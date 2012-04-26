@@ -1,0 +1,53 @@
+package org.generationcp.ibpworkbench.comp.window;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+
+/**
+ * A Window that shows a web page in an embedded iframe.
+ * 
+ * Usage:
+ * ExternalWebToolWindow window = new ExternalWebToolWindow("Germplasm Browser", "http://localhost:8081/GermplasmBrowser/");
+ * window.setWidth("800px");
+ * window.setHeight("600px");
+ * 
+ * @author Glenn Marintes
+ */
+public class ExternalWebToolWindow extends Window {
+    private static final long serialVersionUID = 1L;
+    
+    private String url;
+    
+    private Embedded browser;
+    
+    public ExternalWebToolWindow(String caption, String url) {
+        super(caption);
+        
+        this.url = url;
+        
+        assemble();
+    }
+    
+    protected void initializeComponents() {
+        browser = new Embedded("", new ExternalResource(url));
+        browser.setType(Embedded.TYPE_BROWSER);
+    }
+    
+    protected void initializeLayout() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSizeFull();
+        
+        browser.setSizeFull();
+        layout.addComponent(browser);
+        layout.setExpandRatio(browser, 1.0f);
+        
+        setContent(layout);
+    }
+    
+    protected void assemble() {
+        initializeComponents();
+        initializeLayout();
+    }
+}
