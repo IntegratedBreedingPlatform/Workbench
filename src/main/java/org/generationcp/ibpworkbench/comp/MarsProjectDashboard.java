@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.comp;
 
 import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolId;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.QtlAnalysisWindow;
@@ -16,7 +18,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
@@ -32,7 +33,8 @@ public class MarsProjectDashboard extends VerticalLayout {
     private Label breedingManagementTitle;
     
     private Label fieldTrialManagementTitle;
-    private Link fieldBookLink;
+    //private Link fieldBookLink;
+    private Button fieldBookButton;
     private Button uploadFieldBookDataButton;
     
     private Label populationManagementTitle;
@@ -67,8 +69,12 @@ public class MarsProjectDashboard extends VerticalLayout {
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
         fieldTrialManagementTitle.setSizeUndefined();
         
-        fieldBookLink = new Link("Field Book", new ExternalResource("http://localhost:10080/ibfb/master.jnlp"));
-        fieldBookLink.setSizeUndefined();
+//        fieldBookLink = new Link("Field Book", new ExternalResource("http://localhost:10080/ibfb/master.jnlp"));
+//        fieldBookLink.setSizeUndefined();
+        
+        fieldBookButton = new Button("Field Book");
+        fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK);
+        fieldBookButton.setSizeUndefined();
         
         uploadFieldBookDataButton = new Button("Upload Field Book Data");
         uploadFieldBookDataButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -205,8 +211,8 @@ public class MarsProjectDashboard extends VerticalLayout {
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
 
-        layout.addComponent(fieldBookLink);
-        layout.setComponentAlignment(fieldBookLink, Alignment.MIDDLE_CENTER);
+        layout.addComponent(fieldBookButton);
+        layout.setComponentAlignment(fieldBookButton, Alignment.MIDDLE_CENTER);
 
         layout.addComponent(uploadFieldBookDataButton);
         layout.setComponentAlignment(uploadFieldBookDataButton, Alignment.MIDDLE_CENTER);
@@ -363,6 +369,7 @@ public class MarsProjectDashboard extends VerticalLayout {
                 
                 // set allowed mime types
                 fileUploadWindow.getUpload().addAllowedMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                fileUploadWindow.getUpload().addAllowedMimeType("application/vnd.ms-excel");
                 
                 // set the upload listeners
                 fileUploadWindow.getUpload().addListener(new FieldBookUploadSucceededListener(fileUploadWindow));
@@ -373,40 +380,14 @@ public class MarsProjectDashboard extends VerticalLayout {
             }
         });
         
-        browseGermplasmButton.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Embedded browser = new Embedded("", new ExternalResource("http://localhost:8081/GermplasmBrowser/"));
-                browser.setType(Embedded.TYPE_BROWSER);
-                browser.setSizeFull();
-                
-                IContentWindow contentWindow = (IContentWindow) getWindow();
-                contentWindow.showContent(browser);
-            }
-        });
-        
-        retrieveGermplasmPhenotypicButton.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Embedded browser = new Embedded("", new ExternalResource("http://localhost:8081/GermplasmBrowser2/"));
-                browser.setType(Embedded.TYPE_BROWSER);
-                browser.setSizeFull();
-                
-                IContentWindow contentWindow = (IContentWindow) getWindow();
-                contentWindow.showContent(browser);
-            }
-        });
+        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_BROWSER));
+        retrieveGermplasmPhenotypicButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_PHENOTYPIC));
         
         gdmsButton.addListener(new ClickListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(ClickEvent event) {
-//                Embedded browser = new Embedded("", new ExternalResource("http://localhost:10080/GDMS/"));
                 Embedded browser = new Embedded("", new ExternalResource("http://localhost:8080/ibpworkbench/VAADIN/themes/gcp-default/layouts/load_gdms.html"));
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
@@ -415,6 +396,8 @@ public class MarsProjectDashboard extends VerticalLayout {
                 contentWindow.showContent(browser);
             }
         });
+        
+        fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolId.FIELDBOOK));
         
         qtlAnalysisButton.addListener(new ClickListener() {
             private static final long serialVersionUID = 1L;

@@ -37,6 +37,23 @@ public class PoiUtil {
         return cell == null ? null : cell.getStringCellValue();
     }
     
+    public static Object getCellValue(Cell cell) {
+        if (cell == null) return null;
+        
+        switch (cell.getCellType()) {
+        case Cell.CELL_TYPE_BOOLEAN:
+            return cell.getBooleanCellValue();
+        case Cell.CELL_TYPE_STRING:
+            return cell.getStringCellValue();
+        case Cell.CELL_TYPE_NUMERIC:
+            return cell.getNumericCellValue();
+        case Cell.CELL_TYPE_FORMULA:
+            return cell.getCellFormula();
+        default:
+            return null;
+        }
+    }
+    
     // setCellValue with cell name as parameter
     
     public static void setCellValue(Sheet sheet, String cellName, String value) {

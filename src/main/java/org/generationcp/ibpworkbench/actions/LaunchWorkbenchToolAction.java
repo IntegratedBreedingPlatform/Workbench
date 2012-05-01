@@ -1,0 +1,88 @@
+package org.generationcp.ibpworkbench.actions;
+
+import java.io.IOException;
+
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Window;
+
+public class LaunchWorkbenchToolAction implements ClickListener {
+    private static final long serialVersionUID = 1L;
+    
+    private final static Logger log = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
+    
+    public static enum ToolId {
+         GERMPLASM_BROWSER("germplasm_browser")
+        ,GERMPLASM_PHENOTYPIC("germplasm_phenotypic")
+        ,GDMS("gdms")
+        ,FIELDBOOK("fieldbook")
+        ;
+        
+        String toolId;
+        
+        ToolId(String toolId) {
+            this.toolId = toolId;
+        }
+        
+        public String getToolId() {
+            return toolId;
+        }
+    }
+
+    private ToolId toolId;
+    
+    public LaunchWorkbenchToolAction(ToolId toolId) {
+        this.toolId = toolId;
+    }
+
+    @Override
+    public void buttonClick(ClickEvent event) {
+        Window window = event.getComponent().getWindow();
+        
+        IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
+        if (application == null) {
+            log.warn("Application is null when event occured");
+            return;
+        }
+        
+        Tool tool = application.getWorkbenchDataManager().getToolWithName(toolId.getToolId());
+        if (tool == null) {
+            log.warn("Cannot find tool " + toolId);
+            
+            window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
+            
+            return;
+        }
+        
+        if (tool.getToolType() == ToolType.NATIVE) {
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(tool.getPath());
+            }
+            catch (IOException e) {
+                log.error("Cannot launch " + tool.getPath(), e);
+                
+                window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
+            }
+        }
+        else {
+            Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
+            browser.setType(Embedded.TYPE_BROWSER);
+            browser.setSizeFull();
+            
+            IContentWindow contentWindow = (IContentWindow) event.getComponent().getWindow();
+            contentWindow.showContent(browser);
+        }
+    }
+
+}

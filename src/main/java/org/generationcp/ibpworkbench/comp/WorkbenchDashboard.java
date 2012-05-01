@@ -110,7 +110,8 @@ public class WorkbenchDashboard extends VerticalLayout {
     }
     
     protected void initializeLayout() {
-        setSizeFull();
+//        setSizeFull();
+        setWidth("100%");
         setMargin(true);
         setSpacing(true);
         
@@ -188,12 +189,19 @@ public class WorkbenchDashboard extends VerticalLayout {
     }
     
     private Component layoutProjectTableArea() {
-        AbsoluteLayout outerLayout = new AbsoluteLayout();
-        outerLayout.setMargin(true, false, true, false);
+//        AbsoluteLayout outerLayout = new AbsoluteLayout();
+//        outerLayout.setWidth("100%");
+//        outerLayout.setHeight("230px");
+//        outerLayout.setMargin(true, false, true, false);
+//        
+//        outerLayout.addComponent(projectTable, "top: 5px; left: 20px; right: 20px;");
+////        projectTable.setWidth("100%");
+////        projectTable.setHeight("320px");
+//        
+//        return outerLayout;
         
-        outerLayout.addComponent(projectTable, "top: 5px; left: 20px; right: 20px;");
         projectTable.setWidth("100%");
-        
-        return outerLayout;
+        projectTable.setHeight("100%");
+        return projectTable;
     }
 }

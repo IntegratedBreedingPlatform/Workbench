@@ -70,6 +70,13 @@ public class IBPWorkbenchApplication extends Application {
     }
     
     @Override
+    public void close() {
+        super.close();
+        
+        // TODO: implement this when we need to do something on session timeout
+    }
+    
+    @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
         event.getThrowable().printStackTrace();
     }

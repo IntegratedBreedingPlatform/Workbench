@@ -26,7 +26,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory {
             TextField tf = (TextField) field;
             tf.setRequired(true);
             tf.setRequiredError("Please enter a Project Name.");
-            tf.addValidator(new StringLengthValidator("Project Name must be 3-25 characters", 3, 25, false));
+            tf.addValidator(new StringLengthValidator("Project Name must be 3-255 characters", 3, 255, false));
         }
         else if ("targetDueDate".equals(propertyId)) {
             field.setRequired(true);

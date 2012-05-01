@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.POIXMLException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.generationcp.ibpworkbench.model.FieldBookObservation;
 import org.generationcp.ibpworkbench.util.PoiUtil;
-import org.generationcp.ibpworkbench.util.Util;
 
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
@@ -24,7 +24,8 @@ public class FieldBookObservationPanel extends VerticalLayout {
     
     private String filename;
     
-    private List<FieldBookObservation> observationList;
+    private List<String> columnNames;
+    private List<List<String>> observationList;
 
     private Table observationTable;
     
@@ -35,99 +36,113 @@ public class FieldBookObservationPanel extends VerticalLayout {
     }
     
     protected void initialize() {
+        Workbook wb = null;
+        
         try {
-            Workbook wb = new XSSFWorkbook(new FileInputStream(filename));
-            
-            Sheet sheet = wb.getSheet("Observation");
-            if (sheet == null) return;
-            
-            observationList = new ArrayList<FieldBookObservation>();
-            
-            for (int index = 1; index < 1048576; index++) {
-                Row row = sheet.getRow(index);
-                if (row == null) break;
-                
-                Cell cellA = row.getCell(0);
-                Cell cellB = row.getCell(1);
-                Cell cellC = row.getCell(2);
-                Cell cellD = row.getCell(3);
-                Cell cellE = row.getCell(4);
-                Cell cellF = row.getCell(5);
-                Cell cellG = row.getCell(6);
-                Cell cellH = row.getCell(7);
-                Cell cellI = row.getCell(8);
-                
-                if (Util.isAllNull(cellA, cellB, cellC, cellD, cellE, cellF, cellG, cellH, cellI)) {
-                    break;
-                }
-                
-                Double plotNo = PoiUtil.getCellNumericValue(cellA);
-                Double rep = PoiUtil.getCellNumericValue(cellB);
-                Double mainPlot = PoiUtil.getCellNumericValue(cellC);
-                Double subPlot = PoiUtil.getCellNumericValue(cellD);
-                String variety = PoiUtil.getCellStringValue(cellE);
-                Double gid = PoiUtil.getCellNumericValue(cellF);
-                Double fertilizer = PoiUtil.getCellNumericValue(cellG);
-                Double yield = PoiUtil.getCellNumericValue(cellH);
-                Double pht = PoiUtil.getCellNumericValue(cellI);
-                
-                if (Util.isAllNull(plotNo, rep, mainPlot, subPlot, variety, gid, fertilizer, yield, pht)) {
-                    break;
-                }
-                
-                FieldBookObservation observation = new FieldBookObservation();
-                observation.setPlotNo(plotNo.intValue());
-                observation.setRep(rep.intValue());
-                observation.setMainPlot(mainPlot.intValue());
-                observation.setSubPlot(subPlot.intValue());
-                observation.setVariety(variety);
-                observation.setGid(gid.intValue());
-                observation.setFertilizer(fertilizer.intValue());
-                observation.setYield(yield);
-                observation.setPht(pht.intValue());
-                
-                observationList.add(observation);
-            }
+            wb = new XSSFWorkbook(new FileInputStream(filename));
         }
         catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Cannot open file", e);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Cannot process file", e);
+        }
+        catch (POIXMLException e) {
+            try {
+                wb = new HSSFWorkbook(new FileInputStream(filename));
+            }
+            catch (FileNotFoundException e1) {
+                throw new RuntimeException("Cannot open file", e1);
+            }
+            catch (IOException e1) {
+                throw new RuntimeException("Cannot process file", e1);
+            }
+        }
+        finally {
+            if (wb == null) {
+                return;
+            }
+        }
+        
+        Sheet sheet = wb.getSheet("Observation");
+        if (sheet == null) {
+            sheet = wb.getSheet("Measurements");
+        }
+        if (sheet == null) return;
+
+        observationList = new ArrayList<List<String>>();
+
+        columnNames = new ArrayList<String>();
+        for (int colIndex = 0; colIndex < 1024; colIndex++) {
+            Row row = sheet.getRow(0);
+            if (row == null) break;
+
+            Cell cell = row.getCell(colIndex);
+            String columnName = PoiUtil.getCellStringValue(cell);
+            if (StringUtils.isBlank(columnName)) break;
+
+            columnNames.add(columnName);
+        }
+
+        for (int rowIndex = 1; rowIndex < 1048576; rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row == null) break;
+
+            List<String> observations = new ArrayList<String>();
+            for (int colIndex = 0; colIndex < columnNames.size(); colIndex++) {
+                Cell cell = row.getCell(colIndex);
+                Object cellValue = PoiUtil.getCellValue(cell);
+
+                observations.add(cellValue == null ? "" : cellValue.toString());
+            }
+
+            observationList.add(observations);
         }
     }
     
     protected void initializeComponents() {
         observationTable = new Table();
         
+        observationTable.setSelectable(true); // allow row selection
+        
         observationTable.setImmediate(true); // react at once when something is selected
         
-        BeanContainer<String, FieldBookObservation> container = new BeanContainer<String, FieldBookObservation>(FieldBookObservation.class);
-        container.setBeanIdProperty("plotNo");
+//        BeanContainer<String, FieldBookObservation> container = new BeanContainer<String, FieldBookObservation>(FieldBookObservation.class);
+//        container.setBeanIdProperty("plotNo");
+//        
+//        for (FieldBookObservation observation : observationList) {
+//            container.addBean(observation);
+//        }
+//        
+//        observationTable.setContainerDataSource(container);
+//        
+//        observationTable.setColumnHeader("plotNo", "Plot No");
+//        observationTable.setColumnHeader("rep", "Rep");
+//        observationTable.setColumnHeader("mainPlot", "Main Plot");
+//        observationTable.setColumnHeader("subPlot", "Sub Plot");
+//        observationTable.setColumnHeader("variety", "Variety");
+//        observationTable.setColumnHeader("gid", "GID");
+//        observationTable.setColumnHeader("fertilizer", "Fert");
+//        observationTable.setColumnHeader("yield", "Yield");
+//        observationTable.setColumnHeader("pht", "PHT");
+//        
+//        String[] columns = new String[]{"plotNo", "rep", "mainPlot", "subPlot", "variety", "gid", "fertilizer", "yield", "pht"};
+//        observationTable.setVisibleColumns(columns);
         
-        for (FieldBookObservation observation : observationList) {
-            container.addBean(observation);
+        for (String columnName : columnNames) {
+            observationTable.addContainerProperty(columnName, String.class, null);
         }
         
-        observationTable.setContainerDataSource(container);
-        
-        observationTable.setColumnHeader("plotNo", "Plot No");
-        observationTable.setColumnHeader("rep", "Rep");
-        observationTable.setColumnHeader("mainPlot", "Main Plot");
-        observationTable.setColumnHeader("subPlot", "Sub Plot");
-        observationTable.setColumnHeader("variety", "Variety");
-        observationTable.setColumnHeader("gid", "GID");
-        observationTable.setColumnHeader("fertilizer", "Fert");
-        observationTable.setColumnHeader("yield", "Yield");
-        observationTable.setColumnHeader("pht", "PHT");
-        
-        String[] columns = new String[]{"plotNo", "rep", "mainPlot", "subPlot", "variety", "gid", "fertilizer", "yield", "pht"};
-        observationTable.setVisibleColumns(columns);
+        for (int rowIndex = 0; rowIndex < observationList.size(); rowIndex++) {
+            List<String> observation = observationList.get(rowIndex);
+            observationTable.addItem(observation.toArray(), rowIndex);
+        }
     }
     
     protected void initializeLayout() {
         setMargin(true);
         
+        observationTable.setWidth("100%");
         addComponent(observationTable);
     }
     
