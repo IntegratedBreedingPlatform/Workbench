@@ -4,6 +4,7 @@ import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
+import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 
@@ -31,7 +32,12 @@ public class IBPWorkbenchApplication extends Application {
     }
     
     public WorkbenchDataManager getWorkbenchDataManager() {
-        return managerFactory.getWorkbenchDataManager();
+    	try{
+    		return managerFactory.getWorkbenchDataManager();
+    	}catch(ConfigException ex){
+    		return null;
+    	}
+        
     }
     
     @Override

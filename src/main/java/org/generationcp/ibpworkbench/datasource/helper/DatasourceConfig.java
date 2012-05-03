@@ -49,7 +49,11 @@ public class DatasourceConfig {
             in.close();
 
             DatabaseConnectionParameters param = new DatabaseConnectionParameters(host, port, dbname, username, password);
-            managerFactory = new ManagerFactory(param);
+            //the database connection parameters for central is set to null because the Workbench
+            //does not need a connection to a central instance of IBDB
+            //the Workbench currently uses the WorkbenchDataManager only which needs just a 
+            //connection to a local instance
+            managerFactory = new ManagerFactory(param, null);
         }
         catch (URISyntaxException e) {
             throw new RuntimeException("Cannot create data source", e);
