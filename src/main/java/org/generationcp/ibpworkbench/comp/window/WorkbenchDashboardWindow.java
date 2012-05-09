@@ -4,6 +4,10 @@ import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction;
 import org.generationcp.ibpworkbench.comp.ContactBookPanel;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -19,8 +23,10 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
-public class WorkbenchDashboardWindow extends Window implements IContentWindow {
+@Configurable
+public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean {
     private static final long serialVersionUID = 1L;
+    private Logger log = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
     
     private Label workbenchTitle;
     private Button homeButton;
@@ -36,9 +42,18 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow {
     private VerticalSplitPanel verticalSplitPanel;
     
     private HorizontalSplitPanel contentAreaSplitPanel;
+    
     private WorkbenchDashboard workbenchDashboard;
 
     public WorkbenchDashboardWindow() {
+        log.debug("{} instead created.", WorkbenchDashboardWindow.class);
+    }
+    
+    /**
+     * Assemble the UI after all dependencies has been set.
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
         assemble();
     }
     
@@ -114,11 +129,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow {
         
         verticalSplitPanel.addComponent(contentAreaSplitPanel);
         
-//        layout.addComponent(contentAreaSplitPanel);
-//        layout.setComponentAlignment(contentAreaSplitPanel, Alignment.MIDDLE_CENTER);
-//        layout.setExpandRatio(contentAreaSplitPanel, 1.0f);
-        
-        
         setContent(layout);
     }
     
@@ -128,6 +138,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow {
 
             @Override
             public void buttonClick(ClickEvent event) {
+                // we create a new WorkbenchDashboard object here
+                // so that the UI is reset to its initial state
+                // we can remove this if we want to present the last UI state.
                 workbenchDashboard = new WorkbenchDashboard();
                 workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
                 
@@ -147,15 +160,15 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow {
         createProjectButton.addListener(new OpenNewProjectAction());
         
         createContactButton.addListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ContactBookPanel contactBookPanel = new ContactBookPanel();
-				showContent(contactBookPanel);
-			}
-		});
-        
+            @Override
+            public void buttonClick(ClickEvent event) {
+                ContactBookPanel contactBookPanel = new ContactBookPanel();
+                showContent(contactBookPanel);
+            }
+        });
+
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
     }
     

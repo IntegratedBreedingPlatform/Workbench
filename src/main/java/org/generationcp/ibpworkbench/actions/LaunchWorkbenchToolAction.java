@@ -2,19 +2,21 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.IOException;
 
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 public class LaunchWorkbenchToolAction implements ClickListener {
     private static final long serialVersionUID = 1L;
@@ -40,22 +42,24 @@ public class LaunchWorkbenchToolAction implements ClickListener {
     }
 
     private ToolId toolId;
+
+    private DatasourceConfig dataSourceConfig;
     
     public LaunchWorkbenchToolAction(ToolId toolId) {
         this.toolId = toolId;
+    }
+    
+    @Autowired(required = true)
+    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
+        this.dataSourceConfig = dataSourceConfig;
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
         
-        IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
-        if (application == null) {
-            log.warn("Application is null when event occured");
-            return;
-        }
-        
-        Tool tool = application.getWorkbenchDataManager().getToolWithName(toolId.getToolId());
+        WorkbenchDataManager workbenchDataManager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
+        Tool tool = workbenchDataManager.getToolWithName(toolId.getToolId());
         if (tool == null) {
             log.warn("Cannot find tool " + toolId);
             

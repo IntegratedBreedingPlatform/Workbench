@@ -1,61 +1,30 @@
 package org.generationcp.ibpworkbench;
 
+import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
-import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
-import org.generationcp.middleware.exceptions.ConfigException;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import com.vaadin.Application;
-
-public class IBPWorkbenchApplication extends Application {
+public class IBPWorkbenchApplication extends SpringContextApplication {
     private static final long serialVersionUID = 1L;
+    
+    private final static Logger log = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
     
     private LoginWindow loginWindow;
 
-    private WorkbenchDashboardWindow dashboardWindow;
-    
-    private ManagerFactory managerFactory;
-    
-    public LoginWindow getLoginWindow() {
-        return loginWindow;
-    }
-    
-    public WorkbenchDashboardWindow getDashboardWindow() {
-        return dashboardWindow;
-    }
-    
-    public ManagerFactory getManagerFactory() {
-        return managerFactory;
-    }
-    
-    public WorkbenchDataManager getWorkbenchDataManager() {
-    	try{
-    		return managerFactory.getWorkbenchDataManager();
-    	}catch(ConfigException ex){
-    		return null;
-    	}
-        
-    }
-    
     @Override
-    public void init() {
+    protected void initSpringApplication(ConfigurableWebApplicationContext context) {
         assemble();
     }
     
     protected void initialize() {
         setTheme("gcp-default");
-        
-        // initialize data source
-        managerFactory = new DatasourceConfig().getManagerFactory();
     }
     
     protected void initializeComponents() {
         loginWindow = new LoginWindow();
-        
-        dashboardWindow = new WorkbenchDashboardWindow();
     }
     
     protected void initializeLayout() {
@@ -63,7 +32,7 @@ public class IBPWorkbenchApplication extends Application {
     }
     
     protected void initializeActions() {
-        new LoginAction(loginWindow.getLoginForm());
+        new LoginAction(loginWindow);
     }
     
     protected void assemble() {
@@ -79,11 +48,13 @@ public class IBPWorkbenchApplication extends Application {
     public void close() {
         super.close();
         
-        // TODO: implement this when we need to do something on session timeout
+        // implement this when we need to do something on session timeout
+        
+        log.debug("Application closed");
     }
     
     @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
-        event.getThrowable().printStackTrace();
+        log.error("Encountered error", event.getThrowable());
     }
 }

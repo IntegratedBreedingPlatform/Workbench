@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.comp;
 
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
@@ -12,7 +14,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class CreateNewProjectPanel extends VerticalLayout {
+@Configurable
+public class CreateNewProjectPanel extends VerticalLayout implements InitializingBean {
     private static final long serialVersionUID = 1L;
     
     private Label newProjectTitle;
@@ -22,9 +25,15 @@ public class CreateNewProjectPanel extends VerticalLayout {
     private Button cancelButton;
 
     private Button saveButton;
-
+    
     public CreateNewProjectPanel() {
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
         assemble();
+        
+        form.setVisibleItemProperties(new String[]{"projectName", "targetDueDate", "template"});
     }
     
     public Button getSaveButton() {
@@ -37,13 +46,6 @@ public class CreateNewProjectPanel extends VerticalLayout {
     
     public Form getForm() {
         return form;
-    }
-    
-    @Override
-    public void attach() {
-        super.attach();
-        
-        form.setVisibleItemProperties(new String[]{"projectName", "targetDueDate", "template"});
     }
     
     protected void initializeComponents() {

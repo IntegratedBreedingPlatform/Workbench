@@ -2,6 +2,10 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
+import org.generationcp.ibpworkbench.comp.window.LoginWindow;
+import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -10,24 +14,27 @@ import com.vaadin.ui.TextField;
 
 public class LoginAction implements ClickListener {
     private static final long serialVersionUID = 1L;
-    private LoginForm loginForm;
+    private Logger log = LoggerFactory.getLogger(LoginAction.class);
     
-    public LoginAction(LoginForm loginForm) {
-        this.loginForm = loginForm;
+    private LoginWindow loginWindow;
+    
+    public LoginAction(LoginWindow loginWindow) {
+        this.loginWindow = loginWindow;
         
-        loginForm.getBtnLogin().addListener(this);
+        loginWindow.getLoginForm().getBtnLogin().addListener(this);
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
+        LoginForm loginForm = loginWindow.getLoginForm();
+        
         TextField txtEmailAddress = loginForm.getTxtEmailAddress();
         PasswordField pfPassword = loginForm.getPfPassword();
         
-        loginForm.getWindow().showNotification("Login with " + txtEmailAddress.getValue() + "/" + pfPassword.getValue());
+        log.trace("Login with " + txtEmailAddress.getValue() + "/" + pfPassword.getValue());
         
-        IBPWorkbenchApplication application = (IBPWorkbenchApplication) loginForm.getApplication();
-        application.removeWindow(application.getLoginWindow());
-        application.setMainWindow(application.getDashboardWindow());
+        IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
+        application.removeWindow(application.getMainWindow());
+        application.setMainWindow(new WorkbenchDashboardWindow());
     }
-
 }

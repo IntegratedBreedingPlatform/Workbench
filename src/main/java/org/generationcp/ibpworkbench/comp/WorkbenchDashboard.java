@@ -4,9 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
@@ -22,7 +25,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-public class WorkbenchDashboard extends VerticalLayout {
+@Configurable
+public class WorkbenchDashboard extends VerticalLayout implements InitializingBean {
     private static final long serialVersionUID = 1L;
 
     private Button leftButton;
@@ -34,39 +38,19 @@ public class WorkbenchDashboard extends VerticalLayout {
 
     private HorizontalLayout projectThumbnailLayout;
     
+    @Autowired(required = true)
+    private DatasourceConfig dataSourceConfig;
+    
     public WorkbenchDashboard() {
-        assemble();
+    }
+    
+    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
+        this.dataSourceConfig = dataSourceConfig;
     }
     
     @Override
-    public void attach() {
-        super.attach();
-        
-        // Get the list of Projects
-        WorkbenchDataManager manager = getApplication().getWorkbenchDataManager();
-        List<Project> projects = manager.getProjects();
-        
-        // set the Project Table data source
-        BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-        projectContainer.setBeanIdProperty("projectName");
-        for (Project project : projects) {
-            projectContainer.addBean(project);
-        }
-        projectTable.setContainerDataSource(projectContainer);
-        
-        // set the visible columns on the Project Table
-        String[] columns = new String[]{"targetDueDate", "projectName", "action", "status", "owner"};
-        projectTable.setVisibleColumns(columns);
-        
-        // update the Project Thumbnail area
-        for (Project project : projects) {
-            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
-            projectThumbnailLayout.addComponent(projectPanel);
-        }
-    }
-    
-    public IBPWorkbenchApplication getApplication() {
-        return (IBPWorkbenchApplication) super.getApplication();
+    public void afterPropertiesSet() throws Exception {
+        assemble();
     }
     
     public void addProjectTableListener(ItemClickListener listener) {
@@ -110,7 +94,6 @@ public class WorkbenchDashboard extends VerticalLayout {
     }
     
     protected void initializeLayout() {
-//        setSizeFull();
         setWidth("100%");
         setMargin(true);
         setSpacing(true);
@@ -124,6 +107,30 @@ public class WorkbenchDashboard extends VerticalLayout {
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
         setExpandRatio(projectTableArea, 1.0f);
+    }
+    
+    protected void initializeData() {
+        // Get the list of Projects
+        WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
+        List<Project> projects = manager.getProjects();
+        
+        // set the Project Table data source
+        BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+        projectContainer.setBeanIdProperty("projectName");
+        for (Project project : projects) {
+            projectContainer.addBean(project);
+        }
+        projectTable.setContainerDataSource(projectContainer);
+        
+        // set the visible columns on the Project Table
+        String[] columns = new String[]{"targetDueDate", "projectName", "action", "status", "owner"};
+        projectTable.setVisibleColumns(columns);
+        
+        // update the Project Thumbnail area
+        for (Project project : projects) {
+            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
+            projectThumbnailLayout.addComponent(projectPanel);
+        }
     }
     
     protected void initializeActions() {
@@ -160,6 +167,7 @@ public class WorkbenchDashboard extends VerticalLayout {
     protected void assemble() {
         initializeComponents();
         initializeLayout();
+        initializeData();
         initializeActions();
     }
     
@@ -178,8 +186,7 @@ public class WorkbenchDashboard extends VerticalLayout {
         projectThumbnailArea.setContent(projectThumbnailLayout);
         
         // NOTE: the project thumbnail layout is intentionally empty at this point.
-        // The child components will be added once the WorkbenchDashboard is attached
-        // to an application.
+        // The child components will be added later.
         
         outerLayout.addComponent(projectThumbnailArea, "top: 0px; left: 20px; right: 20px;");
         outerLayout.addComponent(leftButton, "top: 50%; left: 10px");
@@ -189,17 +196,6 @@ public class WorkbenchDashboard extends VerticalLayout {
     }
     
     private Component layoutProjectTableArea() {
-//        AbsoluteLayout outerLayout = new AbsoluteLayout();
-//        outerLayout.setWidth("100%");
-//        outerLayout.setHeight("230px");
-//        outerLayout.setMargin(true, false, true, false);
-//        
-//        outerLayout.addComponent(projectTable, "top: 5px; left: 20px; right: 20px;");
-////        projectTable.setWidth("100%");
-////        projectTable.setHeight("320px");
-//        
-//        return outerLayout;
-        
         projectTable.setWidth("100%");
         projectTable.setHeight("100%");
         return projectTable;

@@ -2,9 +2,11 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import java.util.List;
 
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
@@ -15,8 +17,16 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
+@Configurable
 public class ProjectFormFieldFactory extends DefaultFieldFactory {
     private static final long serialVersionUID = 1L;
+    
+    private DatasourceConfig dataSourceConfig;
+    
+    @Autowired
+    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
+        this.dataSourceConfig = dataSourceConfig;
+    }
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -33,8 +43,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory {
             field.setRequiredError("Please enter a Target Due Date.");
         }
         else if ("template".equals(propertyId)) {
-            IBPWorkbenchApplication application = (IBPWorkbenchApplication) uiContext.getApplication();
-            WorkbenchDataManager manager = application.getWorkbenchDataManager();
+            WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
             
             BeanContainer<Long, WorkflowTemplate> templateContainer = new BeanContainer<Long, WorkflowTemplate>(WorkflowTemplate.class);
             templateContainer.setBeanIdProperty("templateId");

@@ -6,6 +6,17 @@
     <param-name>productionMode</param-name>
     <param-value>true</param-value>
   </context-param>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:applicationContext.xml</param-value>
+  </context-param>
+  
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+      <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
   
   <session-config>
     <session-timeout>60</session-timeout>
@@ -13,7 +24,7 @@
 
   <servlet>
     <servlet-name>ibpworkbench</servlet-name>
-    <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+    <servlet-class>org.generationcp.ibpworkbench.spring.SpringApplicationServlet</servlet-class>
     <init-param>
       <param-name>application</param-name>
       <param-value>org.generationcp.ibpworkbench.IBPWorkbenchApplication</param-value>
@@ -22,16 +33,5 @@
   <servlet-mapping>
     <servlet-name>ibpworkbench</servlet-name>
     <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description></description>
-    <display-name>ProjectFormFieldFactory</display-name>
-    <servlet-name>ProjectFormFieldFactory</servlet-name>
-    <servlet-class>org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ProjectFormFieldFactory</servlet-name>
-    <url-pattern>/ProjectFormFieldFactory</url-pattern>
   </servlet-mapping>
 </web-app>
