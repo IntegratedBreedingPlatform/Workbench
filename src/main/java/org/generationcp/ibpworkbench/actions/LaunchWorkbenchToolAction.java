@@ -10,6 +10,7 @@ import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,6 +19,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
+@Configurable
 public class LaunchWorkbenchToolAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
