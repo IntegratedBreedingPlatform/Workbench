@@ -33,6 +33,8 @@ public class MarsProjectDashboard extends VerticalLayout {
     private Label breedingManagementTitle;
     
     private Label fieldTrialManagementTitle;
+    private Label plantSelectionTitle;
+    
     //private Link fieldBookLink;
     private Button fieldBookButton;
     private Button uploadFieldBookDataButton;
@@ -41,6 +43,8 @@ public class MarsProjectDashboard extends VerticalLayout {
     private Button browseGermplasmButton;
     private Button retrieveGermplasmPhenotypicButton;
     private Button gdmsButton;
+    
+    private Button optimasButton;
     
     // Marker Trait Analysis controls
     private Label markerTraitAnalysisTitle;
@@ -95,6 +99,14 @@ public class MarsProjectDashboard extends VerticalLayout {
         gdmsButton = new Button("GDMS");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
+        
+        optimasButton = new Button("OptiMAS");
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
+        optimasButton.setSizeUndefined();
+        
+        plantSelectionTitle = new Label("Plant Selection");
+        plantSelectionTitle.setStyleName("gcp-section-title");
+        plantSelectionTitle.setSizeUndefined();
         
         // marker trait analysis
         markerTraitAnalysisTitle = new Label("Marker Trait Analysis");
@@ -298,7 +310,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         layoutPanel(ideotypeDesignArea);
         layout.addComponent(ideotypeDesignArea);
         
-        Component plantSelectionArea = createPanel("Plant Selection", "OptiMAS");
+        Component plantSelectionArea = layoutPlantSelection();
         layoutPanel(plantSelectionArea);
         layout.addComponent(plantSelectionArea);
         
@@ -314,6 +326,26 @@ public class MarsProjectDashboard extends VerticalLayout {
         layoutPanel(projectCompletionArea);
         layout.addComponent(projectCompletionArea);
         
+        panel.setContent(layout);
+        return panel;
+    }
+    
+    protected Component layoutPlantSelection() {
+        Panel panel = new Panel();
+
+        VerticalLayout layout = new VerticalLayout();
+
+        layout.addComponent(plantSelectionTitle);
+        layout.setComponentAlignment(plantSelectionTitle, Alignment.TOP_CENTER);
+
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+
+        layout.addComponent(optimasButton);
+        layout.setComponentAlignment(optimasButton, Alignment.MIDDLE_CENTER);
+
         panel.setContent(layout);
         return panel;
     }
@@ -398,6 +430,8 @@ public class MarsProjectDashboard extends VerticalLayout {
         });
         
         fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolId.FIELDBOOK));
+        
+        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolId.OPTIMAS));
         
         qtlAnalysisButton.addListener(new ClickListener() {
             private static final long serialVersionUID = 1L;

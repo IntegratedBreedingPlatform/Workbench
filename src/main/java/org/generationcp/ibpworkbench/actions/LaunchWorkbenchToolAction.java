@@ -30,6 +30,7 @@ public class LaunchWorkbenchToolAction implements ClickListener {
         ,GERMPLASM_PHENOTYPIC("germplasm_phenotypic")
         ,GDMS("gdms")
         ,FIELDBOOK("fieldbook")
+        ,OPTIMAS("optimas")
         ;
         
         String toolId;
