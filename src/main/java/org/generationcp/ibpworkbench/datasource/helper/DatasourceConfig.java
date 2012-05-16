@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
@@ -13,7 +14,9 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.hibernate.HibernateException;
 
-public class DatasourceConfig {
+public class DatasourceConfig implements Serializable{
+    private static final long serialVersionUID = 1818294200537720321L;
+	
     private String host;
     private String port;
     private String dbname;
