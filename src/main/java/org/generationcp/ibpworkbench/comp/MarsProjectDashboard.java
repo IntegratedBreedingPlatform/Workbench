@@ -39,7 +39,7 @@ public class MarsProjectDashboard extends VerticalLayout {
     private Button fieldBookButton;
     private Button uploadFieldBookDataButton;
     
-    private Label populationManagementTitle;
+    private Label populationDevelopmentTitle;
     private Button browseGermplasmButton;
     private Button retrieveGermplasmPhenotypicButton;
     private Button gdmsButton;
@@ -69,7 +69,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         breedingManagementTitle = new Label("Breeding Management");
         breedingManagementTitle.setStyleName("gcp-section-title");
         
-        fieldTrialManagementTitle = new Label("Field Trial Management");
+        fieldTrialManagementTitle = new Label("3. Field Trial Management");
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
         fieldTrialManagementTitle.setSizeUndefined();
         
@@ -84,9 +84,9 @@ public class MarsProjectDashboard extends VerticalLayout {
         uploadFieldBookDataButton.setStyleName(BaseTheme.BUTTON_LINK);
         uploadFieldBookDataButton.setSizeUndefined();
         
-        populationManagementTitle = new Label("Population Management");
-        populationManagementTitle.setStyleName("gcp-section-title");
-        populationManagementTitle.setSizeUndefined();
+        populationDevelopmentTitle = new Label("2. Population Development");
+        populationDevelopmentTitle.setStyleName("gcp-section-title");
+        populationDevelopmentTitle.setSizeUndefined();
         
         browseGermplasmButton = new Button("Browse Germplasm Information");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -164,33 +164,33 @@ public class MarsProjectDashboard extends VerticalLayout {
         layout.addComponent(breedingManagementTitle);
         layout.setComponentAlignment(breedingManagementTitle, Alignment.TOP_CENTER);
         
-        Component genotypingArea = createPanel("Genotyping", "Lab Book");
-        layoutPanel(genotypingArea);
-        layout.addComponent(genotypingArea);
+        Component projectPlanningArea = createPanel("1. Project Planning");
+        layoutPanel(projectPlanningArea);
+        layout.addComponent(projectPlanningArea);
+        
+        Component populationManagementArea = layoutPopulationDevelopment();
+        layoutPanel(populationManagementArea);
+        layout.addComponent(populationManagementArea);
         
         Component fieldTrialArea = layoutFieldTrialManagement();
         layoutPanel(fieldTrialArea);
         layout.addComponent(fieldTrialArea);
         
-        Component populationManagementArea = layoutPopulationManagement();
-        layoutPanel(populationManagementArea);
-        layout.addComponent(populationManagementArea);
-        
-        Component projectPlanningArea = createPanel("Project Planning");
-        layoutPanel(projectPlanningArea);
-        layout.addComponent(projectPlanningArea);
+        Component genotypingArea = createPanel("4. Genotyping", "Lab Book");
+        layoutPanel(genotypingArea);
+        layout.addComponent(genotypingArea);
         
         panel.setContent(layout);
         return panel;
     }
     
-    protected Component layoutPopulationManagement() {
+    protected Component layoutPopulationDevelopment() {
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
 
-        layout.addComponent(populationManagementTitle);
-        layout.setComponentAlignment(populationManagementTitle, Alignment.TOP_CENTER);
+        layout.addComponent(populationDevelopmentTitle);
+        layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -245,22 +245,22 @@ public class MarsProjectDashboard extends VerticalLayout {
         layout.addComponent(markerTraitAnalysisTitle);
         layout.setComponentAlignment(markerTraitAnalysisTitle, Alignment.TOP_CENTER);
         
-//        Component loadDataSetsArea = createPanel("Load Datasets", "Analytical Pipeline");
-//        layoutPanel(loadDataSetsArea);
-//        layout.addComponent(loadDataSetsArea);
+        Component loadDataSetsArea = createPanel("5. Load Datasets", "Analytical Pipeline");
+        layoutPanel(loadDataSetsArea);
+        layout.addComponent(loadDataSetsArea);
         
-//        Component phenotypicAnalysisArea = createPanel("Phenotypic Analysis");
-//        layoutPanel(phenotypicAnalysisArea);
-//        layout.addComponent(phenotypicAnalysisArea);
-//        
-//        Component genotypicAnalysisArea = createPanel("Genotypic Analysis");
-//        layoutPanel(genotypicAnalysisArea);
-//        layout.addComponent(genotypicAnalysisArea);
+        Component phenotypicAnalysisArea = createPanel("6. Phenotypic Analysis", "Analytical Pipeline");
+        layoutPanel(phenotypicAnalysisArea);
+        layout.addComponent(phenotypicAnalysisArea);
+        
+        Component genotypicAnalysisArea = createPanel("7. Genotypic Analysis", "Analytical Pipeline");
+        layoutPanel(genotypicAnalysisArea);
+        layout.addComponent(genotypicAnalysisArea);
         
         Component qtlAnalysisArea = layoutQtlAnalysisArea();
         layoutPanel(qtlAnalysisArea);
         layout.addComponent(qtlAnalysisArea);
-        layout.setExpandRatio(qtlAnalysisArea, 1.0f);
+        //layout.setExpandRatio(qtlAnalysisArea, 1.0f);
         
         panel.setContent(layout);
         return panel;
@@ -271,7 +271,7 @@ public class MarsProjectDashboard extends VerticalLayout {
 
         VerticalLayout layout = new VerticalLayout();
 
-        Label titleLabel = new Label("QTL Analysis");
+        Label titleLabel = new Label("8. QTL Analysis");
         titleLabel.setStyleName("gcp-section-title");
         titleLabel.setSizeUndefined();
 
@@ -306,7 +306,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         layout.addComponent(markerImplementationTitle);
         layout.setComponentAlignment(markerImplementationTitle, Alignment.TOP_CENTER);
         
-        Component ideotypeDesignArea = createPanel("Ideotype Design", "Selection Index");
+        Component ideotypeDesignArea = createPanel("9. Ideotype Design", "Selection Index");
         layoutPanel(ideotypeDesignArea);
         layout.addComponent(ideotypeDesignArea);
         
@@ -322,7 +322,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         layoutPanel(genotypingArea);
         layout.addComponent(genotypingArea);
         
-        Component projectCompletionArea = createPanel("Project Completion");
+        Component projectCompletionArea = createPanel("11. Project Completion");
         layoutPanel(projectCompletionArea);
         layout.addComponent(projectCompletionArea);
         
