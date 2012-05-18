@@ -25,7 +25,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     // Breeding Management
     private Panel genotypingPanel;
     private Panel fieldTrialPanel;
-    private Panel populationManagementPanel;
+    private Panel populationDevelopmentPanel;
     private Panel projectPlanningPanel;
     
     // Market Trait Analysis
@@ -37,6 +37,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     // Marker Implementation
     private Panel projectCompletionPanel;
     private Panel ideotypeDesignPanel;
+    private Panel subProcessPanel;
     
     public ProjectThumbnailPanel(Project project) {
         this.project = project;
@@ -55,21 +56,22 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         workflowTitle = new Label("MARS");
         
         // Breeding Management
-        genotypingPanel = createPanel(""); // Genotyping
-        fieldTrialPanel = createPanel(""); // Field Trial Management
-        populationManagementPanel = createPanel(""); // Population Management
-        projectPlanningPanel = createPanel("Project Planning"); // Project Planning
-        projectPlanningPanel.setStyleName(Reindeer.PANEL_LIGHT);
+        projectPlanningPanel = createPanel("1. Project", "Planning"); // Project Planning
+        populationDevelopmentPanel = createPanel("2. Population",  "Development"); // Population Development
+        fieldTrialPanel = createPanel("3. Field Trial",  "Management"); // Field Trial Management
+        genotypingPanel = createPanel("4. Genotyping"); // Genotyping
         
         // Market Trait Analysis
-        loadDataSetsPanel = createPanel("");
-        phenotypicAnalysisPanel = createPanel("");
-        genotypicAnalysisPanel = createPanel("");
-        qtlAnalysisPanel = createPanel("");
+        loadDataSetsPanel = createPanel("5. Load",  "Datasets");
+        phenotypicAnalysisPanel = createPanel("6. Phenotypic",  "Analysis");
+        genotypicAnalysisPanel = createPanel("7. Genotypic",  "Analysis");
+        qtlAnalysisPanel = createPanel("8. QTL",  "Analysis");
         
         // Marker Implementation
-        projectCompletionPanel = createPanel("");
-        ideotypeDesignPanel = createPanel("");
+        ideotypeDesignPanel = createPanel("9. Ideotype",  "Design");
+        subProcessPanel = createPanel("10. XYZ",  "Subprocess");
+        projectCompletionPanel = createPanel("11. Project",  "Completion");
+        
     }
     
     protected void initializeLayout() {
@@ -131,17 +133,17 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         
-        layoutPanel(genotypingPanel);
-        layout.addComponent(genotypingPanel);
+        layoutPanel(projectPlanningPanel);
+        layout.addComponent(projectPlanningPanel);
+        
+        layoutPanel(populationDevelopmentPanel);
+        layout.addComponent(populationDevelopmentPanel);
         
         layoutPanel(fieldTrialPanel);
         layout.addComponent(fieldTrialPanel);
         
-        layoutPanel(populationManagementPanel);
-        layout.addComponent(populationManagementPanel);
-        
-        layoutPanel(projectPlanningPanel);
-        layout.addComponent(projectPlanningPanel);
+        layoutPanel(genotypingPanel);
+        layout.addComponent(genotypingPanel);
         
         return layout;
     }
@@ -170,26 +172,32 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setSizeFull();
         layout.setSpacing(true);
         
-        layoutPanel(projectCompletionPanel);
-        layout.addComponent(projectCompletionPanel);
-        
         layoutPanel(ideotypeDesignPanel);
         layout.addComponent(ideotypeDesignPanel);
+        
+        layoutPanel(subProcessPanel);
+        layout.addComponent(subProcessPanel);
+        
+        layoutPanel(projectCompletionPanel);
+        layout.addComponent(projectCompletionPanel);
         
         return layout;
     }
     
-    protected Panel createPanel(String caption) {
+    protected Panel createPanel(String... captions) {
         Panel panel = new Panel();
         
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(false);
         
-        Label label = new Label(caption);
-        label.setSizeUndefined();
-        
-        layout.addComponent(label);
-        layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
+        for(String caption : captions)
+        {
+	        Label label = new Label(caption);
+	        label.setSizeUndefined();
+	        
+	        layout.addComponent(label);
+	        layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
+        }
         
         panel.setContent(layout);
         return panel;
