@@ -4,11 +4,14 @@ import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 // TODO: rename this to MarsProjectThumbnailPanel?
 public class ProjectThumbnailPanel extends VerticalLayout implements IProjectProvider {
@@ -55,7 +58,8 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         genotypingPanel = createPanel(""); // Genotyping
         fieldTrialPanel = createPanel(""); // Field Trial Management
         populationManagementPanel = createPanel(""); // Population Management
-        projectPlanningPanel = createPanel(""); // Project Planning
+        projectPlanningPanel = createPanel("Project Planning"); // Project Planning
+        projectPlanningPanel.setStyleName(Reindeer.PANEL_LIGHT);
         
         // Market Trait Analysis
         loadDataSetsPanel = createPanel("");
