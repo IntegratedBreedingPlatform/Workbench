@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
@@ -72,14 +73,15 @@ public class LaunchWorkbenchToolAction implements ClickListener {
         }
         
         if (tool.getToolType() == ToolType.NATIVE) {
+            File absoluteToolFile = new File(tool.getPath());
             Runtime runtime = Runtime.getRuntime();
             try {
-                runtime.exec(tool.getPath());
+                runtime.exec(absoluteToolFile.getAbsolutePath());
             }
             catch (IOException e) {
-                log.error("Cannot launch " + tool.getPath(), e);
+                log.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
                 
-                window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
+                window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(), Notification.TYPE_ERROR_MESSAGE);
             }
         }
         else {
