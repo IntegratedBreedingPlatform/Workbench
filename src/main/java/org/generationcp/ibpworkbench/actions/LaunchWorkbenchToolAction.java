@@ -73,7 +73,7 @@ public class LaunchWorkbenchToolAction implements ClickListener {
         }
         
         if (tool.getToolType() == ToolType.NATIVE) {
-            File absoluteToolFile = new File(tool.getPath());
+            File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
             Runtime runtime = Runtime.getRuntime();
             try {
                 runtime.exec(absoluteToolFile.getAbsolutePath());
