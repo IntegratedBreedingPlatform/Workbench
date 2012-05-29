@@ -32,6 +32,7 @@ public class LaunchWorkbenchToolAction implements ClickListener {
         ,GDMS("gdms")
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
+        ,BREEDING_MANAGER("breeding_manager")
         ;
         
         String toolId;

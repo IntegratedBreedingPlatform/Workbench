@@ -5,17 +5,14 @@ import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolId;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.QtlAnalysisWindow;
 import org.generationcp.middleware.pojos.workbench.Project;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -53,6 +50,9 @@ public class MarsProjectDashboard extends VerticalLayout {
 
     // Marker Implementation controls
     private Label markerImplementationTitle;
+    
+    private Label populationTitle;
+    private Button breedingManagerButton;
 
     public MarsProjectDashboard(Project project) {
         this.project = project;
@@ -115,6 +115,14 @@ public class MarsProjectDashboard extends VerticalLayout {
         // marker implementation
         markerImplementationTitle = new Label("Marker Implementation");
         markerImplementationTitle.setStyleName("gcp-section-title");
+        
+        populationTitle = new Label("Population");
+        populationTitle.setStyleName("gcp-section-title");
+        populationTitle.setSizeUndefined();
+        
+        breedingManagerButton = new Button("Breeding Manager");
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingManagerButton.setSizeUndefined();
     }
     
     protected void initializeLayout() {
@@ -314,7 +322,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         layoutPanel(plantSelectionArea);
         layout.addComponent(plantSelectionArea);
         
-        Component populationArea = createPanel("Population", "Breeding Manager");
+        Component populationArea = layoutPopulation();
         layoutPanel(populationArea);
         layout.addComponent(populationArea);
         
@@ -345,6 +353,26 @@ public class MarsProjectDashboard extends VerticalLayout {
 
         layout.addComponent(optimasButton);
         layout.setComponentAlignment(optimasButton, Alignment.MIDDLE_CENTER);
+
+        panel.setContent(layout);
+        return panel;
+    }
+    
+    protected Component layoutPopulation() {
+        Panel panel = new Panel();
+
+        VerticalLayout layout = new VerticalLayout();
+
+        layout.addComponent(populationTitle);
+        layout.setComponentAlignment(populationTitle, Alignment.TOP_CENTER);
+
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+
+        layout.addComponent(breedingManagerButton);
+        layout.setComponentAlignment(breedingManagerButton, Alignment.MIDDLE_CENTER);
 
         panel.setContent(layout);
         return panel;
@@ -415,19 +443,7 @@ public class MarsProjectDashboard extends VerticalLayout {
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_BROWSER));
         retrieveGermplasmPhenotypicButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_PHENOTYPIC));
         
-        gdmsButton.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Embedded browser = new Embedded("", new ExternalResource("http://localhost:8080/ibpworkbench/VAADIN/themes/gcp-default/layouts/load_gdms.html"));
-                browser.setType(Embedded.TYPE_BROWSER);
-                browser.setSizeFull();
-                
-                IContentWindow contentWindow = (IContentWindow) getWindow();
-                contentWindow.showContent(browser);
-            }
-        });
+        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolId.GDMS));
         
         fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolId.FIELDBOOK));
         
@@ -446,6 +462,8 @@ public class MarsProjectDashboard extends VerticalLayout {
                 window.center();
             }
         });
+        
+        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolId.BREEDING_MANAGER));
     }
     
     protected void assemble() {
