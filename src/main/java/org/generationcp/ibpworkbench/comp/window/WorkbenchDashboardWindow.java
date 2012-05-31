@@ -233,11 +233,12 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         leftLayout.addComponent(createProjectButton);
         leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
         
-        leftLayout.addComponent(createContactButton);
-        leftLayout.setComponentAlignment(createContactButton, Alignment.TOP_CENTER);
+        // TODO: These are commented out to remove non-working elements for June milestone
+//        leftLayout.addComponent(createContactButton);
+//        leftLayout.setComponentAlignment(createContactButton, Alignment.TOP_CENTER);
         
-        leftLayout.addComponent(recentTitle);
-        leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
+//        leftLayout.addComponent(recentTitle);
+//        leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
         
         return leftLayout;
     }
