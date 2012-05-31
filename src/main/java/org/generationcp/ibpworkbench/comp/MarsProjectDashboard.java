@@ -4,7 +4,9 @@ import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolId;
+import org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
+import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.QtlAnalysisWindow;
 import org.generationcp.middleware.pojos.workbench.Project;
 
@@ -53,6 +55,10 @@ public class MarsProjectDashboard extends VerticalLayout {
     
     private Label populationTitle;
     private Button breedingManagerButton;
+    
+    //Temporary Back Button Navigation
+    private Button backButton;
+    private HorizontalLayout buttonLayout;
 
     public MarsProjectDashboard(Project project) {
         this.project = project;
@@ -123,11 +129,27 @@ public class MarsProjectDashboard extends VerticalLayout {
         breedingManagerButton = new Button("Breeding Manager");
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingManagerButton.setSizeUndefined();
+        
+        backButton = new Button("Back", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                Component component = event.getComponent();
+                IContentWindow window = (IContentWindow) component.getWindow();
+                
+                ProjectDashboard projectDashboard = new ProjectDashboard(project);
+                projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+                
+                window.showContent(projectDashboard);
+            }
+        });
+        
+        buttonLayout = new HorizontalLayout();
     }
     
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
+        setWidth("960px");
         
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
@@ -135,6 +157,19 @@ public class MarsProjectDashboard extends VerticalLayout {
         Component workFlowArea = layoutWorkflowArea();
         workFlowArea.setSizeUndefined();
         addComponent(workFlowArea);
+        
+        addButtonLayout();
+    }
+    
+    private void addButtonLayout() {
+        buttonLayout.setSpacing(true);
+        buttonLayout.setMargin(true);
+        buttonLayout.setWidth("100%");
+        
+        buttonLayout.addComponent(backButton);
+        buttonLayout.setComponentAlignment(backButton, Alignment.MIDDLE_RIGHT);
+        
+        addComponent(buttonLayout);
     }
     
     protected Component layoutWorkflowArea() {
