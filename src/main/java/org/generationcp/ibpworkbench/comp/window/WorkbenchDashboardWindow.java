@@ -142,6 +142,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
                 // so that the UI is reset to its initial state
                 // we can remove this if we want to present the last UI state.
                 workbenchDashboard = new WorkbenchDashboard();
+                workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
                 workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
                 
                 showContent(workbenchDashboard);
@@ -170,6 +171,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         });
 
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
+        workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
     }
     
     protected void assemble() {

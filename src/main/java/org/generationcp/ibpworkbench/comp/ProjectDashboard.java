@@ -63,11 +63,14 @@ public class ProjectDashboard extends VerticalLayout {
         initializeRecentActivityTable();
         
         backButton = new Button("Back", new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void buttonClick(ClickEvent event) {
                 IContentWindow window = (IContentWindow) event.getComponent().getWindow();
                 
                 WorkbenchDashboard workbenchDashboard = new WorkbenchDashboard();
+                workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
                 workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
                 
                 window.showContent(workbenchDashboard);
@@ -223,7 +226,7 @@ public class ProjectDashboard extends VerticalLayout {
         layout.setMargin(true);
         
         // project thumbnail
-        projectThumbnailPanel.setWidth("380px");
+        projectThumbnailPanel.setWidth("420px");
         projectThumbnailPanel.setMargin(false);
         layout.addComponent(projectThumbnailPanel);
         

@@ -49,6 +49,7 @@ public class SaveNewProjectAction implements ClickListener {
         
         // go back to dashboard
         WorkbenchDashboard workbenchDashboard = new WorkbenchDashboard();
+        workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
         contentWindow.showContent(workbenchDashboard);
     }

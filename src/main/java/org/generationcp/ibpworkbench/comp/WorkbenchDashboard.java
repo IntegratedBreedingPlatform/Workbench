@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,6 +25,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
@@ -41,6 +44,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     @Autowired(required = true)
     private DatasourceConfig dataSourceConfig;
     
+    private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
+    
     public WorkbenchDashboard() {
     }
     
@@ -51,6 +56,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     @Override
     public void afterPropertiesSet() throws Exception {
         assemble();
+    }
+    
+    public void setProjectThumbnailClickHandler(com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler) {
+        this.projectThumbnailClickHandler = projectThumbnailClickHandler;
     }
     
     public void addProjectTableListener(ItemClickListener listener) {
@@ -91,6 +100,18 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         projectTable.setColumnHeader("action", "Action");
         projectTable.setColumnHeader("status", "Status");
         projectTable.setColumnHeader("owner", "Owner");
+        
+        projectTable.setCaption("Double click row to open Project dashboard");
+        
+        projectTable.setColumnCollapsingAllowed(true);
+        projectTable.setCellStyleGenerator(new CellStyleGenerator() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getStyle(Object itemId, Object propertyId) {
+                return "project-table";
+            }
+        });
     }
     
     protected void initializeLayout() {
@@ -129,6 +150,20 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // update the Project Thumbnail area
         for (Project project : projects) {
             ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
+            projectPanel.setData(project);
+            
+            projectPanel.addListener(new LayoutClickListener() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void layoutClick(LayoutClickEvent event) {
+                    if (!event.isDoubleClick()) return;
+                    if (projectThumbnailClickHandler == null) return;
+                    
+                    projectThumbnailClickHandler.click(event);
+                }
+            });
+            
             projectThumbnailLayout.addComponent(projectPanel);
         }
     }

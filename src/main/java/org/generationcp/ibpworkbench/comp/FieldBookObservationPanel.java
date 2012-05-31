@@ -39,7 +39,7 @@ public class FieldBookObservationPanel extends VerticalLayout {
         Workbook wb = null;
         
         try {
-            wb = new XSSFWorkbook(new FileInputStream(filename));
+            wb = new HSSFWorkbook(new FileInputStream(filename));
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("Cannot open file", e);
@@ -49,7 +49,7 @@ public class FieldBookObservationPanel extends VerticalLayout {
         }
         catch (POIXMLException e) {
             try {
-                wb = new HSSFWorkbook(new FileInputStream(filename));
+                wb = new XSSFWorkbook(new FileInputStream(filename));
             }
             catch (FileNotFoundException e1) {
                 throw new RuntimeException("Cannot open file", e1);
@@ -57,6 +57,9 @@ public class FieldBookObservationPanel extends VerticalLayout {
             catch (IOException e1) {
                 throw new RuntimeException("Cannot process file", e1);
             }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
         finally {
             if (wb == null) {

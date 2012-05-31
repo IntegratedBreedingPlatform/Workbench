@@ -4,14 +4,11 @@ import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 // TODO: rename this to MarsProjectThumbnailPanel?
 public class ProjectThumbnailPanel extends VerticalLayout implements IProjectProvider {
@@ -23,21 +20,18 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     private Label workflowTitle;
     
     // Breeding Management
-    private Panel genotypingPanel;
-    private Panel fieldTrialPanel;
-    private Panel populationDevelopmentPanel;
-    private Panel projectPlanningPanel;
+    private VerticalLayout genotypingPanel;
+    private VerticalLayout fieldTrialPanel;
+    private VerticalLayout populationDevelopmentPanel;
+    private VerticalLayout projectPlanningPanel;
     
     // Market Trait Analysis
-    private Panel loadDataSetsPanel;
-    private Panel phenotypicAnalysisPanel;
-    private Panel genotypicAnalysisPanel;
-    private Panel qtlAnalysisPanel;
+    private VerticalLayout markerTraitAnalysisPanel;
     
     // Marker Implementation
-    private Panel projectCompletionPanel;
-    private Panel ideotypeDesignPanel;
-    private Panel subProcessPanel;
+    private VerticalLayout plantSelectionPanel;
+    private VerticalLayout recombinationCycle;
+    private VerticalLayout projectCompletionPanel;
     
     public ProjectThumbnailPanel(Project project) {
         this.project = project;
@@ -51,27 +45,25 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     }
     
     protected void initializeComponents() {
+        addStyleName("gcp-hand-cursor");
+        
         projectTitle = new Label(project.getProjectName());
         
         workflowTitle = new Label("MARS");
         
         // Breeding Management
-        projectPlanningPanel = createPanel("1. Project", "Planning"); // Project Planning
-        populationDevelopmentPanel = createPanel("2. Population",  "Development"); // Population Development
-        fieldTrialPanel = createPanel("3. Field Trial",  "Management"); // Field Trial Management
-        genotypingPanel = createPanel("4. Genotyping"); // Genotyping
+        projectPlanningPanel = createWorkflowStep("1. Project", "Planning"); // Project Planning
+        populationDevelopmentPanel = createWorkflowStep("2. Population",  "Development"); // Population Development
+        fieldTrialPanel = createWorkflowStep("3. Field Trial",  "Management"); // Field Trial Management
+        genotypingPanel = createWorkflowStep("4. Genotyping"); // Genotyping
         
         // Market Trait Analysis
-        loadDataSetsPanel = createPanel("5. Load",  "Datasets");
-        phenotypicAnalysisPanel = createPanel("6. Phenotypic",  "Analysis");
-        genotypicAnalysisPanel = createPanel("7. Genotypic",  "Analysis");
-        qtlAnalysisPanel = createPanel("8. QTL",  "Analysis");
+        markerTraitAnalysisPanel = createWorkflowStep("5. Marker Trait",  "Analysis");
         
         // Marker Implementation
-        ideotypeDesignPanel = createPanel("9. Ideotype",  "Design");
-        subProcessPanel = createPanel("10. XYZ",  "Subprocess");
-        projectCompletionPanel = createPanel("11. Project",  "Completion");
-        
+        plantSelectionPanel = createWorkflowStep("6. Plant",  "Selection");
+        recombinationCycle = createWorkflowStep("7. Recombination", "Cycle");
+        projectCompletionPanel = createWorkflowStep("8. Project",  "Completion");
     }
     
     protected void initializeLayout() {
@@ -102,11 +94,12 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setMargin(true);
         
         layout.addComponent(workflowTitle);
+        layout.setExpandRatio(workflowTitle, 0);
         
         Component summaryPanel = layoutSummaryPanel();
         summaryPanel.setSizeFull();
         layout.addComponent(summaryPanel);
-        layout.setExpandRatio(summaryPanel, 1.0f);
+        layout.setExpandRatio(summaryPanel, 100);
         
         panel.setContent(layout);
         return panel;
@@ -133,16 +126,16 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         
-        layoutPanel(projectPlanningPanel);
+        configureWorkflowStepLayout(projectPlanningPanel);
         layout.addComponent(projectPlanningPanel);
         
-        layoutPanel(populationDevelopmentPanel);
+        configureWorkflowStepLayout(populationDevelopmentPanel);
         layout.addComponent(populationDevelopmentPanel);
         
-        layoutPanel(fieldTrialPanel);
+        configureWorkflowStepLayout(fieldTrialPanel);
         layout.addComponent(fieldTrialPanel);
         
-        layoutPanel(genotypingPanel);
+        configureWorkflowStepLayout(genotypingPanel);
         layout.addComponent(genotypingPanel);
         
         return layout;
@@ -152,17 +145,8 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         
-        layoutPanel(loadDataSetsPanel);
-        layout.addComponent(loadDataSetsPanel);
-        
-        layoutPanel(phenotypicAnalysisPanel);
-        layout.addComponent(phenotypicAnalysisPanel);
-        
-        layoutPanel(genotypicAnalysisPanel);
-        layout.addComponent(genotypicAnalysisPanel);
-        
-        layoutPanel(qtlAnalysisPanel);
-        layout.addComponent(qtlAnalysisPanel);
+        configureWorkflowStepLayout(markerTraitAnalysisPanel);
+        layout.addComponent(markerTraitAnalysisPanel);
         
         return layout;
     }
@@ -172,23 +156,20 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setSizeFull();
         layout.setSpacing(true);
         
-        layoutPanel(ideotypeDesignPanel);
-        layout.addComponent(ideotypeDesignPanel);
+        configureWorkflowStepLayout(plantSelectionPanel);
+        layout.addComponent(plantSelectionPanel);
         
-        layoutPanel(subProcessPanel);
-        layout.addComponent(subProcessPanel);
+        configureWorkflowStepLayout(recombinationCycle);
+        layout.addComponent(recombinationCycle);
         
-        layoutPanel(projectCompletionPanel);
+        configureWorkflowStepLayout(projectCompletionPanel);
         layout.addComponent(projectCompletionPanel);
         
         return layout;
     }
     
-    protected Panel createPanel(String... captions) {
-        Panel panel = new Panel();
-        
+    protected VerticalLayout createWorkflowStep(String... captions) {
         VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(false);
         
         for(String caption : captions)
         {
@@ -199,12 +180,13 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
 	        layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
         }
         
-        panel.setContent(layout);
-        return panel;
+        return layout;
     }
     
-    protected void layoutPanel(Panel panel) {
-        panel.setWidth("100px");
-        panel.setHeight("50px");
+    protected void configureWorkflowStepLayout(VerticalLayout layout) {
+        layout.setWidth("120px");
+        layout.setHeight("50px");
+        layout.setStyleName("gcp-mars-workflow-step-thumb");
+        layout.setMargin(false);
     }
 }
