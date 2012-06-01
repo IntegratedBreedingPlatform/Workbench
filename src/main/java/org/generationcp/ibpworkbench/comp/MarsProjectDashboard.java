@@ -547,6 +547,8 @@ public class MarsProjectDashboard extends VerticalLayout {
         optimasButton.addListener(new LaunchWorkbenchToolAction(ToolId.OPTIMAS));
         
         breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolId.BREEDING_MANAGER));
+        
+        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolId.BREEDING_VIEW));
     }
     
     protected void assemble() {

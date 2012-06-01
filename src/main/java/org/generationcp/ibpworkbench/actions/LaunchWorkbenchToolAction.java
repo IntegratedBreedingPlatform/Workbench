@@ -33,6 +33,7 @@ public class LaunchWorkbenchToolAction implements ClickListener {
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
+        ,BREEDING_VIEW("breeding_view")
         ;
         
         String toolId;
