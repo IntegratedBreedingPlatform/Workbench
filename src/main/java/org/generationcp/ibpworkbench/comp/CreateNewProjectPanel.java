@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.comp;
 
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
@@ -27,9 +27,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class CreateNewProjectPanel extends VerticalLayout implements InitializingBean {
+public class CreateNewProjectPanel extends VerticalLayout implements InitializingBean{
+
     private static final long serialVersionUID = 1L;
-    
+
     private Label newProjectTitle;
 
     private Form form;
@@ -37,72 +38,72 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     private Button cancelButton;
 
     private Button saveButton;
-    
+
     public CreateNewProjectPanel() {
     }
-    
+
     @Override
     public void afterPropertiesSet() throws Exception {
         assemble();
-        
-        form.setVisibleItemProperties(new String[]{"projectName", "targetDueDate", "template"});
+
+        form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "template" });
     }
-    
+
     public Button getSaveButton() {
         return saveButton;
     }
-    
+
     public Button getCancelButton() {
         return cancelButton;
     }
-    
+
     public Form getForm() {
         return form;
     }
-    
+
     protected void initializeComponents() {
         newProjectTitle = new Label("Create New Project");
         newProjectTitle.setStyleName("gcp-content-title");
-        
+
         BeanItem<Project> projectBean = new BeanItem<Project>(new Project());
-        
+
         form = new Form();
         form.setItemDataSource(projectBean);
         form.setFormFieldFactory(new ProjectFormFieldFactory());
-        
+
         cancelButton = new Button("Cancel");
         saveButton = new Button("Save");
     }
-    
+
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        
+
         newProjectTitle.setSizeUndefined();
         addComponent(newProjectTitle);
-        
+
         form.setSizeFull();
         addComponent(form);
-        
+
         // add the save/cancel buttons
         Component buttonArea = layoutButtonArea();
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
-    
+
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
-        
+
         cancelButton = new Button("Cancel");
         saveButton = new Button("Save");
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
-        
+
         return buttonLayout;
     }
-    
+
     protected void assemble() {
         initializeComponents();
         initializeLayout();

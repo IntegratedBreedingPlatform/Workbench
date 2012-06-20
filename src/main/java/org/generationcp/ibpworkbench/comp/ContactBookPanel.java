@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.comp;
 
 import java.util.List;
@@ -24,63 +24,62 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-public class ContactBookPanel extends VerticalLayout {
+public class ContactBookPanel extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Label lblContactBook;
-	private TextField txtSearch;
-	private Table tblContact;
-	
-	public ContactBookPanel() {
-		assemble();
-	}
-	
-	protected void assemble(){
-		initializeComponent();
-		initializeLayout();
-		
-	}
+    private Label lblContactBook;
+    private TextField txtSearch;
+    private Table tblContact;
 
-	protected void initializeLayout() {
-		setMargin(true);
-		setSpacing(true);
-		
-		addComponent(lblContactBook);
-		addComponent(txtSearch);
-		addComponent(tblContact);
-	}
+    public ContactBookPanel() {
+        assemble();
+    }
 
-	protected void initializeComponent() {
-		lblContactBook = new Label("Contact Book");
-		lblContactBook.setStyleName("gcp-content-title");
-		
-		txtSearch = new TextField();
-		txtSearch.setInputPrompt("Search Contacts");
-		
-		tblContact = new Table();
-		
-		tblContact.setWidth("90%");
-		tblContact.setHeight("100%");
-		
-		IContactManager projectManager = MockContactManager.getInstance();
+    protected void assemble() {
+        initializeComponent();
+        initializeLayout();
+
+    }
+
+    protected void initializeLayout() {
+        setMargin(true);
+        setSpacing(true);
+
+        addComponent(lblContactBook);
+        addComponent(txtSearch);
+        addComponent(tblContact);
+    }
+
+    protected void initializeComponent() {
+        lblContactBook = new Label("Contact Book");
+        lblContactBook.setStyleName("gcp-content-title");
+
+        txtSearch = new TextField();
+        txtSearch.setInputPrompt("Search Contacts");
+
+        tblContact = new Table();
+
+        tblContact.setWidth("90%");
+        tblContact.setHeight("100%");
+
+        IContactManager projectManager = MockContactManager.getInstance();
         List<Contact> contacts = projectManager.getContacts();
-        
+
         BeanContainer<String, Contact> contactContainer = new BeanContainer<String, Contact>(Contact.class);
         contactContainer.setBeanIdProperty("contactId");
         for (Contact contact : contacts) {
             contactContainer.addBean(contact);
         }
         tblContact.setContainerDataSource(contactContainer);
-        
+
         tblContact.setColumnHeader("firstName", "Name");
         tblContact.setColumnHeader("email", "Email");
         tblContact.setColumnHeader("address", "Address");
         tblContact.setColumnHeader("phoneNumber", "Phone Number");
 
-        
-        String[] columns = new String[]{"firstName", "email", "address1", "phoneNumber"};
+        String[] columns = new String[] { "firstName", "email", "address1", "phoneNumber" };
         tblContact.setVisibleColumns(columns);
-	}
+    }
 
 }

@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.comp.vaadin;
 
 import java.io.File;
@@ -21,7 +21,8 @@ import java.util.List;
 
 import com.vaadin.ui.Upload.Receiver;
 
-public class Upload extends com.vaadin.ui.Upload implements Receiver {
+public class Upload extends com.vaadin.ui.Upload implements Receiver{
+
     private static final long serialVersionUID = 1L;
 
     private String uploadPath = "./";
@@ -44,7 +45,7 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver {
         if (!uploadPath.endsWith(File.separator)) {
             uploadPath += File.separator;
         }
-        
+
         this.uploadPath = uploadPath;
     }
 
@@ -74,7 +75,9 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver {
             }
         }
 
-        if (!allowed) return null;
+        if (!allowed) {
+            return null;
+        }
 
         // TODO: Check if we are going to encounter a race condition here,
         // when two users try to upload a file with the same filename.
@@ -82,8 +85,7 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver {
         try {
             // Open the file for writing.
             return new FileOutputStream(file);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             // Error while opening the file. Not reported here.
             e.printStackTrace();
             return null;

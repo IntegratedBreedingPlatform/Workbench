@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.util;
 
 import java.lang.reflect.Array;
@@ -22,77 +22,84 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Glenn Marintes
  */
-public abstract class StringUtil {
-    
+public abstract class StringUtil{
+
     public static int parseInt(String string, int defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
         try {
             return Integer.parseInt(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     public static Integer parseInt(String string, Integer defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
         try {
             return Integer.parseInt(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     public static long parseLong(String string, long defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
         try {
             return Long.parseLong(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     public static Long parseLong(String string, Long defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
         try {
             return Long.parseLong(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     public static float parseFloat(String string, float defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
-        
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
+
         try {
             return Float.parseFloat(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     public static Float parseFloat(String string, Float defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
-        
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
+
         try {
             return Float.parseFloat(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
-    public static BigInteger parseBigInteger(String string,BigInteger defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
+
+    public static BigInteger parseBigInteger(String string, BigInteger defaultValue) {
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
 
         try {
             return new BigInteger(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -105,16 +112,17 @@ public abstract class StringUtil {
      * @return
      */
     public static double parseDouble(String string, double defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
-        
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
+
         try {
             return Double.parseDouble(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     /**
      * A lenient version of {@link Double#parseDouble(String)}.
      * 
@@ -125,16 +133,17 @@ public abstract class StringUtil {
      *         otherwise.
      */
     public static Double parseDouble(String string, Double defaultValue) {
-        if (StringUtils.isBlank(string)) return defaultValue;
-        
+        if (StringUtils.isBlank(string)) {
+            return defaultValue;
+        }
+
         try {
             return Double.parseDouble(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
-    
+
     /**
      * Join the specified list of objects with the specified delimiter. Any
      * empty value in the list will be ignored.
@@ -148,28 +157,34 @@ public abstract class StringUtil {
      */
     public static String joinIgnoreEmpty(Object delimiter, Object... objectList) {
         StringBuilder sb = new StringBuilder();
-        if (objectList == null) return sb.toString();
-        
+        if (objectList == null) {
+            return sb.toString();
+        }
+
         for (Object obj : objectList) {
-            if (obj == null) continue;
-            
+            if (obj == null) {
+                continue;
+            }
+
             String value = null;
             if (obj instanceof Collection<?>) {
                 value = joinIgnoreEmpty(delimiter, ((Collection<?>) obj).toArray());
-            }
-            else if (Object[].class.isInstance(obj)) {
+            } else if (Object[].class.isInstance(obj)) {
                 value = joinIgnoreEmpty(delimiter, (Object[]) obj);
-            }
-            else {
+            } else {
                 value = obj.toString();
             }
-            
-            if (StringUtils.isEmpty(value)) continue;
-            
-            if (sb.length() > 0) sb.append(delimiter);
+
+            if (StringUtils.isEmpty(value)) {
+                continue;
+            }
+
+            if (sb.length() > 0) {
+                sb.append(delimiter);
+            }
             sb.append(value);
         }
-        
+
         return sb.toString();
     }
 
@@ -186,28 +201,34 @@ public abstract class StringUtil {
      */
     public static String joinIgnoreNull(Object delimiter, Object... objectList) {
         StringBuilder sb = new StringBuilder();
-        if (objectList == null) return sb.toString();
-        
+        if (objectList == null) {
+            return sb.toString();
+        }
+
         for (Object obj : objectList) {
-            if (obj == null) continue;
-            
+            if (obj == null) {
+                continue;
+            }
+
             String value = null;
             if (obj instanceof Collection<?>) {
                 value = joinIgnoreEmpty(delimiter, ((Collection<?>) obj).toArray());
-            }
-            else if (Object[].class.isInstance(obj)) {
+            } else if (Object[].class.isInstance(obj)) {
                 value = joinIgnoreEmpty(delimiter, (Object[]) obj);
-            }
-            else {
+            } else {
                 value = obj.toString();
             }
-            
-            if (value == null) continue;
-            
-            if (sb.length() > 0) sb.append(delimiter);
+
+            if (value == null) {
+                continue;
+            }
+
+            if (sb.length() > 0) {
+                sb.append(delimiter);
+            }
             sb.append(value);
         }
-        
+
         return sb.toString();
     }
 
@@ -222,8 +243,12 @@ public abstract class StringUtil {
      * @return
      */
     public static String prependWith(Object obj, String prefix, int maxLength) {
-        if (obj == null) return null;
-        if (prefix == null) throw new IllegalArgumentException("prefix cannot be null");
+        if (obj == null) {
+            return null;
+        }
+        if (prefix == null) {
+            throw new IllegalArgumentException("prefix cannot be null");
+        }
 
         String str = obj.toString();
         int strLength = str.length();
@@ -233,7 +258,7 @@ public abstract class StringUtil {
 
         return str;
     }
-    
+
     /**
      * Prepend the {@link String} representation of the specified
      * <code>obj</code> with the specified <code>suffix</code> until it reaches
@@ -245,8 +270,12 @@ public abstract class StringUtil {
      * @return
      */
     public static String appendWith(Object obj, String suffix, int maxLength) {
-        if (obj == null) return null;
-        if (suffix == null) throw new IllegalArgumentException("suffix cannot be null");
+        if (obj == null) {
+            return null;
+        }
+        if (suffix == null) {
+            throw new IllegalArgumentException("suffix cannot be null");
+        }
 
         String str = obj.toString();
         int strLength = str.length();
@@ -267,11 +296,11 @@ public abstract class StringUtil {
      */
     public static String stringOf(char ch, int count) {
         StringBuilder sb = new StringBuilder();
-        
-        for (int i=0; i < count; i++) {
+
+        for (int i = 0; i < count; i++) {
             sb.append(ch);
         }
-        
+
         return sb.toString();
     }
 
@@ -285,11 +314,11 @@ public abstract class StringUtil {
      */
     public static String stringOf(String str, int count) {
         StringBuilder sb = new StringBuilder();
-        
-        for (int i=0; i < count; i++) {
+
+        for (int i = 0; i < count; i++) {
             sb.append(str);
         }
-        
+
         return sb.toString();
     }
 }

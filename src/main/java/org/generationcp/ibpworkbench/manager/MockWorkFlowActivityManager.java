@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.manager;
 
 import java.text.ParseException;
@@ -20,14 +20,15 @@ import java.util.List;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
 
-public class MockWorkFlowActivityManager implements IWorkFlowActivityManager {
+public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
+
     private List<WorkFlowActivity> activities;
-    
+
     protected MockWorkFlowActivityManager() {
         activities = new ArrayList<WorkFlowActivity>();
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        
+
         try {
             WorkFlowActivity activity1 = new WorkFlowActivity();
             activity1.setActivityId(1L);
@@ -57,8 +58,7 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager {
             activities.add(activity2);
             activities.add(activity3);
             activities.add(activity4);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -68,15 +68,16 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager {
         for (WorkFlowActivity activity : activities) {
             activity.setProject(project);
         }
-        
+
         return activities;
     }
-    
+
     public static MockWorkFlowActivityManager getInstance() {
         return SingletonHolder.instance;
     }
-    
-    private static class SingletonHolder {
+
+    private static class SingletonHolder{
+
         public static final MockWorkFlowActivityManager instance = new MockWorkFlowActivityManager();
     }
 }

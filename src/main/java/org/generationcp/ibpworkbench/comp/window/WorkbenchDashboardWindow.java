@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.comp.window;
 
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -36,10 +36,11 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean {
+public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean{
+
     private static final long serialVersionUID = 1L;
     private Logger log = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
-    
+
     private Label workbenchTitle;
     private Button homeButton;
     private Button signOutButton;
@@ -50,17 +51,17 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Button createProjectButton;
     private Button createContactButton;
     private Label recentTitle;
-    
+
     private VerticalSplitPanel verticalSplitPanel;
-    
+
     private HorizontalSplitPanel contentAreaSplitPanel;
-    
+
     private WorkbenchDashboard workbenchDashboard;
 
     public WorkbenchDashboardWindow() {
         log.debug("{} instead created.", WorkbenchDashboardWindow.class);
     }
-    
+
     /**
      * Assemble the UI after all dependencies has been set.
      */
@@ -68,84 +69,85 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     public void afterPropertiesSet() throws Exception {
         assemble();
     }
-    
+
     protected void initializeComponents() {
         // workbench header components
         workbenchTitle = new Label("Workbench");
         workbenchTitle.setStyleName("gcp-window-title");
-        
+
         homeButton = new Button("Home");
         homeButton.setStyleName(BaseTheme.BUTTON_LINK);
         homeButton.setSizeUndefined();
-        
+
         signOutButton = new Button("Signout");
         signOutButton.setStyleName(BaseTheme.BUTTON_LINK);
         signOutButton.setSizeUndefined();
-        
+
         accountButton = new Button("Account");
         accountButton.setStyleName(BaseTheme.BUTTON_LINK);
         accountButton.setSizeUndefined();
-        
+
         helpButton = new Button("Help");
         helpButton.setStyleName(BaseTheme.BUTTON_LINK);
         helpButton.setSizeUndefined();
-        
+
         // left area components
         actionsTitle = new Label("Actions");
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
-        
+
         createProjectButton = new Button("Create Project");
         createProjectButton.setWidth("120px");
-        
+
         createContactButton = new Button("Create Contact");
         createContactButton.setWidth("120px");
-        
+
         recentTitle = new Label("Recent");
         recentTitle.setStyleName("gcp-section-title");
         recentTitle.setSizeUndefined();
-        
+
         workbenchDashboard = new WorkbenchDashboard();
-        
+
         verticalSplitPanel = new VerticalSplitPanel();
         contentAreaSplitPanel = new HorizontalSplitPanel();
     }
-    
+
     protected void initializeLayout() {
         setSizeFull();
-        
+
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
-        
+
         // add the vertical split panel
         verticalSplitPanel.setSplitPosition(50, Sizeable.UNITS_PIXELS);
         verticalSplitPanel.setLocked(true);
         verticalSplitPanel.setSizeFull();
-        
+
         layout.addComponent(verticalSplitPanel);
-        
+
         // add the workbench header
         Component workbenchHeader = layoutWorkbenchHeader();
         verticalSplitPanel.addComponent(workbenchHeader);
-        
+
         // add the content area split panel
         contentAreaSplitPanel.setSplitPosition(200, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.setLocked(false);
-        
+
         // layout the left area of the content area split panel
         Component leftArea = layoutLeftArea();
         contentAreaSplitPanel.addComponent(leftArea);
-        
+
         // layout the right area of the content area split panel
         contentAreaSplitPanel.addComponent(workbenchDashboard);
-        
+
         verticalSplitPanel.addComponent(contentAreaSplitPanel);
-        
+
         setContent(layout);
     }
-    
+
     protected void initializeActions() {
         homeButton.addListener(new ClickListener() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -156,12 +158,13 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
                 workbenchDashboard = new WorkbenchDashboard();
                 workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
                 workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
-                
+
                 showContent(workbenchDashboard);
             }
         });
-        
+
         signOutButton.addListener(new ClickListener() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -169,10 +172,11 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
                 getApplication().close();
             }
         });
-        
+
         createProjectButton.addListener(new OpenNewProjectAction());
-        
+
         createContactButton.addListener(new ClickListener() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -185,82 +189,85 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
         workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
     }
-    
+
     protected void assemble() {
         initializeComponents();
         initializeLayout();
         initializeActions();
     }
-    
+
     private Component layoutWorkbenchHeader() {
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidth("100%");
         headerLayout.setHeight("100%");
         headerLayout.setMargin(false, true, false, true);
         headerLayout.setSpacing(false);
-        
+
         // workbench title area
         headerLayout.addComponent(workbenchTitle);
         headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_CENTER);
-        
+
         // right side button area
         HorizontalLayout headerRightLayout = new HorizontalLayout();
         headerRightLayout.setSizeUndefined();
         headerRightLayout.setMargin(false);
         headerRightLayout.setSpacing(true);
-        
+
         headerRightLayout.addComponent(homeButton);
         headerRightLayout.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
-        
+
         headerRightLayout.addComponent(new Label("|"));
-        
+
         headerRightLayout.addComponent(signOutButton);
         headerRightLayout.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
-        
+
         headerRightLayout.addComponent(new Label("|"));
-        
+
         headerRightLayout.addComponent(accountButton);
         headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
-        
+
         headerRightLayout.addComponent(new Label("|"));
-        
+
         headerRightLayout.addComponent(helpButton);
         headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
-        
+
         headerLayout.addComponent(headerRightLayout);
         headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);
-        
+
         return headerLayout;
     }
-    
+
     private Component layoutLeftArea() {
         VerticalLayout leftLayout = new VerticalLayout();
         leftLayout.setWidth("100%");
         leftLayout.setHeight(null);
         leftLayout.setSpacing(true);
-        
+
         leftLayout.addComponent(actionsTitle);
         leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
-        
+
         leftLayout.addComponent(createProjectButton);
         leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
-        
-        // TODO: These are commented out to remove non-working elements for June milestone
-//        leftLayout.addComponent(createContactButton);
-//        leftLayout.setComponentAlignment(createContactButton, Alignment.TOP_CENTER);
-        
-//        leftLayout.addComponent(recentTitle);
-//        leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
-        
+
+        // TODO: These are commented out to remove non-working elements for June
+        // milestone
+        // leftLayout.addComponent(createContactButton);
+        // leftLayout.setComponentAlignment(createContactButton,
+        // Alignment.TOP_CENTER);
+
+        // leftLayout.addComponent(recentTitle);
+        // leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
+
         return leftLayout;
     }
-    
+
     /**
      * Show the specified {@link Component} on the right side area of the
      * Workbench's split panel.
      * 
      * @param content
      */
+    @Override
     public void showContent(Component content) {
         contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
         contentAreaSplitPanel.addComponent(content);

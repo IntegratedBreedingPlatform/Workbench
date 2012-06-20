@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
@@ -33,27 +33,22 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 @Configurable
-public class LaunchWorkbenchToolAction implements ClickListener {
+public class LaunchWorkbenchToolAction implements ClickListener{
+
     private static final long serialVersionUID = 1L;
-    
+
     private final static Logger log = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
-    
+
     public static enum ToolId {
-         GERMPLASM_BROWSER("germplasm_browser")
-        ,GERMPLASM_PHENOTYPIC("germplasm_phenotypic")
-        ,GDMS("gdms")
-        ,FIELDBOOK("fieldbook")
-        ,OPTIMAS("optimas")
-        ,BREEDING_MANAGER("breeding_manager")
-        ,BREEDING_VIEW("breeding_view")
-        ;
-        
+        GERMPLASM_BROWSER("germplasm_browser"), GERMPLASM_PHENOTYPIC("germplasm_phenotypic"), GDMS("gdms"), FIELDBOOK("fieldbook"), OPTIMAS(
+                "optimas"), BREEDING_MANAGER("breeding_manager"), BREEDING_VIEW("breeding_view");
+
         String toolId;
-        
+
         ToolId(String toolId) {
             this.toolId = toolId;
         }
-        
+
         public String getToolId() {
             return toolId;
         }
@@ -62,11 +57,11 @@ public class LaunchWorkbenchToolAction implements ClickListener {
     private ToolId toolId;
 
     private DatasourceConfig dataSourceConfig;
-    
+
     public LaunchWorkbenchToolAction(ToolId toolId) {
         this.toolId = toolId;
     }
-    
+
     @Autowired(required = true)
     public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
         this.dataSourceConfig = dataSourceConfig;
@@ -75,34 +70,33 @@ public class LaunchWorkbenchToolAction implements ClickListener {
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
-        
+
         WorkbenchDataManager workbenchDataManager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
         Tool tool = workbenchDataManager.getToolWithName(toolId.getToolId());
         if (tool == null) {
             log.warn("Cannot find tool " + toolId);
-            
+
             window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
-            
+
             return;
         }
-        
+
         if (tool.getToolType() == ToolType.NATIVE) {
             File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
             Runtime runtime = Runtime.getRuntime();
             try {
                 runtime.exec(absoluteToolFile.getAbsolutePath());
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 log.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
-                
-                window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(), Notification.TYPE_ERROR_MESSAGE);
+
+                window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(),
+                        Notification.TYPE_ERROR_MESSAGE);
             }
-        }
-        else {
+        } else {
             Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
             browser.setType(Embedded.TYPE_BROWSER);
             browser.setSizeFull();
-            
+
             IContentWindow contentWindow = (IContentWindow) event.getComponent().getWindow();
             contentWindow.showContent(browser);
         }

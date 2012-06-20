@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.spring;
 
 import javax.servlet.ServletConfig;
@@ -31,7 +31,8 @@ import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
  * 
  * @author Glenn Marintes
  */
-public class SpringApplicationServlet extends AbstractApplicationServlet {
+public class SpringApplicationServlet extends AbstractApplicationServlet{
+
     private static final long serialVersionUID = 1L;
 
     /**

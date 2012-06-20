@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.datasource.helper;
 
 import java.io.File;
@@ -27,8 +27,9 @@ import org.generationcp.middleware.util.ResourceFinder;
 import org.hibernate.HibernateException;
 
 public class DatasourceConfig implements Serializable{
+
     private static final long serialVersionUID = 1818294200537720321L;
-	
+
     private String host;
     private String port;
     private String dbname;
@@ -45,8 +46,7 @@ public class DatasourceConfig implements Serializable{
 
             try {
                 in = new FileInputStream(new File(ResourceFinder.locateFile("IBPDatasource.properties").toURI()));
-            }
-            catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException ex) {
                 in = getClass().getClassLoader().getResourceAsStream("IBPDatasource.properties");
             }
             prop.load(in);
@@ -64,22 +64,20 @@ public class DatasourceConfig implements Serializable{
             in.close();
 
             DatabaseConnectionParameters param = new DatabaseConnectionParameters(host, port, dbname, username, password);
-            //the database connection parameters for central is set to null because the Workbench
-            //does not need a connection to a central instance of IBDB
-            //the Workbench currently uses the WorkbenchDataManager only which needs just a 
-            //connection to a local instance
+            // the database connection parameters for central is set to null
+            // because the Workbench
+            // does not need a connection to a central instance of IBDB
+            // the Workbench currently uses the WorkbenchDataManager only which
+            // needs just a
+            // connection to a local instance
             managerFactory = new ManagerFactory(param, null);
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException("Cannot create data source", e);
-        }
-        catch (HibernateException e) {
+        } catch (HibernateException e) {
             throw new RuntimeException("Cannot create data source", e);
-        }
-        catch (ConfigException e) {
+        } catch (ConfigException e) {
             throw new RuntimeException("Cannot create data source", e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Cannot create data source", e);
         }
 

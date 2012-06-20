@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
@@ -27,38 +27,40 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Form;
 
 @Configurable
-public class SaveNewProjectAction implements ClickListener {
+public class SaveNewProjectAction implements ClickListener{
+
     private static final long serialVersionUID = 1L;
-    
+
     private Form newProjectForm;
-    
+
     private DatasourceConfig dataSourceConfig;
 
     public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
     }
-    
+
     @Autowired
     public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
         this.dataSourceConfig = dataSourceConfig;
     }
-    
+
     @Override
     public void buttonClick(ClickEvent event) {
         Component component = event.getComponent();
         IContentWindow contentWindow = (IContentWindow) component.getWindow();
-        
+
         newProjectForm.commit();
 
         @SuppressWarnings("unchecked")
         BeanItem<Project> projectBean = (BeanItem<Project>) newProjectForm.getItemDataSource();
         Project project = projectBean.getBean();
-        
+
         WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        
+
         manager.saveOrUpdateProject(project);
-        System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
-        
+        System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project
+                .getTemplate().getTemplateId());
+
         // go back to dashboard
         WorkbenchDashboard workbenchDashboard = new WorkbenchDashboard();
         workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());

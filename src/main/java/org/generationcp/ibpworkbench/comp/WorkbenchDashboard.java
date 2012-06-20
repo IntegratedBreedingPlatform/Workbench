@@ -1,15 +1,15 @@
-/***************************************************************
+/*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * 
  * Generation Challenge Programme (GCP)
  * 
  * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
- **************************************************************/
+ *******************************************************************************/
+
 package org.generationcp.ibpworkbench.comp;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +41,8 @@ import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class WorkbenchDashboard extends VerticalLayout implements InitializingBean {
+public class WorkbenchDashboard extends VerticalLayout implements InitializingBean{
+
     private static final long serialVersionUID = 1L;
 
     private Button leftButton;
@@ -52,43 +53,44 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private Label dashboardTitle;
 
     private HorizontalLayout projectThumbnailLayout;
-    
+
     @Autowired(required = true)
     private DatasourceConfig dataSourceConfig;
-    
+
     private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
-    
+
     public WorkbenchDashboard() {
     }
-    
+
     public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
         this.dataSourceConfig = dataSourceConfig;
     }
-    
+
     @Override
     public void afterPropertiesSet() throws Exception {
         assemble();
     }
-    
+
     public void setProjectThumbnailClickHandler(com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler) {
         this.projectThumbnailClickHandler = projectThumbnailClickHandler;
     }
-    
+
     public void addProjectTableListener(ItemClickListener listener) {
         projectTable.addListener(listener);
     }
-    
+
     protected void initializeComponents() {
         dashboardTitle = new Label("Dashboard");
         dashboardTitle.setStyleName("gcp-content-title");
-        
+
         // project list components
         projectThumbnailArea = new Panel();
         leftButton = new Button("<<");
         rightButton = new Button(">>");
-        
+
         // project table components
         projectTable = new Table() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -97,26 +99,28 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
                 }
-                
+
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-        projectTable.setImmediate(true); // react at once when something is selected
-        
+        projectTable.setImmediate(true); // react at once when something is
+                                         // selected
+
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
         projectTable.setContainerDataSource(projectContainer);
-        
+
         projectTable.setColumnHeader("targetDueDate", "Date");
         projectTable.setColumnHeader("projectName", "Project");
         projectTable.setColumnHeader("action", "Action");
         projectTable.setColumnHeader("status", "Status");
         projectTable.setColumnHeader("owner", "Owner");
-        
+
         projectTable.setCaption("Double click row to open Project dashboard");
-        
+
         projectTable.setColumnCollapsingAllowed(true);
         projectTable.setCellStyleGenerator(new CellStyleGenerator() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -125,28 +129,28 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             }
         });
     }
-    
+
     protected void initializeLayout() {
         setWidth("100%");
         setMargin(true);
         setSpacing(true);
-        
+
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
-        
+
         Component projectThumbnailArea = layoutProjectThumbnailArea();
         addComponent(projectThumbnailArea);
-        
+
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
         setExpandRatio(projectTableArea, 1.0f);
     }
-    
+
     protected void initializeData() {
         // Get the list of Projects
         WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
         List<Project> projects = manager.getProjects();
-        
+
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
@@ -154,32 +158,37 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             projectContainer.addBean(project);
         }
         projectTable.setContainerDataSource(projectContainer);
-        
+
         // set the visible columns on the Project Table
-        String[] columns = new String[]{"targetDueDate", "projectName", "action", "status", "owner"};
+        String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
         projectTable.setVisibleColumns(columns);
-        
+
         // update the Project Thumbnail area
         for (Project project : projects) {
             ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
             projectPanel.setData(project);
-            
+
             projectPanel.addListener(new LayoutClickListener() {
+
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public void layoutClick(LayoutClickEvent event) {
-                    if (!event.isDoubleClick()) return;
-                    if (projectThumbnailClickHandler == null) return;
-                    
+                    if (!event.isDoubleClick()) {
+                        return;
+                    }
+                    if (projectThumbnailClickHandler == null) {
+                        return;
+                    }
+
                     projectThumbnailClickHandler.click(event);
                 }
             });
-            
+
             projectThumbnailLayout.addComponent(projectPanel);
         }
     }
-    
+
     protected void initializeActions() {
         // TODO: if we are going to support left/right buttons here
         // then we need a fixed thumbnail area width.
@@ -189,17 +198,21 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // NOTE: if we are going to set a fixed width, we must
         // design the screens against a specific viewport size.
         leftButton.addListener(new ClickListener() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(ClickEvent event) {
                 int offset = projectThumbnailArea.getScrollLeft();
                 offset -= 100;
-                if (offset < 0) offset = 0;
+                if (offset < 0) {
+                    offset = 0;
+                }
                 projectThumbnailArea.setScrollLeft(offset);
             }
         });
         rightButton.addListener(new ClickListener() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -210,38 +223,39 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             }
         });
     }
-    
+
     protected void assemble() {
         initializeComponents();
         initializeLayout();
         initializeData();
         initializeActions();
     }
-    
+
     private Component layoutProjectThumbnailArea() {
         AbsoluteLayout outerLayout = new AbsoluteLayout();
         outerLayout.setWidth("100%");
         outerLayout.setHeight("430px");
-        
+
         projectThumbnailArea.setWidth("100%");
         projectThumbnailArea.setScrollable(true);
-        
+
         projectThumbnailLayout = new HorizontalLayout();
         projectThumbnailLayout.setSpacing(true);
         projectThumbnailLayout.setMargin(true);
-        
+
         projectThumbnailArea.setContent(projectThumbnailLayout);
-        
-        // NOTE: the project thumbnail layout is intentionally empty at this point.
+
+        // NOTE: the project thumbnail layout is intentionally empty at this
+        // point.
         // The child components will be added later.
-        
+
         outerLayout.addComponent(projectThumbnailArea, "top: 0px; left: 20px; right: 20px;");
         outerLayout.addComponent(leftButton, "top: 50%; left: 10px");
         outerLayout.addComponent(rightButton, "top: 50%; right: 10px");
-        
+
         return outerLayout;
     }
-    
+
     private Component layoutProjectTableArea() {
         projectTable.setWidth("100%");
         projectTable.setHeight("100%");
