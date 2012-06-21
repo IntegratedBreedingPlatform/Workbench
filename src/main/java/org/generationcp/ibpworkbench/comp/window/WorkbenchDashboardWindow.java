@@ -51,6 +51,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Button createProjectButton;
     private Button createContactButton;
     private Label recentTitle;
+    private Label usersGuideTitle;
+    private Label hint1;
 
     private VerticalSplitPanel verticalSplitPanel;
 
@@ -106,6 +108,18 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         recentTitle.setStyleName("gcp-section-title");
         recentTitle.setSizeUndefined();
 
+        usersGuideTitle = new Label("User's Guide");
+        usersGuideTitle.setStyleName("gcp-section-title");
+        usersGuideTitle.setSizeUndefined();
+        
+        hint1 = new Label("Click on the workflow " +
+        		"\nthumbnail to " +
+        		"\nview more details about a " +
+        		"\nproject and to go to main " +
+        		"\nworkflow diagram.");
+        hint1.setContentMode(Label.CONTENT_PREFORMATTED);
+        hint1.setSizeUndefined();
+        
         workbenchDashboard = new WorkbenchDashboard();
 
         verticalSplitPanel = new VerticalSplitPanel();
@@ -258,6 +272,10 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // leftLayout.addComponent(recentTitle);
         // leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
 
+        leftLayout.addComponent(usersGuideTitle);
+        leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
+        leftLayout.addComponent(hint1);
+        
         return leftLayout;
     }
 

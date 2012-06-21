@@ -116,7 +116,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         projectTable.setColumnHeader("status", "Status");
         projectTable.setColumnHeader("owner", "Owner");
 
-        projectTable.setCaption("Click row to open Project dashboard");
+        projectTable.setCaption("Click row to open Project Dashboard");
 
         projectTable.setColumnCollapsingAllowed(true);
         projectTable.setCellStyleGenerator(new CellStyleGenerator() {

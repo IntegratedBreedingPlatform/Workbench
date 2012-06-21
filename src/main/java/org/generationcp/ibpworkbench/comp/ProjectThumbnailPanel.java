@@ -61,8 +61,10 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         addStyleName("gcp-hand-cursor");
         
         projectTitle = new Label(project.getProjectName());
+        projectTitle.setDescription("Click here");
 
         workflowTitle = new Label("MARS");
+        workflowTitle.setDescription("Click here");
 
         // Breeding Management
         projectPlanningPanel = createWorkflowStep("1. Project", "Planning"); // Project
@@ -191,6 +193,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         for (String caption : captions) {
             Label label = new Label(caption);
             label.setSizeUndefined();
+            label.setDescription("Click here");
 
             layout.addComponent(label);
             layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
