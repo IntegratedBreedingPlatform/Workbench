@@ -30,10 +30,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
 
     @Override
     public void itemClick(ItemClickEvent event) {
-        if (!event.isDoubleClick()) {
-            return;
-        }
-
+        
         Component component = event.getComponent();
 
         IContentWindow window = (IContentWindow) component.getWindow();
@@ -54,10 +51,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
 
     @Override
     public void click(ClickEvent event) {
-        if (!event.isDoubleClick()) {
-            return;
-        }
-
+        
         Component component = event.getComponent();
         IContentWindow window = (IContentWindow) component.getWindow();
 

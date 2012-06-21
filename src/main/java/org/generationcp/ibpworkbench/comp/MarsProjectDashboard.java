@@ -60,7 +60,7 @@ public class MarsProjectDashboard extends VerticalLayout{
 
     private Label populationDevelopmentTitle;
     private Button browseGermplasmButton;
-    private Button retrieveGermplasmPhenotypicButton;
+    private Button browseStudiesButton;
     private Button gdmsButton;
 
     private Button breedingViewButton;
@@ -137,6 +137,7 @@ public class MarsProjectDashboard extends VerticalLayout{
         fieldBookButton = new Button("Field Book");
         fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK);
         fieldBookButton.setSizeUndefined();
+        fieldBookButton.setDescription("Click to launch Fieldbook");
 
         uploadFieldBookDataButton = new Button("Upload Field Book Data");
         uploadFieldBookDataButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -145,22 +146,27 @@ public class MarsProjectDashboard extends VerticalLayout{
         browseGermplasmButton = new Button("Browse Germplasm Information");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
+        browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
 
-        retrieveGermplasmPhenotypicButton = new Button("Browse Studies and Datasets");
-        retrieveGermplasmPhenotypicButton.setStyleName(BaseTheme.BUTTON_LINK);
-        retrieveGermplasmPhenotypicButton.setSizeUndefined();
+        browseStudiesButton = new Button("Browse Studies and Datasets");
+        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseStudiesButton.setSizeUndefined();
+        browseStudiesButton.setDescription("Click to launch Study Browser");
 
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
+        gdmsButton.setDescription("Click to launch GDMS");
 
         breedingViewButton = new Button("Breeding View");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
+        breedingViewButton.setDescription("Click to launch Breeding View");
 
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
+        optimasButton.setDescription("Click to launch OptiMAS");
 
         // marker trait analysis
         markerTraitAnalysisTitle = new Label("Marker Trait Analysis");
@@ -186,6 +192,7 @@ public class MarsProjectDashboard extends VerticalLayout{
         breedingManagerButton = new Button("Breeding Manager");
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingManagerButton.setSizeUndefined();
+        breedingManagerButton.setDescription("Click to launch Nursery Manager");
 
         backButton = new Button("Back", new Button.ClickListener() {
 
@@ -302,9 +309,9 @@ public class MarsProjectDashboard extends VerticalLayout{
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
-        layout.addComponent(retrieveGermplasmPhenotypicButton);
-        layout.setComponentAlignment(retrieveGermplasmPhenotypicButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(retrieveGermplasmPhenotypicButton, 0);
+        layout.addComponent(browseStudiesButton);
+        layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseStudiesButton, 0);
 
         return layout;
     }
@@ -555,7 +562,7 @@ public class MarsProjectDashboard extends VerticalLayout{
         });
 
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_BROWSER));
-        retrieveGermplasmPhenotypicButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_PHENOTYPIC));
+        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_PHENOTYPIC));
 
         gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolId.GDMS));
 

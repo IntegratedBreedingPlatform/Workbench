@@ -27,9 +27,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener{
 
     @Override
     public void layoutClick(LayoutClickEvent event) {
-        if (!event.isDoubleClick())
-            return;
-
+        
         Component component = event.getComponent();
 
         IProjectProvider projectProvider = (IProjectProvider) component;

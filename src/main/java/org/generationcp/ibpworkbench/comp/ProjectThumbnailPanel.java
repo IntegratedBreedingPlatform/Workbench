@@ -59,7 +59,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
 
     protected void initializeComponents() {
         addStyleName("gcp-hand-cursor");
-
+        
         projectTitle = new Label(project.getProjectName());
 
         workflowTitle = new Label("MARS");

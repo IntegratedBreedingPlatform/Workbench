@@ -116,7 +116,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         projectTable.setColumnHeader("status", "Status");
         projectTable.setColumnHeader("owner", "Owner");
 
-        projectTable.setCaption("Double click row to open Project dashboard");
+        projectTable.setCaption("Click row to open Project dashboard");
 
         projectTable.setColumnCollapsingAllowed(true);
         projectTable.setCellStyleGenerator(new CellStyleGenerator() {
@@ -174,9 +174,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
                 @Override
                 public void layoutClick(LayoutClickEvent event) {
-                    if (!event.isDoubleClick()) {
-                        return;
-                    }
                     if (projectThumbnailClickHandler == null) {
                         return;
                     }
