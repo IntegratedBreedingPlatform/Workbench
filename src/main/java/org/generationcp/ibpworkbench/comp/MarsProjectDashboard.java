@@ -16,9 +16,7 @@ import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
-import org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 import com.vaadin.ui.Alignment;
@@ -77,10 +75,6 @@ public class MarsProjectDashboard extends VerticalLayout{
     private Label recombinationCycleTitle;
 
     private Button breedingManagerButton;
-
-    // Temporary Back Button Navigation
-    private Button backButton;
-    private HorizontalLayout buttonLayout;
 
     public MarsProjectDashboard(Project project) {
         this.project = project;
@@ -194,23 +188,6 @@ public class MarsProjectDashboard extends VerticalLayout{
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Nursery Manager");
 
-        backButton = new Button("Back", new Button.ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Component component = event.getComponent();
-                IContentWindow window = (IContentWindow) component.getWindow();
-
-                ProjectDashboard projectDashboard = new ProjectDashboard(project);
-                projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
-
-                window.showContent(projectDashboard);
-            }
-        });
-
-        buttonLayout = new HorizontalLayout();
     }
 
     protected void initializeLayout() {
@@ -225,18 +202,6 @@ public class MarsProjectDashboard extends VerticalLayout{
         workFlowArea.setSizeUndefined();
         addComponent(workFlowArea);
 
-        addButtonLayout();
-    }
-
-    private void addButtonLayout() {
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true);
-        buttonLayout.setWidth("100%");
-
-        buttonLayout.addComponent(backButton);
-        buttonLayout.setComponentAlignment(backButton, Alignment.MIDDLE_RIGHT);
-
-        addComponent(buttonLayout);
     }
 
     protected Component layoutWorkflowArea() {
