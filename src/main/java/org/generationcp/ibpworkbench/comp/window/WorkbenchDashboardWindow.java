@@ -12,10 +12,14 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import org.generationcp.ibpworkbench.actions.CreateContactAction;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction;
-import org.generationcp.ibpworkbench.comp.ContactBookPanel;
+import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.navigation.CrumbTrail;
+import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -24,12 +28,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
@@ -58,7 +61,14 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     private HorizontalSplitPanel contentAreaSplitPanel;
 
+    private VerticalLayout mainContent;
+
     private WorkbenchDashboard workbenchDashboard;
+
+    private CrumbTrail crumbTrail;
+
+    private UriFragmentUtility uriFragUtil;
+    private NavUriFragmentChangedListener uriChangeListener;
 
     public WorkbenchDashboardWindow() {
         log.debug("{} instead created.", WorkbenchDashboardWindow.class);
@@ -111,19 +121,29 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         usersGuideTitle = new Label("User's Guide");
         usersGuideTitle.setStyleName("gcp-section-title");
         usersGuideTitle.setSizeUndefined();
-        
+
         hint1 = new Label("Click on the workflow " +
-        		"\nthumbnail to " +
-        		"\nview more details about a " +
-        		"\nproject and to go to main " +
-        		"\nworkflow diagram.");
+                "\nthumbnail to " +
+                "\nview more details about a " +
+                "\nproject and to go to main " +
+                "\nworkflow diagram.");
         hint1.setContentMode(Label.CONTENT_PREFORMATTED);
         hint1.setSizeUndefined();
-        
+
         workbenchDashboard = new WorkbenchDashboard();
 
         verticalSplitPanel = new VerticalSplitPanel();
         contentAreaSplitPanel = new HorizontalSplitPanel();
+
+        mainContent = new VerticalLayout();
+        crumbTrail = new CrumbTrail();
+        crumbTrail.setMargin(true);
+        crumbTrail.setSpacing(true);
+
+        uriFragUtil = new UriFragmentUtility();
+        uriChangeListener = new NavUriFragmentChangedListener();
+
+        uriFragUtil.addListener(uriChangeListener);
     }
 
     protected void initializeLayout() {
@@ -151,8 +171,12 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         Component leftArea = layoutLeftArea();
         contentAreaSplitPanel.addComponent(leftArea);
 
+        mainContent.addComponent(crumbTrail);
+        mainContent.addComponent(workbenchDashboard);
+
         // layout the right area of the content area split panel
-        contentAreaSplitPanel.addComponent(workbenchDashboard);
+        // contentAreaSplitPanel.addComponent(workbenchDashboard);
+        contentAreaSplitPanel.addComponent(mainContent);
 
         verticalSplitPanel.addComponent(contentAreaSplitPanel);
 
@@ -160,48 +184,13 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     }
 
     protected void initializeActions() {
-        homeButton.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                // we create a new WorkbenchDashboard object here
-                // so that the UI is reset to its initial state
-                // we can remove this if we want to present the last UI state.
-                workbenchDashboard = new WorkbenchDashboard();
-                workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
-                workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
-
-                showContent(workbenchDashboard);
-            }
-        });
-
-        signOutButton.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                getApplication().close();
-            }
-        });
-
+        homeButton.addListener(new HomeAction());
+        signOutButton.addListener(new SignoutAction());
         createProjectButton.addListener(new OpenNewProjectAction());
+        createContactButton.addListener(new CreateContactAction());
 
-        createContactButton.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                ContactBookPanel contactBookPanel = new ContactBookPanel();
-                showContent(contactBookPanel);
-            }
-        });
-
-        workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
         workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
+        workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
     }
 
     protected void assemble() {
@@ -220,6 +209,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // workbench title area
         headerLayout.addComponent(workbenchTitle);
         headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_CENTER);
+
+        headerLayout.addComponent(uriFragUtil);
 
         // right side button area
         HorizontalLayout headerRightLayout = new HorizontalLayout();
@@ -268,14 +259,14 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // leftLayout.addComponent(createContactButton);
         // leftLayout.setComponentAlignment(createContactButton,
         // Alignment.TOP_CENTER);
-
+        //
         // leftLayout.addComponent(recentTitle);
         // leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
 
         leftLayout.addComponent(usersGuideTitle);
         leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
         leftLayout.addComponent(hint1);
-        
+
         return leftLayout;
     }
 
@@ -285,9 +276,34 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
      * 
      * @param content
      */
-    @Override
     public void showContent(Component content) {
-        contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
-        contentAreaSplitPanel.addComponent(content);
+
+        // contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
+        // contentAreaSplitPanel.addComponent(content);
+
+        mainContent.removeAllComponents();
+        mainContent.addComponent(crumbTrail);
+        mainContent.addComponent(content);
     }
+
+    public WorkbenchDashboard getWorkbenchDashboard() {
+        return workbenchDashboard;
+    }
+
+    public void setWorkbenchDashboard(WorkbenchDashboard workbenchDashboard) {
+        this.workbenchDashboard = workbenchDashboard;
+    }
+
+    public CrumbTrail getCrumbTrail() {
+        return crumbTrail;
+    }
+
+    public void setCrumbTrail(CrumbTrail crumbTrail) {
+        this.crumbTrail = crumbTrail;
+    }
+
+    public void setUriFragment(String fragment) {
+        uriFragUtil.setFragment(fragment);
+    }
+
 }

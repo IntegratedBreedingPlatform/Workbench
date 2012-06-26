@@ -16,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.manager.IWorkFlowActivityManager;
 import org.generationcp.ibpworkbench.manager.MockWorkFlowActivityManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -26,9 +24,6 @@ import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -52,10 +47,6 @@ public class ProjectDashboard extends VerticalLayout{
     private Label recentActivityTitle;
     private Table recentActivityTable;
 
-    // Temporary Back Button Navigation
-    private Button backButton;
-    private HorizontalLayout buttonLayout;
-
     public ProjectDashboard(Project project) {
         this.project = project;
 
@@ -75,23 +66,6 @@ public class ProjectDashboard extends VerticalLayout{
         initializeUpcomingActivityTable();
         initializeRecentActivityTable();
 
-        backButton = new Button("Back", new Button.ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                IContentWindow window = (IContentWindow) event.getComponent().getWindow();
-
-                WorkbenchDashboard workbenchDashboard = new WorkbenchDashboard();
-                workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
-                workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
-
-                window.showContent(workbenchDashboard);
-            }
-        });
-
-        buttonLayout = new HorizontalLayout();
     }
 
     protected void initializeUpcomingActivityTable() {
@@ -190,18 +164,6 @@ public class ProjectDashboard extends VerticalLayout{
         recentActivityArea.setHeight("200px");
         addComponent(recentActivityArea);
 
-        addButtonLayout();
-    }
-
-    private void addButtonLayout() {
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true);
-        buttonLayout.setWidth("100%");
-
-        buttonLayout.addComponent(backButton);
-        buttonLayout.setComponentAlignment(backButton, Alignment.MIDDLE_RIGHT);
-
-        addComponent(buttonLayout);
     }
 
     public void addProjectThumbnailPanelListener(LayoutClickListener listener) {

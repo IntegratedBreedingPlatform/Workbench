@@ -15,7 +15,7 @@ package org.generationcp.ibpworkbench.comp;
 import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolId;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
@@ -561,18 +561,18 @@ public class MarsProjectDashboard extends VerticalLayout{
             }
         });
 
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolId.GERMPLASM_PHENOTYPIC));
+        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_PHENOTYPIC));
 
-        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolId.GDMS));
+        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 
-        fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolId.FIELDBOOK));
+        fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolId.OPTIMAS));
+        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
 
-        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolId.BREEDING_MANAGER));
+        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolId.BREEDING_VIEW));
+        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
     }
 
     protected void assemble() {

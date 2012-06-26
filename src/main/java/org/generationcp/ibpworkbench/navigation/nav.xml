@@ -1,0 +1,32 @@
+<!-- 
+  Copyright (c) 2012, All Rights Reserved.
+  
+  Generation Challenge Programme (GCP)
+  
+  
+  This software is licensed for use under the terms of the GNU General Public
+  License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+  Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+  
+-->
+<root>
+    <home id="home" label="Home" level="0" 
+          class="org.generationcp.ibpworkbench.actions.HomeAction">
+        <openProject id="openProject" label="Project Dashboard: " level="1" 
+                     class="org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction">
+            <openProjectWorkflow id="openProjectWorkflow" label="Project Workflow: " level="2" 
+                                 class="org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction">
+               <gdms id="gdms" label="Genotyping Data Management System" level="3" 
+                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</gdms>
+               <germplasm_browser id="germplasm_browser" label="Browse Germplasm Information" level="3" 
+                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</germplasm_browser>
+               <germplasm_genotypic id="germplasm_genotypic" label="Retrieve Germplasm by Phenotypic Data" level="3" 
+                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToo lAction">x</germplasm_genotypic>                     
+            </openProjectWorkflow>
+        </openProject>
+    </home>
+    <createProject id="createProject" label="Create Project" level="0" 
+                   class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction">x</createProject>
+    <createContacts id="createContacts" label="Create Contacts" level="0" 
+                    class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>
+</root>
