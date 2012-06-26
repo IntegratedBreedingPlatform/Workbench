@@ -65,10 +65,10 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
             
             navXmlParser.setUriFragment(u.getFragment());
             if (navXmlParser.validateUriFragment()) {
-               Map<String, String> viewDetails = navXmlParser.getXpathDetails();
-               
+               Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
+
                try {
-                   ActionListener listener = (ActionListener) Class.forName(viewDetails.get("class")).getConstructor().newInstance();
+                   ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
                    listener.doAction(u.getWindow(), u.getFragment());
                } catch (Exception e) {
                    e.printStackTrace();
