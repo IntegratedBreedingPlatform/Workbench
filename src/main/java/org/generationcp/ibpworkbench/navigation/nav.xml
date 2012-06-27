@@ -20,15 +20,13 @@
                      class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</gdms>
                <germplasm_browser id="germplasm_browser" label="Browse Germplasm Information" level="3" 
                      class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</germplasm_browser>
-               <germplasm_genotypic id="germplasm_genotypic" label="Retrieve Germplasm by Phenotypic Data" level="3" 
-                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToo lAction">x</germplasm_genotypic>                     
+               <germplasm_phenotypic id="germplasm_phenotypic" label="Retrieve Germplasm by Phenotypic Data" level="3" 
+                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</germplasm_phenotypic>
             </openProjectWorkflow>
         </openProject>
 	    <createProject id="createProject" label="Create Project" level="1" 
 	                   class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction">x</createProject>
 	    <createContacts id="createContacts" label="Create Contacts" level="1" 
 	                    class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>
-        <createContacts id="createContacts" label="Create Contacts" level="1" 
-                        class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>	                    
     </home>
 </root>
