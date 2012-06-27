@@ -281,8 +281,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
         // contentAreaSplitPanel.addComponent(content);
 
-        mainContent.removeAllComponents();
-        mainContent.addComponent(crumbTrail);
+        mainContent.removeComponent(mainContent.getComponent(1));
         mainContent.addComponent(content);
     }
 
