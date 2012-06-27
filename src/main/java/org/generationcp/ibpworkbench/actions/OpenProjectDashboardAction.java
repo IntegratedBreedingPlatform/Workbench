@@ -67,7 +67,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     public void click(ClickEvent event) {
         Component component = event.getComponent();
         IContentWindow window = (IContentWindow) component.getWindow();
-
+        
         Project project = (Project) ((ProjectThumbnailPanel) component).getData();
         if (project == null) {
             return;
@@ -78,8 +78,8 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
 
         window.showContent(projectDashboard);
         
-        String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
-        NavManager.navigateApp(component.getWindow(), viewId, project.getProjectName());
+        String viewId = "/home/openProject?projectId=" + project.getProjectId();
+        NavManager.navigateApp((Window) window, viewId, project.getProjectName());
     }
 
     @Override

@@ -150,7 +150,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                     NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + tool.getToolName());
                 }
                 
-                IContentWindow contentWindow = (IContentWindow) event.getComponent().getWindow();
+                IContentWindow contentWindow = (IContentWindow) window;
                 contentWindow.showContent(browser);
             }
         }
