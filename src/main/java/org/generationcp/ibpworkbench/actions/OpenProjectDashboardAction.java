@@ -57,7 +57,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
         
         String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
-        NavManager.navigateApp(component.getWindow(), viewId, project.getProjectName());
+        NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
         
         
         window.showContent(projectDashboard);
@@ -79,7 +79,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         window.showContent(projectDashboard);
         
         String viewId = "/home/openProject?projectId=" + project.getProjectId();
-        NavManager.navigateApp((Window) window, viewId, project.getProjectName());
+        NavManager.navigateApp((Window) window, viewId, true, project.getProjectName());
     }
 
     @Override
@@ -88,7 +88,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     }
     
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         
         //get parameters from uri fragment
         
@@ -116,6 +116,6 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         
         w.showContent(projectDashboard);
         
-        NavManager.navigateApp(window, uriFragment, p.getProjectName());
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
     }
 }

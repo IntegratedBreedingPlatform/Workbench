@@ -42,7 +42,7 @@ public class CreateContactAction implements ClickListener, ActionListener {
      */
     @Override
     public void buttonClick(ClickEvent event) {
-        doAction(event.getComponent().getWindow(), null);
+        doAction(event.getComponent().getWindow(), null, true);
     }
 
     /**
@@ -62,13 +62,13 @@ public class CreateContactAction implements ClickListener, ActionListener {
      * @param uriFragment the uri fragment
      */
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         ContactBookPanel contactBookPanel = new ContactBookPanel();
         IContentWindow w = (IContentWindow) window;
         
         w.showContent(contactBookPanel);
         
-        NavManager.navigateApp(window, "/home/createContacts");
+        NavManager.navigateApp(window, "/home/createContacts", isLinkAccessed);
     }
 
 }

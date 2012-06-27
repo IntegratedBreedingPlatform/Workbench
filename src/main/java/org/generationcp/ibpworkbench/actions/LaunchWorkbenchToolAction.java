@@ -63,13 +63,13 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         }
         
         public static boolean isCorrectTool(String toolName) {
-            if(ToolEnum.GERMPLASM_BROWSER.toString().equals(toolName) ||
-               ToolEnum.GERMPLASM_PHENOTYPIC.toString().equals(toolName) ||
-               ToolEnum.GDMS.toString().equals(toolName) ||
-               ToolEnum.FIELDBOOK.toString().equals(toolName) ||
-               ToolEnum.OPTIMAS.toString().equals(toolName) ||
-               ToolEnum.BREEDING_MANAGER.toString().equals(toolName) ||
-               ToolEnum.BREEDING_VIEW.toString().equals(toolName)) {
+            if(ToolEnum.GERMPLASM_BROWSER.getToolName().equals(toolName) ||
+               ToolEnum.GERMPLASM_PHENOTYPIC.getToolName().equals(toolName) ||
+               ToolEnum.GDMS.getToolName().equals(toolName) ||
+               ToolEnum.FIELDBOOK.getToolName().equals(toolName) ||
+               ToolEnum.OPTIMAS.getToolName().equals(toolName) ||
+               ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) ||
+               ToolEnum.BREEDING_VIEW.getToolName().equals(toolName)) {
                 return true;
             } else {
                 return false;
@@ -97,7 +97,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
         
-        launchTool(toolEnum.getToolName(), window, event);
+        launchTool(toolEnum.getToolName(), window, true);
     }
 
     @Override
@@ -106,21 +106,21 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     }
 
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 
         Map<String, List<String>> map = UriUtils.getUriParameters(uriFragment);
         String toolName = map.get("toolName").get(0);
         
         if(ToolEnum.isCorrectTool(toolName)) {
-            launchTool(toolName, window, null);
+            launchTool(toolName, window, isLinkAccessed);
         } else {
 //            System.out.println("wrong tool id");
         }
     }
     
-    private void launchTool(String toolName, Window window, Event event) {
+    private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
         WorkbenchDataManager workbenchDataManager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        Tool tool = workbenchDataManager.getToolWithName(toolEnum.getToolName());
+        Tool tool = workbenchDataManager.getToolWithName(toolName);
         if (tool == null) {
             log.warn("Cannot find tool " + toolEnum);
             
@@ -129,6 +129,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
             return;
         } else {
             if (tool.getToolType() == ToolType.NATIVE) {
+                
                 File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
                 Runtime runtime = Runtime.getRuntime();
                 try {
@@ -139,16 +140,16 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                     
                     window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(), Notification.TYPE_ERROR_MESSAGE);
                 }
+                
             } else {
+                
                 Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
                 browser.setHeight("800px");
                 browser.setWidth("100%");
                 
-                if(event != null) {
-                    NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + tool.getToolName());
-                }
+                NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName, isLinkAccessed);
                 
                 IContentWindow contentWindow = (IContentWindow) window;
                 contentWindow.showContent(browser);

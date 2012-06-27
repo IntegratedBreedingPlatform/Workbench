@@ -43,7 +43,7 @@ public class HomeAction implements ClickListener, ActionListener{
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
-        doAction(window, "/home");
+        doAction(window, "/home", true);
         
     }
 
@@ -64,7 +64,7 @@ public class HomeAction implements ClickListener, ActionListener{
      * @param uriFragment the uri fragment
      */
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         // we create a new WorkbenchDashboard object here
         // so that the UI is reset to its initial state
         // we can remove this if we want to present the last UI state.
@@ -77,7 +77,7 @@ public class HomeAction implements ClickListener, ActionListener{
         
         w.showContent(w.getWorkbenchDashboard());
         
-        NavManager.navigateApp(window, "/home");
+        NavManager.navigateApp(window, "/home", isLinkAccessed);
     }
 
 }

@@ -53,8 +53,8 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
         
         NavManager.navigateApp(component.getWindow(), 
-                "/home/openProject/openProjectWorkflow?projectId="+project.getProjectId(), 
-                project.getProjectName());
+                "/home/openProject/openProjectWorkflow?projectId="+project.getProjectId(),
+                true, project.getProjectName());
         
         window.showContent(projectDashboard);
     }
@@ -65,7 +65,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
     }
 
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
@@ -85,6 +85,6 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         
         w.showContent(projectDashboard);
         
-        NavManager.navigateApp(window, uriFragment, p.getProjectName());
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
     }
 }

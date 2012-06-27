@@ -62,14 +62,15 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
         if(crumbTrail.isLinkAccessed()) {
             crumbTrail.setLinkAccessed(false);
         } else {
-            
+
             navXmlParser.setUriFragment(u.getFragment());
+            
             if (navXmlParser.validateUriFragment()) {
                Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
 
                try {
                    ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
-                   listener.doAction(u.getWindow(), u.getFragment());
+                   listener.doAction(u.getWindow(), u.getFragment(), false);
                } catch (Exception e) {
                    e.printStackTrace();
                }

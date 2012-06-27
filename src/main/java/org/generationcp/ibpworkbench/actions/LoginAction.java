@@ -16,6 +16,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,9 @@ public class LoginAction implements ClickListener{
 
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
         application.removeWindow(application.getMainWindow());
-        application.setMainWindow(new WorkbenchDashboardWindow());
+        WorkbenchDashboardWindow window = new WorkbenchDashboardWindow();
+        application.setMainWindow(window);
+
+        NavManager.navigateApp(window, "/home", true);
     }
 }

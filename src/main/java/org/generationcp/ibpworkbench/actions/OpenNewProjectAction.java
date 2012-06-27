@@ -25,7 +25,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        doAction(event.getComponent().getWindow(), null);
+        doAction(event.getComponent().getWindow(), null, true);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     }
 
     @Override
-    public void doAction(Window window, String uriFragment) {
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
         
         CreateNewProjectPanel newProjectPanel = new CreateNewProjectPanel();
@@ -44,7 +44,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         
         newProjectPanel.getSaveButton().addListener(new SaveNewProjectAction(newProjectPanel.getForm()));
         
-        NavManager.navigateApp(window, "/home/createProject");
+        NavManager.navigateApp(window, "/home/createProject", isLinkAccessed);
     }
 
 }

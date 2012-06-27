@@ -64,7 +64,7 @@ public class CrumbTrail extends HorizontalLayout {
         navXmlParser = new NavXmlParser();
         
         //TODO: either add here or add on login?
-        addBreadCrumb("/home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
+//        addBreadCrumb("/home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
     }
     
     /**
@@ -74,7 +74,7 @@ public class CrumbTrail extends HorizontalLayout {
      * @param labelToAppend the label to append
      */
     public void updateCrumbTrail(String viewId, String labelToAppend) {
-        int currentLevel = crumbTrail.peekLast().getLevel();
+        int currentLevel = crumbTrail.isEmpty() ? -1 : crumbTrail.peekLast().getLevel();
         navXmlParser.setUriFragment(viewId);
         
         if(navXmlParser.validateUriFragment()) {
@@ -185,7 +185,7 @@ public class CrumbTrail extends HorizontalLayout {
      *
      * @return the crumb trail
      */
-    public LinkedList<BreadCrumb> getCrumbTrail() {
+    public LinkedList<BreadCrumb> getCrumbTrailList() {
         return crumbTrail;
     }
     

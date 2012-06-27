@@ -38,8 +38,8 @@ public final class NavManager {
      * @param window the window
      * @param viewId the view id
      */
-    public static void navigateApp(Window window, String viewId) {
-        navigateApp(window, viewId, null);
+    public static void navigateApp(Window window, String viewId, boolean isLinkAccessed) {
+        navigateApp(window, viewId, isLinkAccessed, null);
     }
     
     /**
@@ -49,12 +49,14 @@ public final class NavManager {
      * @param viewId the view id
      * @param breadCrumbLabel the bread crumb label
      */
-    public static void navigateApp(Window window, String viewId, String breadCrumbLabel) {
+    public static void navigateApp(Window window, String viewId, boolean isLinkAccessed, String breadCrumbLabel) {
         WorkbenchDashboardWindow workbenchWindow = (WorkbenchDashboardWindow) window;
         CrumbTrail crumbTrail = workbenchWindow.getCrumbTrail();
         
-        if(!crumbTrail.getLastBreadCrumbUri().equals(viewId)) {
-            crumbTrail.setLinkAccessed(true);
+        if(crumbTrail.getCrumbTrailList().isEmpty() || !crumbTrail.getLastBreadCrumbUri().equals(viewId)) {
+            if(isLinkAccessed) {
+                crumbTrail.setLinkAccessed(true);
+            }
             
             workbenchWindow.setUriFragment(viewId);
             crumbTrail.updateCrumbTrail(viewId, breadCrumbLabel);
@@ -72,7 +74,7 @@ public final class NavManager {
     public static void breadCrumbClick(ActionListener listener, Event event) {
         BreadCrumb b = (BreadCrumb) event.getComponent().getParent();
         
-        listener.doAction(b.getWindow(), b.getUriFragment());
+        listener.doAction(b.getWindow(), b.getUriFragment(), true);
 //        navigateApp(event, b.getUriFragment());
     }
 

@@ -24,10 +24,10 @@ import com.vaadin.ui.Window;
  * <b>Author</b>: Michael Blancaflor
  * <br>
  * <b>File Created</b>: Jun 14, 2012
+ *
  */
 public interface ActionListener {
     
-    //
     /**
      * Used by bread crumbs. Invoked when a bread crumb is clicked.
      *
@@ -35,12 +35,13 @@ public interface ActionListener {
      */
     public void doAction(Component.Event event);
     
-    //
     /**
-     * Used by NavUriFragmentChangedListener
+     * Used by NavUriFragmentChangedListener.
      *
      * @param window the window
      * @param uriFragment the uri fragment
+     * @param isLinkAccessed the is link accessed
      */
-    public void doAction(Window window, String uriFragment);
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed);
+    
 }
