@@ -42,10 +42,7 @@ public class CreateContactAction implements ClickListener, ActionListener {
      */
     @Override
     public void buttonClick(ClickEvent event) {
-        Window window = event.getComponent().getWindow();
-        NavManager.navigateApp(window, "/createContacts");
-        
-        doAction(window, null);
+        doAction(event.getComponent().getWindow(), null);
     }
 
     /**
@@ -70,6 +67,8 @@ public class CreateContactAction implements ClickListener, ActionListener {
         IContentWindow w = (IContentWindow) window;
         
         w.showContent(contactBookPanel);
+        
+        NavManager.navigateApp(window, "/home/createContacts");
     }
 
 }

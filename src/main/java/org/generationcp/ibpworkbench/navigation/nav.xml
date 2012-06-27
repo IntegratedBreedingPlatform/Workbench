@@ -24,9 +24,11 @@
                      class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToo lAction">x</germplasm_genotypic>                     
             </openProjectWorkflow>
         </openProject>
+	    <createProject id="createProject" label="Create Project" level="1" 
+	                   class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction">x</createProject>
+	    <createContacts id="createContacts" label="Create Contacts" level="1" 
+	                    class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>
+        <createContacts id="createContacts" label="Create Contacts" level="1" 
+                        class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>	                    
     </home>
-    <createProject id="createProject" label="Create Project" level="0" 
-                   class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction">x</createProject>
-    <createContacts id="createContacts" label="Create Contacts" level="0" 
-                    class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>
 </root>

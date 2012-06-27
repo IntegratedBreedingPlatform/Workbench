@@ -44,7 +44,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         
         newProjectPanel.getSaveButton().addListener(new SaveNewProjectAction(newProjectPanel.getForm()));
         
-        NavManager.navigateApp(window, "/createProject");
+        NavManager.navigateApp(window, "/home/createProject");
     }
 
 }
