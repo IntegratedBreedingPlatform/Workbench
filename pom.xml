@@ -47,6 +47,7 @@
             <version>1.0.0</version>
         </dependency>
         -->
+        <!-- dellroad-stuff for Spring -->
         <dependency>
             <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-vaadin</artifactId>
