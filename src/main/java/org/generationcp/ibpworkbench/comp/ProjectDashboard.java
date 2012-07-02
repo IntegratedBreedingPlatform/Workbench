@@ -16,10 +16,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.manager.IWorkFlowActivityManager;
 import org.generationcp.ibpworkbench.manager.MockWorkFlowActivityManager;
+import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
+import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
@@ -31,7 +37,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-public class ProjectDashboard extends VerticalLayout{
+@Configurable
+public class ProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,22 +53,28 @@ public class ProjectDashboard extends VerticalLayout{
 
     private Label recentActivityTitle;
     private Table recentActivityTable;
-
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
     public ProjectDashboard(Project project) {
         this.project = project;
-
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
         assemble();
     }
-
+    
     protected void initializeComponents() {
-        dashboardTitle = new Label("Project Dashboard: " + project.getProjectName());
+        dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        datasetsTitle = new Label("Datasets");
+        datasetsTitle = new Label();
 
         projectThumbnailPanel = new ProjectThumbnailPanel(project);
 
-        recentActivityTitle = new Label("Recent Activity");
+        recentActivityTitle = new Label();
 
         initializeUpcomingActivityTable();
         initializeRecentActivityTable();
@@ -96,10 +109,6 @@ public class ProjectDashboard extends VerticalLayout{
         }
         upcomingActivityTable.setContainerDataSource(activityContainer);
 
-        upcomingActivityTable.setColumnHeader("title", "Next Activity");
-        upcomingActivityTable.setColumnHeader("owner", "Owner");
-        upcomingActivityTable.setColumnHeader("dueDate", "Due Date");
-
         String[] columns = new String[] { "title", "owner", "dueDate" };
         upcomingActivityTable.setVisibleColumns(columns);
     }
@@ -133,12 +142,6 @@ public class ProjectDashboard extends VerticalLayout{
             activityContainer.addBean(activity);
         }
         recentActivityTable.setContainerDataSource(activityContainer);
-
-        recentActivityTable.setColumnHeader("date", "date");
-        recentActivityTable.setColumnHeader("project", "Project");
-        recentActivityTable.setColumnHeader("title", "Action");
-        recentActivityTable.setColumnHeader("status", "Status");
-        recentActivityTable.setColumnHeader("owner", "Owner");
 
         String[] columns = new String[] { "date", "project", "title", "status", "owner" };
         recentActivityTable.setVisibleColumns(columns);
@@ -228,5 +231,29 @@ public class ProjectDashboard extends VerticalLayout{
         layout.addComponent(recentActivityTable);
 
         return layout;
+    }
+    
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    };
+    
+    @Override
+    public void updateLabels() {
+        messageSource.setValue(dashboardTitle, Message.project_dashboard_title, project.getProjectName());
+        
+        messageSource.setValue(datasetsTitle, Message.datasets);
+        messageSource.setValue(datasetsTitle, Message.datasets);
+        
+        messageSource.setColumnHeader(upcomingActivityTable, "title", Message.activity_next);
+        messageSource.setColumnHeader(upcomingActivityTable, "owner", Message.owner);
+        messageSource.setColumnHeader(upcomingActivityTable, "dueDate", Message.date_due);
+        
+        messageSource.setColumnHeader(recentActivityTable, "date", Message.date);
+        messageSource.setColumnHeader(recentActivityTable, "project", Message.project);
+        messageSource.setColumnHeader(recentActivityTable, "title", Message.action);
+        messageSource.setColumnHeader(recentActivityTable, "status", Message.status);
+        messageSource.setColumnHeader(recentActivityTable, "owner", Message.owner);
     }
 }

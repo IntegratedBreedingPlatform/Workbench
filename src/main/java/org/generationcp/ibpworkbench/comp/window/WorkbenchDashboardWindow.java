@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -20,9 +21,12 @@ import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
+import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.Sizeable;
@@ -39,7 +43,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean{
+public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     private Logger log = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
@@ -69,6 +73,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     private UriFragmentUtility uriFragUtil;
     private NavUriFragmentChangedListener uriChangeListener;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public WorkbenchDashboardWindow() {
         log.debug("{} instead created.", WorkbenchDashboardWindow.class);
@@ -84,27 +91,27 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     protected void initializeComponents() {
         // workbench header components
-        workbenchTitle = new Label("Workbench");
+        workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
 
-        homeButton = new Button("Home");
+        homeButton = new Button();
         homeButton.setStyleName(BaseTheme.BUTTON_LINK);
         homeButton.setSizeUndefined();
 
-        signOutButton = new Button("Signout");
+        signOutButton = new Button();
         signOutButton.setStyleName(BaseTheme.BUTTON_LINK);
         signOutButton.setSizeUndefined();
 
-        accountButton = new Button("Account");
+        accountButton = new Button();
         accountButton.setStyleName(BaseTheme.BUTTON_LINK);
         accountButton.setSizeUndefined();
 
-        helpButton = new Button("Help");
+        helpButton = new Button();
         helpButton.setStyleName(BaseTheme.BUTTON_LINK);
         helpButton.setSizeUndefined();
 
         // left area components
-        actionsTitle = new Label("Actions");
+        actionsTitle = new Label();
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
 
@@ -114,19 +121,15 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         createContactButton = new Button("Create Contact");
         createContactButton.setWidth("120px");
 
-        recentTitle = new Label("Recent");
+        recentTitle = new Label();
         recentTitle.setStyleName("gcp-section-title");
         recentTitle.setSizeUndefined();
 
-        usersGuideTitle = new Label("User's Guide");
+        usersGuideTitle = new Label();
         usersGuideTitle.setStyleName("gcp-section-title");
         usersGuideTitle.setSizeUndefined();
 
-        hint1 = new Label("Click on the workflow " +
-                "\nthumbnail to " +
-                "\nview more details about a " +
-                "\nproject and to go to main " +
-                "\nworkflow diagram.");
+        hint1 = new Label();
         hint1.setContentMode(Label.CONTENT_PREFORMATTED);
         hint1.setSizeUndefined();
 
@@ -304,5 +307,30 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     public void setUriFragment(String fragment) {
         uriFragUtil.setFragment(fragment);
     }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    }
 
+    @Override
+    public void updateLabels() {
+        messageSource.setValue(workbenchTitle, Message.workbench_title);
+        
+        messageSource.setCaption(homeButton, Message.home);
+        messageSource.setCaption(signOutButton, Message.signout);
+        messageSource.setCaption(accountButton, Message.account);
+        messageSource.setCaption(helpButton, Message.help);
+        
+        messageSource.setCaption(actionsTitle, Message.actions);
+        messageSource.setCaption(createProjectButton, Message.project_create);
+        messageSource.setCaption(createContactButton, Message.contact_create);
+        
+        messageSource.setValue(recentTitle, Message.recent);
+        messageSource.setValue(usersGuideTitle, Message.user_guide);
+        
+        messageSource.setValue(hint1, Message.user_guide_1);
+    }
 }

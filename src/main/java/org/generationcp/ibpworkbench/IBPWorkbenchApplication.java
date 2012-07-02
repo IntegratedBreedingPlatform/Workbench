@@ -14,9 +14,12 @@ package org.generationcp.ibpworkbench;
 
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.ibpworkbench.actions.LoginAction;
+import org.generationcp.ibpworkbench.actions.UpdateComponentLabelsAction;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
+import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 public class IBPWorkbenchApplication extends SpringContextApplication{
@@ -26,7 +29,16 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
     private final static Logger log = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
     private LoginWindow loginWindow;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
+    private UpdateComponentLabelsAction messageSourceListener;
+    
+    public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+    
     @Override
     protected void initSpringApplication(ConfigurableWebApplicationContext context) {
         assemble();
@@ -46,6 +58,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
 
     protected void initializeActions() {
         new LoginAction(loginWindow);
+        
+        messageSourceListener = new UpdateComponentLabelsAction(this);
+        messageSource.addListener(messageSourceListener);
     }
 
     protected void assemble() {
@@ -62,6 +77,8 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
         super.close();
 
         // implement this when we need to do something on session timeout
+        
+        messageSource.removeListener(messageSourceListener);
 
         log.debug("Application closed");
     }

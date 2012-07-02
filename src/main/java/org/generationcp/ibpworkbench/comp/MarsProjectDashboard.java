@@ -12,12 +12,18 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
+import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
+import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -30,7 +36,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
-public class MarsProjectDashboard extends VerticalLayout{
+@Configurable
+public class MarsProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,16 +82,22 @@ public class MarsProjectDashboard extends VerticalLayout{
     private Label recombinationCycleTitle;
 
     private Button breedingManagerButton;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public MarsProjectDashboard(Project project) {
         this.project = project;
-
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
         assemble();
     }
 
     protected void initializeComponents() {
         // dashboard title
-        dashboardTitle = new Label("Project: " + project.getProjectName());
+        dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
         // breeding management
@@ -544,5 +557,17 @@ public class MarsProjectDashboard extends VerticalLayout{
         initializeComponents();
         initializeLayout();
         initializeActions();
+    }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    }
+    
+    @Override
+    public void updateLabels() {
+        messageSource.setValue(dashboardTitle, Message.project_title, project.getProjectName());
     }
 }

@@ -16,7 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
+import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
+import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,21 +44,24 @@ import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class WorkbenchDashboard extends VerticalLayout implements InitializingBean{
+public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private Button leftButton;
-    private Button rightButton;
+    private Button btnLeft;
+    private Button btnRight;
     private Panel projectThumbnailArea;
-    private Table projectTable;
+    private Table tblProject;
 
-    private Label dashboardTitle;
+    private Label lblDashboardTitle;
 
     private HorizontalLayout projectThumbnailLayout;
 
-    @Autowired(required = true)
+    @Autowired
     private DatasourceConfig dataSourceConfig;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
 
@@ -76,20 +82,20 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     public void addProjectTableListener(ItemClickListener listener) {
-        projectTable.addListener(listener);
+        tblProject.addListener(listener);
     }
 
     protected void initializeComponents() {
-        dashboardTitle = new Label("Dashboard");
-        dashboardTitle.setStyleName("gcp-content-title");
+        lblDashboardTitle = new Label();
+        lblDashboardTitle.setStyleName("gcp-content-title");
 
         // project list components
         projectThumbnailArea = new Panel();
-        leftButton = new Button("<<");
-        rightButton = new Button(">>");
+        btnLeft = new Button("<<");
+        btnRight = new Button(">>");
 
         // project table components
-        projectTable = new Table() {
+        tblProject = new Table() {
 
             private static final long serialVersionUID = 1L;
 
@@ -103,23 +109,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-        projectTable.setImmediate(true); // react at once when something is
+        tblProject.setImmediate(true); // react at once when something is
                                          // selected
 
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
-        projectTable.setContainerDataSource(projectContainer);
+        tblProject.setContainerDataSource(projectContainer);
 
-        projectTable.setColumnHeader("targetDueDate", "Date");
-        projectTable.setColumnHeader("projectName", "Project");
-        projectTable.setColumnHeader("action", "Action");
-        projectTable.setColumnHeader("status", "Status");
-        projectTable.setColumnHeader("owner", "Owner");
-
-        projectTable.setCaption("Click row to open Project Dashboard");
-
-        projectTable.setColumnCollapsingAllowed(true);
-        projectTable.setCellStyleGenerator(new CellStyleGenerator() {
+        tblProject.setColumnCollapsingAllowed(true);
+        tblProject.setCellStyleGenerator(new CellStyleGenerator() {
 
             private static final long serialVersionUID = 1L;
 
@@ -135,8 +133,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         setMargin(true);
         setSpacing(true);
 
-        dashboardTitle.setSizeUndefined();
-        addComponent(dashboardTitle);
+        lblDashboardTitle.setSizeUndefined();
+        addComponent(lblDashboardTitle);
 
         Component projectThumbnailArea = layoutProjectThumbnailArea();
         addComponent(projectThumbnailArea);
@@ -157,11 +155,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         for (Project project : projects) {
             projectContainer.addBean(project);
         }
-        projectTable.setContainerDataSource(projectContainer);
+        tblProject.setContainerDataSource(projectContainer);
 
         // set the visible columns on the Project Table
         String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
-        projectTable.setVisibleColumns(columns);
+        tblProject.setVisibleColumns(columns);
 
         // update the Project Thumbnail area
         for (Project project : projects) {
@@ -194,7 +192,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // available screen width.
         // NOTE: if we are going to set a fixed width, we must
         // design the screens against a specific viewport size.
-        leftButton.addListener(new ClickListener() {
+        btnLeft.addListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
@@ -208,7 +206,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 projectThumbnailArea.setScrollLeft(offset);
             }
         });
-        rightButton.addListener(new ClickListener() {
+        btnRight.addListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
@@ -247,15 +245,34 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // The child components will be added later.
 
         outerLayout.addComponent(projectThumbnailArea, "top: 0px; left: 20px; right: 20px;");
-        outerLayout.addComponent(leftButton, "top: 50%; left: 10px");
-        outerLayout.addComponent(rightButton, "top: 50%; right: 10px");
+        outerLayout.addComponent(btnLeft, "top: 50%; left: 10px");
+        outerLayout.addComponent(btnRight, "top: 50%; right: 10px");
 
         return outerLayout;
     }
 
     private Component layoutProjectTableArea() {
-        projectTable.setWidth("100%");
-        projectTable.setHeight("100%");
-        return projectTable;
+        tblProject.setWidth("100%");
+        tblProject.setHeight("100%");
+        return tblProject;
+    }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    }
+
+    @Override
+    public void updateLabels() {
+        messageSource.setValue(lblDashboardTitle, Message.dashboard);
+        messageSource.setCaption(tblProject, Message.project_table_caption);
+        
+        messageSource.setColumnHeader(tblProject, "targetDueDate", Message.date);
+        messageSource.setColumnHeader(tblProject, "projectName", Message.project);
+        messageSource.setColumnHeader(tblProject, "action", Message.action);
+        messageSource.setColumnHeader(tblProject, "status", Message.status);
+        messageSource.setColumnHeader(tblProject, "owner", Message.owner);
     }
 }
