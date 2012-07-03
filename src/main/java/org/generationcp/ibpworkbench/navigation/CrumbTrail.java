@@ -55,6 +55,7 @@ public class CrumbTrail extends HorizontalLayout {
      * Instantiates a new crumb trail.
      */
     public CrumbTrail() {
+        super();
         crumbTrail = new LinkedList<BreadCrumb>();
         navProps = ResourceBundle.getBundle("org.generationcp.ibpworkbench.navigation.Navigation");
         linkAccessed = false;
@@ -161,9 +162,9 @@ public class CrumbTrail extends HorizontalLayout {
      * @return the last bread crumb uri
      */
     public String getLastBreadCrumbUri() {
-        if(!crumbTrail.isEmpty()) 
+        if(!crumbTrail.isEmpty()) {
             return crumbTrail.peekLast().getUriFragment();
-        
+        }
         return null;
     }
     

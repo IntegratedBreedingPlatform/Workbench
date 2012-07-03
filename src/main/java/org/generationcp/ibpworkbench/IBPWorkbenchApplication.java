@@ -26,7 +26,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
 
     private static final long serialVersionUID = 1L;
 
-    private final static Logger log = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
+    private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
     private LoginWindow loginWindow;
     
@@ -80,11 +80,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
         
         messageSource.removeListener(messageSourceListener);
 
-        log.debug("Application closed");
+        LOG.debug("Application closed");
     }
 
     @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
-        log.error("Encountered error", event.getThrowable());
+        LOG.error("Encountered error", event.getThrowable());
     }
 }

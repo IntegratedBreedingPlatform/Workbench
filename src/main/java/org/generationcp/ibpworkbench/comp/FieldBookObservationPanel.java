@@ -27,12 +27,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.generationcp.ibpworkbench.util.PoiUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 public class FieldBookObservationPanel extends VerticalLayout{
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(FieldBookObservationPanel.class);
     private static final long serialVersionUID = 1L;
 
     private String filename;
@@ -43,6 +46,7 @@ public class FieldBookObservationPanel extends VerticalLayout{
     private Table observationTable;
 
     public FieldBookObservationPanel(String filename) {
+        super();
         this.filename = filename;
 
         assemble();
@@ -66,7 +70,7 @@ public class FieldBookObservationPanel extends VerticalLayout{
                 throw new RuntimeException("Cannot process file", e1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         } finally {
             if (wb == null) {
                 return;

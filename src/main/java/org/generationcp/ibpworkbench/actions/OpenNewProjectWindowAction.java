@@ -14,6 +14,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.comp.form.ProjectFormPanel;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ListenerMethod.MethodException;
@@ -25,6 +27,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class OpenNewProjectWindowAction implements Command, ClickListener{
+    
+    private static final Logger LOG = LoggerFactory.getLogger(OpenNewProjectWindowAction.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -70,7 +74,7 @@ public class OpenNewProjectWindowAction implements Command, ClickListener{
 
                     window.getParent().removeWindow(window);
                 } catch (MethodException e) {
-                    e.printStackTrace();
+                    LOG.error("MethodException", e );
                 }
             }
         });

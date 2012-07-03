@@ -58,11 +58,12 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
     private SimpleResourceBundleMessageSource messageSource;
     
     public ProjectDashboard(Project project) {
+        super();
         this.project = project;
     }
     
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         assemble();
     }
     

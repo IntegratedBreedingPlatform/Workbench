@@ -28,7 +28,7 @@ import com.vaadin.ui.TextField;
 public class LoginAction implements ClickListener{
 
     private static final long serialVersionUID = 1L;
-    private Logger log = LoggerFactory.getLogger(LoginAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
 
     private LoginWindow loginWindow;
 
@@ -45,7 +45,7 @@ public class LoginAction implements ClickListener{
         TextField txtEmailAddress = loginForm.getTxtEmailAddress();
         PasswordField pfPassword = loginForm.getPfPassword();
 
-        log.trace("Login with " + txtEmailAddress.getValue() + "/" + pfPassword.getValue());
+        LOG.trace("Login with " + txtEmailAddress.getValue() + "/" + pfPassword.getValue());
 
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
         application.removeWindow(application.getMainWindow());

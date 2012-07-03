@@ -19,10 +19,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.ui.Upload.Receiver;
 
 public class Upload extends com.vaadin.ui.Upload implements Receiver{
 
+    private static final Logger LOG = LoggerFactory.getLogger(Upload.class);
     private static final long serialVersionUID = 1L;
 
     private String uploadPath = "./";
@@ -30,9 +34,11 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver{
     private List<String> allowedMimeTypes;
 
     public Upload() {
+        super();
     }
 
     public Upload(String caption) {
+        super();
         setCaption(caption);
         setReceiver(this);
     }
@@ -42,11 +48,11 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver{
     }
 
     public void setUploadPath(String uploadPath) {
+        String newUploadPath = uploadPath;
         if (!uploadPath.endsWith(File.separator)) {
-            uploadPath += File.separator;
+            newUploadPath += File.separator;
         }
-
-        this.uploadPath = uploadPath;
+        this.uploadPath = newUploadPath;
     }
 
     public List<String> getAllowedMimeTypes() {
@@ -87,7 +93,7 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver{
             return new FileOutputStream(file);
         } catch (FileNotFoundException e) {
             // Error while opening the file. Not reported here.
-            e.printStackTrace();
+            LOG.error("FileNotFoundException", e);
             return null;
         }
     }

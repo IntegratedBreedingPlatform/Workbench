@@ -19,9 +19,13 @@ import java.util.List;
 
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
 
+    
+    private static final Logger LOG = LoggerFactory.getLogger(MockWorkFlowActivityManager.class);
     private List<WorkFlowActivity> activities;
 
     protected MockWorkFlowActivityManager() {
@@ -59,7 +63,7 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
             activities.add(activity3);
             activities.add(activity4);
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOG.error("ParseException", e );
         }
     }
 
@@ -73,11 +77,11 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
     }
 
     public static MockWorkFlowActivityManager getInstance() {
-        return SingletonHolder.instance;
+        return SingletonHolder.INSTANCE;
     }
 
     private static class SingletonHolder{
 
-        public static final MockWorkFlowActivityManager instance = new MockWorkFlowActivityManager();
+        public static final MockWorkFlowActivityManager INSTANCE = new MockWorkFlowActivityManager();
     }
 }

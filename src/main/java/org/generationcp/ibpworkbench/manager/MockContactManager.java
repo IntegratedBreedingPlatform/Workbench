@@ -67,11 +67,11 @@ public class MockContactManager implements IContactManager{
 
     public static IContactManager getInstance() {
         // TODO Auto-generated method stub
-        return SingletonHolder.instance;
+        return SingletonHolder.INSTANCE;
     }
 
     private static class SingletonHolder{
 
-        public static final IContactManager instance = new MockContactManager();
+        public static final IContactManager INSTANCE = new MockContactManager();
     }
 }

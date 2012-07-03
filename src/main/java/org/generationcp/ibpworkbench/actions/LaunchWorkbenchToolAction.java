@@ -40,7 +40,7 @@ import com.vaadin.ui.Window.Notification;
 public class LaunchWorkbenchToolAction implements ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
     
-    private final static Logger log = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
+    private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
@@ -71,9 +71,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) ||
                ToolEnum.BREEDING_VIEW.getToolName().equals(toolName)) {
                 return true;
-            } else {
-                return false;
-            }
+            }   return false;
+            
         }
     }
 
@@ -122,7 +121,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         WorkbenchDataManager workbenchDataManager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
         Tool tool = workbenchDataManager.getToolWithName(toolName);
         if (tool == null) {
-            log.warn("Cannot find tool " + toolEnum);
+            LOG.warn("Cannot find tool " + toolEnum);
             
             window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
             
@@ -136,7 +135,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                     runtime.exec(absoluteToolFile.getAbsolutePath());
                 }
                 catch (IOException e) {
-                    log.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
+                    LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
                     
                     window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(), Notification.TYPE_ERROR_MESSAGE);
                 }

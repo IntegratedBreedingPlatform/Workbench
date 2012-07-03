@@ -46,7 +46,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
-    private Logger log = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
 
     private Label workbenchTitle;
     private Button homeButton;
@@ -78,14 +78,15 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private SimpleResourceBundleMessageSource messageSource;
 
     public WorkbenchDashboardWindow() {
-        log.debug("{} instead created.", WorkbenchDashboardWindow.class);
+        super();
+        LOG.debug("{} instead created.", WorkbenchDashboardWindow.class);
     }
 
     /**
      * Assemble the UI after all dependencies has been set.
      */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         assemble();
     }
 

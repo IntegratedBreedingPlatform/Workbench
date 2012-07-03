@@ -40,10 +40,11 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     private Button saveButton;
 
     public CreateNewProjectPanel() {
+        super();
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet(){
         assemble();
 
         form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "template" });

@@ -25,19 +25,24 @@ import org.generationcp.middleware.manager.DatabaseConnectionParameters;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatasourceConfig implements Serializable{
 
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DatasourceConfig.class);
     private static final long serialVersionUID = 1818294200537720321L;
 
-    private String host;
-    private String port;
-    private String dbname;
-    private String username;
-    private String password;
     private ManagerFactory managerFactory;
 
     public DatasourceConfig() {
+
+        String host;
+        String port;
+        String dbname;
+        String username;
+        String password;
 
         Properties prop = new Properties();
 
@@ -47,20 +52,20 @@ public class DatasourceConfig implements Serializable{
             try {
                 in = new FileInputStream(new File(ResourceFinder.locateFile("IBPDatasource.properties").toURI()));
             } catch (IllegalArgumentException ex) {
-                in = getClass().getClassLoader().getResourceAsStream("IBPDatasource.properties");
+                in = Thread.currentThread().getContextClassLoader().getResourceAsStream("IBPDatasource.properties");
             }
             prop.load(in);
 
             host = prop.getProperty("ibpmiddleware.host");
-            System.out.println(host);
+            LOG.info("host:" + host);
             dbname = prop.getProperty("ibpmiddleware.dbname");
-            System.out.println(dbname);
+            LOG.info("dbname:" + dbname);
             port = prop.getProperty("ibpmiddleware.port");
-            System.out.println(port);
+            LOG.info("port:" + port);
             username = prop.getProperty("ibpmiddleware.username");
-            System.out.println(username);
+            LOG.info("username:" + username);
             password = prop.getProperty("ibpmiddleware.password");
-            System.out.println(password);
+            LOG.info("password:" + password);
             in.close();
 
             DatabaseConnectionParameters param = new DatabaseConnectionParameters(host, port, dbname, username, password);

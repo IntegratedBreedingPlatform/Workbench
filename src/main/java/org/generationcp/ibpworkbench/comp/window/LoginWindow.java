@@ -25,6 +25,7 @@ public class LoginWindow extends Window{
     private LoginForm loginForm;
 
     public LoginWindow() {
+        super();
         loginForm = new LoginForm();
         loginForm.setSizeUndefined();
 

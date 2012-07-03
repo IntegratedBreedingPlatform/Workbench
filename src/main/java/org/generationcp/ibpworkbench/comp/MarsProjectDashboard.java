@@ -87,11 +87,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private SimpleResourceBundleMessageSource messageSource;
 
     public MarsProjectDashboard(Project project) {
+        super();
         this.project = project;
     }
     
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         assemble();
     }
 

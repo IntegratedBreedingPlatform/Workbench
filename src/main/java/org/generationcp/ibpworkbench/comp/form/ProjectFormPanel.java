@@ -92,6 +92,7 @@ public class ProjectFormPanel extends VerticalLayout{
         private GridLayout layout;
 
         public DefaultProjectForm() {
+            super();
             layout = new GridLayout(2, 2);
 
             // use margins around layout
@@ -112,9 +113,9 @@ public class ProjectFormPanel extends VerticalLayout{
 
         @Override
         protected void attachField(Object propertyId, Field field) {
-            if (propertyId.equals("projectName")) {
+            if ("projectName".equals(propertyId)) {
                 layout.addComponent(field, 0, 0);
-            } else if (propertyId.equals("targetDueDate")) {
+            } else if ("targetDueDate".equals(propertyId)) {
                 layout.addComponent(field, 0, 1);
             }
         }

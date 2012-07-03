@@ -24,6 +24,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -38,7 +40,9 @@ import org.xml.sax.InputSource;
  * <b>File Created</b>: Jun 19, 2012.
  */
 public class NavXmlParser {
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(NavXmlParser.class);
+    
     /** The x path. */
     private final XPath xPath;
     
@@ -64,7 +68,7 @@ public class NavXmlParser {
     
     /** The pattern used to validate incoming URI fragments. 
      * e.g. "/home/openProject?projectId=3&projectName=demo" */
-    private final String xPathPattern = "[/\\w]+[\\?[\\w]+\\=[\\w]+[\\&[\\w]+\\=[\\w]+]*]*";
+    private final static String xPathPattern = "[/\\w]+[\\?[\\w]+\\=[\\w]+[\\&[\\w]+\\=[\\w]+]*]*";
     
     /**
      * Instantiates a new nav xml parser.
@@ -88,21 +92,21 @@ public class NavXmlParser {
         try {
             file = new File(getClass().getResource("nav.xml").toURI());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            LOG.error("URISyntaxException", e );
         }
         try {
             reader = new FileReader(file);
             source = new InputSource(reader);
             root = (Node) xPath.evaluate("/root", source, XPathConstants.NODE);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("FileNotFoundException", e );
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            LOG.error("XPathExpressionException", e );
         } finally {
             try {
                 reader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("IOException", e );
             }
         }  
     }
@@ -129,8 +133,7 @@ public class NavXmlParser {
             xPathDetails.put("className", className);
             xPathDetails.put("label", label);
         } catch (XPathExpressionException e) {
-            //TODO: tell dev to fix the xml entry 
-            e.printStackTrace();
+            LOG.error("XPathExpressionException: Please fix the XML entry", e );
         } 
         
         return xPathDetails;
@@ -148,8 +151,7 @@ public class NavXmlParser {
             try {
                 status = xPath.evaluate(xPathUriFragment, root);
             } catch (XPathExpressionException e) {
-                //TODO: tell dev to fix the xml entry 
-                e.printStackTrace();
+                LOG.error("XPathExpressionException: Please fix the XML entry", e );
             }
             return status.length() > 0;
         } else {

@@ -45,7 +45,9 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IProjectProvider projectProvider = (IProjectProvider) component;
         Project project = projectProvider.getProject();
         
-        if (project == null) return;
+        if (project == null) {
+            return;
+        }
         
         IContentWindow window = (IContentWindow) component.getWindow();
         

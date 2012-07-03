@@ -51,7 +51,9 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         BeanItem<Project> item = (BeanItem<Project>) event.getItem();
         
         Project project = item.getBean();
-        if (project == null) return;
+        if (project == null) {
+            return;
+        }
         
         ProjectDashboard projectDashboard = new ProjectDashboard(project);
         projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());

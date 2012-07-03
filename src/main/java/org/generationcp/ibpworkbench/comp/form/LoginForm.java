@@ -44,10 +44,11 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private SimpleResourceBundleMessageSource messageSource;
 
     public LoginForm() {
+        super();
     }
     
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         assemble();
     }
 

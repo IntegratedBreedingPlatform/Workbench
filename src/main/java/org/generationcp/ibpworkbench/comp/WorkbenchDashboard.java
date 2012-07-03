@@ -66,6 +66,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
 
     public WorkbenchDashboard() {
+        super();
     }
 
     public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
@@ -73,7 +74,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         assemble();
     }
 

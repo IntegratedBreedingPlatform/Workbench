@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.generationcp.ibpworkbench.actions.ActionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,7 +39,9 @@ import com.vaadin.ui.themes.BaseTheme;
  * <b>File Created</b>: May 25, 2012
  */
 public class BreadCrumb extends HorizontalLayout{
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(BreadCrumb.class);
+    
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8213285942426539122L;
 
@@ -71,6 +75,7 @@ public class BreadCrumb extends HorizontalLayout{
      * @param className the class name
      */
     public BreadCrumb(int level, String label, String uriFragment, String className) {
+        super();
         setLevel(level);
         setUriFragment(uriFragment);
         setLabel(label);
@@ -89,19 +94,19 @@ public class BreadCrumb extends HorizontalLayout{
             setListener((ActionListener) Class.forName(getClassName()).getConstructor().newInstance());
             // TODO: clean me up before you go go
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            LOG.error("IllegalArgumentException", e );
         } catch (SecurityException e) {
-            e.printStackTrace();
+            LOG.error("SecurityException", e );
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.error("InstantiationException", e );
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.error("IllegalAccessException", e );
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            LOG.error("InvocationTargetException", e );
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOG.error("NoSuchMethodException", e );
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("ClassNotFoundException", e );
         }
     }
 

@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
@@ -38,6 +40,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -504911617538850779L;
+    private static final Logger LOG = LoggerFactory.getLogger(NavUriFragmentChangedListener.class);
     
     /** The nav xml parser. */
     private NavXmlParser navXmlParser;
@@ -72,7 +75,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
                    ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
                    listener.doAction(u.getWindow(), u.getFragment(), false);
                } catch (Exception e) {
-                   e.printStackTrace();
+                   LOG.error("Exception", e );
                }
                    
             } else {
