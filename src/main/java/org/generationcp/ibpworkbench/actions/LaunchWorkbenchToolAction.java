@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -78,7 +77,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 
     private ToolEnum toolEnum;
 
-    private DatasourceConfig dataSourceConfig;
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
     
     public LaunchWorkbenchToolAction() {
     }
@@ -87,11 +87,6 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         this.toolEnum = toolEnum;
     }
     
-    @Autowired(required = true)
-    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
-        this.dataSourceConfig = dataSourceConfig;
-    }
-
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
@@ -113,12 +108,11 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         if(ToolEnum.isCorrectTool(toolName)) {
             launchTool(toolName, window, isLinkAccessed);
         } else {
-//            System.out.println("wrong tool id");
+            LOG.debug("Cannot launch tool due to invalid tool id: {}", toolName);
         }
     }
     
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
-        WorkbenchDataManager workbenchDataManager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
         Tool tool = workbenchDataManager.getToolWithName(toolName);
         if (tool == null) {
             LOG.warn("Cannot find tool " + toolEnum);

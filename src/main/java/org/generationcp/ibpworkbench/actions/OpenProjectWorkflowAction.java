@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
@@ -35,8 +34,8 @@ import com.vaadin.ui.Window;
 public class OpenProjectWorkflowAction implements LayoutClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
 
-    @Autowired(required = true)
-    private DatasourceConfig dataSourceConfig;
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
     
     @Override
     public void layoutClick(LayoutClickEvent event) {
@@ -71,8 +70,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        List<Project> projects = manager.getProjects();
+        List<Project> projects = workbenchDataManager.getProjects();
         
         Project p = null;
         Long projectId = Long.parseLong(params.get("projectId").get(0));

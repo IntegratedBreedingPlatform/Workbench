@@ -9,6 +9,9 @@
                             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
                             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 >
+    <!-- Declare property file locations -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    
     <!-- Enable Spring annotations -->
     <context:annotation-config/>
     
@@ -24,18 +27,28 @@
     <!-- The application class. -->
     <bean id="application" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication" scope="prototype"/>
     
-    <!-- The data source configuration -->
-    <bean id="dataSourceConfig" class="org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig"/>
-    
     <!--
         Reuseable UI components can be declared here, but don't do it just so you can have auto-wiring.
         Add @Configurable annotation to your class if you only need auto-wiring.
     -->
     
+    <!-- The Message Source -->
     <bean id="messageSource" class="org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource">
         <property name="basename" value="I18NMessages"/>
         <property name="locale">
             <util:constant static-field="java.util.Locale.ENGLISH"/>
         </property>
+    </bean>
+    
+    <!-- Data Managers -->
+    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+        <constructor-arg value="ibpworkbench_hib.cfg.xml"/>
+        <constructor-arg value="${jdbc.url}"/>
+        <constructor-arg value="${jdbc.username}"/>
+        <constructor-arg value="${jdbc.password}"/>
+    </bean>
+    
+    <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
+        <constructor-arg ref="hibernateUtil"/>
     </bean>
 </beans>

@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.eclipse.jetty.util.log.Log;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -33,15 +31,11 @@ public class SaveNewProjectAction implements ClickListener {
    
     private Form newProjectForm;
     
-    private DatasourceConfig dataSourceConfig;
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
 
     public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
-    }
-    
-    @Autowired
-    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
-        this.dataSourceConfig = dataSourceConfig;
     }
     
     @Override
@@ -52,9 +46,7 @@ public class SaveNewProjectAction implements ClickListener {
         BeanItem<Project> projectBean = (BeanItem<Project>) newProjectForm.getItemDataSource();
         Project project = projectBean.getBean();
         
-        WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        
-        manager.saveOrUpdateProject(project);
+        workbenchDataManager.saveOrUpdateProject(project);
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
         

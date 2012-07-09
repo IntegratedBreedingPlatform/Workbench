@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
 import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -58,7 +57,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private HorizontalLayout projectThumbnailLayout;
 
     @Autowired
-    private DatasourceConfig dataSourceConfig;
+    private WorkbenchDataManager workbenchDataManager;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -67,10 +66,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     public WorkbenchDashboard() {
         super();
-    }
-
-    public void setDataSourceConfig(DatasourceConfig dataSourceConfig) {
-        this.dataSourceConfig = dataSourceConfig;
     }
 
     @Override
@@ -147,8 +142,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     protected void initializeData() {
         // Get the list of Projects
-        WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        List<Project> projects = manager.getProjects();
+        List<Project> projects = workbenchDataManager.getProjects();
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);

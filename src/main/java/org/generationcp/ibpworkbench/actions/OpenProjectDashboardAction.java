@@ -18,7 +18,6 @@ import java.util.Map;
 import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.datasource.helper.DatasourceConfig;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -39,8 +38,8 @@ import com.vaadin.ui.Window;
 public class OpenProjectDashboardAction implements ItemClickListener, MouseEvents.ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
 
-    @Autowired(required = true)
-    private DatasourceConfig dataSourceConfig;
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
     
     @Override
     public void itemClick(ItemClickEvent event) {
@@ -101,8 +100,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        WorkbenchDataManager manager = dataSourceConfig.getManagerFactory().getWorkbenchDataManager();
-        List<Project> projects = manager.getProjects();
+        List<Project> projects = workbenchDataManager.getProjects();
         
         Project p = null;
         Long projectId = Long.parseLong(params.get("projectId").get(0));
