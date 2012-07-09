@@ -161,7 +161,7 @@
         <dependency>
             <groupId>org.generationcp</groupId>
             <artifactId>middleware</artifactId>
-            <version>0.3.0</version>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
@@ -170,6 +170,12 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- IBPCommons Dependency -->
+        <dependency>
+            <groupId>ibpcommons</groupId>
+            <artifactId>ibpcommons</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <!-- Jetty Dependency for Testing -->
         <dependency>
