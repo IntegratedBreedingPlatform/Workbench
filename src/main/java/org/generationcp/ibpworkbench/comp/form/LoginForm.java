@@ -12,9 +12,9 @@
 
 package org.generationcp.ibpworkbench.comp.form;
 
+import org.generationcp.commons.spring.InternationalizableComponent;
+import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
-import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;

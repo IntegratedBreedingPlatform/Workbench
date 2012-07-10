@@ -13,10 +13,10 @@
 package org.generationcp.ibpworkbench;
 
 import org.dellroad.stuff.vaadin.SpringContextApplication;
+import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.actions.UpdateComponentLabelsAction;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
-import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

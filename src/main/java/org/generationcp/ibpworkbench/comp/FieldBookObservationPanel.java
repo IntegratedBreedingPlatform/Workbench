@@ -26,7 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.generationcp.ibpworkbench.util.PoiUtil;
+import org.generationcp.commons.util.PoiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

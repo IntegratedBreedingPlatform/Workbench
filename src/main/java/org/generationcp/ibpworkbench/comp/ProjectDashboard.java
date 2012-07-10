@@ -16,11 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.commons.spring.InternationalizableComponent;
+import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.manager.IWorkFlowActivityManager;
 import org.generationcp.ibpworkbench.manager.MockWorkFlowActivityManager;
-import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
-import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
 import org.springframework.beans.factory.InitializingBean;

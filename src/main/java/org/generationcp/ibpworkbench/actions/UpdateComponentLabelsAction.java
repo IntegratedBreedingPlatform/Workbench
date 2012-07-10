@@ -5,8 +5,8 @@ import java.util.Locale;
 import java.util.Queue;
 
 import org.eclipse.jetty.util.ArrayQueue;
-import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
-import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSourceListener;
+import org.generationcp.commons.spring.InternationalizableComponent;
+import org.generationcp.commons.spring.SimpleResourceBundleMessageSourceListener;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Component;

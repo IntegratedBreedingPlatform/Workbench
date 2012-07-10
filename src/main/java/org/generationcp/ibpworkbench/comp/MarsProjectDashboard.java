@@ -12,14 +12,14 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import org.generationcp.commons.spring.InternationalizableComponent;
+import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
 import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
-import org.generationcp.ibpworkbench.spring.InternationalizableComponent;
-import org.generationcp.ibpworkbench.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
