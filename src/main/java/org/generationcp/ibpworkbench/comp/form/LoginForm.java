@@ -21,9 +21,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout.MarginInfo;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -39,6 +41,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private Button btnLogin;
     private TextField txtEmailAddress;
     private PasswordField pfPassword;
+    private Component messageArea;
+    private Label lblMessage;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -62,6 +66,14 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
     public PasswordField getPfPassword() {
         return pfPassword;
+    }
+    
+    public Component getMessageArea() {
+        return messageArea;
+    }
+    
+    public Label getMessageLabel() {
+        return lblMessage;
     }
 
     protected void initialize() {
@@ -94,14 +106,14 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         Panel loginPanel = new Panel();
         loginPanel.setImmediate(false);
         loginPanel.setWidth("360px");
-        loginPanel.setHeight("120px");
+        loginPanel.setHeight("210px");
 
         // login panel layout
         VerticalLayout loginPanelLayout = new VerticalLayout();
         loginPanelLayout.setImmediate(false);
         loginPanelLayout.setWidth("100.0%");
         loginPanelLayout.setHeight("100.0%");
-        loginPanelLayout.setMargin(false);
+        loginPanelLayout.setMargin(true, false, true, false);
         loginPanel.setContent(loginPanelLayout);
 
         // title label
@@ -110,10 +122,12 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         lblTitle.setStyleName("gcp-form-title");
         loginPanelLayout.addComponent(lblTitle);
         loginPanelLayout.setComponentAlignment(lblTitle, Alignment.TOP_CENTER);
+        loginPanelLayout.setExpandRatio(lblTitle, 0);
 
         GridLayout usernamePasswordArea = buildUsernamePasswordArea();
         loginPanelLayout.addComponent(usernamePasswordArea);
         loginPanelLayout.setComponentAlignment(usernamePasswordArea, Alignment.TOP_CENTER);
+        loginPanelLayout.setExpandRatio(usernamePasswordArea, 0);
 
         btnLogin = new Button();
         loginPanelLayout.addComponent(btnLogin);
@@ -134,15 +148,38 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         lblPassword.setWidth(null);
 
         pfPassword = new PasswordField();
-
-        GridLayout gridLayout = new GridLayout(2, 2);
+        
+        messageArea = buildMessageArea();
+        
+        GridLayout gridLayout = new GridLayout(2, 3);
+        gridLayout.setMargin(true, false, false, false);
         gridLayout.setWidth("250px");
         gridLayout.addComponent(lblEmailAddress);
         gridLayout.addComponent(txtEmailAddress);
         gridLayout.addComponent(lblPassword);
         gridLayout.addComponent(pfPassword);
+        gridLayout.addComponent(messageArea, 0, 2, 1, 2);
 
+        lblMessage.setVisible(false);
+        
         return gridLayout;
+    }
+    
+    private Component buildMessageArea() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSizeUndefined();
+        layout.setMargin(true, false, true, false);
+        
+        lblMessage = new Label();
+        lblMessage.setSizeUndefined();
+        
+        layout.addComponent(lblMessage);
+        
+        return layout;
+    }
+    
+    public void setErrorMessage(String message) {
+        lblMessage.setCaption(message);
     }
     
     @Override
@@ -158,5 +195,6 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         messageSource.setCaption(btnLogin, Message.login);
         messageSource.setValue(lblEmailAddress, Message.email);
         messageSource.setValue(lblPassword, Message.password);
+        messageSource.setValue(lblMessage, Message.error_login_invalid);
     }
 }

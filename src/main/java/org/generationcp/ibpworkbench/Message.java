@@ -8,6 +8,7 @@ public enum Message {
     ,contact_create
     ,dashboard
     ,datasets
+    ,error_login_invalid
     ,help
     ,home
     ,email

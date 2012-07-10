@@ -51,4 +51,9 @@
     <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
         <constructor-arg ref="hibernateUtil"/>
     </bean>
+        
+    <bean id="userDataManager" class="org.generationcp.middleware.manager.UserDataManagerImpl">
+        <constructor-arg ref="hibernateUtil"/>
+        <constructor-arg><null/></constructor-arg>
+    </bean>
 </beans>
