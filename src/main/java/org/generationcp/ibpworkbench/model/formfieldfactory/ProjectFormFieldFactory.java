@@ -15,12 +15,14 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import java.util.List;
 
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -64,6 +66,20 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             comboBox.setRequired(true);
             comboBox.setRequiredError("Please enter a Workflow Template.");
 
+            return comboBox;
+        }
+        else if ("cropType".equals(propertyId)) {
+            BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
+            for (CropType cropType : CropType.values()) {
+                beanItemContainer.addBean(cropType);
+            }
+            
+            ComboBox comboBox = new ComboBox("Crop");
+            comboBox.setContainerDataSource(beanItemContainer);
+            comboBox.setItemCaptionPropertyId("cropName");
+            comboBox.setRequired(true);
+            comboBox.setRequiredError("Please select a Crop.");
+            
             return comboBox;
         }
 

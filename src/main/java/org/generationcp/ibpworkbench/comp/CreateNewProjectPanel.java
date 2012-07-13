@@ -47,7 +47,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     public void afterPropertiesSet(){
         assemble();
 
-        form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "template" });
+        form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "cropType", "template" });
     }
 
     public Button getSaveButton() {
