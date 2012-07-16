@@ -16,8 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.generationcp.commons.spring.InternationalizableComponent;
-import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.manager.IWorkFlowActivityManager;
 import org.generationcp.ibpworkbench.manager.MockWorkFlowActivityManager;

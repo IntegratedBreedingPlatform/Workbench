@@ -12,8 +12,8 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
-import org.generationcp.commons.spring.InternationalizableComponent;
-import org.generationcp.commons.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
