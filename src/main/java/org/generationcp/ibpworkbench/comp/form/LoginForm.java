@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.comp.form;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.pojos.workbench.Contact;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -42,6 +43,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private PasswordField pfPassword;
     private Component messageArea;
     private Label lblMessage;
+    private int userId;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -53,6 +55,10 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     @Override
     public void afterPropertiesSet() {
         assemble();
+    }
+    
+    public int getUserId() {
+    	return userId;
     }
 
     public Button getBtnLogin() {

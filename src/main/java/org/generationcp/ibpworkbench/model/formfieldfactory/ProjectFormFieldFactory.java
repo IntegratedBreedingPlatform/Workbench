@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import java.util.List;
 
+import org.generationcp.middleware.manager.WorkbenchManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
@@ -36,7 +37,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    private WorkbenchManagerFactory workbenchManagerFactory;
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -54,7 +55,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             BeanContainer<Long, WorkflowTemplate> templateContainer = new BeanContainer<Long, WorkflowTemplate>(WorkflowTemplate.class);
             templateContainer.setBeanIdProperty("templateId");
 
-            List<WorkflowTemplate> templateList = workbenchDataManager.getWorkflowTemplates();
+            List<WorkflowTemplate> templateList = workbenchManagerFactory.getWorkBenchDataManager().getWorkflowTemplates();
 
             for (WorkflowTemplate template : templateList) {
                 templateContainer.addBean(template);

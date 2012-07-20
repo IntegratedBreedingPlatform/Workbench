@@ -41,19 +41,19 @@
     </bean>
     
     <!-- Data Managers -->
-    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+<!--     <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
         <constructor-arg value="ibpworkbench_hib.cfg.xml"/>
         <constructor-arg value="${jdbc.url}"/>
         <constructor-arg value="${jdbc.username}"/>
         <constructor-arg value="${jdbc.password}"/>
-    </bean>
+    </bean> -->
     
-    <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
-        <constructor-arg ref="hibernateUtil"/>
-    </bean>
+    <bean id="workbenchManagerFactory" class="org.generationcp.middleware.manager.WorkbenchManagerFactory"/>
+<!--         <constructor-arg ref="hibernateUtil"/>
+    </bean> -->
         
-    <bean id="userDataManager" class="org.generationcp.middleware.manager.UserDataManagerImpl">
+<!--     <bean id="userDataManager" class="org.generationcp.middleware.manager.UserDataManagerImpl">
         <constructor-arg ref="hibernateUtil"/>
         <constructor-arg><null/></constructor-arg>
-    </bean>
+    </bean> -->
 </beans>

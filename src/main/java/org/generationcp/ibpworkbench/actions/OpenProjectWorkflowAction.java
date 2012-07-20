@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.middleware.manager.WorkbenchManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    private WorkbenchManagerFactory workbenchManagerFactory;
     
     @Override
     public void layoutClick(LayoutClickEvent event) {
@@ -70,7 +71,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        List<Project> projects = workbenchDataManager.getProjects();
+        List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
         
         Project p = null;
         Long projectId = Long.parseLong(params.get("projectId").get(0));

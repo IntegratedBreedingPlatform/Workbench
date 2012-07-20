@@ -19,6 +19,7 @@ import java.util.List;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.manager.WorkbenchManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -57,7 +58,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private HorizontalLayout projectThumbnailLayout;
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    private WorkbenchManagerFactory workbenchManagerFactory;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -142,7 +143,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     protected void initializeData() {
         // Get the list of Projects
-        List<Project> projects = workbenchDataManager.getProjects();
+        List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);

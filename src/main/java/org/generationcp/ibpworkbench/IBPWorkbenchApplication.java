@@ -46,6 +46,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
 
     protected void initialize() {
         setTheme("gcp-default");
+           
     }
 
     protected void initializeComponents() {

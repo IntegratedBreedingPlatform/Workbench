@@ -12,12 +12,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.WorkbenchManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +41,7 @@ public class LoginAction implements ClickListener{
     private LoginWindow loginWindow;
     
     @Autowired
-    private UserDataManager userDataManager;
+    private WorkbenchManagerFactory workbenchManagerFactory;
 
     public LoginAction(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
@@ -60,7 +63,7 @@ public class LoginAction implements ClickListener{
         
         boolean valid = false;
         try {
-            valid = userDataManager.isValidUserLogin(username, password);
+            valid = workbenchManagerFactory.getWorkBenchDataManager().isValidUserLogin(username, password);
         }
         catch (QueryException e) {
             LOG.error("Error encountered while trying to login", e);
@@ -73,6 +76,19 @@ public class LoginAction implements ClickListener{
         }
         
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
+        
+        
+        // Create the application data instance
+           ApplicationMetaData sessionData = new ApplicationMetaData(application);
+           
+           ApplicationMetaData.setUserData(workbenchManagerFactory.getWorkBenchDataManager().getUserByName(username, 0, 1, Operation.EQUAL).get(0));
+           
+           // Register it as a listener in the application context
+           application.getContext().addTransactionListener(sessionData);
+           
+           // Also set the user data model
+           //ApplicationMetaData.setUserData(userDataManager.get);
+        
         application.removeWindow(application.getMainWindow());
         WorkbenchDashboardWindow window = new WorkbenchDashboardWindow();
         application.setMainWindow(window);

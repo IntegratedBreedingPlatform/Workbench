@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.middleware.manager.WorkbenchManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -32,7 +34,7 @@ public class SaveNewProjectAction implements ClickListener {
     private Form newProjectForm;
     
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    private WorkbenchManagerFactory workbenchManagerFactory;
 
     public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
@@ -46,7 +48,9 @@ public class SaveNewProjectAction implements ClickListener {
         BeanItem<Project> projectBean = (BeanItem<Project>) newProjectForm.getItemDataSource();
         Project project = projectBean.getBean();
         
-        workbenchDataManager.saveOrUpdateProject(project);
+        project.setUserId(ApplicationMetaData.getUserData().getUserid());
+        
+        workbenchManagerFactory.getWorkBenchDataManager().saveOrUpdateProject(project);
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
         
