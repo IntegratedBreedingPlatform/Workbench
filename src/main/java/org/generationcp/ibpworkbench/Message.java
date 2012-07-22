@@ -29,5 +29,22 @@ public enum Message {
     ,signout
     ,user_guide
     ,user_guide_1
-    ,workbench_title
+    ,workbench_title,
+    
+    //General
+    SAVE,
+    CANCEL,
+    
+    //Register User Account
+    REGISTER_USER_ACCOUNT,
+    REGISTER_USER_ACCOUNT_FORM,
+    USER_ACC_POS_TITLE,
+    USER_ACC_FNAME,
+    USER_ACC_MIDNAME,
+    USER_ACC_LNAME,
+    USER_ACC_EMAIL,
+    USER_ACC_USERNAME,
+    USER_ACC_PASSWORD,
+    USER_ACC_PASSWORD_CONFIRM
+    
 }
