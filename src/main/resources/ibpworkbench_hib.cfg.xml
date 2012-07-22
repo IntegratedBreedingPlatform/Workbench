@@ -24,5 +24,7 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.Tool"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowStep"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowTemplate"/>
+        <mapping class="org.generationcp.middleware.pojos.Person"/> 
+        <mapping class="org.generationcp.middleware.pojos.User"/>
     </session-factory>
 </hibernate-configuration>

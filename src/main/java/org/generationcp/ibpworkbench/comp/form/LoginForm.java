@@ -15,7 +15,7 @@ package org.generationcp.ibpworkbench.comp.form;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.pojos.workbench.Contact;
+import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -30,6 +30,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class LoginForm extends CustomComponent implements InitializingBean, InternationalizableComponent {
@@ -44,6 +45,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private Component messageArea;
     private Label lblMessage;
     private int userId;
+    private Button registerUserAccountButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -97,6 +99,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     }
 
     protected void initializeActions() {
+        registerUserAccountButton.addListener(new OpenRegisterUserAccountAction());
     }
 
     protected void assemble() {
@@ -137,6 +140,11 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         btnLogin = new Button();
         loginPanelLayout.addComponent(btnLogin);
         loginPanelLayout.setComponentAlignment(btnLogin, Alignment.TOP_CENTER);
+        
+        registerUserAccountButton = new Button();
+        registerUserAccountButton.setStyleName(BaseTheme.BUTTON_LINK);
+        loginPanelLayout.addComponent(registerUserAccountButton);
+        loginPanelLayout.setComponentAlignment(registerUserAccountButton, Alignment.BOTTOM_CENTER);
 
         return loginPanel;
     }
@@ -201,5 +209,6 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         messageSource.setValue(lblEmailAddress, Message.email);
         messageSource.setValue(lblPassword, Message.password);
         messageSource.setValue(lblMessage, Message.error_login_invalid);
+        messageSource.setCaption(registerUserAccountButton, Message.REGISTER_USER_ACCOUNT);
     }
 }
