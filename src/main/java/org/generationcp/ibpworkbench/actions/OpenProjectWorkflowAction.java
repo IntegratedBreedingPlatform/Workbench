@@ -20,7 +20,7 @@ import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
     
     @Override
     public void layoutClick(LayoutClickEvent event) {
@@ -77,7 +77,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
                 
         //TODO: Verify the try-catch flow
         try {
-            List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
+            List<Project> projects = workbenchDataManager.getProjects();
             
             Project p = null;
             Long projectId = Long.parseLong(params.get("projectId").get(0));

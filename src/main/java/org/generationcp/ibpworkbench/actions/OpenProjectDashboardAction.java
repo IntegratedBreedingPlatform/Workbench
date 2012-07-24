@@ -21,7 +21,7 @@ import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     private static final long serialVersionUID = 1L;
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
     
     @Override
     public void itemClick(ItemClickEvent event) {
@@ -107,7 +107,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
                 
         //TODO: Verify the try-catch flow
         try {
-            List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
+            List<Project> projects = workbenchDataManager.getProjects();
         
             Project p = null;
             Long projectId = Long.parseLong(params.get("projectId").get(0));

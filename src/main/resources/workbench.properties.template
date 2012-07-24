@@ -1,0 +1,6 @@
+#Workbench hibernate configuration 
+workbench.host = localhost
+workbench.port = 3306
+workbench.dbname = workbench
+workbench.username = root
+workbench.password = password

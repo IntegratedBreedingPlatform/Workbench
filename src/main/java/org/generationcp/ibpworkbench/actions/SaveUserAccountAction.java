@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class SaveUserAccountAction implements ClickListener {
     private Form userAccountForm;
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
     
     public SaveUserAccountAction(Form userAccountForm) {
         this.userAccountForm = userAccountForm;
@@ -92,7 +92,7 @@ public class SaveUserAccountAction implements ClickListener {
         person.setNotes("-");
         person.setPositionName("-");
         person.setPhone("-");
-        workbenchManagerFactory.getWorkBenchDataManager().addPerson(person);
+        workbenchDataManager.addPerson(person);
         
         User user = new User();
         user.setPersonid(person.getId());
@@ -104,7 +104,7 @@ public class SaveUserAccountAction implements ClickListener {
         user.setInstalid(0);
         user.setStatus(0);
         user.setType(0);
-        workbenchManagerFactory.getWorkBenchDataManager().addUser(user);
+        workbenchDataManager.addUser(user);
     }
 
 }

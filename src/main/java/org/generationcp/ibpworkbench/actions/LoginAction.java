@@ -20,7 +20,7 @@ import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class LoginAction implements ClickListener{
     private LoginWindow loginWindow;
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
 
     public LoginAction(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
@@ -62,7 +62,7 @@ public class LoginAction implements ClickListener{
         
         boolean valid = false;
         try {
-            valid = workbenchManagerFactory.getWorkBenchDataManager().isValidUserLogin(username, password);
+            valid = workbenchDataManager.isValidUserLogin(username, password);
         }
         catch (QueryException e) {
             LOG.error("Error encountered while trying to login", e);
@@ -82,7 +82,7 @@ public class LoginAction implements ClickListener{
            
            //TODO: Verify the try-catch flow
            try {
-               ApplicationMetaData.setUserData(workbenchManagerFactory.getWorkBenchDataManager().getUserByName(username, 0, 1, Operation.EQUAL).get(0));
+               ApplicationMetaData.setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
            } catch (QueryException e) {
                LOG.error("Error encountered while trying to login", e);
                return;

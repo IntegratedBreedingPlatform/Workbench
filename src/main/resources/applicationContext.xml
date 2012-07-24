@@ -10,7 +10,7 @@
                             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 >
     <!-- Declare property file locations -->
-    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <context:property-placeholder location="classpath:workbench.properties"/>
     
     <!-- Enable Spring annotations -->
     <context:annotation-config/>
@@ -41,19 +41,16 @@
     </bean>
     
     <!-- Data Managers -->
-<!--     <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
-        <constructor-arg value="ibpworkbench_hib.cfg.xml"/>
-        <constructor-arg value="${jdbc.url}"/>
-        <constructor-arg value="${jdbc.username}"/>
-        <constructor-arg value="${jdbc.password}"/>
-    </bean> -->
+    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+        <constructor-arg value="${workbench.host}"/>
+        <constructor-arg value="${workbench.port}"/>
+        <constructor-arg value="${workbench.dbname}"/>
+        <constructor-arg value="${workbench.username}"/>
+        <constructor-arg value="${workbench.password}"/>
+    </bean>
     
-    <bean id="workbenchManagerFactory" class="org.generationcp.middleware.manager.WorkbenchManagerFactory"/>
-<!--         <constructor-arg ref="hibernateUtil"/>
-    </bean> -->
-        
-<!--     <bean id="userDataManager" class="org.generationcp.middleware.manager.UserDataManagerImpl">
+    <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
         <constructor-arg ref="hibernateUtil"/>
-        <constructor-arg><null/></constructor-arg>
-    </bean> -->
+    </bean>
+
 </beans>

@@ -12,7 +12,7 @@
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class PersonNameValidator extends AbstractValidator{
     private static final Logger LOG = LoggerFactory.getLogger(PersonNameValidator.class);
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
     
     private Field firstName;
     private Field lastName;
@@ -64,7 +64,7 @@ public class PersonNameValidator extends AbstractValidator{
     @Override
     public boolean isValid(Object value) {
         try {
-            return !workbenchManagerFactory.getWorkBenchDataManager().isPersonExists(
+            return !workbenchDataManager.isPersonExists(
                     firstName.getValue().toString(), lastName.getValue().toString());
         } catch (QueryException e) {
             LOG.error(e.getMessage());

@@ -20,7 +20,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private HorizontalLayout projectThumbnailLayout;
 
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -148,7 +148,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         //TODO: Verify the try-catch flow
         try {
             // Get the list of Projects
-            List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
+            List<Project> projects = workbenchDataManager.getProjects();
 
             // set the Project Table data source
             BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);

@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class SaveNewProjectAction implements ClickListener {
     private Form newProjectForm;
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
 
     public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
@@ -52,7 +52,7 @@ public class SaveNewProjectAction implements ClickListener {
         
         //TODO: Verify the try-catch flow
         try {
-            workbenchManagerFactory.getWorkBenchDataManager().saveOrUpdateProject(project);
+        	workbenchDataManager.saveOrUpdateProject(project);
         } catch (QueryException e) {
             LOG.error("Error encountered while trying to save project", e);
             return;

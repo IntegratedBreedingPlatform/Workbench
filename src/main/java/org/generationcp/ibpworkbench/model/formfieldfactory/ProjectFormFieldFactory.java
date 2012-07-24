@@ -15,7 +15,7 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import java.util.List;
 
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -60,7 +60,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 
             //TODO: Verify the try-catch flow
             try {
-                List<WorkflowTemplate> templateList = workbenchManagerFactory.getWorkBenchDataManager().getWorkflowTemplates();
+                List<WorkflowTemplate> templateList = workbenchDataManager.getWorkflowTemplates();
 
                 for (WorkflowTemplate template : templateList) {
                     templateContainer.addBean(template);

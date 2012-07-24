@@ -12,7 +12,7 @@
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.middleware.exceptions.QueryException;
-import org.generationcp.middleware.manager.WorkbenchManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class UsernameValidator extends AbstractValidator{
     private static final Logger LOG = LoggerFactory.getLogger(UsernameValidator.class);
     
     @Autowired
-    private WorkbenchManagerFactory workbenchManagerFactory;
+    private WorkbenchDataManager workbenchDataManager;
 
     public UsernameValidator() {
         super("User with Username \"{0}\" already exists.");
@@ -48,7 +48,7 @@ public class UsernameValidator extends AbstractValidator{
     @Override
     public boolean isValid(Object value) {
         try {
-            return !workbenchManagerFactory.getWorkBenchDataManager().isUsernameExists(value.toString());
+            return !workbenchDataManager.isUsernameExists(value.toString());
         } catch (QueryException e) {
             if(LOG.isErrorEnabled()) {
                 LOG.error(e.getMessage());
