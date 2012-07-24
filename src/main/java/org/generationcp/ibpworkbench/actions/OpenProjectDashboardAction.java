@@ -20,9 +20,11 @@ import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.WorkbenchManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -37,8 +39,10 @@ import com.vaadin.ui.Window;
 
 @Configurable
 public class OpenProjectDashboardAction implements ItemClickListener, MouseEvents.ClickListener, ActionListener {
-    private static final long serialVersionUID = 1L;
 
+    private static final Logger LOG = LoggerFactory.getLogger(OpenProjectDashboardAction.class);
+    private static final long serialVersionUID = 1L;
+    
     @Autowired
     private WorkbenchManagerFactory workbenchManagerFactory;
     
@@ -101,22 +105,27 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
+        //TODO: Verify the try-catch flow
+        try {
+            List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
         
-        Project p = null;
-        Long projectId = Long.parseLong(params.get("projectId").get(0));
+            Project p = null;
+            Long projectId = Long.parseLong(params.get("projectId").get(0));
 
-        for(Project proj : projects) {
-            if(proj.getProjectId().equals(projectId)) {
-                p = proj;
+            for (Project proj : projects) {
+                if (proj.getProjectId().equals(projectId)) {
+                    p = proj;
+                }
             }
+
+            ProjectDashboard projectDashboard = new ProjectDashboard(p);
+            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+
+            w.showContent(projectDashboard);
+
+            NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+        } catch (QueryException e) {
+            LOG.error("Error encountered while getting projects", e);
         }
-        
-        ProjectDashboard projectDashboard = new ProjectDashboard(p);
-        projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
-        
-        w.showContent(projectDashboard);
-        
-        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
     }
 }

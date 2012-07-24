@@ -14,10 +14,12 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import java.util.List;
 
+import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.WorkbenchManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -33,7 +35,8 @@ import com.vaadin.ui.TextField;
 
 @Configurable
 public class ProjectFormFieldFactory extends DefaultFieldFactory{
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectFormFieldFactory.class);
     private static final long serialVersionUID = 1L;
 
     @Autowired
@@ -55,19 +58,24 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             BeanContainer<Long, WorkflowTemplate> templateContainer = new BeanContainer<Long, WorkflowTemplate>(WorkflowTemplate.class);
             templateContainer.setBeanIdProperty("templateId");
 
-            List<WorkflowTemplate> templateList = workbenchManagerFactory.getWorkBenchDataManager().getWorkflowTemplates();
+            //TODO: Verify the try-catch flow
+            try {
+                List<WorkflowTemplate> templateList = workbenchManagerFactory.getWorkBenchDataManager().getWorkflowTemplates();
 
-            for (WorkflowTemplate template : templateList) {
-                templateContainer.addBean(template);
+                for (WorkflowTemplate template : templateList) {
+                    templateContainer.addBean(template);
+                }
+
+                ComboBox comboBox = new ComboBox("Workflow Template");
+                comboBox.setContainerDataSource(templateContainer);
+                comboBox.setItemCaptionPropertyId("name");
+                comboBox.setRequired(true);
+                comboBox.setRequiredError("Please enter a Workflow Template.");
+
+                return comboBox;
+            } catch (QueryException e) {
+                LOG.error("Error encountered while getting workflow templates", e);
             }
-
-            ComboBox comboBox = new ComboBox("Workflow Template");
-            comboBox.setContainerDataSource(templateContainer);
-            comboBox.setItemCaptionPropertyId("name");
-            comboBox.setRequired(true);
-            comboBox.setRequiredError("Please enter a Workflow Template.");
-
-            return comboBox;
         }
         else if ("cropType".equals(propertyId)) {
             BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);

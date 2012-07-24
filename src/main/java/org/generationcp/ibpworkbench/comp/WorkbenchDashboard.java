@@ -19,9 +19,11 @@ import java.util.List;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.WorkbenchManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -46,6 +48,7 @@ import com.vaadin.ui.VerticalLayout;
 @Configurable
 public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
+    private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     private static final long serialVersionUID = 1L;
 
     private Button btnLeft;
@@ -142,41 +145,46 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeData() {
-        // Get the list of Projects
-        List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
+        //TODO: Verify the try-catch flow
+        try {
+            // Get the list of Projects
+            List<Project> projects = workbenchManagerFactory.getWorkBenchDataManager().getProjects();
 
-        // set the Project Table data source
-        BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-        projectContainer.setBeanIdProperty("projectName");
-        for (Project project : projects) {
-            projectContainer.addBean(project);
-        }
-        tblProject.setContainerDataSource(projectContainer);
+            // set the Project Table data source
+            BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+            projectContainer.setBeanIdProperty("projectName");
+            for (Project project : projects) {
+                projectContainer.addBean(project);
+            }
+            tblProject.setContainerDataSource(projectContainer);
 
-        // set the visible columns on the Project Table
-        String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
-        tblProject.setVisibleColumns(columns);
+            // set the visible columns on the Project Table
+            String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
+            tblProject.setVisibleColumns(columns);
 
-        // update the Project Thumbnail area
-        for (Project project : projects) {
-            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
-            projectPanel.setData(project);
+            // update the Project Thumbnail area
+            for (Project project : projects) {
+                ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
+                projectPanel.setData(project);
 
-            projectPanel.addListener(new LayoutClickListener() {
+                projectPanel.addListener(new LayoutClickListener() {
 
-                private static final long serialVersionUID = 1L;
+                    private static final long serialVersionUID = 1L;
 
-                @Override
-                public void layoutClick(LayoutClickEvent event) {
-                    if (projectThumbnailClickHandler == null) {
-                        return;
+                    @Override
+                    public void layoutClick(LayoutClickEvent event) {
+                        if (projectThumbnailClickHandler == null) {
+                            return;
+                        }
+
+                        projectThumbnailClickHandler.click(event);
                     }
+                });
 
-                    projectThumbnailClickHandler.click(event);
-                }
-            });
-
-            projectThumbnailLayout.addComponent(projectPanel);
+                projectThumbnailLayout.addComponent(projectPanel);
+            }
+        } catch (QueryException e) {
+            LOG.error("Error encountered while getting workflow templates", e);
         }
     }
 

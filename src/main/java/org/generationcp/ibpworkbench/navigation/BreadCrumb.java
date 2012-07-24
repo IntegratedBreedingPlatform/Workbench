@@ -123,9 +123,9 @@ public class BreadCrumb extends HorizontalLayout{
         try {
             m = getListener().getClass().getMethod("doAction", Event.class);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
         }
 
         button.addListener(ClickEvent.class, getListener(), m);

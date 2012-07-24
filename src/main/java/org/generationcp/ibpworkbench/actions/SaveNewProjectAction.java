@@ -12,8 +12,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.WorkbenchManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,13 @@ public class SaveNewProjectAction implements ClickListener {
         
         project.setUserId(ApplicationMetaData.getUserData().getUserid());
         
-        workbenchManagerFactory.getWorkBenchDataManager().saveOrUpdateProject(project);
+        //TODO: Verify the try-catch flow
+        try {
+            workbenchManagerFactory.getWorkBenchDataManager().saveOrUpdateProject(project);
+        } catch (QueryException e) {
+            LOG.error("Error encountered while trying to save project", e);
+            return;
+        }
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
         

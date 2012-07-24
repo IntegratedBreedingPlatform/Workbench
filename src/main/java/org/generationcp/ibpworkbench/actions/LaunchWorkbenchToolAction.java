@@ -19,6 +19,7 @@ import java.util.Map;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -113,40 +114,46 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     }
     
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
-        Tool tool = workbenchDataManager.getToolWithName(toolName);
-        if (tool == null) {
-            LOG.warn("Cannot find tool " + toolEnum);
-            
-            window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
-            
-            return;
-        } else {
-            if (tool.getToolType() == ToolType.NATIVE) {
-                
-                File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-                Runtime runtime = Runtime.getRuntime();
-                try {
-                    runtime.exec(absoluteToolFile.getAbsolutePath());
-                }
-                catch (IOException e) {
-                    LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
-                    
-                    window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(), Notification.TYPE_ERROR_MESSAGE);
-                }
-                
+        //TODO: Verify the try-catch flow
+        try {
+            Tool tool = workbenchDataManager.getToolWithName(toolName);
+            if (tool == null) {
+                LOG.warn("Cannot find tool " + toolEnum);
+
+                window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
+
+                return;
             } else {
-                
-                Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
-                browser.setType(Embedded.TYPE_BROWSER);
-                browser.setSizeFull();
-                browser.setHeight("800px");
-                browser.setWidth("100%");
-                
-                NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName, isLinkAccessed);
-                
-                IContentWindow contentWindow = (IContentWindow) window;
-                contentWindow.showContent(browser);
+                if (tool.getToolType() == ToolType.NATIVE) {
+
+                    File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+                    Runtime runtime = Runtime.getRuntime();
+                    try {
+                        runtime.exec(absoluteToolFile.getAbsolutePath());
+                    } catch (IOException e) {
+                        LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
+
+                        window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(),
+                                Notification.TYPE_ERROR_MESSAGE);
+                    }
+
+                } else {
+
+                    Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
+                    browser.setType(Embedded.TYPE_BROWSER);
+                    browser.setSizeFull();
+                    browser.setHeight("800px");
+                    browser.setWidth("100%");
+
+                    NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName,
+                            isLinkAccessed);
+
+                    IContentWindow contentWindow = (IContentWindow) window;
+                    contentWindow.showContent(browser);
+                }
             }
+        } catch (QueryException e) {
+            LOG.error("Error encountered while getting tools with the name " + toolName, e);
         }
     }
 
