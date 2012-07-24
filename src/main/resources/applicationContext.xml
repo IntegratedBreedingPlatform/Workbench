@@ -42,6 +42,7 @@
     
     <!-- Data Managers -->
     <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+    	<constructor-arg value="ibpworkbench_hib.cfg.xml"/>
         <constructor-arg value="${workbench.host}"/>
         <constructor-arg value="${workbench.port}"/>
         <constructor-arg value="${workbench.dbname}"/>
