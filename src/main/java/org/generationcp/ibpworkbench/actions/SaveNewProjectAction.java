@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.sql.SQLException;
+
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -43,6 +47,8 @@ public class SaveNewProjectAction implements ClickListener {
     @Override
     public void buttonClick(ClickEvent event) {
         newProjectForm.commit();
+        
+        boolean isGenerationSuccess = false;
 
         @SuppressWarnings("unchecked")
         BeanItem<Project> projectBean = (BeanItem<Project>) newProjectForm.getItemDataSource();
@@ -50,15 +56,34 @@ public class SaveNewProjectAction implements ClickListener {
         
         project.setUserId(ApplicationMetaData.getUserData().getUserid());
         
+        //workbenchDataManager.get
+        
         //TODO: Verify the try-catch flow
         try {
+        	
         	workbenchDataManager.saveOrUpdateProject(project);
+        	
         } catch (QueryException e) {
+        	
             LOG.error("Error encountered while trying to save project", e);
+            
             return;
         }
+        
+        try {
+        	
+			IBDBGenerator generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
+			
+			isGenerationSuccess = generator.generateDatabase();
+			
+		} catch (InternationalizableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
+        LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
         
         // go back to dashboard
         HomeAction home = new HomeAction();
