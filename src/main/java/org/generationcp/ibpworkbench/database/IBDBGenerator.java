@@ -20,6 +20,10 @@ import org.generationcp.commons.util.ResourceFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Jeffrey Morales
+ */
 public class IBDBGenerator {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
