@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.sql.SQLException;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
