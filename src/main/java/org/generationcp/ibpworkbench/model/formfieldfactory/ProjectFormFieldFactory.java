@@ -52,6 +52,10 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 	private WorkbenchDataManager workbenchDataManager;
 	@Autowired
 	private ManagerFactory managerFactory;
+	
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String SELECT = "select";
 
 	@Override
 	public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -114,10 +118,10 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 				e.printStackTrace();
 			}
 			table.setContainerDataSource(locationContainer);
-			table.setVisibleColumns(new String[]{"select","lname"});
+			table.setVisibleColumns(new String[]{SELECT,NAME});
 			table.setColumnHeaders(new String[]{"Select","Location"});
-			table.setColumnWidth("select", 50);
-			table.setColumnWidth("lname",300);
+			table.setColumnWidth(SELECT, 50);
+			table.setColumnWidth(NAME,300);
 			table.setHeight(200);
 			table.setWidth(300);
 			
@@ -136,10 +140,10 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 				e.printStackTrace();
 			}
 			table.setContainerDataSource(methodContainer);
-			table.setVisibleColumns(new String[]{"select","mname"});
+			table.setVisibleColumns(new String[]{SELECT,NAME});
 			table.setColumnHeaders(new String[]{"Select","Method Name"});
-			table.setColumnWidth("select", 50);
-			table.setColumnWidth("mname",250);
+			table.setColumnWidth(SELECT, 50);
+			table.setColumnWidth(NAME,250);
 			table.setHeight(200);
 			table.setWidth(300);
 
@@ -152,9 +156,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 	public IndexedContainer getLocationContainer() throws QueryException {
 		
 		IndexedContainer container = new IndexedContainer();
-		container.addContainerProperty("select", CheckBox.class, "");
-		container.addContainerProperty("locid", Integer.class, 0);
-		container.addContainerProperty("lname", String.class, "");
+		container.addContainerProperty(SELECT, CheckBox.class, "");
+		container.addContainerProperty(ID, Integer.class, 0);
+		container.addContainerProperty(NAME, String.class, "");
 
 		int locCount=managerFactory.getGermplasmDataManager().countAllLocations();
 		List<Location> locationList =managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
@@ -168,17 +172,17 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 	private  void addLocationItem(Container container, int locid, String lname) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
-		item.getItemProperty("select").setValue(new CheckBox(null, false));
-		item.getItemProperty("locid").setValue(locid);
-		item.getItemProperty("lname").setValue(lname);
+		item.getItemProperty(SELECT).setValue(new CheckBox(null, false));
+		item.getItemProperty(ID).setValue(locid);
+		item.getItemProperty(NAME).setValue(lname);
 	}
 	
 	public IndexedContainer getMethodContainer() throws QueryException {
 		
 		IndexedContainer container = new IndexedContainer();
-		container.addContainerProperty("select", CheckBox.class, "");
-		container.addContainerProperty("mid", Integer.class, 0);
-		container.addContainerProperty("mname", String.class, "");
+		container.addContainerProperty(SELECT, CheckBox.class, "");
+		container.addContainerProperty(ID, Integer.class, 0);
+		container.addContainerProperty(NAME, String.class, "");
 
 		List<Method> methodList =managerFactory.getGermplasmDataManager().getAllMethods();
 		for (Method method : methodList) {
@@ -191,9 +195,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 	private  void addMethodItem(Container container, int mid, String mname) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
-		item.getItemProperty("select").setValue(new CheckBox(null, false));
-		item.getItemProperty("mid").setValue(mid);
-		item.getItemProperty("mname").setValue(mname);
+		item.getItemProperty(SELECT).setValue(new CheckBox(null, false));
+		item.getItemProperty(ID).setValue(mid);
+		item.getItemProperty(NAME).setValue(mname);
 	}
 
 }
