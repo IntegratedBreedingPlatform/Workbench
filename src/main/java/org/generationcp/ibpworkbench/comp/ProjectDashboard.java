@@ -237,9 +237,7 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
     
     public void attach() {
         super.attach();
-        System.out.println("attaching!!!!!");
-        Throwable t = new Throwable();
-        t.printStackTrace();
+        
         updateLabels();
     };
     
