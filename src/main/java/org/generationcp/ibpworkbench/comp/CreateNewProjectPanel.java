@@ -20,93 +20,101 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component.Listener;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class CreateNewProjectPanel extends VerticalLayout implements InitializingBean{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Label newProjectTitle;
+	private Label newProjectTitle;
 
-    private Form form;
+	private Form form;
 
-    private Button cancelButton;
+	private Button cancelButton;
 
-    private Button saveButton;
+	private Button saveButton;
 
-    public CreateNewProjectPanel() {
-        super();
-    }
+	public CreateNewProjectPanel() {
+		super();
+	}
 
-    @Override
-    public void afterPropertiesSet(){
-        assemble();
+	@Override
+	public void afterPropertiesSet(){
+		assemble();
 
-        form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "cropType", "template" });
-    }
+		form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "cropType", "template","tblLocation","tblMethods"});
+	}
 
-    public Button getSaveButton() {
-        return saveButton;
-    }
+	public Button getSaveButton() {
+		return saveButton;
+	}
 
-    public Button getCancelButton() {
-        return cancelButton;
-    }
+	public Button getCancelButton() {
+		return cancelButton;
+	}
 
-    public Form getForm() {
-        return form;
-    }
+	public Form getForm() {
+		return form;
+	}
 
-    protected void initializeComponents() {
-        newProjectTitle = new Label("Create New Project");
-        newProjectTitle.setStyleName("gcp-content-title");
+	protected void initializeComponents() {
+		newProjectTitle = new Label("Create New Project");
+		newProjectTitle.setStyleName("gcp-content-title");
 
-        BeanItem<Project> projectBean = new BeanItem<Project>(new Project());
+		BeanItem<Project> projectBean = new BeanItem<Project>(new Project());
+		projectBean.addItemProperty("tblLocation", new Table());
+		projectBean.addItemProperty("tblMethods", new Table());
 
-        form = new Form();
-        form.setItemDataSource(projectBean);
-        form.setFormFieldFactory(new ProjectFormFieldFactory());
+		form = new Form();
+		form.setItemDataSource(projectBean);
+		form.setFormFieldFactory(new ProjectFormFieldFactory());
 
-        cancelButton = new Button("Cancel");
-        saveButton = new Button("Save");
-    }
+		cancelButton = new Button("Cancel");
+		saveButton = new Button("Save");
+	}
 
-    protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
+	protected void initializeLayout() {
+		setSpacing(true);
+		setMargin(true);
 
-        newProjectTitle.setSizeUndefined();
-        addComponent(newProjectTitle);
+		newProjectTitle.setSizeUndefined();
+		addComponent(newProjectTitle);
 
-        form.setSizeFull();
-        addComponent(form);
+		form.setSizeFull();
+		addComponent(form);
 
-        // add the save/cancel buttons
-        Component buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
-    }
+		// add the save/cancel buttons
+		Component buttonArea = layoutButtonArea();
+		addComponent(buttonArea);
+		setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+	}
 
-    protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
+	protected Component layoutButtonArea() {
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setSpacing(true);
+		buttonLayout.setMargin(true, false, false, false);
 
-        cancelButton = new Button("Cancel");
-        saveButton = new Button("Save");
-        buttonLayout.addComponent(cancelButton);
-        buttonLayout.addComponent(saveButton);
+		cancelButton = new Button("Cancel");
+		saveButton = new Button("Save");
+		buttonLayout.addComponent(cancelButton);
+		buttonLayout.addComponent(saveButton);
 
-        return buttonLayout;
-    }
+		return buttonLayout;
+	}
 
-    protected void assemble() {
-        initializeComponents();
-        initializeLayout();
-    }
+	protected void assemble() {
+		initializeComponents();
+		initializeLayout();
+	}
 }
