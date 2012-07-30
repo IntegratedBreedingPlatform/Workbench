@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.event.ListenerMethod.MethodException;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.MenuBar.Command;
@@ -69,13 +68,9 @@ public class OpenNewProjectWindowAction implements Command, ClickListener{
 
             @Override
             public void buttonClick(ClickEvent event) {
-                try {
-                    formPanel.getProjectForm().commit();
+                formPanel.getProjectForm().commit();
 
-                    window.getParent().removeWindow(window);
-                } catch (MethodException e) {
-                    LOG.error("MethodException", e );
-                }
+                window.getParent().removeWindow(window);
             }
         });
         formPanel.getCancelButton().addListener(new ClickListener() {

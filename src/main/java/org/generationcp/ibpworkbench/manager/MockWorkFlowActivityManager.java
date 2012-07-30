@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
 import org.slf4j.Logger;
@@ -24,11 +26,12 @@ import org.slf4j.LoggerFactory;
 
 public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
 
-    
     private static final Logger LOG = LoggerFactory.getLogger(MockWorkFlowActivityManager.class);
     private List<WorkFlowActivity> activities;
-
-    protected MockWorkFlowActivityManager() {
+    
+    private static MockWorkFlowActivityManager INSTANCE;
+    
+    private MockWorkFlowActivityManager() throws InternationalizableException  {
         activities = new ArrayList<WorkFlowActivity>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -63,7 +66,9 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
             activities.add(activity3);
             activities.add(activity4);
         } catch (ParseException e) {
-            LOG.error("ParseException", e );
+            LOG.error("ParseException", e);
+            throw new InternationalizableException(
+                    e, Message.PARSE_ERROR, Message.WORKFLOW_DATE_PARSE_ERROR_DESC);
         }
     }
 
@@ -76,12 +81,11 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
         return activities;
     }
 
-    public static MockWorkFlowActivityManager getInstance() {
-        return SingletonHolder.INSTANCE;
+    public static MockWorkFlowActivityManager getInstance() throws InternationalizableException {
+        if (INSTANCE == null) {
+            INSTANCE = new MockWorkFlowActivityManager();
+        }
+        return INSTANCE;
     }
 
-    private static class SingletonHolder{
-
-        public static final MockWorkFlowActivityManager INSTANCE = new MockWorkFlowActivityManager();
-    }
 }

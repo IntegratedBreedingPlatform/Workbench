@@ -12,12 +12,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -41,6 +44,9 @@ public class LoginAction implements ClickListener{
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public LoginAction(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
@@ -63,14 +69,19 @@ public class LoginAction implements ClickListener{
         boolean valid = false;
         try {
             valid = workbenchDataManager.isValidUserLogin(username, password);
-        }
-        catch (QueryException e) {
+        } catch (QueryException e) {
             LOG.error("Error encountered while trying to login", e);
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    messageSource.getMessage(Message.LOGIN_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.LOGIN_DB_ERROR_DESC));
             return;
         }
         
         if (!valid) {
-            loginForm.getMessageLabel().setVisible(true);
+            // loginForm.getMessageLabel().setVisible(true);
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    messageSource.getMessage(Message.LOGIN_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.error_login_invalid));
             return;
         }
         
@@ -80,24 +91,33 @@ public class LoginAction implements ClickListener{
         // Create the application data instance
            ApplicationMetaData sessionData = new ApplicationMetaData(application);
            
-           //TODO: Verify the try-catch flow
-           try {
-               ApplicationMetaData.setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
-           } catch (QueryException e) {
-               LOG.error("Error encountered while trying to login", e);
-               return;
-           }
+        //TODO: Verify the try-catch flow
+        try {
+            ApplicationMetaData.setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
+        } catch (QueryException e) {
+            LOG.error("Error encountered while trying to login", e);
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    messageSource.getMessage(Message.DATABASE_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+        }
 
-           // Register it as a listener in the application context
-           application.getContext().addTransactionListener(sessionData);
-           
-           // Also set the user data model
-           //ApplicationMetaData.setUserData(userDataManager.get);
+        // Register it as a listener in the application context
+        application.getContext().addTransactionListener(sessionData);
+       
+        // Also set the user data model
+        //ApplicationMetaData.setUserData(userDataManager.get);
         
-        application.removeWindow(application.getMainWindow());
-        WorkbenchDashboardWindow window = new WorkbenchDashboardWindow();
-        application.setMainWindow(window);
-
-        NavManager.navigateApp(window, "/home", true);
+        WorkbenchDashboardWindow window = null;
+        try {
+            window = new WorkbenchDashboardWindow();
+            application.removeWindow(application.getMainWindow());
+            application.setMainWindow(window);
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(application.getMainWindow(),
+                    i.getCaption(), i.getDescription());
+            return;
+        }
     }
 }

@@ -12,7 +12,10 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -37,6 +40,9 @@ public class SaveNewProjectAction implements ClickListener {
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
@@ -58,26 +64,23 @@ public class SaveNewProjectAction implements ClickListener {
         
         //TODO: Verify the try-catch flow
         try {
-        	
-        	workbenchDataManager.saveOrUpdateProject(project);
-        	
+            workbenchDataManager.saveOrUpdateProject(project);
         } catch (QueryException e) {
-        	
-            LOG.error("Error encountered while trying to save project", e);
-            
+            LOG.error("Error encountered while trying to save the project.", e);
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    messageSource.getMessage(Message.DATABASE_ERROR), 
+                    messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
             return;
         }
         
         try {
         	
-			IBDBGenerator generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
-			
-			isGenerationSuccess = generator.generateDatabase();
-			
-		} catch (InternationalizableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            IBDBGenerator generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
+            isGenerationSuccess = generator.generateDatabase();
+        } catch (InternationalizableException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());

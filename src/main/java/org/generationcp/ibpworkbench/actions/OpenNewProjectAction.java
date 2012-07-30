@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.CreateNewProjectPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -23,6 +27,8 @@ import com.vaadin.ui.Window;
 public class OpenNewProjectAction implements ClickListener, ActionListener{
     private static final long serialVersionUID = 1L;
 
+    private static final Logger LOG = LoggerFactory.getLogger(OpenNewProjectAction.class);
+    
     @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
@@ -37,7 +43,16 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
         
-        CreateNewProjectPanel newProjectPanel = new CreateNewProjectPanel();
+        CreateNewProjectPanel newProjectPanel = null;
+        try {
+            newProjectPanel = new CreateNewProjectPanel();
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            return;
+        }
+        
         newProjectPanel.setWidth("480px");
         
         w.showContent(newProjectPanel);

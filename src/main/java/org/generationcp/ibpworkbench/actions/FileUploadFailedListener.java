@@ -12,21 +12,29 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
+@Configurable
 public class FileUploadFailedListener implements FailedListener{
 
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
     private static final long serialVersionUID = 1L;
 
     @Override
     public void uploadFailed(FailedEvent event) {
         Window window = event.getComponent().getWindow();
 
-        String description = "<br/>" + event.getFilename() + " cannot be uploaded.<br/>" + "Perhaps the file is in a wrong format?<br/>"
-                + "Try uploading again.";
-        window.showNotification("Upload Failed", description, Notification.TYPE_ERROR_MESSAGE);
+        MessageNotifier.showError(window, messageSource.getMessage(Message.UPLOAD_ERROR), 
+                messageSource.getMessage(Message.UPLOAD_ERROR_DESC, event.getFilename()));
     }
 }

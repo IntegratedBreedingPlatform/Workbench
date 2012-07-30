@@ -12,20 +12,29 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.FieldBookObservationPanel;
 import org.generationcp.ibpworkbench.comp.vaadin.Upload;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
+@Configurable
 public class FieldBookUploadSucceededListener implements SucceededListener{
 
     private static final long serialVersionUID = 1L;
     private FileUploadWindow window;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public FieldBookUploadSucceededListener(FileUploadWindow window) {
         this.window = window;
@@ -39,15 +48,24 @@ public class FieldBookUploadSucceededListener implements SucceededListener{
         parentWindow.removeWindow(this.window);
 
         // show notification
-        String description = "<br/>" + event.getFilename() + " uploaded.";
-        parentWindow.showNotification("Upload Success", description, Notification.TYPE_TRAY_NOTIFICATION);
+        MessageNotifier.showTrayNotification(parentWindow, messageSource.getMessage(Message.UPLOAD_SUCCESS),
+                messageSource.getMessage(Message.UPLOAD_SUCCESS_DESC, event.getFilename()));
 
         IContentWindow contentWindow = (IContentWindow) parentWindow;
 
         Upload upload = (Upload) event.getSource();
 
         // display the table
-        FieldBookObservationPanel panel = new FieldBookObservationPanel(upload.getUploadPath() + event.getFilename());
+        FieldBookObservationPanel panel = null;
+        try {
+            panel = new FieldBookObservationPanel(upload.getUploadPath() + event.getFilename());
+        } catch (Exception e) {
+            //TODO: test this catch block
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(parentWindow, i.getCaption(), i.getDescription());
+            return;
+        }
+        
         contentWindow.showContent(panel);
     }
 }

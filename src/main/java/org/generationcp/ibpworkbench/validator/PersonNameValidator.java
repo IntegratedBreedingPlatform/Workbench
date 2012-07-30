@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.validator;
 
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,9 +67,10 @@ public class PersonNameValidator extends AbstractValidator{
         try {
             return !workbenchDataManager.isPersonExists(
                     firstName.getValue().toString(), lastName.getValue().toString());
-        } catch (QueryException e) {
-            LOG.error(e.getMessage());
-            return false;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+//            return false;
         }
     }
     

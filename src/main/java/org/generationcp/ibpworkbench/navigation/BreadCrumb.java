@@ -14,9 +14,13 @@ package org.generationcp.ibpworkbench.navigation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -38,7 +42,8 @@ import com.vaadin.ui.themes.BaseTheme;
  * <b>Author</b>: Michael Blancaflor <br>
  * <b>File Created</b>: May 25, 2012
  */
-public class BreadCrumb extends HorizontalLayout{
+@Configurable
+public class BreadCrumb extends HorizontalLayout implements InitializingBean{
     
     private static final Logger LOG = LoggerFactory.getLogger(BreadCrumb.class);
     
@@ -65,7 +70,7 @@ public class BreadCrumb extends HorizontalLayout{
 
     /** The listener. */
     private ActionListener listener;
-
+    
     /**
      * Instantiates a new bread crumb.
      *
@@ -80,40 +85,57 @@ public class BreadCrumb extends HorizontalLayout{
         setUriFragment(uriFragment);
         setLabel(label);
         setClassName(className);
-
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
         init();
+    }
+    
+    public void throwContactAdminError(Exception e) throws Exception {
+        throw new InternationalizableException(e, Message.CONFIG_ERROR,
+                Message.CONTACT_ADMIN_ERROR_DESC);
     }
 
     /**
      * Initializes the listener.
      * 
      * TODO: Put error handling
+     * @throws Exception 
      */
-    private void initListener() {
+    private void initListener() throws Exception {
         try {
             setListener((ActionListener) Class.forName(getClassName()).getConstructor().newInstance());
             // TODO: clean me up before you go go
         } catch (IllegalArgumentException e) {
-            LOG.error("IllegalArgumentException", e );
+            LOG.error("IllegalArgumentException", e);
+            throwContactAdminError(e);
         } catch (SecurityException e) {
-            LOG.error("SecurityException", e );
+            LOG.error("SecurityException", e);
+            throwContactAdminError(e);
         } catch (InstantiationException e) {
-            LOG.error("InstantiationException", e );
+            LOG.error("InstantiationException", e);
+            throwContactAdminError(e);
         } catch (IllegalAccessException e) {
-            LOG.error("IllegalAccessException", e );
+            LOG.error("IllegalAccessException", e);
+            throwContactAdminError(e);
         } catch (InvocationTargetException e) {
-            LOG.error("InvocationTargetException", e );
+            LOG.error("InvocationTargetException", e);
+            throwContactAdminError(e);
         } catch (NoSuchMethodException e) {
-            LOG.error("NoSuchMethodException", e );
+            LOG.error("NoSuchMethodException", e);
+            throwContactAdminError(e);
         } catch (ClassNotFoundException e) {
-            LOG.error("ClassNotFoundException", e );
+            LOG.error("ClassNotFoundException", e);
+            throwContactAdminError(e);
         }
     }
 
     /**
      * Initializes the breadcrumb components.
+     * @throws Exception 
      */
-    private void init() {
+    private void init() throws Exception {
         button = new Button(getLabel());
         button.setStyleName(BaseTheme.BUTTON_LINK);
 
@@ -123,9 +145,11 @@ public class BreadCrumb extends HorizontalLayout{
         try {
             m = getListener().getClass().getMethod("doAction", Event.class);
         } catch (SecurityException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            LOG.error("SecurityException", e);
+            throwContactAdminError(e);
         } catch (NoSuchMethodException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            LOG.error("NoSuchMethodException", e);
+            throwContactAdminError(e);
         }
 
         button.addListener(ClickEvent.class, getListener(), m);

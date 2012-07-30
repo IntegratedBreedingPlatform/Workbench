@@ -26,14 +26,21 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.PoiUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-public class FieldBookObservationPanel extends VerticalLayout{
+@Configurable
+public class FieldBookObservationPanel extends VerticalLayout implements InitializingBean{
     
     private static final Logger LOG = LoggerFactory.getLogger(FieldBookObservationPanel.class);
     private static final long serialVersionUID = 1L;
@@ -44,33 +51,45 @@ public class FieldBookObservationPanel extends VerticalLayout{
     private List<List<String>> observationList;
 
     private Table observationTable;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public FieldBookObservationPanel(String filename) {
         super();
         this.filename = filename;
 
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
         assemble();
     }
 
-    protected void initialize() {
+    protected void initialize() throws Exception {
         Workbook wb = null;
 
         try {
             wb = new HSSFWorkbook(new FileInputStream(filename));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Cannot open file", e);
+            throw new RuntimeException(messageSource.getMessage(Message.FILE_CANNOT_OPEN_DESC), e);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot process file", e);
+            throw new RuntimeException(messageSource.getMessage(Message.FILE_CANNOT_PROCESS_DESC), e);
         } catch (POIXMLException e) {
             try {
                 wb = new XSSFWorkbook(new FileInputStream(filename));
             } catch (FileNotFoundException e1) {
-                throw new RuntimeException("Cannot open file", e1);
+                throw new RuntimeException(messageSource.getMessage(Message.FILE_CANNOT_OPEN_DESC), e1);
             } catch (IOException e1) {
-                throw new RuntimeException("Cannot process file", e1);
+                throw new RuntimeException(messageSource.getMessage(Message.FILE_CANNOT_PROCESS_DESC), e1);
             }
         } catch (Exception e) {
+            //TODO: test
             LOG.error("Exception", e);
+            InternationalizableException i18e = new InternationalizableException(e);
+            i18e.setCaption(Message.FILE_ERROR);
+            i18e.setDescription(e.getCause().getMessage());
+            throw i18e;
         } finally {
             if (wb == null) {
                 return;
@@ -174,7 +193,7 @@ public class FieldBookObservationPanel extends VerticalLayout{
     protected void initializeActions() {
     }
 
-    protected void assemble() {
+    protected void assemble() throws Exception {
         initialize();
         initializeComponents();
         initializeLayout();

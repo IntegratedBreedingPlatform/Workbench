@@ -114,7 +114,6 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         Panel loginPanel = new Panel();
         loginPanel.setImmediate(false);
         loginPanel.setWidth("360px");
-        loginPanel.setHeight("210px");
 
         // login panel layout
         VerticalLayout loginPanelLayout = new VerticalLayout();

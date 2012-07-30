@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -34,6 +38,8 @@ public class HomeAction implements ClickListener, ActionListener{
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 5592156945270416052L;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
     
     /**
      * Button click.
@@ -69,7 +75,15 @@ public class HomeAction implements ClickListener, ActionListener{
         // so that the UI is reset to its initial state
         // we can remove this if we want to present the last UI state.
         WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) window;
-        WorkbenchDashboard workbenchDashboard = new WorkbenchDashboard(); 
+        WorkbenchDashboard workbenchDashboard = null;
+        try {
+            workbenchDashboard = new WorkbenchDashboard();
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+        }
+        
         workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
         

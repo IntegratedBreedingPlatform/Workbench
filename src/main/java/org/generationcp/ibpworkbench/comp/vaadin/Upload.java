@@ -19,11 +19,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Upload.Receiver;
 
+@Configurable
 public class Upload extends com.vaadin.ui.Upload implements Receiver{
 
     private static final Logger LOG = LoggerFactory.getLogger(Upload.class);
@@ -32,6 +38,9 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver{
     private String uploadPath = "./";
 
     private List<String> allowedMimeTypes;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public Upload() {
         super();
@@ -94,6 +103,10 @@ public class Upload extends com.vaadin.ui.Upload implements Receiver{
         } catch (FileNotFoundException e) {
             // Error while opening the file. Not reported here.
             LOG.error("FileNotFoundException", e);
+            MessageNotifier.showError(getWindow(), 
+                    messageSource.getMessage(Message.FILE_NOT_FOUND_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.FILE_NOT_FOUND_ERROR_DESC, 
+                            uploadPath + filename));
             return null;
         }
     }

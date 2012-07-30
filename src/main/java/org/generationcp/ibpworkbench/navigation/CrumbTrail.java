@@ -53,8 +53,9 @@ public class CrumbTrail extends HorizontalLayout {
     
     /**
      * Instantiates a new crumb trail.
+     * @throws Exception 
      */
-    public CrumbTrail() {
+    public CrumbTrail() throws Exception {
         super();
         crumbTrail = new LinkedList<BreadCrumb>();
         navProps = ResourceBundle.getBundle("org.generationcp.ibpworkbench.navigation.Navigation");
@@ -64,8 +65,7 @@ public class CrumbTrail extends HorizontalLayout {
         
         navXmlParser = new NavXmlParser();
         
-        //TODO: either add here or add on login?
-//        addBreadCrumb("/home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
+        addBreadCrumb("/home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
     }
     
     /**
@@ -73,8 +73,10 @@ public class CrumbTrail extends HorizontalLayout {
      *
      * @param viewId the view id
      * @param labelToAppend the label to append
+     * @throws Exception 
+     * @throws NumberFormatException 
      */
-    public void updateCrumbTrail(String viewId, String labelToAppend) {
+    public void updateCrumbTrail(String viewId, String labelToAppend) throws NumberFormatException, Exception {
         int currentLevel = crumbTrail.isEmpty() ? -1 : crumbTrail.peekLast().getLevel();
         navXmlParser.setUriFragment(viewId);
         
@@ -86,9 +88,7 @@ public class CrumbTrail extends HorizontalLayout {
             }
              
             addBreadCrumb(viewId, breadCrumbLabel, currentLevel, Integer.parseInt(map.get("level")), map.get("className"));
-        } else {
-            //TODO: handle invalid viewID; throw error
-        }
+        } 
     }
     
     /**
@@ -103,7 +103,7 @@ public class CrumbTrail extends HorizontalLayout {
      * @param className the class name
      */
     private void addBreadCrumb(String viewId, String caption, 
-            int currentLevel, int level, String className) {
+            int currentLevel, int level, String className) throws Exception {
         
         BreadCrumb lastBreadCrumb;
         int currLevel = currentLevel;

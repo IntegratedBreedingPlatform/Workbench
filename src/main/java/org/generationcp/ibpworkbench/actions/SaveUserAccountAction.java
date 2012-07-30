@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -49,6 +53,9 @@ public class SaveUserAccountAction implements ClickListener {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
     public SaveUserAccountAction(Form userAccountForm) {
         this.userAccountForm = userAccountForm;
     }
@@ -60,13 +67,25 @@ public class SaveUserAccountAction implements ClickListener {
         BeanItem<UserAccountModel> bean =  (BeanItem<UserAccountModel>) userAccountForm.getItemDataSource();
         UserAccountModel userAccount = bean.getBean();
         
-        userAccountForm.commit();
+        try {
+            userAccountForm.commit();
+        } catch (Exception e) {
+            //TODO: investigate. Exception still not properly handled.
+            //vaadin shows an "Internal Error" message
+            InternationalizableException i = (InternationalizableException) e;
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    i.getCaption(), 
+                    i.getDescription());
+            return;
+        }
+        
         try {
             saveUserAccount(userAccount);
         } catch (QueryException e) {
-            if(LOG.isErrorEnabled()) {
-                LOG.error(e.getMessage());
-            }
+            LOG.error("Error encountered while trying to save user account details.", e);
+            MessageNotifier.showError(event.getComponent().getWindow(), 
+                    messageSource.getMessage(Message.DATABASE_ERROR), 
+                    messageSource.getMessage(Message.SAVE_USER_ACCOUT_ERROR_DESC));
             return;
         }
         

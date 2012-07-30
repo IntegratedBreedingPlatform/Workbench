@@ -14,6 +14,9 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
@@ -35,12 +38,15 @@ import com.vaadin.ui.Window;
 
 @Configurable
 public class OpenProjectWorkflowAction implements LayoutClickListener, ActionListener {
+    private static final long serialVersionUID = 1L;
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectWorkflowAction.class);
-    private static final long serialVersionUID = 1L;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
     
     @Override
     public void layoutClick(LayoutClickEvent event) {
@@ -75,26 +81,21 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        //TODO: Verify the try-catch flow
+        Project p = null;
         try {
-            List<Project> projects = workbenchDataManager.getProjects();
-            
-            Project p = null;
             Long projectId = Long.parseLong(params.get("projectId").get(0));
-
-            for(Project proj : projects) {
-                if(proj.getProjectId().equals(projectId)) {
-                    p = proj;
-                }
-            }
-            
-            MarsProjectDashboard projectDashboard = new MarsProjectDashboard(p);
-            
-            w.showContent(projectDashboard);
-            
-            NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+            p = workbenchDataManager.getProjectById(projectId);
         } catch (QueryException e) {
-            LOG.error("Error encountered while getting projects", e);
+            LOG.error("QueryException", e);
+            MessageNotifier.showError(window, 
+                    messageSource.getMessage(Message.DATABASE_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
         }
+        
+        MarsProjectDashboard projectDashboard = new MarsProjectDashboard(p);
+        
+        w.showContent(projectDashboard);
+        
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
     }
 }

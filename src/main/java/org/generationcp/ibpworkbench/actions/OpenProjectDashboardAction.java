@@ -15,6 +15,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
@@ -39,12 +43,15 @@ import com.vaadin.ui.Window;
 
 @Configurable
 public class OpenProjectDashboardAction implements ItemClickListener, MouseEvents.ClickListener, ActionListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OpenProjectDashboardAction.class);
     private static final long serialVersionUID = 1L;
     
+    private static final Logger LOG = LoggerFactory.getLogger(OpenProjectDashboardAction.class);
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
     
     @Override
     public void itemClick(ItemClickEvent event) {
@@ -59,12 +66,19 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        ProjectDashboard projectDashboard = new ProjectDashboard(project);
-        projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+        ProjectDashboard projectDashboard = null;
+        try {
+            projectDashboard = new ProjectDashboard(project);
+            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            return;
+        }
         
         String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
         NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
-        
         
         window.showContent(projectDashboard);
     }
@@ -79,11 +93,19 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
 
-        ProjectDashboard projectDashboard = new ProjectDashboard(project);
-        projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+        ProjectDashboard projectDashboard = null;
+        try {
+            projectDashboard = new ProjectDashboard(project);
+            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            return;
+        }
 
         window.showContent(projectDashboard);
-        
+
         String viewId = "/home/openProject?projectId=" + project.getProjectId();
         NavManager.navigateApp((Window) window, viewId, true, project.getProjectName());
     }
@@ -105,27 +127,37 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        //TODO: Verify the try-catch flow
+        Project p = null;
         try {
-            List<Project> projects = workbenchDataManager.getProjects();
-        
-            Project p = null;
-            Long projectId = Long.parseLong(params.get("projectId").get(0));
-
-            for (Project proj : projects) {
-                if (proj.getProjectId().equals(projectId)) {
-                    p = proj;
-                }
-            }
-
-            ProjectDashboard projectDashboard = new ProjectDashboard(p);
-            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
-
-            w.showContent(projectDashboard);
-
-            NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
-        } catch (QueryException e) {
-            LOG.error("Error encountered while getting projects", e);
+            p = workbenchDataManager
+                    .getProjectById(Long.parseLong(params.get("projectId").get(0)));
+        } catch (NumberFormatException nfe) {
+            LOG.error("NumberFormatException", nfe);
+            MessageNotifier.showError(window, 
+                    messageSource.getMessage(Message.INVALID_URL_PARAM_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.INVALID_URL_PARAM_ERROR_DESC));
+            return;
+        } catch (QueryException qe) {
+            LOG.error("QueryException", qe);
+            MessageNotifier.showError(window, 
+                    messageSource.getMessage(Message.DATABASE_ERROR), 
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
         }
+        
+        ProjectDashboard projectDashboard = null;
+        try {
+            projectDashboard = new ProjectDashboard(p);
+            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            InternationalizableException i = (InternationalizableException) e.getCause();
+            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            return;
+        }
+        
+        w.showContent(projectDashboard);
+        
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
     }
 }

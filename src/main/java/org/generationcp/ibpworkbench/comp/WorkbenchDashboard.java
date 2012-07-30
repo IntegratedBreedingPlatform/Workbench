@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -146,45 +147,48 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     protected void initializeData() {
         //TODO: Verify the try-catch flow
+        // Get the list of Projects
+        List<Project> projects = null;
         try {
-            // Get the list of Projects
-            List<Project> projects = workbenchDataManager.getProjects();
-
-            // set the Project Table data source
-            BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-            projectContainer.setBeanIdProperty("projectName");
-            for (Project project : projects) {
-                projectContainer.addBean(project);
-            }
-            tblProject.setContainerDataSource(projectContainer);
-
-            // set the visible columns on the Project Table
-            String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
-            tblProject.setVisibleColumns(columns);
-
-            // update the Project Thumbnail area
-            for (Project project : projects) {
-                ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
-                projectPanel.setData(project);
-
-                projectPanel.addListener(new LayoutClickListener() {
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void layoutClick(LayoutClickEvent event) {
-                        if (projectThumbnailClickHandler == null) {
-                            return;
-                        }
-
-                        projectThumbnailClickHandler.click(event);
-                    }
-                });
-
-                projectThumbnailLayout.addComponent(projectPanel);
-            }
+            projects = workbenchDataManager.getProjects();
         } catch (QueryException e) {
-            LOG.error("Error encountered while getting workflow templates", e);
+            LOG.error("Exception", e);
+            throw new InternationalizableException(e, 
+                    Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+
+        // set the Project Table data source
+        BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+        projectContainer.setBeanIdProperty("projectName");
+        for (Project project : projects) {
+            projectContainer.addBean(project);
+        }
+        tblProject.setContainerDataSource(projectContainer);
+
+        // set the visible columns on the Project Table
+        String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
+        tblProject.setVisibleColumns(columns);
+
+        // update the Project Thumbnail area
+        for (Project project : projects) {
+            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
+            projectPanel.setData(project);
+
+            projectPanel.addListener(new LayoutClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void layoutClick(LayoutClickEvent event) {
+                    if (projectThumbnailClickHandler == null) {
+                        return;
+                    }
+
+                    projectThumbnailClickHandler.click(event);
+                }
+            });
+
+            projectThumbnailLayout.addComponent(projectPanel);
         }
     }
 

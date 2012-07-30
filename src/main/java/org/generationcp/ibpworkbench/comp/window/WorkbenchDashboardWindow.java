@@ -79,18 +79,18 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     public WorkbenchDashboardWindow() {
         super();
-        LOG.debug("{} instead created.", WorkbenchDashboardWindow.class);
+//        LOG.debug("{} instead created.", WorkbenchDashboardWindow.class);
     }
 
     /**
      * Assemble the UI after all dependencies has been set.
      */
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         assemble();
     }
 
-    protected void initializeComponents() {
+    protected void initializeComponents() throws Exception {
         // workbench header components
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
@@ -197,7 +197,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
     }
 
-    protected void assemble() {
+    protected void assemble() throws Exception {
         initializeComponents();
         initializeLayout();
         initializeActions();
@@ -270,7 +270,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         leftLayout.addComponent(usersGuideTitle);
         leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
         leftLayout.addComponent(hint1);
-
+        
         return leftLayout;
     }
 

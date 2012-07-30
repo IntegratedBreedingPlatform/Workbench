@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -63,11 +64,11 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
     }
     
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws InternationalizableException {
         assemble();
     }
     
-    protected void initializeComponents() {
+    protected void initializeComponents() throws InternationalizableException {
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
@@ -82,7 +83,7 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
 
     }
 
-    protected void initializeUpcomingActivityTable() {
+    protected void initializeUpcomingActivityTable() throws InternationalizableException {
         upcomingActivityTable = new Table() {
 
             private static final long serialVersionUID = 1L;
@@ -114,7 +115,7 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
         upcomingActivityTable.setVisibleColumns(columns);
     }
 
-    protected void initializeRecentActivityTable() {
+    protected void initializeRecentActivityTable() throws InternationalizableException {
         recentActivityTable = new Table() {
 
             private static final long serialVersionUID = 1L;
@@ -174,7 +175,7 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
         projectThumbnailPanel.addListener(listener);
     }
 
-    protected void assemble() {
+    protected void assemble() throws InternationalizableException {
         initializeComponents();
         initializeLayout();
     }
@@ -236,7 +237,9 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
     
     public void attach() {
         super.attach();
-        
+        System.out.println("attaching!!!!!");
+        Throwable t = new Throwable();
+        t.printStackTrace();
         updateLabels();
     };
     

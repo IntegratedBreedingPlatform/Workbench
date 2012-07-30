@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.navigation;
 
 import java.util.Map;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.slf4j.Logger;
@@ -48,7 +50,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     /**
      * Instantiates a new nav uri fragment changed listener.
      */
-    public NavUriFragmentChangedListener() {
+    public NavUriFragmentChangedListener() throws InternationalizableException {
         navXmlParser = new NavXmlParser();
     }
 
@@ -68,18 +70,17 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
 
             navXmlParser.setUriFragment(u.getFragment());
             
-            if (navXmlParser.validateUriFragment()) {
-               Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
-
-               try {
+            //TODO test throws InternationalizableException
+            try {
+                if (navXmlParser.validateUriFragment()) {
+                   Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
                    ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
                    listener.doAction(u.getWindow(), u.getFragment(), false);
-               } catch (Exception e) {
-                   LOG.error("Exception", e );
-               }
-                   
-            } else {
-                //throw invalid uri error
+                }
+            } catch (Exception e) {
+                LOG.error("Exception", e);
+                InternationalizableException i = (InternationalizableException) e;
+                MessageNotifier.showError(u.getWindow(), i.getCaption(), i.getDescription());
             }
         }
     }

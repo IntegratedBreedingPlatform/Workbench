@@ -11,8 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.navigation;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
@@ -28,7 +37,13 @@ import com.vaadin.ui.Window;
  * <br>
  * <b>File Created</b>: Jun 11, 2012.
  */
+@Configurable
 public final class NavManager {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(NavManager.class);
+    
+    @Autowired
+    private static SimpleResourceBundleMessageSource messageSource;
     
     private NavManager() {}
 
@@ -59,10 +74,29 @@ public final class NavManager {
             }
             
             workbenchWindow.setUriFragment(viewId);
-            crumbTrail.updateCrumbTrail(viewId, breadCrumbLabel);
+            
+            try {
+                crumbTrail.updateCrumbTrail(viewId, breadCrumbLabel);
+            } catch (NumberFormatException e) {
+                LOG.error("NumberFormatException", e);
+                showConfigError(window);
+            } catch (Exception e) {
+                LOG.error("Exception", e);
+                if(e instanceof BeanCreationException) {
+                    InternationalizableException i = (InternationalizableException) e.getCause(); 
+                    MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+                } else {
+                    showConfigError(window);
+                }
+            }
         } else {
             //page refresh is handled in Listener implementation
         }
+    }
+    
+    private static void showConfigError(Window window) {
+        MessageNotifier.showError(window, messageSource.getMessage(Message.CONFIG_ERROR),
+                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
     }
     
     /**

@@ -13,9 +13,13 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
@@ -34,7 +38,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 @Configurable
 public class LaunchWorkbenchToolAction implements ClickListener, ActionListener {
@@ -81,6 +84,9 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
     public LaunchWorkbenchToolAction() {
     }
     
@@ -109,52 +115,59 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         if(ToolEnum.isCorrectTool(toolName)) {
             launchTool(toolName, window, isLinkAccessed);
         } else {
-            LOG.debug("Cannot launch tool due to invalid tool id: {}", toolName);
+            LOG.debug("Cannot launch tool due to invalid tool: {}", toolName);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
+                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(toolName).toArray()));
         }
     }
     
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
-        //TODO: Verify the try-catch flow
+        Tool tool = null;
         try {
-            Tool tool = workbenchDataManager.getToolWithName(toolName);
-            if (tool == null) {
-                LOG.warn("Cannot find tool " + toolEnum);
-
-                window.showNotification("Launch Error", "Cannot launch tool.", Notification.TYPE_ERROR_MESSAGE);
-
-                return;
-            } else {
-                if (tool.getToolType() == ToolType.NATIVE) {
-
-                    File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-                    Runtime runtime = Runtime.getRuntime();
-                    try {
-                        runtime.exec(absoluteToolFile.getAbsolutePath());
-                    } catch (IOException e) {
-                        LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
-
-                        window.showNotification("Launch Error", "Cannot launch tool at " + absoluteToolFile.getAbsolutePath(),
-                                Notification.TYPE_ERROR_MESSAGE);
-                    }
-
-                } else {
-
-                    Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
-                    browser.setType(Embedded.TYPE_BROWSER);
-                    browser.setSizeFull();
-                    browser.setHeight("800px");
-                    browser.setWidth("100%");
-
-                    NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName,
-                            isLinkAccessed);
-
-                    IContentWindow contentWindow = (IContentWindow) window;
-                    contentWindow.showContent(browser);
+            tool = workbenchDataManager.getToolWithName(toolName);
+        } catch (QueryException qe) {
+            LOG.error("QueryException", qe);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+        }
+        
+        if (tool == null) {
+            LOG.warn("Cannot find tool " + toolEnum);
+            showLaunchError(window, toolEnum.toString());
+            return;
+        } else {
+            if (tool.getToolType() == ToolType.NATIVE) {
+                
+                File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+                Runtime runtime = Runtime.getRuntime();
+                try {
+                    runtime.exec(absoluteToolFile.getAbsolutePath());
                 }
+                catch (IOException e) {
+                    LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
+                    showLaunchError(window, absoluteToolFile.getAbsolutePath());
+                }
+                
+            } else {
+                
+                Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
+                browser.setType(Embedded.TYPE_BROWSER);
+                browser.setSizeFull();
+                browser.setHeight("800px");
+                browser.setWidth("100%");
+                
+                NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName, isLinkAccessed);
+                
+                IContentWindow contentWindow = (IContentWindow) window;
+                contentWindow.showContent(browser);
             }
-        } catch (QueryException e) {
-            LOG.error("Error encountered while getting tools with the name " + toolName, e);
         }
     }
+    
+    private void showLaunchError(Window window, String tool) {
+        MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+                "<br />" + messageSource.getMessage(Message.LAUNCH_TOOL_ERROR_DESC, tool));
+    }
+    
 
 }

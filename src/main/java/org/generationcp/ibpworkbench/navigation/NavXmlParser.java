@@ -24,6 +24,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -75,7 +77,7 @@ public class NavXmlParser {
      *
      * @param uriFragment the uri fragment
      */
-    public NavXmlParser(String uriFragment) {
+    public NavXmlParser(String uriFragment) throws Exception {
         this();
         setUriFragment(uriFragment);
     }
@@ -87,28 +89,37 @@ public class NavXmlParser {
      * 
      * TODO: error handling
      */
-    public NavXmlParser() {
+    public NavXmlParser() throws InternationalizableException {
         xPath = XPathFactory.newInstance().newXPath();
         try {
             file = new File(getClass().getResource("nav.xml").toURI());
         } catch (URISyntaxException e) {
-            LOG.error("URISyntaxException", e );
+            LOG.error("URISyntaxException", e);
+            throwConfigError(e);
         }
         try {
             reader = new FileReader(file);
             source = new InputSource(reader);
             root = (Node) xPath.evaluate("/root", source, XPathConstants.NODE);
         } catch (FileNotFoundException e) {
-            LOG.error("FileNotFoundException", e );
+            LOG.error("FileNotFoundException", e);
+            throwConfigError(e);
         } catch (XPathExpressionException e) {
-            LOG.error("XPathExpressionException", e );
+            LOG.error("XPathExpressionException", e);
+            throwConfigError(e);
         } finally {
             try {
                 reader.close();
             } catch (IOException e) {
                 LOG.error("IOException", e );
+                throwConfigError(e);
             }
         }  
+    }
+    
+    private void throwConfigError(Exception e) throws InternationalizableException {
+        throw new InternationalizableException(e, 
+                Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
     
     /**
@@ -117,7 +128,7 @@ public class NavXmlParser {
      *
      * @return the xpath details
      */
-    public Map<String, String> getXpathDetails() {
+    public Map<String, String> getXpathDetails() throws InternationalizableException {
         
         String level;
         String className;
@@ -133,7 +144,8 @@ public class NavXmlParser {
             xPathDetails.put("className", className);
             xPathDetails.put("label", label);
         } catch (XPathExpressionException e) {
-            LOG.error("XPathExpressionException: Please fix the XML entry", e );
+            LOG.error("XPathExpressionException: Please fix the XML entry", e);
+            throwConfigError(e);
         } 
         
         return xPathDetails;
@@ -145,17 +157,18 @@ public class NavXmlParser {
      *
      * @return true, if successful
      */
-    public boolean validateUriFragment() {
+    public boolean validateUriFragment() throws InternationalizableException {
         if(validateUriFragmentSyntax(uriFragment)) {
             String status = "";
             try {
                 status = xPath.evaluate(xPathUriFragment, root);
             } catch (XPathExpressionException e) {
-                LOG.error("XPathExpressionException: Please fix the XML entry", e );
+                LOG.error("XPathExpressionException: Please fix the XML entry", e);
+                throw new InternationalizableException(e, 
+                        Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
             }
             return status.length() > 0;
         } else {
-            //TODO: add on screen error message?
             return false;
         }
     }
