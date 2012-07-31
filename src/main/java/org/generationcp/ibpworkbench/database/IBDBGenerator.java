@@ -29,31 +29,40 @@ import org.slf4j.LoggerFactory;
 public class IBDBGenerator{
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
-    private static final String WORKBENCH_PROP = "workbench.properties";
-    private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
-    private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
-    private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
-    private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
-
-    private static final String WORKBENCH_PROP_HOST = "workbench.host";
-    private static final String WORKBENCH_PROP_PORT = "workbench.port";
-    private static final String WORKBENCH_PROP_USER = "workbench.username";
-    private static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
-
-    private static final String DB_LOCAL_NAME_SUFFIX = "_local";
-
-    private static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
-    private static final String SQL_CHAR_SET = " CHARACTER SET ";
-    private static final String SQL_COLLATE = " COLLATE ";
-
-    private static final String DEFAULT_CHAR_SET = "utf8";
-    private static final String DEFAULT_COLLATE = "utf8_general_ci";
-
-    private static final String SQL_LINE_COMMENT = "--";
-    private static final String SQL_BEGIN_COMMENT = "/*";
-    private static final String SQL_END_COMMENT = "*/";
-
-    private static final String SQL_END = ";";
+	private static final String WORKBENCH_PROP = "workbench.properties";
+	private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
+	private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
+	private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
+	private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
+	
+	private static final String WORKBENCH_PROP_HOST = "workbench.host";
+	private static final String WORKBENCH_PROP_PORT = "workbench.port";
+	private static final String WORKBENCH_PROP_USER = "workbench.username";
+	private static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
+	
+	private static final String DB_LOCAL_NAME_SUFFIX = "_local";
+	
+	private static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
+	private static final String SQL_CHAR_SET = " CHARACTER SET ";
+	private static final String SQL_COLLATE = " COLLATE ";
+	private static final String SQL_GRANT_ALL = "GRANT ALL ON ";
+	private static final String SQL_TO = " TO ";
+	private static final String SQL_IDENTIFIED_BY = " IDENTIFIED BY ";
+	private static final String SQL_FLUSH_PRIVILEGES = "FLUSH PRIVILEGES ";
+	private static final String SQL_LINE_COMMENT = "--";
+	private static final String SQL_BEGIN_COMMENT = "/*";
+	private static final String SQL_END_COMMENT = "*/";
+	private static final String SQL_SINGLE_QUOTE = "'";
+	private static final String SQL_AT_SIGN = "@";
+	private static final String SQL_PERIOD = ".";
+	private static final String SQL_END = ";";
+	
+	private static final String DEFAULT_LOCAL_USER = "local";
+	private static final String DEFAULT_LOCAL_HOST = "local";
+	private static final String DEFAULT_LOCAL_PASSWORD = "local";
+	private static final String DEFAULT_ALL = "*";
+	private static final String DEFAULT_CHAR_SET = "utf8";
+	private static final String DEFAULT_COLLATE = "utf8_general_ci";
 
     private String workbenchHost;
     private String workbenchPort;
@@ -136,6 +145,8 @@ public class IBDBGenerator{
 
         StringBuffer databaseName = new StringBuffer();
         StringBuffer createDatabaseSyntax = new StringBuffer();
+    	StringBuffer createGrantSyntax = new StringBuffer();
+    	StringBuffer createFlushSyntax = new StringBuffer();
 
         databaseName.append(crop).append("_").append(projectId).append(DB_LOCAL_NAME_SUFFIX);
 
@@ -143,14 +154,25 @@ public class IBDBGenerator{
 
         try {
 
-            statement = connection.createStatement();
-
-            createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET)
-                    .append(SQL_COLLATE).append(DEFAULT_COLLATE);
-
-            statement.executeUpdate(createDatabaseSyntax.toString());
-
-            connection.setCatalog(databaseName.toString());
+	    	statement = connection.createStatement();
+	    	
+	    	createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
+	    	
+	    	statement.addBatch(createDatabaseSyntax.toString());
+	    	
+	    	createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD).append(DEFAULT_ALL).append(SQL_TO)
+	    		.append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
+	    		.append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
+	    	
+	    	statement.addBatch(createGrantSyntax.toString());
+	    	
+	    	createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
+	    	
+	    	statement.addBatch(createFlushSyntax.toString());
+	    	
+	    	statement.executeBatch();
+	    	
+	    	connection.setCatalog(databaseName.toString());
 
         } catch (SQLException e) {
             handleDatabaseError(e);
@@ -292,10 +314,6 @@ public class IBDBGenerator{
 
             statement.executeBatch();
 
-            statement.close();
-
-            statement = null;
-
             LOG.info("Tables in " + sqlFile.getName() + " Generated.");
 
         } catch (IOException e) {
@@ -304,8 +322,15 @@ public class IBDBGenerator{
             handleDatabaseError(e);
         } catch (SQLException e) {
             handleDatabaseError(e);
+        }  finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    handleDatabaseError(e);
+                }
+            }
         }
-
     }
 
     private void closeConnection() throws InternationalizableException {
