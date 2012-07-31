@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
                             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	<!-- Declare property file locations -->
-	<context:property-placeholder location="classpath:workbench.properties" />
+    <!-- Declare property file locations -->
+    <context:property-placeholder location="classpath:workbench.properties" />
 
-	<!-- Enable Spring annotations -->
-	<context:annotation-config />
+    <!-- Enable Spring annotations -->
+    <context:annotation-config />
 
-	<!-- Enable load-time-weaving so we can use @Configurable annotation. To 
-		make this work, we need to set the -java.agent VM argument to the spring-instrument 
-		JAR file's path. In windows, you can use: -javaagent:${env_var:HOMEDRIVE}${env_var:HOMEPATH}\.m2\repository\org\springframework\spring-instrument\3.1.1.RELEASE\spring-instrument-3.1.1.RELEASE.jar 
-		Mac and Linux users, add your path here. -->
-	<context:load-time-weaver />
+    <!-- Enable load-time-weaving so we can use @Configurable annotation. To 
+        make this work, we need to set the -java.agent VM argument to the spring-instrument 
+        JAR file's path. In windows, you can use: -javaagent:${env_var:HOMEDRIVE}${env_var:HOMEPATH}\.m2\repository\org\springframework\spring-instrument\3.1.1.RELEASE\spring-instrument-3.1.1.RELEASE.jar 
+        Mac and Linux users, add your path here. -->
+    <context:load-time-weaver />
 
-	<!-- The application class. -->
-	<bean id="application" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
-		scope="prototype" />
+    <!-- The application class. -->
+    <bean id="application" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
+        scope="prototype" />
 
-	<!-- Reuseable UI components can be declared here, but don't do it just 
-		so you can have auto-wiring. Add @Configurable annotation to your class if 
-		you only need auto-wiring. -->
+    <!-- Reuseable UI components can be declared here, but don't do it just 
+        so you can have auto-wiring. Add @Configurable annotation to your class if 
+        you only need auto-wiring. -->
 
-	<!-- The Message Source -->
-	<bean id="messageSource"
-		class="org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource">
-		<property name="basename" value="I18NMessages" />
-		<property name="locale">
-			<util:constant static-field="java.util.Locale.ENGLISH" />
-		</property>
-	</bean>
+    <!-- The Message Source -->
+    <bean id="messageSource"
+        class="org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource">
+        <property name="basename" value="I18NMessages" />
+        <property name="locale">
+            <util:constant static-field="java.util.Locale.ENGLISH" />
+        </property>
+    </bean>
 
-	<!-- Data Managers -->
-	<bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
-		<constructor-arg value="ibpworkbench_hib.cfg.xml" />
-		<constructor-arg value="${workbench.host}" />
-		<constructor-arg value="${workbench.port}" />
-		<constructor-arg value="${workbench.dbname}" />
-		<constructor-arg value="${workbench.username}" />
-		<constructor-arg value="${workbench.password}" />
-	</bean>
+    <!-- Data Managers -->
+    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+        <constructor-arg value="ibpworkbench_hib.cfg.xml" />
+        <constructor-arg value="${workbench.host}" />
+        <constructor-arg value="${workbench.port}" />
+        <constructor-arg value="${workbench.dbname}" />
+        <constructor-arg value="${workbench.username}" />
+        <constructor-arg value="${workbench.password}" />
+    </bean>
 
-	<bean id="workbenchDataManager"
-		class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
-		<constructor-arg ref="hibernateUtil" />
-	</bean>
+    <bean id="workbenchDataManager"
+        class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
+        <constructor-arg ref="hibernateUtil" />
+    </bean>
 
-	<bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory" />
+    <bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory" />
 
 </beans>
