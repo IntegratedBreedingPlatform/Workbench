@@ -671,7 +671,7 @@ CREATE TABLE trait (
   tnstat INT DEFAULT 0,
   traitgroup VARCHAR(50) DEFAULT '-',
   ontology VARCHAR(50) DEFAULT '-',
-  isolanguage CHAR(2) NOT NULL DEFAULT 'en',		-- new column, indicates language used      
+  isolanguage VARCHAR(2) NOT NULL DEFAULT 'en',		-- new column, indicates language used      
   PRIMARY KEY (tid) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
@@ -797,7 +797,7 @@ CREATE TABLE tmstraits (
   tnstat INT DEFAULT NULL,
   traitgroup varchar(50) DEFAULT NULL,
   ontology varchar(50) DEFAULT NULL,
-  isolanguage CHAR(2) NOT NULL DEFAULT 'en',		-- new column, indicates language used  
+  isolanguage VARCHAR(2) NOT NULL DEFAULT 'en',		-- new column, indicates language used  
   traittype VARCHAR(1) NOT NULL DEFAULT '-',                -- new column added may 2012
   PRIMARY KEY (tid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
