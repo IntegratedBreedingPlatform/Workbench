@@ -84,7 +84,6 @@ public class FieldBookObservationPanel extends VerticalLayout implements Initial
                 throw new RuntimeException(messageSource.getMessage(Message.FILE_CANNOT_PROCESS_DESC), e1);
             }
         } catch (Exception e) {
-            //TODO: test
             LOG.error("Exception", e);
             InternationalizableException i18e = new InternationalizableException(e);
             i18e.setCaption(Message.FILE_ERROR);

@@ -43,21 +43,23 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
         
-        CreateNewProjectPanel newProjectPanel = null;
+        CreateNewProjectPanel newProjectPanel = new CreateNewProjectPanel();
         try {
             newProjectPanel = new CreateNewProjectPanel();
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            }
             return;
         }
         
         newProjectPanel.setWidth("480px");
         
-        w.showContent(newProjectPanel);
-        
         newProjectPanel.getSaveButton().addListener(new SaveNewProjectAction(newProjectPanel.getForm()));
+        
+        w.showContent(newProjectPanel);
         
         NavManager.navigateApp(window, "/home/createProject", isLinkAccessed);
     }

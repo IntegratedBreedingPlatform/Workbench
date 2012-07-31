@@ -72,8 +72,10 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            }
             return;
         }
         
@@ -99,8 +101,10 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            }
             return;
         }
 
@@ -151,8 +155,10 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            }
             return;
         }
         

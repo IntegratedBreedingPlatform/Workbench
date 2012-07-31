@@ -14,11 +14,15 @@ package org.generationcp.ibpworkbench.navigation;
 import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
@@ -38,6 +42,7 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
  *
  * @see NavUriFragmentChangedEvent
  */
+@Configurable
 public class NavUriFragmentChangedListener implements FragmentChangedListener {
 
     /** The Constant serialVersionUID. */
@@ -46,6 +51,9 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     
     /** The nav xml parser. */
     private NavXmlParser navXmlParser;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
     
     /**
      * Instantiates a new nav uri fragment changed listener.
@@ -70,17 +78,22 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
 
             navXmlParser.setUriFragment(u.getFragment());
             
-            //TODO test throws InternationalizableException
             try {
                 if (navXmlParser.validateUriFragment()) {
                    Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
                    ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
                    listener.doAction(u.getWindow(), u.getFragment(), false);
                 }
+            } catch (InternationalizableException e) {
+                LOG.error(e.toString(), e);
+                MessageNotifier.showError(u.getWindow(), e.getCaption(), e.getDescription());
+                return;
             } catch (Exception e) {
-                LOG.error("Exception", e);
-                InternationalizableException i = (InternationalizableException) e;
-                MessageNotifier.showError(u.getWindow(), i.getCaption(), i.getDescription());
+                LOG.error(e.toString(), e);
+                MessageNotifier.showError(u.getWindow(), 
+                        messageSource.getMessage(Message.CONFIG_ERROR), 
+                        messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
             }
         }
     }

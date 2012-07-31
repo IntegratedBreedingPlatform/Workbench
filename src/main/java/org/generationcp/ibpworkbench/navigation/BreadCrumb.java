@@ -100,13 +100,11 @@ public class BreadCrumb extends HorizontalLayout implements InitializingBean{
     /**
      * Initializes the listener.
      * 
-     * TODO: Put error handling
      * @throws Exception 
      */
     private void initListener() throws Exception {
         try {
             setListener((ActionListener) Class.forName(getClassName()).getConstructor().newInstance());
-            // TODO: clean me up before you go go
         } catch (IllegalArgumentException e) {
             LOG.error("IllegalArgumentException", e);
             throwContactAdminError(e);

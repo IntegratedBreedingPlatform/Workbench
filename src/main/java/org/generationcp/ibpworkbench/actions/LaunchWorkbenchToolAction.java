@@ -129,6 +129,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
             LOG.error("QueryException", qe);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
         }
         
         if (tool == null) {

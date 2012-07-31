@@ -20,6 +20,8 @@ import org.generationcp.ibpworkbench.comp.FieldBookObservationPanel;
 import org.generationcp.ibpworkbench.comp.vaadin.Upload;
 import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -32,6 +34,8 @@ public class FieldBookUploadSucceededListener implements SucceededListener{
 
     private static final long serialVersionUID = 1L;
     private FileUploadWindow window;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(FieldBookUploadSucceededListener.class);
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -60,9 +64,11 @@ public class FieldBookUploadSucceededListener implements SucceededListener{
         try {
             panel = new FieldBookObservationPanel(upload.getUploadPath() + event.getFilename());
         } catch (Exception e) {
-            //TODO: test this catch block
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(parentWindow, i.getCaption(), i.getDescription());
+            LOG.error(e.toString(), e);
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(parentWindow, i.getCaption(), i.getDescription());
+            }
             return;
         }
         

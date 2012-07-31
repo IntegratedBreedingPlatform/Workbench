@@ -19,7 +19,6 @@ import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -82,7 +81,7 @@ public final class NavManager {
                 showConfigError(window);
             } catch (Exception e) {
                 LOG.error("Exception", e);
-                if(e instanceof BeanCreationException) {
+                if(e.getCause() instanceof InternationalizableException) {
                     InternationalizableException i = (InternationalizableException) e.getCause(); 
                     MessageNotifier.showError(window, i.getCaption(), i.getDescription());
                 } else {

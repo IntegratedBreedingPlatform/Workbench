@@ -80,8 +80,11 @@ public class HomeAction implements ClickListener, ActionListener{
             workbenchDashboard = new WorkbenchDashboard();
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            }
+            return;
         }
         
         workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());

@@ -69,17 +69,18 @@ public class SaveNewProjectAction implements ClickListener {
             LOG.error("Error encountered while trying to save the project.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
-                    messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                    "<br />" + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
             return;
         }
         
         try {
-        	
             IBDBGenerator generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
             isGenerationSuccess = generator.generateDatabase();
         } catch (InternationalizableException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.toString(), e);
+            MessageNotifier.showError(event.getComponent().getWindow(),
+                    e.getCaption(), e.getDescription());
+            return;
         }
         
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());

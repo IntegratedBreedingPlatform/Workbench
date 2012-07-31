@@ -87,7 +87,6 @@ public class NavXmlParser {
     /**
      * Instantiates a new nav xml parser.
      * 
-     * TODO: error handling
      */
     public NavXmlParser() throws InternationalizableException {
         xPath = XPathFactory.newInstance().newXPath();
