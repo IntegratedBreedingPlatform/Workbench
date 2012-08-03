@@ -45,10 +45,17 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     private VerticalLayout plantSelectionPanel;
     private VerticalLayout recombinationCycle;
     private VerticalLayout projectCompletionPanel;
+    
+    private boolean isLastOpenedProject;
 
     public ProjectThumbnailPanel(Project project) {
+        this(project, false);
+    }
+    
+    public ProjectThumbnailPanel(Project project, boolean isLastOpenedProject) {
         this.project = project;
-
+        this.isLastOpenedProject = isLastOpenedProject;
+        
         assemble();
     }
 
@@ -88,7 +95,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
     protected void initializeLayout() {
         setSizeUndefined();
         setWidth("480px");
-
+        
         projectTitle.setWidth("100%");
         projectTitle.setHeight("32px");
         addComponent(projectTitle);
@@ -107,14 +114,18 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
 
     protected Component layoutWorkflowPanel() {
         Panel panel = new Panel();
-
+        
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setMargin(true);
+        
+        if(isLastOpenedProject) {
+            layout.setStyleName("gcp-highlight");
+        }
 
         layout.addComponent(workflowTitle);
         layout.setExpandRatio(workflowTitle, 0);
-
+        
         Component summaryPanel = layoutSummaryPanel();
         summaryPanel.setSizeFull();
         layout.addComponent(summaryPanel);
@@ -208,4 +219,5 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setStyleName("gcp-mars-workflow-step-thumb");
         layout.setMargin(false);
     }
+
 }

@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -74,10 +75,12 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
                 InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+                MessageNotifier.showError(component.getWindow(), i.getCaption(), i.getDescription());
             }
             return;
         }
+        
+        updateProjectLastOpenedDate(component.getWindow(), project);
         
         String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
         NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
@@ -107,6 +110,8 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             }
             return;
         }
+        
+        updateProjectLastOpenedDate(component.getWindow(), project);
 
         window.showContent(projectDashboard);
 
@@ -143,9 +148,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         } catch (QueryException qe) {
             LOG.error("QueryException", qe);
-            MessageNotifier.showError(window, 
-                    messageSource.getMessage(Message.DATABASE_ERROR), 
-                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            showDatabaseError(window);
             return;
         }
         
@@ -162,8 +165,26 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
+        updateProjectLastOpenedDate(window, p);
+        
         w.showContent(projectDashboard);
         
         NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+    }
+    
+    private void updateProjectLastOpenedDate(Window window, Project p) {
+        try {
+            p.setLastOpenDate(new Date());
+            workbenchDataManager.saveOrUpdateProject(p);
+        } catch (QueryException e) {
+            LOG.error(e.toString(), e);
+            showDatabaseError(window);
+        }
+    }
+    
+    private void showDatabaseError(Window window) {
+        MessageNotifier.showError(window, 
+                messageSource.getMessage(Message.DATABASE_ERROR), 
+                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
     }
 }

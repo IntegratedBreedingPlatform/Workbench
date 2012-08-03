@@ -29,6 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -68,6 +69,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private SimpleResourceBundleMessageSource messageSource;
 
     private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
+    
+    private Project lastOpenedProject;
 
     public WorkbenchDashboard() {
         super();
@@ -124,6 +127,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
             @Override
             public String getStyle(Object itemId, Object propertyId) {
+                Item item = tblProject.getItem(itemId);
+                if(lastOpenedProject.getProjectId() == 
+                   item.getItemProperty("projectId").getValue()) {
+                    return "gcp-highlight";
+                }
                 return "project-table";
             }
         });
@@ -149,8 +157,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         //TODO: Verify the try-catch flow
         // Get the list of Projects
         List<Project> projects = null;
+        lastOpenedProject = null;
         try {
             projects = workbenchDataManager.getProjects();
+            //TODO UPDATE userid param
+            lastOpenedProject = workbenchDataManager.getLastOpenedProject(1);
         } catch (QueryException e) {
             LOG.error("Exception", e);
             throw new InternationalizableException(e, 
@@ -168,10 +179,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // set the visible columns on the Project Table
         String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
         tblProject.setVisibleColumns(columns);
-
+        
+        boolean isLastOpenedProject = false;
+        
         // update the Project Thumbnail area
         for (Project project : projects) {
-            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project);
+            isLastOpenedProject = lastOpenedProject.getProjectId() == 
+                project.getProjectId();
+            
+            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project, isLastOpenedProject);
             projectPanel.setData(project);
 
             projectPanel.addListener(new LayoutClickListener() {
@@ -238,14 +254,14 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         AbsoluteLayout outerLayout = new AbsoluteLayout();
         outerLayout.setWidth("100%");
         outerLayout.setHeight("430px");
-
+        
         projectThumbnailArea.setWidth("100%");
         projectThumbnailArea.setScrollable(true);
-
+        
         projectThumbnailLayout = new HorizontalLayout();
         projectThumbnailLayout.setSpacing(true);
         projectThumbnailLayout.setMargin(true);
-
+        
         projectThumbnailArea.setContent(projectThumbnailLayout);
 
         // NOTE: the project thumbnail layout is intentionally empty at this
