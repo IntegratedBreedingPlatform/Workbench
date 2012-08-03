@@ -114,9 +114,11 @@ public class LoginAction implements ClickListener{
             application.setMainWindow(window);
         } catch (Exception e) {
             LOG.error("Exception", e);
-            InternationalizableException i = (InternationalizableException) e.getCause();
-            MessageNotifier.showError(application.getMainWindow(),
-                    i.getCaption(), i.getDescription());
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(application.getMainWindow(),
+                        i.getCaption(), i.getDescription());
+            }
             return;
         }
     }
