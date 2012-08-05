@@ -47,7 +47,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
-
+    
+    private static final String VERSION = "1.1.0";
+    
     private Label workbenchTitle;
     private Button homeButton;
     private Button signOutButton;
@@ -318,7 +320,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     @Override
     public void updateLabels() {
-        messageSource.setValue(workbenchTitle, Message.workbench_title);
+        String title = messageSource.getMessage(Message.workbench_title) + " " + VERSION;
+        workbenchTitle.setValue(title);
         
         messageSource.setCaption(homeButton, Message.home);
         messageSource.setCaption(signOutButton, Message.signout);
