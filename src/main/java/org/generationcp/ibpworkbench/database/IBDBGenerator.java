@@ -58,7 +58,7 @@ public class IBDBGenerator{
 	private static final String SQL_END = ";";
 	
 	private static final String DEFAULT_LOCAL_USER = "local";
-	private static final String DEFAULT_LOCAL_HOST = "local";
+	private static final String DEFAULT_LOCAL_HOST = "localhost";
 	private static final String DEFAULT_LOCAL_PASSWORD = "local";
 	private static final String DEFAULT_ALL = "*";
 	private static final String DEFAULT_CHAR_SET = "utf8";
