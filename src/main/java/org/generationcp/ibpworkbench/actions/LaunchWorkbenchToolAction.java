@@ -23,6 +23,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -87,6 +88,9 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
+    @Autowired
+    private ToolUtil toolUtil;
+    
     public LaunchWorkbenchToolAction() {
     }
     
@@ -139,12 +143,12 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         } else {
             if (tool.getToolType() == ToolType.NATIVE) {
                 
-                File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-                Runtime runtime = Runtime.getRuntime();
                 try {
-                    runtime.exec(absoluteToolFile.getAbsolutePath());
+                    toolUtil.launchNativeTool(tool);
                 }
                 catch (IOException e) {
+                    File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+                    
                     LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
                     showLaunchError(window, absoluteToolFile.getAbsolutePath());
                 }

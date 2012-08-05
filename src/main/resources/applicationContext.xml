@@ -50,6 +50,12 @@
         <constructor-arg ref="hibernateUtil" />
     </bean>
 
-    <bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory" />
-
+    <bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
+        <property name="jdbcHost"           value="${workbench.host}"/>
+        <property name="jdbcPort"           value="${workbench.port}"/>
+        <property name="centralUser"        value="${central.user}"/>
+        <property name="centralPassword"    value="${central.password}"/>
+        <property name="localUser"          value="${local.user}"/>
+        <property name="localPassword"      value="${local.password}"/>
+    </bean>
 </beans>

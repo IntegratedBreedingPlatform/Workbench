@@ -13,6 +13,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,12 @@ import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +58,9 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
+    @Autowired
+    private ToolUtil toolUtil;
+    
     @Override
     public void itemClick(ItemClickEvent event) {
         Component component = event.getComponent();
@@ -67,6 +74,9 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
+        updateTools(component.getWindow(), project);
+        
+        // open the project's dashboard
         ProjectDashboard projectDashboard = null;
         try {
             projectDashboard = new ProjectDashboard(project);
@@ -97,6 +107,8 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         if (project == null) {
             return;
         }
+        
+        updateTools(component.getWindow(), project);
 
         ProjectDashboard projectDashboard = null;
         try {
@@ -152,6 +164,8 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
+        updateTools(window, p);
+        
         ProjectDashboard projectDashboard = null;
         try {
             projectDashboard = new ProjectDashboard(p);
@@ -186,5 +200,59 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         MessageNotifier.showError(window, 
                 messageSource.getMessage(Message.DATABASE_ERROR), 
                 "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+    }
+    
+    protected void updateTools(Window window, Project project) {
+        // get all native tools
+        List<Tool> nativeTools = null;
+        try {
+            nativeTools = workbenchDataManager.getToolsWithType(ToolType.NATIVE);
+        }
+        catch (QueryException e1) {
+            LOG.error("QueryException", e1);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
+        }
+        
+        for (Tool tool : nativeTools) {
+            // close the native tools
+            try {
+                toolUtil.closeNativeTool(tool);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+            
+            // rewrite the configuration file
+            try {
+                toolUtil.updateToolConfigurationForProject(tool, project);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+        }
+        
+        // get web tools
+        List<Tool> webTools = null;
+        try {
+            webTools = workbenchDataManager.getToolsWithType(ToolType.WEB);
+        }
+        catch (QueryException e2) {
+            LOG.error("QueryException", e2);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
+        }
+        
+        for (Tool tool : webTools) {
+            // rewrite the configuration file
+            try {
+                toolUtil.updateToolConfigurationForProject(tool, project);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+        }
     }
 }
