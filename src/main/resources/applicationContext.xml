@@ -45,6 +45,9 @@
         <constructor-arg value="${workbench.password}" />
     </bean>
 
+    <!-- The data source configuration -->
+    <bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory"/>
+
     <bean id="workbenchDataManager"
         class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
         <constructor-arg ref="hibernateUtil" />
