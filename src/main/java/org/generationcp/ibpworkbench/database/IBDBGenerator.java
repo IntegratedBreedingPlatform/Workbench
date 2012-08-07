@@ -30,6 +30,8 @@ public class IBDBGenerator{
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
 	private static final String WORKBENCH_PROP = "workbench.properties";
+	
+	private static final String WORKBENCH_GDMS_USER_SQL = "IBDBv1_GDMS_User.sql";
 	private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
 	private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
 	private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
@@ -173,7 +175,13 @@ public class IBDBGenerator{
 	    	statement.executeBatch();
 	    	
 	    	connection.setCatalog(databaseName.toString());
-
+	    	
+	    	executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_USER_SQL).toURI()));
+	    	
+        } catch (FileNotFoundException e) {
+            handleConfigurationError(e);
+        } catch (URISyntaxException e) {
+            handleConfigurationError(e);
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -191,10 +199,10 @@ public class IBDBGenerator{
 
         try {
 
-            createTables(new File(ResourceFinder.locateFile(WORKBENCH_DMS_SQL).toURI()));
-            createTables(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
-            createTables(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
-            createTables(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));
+        	executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_SQL).toURI()));
+        	executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
+        	executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
+        	executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));
 
             LOG.info("IB Local Database Generation Successful");
 
@@ -206,7 +214,7 @@ public class IBDBGenerator{
 
     }
 
-    private void createTables(File sqlFile) throws InternationalizableException {
+    private void executeSQLFile(File sqlFile) throws InternationalizableException {
 
         /*
          * if (!sqlFile.toString().endsWith(".sql")) { throw new
