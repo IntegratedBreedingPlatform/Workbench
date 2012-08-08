@@ -51,7 +51,6 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
-    @Autowired
     private ManagerFactory managerFactory;
 
     private static final String ID = "id";
