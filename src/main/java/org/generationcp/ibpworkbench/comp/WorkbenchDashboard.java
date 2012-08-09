@@ -19,6 +19,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -128,9 +129,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             @Override
             public String getStyle(Object itemId, Object propertyId) {
                 Item item = tblProject.getItem(itemId);
-                if(lastOpenedProject.getProjectId() == 
-                   item.getItemProperty("projectId").getValue()) {
-                    return "gcp-highlight";
+                //TODO: remove checking when projects retrieved are only for the user
+                if(lastOpenedProject != null) {
+                    if(lastOpenedProject.getProjectId() == 
+                       item.getItemProperty("projectId").getValue()) {
+                        return "gcp-highlight";
+                    }
                 }
                 return "project-table";
             }
@@ -160,8 +164,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lastOpenedProject = null;
         try {
             projects = workbenchDataManager.getProjects();
-            //TODO UPDATE userid param
-            lastOpenedProject = workbenchDataManager.getLastOpenedProject(1);
+            lastOpenedProject = workbenchDataManager.getLastOpenedProject(
+                    ApplicationMetaData.getUserData().getUserid());
         } catch (QueryException e) {
             LOG.error("Exception", e);
             throw new InternationalizableException(e, 
@@ -184,8 +188,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         // update the Project Thumbnail area
         for (Project project : projects) {
-            isLastOpenedProject = lastOpenedProject.getProjectId() == 
-                project.getProjectId();
+            //TODO: remove checking when projects retrieved are only for the user
+            if(lastOpenedProject != null) {
+                isLastOpenedProject = lastOpenedProject.getProjectId() == 
+                    project.getProjectId();
+            }
             
             ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project, isLastOpenedProject);
             projectPanel.setData(project);
