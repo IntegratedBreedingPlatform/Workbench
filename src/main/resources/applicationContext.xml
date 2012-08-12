@@ -36,7 +36,7 @@
     </bean>
 
     <!-- Data Managers -->
-    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil">
+    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil" destroy-method="shutdown">
         <constructor-arg value="ibpworkbench_hib.cfg.xml" />
         <constructor-arg value="${workbench.host}" />
         <constructor-arg value="${workbench.port}" />
@@ -46,7 +46,7 @@
     </bean>
 
     <!-- The data source configuration -->
-    <bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory"/>
+    <bean id="managerFactory" class="org.generationcp.middleware.manager.ManagerFactory" destroy-method="close"/>
 
     <bean id="workbenchDataManager"
         class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
