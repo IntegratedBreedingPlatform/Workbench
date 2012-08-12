@@ -29,6 +29,7 @@ public enum Message {
     ,signout
     ,user_guide
     ,user_guide_1
+    ,USERNAME
     ,workbench_title,
     
     //General
