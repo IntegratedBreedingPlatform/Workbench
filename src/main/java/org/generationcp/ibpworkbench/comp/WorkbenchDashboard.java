@@ -190,8 +190,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         for (Project project : projects) {
             //TODO: remove checking when projects retrieved are only for the user
             if(lastOpenedProject != null) {
-                isLastOpenedProject = lastOpenedProject.getProjectId() == 
-                    project.getProjectId();
+                isLastOpenedProject = lastOpenedProject.getProjectId().equals(project.getProjectId());
             }
             
             ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project, isLastOpenedProject);
