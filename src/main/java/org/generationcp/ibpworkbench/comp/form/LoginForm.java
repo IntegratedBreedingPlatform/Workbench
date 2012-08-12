@@ -37,10 +37,10 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private static final long serialVersionUID = 1L;
     
     private Label lblTitle;
-    private Label lblEmailAddress;
+    private Label lblUsername;
     private Label lblPassword;
     private Button btnLogin;
-    private TextField txtEmailAddress;
+    private TextField txtUsername;
     private PasswordField pfPassword;
     private Component messageArea;
     private Label lblMessage;
@@ -67,8 +67,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         return btnLogin;
     }
 
-    public TextField getTxtEmailAddress() {
-        return txtEmailAddress;
+    public TextField getTxtUsername() {
+        return txtUsername;
     }
 
     public PasswordField getPfPassword() {
@@ -150,10 +150,10 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
     private GridLayout buildUsernamePasswordArea() {
         // email address
-        lblEmailAddress = new Label();
-        lblEmailAddress.setWidth(null);
+        lblUsername = new Label();
+        lblUsername.setWidth(null);
 
-        txtEmailAddress = new TextField();
+        txtUsername = new TextField();
 
         // password
         lblPassword = new Label();
@@ -166,8 +166,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         GridLayout gridLayout = new GridLayout(2, 3);
         gridLayout.setMargin(true, false, false, false);
         gridLayout.setWidth("250px");
-        gridLayout.addComponent(lblEmailAddress);
-        gridLayout.addComponent(txtEmailAddress);
+        gridLayout.addComponent(lblUsername);
+        gridLayout.addComponent(txtUsername);
         gridLayout.addComponent(lblPassword);
         gridLayout.addComponent(pfPassword);
         gridLayout.addComponent(messageArea, 0, 2, 1, 2);
@@ -205,7 +205,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     public void updateLabels() {
         messageSource.setValue(lblTitle, Message.login_title);
         messageSource.setCaption(btnLogin, Message.login);
-        messageSource.setValue(lblEmailAddress, Message.email);
+        messageSource.setValue(lblUsername, Message.USERNAME);
         messageSource.setValue(lblPassword, Message.password);
         messageSource.setValue(lblMessage, Message.error_login_invalid);
         messageSource.setCaption(registerUserAccountButton, Message.REGISTER_USER_ACCOUNT);

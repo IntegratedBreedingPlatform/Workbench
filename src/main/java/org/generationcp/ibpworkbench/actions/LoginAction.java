@@ -58,13 +58,13 @@ public class LoginAction implements ClickListener{
     public void buttonClick(ClickEvent event) {
         LoginForm loginForm = loginWindow.getLoginForm();
 
-        TextField txtEmailAddress = loginForm.getTxtEmailAddress();
+        TextField txtUsername = loginForm.getTxtUsername();
         PasswordField pfPassword = loginForm.getPfPassword();
         
-        String username = (String) txtEmailAddress.getValue();
+        String username = (String) txtUsername.getValue();
         String password = (String) pfPassword.getValue();
         
-        LOG.trace("Login with " + txtEmailAddress.getValue() + "/" + pfPassword.getValue());
+        LOG.trace("Login with " + txtUsername.getValue() + "/" + pfPassword.getValue());
         
         boolean valid = false;
         try {
