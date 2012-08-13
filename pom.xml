@@ -34,11 +34,13 @@
             <artifactId>vaadin</artifactId>
             <version>${vaadin.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwt.version}</version>
         </dependency>
+        -->
         <!-- Vaadin Add-Ons -->
         <!--
         <dependency>
@@ -52,6 +54,12 @@
             <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-vaadin</artifactId>
             <version>1.0.315</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Spring Dependency -->
         <dependency>
@@ -76,6 +84,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>3.1.1.RELEASE</version>
         </dependency>
@@ -92,7 +105,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.6.12</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
