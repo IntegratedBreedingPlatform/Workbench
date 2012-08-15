@@ -18,6 +18,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -51,8 +52,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
-    private ManagerFactory managerFactory;
-
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+    
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String SELECT = "select";
@@ -123,8 +125,8 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             table.setColumnHeaders(new String[] { "Select", "Location" });
             table.setColumnWidth(SELECT, 50);
             table.setColumnWidth(NAME, 300);
-            table.setHeight(200);
-            table.setWidth(300);
+            table.setHeight("200px");
+            table.setWidth("300px");
 
             return table;
 
@@ -144,8 +146,8 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             table.setColumnHeaders(new String[] { "Select", "Method Name" });
             table.setColumnWidth(SELECT, 50);
             table.setColumnWidth(NAME, 250);
-            table.setHeight(200);
-            table.setWidth(300);
+            table.setHeight("200px");
+            table.setWidth("300px");
 
             return table;
         }
@@ -159,6 +161,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         container.addContainerProperty(ID, Integer.class, 0);
         container.addContainerProperty(NAME, String.class, "");
 
+        // TODO: Get a ManagerFactory from the ManagerFactoryProvider
+        // Check ManagerFactoryProvider for methods that you can use.
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(null);
         int locCount = managerFactory.getGermplasmDataManager().countAllLocations();
         List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
 
@@ -183,6 +188,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         container.addContainerProperty(ID, Integer.class, 0);
         container.addContainerProperty(NAME, String.class, "");
 
+        // TODO: Get a ManagerFactory from the ManagerFactoryProvider
+        // Check ManagerFactoryProvider for methods that you can use.
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(null);
         List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
         for (Method method : methodList) {
             addMethodItem(container, method.getMid(), method.getMname());
