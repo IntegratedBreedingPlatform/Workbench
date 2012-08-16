@@ -20,6 +20,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -171,6 +172,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             throw new InternationalizableException(e, 
                     Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
+        
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        app.getSessionData().setLastOpenedProject(lastOpenedProject);
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);

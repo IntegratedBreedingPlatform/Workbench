@@ -12,14 +12,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
@@ -190,6 +191,10 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         try {
             p.setLastOpenDate(new Date());
             workbenchDataManager.saveOrUpdateProject(p);
+            
+            // set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            app.getSessionData().setLastOpenedProject(p);
         } catch (QueryException e) {
             LOG.error(e.toString(), e);
             showDatabaseError(window);
@@ -203,6 +208,13 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     }
     
     protected void updateTools(Window window, Project project) {
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
+        // don't do anything if the project is the last project opened
+        if (app.getSessionData().isLastOpenedProject(project)) {
+            return;
+        }
+        
         // get all native tools
         List<Tool> nativeTools = null;
         try {

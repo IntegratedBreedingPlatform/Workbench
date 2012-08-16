@@ -35,6 +35,12 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
 
     private UpdateComponentLabelsAction messageSourceListener;
     
+    private SessionData sessionData = new SessionData();
+    
+    public SessionData getSessionData() {
+        return sessionData;
+    }
+    
     public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
         this.messageSource = messageSource;
     }
@@ -87,5 +93,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication{
     @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
         LOG.error("Encountered error", event.getThrowable());
+    }
+    
+    public static IBPWorkbenchApplication get() {
+        return get(IBPWorkbenchApplication.class);
     }
 }
