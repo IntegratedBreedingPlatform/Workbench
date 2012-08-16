@@ -65,7 +65,6 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     @Override
     public void itemClick(ItemClickEvent event) {
         Component component = event.getComponent();
-        IContentWindow window = (IContentWindow) component.getWindow();
         
         @SuppressWarnings("unchecked")
         BeanItem<Project> item = (BeanItem<Project>) event.getItem();
@@ -75,61 +74,25 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        updateTools(component.getWindow(), project);
-        
-        // open the project's dashboard
-        ProjectDashboard projectDashboard = null;
-        try {
-            projectDashboard = new ProjectDashboard(project);
-            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
-        } catch (Exception e) {
-            LOG.error("Exception", e);
-            if(e.getCause() instanceof InternationalizableException) {
-                InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(component.getWindow(), i.getCaption(), i.getDescription());
-            }
-            return;
-        }
-        
-        updateProjectLastOpenedDate(component.getWindow(), project);
-        
         String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
         NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
         
-        window.showContent(projectDashboard);
+        openProject(component.getWindow(), project);
     }
     
     @Override
     public void click(ClickEvent event) {
         Component component = event.getComponent();
-        IContentWindow window = (IContentWindow) component.getWindow();
         
         Project project = (Project) ((ProjectThumbnailPanel) component).getData();
         if (project == null) {
             return;
         }
         
-        updateTools(component.getWindow(), project);
-
-        ProjectDashboard projectDashboard = null;
-        try {
-            projectDashboard = new ProjectDashboard(project);
-            projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
-        } catch (Exception e) {
-            LOG.error("Exception", e);
-            if(e.getCause() instanceof InternationalizableException) {
-                InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-            }
-            return;
-        }
+        String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
+        NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
         
-        updateProjectLastOpenedDate(component.getWindow(), project);
-
-        window.showContent(projectDashboard);
-
-        String viewId = "/home/openProject?projectId=" + project.getProjectId();
-        NavManager.navigateApp((Window) window, viewId, true, project.getProjectName());
+        openProject(component.getWindow(), project);
     }
 
     @Override
@@ -146,7 +109,6 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         //instantiate ProjectDashboard
         
         //call window.showContent
-        IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
         Project p = null;
@@ -165,11 +127,18 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        updateTools(window, p);
+        openProject(window, p);
         
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+    }
+    
+    private void openProject(Window window, Project project) {
+        updateTools(window, project);
+        
+        // open the project's dashboard
         ProjectDashboard projectDashboard = null;
         try {
-            projectDashboard = new ProjectDashboard(p);
+            projectDashboard = new ProjectDashboard(project);
             projectDashboard.addProjectThumbnailPanelListener(new OpenProjectWorkflowAction());
         } catch (Exception e) {
             LOG.error("Exception", e);
@@ -180,11 +149,9 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        updateProjectLastOpenedDate(window, p);
+        updateProjectLastOpenedDate(window, project);
         
-        w.showContent(projectDashboard);
-        
-        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+        ((IContentWindow) window).showContent(projectDashboard);
     }
     
     private void updateProjectLastOpenedDate(Window window, Project p) {
