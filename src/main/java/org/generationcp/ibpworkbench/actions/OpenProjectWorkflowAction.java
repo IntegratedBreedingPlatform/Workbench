@@ -18,6 +18,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
+import org.generationcp.ibpworkbench.comp.MasProjectDashboard;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -61,14 +62,22 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         
         IContentWindow window = (IContentWindow) component.getWindow();
         
-        //TODO: create a project dashboard based on the project's workflow type
-        MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
-        
         NavManager.navigateApp(component.getWindow(), 
                 "/home/openProject/openProjectWorkflow?projectId="+project.getProjectId(),
                 true, project.getProjectName());
-        
-        window.showContent(projectDashboard);
+
+        // Create a project dashboard based on the project's workflow type
+        String projectTemplate = project.getTemplate().getName();                
+        if (projectTemplate != null){
+            if (projectTemplate.equals("MARS")) { 
+                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
+                window.showContent(projectDashboard);
+            } else if (projectTemplate.equals("MAS")){
+                MasProjectDashboard projectDashboard = new MasProjectDashboard(project);
+                window.showContent(projectDashboard);
+            }
+        }
+
     }
 
     @Override
@@ -81,10 +90,10 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IContentWindow w = (IContentWindow) window;
         Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
                 
-        Project p = null;
+        Project project = null;
         try {
             Long projectId = Long.parseLong(params.get("projectId").get(0));
-            p = workbenchDataManager.getProjectById(projectId);
+            project = workbenchDataManager.getProjectById(projectId);
         } catch (QueryException e) {
             LOG.error("QueryException", e);
             MessageNotifier.showError(window, 
@@ -92,10 +101,18 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
         }
         
-        MarsProjectDashboard projectDashboard = new MarsProjectDashboard(p);
+        // Create a project dashboard based on the project's workflow type
+        String projectTemplate = project.getTemplate().getName();                
+        if (projectTemplate != null){
+            if (projectTemplate.equals("MARS")) { 
+                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
+                w.showContent(projectDashboard);
+            } else if (projectTemplate.equals("MAS")){
+                MasProjectDashboard projectDashboard = new MasProjectDashboard(project);
+                w.showContent(projectDashboard);
+            }
+        }
         
-        w.showContent(projectDashboard);
-        
-        NavManager.navigateApp(window, uriFragment, isLinkAccessed, p.getProjectName());
+        NavManager.navigateApp(window, uriFragment, isLinkAccessed, project.getProjectName());
     }
 }

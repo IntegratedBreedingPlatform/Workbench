@@ -74,7 +74,15 @@ public class ProjectDashboard extends VerticalLayout implements InitializingBean
 
         datasetsTitle = new Label();
 
-        projectThumbnailPanel = new ProjectThumbnailPanel(project);
+        // Initialize the project thumbnail panel based on the template set on the project
+        String projectTemplate = project.getTemplate().getName();
+        if (projectTemplate != null) {
+            if (projectTemplate.equals("MARS")){
+                projectThumbnailPanel = new MarsProjectThumbnailPanel(project);
+            } else if (projectTemplate.equals("MAS")){
+                projectThumbnailPanel = new MasProjectThumbnailPanel(project);
+            }
+        }  
 
         recentActivityTitle = new Label();
 

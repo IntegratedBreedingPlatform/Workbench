@@ -115,8 +115,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-        tblProject.setImmediate(true); // react at once when something is
-                                         // selected
+        tblProject.setImmediate(true); // react at once when something is selected
 
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
@@ -196,25 +195,37 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             if(lastOpenedProject != null) {
                 isLastOpenedProject = lastOpenedProject.getProjectId().equals(project.getProjectId());
             }
-            
-            ProjectThumbnailPanel projectPanel = new ProjectThumbnailPanel(project, isLastOpenedProject);
-            projectPanel.setData(project);
 
-            projectPanel.addListener(new LayoutClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void layoutClick(LayoutClickEvent event) {
-                    if (projectThumbnailClickHandler == null) {
-                        return;
-                    }
-
-                    projectThumbnailClickHandler.click(event);
+            // Create project thumbnail panel based on project template (MARS, MAS, etc).
+            ProjectThumbnailPanel projectPanel = null;
+            String projectTemplate = project.getTemplate().getName();
+            if (projectTemplate != null) { 
+                if (projectTemplate.equals("MARS")){
+                    projectPanel = new MarsProjectThumbnailPanel(project, isLastOpenedProject);
+                } else if (projectTemplate.equals("MAS")){
+                    projectPanel = new MasProjectThumbnailPanel(project, isLastOpenedProject);
                 }
-            });
+            }
+            
+            if (projectPanel != null) {
+                projectPanel.setData(project);
 
-            projectThumbnailLayout.addComponent(projectPanel);
+                projectPanel.addListener(new LayoutClickListener() {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void layoutClick(LayoutClickEvent event) {
+                        if (projectThumbnailClickHandler == null) {
+                            return;
+                        }
+
+                        projectThumbnailClickHandler.click(event);
+                    }
+                });
+
+                projectThumbnailLayout.addComponent(projectPanel);
+            }
         }
     }
 

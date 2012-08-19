@@ -17,45 +17,30 @@ import org.generationcp.middleware.pojos.workbench.Project;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
-// TODO: rename this to MarsProjectThumbnailPanel?
-public class ProjectThumbnailPanel extends VerticalLayout implements IProjectProvider{
+public abstract class ProjectThumbnailPanel extends VerticalLayout implements IProjectProvider{
 
     private static final long serialVersionUID = 1L;
 
-    private Project project;
+    protected Project project;
 
-    private Label projectTitle;
-    private Label workflowTitle;
+    protected Label projectTitle;
+    protected Label workflowTitle;
 
-    // Breeding Management
-    private VerticalLayout genotypingPanel;
-    private VerticalLayout fieldTrialPanel;
-    private VerticalLayout populationDevelopmentPanel;
-    private VerticalLayout projectPlanningPanel;
-
-    // Market Trait Analysis
-    private VerticalLayout markerTraitAnalysisPanel;
-
-    // Marker Implementation
-    private VerticalLayout plantSelectionPanel;
-    private VerticalLayout recombinationCycle;
-    private VerticalLayout projectCompletionPanel;
-    
-    private boolean isLastOpenedProject;
+    protected boolean isLastOpenedProject;
+    protected String workflowTitleString;
 
     public ProjectThumbnailPanel(Project project) {
-        this(project, false);
+        this(project, false);        
     }
     
     public ProjectThumbnailPanel(Project project, boolean isLastOpenedProject) {
         this.project = project;
-        this.isLastOpenedProject = isLastOpenedProject;
-        
+        this.setLastOpenedProject(isLastOpenedProject);
+        this.workflowTitleString = project.getTemplate().getName();
         assemble();
     }
 
@@ -64,37 +49,26 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         return project;
     }
 
+    public boolean isLastOpenedProject() {
+        return isLastOpenedProject;
+    }
+
+    public void setLastOpenedProject(boolean isLastOpenedProject) {
+        this.isLastOpenedProject = isLastOpenedProject;
+    }
+    
     protected void initializeComponents() {
         addStyleName("gcp-hand-cursor");
         
         projectTitle = new Label(project.getProjectName());
         projectTitle.setDescription("Click here");
 
-        workflowTitle = new Label("MARS");
+        workflowTitle = new Label(workflowTitleString);
         workflowTitle.setDescription("Click here");
-
-        // Breeding Management
-        projectPlanningPanel = createWorkflowStep("1. Project", "Planning"); // Project
-                                                                             // Planning
-        populationDevelopmentPanel = createWorkflowStep("2. Population", "Development"); // Population
-                                                                                         // Development
-        fieldTrialPanel = createWorkflowStep("3. Field Trial", "Management"); // Field
-                                                                              // Trial
-                                                                              // Management
-        genotypingPanel = createWorkflowStep("4. Genotyping"); // Genotyping
-
-        // Market Trait Analysis
-        markerTraitAnalysisPanel = createWorkflowStep("5. Marker Trait", "Analysis");
-
-        // Marker Implementation
-        plantSelectionPanel = createWorkflowStep("6. Plant", "Selection");
-        recombinationCycle = createWorkflowStep("7. Recombination", "Cycle");
-        projectCompletionPanel = createWorkflowStep("8. Project", "Completion");
     }
 
     protected void initializeLayout() {
         setSizeUndefined();
-        setWidth("480px");
         
         projectTitle.setWidth("100%");
         projectTitle.setHeight("32px");
@@ -119,7 +93,7 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        if(isLastOpenedProject) {
+        if(isLastOpenedProject()) {
             layout.setStyleName("gcp-highlight");
         }
 
@@ -134,69 +108,12 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         panel.setContent(layout);
         return panel;
     }
-
-    protected Component layoutSummaryPanel() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeFull();
-        layout.setSpacing(true);
-
-        Component breedingManagementArea = layoutBreedingManagementArea();
-        layout.addComponent(breedingManagementArea);
-
-        Component markerTraitAnalysisArea = layoutMarkerTraitAnalysis();
-        layout.addComponent(markerTraitAnalysisArea);
-
-        Component markerImplementationArea = layoutMarkerImplementation();
-        layout.addComponent(markerImplementationArea);
-
-        return layout;
-    }
-
-    protected Component layoutBreedingManagementArea() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSpacing(true);
-
-        configureWorkflowStepLayout(projectPlanningPanel);
-        layout.addComponent(projectPlanningPanel);
-
-        configureWorkflowStepLayout(populationDevelopmentPanel);
-        layout.addComponent(populationDevelopmentPanel);
-
-        configureWorkflowStepLayout(fieldTrialPanel);
-        layout.addComponent(fieldTrialPanel);
-
-        configureWorkflowStepLayout(genotypingPanel);
-        layout.addComponent(genotypingPanel);
-
-        return layout;
-    }
-
-    protected Component layoutMarkerTraitAnalysis() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSpacing(true);
-
-        configureWorkflowStepLayout(markerTraitAnalysisPanel);
-        layout.addComponent(markerTraitAnalysisPanel);
-
-        return layout;
-    }
-
-    protected Component layoutMarkerImplementation() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.setSpacing(true);
-
-        configureWorkflowStepLayout(plantSelectionPanel);
-        layout.addComponent(plantSelectionPanel);
-
-        configureWorkflowStepLayout(recombinationCycle);
-        layout.addComponent(recombinationCycle);
-
-        configureWorkflowStepLayout(projectCompletionPanel);
-        layout.addComponent(projectCompletionPanel);
-
-        return layout;
-    }
+    
+    /** 
+     * Implement to provide layout of the summary panel based on a specific workflow template.
+     */
+    protected abstract Component layoutSummaryPanel();
+    
 
     protected VerticalLayout createWorkflowStep(String... captions) {
         VerticalLayout layout = new VerticalLayout();
@@ -219,5 +136,6 @@ public class ProjectThumbnailPanel extends VerticalLayout implements IProjectPro
         layout.setStyleName("gcp-mars-workflow-step-thumb");
         layout.setMargin(false);
     }
+
 
 }

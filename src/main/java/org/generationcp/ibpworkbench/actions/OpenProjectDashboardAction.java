@@ -23,7 +23,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.ProjectDashboard;
-import org.generationcp.ibpworkbench.comp.ProjectThumbnailPanel;
+import org.generationcp.ibpworkbench.comp.MarsProjectThumbnailPanel;
+import org.generationcp.ibpworkbench.comp.MasProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
@@ -84,7 +85,13 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
     public void click(ClickEvent event) {
         Component component = event.getComponent();
         
-        Project project = (Project) ((ProjectThumbnailPanel) component).getData();
+        Project project = null;
+        if (component instanceof MarsProjectThumbnailPanel){
+            project = (Project) ((MarsProjectThumbnailPanel) component).getData();
+        } else if (component instanceof MasProjectThumbnailPanel){
+            project = (Project) ((MasProjectThumbnailPanel) component).getData();
+        }
+        
         if (project == null) {
             return;
         }
