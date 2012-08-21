@@ -12,7 +12,10 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
+import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -33,13 +36,21 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     private static final long serialVersionUID = 1L;
 
     private Label newProjectTitle;
+    
+    private Label addLocationTitle;
 
-    private Form form;
+    private Form projectForm;
+    
+    private AddLocationForm locationForm;
 
     private Button cancelButton;
 
-    private Button saveButton;
+    private Button saveProjectButton;
+    
+    private Button addLocationButton;
 
+    Component buttonArea;
+    
     public CreateNewProjectPanel() {
         super();
     }
@@ -48,35 +59,61 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     public void afterPropertiesSet() {
         assemble();
 
-        form.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "cropType", "template" });
+        projectForm.setVisibleItemProperties(new String[] { "projectName", "targetDueDate", "cropType", "template" });
+        
     }
 
-    public Button getSaveButton() {
-        return saveButton;
+    public Button getAddLocationButton() {
+        return addLocationButton;
+    }
+    
+    public Button getSaveProjectButton() {
+        return saveProjectButton;
     }
 
     public Button getCancelButton() {
         return cancelButton;
     }
 
-    public Form getForm() {
-        return form;
+    public Form getProjectForm() {
+        return projectForm;
+    }
+    
+    public AddLocationForm getLocationForm() {
+        return locationForm;
     }
 
     protected void initializeComponents() {
         newProjectTitle = new Label("Create New Project");
         newProjectTitle.setStyleName("gcp-content-title");
 
+        addComponent(newProjectTitle);
+        
         BeanItem<Project> projectBean = new BeanItem<Project>(new Project());
         projectBean.addItemProperty("tblLocation", new Table());
         projectBean.addItemProperty("tblMethods", new Table());
 
-        form = new Form();
-        form.setItemDataSource(projectBean);
-        form.setFormFieldFactory(new ProjectFormFieldFactory());
-
+        projectForm = new Form();
+        projectForm.setItemDataSource(projectBean);
+        projectForm.setFormFieldFactory(new ProjectFormFieldFactory());
+        addComponent(projectForm);
+        
+        addLocationTitle = new Label("Add Location: ");
+        addLocationTitle.setStyleName("gcp-content-title");
+        addComponent(addLocationTitle);
+        
+        locationForm = new AddLocationForm(new Location());
+        addComponent(locationForm);
+        
+        addLocationButton = new Button("Add Location");
+        addComponent(addLocationButton);
+        
         cancelButton = new Button("Cancel");
-        saveButton = new Button("Save");
+        saveProjectButton = new Button("Save");
+        
+        buttonArea = layoutButtonArea();
+        addComponent(buttonArea);
+        
     }
 
     protected void initializeLayout() {
@@ -84,15 +121,19 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         setMargin(true);
 
         newProjectTitle.setSizeUndefined();
-        addComponent(newProjectTitle);
 
-        form.setSizeFull();
-        addComponent(form);
+        //projectForm.setSizeFull();
+        
+        addLocationTitle.setSizeUndefined();
+        
+        //locationForm.setSizeFull();
 
-        // add the save/cancel buttons
-        Component buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
+        // set the save/cancel buttons
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+    }
+    
+    protected void initializeActions() {
+    	addLocationButton.addListener(new SaveNewLocationAction(locationForm));
     }
 
     protected Component layoutButtonArea() {
@@ -101,9 +142,10 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        saveButton = new Button("Save");
+        saveProjectButton = new Button("Save");
+        
         buttonLayout.addComponent(cancelButton);
-        buttonLayout.addComponent(saveButton);
+        buttonLayout.addComponent(saveProjectButton);
 
         return buttonLayout;
     }
@@ -111,5 +153,6 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     protected void assemble() {
         initializeComponents();
         initializeLayout();
+        initializeActions();
     }
 }

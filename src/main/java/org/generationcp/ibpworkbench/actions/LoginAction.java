@@ -15,7 +15,6 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
@@ -86,26 +85,16 @@ public class LoginAction implements ClickListener{
         }
         
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
-        
-        
-        // Create the application data instance
-           ApplicationMetaData sessionData = new ApplicationMetaData(application);
            
         //TODO: Verify the try-catch flow
         try {
-            ApplicationMetaData.setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
+        	application.getSessionData().setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
         } catch (QueryException e) {
             LOG.error("Error encountered while trying to login", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
         }
-
-        // Register it as a listener in the application context
-        application.getContext().addTransactionListener(sessionData);
-       
-        // Also set the user data model
-        //ApplicationMetaData.setUserData(userDataManager.get);
         
         WorkbenchDashboardWindow window = null;
         try {

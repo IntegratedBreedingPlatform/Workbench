@@ -57,7 +57,9 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         
         newProjectPanel.setWidth("480px");
         
-        newProjectPanel.getSaveButton().addListener(new SaveNewProjectAction(newProjectPanel.getForm()));
+        //newProjectPanel.getAddLocationButton().addListener(new SaveNewLocationAction(newProjectPanel.getLocationForm()));
+        
+        newProjectPanel.getSaveProjectButton().addListener(new SaveNewProjectAction(newProjectPanel.getProjectForm()));
         
         w.showContent(newProjectPanel);
         

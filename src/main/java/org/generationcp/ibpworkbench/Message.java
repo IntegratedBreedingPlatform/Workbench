@@ -75,7 +75,10 @@ public enum Message {
     
     //Tray Notification
     UPLOAD_SUCCESS,
-    UPLOAD_SUCCESS_DESC
+    UPLOAD_SUCCESS_DESC,
+    
+    LOC_NAME,
+    LOC_ABBR
     
     // Tool configuration update
     ,UPDATING

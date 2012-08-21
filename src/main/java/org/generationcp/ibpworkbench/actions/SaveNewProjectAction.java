@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Date;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ApplicationMetaData;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.QueryException;
@@ -58,7 +60,11 @@ public class SaveNewProjectAction implements ClickListener {
         BeanItem<Project> projectBean = (BeanItem<Project>) newProjectForm.getItemDataSource();
         Project project = projectBean.getBean();
         
-        project.setUserId(ApplicationMetaData.getUserData().getUserid());
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
+        project.setUserId(app.getSessionData().getUserData().getUserid());
+        
+        //workbenchDataManager.get
         
         //TODO: Verify the try-catch flow
         try {

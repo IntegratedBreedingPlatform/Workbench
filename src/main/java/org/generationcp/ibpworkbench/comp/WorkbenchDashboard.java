@@ -19,7 +19,6 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.ApplicationMetaData;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
@@ -162,17 +161,19 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // Get the list of Projects
         List<Project> projects = null;
         lastOpenedProject = null;
+        
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
         try {
             projects = workbenchDataManager.getProjects();
             lastOpenedProject = workbenchDataManager.getLastOpenedProject(
-                    ApplicationMetaData.getUserData().getUserid());
+            		app.getSessionData().getUserData().getUserid());
         } catch (QueryException e) {
             LOG.error("Exception", e);
             throw new InternationalizableException(e, 
                     Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
-        
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
         app.getSessionData().setLastOpenedProject(lastOpenedProject);
 
         // set the Project Table data source
