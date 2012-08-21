@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -62,11 +60,9 @@ public class SaveNewProjectAction implements ClickListener {
         
         project.setUserId(ApplicationMetaData.getUserData().getUserid());
         
-        //workbenchDataManager.get
-        
         //TODO: Verify the try-catch flow
         try {
-            project.setLastOpenDate(new Date());
+            project.setLastOpenDate(null);
             workbenchDataManager.saveOrUpdateProject(project);
         } catch (QueryException e) {
             LOG.error("Error encountered while trying to save the project.", e);
