@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -38,14 +37,11 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TwinColSelect;
 
@@ -61,10 +57,6 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
-    private static final String ID = "id";
-    private static final String NAME = "name";
-    private static final String SELECT = "select";
-
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
         Field field = super.createField(item, propertyId, uiContext);
@@ -126,47 +118,63 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 
             return comboBox;
 
-        } else if ("tblLocation".equals(propertyId)) {
+        } else if ("locations".equals(propertyId)) {
+            TwinColSelect select = new TwinColSelect("Locations");
+            select.setLeftColumnCaption("Available Locations");
+            select.setRightColumnCaption("Selected Locations");
+            select.setRows(10);
+            select.setWidth("400px");
+            select.setMultiSelect(true);
+            select.setNullSelectionAllowed(true);
+            
+            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
+            if (cropType != null) {
+                try {
+                    Container container = createLocationsContainer(cropType);
+                    select.setContainerDataSource(container);
 
-            Table table = new Table("Location");
-            IndexedContainer locationContainer = null;
-            try {
-                locationContainer = getLocationContainer();
-            } catch (QueryException e) {
-                LOG.error("QueryException", e);
-                throw new InternationalizableException(e, 
-                        Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                    for (Object itemId : container.getItemIds()) {
+                        Location location = (Location) itemId;
+                        select.setItemCaption(itemId, location.getLname());
+                    }
+                }
+                catch (QueryException e) {
+                    LOG.error("Error encountered while getting central locations", e);
+                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                           Message.CONTACT_ADMIN_ERROR_DESC);
+                }
             }
-            table.setContainerDataSource(locationContainer);
-            table.setVisibleColumns(new String[] { SELECT, NAME });
-            table.setColumnHeaders(new String[] { "Select", "Location" });
-            table.setColumnWidth(SELECT, 50);
-            table.setColumnWidth(NAME, 300);
-            table.setHeight("200px");
-            table.setWidth("300px");
+            
+            return select;
 
-            return table;
+        } else if ("methods".equals(propertyId)) {
+            TwinColSelect select = new TwinColSelect("Methods");
+            select.setLeftColumnCaption("Available Methods");
+            select.setRightColumnCaption("Selected Methods");
+            select.setRows(10);
+            select.setWidth("400px");
+            select.setMultiSelect(true);
+            select.setNullSelectionAllowed(true);
+            
+            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
+            if (cropType != null) {
+                try {
+                    Container container = createMethodsContainer(cropType);
+                    select.setContainerDataSource(container);
 
-        } else if ("tblMethods".equals(propertyId)) {
-
-            Table table = new Table("Breeding Methods");
-            IndexedContainer methodContainer = null;
-            try {
-                methodContainer = getMethodContainer();
-            } catch (QueryException e) {
-                LOG.error("QueryException", e);
-                throw new InternationalizableException(e, 
-                        Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                    for (Object itemId : container.getItemIds()) {
+                        Method method = (Method) itemId;
+                        select.setItemCaption(itemId, method.getMname());
+                    }
+                }
+                catch (QueryException e) {
+                    LOG.error("Error encountered while getting central methods", e);
+                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                           Message.CONTACT_ADMIN_ERROR_DESC);
+                }
             }
-            table.setContainerDataSource(methodContainer);
-            table.setVisibleColumns(new String[] { SELECT, NAME });
-            table.setColumnHeaders(new String[] { "Select", "Method Name" });
-            table.setColumnWidth(SELECT, 50);
-            table.setColumnWidth(NAME, 250);
-            table.setHeight("200px");
-            table.setWidth("300px");
 
-            return table;
+            return select;
         }
         else if ("members".equals(propertyId)) {
             TwinColSelect select = new TwinColSelect("Project Members");
@@ -179,12 +187,19 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             
             CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
             if (cropType != null) {
-                Container container = createUsersContainer(cropType);
-                select.setContainerDataSource(container);
-                
-                for (Object itemId : container.getItemIds()) {
-                    User user = (User) itemId;
-                    select.setItemCaption(itemId, user.getPerson().getDisplayName());
+                try {
+                    Container container = createUsersContainer(cropType);
+                    select.setContainerDataSource(container);
+
+                    for (Object itemId : container.getItemIds()) {
+                        User user = (User) itemId;
+                        select.setItemCaption(itemId, user.getPerson().getDisplayName());
+                    }
+                }
+                catch (QueryException e) {
+                    LOG.error("Error encountered while getting central users", e);
+                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                           Message.CONTACT_ADMIN_ERROR_DESC);
                 }
             }
             
@@ -193,60 +208,34 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return field;
     }
 
-    public IndexedContainer getLocationContainer() throws QueryException {
-
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty(SELECT, CheckBox.class, "");
-        container.addContainerProperty(ID, Integer.class, 0);
-        container.addContainerProperty(NAME, String.class, "");
-
-        // TODO: Get a ManagerFactory from the ManagerFactoryProvider
-        // Check ManagerFactoryProvider for methods that you can use.
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(null);
+    private Container createMethodsContainer(CropType cropType) throws QueryException {
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        
+        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
+        
+        BeanItemContainer<Method> beanItemContainer = new BeanItemContainer<Method>(Method.class);
+        for (Method method : methodList) {
+            beanItemContainer.addBean(method);
+        }
+        
+        return beanItemContainer;
+    }
+    
+    private Container createLocationsContainer(CropType cropType) throws QueryException {
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        
         int locCount = managerFactory.getGermplasmDataManager().countAllLocations();
         List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
-
-        for (Location l : locationList) {
-            addLocationItem(container, l.getLocid(), l.getLname());
+        
+        BeanItemContainer<Location> beanItemContainer = new BeanItemContainer<Location>(Location.class);
+        for (Location location : locationList) {
+            beanItemContainer.addBean(location);
         }
-        return container;
+        
+        return beanItemContainer;
     }
 
-    private void addLocationItem(Container container, int locid, String lname) {
-        Object itemId = container.addItem();
-        Item item = container.getItem(itemId);
-        item.getItemProperty(SELECT).setValue(new CheckBox(null, false));
-        item.getItemProperty(ID).setValue(locid);
-        item.getItemProperty(NAME).setValue(lname);
-    }
-
-    public IndexedContainer getMethodContainer() throws QueryException {
-
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty(SELECT, CheckBox.class, "");
-        container.addContainerProperty(ID, Integer.class, 0);
-        container.addContainerProperty(NAME, String.class, "");
-
-        // TODO: Get a ManagerFactory from the ManagerFactoryProvider
-        // Check ManagerFactoryProvider for methods that you can use.
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(null);
-        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
-        for (Method method : methodList) {
-            addMethodItem(container, method.getMid(), method.getMname());
-        }
-
-        return container;
-    }
-
-    private void addMethodItem(Container container, int mid, String mname) {
-        Object itemId = container.addItem();
-        Item item = container.getItem(itemId);
-        item.getItemProperty(SELECT).setValue(new CheckBox(null, false));
-        item.getItemProperty(ID).setValue(mid);
-        item.getItemProperty(NAME).setValue(mname);
-    }
-
-    private Container createUsersContainer(CropType cropType) {
+    private Container createUsersContainer(CropType cropType) throws QueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         UserDataManager userDataManager = managerFactory.getUserDataManager();
         

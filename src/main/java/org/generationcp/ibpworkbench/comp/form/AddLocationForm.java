@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.middleware.pojos.Location;
+import org.springframework.context.annotation.DependsOn;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
@@ -31,6 +32,7 @@ import com.vaadin.ui.GridLayout;
  * <b>Author</b>: Jeffrey Morales
  * <br>
  * <b>File Created</b>: August 20, 2012
+ * @deprecated unused class
  */
 public class AddLocationForm extends Form{
     

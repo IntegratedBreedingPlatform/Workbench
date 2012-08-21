@@ -12,7 +12,6 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,23 +36,19 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
 
     private Label newProjectTitle;
     
-    private Label addLocationTitle;
-
     private Form projectForm;
     
     private ProjectFormFieldFactory projectFormFieldFactory;
     
-    private AddLocationForm locationForm;
-
     private Button cancelButton;
 
     private Button saveProjectButton;
     
     private Button addLocationButton;
 
-    Component buttonArea;
+    private Component buttonArea;
     
-    private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "projectName", "targetDueDate", "cropType", "template", "members" };
+    private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "projectName", "targetDueDate", "cropType", "template", "members", "methods", "locations" };
 
     public CreateNewProjectPanel() {
         super();
@@ -83,10 +78,6 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         return projectForm;
     }
     
-    public AddLocationForm getLocationForm() {
-        return locationForm;
-    }
-
     protected void initializeComponents() {
         newProjectTitle = new Label("Create New Project");
         newProjectTitle.setStyleName("gcp-content-title");
@@ -94,8 +85,6 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         addComponent(newProjectTitle);
         
         BeanItem<Project> projectBean = new BeanItem<Project>(new Project());
-//        projectBean.addItemProperty("tblLocation", new Table());
-//        projectBean.addItemProperty("tblMethods", new Table());
         
         projectFormFieldFactory = new ProjectFormFieldFactory();
 
@@ -103,16 +92,6 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         projectForm.setItemDataSource(projectBean);
         projectForm.setFormFieldFactory(projectFormFieldFactory);
         addComponent(projectForm);
-        
-//        addLocationTitle = new Label("Add Location");
-//        addLocationTitle.setStyleName("gcp-content-title");
-//        addComponent(addLocationTitle);
-        
-//        locationForm = new AddLocationForm(new Location());
-//        addComponent(locationForm);
-//        
-//        addLocationButton = new Button("Add Location");
-//        addComponent(addLocationButton);
         
         cancelButton = new Button("Cancel");
         saveProjectButton = new Button("Save");
@@ -126,21 +105,11 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         setSpacing(true);
         setMargin(true);
 
-//        newProjectTitle.setSizeUndefined();
-
-        //projectForm.setSizeFull();
-        
-//        addLocationTitle.setSizeUndefined();
-        
-        //locationForm.setSizeFull();
-
         // set the save/cancel buttons
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
     
     protected void initializeActions() {
-//        addLocationButton.addListener(new SaveNewLocationAction(locationForm));
-
         Field field = projectForm.getField("cropType");
         field.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
