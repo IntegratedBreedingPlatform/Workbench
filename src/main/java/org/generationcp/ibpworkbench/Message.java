@@ -76,4 +76,8 @@ public enum Message {
     //Tray Notification
     UPLOAD_SUCCESS,
     UPLOAD_SUCCESS_DESC
+    
+    // Tool configuration update
+    ,UPDATING
+    ,UPDATING_TOOLS_CONFIGURATION
 }
