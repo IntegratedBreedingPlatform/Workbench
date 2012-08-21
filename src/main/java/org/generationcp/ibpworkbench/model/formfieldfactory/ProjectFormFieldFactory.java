@@ -12,16 +12,21 @@
 
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
@@ -42,6 +47,7 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TwinColSelect;
 
 @Configurable
 public class ProjectFormFieldFactory extends DefaultFieldFactory{
@@ -116,6 +122,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             comboBox.setItemCaptionPropertyId("cropName");
             comboBox.setRequired(true);
             comboBox.setRequiredError("Please select a Crop.");
+            comboBox.setImmediate(true);
 
             return comboBox;
 
@@ -160,6 +167,28 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             table.setWidth("300px");
 
             return table;
+        }
+        else if ("members".equals(propertyId)) {
+            TwinColSelect select = new TwinColSelect("Project Members");
+            select.setLeftColumnCaption("Available Users");
+            select.setRightColumnCaption("Selected Project Members");
+            select.setRows(10);
+            select.setWidth("400px");
+            select.setMultiSelect(true);
+            select.setNullSelectionAllowed(true);
+            
+            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
+            if (cropType != null) {
+                Container container = createUsersContainer(cropType);
+                select.setContainerDataSource(container);
+                
+                for (Object itemId : container.getItemIds()) {
+                    User user = (User) itemId;
+                    select.setItemCaption(itemId, user.getPerson().getDisplayName());
+                }
+            }
+            
+            return select;
         }
         return field;
     }
@@ -217,4 +246,28 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         item.getItemProperty(NAME).setValue(mname);
     }
 
+    private Container createUsersContainer(CropType cropType) {
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        UserDataManager userDataManager = managerFactory.getUserDataManager();
+        
+        List<User> validUserList = new ArrayList<User>();
+        
+        // TODO: This can be improved once we implement proper User-Person mapping
+        List<User> userList = userDataManager.getAllUsers();
+        for (User user : userList) {
+            Person person = userDataManager.getPersonById(user.getPersonid());
+            user.setPerson(person);
+            
+            if (person != null) {
+                validUserList.add(user);
+            }
+        }
+        
+        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+        for (User user : validUserList) {
+            beanItemContainer.addBean(user);
+        }
+        
+        return beanItemContainer;
+    }
 }
