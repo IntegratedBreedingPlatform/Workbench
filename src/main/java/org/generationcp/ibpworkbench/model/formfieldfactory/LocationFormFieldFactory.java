@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -53,10 +54,12 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         locationName = new TextField();
         locationName.setRequired(true);
         locationName.setRequiredError("Please enter a Location Name.");
+        locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
         
         locationAbbreviation = new TextField();
         locationAbbreviation.setRequired(true);
         locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
+        locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
 
 
     }
@@ -66,11 +69,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
          
         Field field = super.createField(item, propertyId, uiContext);
         
-        if ("locationName".equals(propertyId)) {
+        if ("lname".equals(propertyId)) {
             messageSource.setCaption(locationName, Message.LOC_NAME);
             return locationName;
             
-        } else if ("locationAbbreviation".equals(propertyId)) {
+        } else if ("labbr".equals(propertyId)) {
             messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
             return locationAbbreviation;
         }

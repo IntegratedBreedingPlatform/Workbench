@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -20,7 +23,9 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +44,9 @@ public class SaveNewProjectAction implements ClickListener {
     private static final long serialVersionUID = 1L;
    
     private Form newProjectForm;
+    
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -66,7 +74,7 @@ public class SaveNewProjectAction implements ClickListener {
         
         //workbenchDataManager.get
         
-        //TODO: Verify the try-catch flow
+        //TODO: Verify the try-catch flow      
         try {
             project.setLastOpenDate(null);
             workbenchDataManager.saveOrUpdateProject(project);
@@ -78,8 +86,10 @@ public class SaveNewProjectAction implements ClickListener {
             return;
         }
         
+        IBDBGenerator generator;
+        
         try {
-            IBDBGenerator generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
+            generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
             isGenerationSuccess = generator.generateDatabase();
         } catch (InternationalizableException e) {
             LOG.error(e.toString(), e);
@@ -88,12 +98,25 @@ public class SaveNewProjectAction implements ClickListener {
             return;
         }
         
+        if(isGenerationSuccess) {
+        	
+        	generator.addCachedLocations(app.getSessionData().getProjectLocationData());
+        	
+        }
+        
+        app.getSessionData().getProjectLocationData().clear();
+        
+        app.getSessionData().getUniqueLocations().clear();
+        
         //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
         LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
+        
+        
         
         // go back to dashboard
         HomeAction home = new HomeAction();
         home.buttonClick(event);
     }
+    
 }

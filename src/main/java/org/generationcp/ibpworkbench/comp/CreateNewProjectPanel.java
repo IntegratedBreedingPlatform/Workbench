@@ -98,7 +98,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         projectForm.setFormFieldFactory(new ProjectFormFieldFactory());
         addComponent(projectForm);
         
-        addLocationTitle = new Label("Add Location: ");
+        addLocationTitle = new Label("Add Location");
         addLocationTitle.setStyleName("gcp-content-title");
         addComponent(addLocationTitle);
         

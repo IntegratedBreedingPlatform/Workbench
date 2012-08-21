@@ -72,7 +72,7 @@ public class AddLocationForm extends Form{
         setComponentError(null);
         setFormFieldFactory(new LocationFormFieldFactory());
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "locationName", "locationAbbreviation" }));
+                new String[] { "lname", "labbr" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -81,9 +81,9 @@ public class AddLocationForm extends Form{
     @Override
     protected void attachField(Object propertyId, Field field) {
         
-        if("locationName".equals(propertyId)) {
+        if("lname".equals(propertyId)) {
             grid.addComponent(field, 0, 0);
-        } else if ("locationAbbreviation".equals(propertyId)) {
+        } else if ("labbr".equals(propertyId)) {
             grid.addComponent(field, 1, 0);
         }
     }

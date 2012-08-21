@@ -46,20 +46,37 @@ public class SaveNewLocationAction implements ClickListener {
         
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         
-        location.setCntryid(0);
-        location.setLrplce(0);
-        location.setLtype(0);
-        location.setNllp(0);
-        location.setSnl1id(0);
-        location.setSnl2id(0);
-        location.setSnl3id(0);
+        if (!app.getSessionData().getUniqueLocations().contains(location.getLname())){
         
-        Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size();
+        	app.getSessionData().getUniqueLocations().add(location.getLname());
+        	
+        	Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size();
+        	
+        	Location newLocation = new Location();
+        	
+        	newLocation.setLname(location.getLname());
+        	newLocation.setLabbr(location.getLabbr());
+        	
+        	newLocation.setLocid(nextKey);
+        	newLocation.setCntryid(0);
+        	newLocation.setLrplce(0);
+        	newLocation.setLtype(0);
+        	newLocation.setNllp(0);
+        	newLocation.setNllp(0);
+            newLocation.setSnl1id(0);
+            newLocation.setSnl2id(0);
+            newLocation.setSnl3id(0);
         
-        app.getSessionData().getProjectLocationData().put(nextKey+1, location);
+            app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
             
+            newLocation = null;
+            
+            LOG.info(app.getSessionData().getProjectLocationData().toString());
         // go back to dashboard
         //HomeAction home = new HomeAction();
         //home.buttonClick(event);
+        
+        }
+        
     }
 }

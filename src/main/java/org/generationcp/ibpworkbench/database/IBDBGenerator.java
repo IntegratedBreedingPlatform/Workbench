@@ -12,13 +12,18 @@ import java.net.URISyntaxException;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,12 +70,16 @@ public class IBDBGenerator{
     private static final String DEFAULT_ALL = "*";
     private static final String DEFAULT_CHAR_SET = "utf8";
     private static final String DEFAULT_COLLATE = "utf8_general_ci";
+    
+    private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
     private String workbenchHost;
     private String workbenchPort;
     private String workbenchUsername;
     private String workbenchPassword;
     private String workbenchURL;
+    
+    private String generatedDatabaseName;
 
     private String crop;
     private Long projectId;
@@ -173,6 +182,8 @@ public class IBDBGenerator{
             statement.addBatch(createFlushSyntax.toString());
             
             statement.executeBatch();
+            
+            generatedDatabaseName = databaseName.toString();
             
             connection.setCatalog(databaseName.toString());
         } catch (SQLException e) {
@@ -351,6 +362,60 @@ public class IBDBGenerator{
 
         }
 
+    }
+    
+    public boolean addCachedLocations(Map<Integer, Location> cachedLocations) {
+    	
+    	boolean areLocationsAdded = false;
+    	
+    	try {
+    		
+		    connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
+    	
+		    connection.setCatalog(generatedDatabaseName);
+    	
+    	    Set<Integer> keySet = cachedLocations.keySet();
+    	
+    	    Iterator<Integer> keyIter = keySet.iterator();
+    	
+    	    Location location;
+    	
+    	    PreparedStatement preparedStatement = null;
+    	
+    	    while(keyIter.hasNext()) {
+    		
+    	    	location = cachedLocations.get(keyIter.next());
+    		
+    		    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
+    		    
+    		    preparedStatement.setInt(1, location.getLocid());
+    		    preparedStatement.setInt(2, location.getLtype());
+    		    preparedStatement.setInt(3, location.getNllp());
+    		    preparedStatement.setString(4, location.getLname());
+    		    preparedStatement.setString(5, location.getLabbr());
+    		    preparedStatement.setInt(6, location.getSnl3id());
+    		    preparedStatement.setInt(7, location.getSnl2id());
+    		    preparedStatement.setInt(8, location.getSnl1id());
+    		    preparedStatement.setInt(9, location.getCntryid());
+    		    preparedStatement.setInt(10, location.getLrplce());
+    		    preparedStatement.setInt(11, 0);
+    		    
+    		    preparedStatement.executeUpdate();
+    		    
+    		    preparedStatement = null;
+    		
+    	    }
+    	    
+    	    areLocationsAdded = true;
+    	    
+    	    closeConnection();
+
+		} catch (SQLException e) {
+		    handleDatabaseError(e);
+		}
+    	
+    	return areLocationsAdded;
+    	
     }
 
     @Override
