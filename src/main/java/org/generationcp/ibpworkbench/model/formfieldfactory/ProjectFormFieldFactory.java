@@ -96,8 +96,18 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
                         Message.CONTACT_ADMIN_ERROR_DESC);
             }
         } else if ("cropType".equals(propertyId)) {
+            List<CropType> cropTypes = null;
+            try {
+                cropTypes = workbenchDataManager.getInstalledCentralCrops();
+            }
+            catch (QueryException e) {
+                LOG.error("Error encountered while getting installed central crops", e);
+                throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                        Message.CONTACT_ADMIN_ERROR_DESC);
+            }
+            
             BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
-            for (CropType cropType : CropType.values()) {
+            for (CropType cropType : cropTypes) {
                 beanItemContainer.addBean(cropType);
             }
 
