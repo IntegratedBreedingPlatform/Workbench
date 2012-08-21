@@ -26,6 +26,7 @@ import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.MarsProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.MasProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -188,6 +189,17 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         if (app.getSessionData().isLastOpenedProject(project)) {
             return;
         }
+        
+        // show a progress window
+        ProgressWindow progressWindow = new ProgressWindow(messageSource.getMessage(Message.UPDATING_TOOLS_CONFIGURATION), 10 * 1000);
+        progressWindow.setCaption(messageSource.getMessage(Message.UPDATING));
+        progressWindow.setModal(true);
+        progressWindow.setClosable(false);
+        progressWindow.setResizable(false);
+        progressWindow.center();
+        
+        window.addWindow(progressWindow);
+        progressWindow.startProgress();
         
         // get all native tools
         List<Tool> nativeTools = null;
