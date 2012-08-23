@@ -64,7 +64,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         
         w.showContent(newProjectPanel);
         
-        NavManager.navigateApp(window, "/home/createProject", isLinkAccessed);
+        NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
     }
 
 }

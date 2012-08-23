@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.exceptions.InternationalizableException;
 
 import com.vaadin.ui.HorizontalLayout;
 
@@ -65,7 +66,7 @@ public class CrumbTrail extends HorizontalLayout {
         
         navXmlParser = new NavXmlParser();
         
-        addBreadCrumb("/home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
+        addBreadCrumb("/Home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
     }
     
     /**
@@ -76,19 +77,20 @@ public class CrumbTrail extends HorizontalLayout {
      * @throws Exception 
      * @throws NumberFormatException 
      */
-    public void updateCrumbTrail(String viewId, String labelToAppend) throws NumberFormatException, Exception {
+    public void updateCrumbTrail(String viewId, String labelToAppend) 
+        throws InternationalizableException, NumberFormatException, Exception {
+        
         int currentLevel = crumbTrail.isEmpty() ? -1 : crumbTrail.peekLast().getLevel();
         navXmlParser.setUriFragment(viewId);
         
-        if(navXmlParser.validateUriFragment()) {
-            Map<String, String> map = navXmlParser.getXpathDetails();
-            String breadCrumbLabel = map.get("label");
-            if(!StringUtils.isEmpty(labelToAppend)) {
-                breadCrumbLabel += labelToAppend;
-            }
-             
-            addBreadCrumb(viewId, breadCrumbLabel, currentLevel, Integer.parseInt(map.get("level")), map.get("className"));
-        } 
+        Map<String, String> map = navXmlParser.getXpathDetails();
+        
+        String breadCrumbLabel = map.get("label");
+        if(!StringUtils.isEmpty(labelToAppend)) {
+            breadCrumbLabel += labelToAppend;
+        }
+        addBreadCrumb(viewId, breadCrumbLabel, currentLevel, 
+                Integer.parseInt(map.get("level")), map.get("className"));
     }
     
     /**

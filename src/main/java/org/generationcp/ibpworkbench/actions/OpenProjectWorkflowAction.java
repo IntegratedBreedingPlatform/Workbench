@@ -63,7 +63,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         IContentWindow window = (IContentWindow) component.getWindow();
         
         NavManager.navigateApp(component.getWindow(), 
-                "/home/openProject/openProjectWorkflow?projectId="+project.getProjectId(),
+                "/OpenProjectWorkflow?projectId="+project.getProjectId(),
                 true, project.getProjectName());
 
         // Create a project dashboard based on the project's workflow type

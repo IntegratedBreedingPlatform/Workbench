@@ -14,15 +14,12 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
-import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -113,8 +110,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 
-        Map<String, List<String>> map = UriUtils.getUriParameters(uriFragment);
-        String toolName = map.get("toolName").get(0);
+        String toolName = uriFragment.split("/")[1];
         
         if(ToolEnum.isCorrectTool(toolName)) {
             launchTool(toolName, window, isLinkAccessed);
@@ -161,7 +157,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                 browser.setHeight("800px");
                 browser.setWidth("100%");
                 
-                NavManager.navigateApp(window, "/home/openProject/openProjectWorkflow/" + toolName + "?toolName=" + toolName, isLinkAccessed);
+                NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
                 
                 IContentWindow contentWindow = (IContentWindow) window;
                 contentWindow.showContent(browser);

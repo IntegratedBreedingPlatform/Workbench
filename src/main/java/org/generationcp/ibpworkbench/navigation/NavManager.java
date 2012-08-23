@@ -79,6 +79,9 @@ public final class NavManager {
             } catch (NumberFormatException e) {
                 LOG.error("NumberFormatException", e);
                 showConfigError(window);
+            } catch (InternationalizableException e){
+                LOG.error("InternationalizableException", e);
+                MessageNotifier.showError(window, e.getCaption(), e.getDescription());
             } catch (Exception e) {
                 LOG.error("Exception", e);
                 if(e.getCause() instanceof InternationalizableException) {

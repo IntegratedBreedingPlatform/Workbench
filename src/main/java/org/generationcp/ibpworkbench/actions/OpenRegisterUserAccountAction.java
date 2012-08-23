@@ -16,9 +16,7 @@ import org.generationcp.ibpworkbench.comp.UserAccountPanel;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 
 /**
@@ -31,7 +29,7 @@ import com.vaadin.ui.Window;
  * <br>
  * <b>File Created</b>: Jul 11, 2012
  */
-public class OpenRegisterUserAccountAction implements ClickListener, ActionListener {
+public class OpenRegisterUserAccountAction implements ClickListener {
 
     private static final long serialVersionUID = 8120323541231442435L;
 
@@ -46,16 +44,6 @@ public class OpenRegisterUserAccountAction implements ClickListener, ActionListe
         vl.setSpacing(true);
         
         event.getComponent().getWindow().setContent(vl);
-    }
-
-    @Override
-    public void doAction(Event event) {
-        
-    }
-
-    @Override
-    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        
     }
 
 }

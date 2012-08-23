@@ -76,24 +76,32 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
             crumbTrail.setLinkAccessed(false);
         } else {
 
-            navXmlParser.setUriFragment(u.getFragment());
-            
-            try {
-                if (navXmlParser.validateUriFragment()) {
-                   Map<String, String> xPathDetails = navXmlParser.getXpathDetails();
-                   ActionListener listener = (ActionListener) Class.forName(xPathDetails.get("className")).getConstructor().newInstance();
-                   listener.doAction(u.getWindow(), u.getFragment(), false);
+            if(navXmlParser.validateUriFragmentSyntax(u.getFragment())) {
+                navXmlParser.setUriFragment(u.getFragment());
+                
+                try {
+                    Map<String, String> map = navXmlParser.getXpathDetails();
+                    ActionListener listener = (ActionListener) 
+                        Class.forName(map.get("className")).getConstructor().newInstance();
+                    listener.doAction(u.getWindow(), u.getFragment(), false);
+                } catch (InternationalizableException e) {
+                    LOG.error(e.toString(), e);
+                    MessageNotifier.showError(u.getWindow(), e.getCaption(), e.getDescription());
+                    return;
+                } catch (Exception e) {
+                    LOG.error(e.toString(), e);
+                    MessageNotifier.showError(u.getWindow(), 
+                            messageSource.getMessage(Message.CONFIG_ERROR), 
+                            messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                    return;
                 }
-            } catch (InternationalizableException e) {
-                LOG.error(e.toString(), e);
-                MessageNotifier.showError(u.getWindow(), e.getCaption(), e.getDescription());
-                return;
-            } catch (Exception e) {
+            
+            } else {
+                Exception e = new Exception("Error with URI fragment syntax.");
                 LOG.error(e.toString(), e);
                 MessageNotifier.showError(u.getWindow(), 
-                        messageSource.getMessage(Message.CONFIG_ERROR), 
-                        messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
+                        messageSource.getMessage(Message.INVALID_URI_ERROR), 
+                        messageSource.getMessage(Message.INVALID_URI_SYNTAX_ERROR_DESC));
             }
         }
     }

@@ -9,24 +9,44 @@
   Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
   
 -->
-<root>
-    <home id="home" label="Home" level="0" 
-          class="org.generationcp.ibpworkbench.actions.HomeAction">
-        <openProject id="openProject" label="Project Dashboard: " level="1" 
-                     class="org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction">
-            <openProjectWorkflow id="openProjectWorkflow" label="Project Workflow: " level="2" 
-                                 class="org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction">
-               <gdms id="gdms" label="Genotyping Data Management System" level="3" 
-                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</gdms>
-               <germplasm_browser id="germplasm_browser" label="Browse Germplasm Information" level="3" 
-                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</germplasm_browser>
-               <germplasm_phenotypic id="germplasm_phenotypic" label="Retrieve Germplasm by Phenotypic Data" level="3" 
-                     class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction">x</germplasm_phenotypic>
-            </openProjectWorkflow>
-        </openProject>
-	    <createProject id="createProject" label="Create Project" level="1" 
-	                   class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction">x</createProject>
-	    <createContacts id="createContacts" label="Create Contacts" level="1" 
-	                    class="org.generationcp.ibpworkbench.actions.CreateContactAction">x</createContacts>
-    </home>
-</root>
+<viewList>
+    <view path="/Home"
+          label="Home"
+          level="0"
+          class="org.generationcp.ibpworkbench.actions.HomeAction" />
+          
+    <view path="/OpenProject" 
+          label="Project Dashboard: " 
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction" />
+          
+    <view path="/OpenProjectWorkflow"
+          label="Project Workflow: "
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction" />
+          
+    <view path="/gdms"
+          label="Genotyping Data Management System"
+          level="3"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />        
+          
+    <view path="/germplasm_browser"
+          label="Browse Germplasm Information"
+          level="3"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
+          
+    <view path="/germplasm_phenotypic"
+          label="Retrieve Germplasm by Phenotypic Data"
+          level="3"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
+
+    <view path="/CreateProject"
+          label="Create Project"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />                                 
+
+    <view path="/CreateContacts"
+          label="Create Contacts"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.CreateContactAction" />
+</viewList>

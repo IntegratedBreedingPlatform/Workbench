@@ -28,6 +28,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -99,7 +100,7 @@ public class NavXmlParser {
         try {
             reader = new FileReader(file);
             source = new InputSource(reader);
-            root = (Node) xPath.evaluate("/root", source, XPathConstants.NODE);
+            root = (Node) xPath.evaluate("/viewList", source, XPathConstants.NODE);
         } catch (FileNotFoundException e) {
             LOG.error("FileNotFoundException", e);
             throwConfigError(e);
@@ -128,48 +129,25 @@ public class NavXmlParser {
      * @return the xpath details
      */
     public Map<String, String> getXpathDetails() throws InternationalizableException {
-        
-        String level;
-        String className;
-        String label;
         Map<String, String> xPathDetails  = new HashMap<String, String>();
-        
+        Node view;
         try {
-            level = xPath.evaluate(xPathUriFragment + "/@level", root);
-            className = xPath.evaluate(xPathUriFragment + "/@class", root);
-            label = xPath.evaluate(xPathUriFragment + "/@label", root);
-
-            xPathDetails.put("level", level);
-            xPathDetails.put("className", className);
-            xPathDetails.put("label", label);
+            view = (Node) xPath.evaluate(xPathUriFragment, root, XPathConstants.NODE);
+            
+            NamedNodeMap map = view.getAttributes();
+            xPathDetails.put("level", map.getNamedItem("level").getNodeValue());
+            xPathDetails.put("className", map.getNamedItem("class").getNodeValue());
+            xPathDetails.put("label", map.getNamedItem("label").getNodeValue());
         } catch (XPathExpressionException e) {
-            LOG.error("XPathExpressionException: Please fix the XML entry", e);
-            throwConfigError(e);
-        } 
-        
-        return xPathDetails;
-    }
-    
-
-    /**
-     * Validate uri fragment.
-     *
-     * @return true, if successful
-     */
-    public boolean validateUriFragment() throws InternationalizableException {
-        if(validateUriFragmentSyntax(uriFragment)) {
-            String status = "";
-            try {
-                status = xPath.evaluate(xPathUriFragment, root);
-            } catch (XPathExpressionException e) {
-                LOG.error("XPathExpressionException: Please fix the XML entry", e);
-                throw new InternationalizableException(e, 
-                        Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
-            }
-            return status.length() > 0;
-        } else {
-            return false;
+            LOG.error("XPathExpressionException: Please check the XPathExpression/viewId used.", e);
+            throw new InternationalizableException(e, 
+                    Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
+        } catch (NullPointerException e) {
+            LOG.error("NullPointerException: " + xPathUriFragment + " cannot be found in nav.xml.", e);
+            throw new InternationalizableException(e, 
+                    Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
         }
+        return xPathDetails;
     }
     
     /**
@@ -178,20 +156,10 @@ public class NavXmlParser {
      * @param uriFragment the uri fragment
      * @return true, if successful
      */
-    private boolean validateUriFragmentSyntax(String uriFragment) {
+    public boolean validateUriFragmentSyntax(String uriFragment) {
         return uriFragment.matches(xPathPattern);
     }
     
-    /**
-     * Removes the parameters in the URI fragment.
-     *
-     * @param uriFragment the uri fragment
-     * @return the string
-     */
-    private String cleanUriFragment(String uriFragment) {
-        return "/root" + uriFragment.split("\\?")[0];
-    }
-
     /**
      * Sets the uri fragment.
      *
@@ -199,7 +167,7 @@ public class NavXmlParser {
      */
     public void setUriFragment(String uriFragment) {
         this.uriFragment = uriFragment;
-        setXPathUriFragment(cleanUriFragment(uriFragment));
+        setXPathUriFragment(uriFragment);
     }
 
     /**
@@ -217,7 +185,7 @@ public class NavXmlParser {
      * @param xPathUriFragment the new x path uri fragment
      */
     private void setXPathUriFragment(String xPathUriFragment) {
-        this.xPathUriFragment = xPathUriFragment;
+        this.xPathUriFragment = "/viewList/view[@path='" + xPathUriFragment.split("\\?")[0] + "']";
     }
 
 }

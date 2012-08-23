@@ -68,7 +68,7 @@ public class CreateContactAction implements ClickListener, ActionListener {
         
         w.showContent(contactBookPanel);
         
-        NavManager.navigateApp(window, "/home/createContacts", isLinkAccessed);
+        NavManager.navigateApp(window, "/CreateContacts", isLinkAccessed);
     }
 
 }

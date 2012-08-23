@@ -22,9 +22,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.MarsProjectThumbnailPanel;
 import org.generationcp.ibpworkbench.comp.MasProjectThumbnailPanel;
+import org.generationcp.ibpworkbench.comp.ProjectDashboard;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -76,7 +76,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
+        String viewId = "/OpenProject?projectId=" + project.getProjectId(); 
         NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
         
         openProject(component.getWindow(), project);
@@ -97,7 +97,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             return;
         }
         
-        String viewId = "/home/openProject?projectId=" + project.getProjectId(); 
+        String viewId = "/OpenProject?projectId=" + project.getProjectId(); 
         NavManager.navigateApp(component.getWindow(), viewId, true, project.getProjectName());
         
         openProject(component.getWindow(), project);

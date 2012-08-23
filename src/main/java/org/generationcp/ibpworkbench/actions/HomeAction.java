@@ -49,7 +49,7 @@ public class HomeAction implements ClickListener, ActionListener{
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
-        doAction(window, "/home", true);
+        doAction(window, "/Home", true);
         
     }
 
@@ -94,7 +94,7 @@ public class HomeAction implements ClickListener, ActionListener{
         
         w.showContent(w.getWorkbenchDashboard());
         
-        NavManager.navigateApp(window, "/home", isLinkAccessed);
+        NavManager.navigateApp(window, "/Home", isLinkAccessed);
     }
 
 }
