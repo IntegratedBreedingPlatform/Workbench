@@ -23,6 +23,8 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowStep"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowTemplate"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUser"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectMethod"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectLocationMap"/>
         <mapping class="org.generationcp.middleware.pojos.Person"/> 
         <mapping class="org.generationcp.middleware.pojos.User"/>
         
