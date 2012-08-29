@@ -142,8 +142,7 @@ public class SaveNewProjectAction implements ClickListener {
 		
 		ArrayList<Method> method = new ArrayList(methods);
 	    List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
-		ArrayList<ProjectLocationMap> projectLocationMapList= new ArrayList<ProjectLocationMap>();
-
+		
 		for(Method m: method){
 			ProjectMethod projectMethod= new ProjectMethod();
 			projectMethod.setMethodId(m.getMid());
