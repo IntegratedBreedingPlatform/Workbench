@@ -22,10 +22,15 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
@@ -119,17 +124,55 @@ public class SaveNewProjectAction implements ClickListener {
 
         if (isGenerationSuccess) {
             generator.addCachedLocations(app.getSessionData().getProjectLocationData());
+            
+            User currentUser = app.getSessionData().getUserData();
+            User user = currentUser.copy();
+            
+            Person currentPerson = workbenchDataManager.getPersonById(currentUser.getPersonid());
+            Person person = currentPerson.copy();
+            
+            // create the project's local person and user data
+            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+            UserDataManager userDataManager =  managerFactory.getUserDataManager();
+            try {
+                // add the person to the project's local database
+                userDataManager.addPerson(person);
+                
+                // add a user to project's local database
+                user.setPersonid(person.getId());
+                userDataManager.addUser(user);
+            }
+            catch (QueryException e) {
+                LOG.error(e.getMessage(), e);
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                                          messageSource.getMessage(Message.DATABASE_ERROR), 
+                                          "<br />" + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                return;
+            }
+            
+            // add a workbench user to ibdb user mapping
+            IbdbUserMap ibdbUserMap = new IbdbUserMap();
+            ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
+            ibdbUserMap.setProjectId(project.getProjectId());
+            ibdbUserMap.setIbdbUserId(user.getUserid());
+            try {
+                workbenchDataManager.addIbdbUserMap(ibdbUserMap);
+            }
+            catch (QueryException e) {
+                LOG.error(e.getMessage(), e);
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                                          messageSource.getMessage(Message.DATABASE_ERROR), 
+                                          "<br />" + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                return;
+            }
         }
 
         app.getSessionData().getProjectLocationData().clear();
 
         app.getSessionData().getUniqueLocations().clear();
 
-        //System.out.printf("%d %s %s %s", project.getProjectId(), project.getProjectName(), project.getTargetDueDate(), project.getTemplate().getTemplateId());
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
         LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
-
-
 
         // go back to dashboard
         HomeAction home = new HomeAction();
