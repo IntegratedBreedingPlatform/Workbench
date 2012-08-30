@@ -12,11 +12,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -85,9 +81,13 @@ public class SaveNewProjectAction implements ClickListener {
 			project.setLastOpenDate(null);
 			Project projectSaved=workbenchDataManager.saveOrUpdateProject(project);
 			
+			// FIXME: Set type parameter to avoid compiler warning
 			Set methods= (Set) newProjectForm.getField("methods").getValue();
 			Set locations= (Set) newProjectForm.getField("locations").getValue();
 			
+			// FIXME: What happens when the user deletes all associated methods and locations?
+			// Ideally, the methods and locations will be saved automatically when we save a project.
+			// However, we need to fix the Project POJOs mapping in order to do that
 			if(!methods.isEmpty()){
 				saveProjectMethods(methods,projectSaved);
 			}
