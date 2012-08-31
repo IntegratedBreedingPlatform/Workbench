@@ -135,8 +135,8 @@ public class ToolUtil {
      * @throws IOException 
      */
     public void updateToolConfigurationForProject(Tool tool, Project project) throws IOException {
-        String centralDbName = String.format("ibdb_%s_central", project.getCropType().name().toLowerCase());
-        String localDbName = String.format("%s_%d_local", project.getCropType().name().toLowerCase(), project.getProjectId());
+        String centralDbName = String.format("ibdb_%s_central", project.getCropType().getCropName().toLowerCase());
+        String localDbName = String.format("%s_%d_local", project.getCropType().getCropName().toLowerCase(), project.getProjectId());
         
         if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name(), ToolName.breeding_manager.name())) {
             File configurationFile = new File("tools/" + tool.getToolName() + "/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
