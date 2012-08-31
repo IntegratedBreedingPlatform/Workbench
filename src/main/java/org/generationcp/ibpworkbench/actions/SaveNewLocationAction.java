@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
+import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +31,12 @@ public class SaveNewLocationAction implements ClickListener {
     private static final long serialVersionUID = 1L;
    
     private AddLocationForm newLocationForm;
+    
+    private AddLocationsWindow window;
 
-    public SaveNewLocationAction(AddLocationForm newLocationForm) {
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window) {
         this.newLocationForm = newLocationForm;
+        this.window = window;
     }
     
     @Override
@@ -39,33 +44,25 @@ public class SaveNewLocationAction implements ClickListener {
     	newLocationForm.commit();
 
         @SuppressWarnings("unchecked")
-        BeanItem<Location> locationBean = (BeanItem<Location>) newLocationForm.getItemDataSource();
-        Location location = locationBean.getBean();
+        BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
+        LocationModel location = locationBean.getBean();
         
         newLocationForm.commit();
         
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         
-        if (!app.getSessionData().getUniqueLocations().contains(location.getLname())){
+        if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())){
         
-        	app.getSessionData().getUniqueLocations().add(location.getLname());
+        	app.getSessionData().getUniqueLocations().add(location.getLocationName());
         	
         	Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size();
         	
-        	Location newLocation = new Location();
+        	LocationModel newLocation = new LocationModel();
         	
-        	newLocation.setLname(location.getLname());
-        	newLocation.setLabbr(location.getLabbr());
+        	newLocation.setLocationName(location.getLocationName());
+        	newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
         	
-        	newLocation.setLocid(nextKey);
-        	newLocation.setCntryid(0);
-        	newLocation.setLrplce(0);
-        	newLocation.setLtype(0);
-        	newLocation.setNllp(0);
-        	newLocation.setNllp(0);
-            newLocation.setSnl1id(0);
-            newLocation.setSnl2id(0);
-            newLocation.setSnl3id(0);
+        	newLocation.setLocationId(nextKey);
         
             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
             
@@ -75,6 +72,10 @@ public class SaveNewLocationAction implements ClickListener {
         // go back to dashboard
         //HomeAction home = new HomeAction();
         //home.buttonClick(event);
+            
+            newLocationForm.commit();
+            
+            window.getParent().removeWindow(window);
         
         }
         

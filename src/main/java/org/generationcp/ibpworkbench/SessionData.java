@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.generationcp.middleware.pojos.Location;
+import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 
@@ -16,7 +16,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 public class SessionData {
     private Project lastOpenedProject;
     private User userData;
-    private HashMap<Integer, Location> locationMaps = new HashMap<Integer, Location>();
+    private HashMap<Integer, LocationModel> locationMaps = new HashMap<Integer, LocationModel>();
     private Set<String> uniqueLocations = new HashSet<String>();
 
     public Project getLastOpenedProject() {
@@ -45,7 +45,7 @@ public class SessionData {
         this.userData = userData;
     }
     
-    public HashMap<Integer, Location> getProjectLocationData() {
+    public HashMap<Integer, LocationModel> getProjectLocationData() {
         return this.locationMaps;
     }
     

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -364,7 +365,7 @@ public class IBDBGenerator{
 
     }
     
-    public boolean addCachedLocations(Map<Integer, Location> cachedLocations) {
+    public boolean addCachedLocations(Map<Integer, LocationModel> cachedLocations) {
     	
     	boolean areLocationsAdded = false;
     	
@@ -378,7 +379,7 @@ public class IBDBGenerator{
     	
     	    Iterator<Integer> keyIter = keySet.iterator();
     	
-    	    Location location;
+    	    LocationModel location;
     	
     	    PreparedStatement preparedStatement = null;
     	
@@ -388,16 +389,16 @@ public class IBDBGenerator{
     		
     		    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
     		    
-    		    preparedStatement.setInt(1, location.getLocid());
-    		    preparedStatement.setInt(2, location.getLtype());
-    		    preparedStatement.setInt(3, location.getNllp());
-    		    preparedStatement.setString(4, location.getLname());
-    		    preparedStatement.setString(5, location.getLabbr());
-    		    preparedStatement.setInt(6, location.getSnl3id());
-    		    preparedStatement.setInt(7, location.getSnl2id());
-    		    preparedStatement.setInt(8, location.getSnl1id());
-    		    preparedStatement.setInt(9, location.getCntryid());
-    		    preparedStatement.setInt(10, location.getLrplce());
+    		    preparedStatement.setInt(1, location.getLocationId());
+    		    preparedStatement.setInt(2, 0);
+    		    preparedStatement.setInt(3, 0);
+    		    preparedStatement.setString(4, location.getLocationName());
+    		    preparedStatement.setString(5, location.getLocationAbbreviation());
+    		    preparedStatement.setInt(6, 0);
+    		    preparedStatement.setInt(7, 0);
+    		    preparedStatement.setInt(8, 0);
+    		    preparedStatement.setInt(9, 0);
+    		    preparedStatement.setInt(10, 0);
     		    preparedStatement.setInt(11, 0);
     		    
     		    preparedStatement.executeUpdate();

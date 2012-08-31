@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.CreateNewProjectPanel;
+import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         //newProjectPanel.getAddLocationButton().addListener(new SaveNewLocationAction(newProjectPanel.getLocationForm()));
         
         newProjectPanel.getSaveProjectButton().addListener(new SaveNewProjectAction(newProjectPanel.getProjectForm()));
+        newProjectPanel.getShowLocationWindowButton().addListener(new OpenAddLocationWindowAction());
         newProjectPanel.getCancelButton().addListener(new HomeAction());
         
         w.showContent(newProjectPanel);

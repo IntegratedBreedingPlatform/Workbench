@@ -13,9 +13,9 @@ package org.generationcp.ibpworkbench.comp.form;
 
 import java.util.Arrays;
 
+import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.middleware.pojos.Location;
-import org.springframework.context.annotation.DependsOn;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
@@ -32,19 +32,18 @@ import com.vaadin.ui.GridLayout;
  * <b>Author</b>: Jeffrey Morales
  * <br>
  * <b>File Created</b>: August 20, 2012
- * @deprecated unused class
  */
 public class AddLocationForm extends Form{
     
 	private static final long serialVersionUID = 865075321914843448L;
 
-	private BeanItem<Location> locationBean;
+	private BeanItem<LocationModel> locationBean;
     
-    private Location location;
+    private LocationModel location;
     
     private GridLayout grid;
     
-    public AddLocationForm(Location location) {
+    public AddLocationForm(LocationModel location) {
         this.location = location;
         
         assemble();
@@ -68,13 +67,13 @@ public class AddLocationForm extends Form{
         
         setLayout(grid);
         
-        locationBean = new BeanItem<Location>(location);
+        locationBean = new BeanItem<LocationModel>(location);
         
         setItemDataSource(locationBean);
         setComponentError(null);
         setFormFieldFactory(new LocationFormFieldFactory());
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "lname", "labbr" }));
+                new String[] { "locationName", "locationAbbreviation" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -83,9 +82,9 @@ public class AddLocationForm extends Form{
     @Override
     protected void attachField(Object propertyId, Field field) {
         
-        if("lname".equals(propertyId)) {
+        if("locationName".equals(propertyId)) {
             grid.addComponent(field, 0, 0);
-        } else if ("labbr".equals(propertyId)) {
+        } else if ("locationAbbreviation".equals(propertyId)) {
             grid.addComponent(field, 1, 0);
         }
     }

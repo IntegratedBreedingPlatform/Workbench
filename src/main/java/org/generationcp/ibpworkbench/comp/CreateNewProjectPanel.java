@@ -44,7 +44,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
 
     private Button saveProjectButton;
     
-    private Button addLocationButton;
+    private Button showLocationWindowButton;
 
     private Component buttonArea;
     
@@ -62,8 +62,8 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         
     }
 
-    public Button getAddLocationButton() {
-        return addLocationButton;
+    public Button getShowLocationWindowButton() {
+        return showLocationWindowButton;
     }
     
     public Button getSaveProjectButton() {
@@ -95,6 +95,8 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         
         cancelButton = new Button("Cancel");
         saveProjectButton = new Button("Save");
+        
+        showLocationWindowButton = new Button("Add Location");
         
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
@@ -138,11 +140,13 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
+        showLocationWindowButton = new Button("Add Location");
         cancelButton = new Button("Cancel");
         saveProjectButton = new Button("Save");
         
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveProjectButton);
+        buttonLayout.addComponent(showLocationWindowButton);
 
         return buttonLayout;
     }

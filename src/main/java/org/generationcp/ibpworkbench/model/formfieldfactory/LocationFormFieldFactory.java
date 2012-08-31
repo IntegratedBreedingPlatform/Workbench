@@ -69,11 +69,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
          
         Field field = super.createField(item, propertyId, uiContext);
         
-        if ("lname".equals(propertyId)) {
+        if ("locationName".equals(propertyId)) {
             messageSource.setCaption(locationName, Message.LOC_NAME);
             return locationName;
             
-        } else if ("labbr".equals(propertyId)) {
+        } else if ("locationAbbreviation".equals(propertyId)) {
             messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
             return locationAbbreviation;
         }
