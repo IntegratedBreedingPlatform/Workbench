@@ -23,6 +23,8 @@ import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +87,23 @@ public class LoginAction implements ClickListener{
         }
         
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
-           
-        //TODO: Verify the try-catch flow
+        
         try {
-        	application.getSessionData().setUserData(workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0));
-        } catch (QueryException e) {
-            LOG.error("Error encountered while trying to login", e);
+            // set the session's current user
+            User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+            application.getSessionData().setUserData(user);
+
+            // save the currently logged user
+            WorkbenchRuntimeData data = workbenchDataManager.getWorkbenchRuntimeData();
+            if (data == null) {
+                data = new WorkbenchRuntimeData();
+            }
+            data.setUserId(user.getUserid());
+            
+            workbenchDataManager.updateWorkbenchRuntimeData(data);
+        }
+        catch (QueryException e) {
+            LOG.error("Database error encountered", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
