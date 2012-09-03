@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.database;
 
 import java.io.BufferedReader;
@@ -24,7 +23,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,14 +81,13 @@ public class IBDBGenerator{
     
     private String generatedDatabaseName;
 
-    private String crop;
+    private CropType cropType;
     private Long projectId;
 
     private Connection connection = null;
 
-    public IBDBGenerator(String crop, Long projectId) {
-
-        this.crop = crop;
+    public IBDBGenerator(CropType cropType, Long projectId) {
+        this.cropType = cropType;
         this.projectId = projectId;
 
     }
@@ -160,7 +158,7 @@ public class IBDBGenerator{
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
 
-        databaseName.append(crop).append("_").append(projectId).append(DB_LOCAL_NAME_SUFFIX);
+        databaseName.append(cropType.getCropName().toLowerCase()).append("_").append(projectId).append(DB_LOCAL_NAME_SUFFIX);
 
         Statement statement = null;
 

@@ -113,7 +113,7 @@ public class SaveNewProjectAction implements ClickListener {
         IBDBGenerator generator;
 
         try {
-            generator = new IBDBGenerator(project.getCropType().toString(), project.getProjectId());
+            generator = new IBDBGenerator(project.getCropType(), project.getProjectId());
             isGenerationSuccess = generator.generateDatabase();
         } catch (InternationalizableException e) {
             LOG.error(e.toString(), e);
