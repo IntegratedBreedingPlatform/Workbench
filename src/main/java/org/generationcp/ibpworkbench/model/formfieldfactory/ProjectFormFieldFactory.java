@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.middleware.exceptions.QueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -57,6 +58,13 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
+    // For new item handling and listener of crop type combo box
+    private CropTypeComboAction cropTypeComboAction;
+    
+    public ProjectFormFieldFactory() {
+        cropTypeComboAction = new CropTypeComboAction();
+    }
+
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
         Field field = super.createField(item, propertyId, uiContext);
@@ -111,11 +119,14 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
 
             ComboBox comboBox = new ComboBox("Crop");
             comboBox.setContainerDataSource(beanItemContainer);
+            comboBox.setNewItemsAllowed(true);
+            cropTypeComboAction.setCropTypeComboBox(comboBox);
+            comboBox.setNewItemHandler(cropTypeComboAction);
             comboBox.setItemCaptionPropertyId("cropName");
             comboBox.setRequired(true);
             comboBox.setRequiredError("Please select a Crop.");
             comboBox.setImmediate(true);
-
+            
             return comboBox;
 
         } else if ("locations".equals(propertyId)) {
@@ -259,4 +270,10 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         
         return beanItemContainer;
     }
+
+    
+    public CropTypeComboAction getCropTypeComboAction() {
+        return cropTypeComboAction;
+    }
+        
 }

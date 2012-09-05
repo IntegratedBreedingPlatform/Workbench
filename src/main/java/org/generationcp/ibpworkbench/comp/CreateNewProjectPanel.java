@@ -12,13 +12,12 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -113,26 +112,9 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     
     protected void initializeActions() {
         Field field = projectForm.getField("cropType");
-        field.addListener(new ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-            private String lastValue = null;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                String value = (String) event.getProperty().getValue();
-                boolean sameAsLastValue = lastValue == null ? value == null : lastValue.equals(value);
-                if (sameAsLastValue) {
-                    return;
-                }
-                else {
-                    lastValue = value;
-                }
-                
-                // set the visible properties again,
-                // so that all fields gets renewed
-                projectForm.setVisibleItemProperties(VISIBLE_ITEM_PROPERTIES);
-            }
-        });
+        CropTypeComboAction cropTypeComboAction = projectFormFieldFactory.getCropTypeComboAction();
+        cropTypeComboAction.setSourcePanel(this);
+        field.addListener(cropTypeComboAction);
     }
 
     protected Component layoutButtonArea() {
@@ -155,5 +137,9 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         initializeComponents();
         initializeLayout();
         initializeActions();
+    }
+    
+    public void refreshVisibleItems(){
+        projectForm.setVisibleItemProperties(VISIBLE_ITEM_PROPERTIES);
     }
 }
