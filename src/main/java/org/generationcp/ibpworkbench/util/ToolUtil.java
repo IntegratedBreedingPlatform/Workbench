@@ -195,11 +195,15 @@ public class ToolUtil {
         else if (Util.isOneOf(tool.getToolName(), ToolName.germplasm_browser.name())) {
             File configurationFile = new File("tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties").getAbsoluteFile();
             
-            String format = "central.dbname=%s\r\n"
+            String format = "central.driver=com.mysql.jdbc.Driver\r\n"
+                          + "central.url=%s\r\n"
+                          + "central.dbname=%s\r\n"
                           + "central.host=%s\r\n"
                           + "central.port=%s\r\n"
                           + "central.username=%s\r\n"
                           + "central.password=%s\r\n"
+                          + "local.driver=com.mysql.jdbc.Driver\r\n"
+                          + "local.url=%s\r\n"
                           + "local.dbname=%s\r\n"
                           + "local.host=%s\r\n"
                           + "local.port=%s\r\n"
@@ -207,8 +211,11 @@ public class ToolUtil {
                           + "local.password=%s\r\n"
                           ;
             
-            String configuration = String.format(format, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
-                                                       , localDbName, jdbcHost, jdbcPort, localUser, localPassword);
+            String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, centralDbName);
+            String localUrl   = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, localDbName);
+            
+            String configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
+                                                       , localUrl, localDbName, jdbcHost, jdbcPort, localUser, localPassword);
             
             FileOutputStream fos = new FileOutputStream(configurationFile);
             try {

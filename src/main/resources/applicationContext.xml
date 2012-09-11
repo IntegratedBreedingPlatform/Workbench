@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
     <!-- Declare property file locations -->
     <context:property-placeholder location="classpath:workbench.properties" />
 
@@ -36,6 +40,26 @@
     </bean>
 
     <!-- Data Managers -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${workbench.driver}"/>
+        <property name="url" value="${workbench.url}"/>
+        <property name="username" value="${workbench.username}"/>
+        <property name="password" value="${workbench.password}"/>
+    </bean>
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
+    </bean>
+    
+    <bean id="hibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        
+        <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+    
+    <!--
     <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil" destroy-method="shutdown">
         <constructor-arg value="ibpworkbench_hib.cfg.xml" />
         <constructor-arg value="${workbench.host}" />
@@ -44,13 +68,14 @@
         <constructor-arg value="${workbench.username}" />
         <constructor-arg value="${workbench.password}" />
     </bean>
+    -->
 
     <!-- Manager Factory Provider -->
     <bean id="managerFactoryProvider" class="org.generationcp.middleware.manager.DefaultManagerFactoryProvider" destroy-method="close"/>
 
     <bean id="workbenchDataManager"
         class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
-        <constructor-arg ref="hibernateUtil" />
+        <constructor-arg ref="hibernateSessionProvider" />
     </bean>
 
     <bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
