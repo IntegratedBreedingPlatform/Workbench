@@ -21,7 +21,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -125,7 +125,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         Tool tool = null;
         try {
             tool = workbenchDataManager.getToolWithName(toolName);
-        } catch (QueryException qe) {
+        } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));

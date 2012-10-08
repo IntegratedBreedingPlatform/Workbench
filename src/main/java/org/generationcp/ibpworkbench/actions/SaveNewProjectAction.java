@@ -21,7 +21,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -102,7 +102,7 @@ public class SaveNewProjectAction implements ClickListener {
             }
             
             
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to save the project.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
@@ -142,7 +142,7 @@ public class SaveNewProjectAction implements ClickListener {
                 user.setPersonid(person.getId());
                 userDataManager.addUser(user);
             }
-            catch (QueryException e) {
+            catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage(), e);
                 MessageNotifier.showError(event.getComponent().getWindow(), 
                                           messageSource.getMessage(Message.DATABASE_ERROR), 
@@ -158,7 +158,7 @@ public class SaveNewProjectAction implements ClickListener {
             try {
                 workbenchDataManager.addIbdbUserMap(ibdbUserMap);
             }
-            catch (QueryException e) {
+            catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage(), e);
                 MessageNotifier.showError(event.getComponent().getWindow(), 
                                           messageSource.getMessage(Message.DATABASE_ERROR), 
@@ -179,7 +179,7 @@ public class SaveNewProjectAction implements ClickListener {
         home.buttonClick(event);
     }
 
-    private void saveProjectMethods(Set methods, Project projectSaved) throws QueryException {
+    private void saveProjectMethods(Set methods, Project projectSaved) throws MiddlewareQueryException {
         
         ArrayList<Method> method = new ArrayList(methods);
         List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
@@ -195,7 +195,7 @@ public class SaveNewProjectAction implements ClickListener {
         
     }
 
-    private void saveProjectLocation(Set locations,Project projectSaved) throws QueryException {
+    private void saveProjectLocation(Set locations,Project projectSaved) throws MiddlewareQueryException {
         
         ArrayList<Location> loc = new ArrayList(locations);
         List<ProjectLocationMap> projectLocationMapList= new ArrayList<ProjectLocationMap>();

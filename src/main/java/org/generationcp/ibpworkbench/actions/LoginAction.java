@@ -20,7 +20,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -70,7 +70,7 @@ public class LoginAction implements ClickListener{
         boolean valid = false;
         try {
             valid = workbenchDataManager.isValidUserLogin(username, password);
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to login", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.LOGIN_ERROR), 
@@ -102,7 +102,7 @@ public class LoginAction implements ClickListener{
             
             workbenchDataManager.updateWorkbenchRuntimeData(data);
         }
-        catch (QueryException e) {
+        catch (MiddlewareQueryException e) {
             LOG.error("Database error encountered", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 

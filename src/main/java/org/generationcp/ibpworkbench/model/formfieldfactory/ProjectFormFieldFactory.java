@@ -18,7 +18,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -96,7 +96,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
                 comboBox.setRequiredError("Please enter a Workflow Template.");
 
                 return comboBox;
-            } catch (QueryException e) {
+            } catch (MiddlewareQueryException e) {
                 LOG.error("Error encountered while getting workflow templates", e);
                 throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                         Message.CONTACT_ADMIN_ERROR_DESC);
@@ -106,7 +106,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             try {
                 cropTypes = workbenchDataManager.getInstalledCentralCrops();
             }
-            catch (QueryException e) {
+            catch (MiddlewareQueryException e) {
                 LOG.error("Error encountered while getting installed central crops", e);
                 throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                         Message.CONTACT_ADMIN_ERROR_DESC);
@@ -149,7 +149,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
                         select.setItemCaption(itemId, location.getLname());
                     }
                 }
-                catch (QueryException e) {
+                catch (MiddlewareQueryException e) {
                     LOG.error("Error encountered while getting central locations", e);
                     throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                                                            Message.CONTACT_ADMIN_ERROR_DESC);
@@ -178,7 +178,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
                         select.setItemCaption(itemId, method.getMname());
                     }
                 }
-                catch (QueryException e) {
+                catch (MiddlewareQueryException e) {
                     LOG.error("Error encountered while getting central methods", e);
                     throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                                                            Message.CONTACT_ADMIN_ERROR_DESC);
@@ -207,7 +207,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
                         select.setItemCaption(itemId, user.getPerson().getDisplayName());
                     }
                 }
-                catch (QueryException e) {
+                catch (MiddlewareQueryException e) {
                     LOG.error("Error encountered while getting central users", e);
                     throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                                                            Message.CONTACT_ADMIN_ERROR_DESC);
@@ -219,7 +219,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return field;
     }
 
-    private Container createMethodsContainer(CropType cropType) throws QueryException {
+    private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         
         List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
@@ -232,11 +232,11 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return beanItemContainer;
     }
     
-    private Container createLocationsContainer(CropType cropType) throws QueryException {
+    private Container createLocationsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         
-        int locCount = managerFactory.getGermplasmDataManager().countAllLocations();
-        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
+        long locCount = managerFactory.getGermplasmDataManager().countAllLocations();
+        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
         
         BeanItemContainer<Location> beanItemContainer = new BeanItemContainer<Location>(Location.class);
         for (Location location : locationList) {
@@ -246,7 +246,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return beanItemContainer;
     }
 
-    private Container createUsersContainer(CropType cropType) throws QueryException {
+    private Container createUsersContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         UserDataManager userDataManager = managerFactory.getUserDataManager();
         

@@ -16,7 +16,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.CreateNewProjectPanel;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.slf4j.Logger;
@@ -121,7 +121,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
                 cropTypeComboBox.setValue(newCropType);
             }
 
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to add crop type.", e);
             MessageNotifier.showError(sourcePanel.getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
                     messageSource.getMessage(Message.ADD_CROP_TYPE_ERROR_DESC));

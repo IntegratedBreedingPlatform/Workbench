@@ -30,7 +30,7 @@ import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -129,7 +129,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
                     messageSource.getMessage(Message.INVALID_URL_PARAM_ERROR), 
                     "<br />" + messageSource.getMessage(Message.INVALID_URL_PARAM_ERROR_DESC));
             return;
-        } catch (QueryException qe) {
+        } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
             showDatabaseError(window);
             return;
@@ -170,7 +170,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
             // set the last opened project in the session
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             app.getSessionData().setLastOpenedProject(p);
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
             showDatabaseError(window);
         }
@@ -206,7 +206,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         try {
             nativeTools = workbenchDataManager.getToolsWithType(ToolType.NATIVE);
         }
-        catch (QueryException e1) {
+        catch (MiddlewareQueryException e1) {
             LOG.error("QueryException", e1);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
@@ -236,7 +236,7 @@ public class OpenProjectDashboardAction implements ItemClickListener, MouseEvent
         try {
             webTools = workbenchDataManager.getToolsWithType(ToolType.WEB);
         }
-        catch (QueryException e2) {
+        catch (MiddlewareQueryException e2) {
             LOG.error("QueryException", e2);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));

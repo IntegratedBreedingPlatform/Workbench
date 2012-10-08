@@ -16,7 +16,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -81,7 +81,7 @@ public class SaveUserAccountAction implements ClickListener {
         
         try {
             saveUserAccount(userAccount);
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to save user account details.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
@@ -94,7 +94,7 @@ public class SaveUserAccountAction implements ClickListener {
         
     }
 
-    private void saveUserAccount(UserAccountModel userAccount) throws QueryException {
+    private void saveUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
         userAccount.trimAll();
         
         Person person = new Person();

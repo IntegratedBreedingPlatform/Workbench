@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class UsernameValidator extends AbstractValidator{
     public boolean isValid(Object value) {
         try {
             return !workbenchDataManager.isUsernameExists(value.toString());
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage());
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 //            return false;

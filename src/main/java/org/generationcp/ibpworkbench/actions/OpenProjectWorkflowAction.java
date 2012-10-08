@@ -23,7 +23,7 @@ import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.model.provider.IProjectProvider;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
-import org.generationcp.middleware.exceptions.QueryException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -94,7 +94,7 @@ public class OpenProjectWorkflowAction implements LayoutClickListener, ActionLis
         try {
             Long projectId = Long.parseLong(params.get("projectId").get(0));
             project = workbenchDataManager.getProjectById(projectId);
-        } catch (QueryException e) {
+        } catch (MiddlewareQueryException e) {
             LOG.error("QueryException", e);
             MessageNotifier.showError(window, 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
