@@ -185,7 +185,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setContainerDataSource(projectContainer);
 
         // set the visible columns on the Project Table
-        String[] columns = new String[] { "targetDueDate", "projectName", "action", "status", "owner" };
+        String[] columns = new String[] { "startDate", "projectName", "action", "status", "owner" };
         tblProject.setVisibleColumns(columns);
         
         boolean isLastOpenedProject = false;
@@ -315,7 +315,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setValue(lblDashboardTitle, Message.dashboard);
         messageSource.setCaption(tblProject, Message.project_table_caption);
         
-        messageSource.setColumnHeader(tblProject, "targetDueDate", Message.date);
+        messageSource.setColumnHeader(tblProject, "startDate", Message.date);
         messageSource.setColumnHeader(tblProject, "projectName", Message.project);
         messageSource.setColumnHeader(tblProject, "action", Message.action);
         messageSource.setColumnHeader(tblProject, "status", Message.status);

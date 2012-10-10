@@ -12,6 +12,8 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import java.util.Date;
+
 import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.ibpworkbench.model.formfieldfactory.ProjectFormFieldFactory;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -47,7 +49,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
 
     private Component buttonArea;
     
-    private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "projectName", "targetDueDate", "cropType", "template", "members", "methods", "locations" };
+    private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "projectName", "startDate", "cropType", "template", "members", "methods", "locations" };
 
     public CreateNewProjectPanel() {
         super();
@@ -101,6 +103,11 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
         addComponent(buttonArea);
         
     }
+    
+    protected void initializeValues() {
+        //set default value of Start Date to the current date
+        projectForm.getField("startDate").setValue(new Date());
+    }
 
     protected void initializeLayout() {
         setSpacing(true);
@@ -135,6 +142,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
 
     protected void assemble() {
         initializeComponents();
+        initializeValues();
         initializeLayout();
         initializeActions();
     }

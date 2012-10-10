@@ -74,9 +74,9 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             tf.setRequired(true);
             tf.setRequiredError("Please enter a Project Name.");
             tf.addValidator(new StringLengthValidator("Project Name must be 3-255 characters", 3, 255, false));
-        } else if ("targetDueDate".equals(propertyId)) {
+        } else if ("startDate".equals(propertyId)) {
             field.setRequired(true);
-            field.setRequiredError("Please enter a Target Due Date.");
+            field.setRequiredError("Please enter a Start Date.");
         } else if ("template".equals(propertyId)) {
             BeanContainer<Long, WorkflowTemplate> templateContainer = new BeanContainer<Long, WorkflowTemplate>(WorkflowTemplate.class);
             templateContainer.setBeanIdProperty("templateId");

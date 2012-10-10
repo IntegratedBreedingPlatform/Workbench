@@ -171,7 +171,7 @@ public class SaveNewProjectAction implements ClickListener {
 
         app.getSessionData().getUniqueLocations().clear();
 
-        LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getTargetDueDate() + " " + project.getTemplate().getTemplateId());
+        LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getStartDate() + " " + project.getTemplate().getTemplateId());
         LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
 
         // go back to dashboard

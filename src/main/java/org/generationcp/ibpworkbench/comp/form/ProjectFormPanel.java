@@ -108,14 +108,14 @@ public class ProjectFormPanel extends VerticalLayout{
             setFormFieldFactory(new ProjectFormFieldFactory());
 
             // set the properties shown
-            setVisibleItemProperties(Arrays.asList(new String[] { "projectName", "targetDueDate" }));
+            setVisibleItemProperties(Arrays.asList(new String[] { "projectName", "startDate" }));
         }
 
         @Override
         protected void attachField(Object propertyId, Field field) {
             if ("projectName".equals(propertyId)) {
                 layout.addComponent(field, 0, 0);
-            } else if ("targetDueDate".equals(propertyId)) {
+            } else if ("startDate".equals(propertyId)) {
                 layout.addComponent(field, 0, 1);
             }
         }
