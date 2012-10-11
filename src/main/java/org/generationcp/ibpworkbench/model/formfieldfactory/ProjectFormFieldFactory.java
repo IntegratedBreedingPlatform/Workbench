@@ -21,7 +21,6 @@ import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -196,22 +195,19 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             select.setMultiSelect(true);
             select.setNullSelectionAllowed(true);
             
-            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
-            if (cropType != null) {
-                try {
-                    Container container = createUsersContainer(cropType);
-                    select.setContainerDataSource(container);
+            try {
+                Container container = createUsersContainer();
+                select.setContainerDataSource(container);
 
-                    for (Object itemId : container.getItemIds()) {
-                        User user = (User) itemId;
-                        select.setItemCaption(itemId, user.getPerson().getDisplayName());
-                    }
+                for (Object itemId : container.getItemIds()) {
+                    User user = (User) itemId;
+                    select.setItemCaption(itemId, user.getPerson().getDisplayName());
                 }
-                catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while getting central users", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                           Message.CONTACT_ADMIN_ERROR_DESC);
-                }
+            }
+            catch (MiddlewareQueryException e) {
+                LOG.error("Error encountered while getting workbench users", e);
+                throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                       Message.CONTACT_ADMIN_ERROR_DESC);
             }
             
             return select;
@@ -246,16 +242,13 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return beanItemContainer;
     }
 
-    private Container createUsersContainer(CropType cropType) throws MiddlewareQueryException {
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-        UserDataManager userDataManager = managerFactory.getUserDataManager();
-        
+    private Container createUsersContainer() throws MiddlewareQueryException {
         List<User> validUserList = new ArrayList<User>();
         
         // TODO: This can be improved once we implement proper User-Person mapping
-        List<User> userList = userDataManager.getAllUsers();
+        List<User> userList = workbenchDataManager.getAllUsers();
         for (User user : userList) {
-            Person person = userDataManager.getPersonById(user.getPersonid());
+            Person person = workbenchDataManager.getPersonById(user.getPersonid());
             user.setPerson(person);
             
             if (person != null) {
