@@ -218,9 +218,12 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         
-        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
-        
         BeanItemContainer<Method> beanItemContainer = new BeanItemContainer<Method>(Method.class);
+        if (managerFactory == null) {
+            return beanItemContainer;
+        }
+        
+        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
         for (Method method : methodList) {
             beanItemContainer.addBean(method);
         }
@@ -231,10 +234,14 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     private Container createLocationsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         
-        long locCount = managerFactory.getGermplasmDataManager().countAllLocations();
-        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
-        
         BeanItemContainer<Location> beanItemContainer = new BeanItemContainer<Location>(Location.class);
+        if (managerFactory == null) {
+            return beanItemContainer;
+        }
+        
+        int locCount = managerFactory.getGermplasmDataManager().countAllLocations();
+        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
+        
         for (Location location : locationList) {
             beanItemContainer.addBean(location);
         }
@@ -243,6 +250,15 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     }
 
     private Container createUsersContainer() throws MiddlewareQueryException {
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        
+        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+        if (managerFactory == null) {
+            return beanItemContainer;
+        }
+        
+        UserDataManager userDataManager = managerFactory.getUserDataManager();
+        
         List<User> validUserList = new ArrayList<User>();
         
         // TODO: This can be improved once we implement proper User-Person mapping
@@ -256,7 +272,6 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             }
         }
         
-        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
             beanItemContainer.addBean(user);
         }
