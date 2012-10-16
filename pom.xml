@@ -25,6 +25,10 @@
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
+        <repository>
+			<id>gcp-efficio-repo</id>
+			<url>http://gcp.efficio.us.com:8081/nexus/content/repositories/thirdparty/</url>
+		</repository>
     </repositories>
 
     <dependencies>
@@ -186,7 +190,7 @@
         </dependency>
         <!-- IBPCommons Dependency -->
         <dependency>
-            <groupId>ibpcommons</groupId>
+            <groupId>org.generationcp</groupId>
             <artifactId>ibpcommons</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -271,5 +275,5 @@
             </plugin>
         </plugins>
     </build>
-
+	
 </project>
