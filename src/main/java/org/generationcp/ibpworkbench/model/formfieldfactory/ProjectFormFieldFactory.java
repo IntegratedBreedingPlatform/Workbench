@@ -239,8 +239,8 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             return beanItemContainer;
         }
         
-        int locCount = managerFactory.getGermplasmDataManager().countAllLocations();
-        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, locCount);
+        long locCount = managerFactory.getGermplasmDataManager().countAllLocations();
+        List<Location> locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
         
         for (Location location : locationList) {
             beanItemContainer.addBean(location);
@@ -250,15 +250,6 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
     }
 
     private Container createUsersContainer() throws MiddlewareQueryException {
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-        
-        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-        if (managerFactory == null) {
-            return beanItemContainer;
-        }
-        
-        UserDataManager userDataManager = managerFactory.getUserDataManager();
-        
         List<User> validUserList = new ArrayList<User>();
         
         // TODO: This can be improved once we implement proper User-Person mapping
@@ -272,6 +263,7 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             }
         }
         
+        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
             beanItemContainer.addBean(user);
         }
