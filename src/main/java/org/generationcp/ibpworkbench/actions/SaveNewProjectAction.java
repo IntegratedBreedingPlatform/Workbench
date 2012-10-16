@@ -128,13 +128,14 @@ public class SaveNewProjectAction implements ClickListener {
             User currentUser = app.getSessionData().getUserData();
             User user = currentUser.copy();
             
-            Person currentPerson = workbenchDataManager.getPersonById(currentUser.getPersonid());
-            Person person = currentPerson.copy();
-            
-            // create the project's local person and user data
-            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-            UserDataManager userDataManager =  managerFactory.getUserDataManager();
             try {
+                Person currentPerson = workbenchDataManager.getPersonById(currentUser.getPersonid());
+                Person person = currentPerson.copy();
+                
+                // create the project's local person and user data
+                ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+                UserDataManager userDataManager =  managerFactory.getUserDataManager();
+                
                 // add the person to the project's local database
                 userDataManager.addPerson(person);
                 
