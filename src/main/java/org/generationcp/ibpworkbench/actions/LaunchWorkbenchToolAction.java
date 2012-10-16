@@ -51,6 +51,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
         ,BREEDING_VIEW("breeding_view")
+        ,MBDT("mbdt")
         ;
         
         String toolName;
