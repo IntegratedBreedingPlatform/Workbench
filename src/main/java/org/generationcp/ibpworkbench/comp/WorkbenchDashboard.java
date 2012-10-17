@@ -21,9 +21,12 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,17 +36,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
@@ -54,14 +49,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     private static final long serialVersionUID = 1L;
 
-    private Button btnLeft;
-    private Button btnRight;
-    private Panel projectThumbnailArea;
-    private Table tblProject;
-
     private Label lblDashboardTitle;
-
-    private HorizontalLayout projectThumbnailLayout;
+    
+    private Table tblProject;
+    
+    private Table tblActivity;
+    
+    private Table tblRoles;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -69,8 +63,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    private com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler;
-    
     private Project lastOpenedProject;
 
     public WorkbenchDashboard() {
@@ -82,23 +74,16 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         assemble();
     }
 
-    public void setProjectThumbnailClickHandler(com.vaadin.event.MouseEvents.ClickListener projectThumbnailClickHandler) {
-        this.projectThumbnailClickHandler = projectThumbnailClickHandler;
-    }
-
-    public void addProjectTableListener(ItemClickListener listener) {
-        tblProject.addListener(listener);
-    }
-
     protected void initializeComponents() {
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName("gcp-content-title");
 
-        // project list components
-        projectThumbnailArea = new Panel();
-        btnLeft = new Button("<<");
-        btnRight = new Button(">>");
-
+        initializeProjectTable();
+        initializeActivityTable();
+        initializeRolesTable();
+    }
+    
+    private void initializeProjectTable() {
         // project table components
         tblProject = new Table() {
 
@@ -139,6 +124,30 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             }
         });
     }
+    
+    private void initializeActivityTable() {
+        tblActivity = new Table();
+        tblActivity.setImmediate(true);
+        
+        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+        container.setBeanIdProperty("projectActivityId");
+        tblActivity.setContainerDataSource(container);
+        
+        String[] columns = new String[] {"date", "name", "description"};
+        tblActivity.setVisibleColumns(columns);
+    }
+    
+    private void initializeRolesTable() {
+        tblRoles = new Table();
+        tblRoles.setImmediate(true);
+        
+        BeanContainer<Integer, Role> container = new BeanContainer<Integer, Role>(Role.class);
+        container.setBeanIdProperty("roleId");
+        tblRoles.setContainerDataSource(container);
+        
+        String[] columns = new String[] {"name"};
+        tblRoles.setVisibleColumns(columns);
+    }
 
     protected void initializeLayout() {
         setWidth("100%");
@@ -148,12 +157,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblDashboardTitle.setSizeUndefined();
         addComponent(lblDashboardTitle);
 
-        Component projectThumbnailArea = layoutProjectThumbnailArea();
-        addComponent(projectThumbnailArea);
-
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
         setExpandRatio(projectTableArea, 1.0f);
+        
+        Component projectDetailArea = layoutProjectDetailArea();
+        addComponent(projectDetailArea);
     }
 
     protected void initializeData() {
@@ -187,82 +196,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // set the visible columns on the Project Table
         String[] columns = new String[] { "startDate", "projectName", "action", "status", "owner" };
         tblProject.setVisibleColumns(columns);
-        
-        boolean isLastOpenedProject = false;
-        
-        // update the Project Thumbnail area
-        for (Project project : projects) {
-            //TODO: remove checking when projects retrieved are only for the user
-            if(lastOpenedProject != null) {
-                isLastOpenedProject = lastOpenedProject.getProjectId().equals(project.getProjectId());
-            }
-
-            // Create project thumbnail panel based on project template (MARS, MAS, etc).
-            ProjectThumbnailPanel projectPanel = null;
-            String projectTemplate = project.getTemplate().getName();
-            if (projectTemplate != null) { 
-                if (projectTemplate.equals("MARS")){
-                    projectPanel = new MarsProjectThumbnailPanel(project, isLastOpenedProject);
-                } else if (projectTemplate.equals("MAS")){
-                    projectPanel = new MasProjectThumbnailPanel(project, isLastOpenedProject);
-                }
-            }
-            
-            if (projectPanel != null) {
-                projectPanel.setData(project);
-
-                projectPanel.addListener(new LayoutClickListener() {
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void layoutClick(LayoutClickEvent event) {
-                        if (projectThumbnailClickHandler == null) {
-                            return;
-                        }
-
-                        projectThumbnailClickHandler.click(event);
-                    }
-                });
-
-                projectThumbnailLayout.addComponent(projectPanel);
-            }
-        }
     }
 
     protected void initializeActions() {
-        // TODO: if we are going to support left/right buttons here
-        // then we need a fixed thumbnail area width.
-        // otherwise, we can just let the user scroll using the
-        // native scrollbar and take advantage of the user's
-        // available screen width.
-        // NOTE: if we are going to set a fixed width, we must
-        // design the screens against a specific viewport size.
-        btnLeft.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                int offset = projectThumbnailArea.getScrollLeft();
-                offset -= 100;
-                if (offset < 0) {
-                    offset = 0;
-                }
-                projectThumbnailArea.setScrollLeft(offset);
-            }
-        });
-        btnRight.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                int offset = projectThumbnailArea.getScrollLeft();
-                offset += 100;
-                projectThumbnailArea.setScrollLeft(offset);
-            }
-        });
+        tblProject.addListener(new ShowProjectDetailAction(tblActivity, tblRoles));
     }
 
     protected void assemble() {
@@ -272,35 +209,26 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         initializeActions();
     }
 
-    private Component layoutProjectThumbnailArea() {
-        AbsoluteLayout outerLayout = new AbsoluteLayout();
-        outerLayout.setWidth("100%");
-        outerLayout.setHeight("430px");
-        
-        projectThumbnailArea.setWidth("100%");
-        projectThumbnailArea.setScrollable(true);
-        
-        projectThumbnailLayout = new HorizontalLayout();
-        projectThumbnailLayout.setSpacing(true);
-        projectThumbnailLayout.setMargin(true);
-        
-        projectThumbnailArea.setContent(projectThumbnailLayout);
-
-        // NOTE: the project thumbnail layout is intentionally empty at this
-        // point.
-        // The child components will be added later.
-
-        outerLayout.addComponent(projectThumbnailArea, "top: 0px; left: 20px; right: 20px;");
-        outerLayout.addComponent(btnLeft, "top: 50%; left: 10px");
-        outerLayout.addComponent(btnRight, "top: 50%; right: 10px");
-
-        return outerLayout;
-    }
-
     private Component layoutProjectTableArea() {
         tblProject.setWidth("100%");
         tblProject.setHeight("100%");
         return tblProject;
+    }
+    
+    private Component layoutProjectDetailArea() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidth("100%");
+        layout.setMargin(false);
+        layout.setSpacing(true);
+        
+        tblActivity.setWidth("100%");
+        layout.addComponent(tblActivity);
+        layout.setExpandRatio(tblActivity, 1.0f);
+        
+        tblRoles.setWidth("300px");
+        layout.addComponent(tblRoles);
+        
+        return layout;
     }
     
     @Override

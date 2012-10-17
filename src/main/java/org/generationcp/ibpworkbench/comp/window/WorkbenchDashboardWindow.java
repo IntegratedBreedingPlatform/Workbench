@@ -18,13 +18,10 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -44,9 +41,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
-
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboardWindow.class);
     
     private static final String VERSION = "1.1.0";
     
@@ -80,8 +75,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private SimpleResourceBundleMessageSource messageSource;
 
     public WorkbenchDashboardWindow() {
-        super();
-//        LOG.debug("{} instead created.", WorkbenchDashboardWindow.class);
     }
 
     /**
@@ -194,9 +187,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         signOutButton.addListener(new SignoutAction());
         createProjectButton.addListener(new OpenNewProjectAction());
         createContactButton.addListener(new CreateContactAction());
-
-        workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
-        workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
     }
 
     protected void assemble() throws Exception {

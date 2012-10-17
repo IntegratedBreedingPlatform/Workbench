@@ -14,17 +14,12 @@
           label="Home"
           level="0"
           class="org.generationcp.ibpworkbench.actions.HomeAction" />
-          
-    <view path="/OpenProject" 
-          label="Project Dashboard: " 
-          level="1"
-          class="org.generationcp.ibpworkbench.actions.OpenProjectDashboardAction" />
-          
-    <view path="/OpenProjectWorkflow"
+    
+    <view path="/OpenProjectWorkflowForRole"
           label="Project Workflow: "
-          level="2"
-          class="org.generationcp.ibpworkbench.actions.OpenProjectWorkflowAction" />
-          
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction" />
+    
     <view path="/gdms"
           label="Genotyping Data Management System"
           level="3"

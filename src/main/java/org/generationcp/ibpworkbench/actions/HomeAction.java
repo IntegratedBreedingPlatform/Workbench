@@ -87,9 +87,6 @@ public class HomeAction implements ClickListener, ActionListener{
             return;
         }
         
-        workbenchDashboard.setProjectThumbnailClickHandler(new OpenProjectDashboardAction());
-        workbenchDashboard.addProjectTableListener(new OpenProjectDashboardAction());
-        
         w.setWorkbenchDashboard(workbenchDashboard);
         
         w.showContent(w.getWorkbenchDashboard());

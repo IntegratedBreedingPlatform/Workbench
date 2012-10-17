@@ -16,21 +16,25 @@
         <property name="hibernate.c3p0.max_statements">50</property> 
         <property name="hibernate.c3p0.idle_test_period">3000</property>
         
-        <mapping class="org.generationcp.middleware.pojos.workbench.Contact"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.CropType"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.Project"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectWorkflowStep"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.Tool"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowStep"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowTemplate"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUser"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectMethod"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectLocationMap"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.Role"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.IbdbUserMap"/>
-        <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData"/>
         <mapping class="org.generationcp.middleware.pojos.Person"/> 
         <mapping class="org.generationcp.middleware.pojos.User"/>
         
+        <mapping class="org.generationcp.middleware.pojos.workbench.Contact"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.CropType"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchDataset"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.Project"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectActivity"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectMethod" />
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUser" />
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectWorkflowStep"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.Role"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.Tool"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowStep"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkflowTemplate"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectLocationMap"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.Role"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.IbdbUserMap"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ToolConfiguration"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData"/>
     </session-factory>
 </hibernate-configuration>
