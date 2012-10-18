@@ -45,7 +45,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
-        ,GERMPLASM_PHENOTYPIC("germplasm_phenotypic")
+        ,STUDY_BROWSER("study_browser")
+        ,GERMPLASM_LIST_BROWSER("germplasm_list_browser")
         ,GDMS("gdms")
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
@@ -66,7 +67,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         
         public static boolean isCorrectTool(String toolName) {
             if(ToolEnum.GERMPLASM_BROWSER.getToolName().equals(toolName) ||
-               ToolEnum.GERMPLASM_PHENOTYPIC.getToolName().equals(toolName) ||
+               ToolEnum.STUDY_BROWSER.getToolName().equals(toolName) ||
+               ToolEnum.GERMPLASM_LIST_BROWSER.getToolName().equals(toolName) ||
                ToolEnum.GDMS.getToolName().equals(toolName) ||
                ToolEnum.FIELDBOOK.getToolName().equals(toolName) ||
                ToolEnum.OPTIMAS.getToolName().equals(toolName) ||
