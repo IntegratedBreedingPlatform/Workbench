@@ -32,7 +32,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class MasWorkflowDiagram extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MabcWorkflowDiagram extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,7 +46,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Label dashboardTitle;
 
     private Label projectPlanningTitle;
-    private Label populationDevelopmentTitle;
+    private Label backcrossingTitle;
     private Label fieldTrialManagementTitle;
     
     private Label genotypingTitle;
@@ -58,7 +58,6 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button browseStudiesButton;
     private Button browseGermplasmListsButton;
     private Button gdmsButton;
-    private Button breedingManagerButton;
     private Button breedingViewButton;
     private Button fieldbookButton;
     private Button optimasButton;
@@ -66,7 +65,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public MasWorkflowDiagram(Project project) {
+    public MabcWorkflowDiagram(Project project) {
         this.project = project;
     }
     
@@ -84,9 +83,9 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         projectPlanningTitle.setStyleName("gcp-section-title-large");
         projectPlanningTitle.setSizeUndefined();
 
-        populationDevelopmentTitle = new Label("Population Development");
-        populationDevelopmentTitle.setStyleName("gcp-section-title-large");
-        populationDevelopmentTitle.setSizeUndefined();
+        backcrossingTitle = new Label("Backcrossing");
+        backcrossingTitle.setStyleName("gcp-section-title-large");
+        backcrossingTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label("Field Trial Management");
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
@@ -119,11 +118,6 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
         
-        breedingManagerButton = new Button("Breeding Manager");
-        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
-        breedingManagerButton.setSizeUndefined();
-        breedingManagerButton.setDescription("Click to launch Breeding Manager");
-
         breedingViewButton = new Button("Breeding View");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
@@ -177,7 +171,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component populationManagementArea = layoutPopulationDevelopment();
+        Component populationManagementArea = layoutBackcrossing();
         layout.addComponent(populationManagementArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
@@ -232,23 +226,19 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         return layout;
     }
 
-    protected Component layoutPopulationDevelopment() {
+    protected Component layoutBackcrossing() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(populationDevelopmentTitle);
-        layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(populationDevelopmentTitle, 0);
+        layout.addComponent(backcrossingTitle);
+        layout.setComponentAlignment(backcrossingTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(backcrossingTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-
-        layout.addComponent(breedingManagerButton);
-        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerButton, 0);
 
         return layout;
     }
@@ -379,7 +369,6 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
         browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
         gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
         breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
         fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
         optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
