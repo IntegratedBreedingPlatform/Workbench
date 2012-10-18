@@ -22,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -32,37 +33,41 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class MasProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MasWorkflowDiagram extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
+    //this is in pixels and used for layouting
+    private static final int WORKFLOW_STEP_HEIGHT = 110;
+    private static final int WORKFLOW_STEP_WIDTH = 270;
+    private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
+    
     private Project project;
 
     private Label dashboardTitle;
-
-    // Breeding Management controls
-    private Label breedingManagementTitle;
 
     private Label projectPlanningTitle;
     private Label populationDevelopmentTitle;
     private Label fieldTrialManagementTitle;
     
-    // Marker Implementation controls
-    private Label markerImplementationTitle;
-    private Label markerTraitSelectionTitle;
-    private Label progenySelectionTitle;
-    private Label projectCompletionTitle;
+    private Label genotypingTitle;
+    private Label statisticalAnalysisTitle;
+    private Label breedingDecisionTitle;
 
+    //links for tools
     private Button browseGermplasmButton;
     private Button browseStudiesButton;
+    private Button browseGermplasmListsButton;
     private Button gdmsButton;
     private Button breedingManagerButton;
-    private Button breedingManager2Button;
+    private Button breedingViewButton;
+    private Button fieldbookButton;
+    private Button optimasButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public MasProjectDashboard(Project project) {
+    public MasWorkflowDiagram(Project project) {
         this.project = project;
     }
     
@@ -76,23 +81,30 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        // Breeding Management
-        breedingManagementTitle = new Label("Breeding Management");
-        breedingManagementTitle.setStyleName("gcp-section-title");
-        breedingManagementTitle.setSizeUndefined();
-
-        projectPlanningTitle = new Label("1. Project Planning");
-        projectPlanningTitle.setStyleName("gcp-section-title");
+        projectPlanningTitle = new Label("Project Planning");
+        projectPlanningTitle.setStyleName("gcp-section-title-large");
         projectPlanningTitle.setSizeUndefined();
 
-        populationDevelopmentTitle = new Label("2. Population Development");
-        populationDevelopmentTitle.setStyleName("gcp-section-title");
+        populationDevelopmentTitle = new Label("Population Development");
+        populationDevelopmentTitle.setStyleName("gcp-section-title-large");
         populationDevelopmentTitle.setSizeUndefined();
 
-        fieldTrialManagementTitle = new Label("3. Field Trial Management");
-        fieldTrialManagementTitle.setStyleName("gcp-section-title");
+        fieldTrialManagementTitle = new Label("Field Trial Management");
+        fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
         fieldTrialManagementTitle.setSizeUndefined();
 
+        genotypingTitle = new Label("Genotyping");
+        genotypingTitle.setStyleName("gcp-section-title-large");
+        genotypingTitle.setSizeUndefined();
+
+        statisticalAnalysisTitle = new Label("Statistical Analysis");
+        statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
+        statisticalAnalysisTitle.setSizeUndefined();
+
+        breedingDecisionTitle = new Label("Breeding Decision");
+        breedingDecisionTitle.setStyleName("gcp-section-title-large");
+        breedingDecisionTitle.setSizeUndefined();
+        
         browseGermplasmButton = new Button("Browse Germplasm Information");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
@@ -103,39 +115,35 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
 
+        browseGermplasmListsButton = new Button("Browser Germplasm Lists");
+        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmListsButton.setSizeUndefined();
+        browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
+        
         breedingManagerButton = new Button("Breeding Manager");
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Breeding Manager");
 
-        breedingManager2Button = new Button("Breeding Manager");
-        breedingManager2Button.setStyleName(BaseTheme.BUTTON_LINK);
-        breedingManager2Button.setSizeUndefined();
-        breedingManager2Button.setDescription("Click to launch Breeding Manager");
+        breedingViewButton = new Button("Breeding View");
+        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewButton.setSizeUndefined();
+        breedingViewButton.setDescription("Click to launch Breeding View");
 
-        gdmsButton = new Button("GDMS");
+        gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");
-
-        // Marker Implementation
-        markerImplementationTitle = new Label("Marker Implementation");
-        markerImplementationTitle.setStyleName("gcp-section-title");
-        markerImplementationTitle.setSizeUndefined();
-
-        markerTraitSelectionTitle = new Label("4. Marker Trait Selection");
-        markerTraitSelectionTitle.setStyleName("gcp-section-title");
-        markerTraitSelectionTitle.setSizeUndefined();
-
-        progenySelectionTitle = new Label("5. Progeny Selection");
-        progenySelectionTitle.setStyleName("gcp-section-title");
-        progenySelectionTitle.setSizeUndefined();
-
-        projectCompletionTitle = new Label("6. Project Completion");
-        projectCompletionTitle.setStyleName("gcp-section-title");
-        projectCompletionTitle.setSizeUndefined();
-
-
+        
+        fieldbookButton = new Button("Fieldbook");
+        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
+        fieldbookButton.setSizeUndefined();
+        fieldbookButton.setDescription("Click to launch Fieldbook");
+        
+        optimasButton = new Button("OptiMAS");
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
+        optimasButton.setSizeUndefined();
+        optimasButton.setDescription("Click to launch OptiMAS");
     }
 
     protected void initializeLayout() {
@@ -155,42 +163,48 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
     protected Component layoutWorkflowArea() {
         Panel panel = new Panel();
 
-        HorizontalLayout layout = new HorizontalLayout();
+        AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
-        layout.setSpacing(true);
-
-        Component breedingManagementArea = layoutBreedingManagementArea();
-        breedingManagementArea.setHeight("100%");
-        layout.addComponent(breedingManagementArea);
-
-        Component markerImplementationArea = layoutMarkerImplementation();
-        markerImplementationArea.setHeight("100%");
-        layout.addComponent(markerImplementationArea);
-
-        panel.setContent(layout);
-        return panel;
-    }
-
-    protected Component layoutBreedingManagementArea() {
-        Panel panel = new Panel();
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("520px");
-        layout.setMargin(true);
-        layout.setSpacing(true);
-
-        layout.addComponent(breedingManagementTitle);
-        layout.setComponentAlignment(breedingManagementTitle, Alignment.TOP_CENTER);
-
+        layout.setWidth("570px");
+        layout.setHeight("620px");
+        
+        String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
+        int top = 10;
+        String topInPixels = "";
+        
+        //the steps on the first column
         Component projectPlanningArea = layoutProjectPlanning();
-        layout.addComponent(projectPlanningArea);
-
+        layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
+        
+        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
         Component populationManagementArea = layoutPopulationDevelopment();
-        layout.addComponent(populationManagementArea);
-
+        layout.addComponent(populationManagementArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        
+        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
         Component fieldTrialArea = layoutFieldTrialManagement();
-        layout.addComponent(fieldTrialArea);
+        layout.addComponent(fieldTrialArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        
+        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        Component progenySelectionArea = layoutStatisticalAnalysis();
+        layout.addComponent(progenySelectionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
+        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        Component projectCompletionArea = layoutBreedingDecision();
+        layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + extraSpace);
+
+        //the steps on the second column   
+        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
+        topInPixels = top + "px";
+        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        String leftInPixels = left + "px";
+        
+        Component genotypingArea = layoutGenotypingStep();
+        layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
+        
         panel.setContent(layout);
         return panel;
     }
@@ -198,16 +212,10 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
     protected Component layoutProjectPlanning() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-
+        
         layout.addComponent(projectPlanningTitle);
         layout.setComponentAlignment(projectPlanningTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectPlanningTitle, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
@@ -217,6 +225,10 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         layout.addComponent(browseStudiesButton);
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
+        
+        layout.addComponent(browseGermplasmListsButton);
+        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGermplasmListsButton, 0);
 
         return layout;
     }
@@ -256,40 +268,20 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        layout.addComponent(fieldbookButton);
+        layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(fieldbookButton, 0);
+        
         return layout;
     }
 
-    protected Component layoutMarkerImplementation() {
-        Panel panel = new Panel();
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("520px");
-        layout.setMargin(true);
-        layout.setSpacing(true);
-
-        layout.addComponent(markerImplementationTitle);
-        layout.setComponentAlignment(markerImplementationTitle, Alignment.TOP_CENTER);
-
-        Component markerTraitSelectionArea = layoutMarkerTraitSelection();
-        layout.addComponent(markerTraitSelectionArea);
-
-        Component progenySelectionArea = layoutProgenySelection();
-        layout.addComponent(progenySelectionArea);
-
-        Component projectCompletionArea = layoutProjectCompletion();
-        layout.addComponent(projectCompletionArea);
-
-        panel.setContent(layout);
-        return panel;
-    }
-
-    protected Component layoutMarkerTraitSelection() {
+    protected Component layoutGenotypingStep() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(markerTraitSelectionTitle);
-        layout.setComponentAlignment(markerTraitSelectionTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(markerTraitSelectionTitle, 0);
+        layout.addComponent(genotypingTitle);
+        layout.setComponentAlignment(genotypingTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(genotypingTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -304,13 +296,13 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         return layout;
     }
 
-    protected Component layoutProgenySelection() {
+    protected Component layoutStatisticalAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(progenySelectionTitle);
-        layout.setComponentAlignment(progenySelectionTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(progenySelectionTitle, 0);
+        layout.addComponent(statisticalAnalysisTitle);
+        layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(statisticalAnalysisTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -318,20 +310,20 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(breedingManager2Button);
-        layout.setComponentAlignment(breedingManager2Button, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManager2Button, 0);
+        layout.addComponent(breedingViewButton);
+        layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewButton, 0);
 
         return layout;
     }
 
-    protected Component layoutProjectCompletion() {
+    protected Component layoutBreedingDecision() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(projectCompletionTitle);
-        layout.setComponentAlignment(projectCompletionTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectCompletionTitle, 0);
+        layout.addComponent(breedingDecisionTitle);
+        layout.setComponentAlignment(breedingDecisionTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingDecisionTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -339,6 +331,10 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        layout.addComponent(optimasButton);
+        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(optimasButton, 0);
+        
         return layout;
     }
 
@@ -373,18 +369,21 @@ public class MasProjectDashboard extends VerticalLayout implements InitializingB
     }
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
-        layout.setWidth("270px");
-        layout.setHeight("110px");
+        layout.setWidth(WORKFLOW_STEP_WIDTH + "px");
+        layout.setHeight(WORKFLOW_STEP_HEIGHT + "px");
         layout.setStyleName("gcp-mars-workflow-step");
         layout.setMargin(true, true, true, true);
     }
-
+    
     protected void initializeActions() {
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_PHENOTYPIC));
+        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
         gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
         breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-        breedingManager2Button.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+        fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
     }
 
     protected void assemble() {

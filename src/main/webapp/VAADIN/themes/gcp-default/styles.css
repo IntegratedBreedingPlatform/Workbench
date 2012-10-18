@@ -15,6 +15,11 @@
 	font-size: 12px;
 }
 
+.gcp-section-title-large {
+	font-weight: bold;
+	font-size: 16px;
+}
+
 .gcp-form-title {
 	font-weight: bold;
 }

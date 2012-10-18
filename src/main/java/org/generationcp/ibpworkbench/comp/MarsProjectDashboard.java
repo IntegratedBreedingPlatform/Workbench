@@ -541,7 +541,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         });
 
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_PHENOTYPIC));
+        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
 
         gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 
