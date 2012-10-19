@@ -68,12 +68,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
             
-            // TODO: a user can have multiple roles in a project
-            Role role = workbenchDataManager.getRoleByProjectAndUser(project, sessionData.getUserData());
-            List<Role> roleList = new ArrayList<Role>();
-            if (role != null) {
-                roleList.add(role);
-            }
+            List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
             
             updateActivityTable(activityList);
             updateRoleTable(roleList);
