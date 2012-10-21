@@ -157,36 +157,36 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
             
             return select;
 
-        } else if ("methods".equals(propertyId)) {
-            TwinColSelect select = new TwinColSelect("Methods");
-            select.setLeftColumnCaption("Available Methods");
-            select.setRightColumnCaption("Selected Methods");
-            select.setRows(10);
-            select.setWidth("400px");
-            select.setMultiSelect(true);
-            select.setNullSelectionAllowed(true);
-            
-            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
-            if (cropType != null) {
-                try {
-                    Container container = createMethodsContainer(cropType);
-                    select.setContainerDataSource(container);
-
-                    for (Object itemId : container.getItemIds()) {
-                        Method method = (Method) itemId;
-                        select.setItemCaption(itemId, method.getMname());
-                    }
-                }
-                catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while getting central methods", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                           Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-            }
-
-            return select;
-        }
-        else if ("members".equals(propertyId)) {
+//        } else if ("methods".equals(propertyId)) {
+//            TwinColSelect select = new TwinColSelect("Methods");
+//            select.setLeftColumnCaption("Available Methods");
+//            select.setRightColumnCaption("Selected Methods");
+//            select.setRows(10);
+//            select.setWidth("400px");
+//            select.setMultiSelect(true);
+//            select.setNullSelectionAllowed(true);
+//            
+//            CropType cropType = (CropType) item.getItemProperty("cropType").getValue();
+//            if (cropType != null) {
+//                try {
+//                    Container container = createMethodsContainer(cropType);
+//                    select.setContainerDataSource(container);
+//
+//                    for (Object itemId : container.getItemIds()) {
+//                        Method method = (Method) itemId;
+//                        select.setItemCaption(itemId, method.getMname());
+//                    }
+//                }
+//                catch (MiddlewareQueryException e) {
+//                    LOG.error("Error encountered while getting central methods", e);
+//                    throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+//                                                           Message.CONTACT_ADMIN_ERROR_DESC);
+//                }
+//            }
+//
+//            return select;
+        
+    	}else if ("members".equals(propertyId)) {
             TwinColSelect select = new TwinColSelect("Project Members");
             select.setLeftColumnCaption("Available Users");
             select.setRightColumnCaption("Selected Project Members");
@@ -215,21 +215,21 @@ public class ProjectFormFieldFactory extends DefaultFieldFactory{
         return field;
     }
 
-    private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-        
-        BeanItemContainer<Method> beanItemContainer = new BeanItemContainer<Method>(Method.class);
-        if (managerFactory == null) {
-            return beanItemContainer;
-        }
-        
-        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
-        for (Method method : methodList) {
-            beanItemContainer.addBean(method);
-        }
-        
-        return beanItemContainer;
-    }
+//    private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
+//        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+//        
+//        BeanItemContainer<Method> beanItemContainer = new BeanItemContainer<Method>(Method.class);
+//        if (managerFactory == null) {
+//            return beanItemContainer;
+//        }
+//        
+//        List<Method> methodList = managerFactory.getGermplasmDataManager().getAllMethods();
+//        for (Method method : methodList) {
+//            beanItemContainer.addBean(method);
+//        }
+//        
+//        return beanItemContainer;
+//    }
     
     private Container createLocationsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);

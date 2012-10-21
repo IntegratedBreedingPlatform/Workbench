@@ -43,6 +43,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
+import com.vaadin.ui.TwinColSelect;
 
 @Configurable
 public class SaveNewProjectAction implements ClickListener {
@@ -51,6 +52,7 @@ public class SaveNewProjectAction implements ClickListener {
     private static final long serialVersionUID = 1L;
 
     private Form newProjectForm;
+    private TwinColSelect selectMethods;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -61,8 +63,9 @@ public class SaveNewProjectAction implements ClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public SaveNewProjectAction(Form newProjectForm) {
+    public SaveNewProjectAction(Form newProjectForm,TwinColSelect selectMethods) {
         this.newProjectForm = newProjectForm;
+        this.selectMethods=selectMethods;
     }
 
     @Override
@@ -87,8 +90,11 @@ public class SaveNewProjectAction implements ClickListener {
             Project projectSaved=workbenchDataManager.saveOrUpdateProject(project);
             
             // FIXME: Set type parameter to avoid compiler warning
-            Set methods= (Set) newProjectForm.getField("methods").getValue();
-            Set locations= (Set) newProjectForm.getField("locations").getValue();
+//            Set methods= (Set) newProjectForm.getField("methods").getValue();
+            @SuppressWarnings("rawtypes")
+			Set methods=(Set)selectMethods.getValue();
+            @SuppressWarnings("rawtypes")
+			Set locations= (Set) newProjectForm.getField("locations").getValue();
             
             // FIXME: What happens when the user deletes all associated methods and locations?
             // Ideally, the methods and locations will be saved automatically when we save a project.

@@ -60,7 +60,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         
         //newProjectPanel.getAddLocationButton().addListener(new SaveNewLocationAction(newProjectPanel.getLocationForm()));
         
-        newProjectPanel.getSaveProjectButton().addListener(new SaveNewProjectAction(newProjectPanel.getProjectForm()));
+        newProjectPanel.getSaveProjectButton().addListener(new SaveNewProjectAction(newProjectPanel.getProjectForm(),newProjectPanel.getSelectMethods()));
         newProjectPanel.getShowLocationWindowButton().addListener(new OpenAddLocationWindowAction());
         newProjectPanel.getCancelButton().addListener(new HomeAction());
         
