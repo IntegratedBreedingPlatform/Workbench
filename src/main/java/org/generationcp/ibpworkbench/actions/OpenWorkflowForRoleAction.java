@@ -11,7 +11,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
-import org.generationcp.ibpworkbench.comp.MasProjectDashboard;
+import org.generationcp.ibpworkbench.comp.MasWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -141,8 +141,8 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
                 contentWindow.showContent(projectDashboard);
             }
             else if (projectTemplate.equals("MAS")) {
-                MasProjectDashboard projectDashboard = new MasProjectDashboard(project);
-                contentWindow.showContent(projectDashboard);
+                MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(project);
+                contentWindow.showContent(masWorkflowDiagram);
             }
             else if (projectTemplate.equals("Manager")) {
                 MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
