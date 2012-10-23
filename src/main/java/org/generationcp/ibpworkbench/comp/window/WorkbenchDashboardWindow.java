@@ -261,7 +261,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         leftLayout.addComponent(usersGuideTitle);
         leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
-        leftLayout.addComponent(hint1);
+        
+        //TODO update the contents of the hint to apply to the new workflow dashboard screen
+        //leftLayout.addComponent(hint1);
         
         return leftLayout;
     }
