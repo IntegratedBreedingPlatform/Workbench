@@ -1,79 +1,85 @@
 @import url(../reindeer/styles.css);
 
 .gcp-window-title {
-	font-weight: bold;
-	font-size: 24px;
+    font-weight: bold;
+    font-size: 24px;
 }
 
 .gcp-content-title {
-	font-weight: bold;
-	font-size: 16px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .gcp-section-title {
-	font-weight: bold;
-	font-size: 12px;
+    font-weight: bold;
+    font-size: 12px;
 }
 
 .gcp-section-title-large {
-	font-weight: bold;
-	font-size: 16px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .gcp-form-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .gcp-mars-workflow-step {
-	background-image: url(images/mars_workflow_button.png);
-	background-position: top;
-	background-repeat: no-repeat;
-	background-size: 100%;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    
+    /* rounded border */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    border: 2px solid;
 }
 
 .gcp-mars-workflow-step-thumb {
-	background-image: url(images/mars_workflow_button_thumb.png);
-	background-position: top;
-	background-repeat: no-repeat;
-	background-size: 100%;
+    background-image: url(images/mars_workflow_button_thumb.png);
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 .gcp-hand-cursor {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 /* add support for multi-line buttons */
 .v-button-multiline,.v-button-caption {
-	white-space: pre;
+    white-space: pre;
 }
 
 /* Lay the options horizontally */
 .v-select-optiongroup-horizontal,.v-select-option {
-	display: inline-block;
+    display: inline-block;
 }
 
 /* Avoid wrapping if the layout is too tight */
 .v-select-optiongroup-horizontal {
-	white-space: nowrap;
+    white-space: nowrap;
 }
 
 /* Some extra spacing is needed */
 .v-select-optiongroup-horizontal,.v-select-option.v-radiobutton {
-	align-bottom: 10px;
+    align-bottom: 10px;
 }
 
 .addTopSpace {
-	margin-top: 10px;
-	margin-left: 10px
+    margin-top: 10px;
+    margin-left: 10px
 }
 
 .v-table-row-project-table, .v-table-cell-content-project-table {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .v-table-row-gcp-highlight, .v-table-cell-content-gcp-highlight {
-	cursor: pointer;
-	background: #dfffcf;
+    cursor: pointer;
+    background: #dfffcf;
 }
 
 .gcp-highlight {

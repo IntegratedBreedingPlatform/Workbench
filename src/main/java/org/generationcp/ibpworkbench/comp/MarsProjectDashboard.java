@@ -207,7 +207,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setWidth("1000px");
+        setWidth("1100px");
 
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
@@ -224,6 +224,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setWidth("1000px");
 
         Component breedingManagementArea = layoutBreedingManagementArea();
         breedingManagementArea.setHeight("100%");
@@ -245,7 +246,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("520px");
+        layout.setHeight("540px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -362,7 +363,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("520px");
+        layout.setHeight("540px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -408,7 +409,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("520px");
+        layout.setHeight("540px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
