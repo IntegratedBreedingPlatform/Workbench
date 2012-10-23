@@ -10,6 +10,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.comp.MabcWorkflowDiagram;
+import org.generationcp.ibpworkbench.comp.ManagerWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
 import org.generationcp.ibpworkbench.comp.MasWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
@@ -134,19 +136,23 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
         sessionData.setLastOpenedProject(project);
         
-        String projectTemplate = role.getWorkflowTemplate().getName();
-        if (projectTemplate != null){
-            if (projectTemplate.equals("MARS")) {
+        String workflowName = role.getWorkflowTemplate().getName();
+        if (workflowName != null){
+            if (workflowName.equals("MARS")) {
                 MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
                 contentWindow.showContent(projectDashboard);
             }
-            else if (projectTemplate.equals("MAS")) {
+            else if (workflowName.equals("MAS")) {
                 MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(project);
                 contentWindow.showContent(masWorkflowDiagram);
             }
-            else if (projectTemplate.equals("Manager")) {
-                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
+            else if (workflowName.equals("Manager")) {
+                ManagerWorkflowDiagram projectDashboard = new ManagerWorkflowDiagram(project);
                 contentWindow.showContent(projectDashboard);
+            }
+            else if (workflowName.equals("MABC")) {
+                MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(project);
+                contentWindow.showContent(mabcWorkflowDiagram);
             }
         }
     }
