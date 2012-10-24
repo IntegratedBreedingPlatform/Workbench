@@ -38,6 +38,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 110;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 130;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -165,7 +166,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("570px");
-        layout.setHeight("620px");
+        layout.setHeight("640px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -175,7 +176,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
         
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         Component populationManagementArea = layoutPopulationDevelopment();
         layout.addComponent(populationManagementArea, "top:" + topInPixels  + "; left:" + extraSpace);
@@ -196,7 +197,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         //the steps on the second column   
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
+        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
         topInPixels = top + "px";
         int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
         String leftInPixels = left + "px";
@@ -211,17 +212,25 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     protected Component layoutProjectPlanning() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
         
         layout.addComponent(projectPlanningTitle);
         layout.setComponentAlignment(projectPlanningTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectPlanningTitle, 0);
 
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+        
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
@@ -277,7 +286,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     protected Component layoutGenotypingStep() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-
+        
         layout.addComponent(genotypingTitle);
         layout.setComponentAlignment(genotypingTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(genotypingTitle, 0);

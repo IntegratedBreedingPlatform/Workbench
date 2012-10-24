@@ -37,7 +37,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 110;
+    private static final int WORKFLOW_STEP_HEIGHT = 130;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -164,7 +164,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("250px");
+        layout.setHeight("300px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -220,12 +220,19 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
         layout.setComponentAlignment(projectPlanningTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectPlanningTitle, 0);
 
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+        
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
@@ -291,6 +298,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
         layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(fieldbookButton);
+        fieldbookButton.setHeight("20px");
         layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(fieldbookButton, 0);
         
