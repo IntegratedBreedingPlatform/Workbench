@@ -22,10 +22,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -41,6 +43,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 130;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
+    private static final int ARROW_IMAGE_HEIGHT = 30;
+    private static final int ARROW_IMAGE_WIDTH = 40;
+    private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
+    private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
+    private static final String TWO_HEADED_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-lr.png";
     
     private Project project;
 
@@ -63,6 +70,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button breedingViewButton;
     private Button fieldbookButton;
     private Button optimasButton;
+    
+    private Embedded downArrowImage1;
+    private Embedded downArrowImage2;
+    private Embedded downArrowImage3;
+    private Embedded downArrowImage4;
+    private Embedded twoHeadedArrowImage;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -144,6 +157,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
         optimasButton.setDescription("Click to launch OptiMAS");
+        
+        downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrowImage4 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        twoHeadedArrowImage = new Embedded("", new ThemeResource(TWO_HEADED_ARROW_THEME_RESOURCE));
     }
 
     protected void initializeLayout() {
@@ -165,8 +184,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
-        layout.setWidth("570px");
-        layout.setHeight("640px");
+        layout.setWidth("620px");
+        layout.setHeight("800px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -178,33 +197,59 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         
         top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component populationManagementArea = layoutPopulationDevelopment();
-        layout.addComponent(populationManagementArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        layout.addComponent(downArrowImage1, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
+        
+        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        Component populationDevelopmentArea = layoutPopulationDevelopment();
+        layout.addComponent(populationDevelopmentArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        layout.addComponent(downArrowImage2, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
+        
+        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         Component fieldTrialArea = layoutFieldTrialManagement();
         layout.addComponent(fieldTrialArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component progenySelectionArea = layoutStatisticalAnalysis();
-        layout.addComponent(progenySelectionArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        layout.addComponent(downArrowImage3, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
+        
+        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        Component statisticalAnalysisArea = layoutStatisticalAnalysis();
+        layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component projectCompletionArea = layoutBreedingDecision();
-        layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        layout.addComponent(downArrowImage4, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
+        
+        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        Component breedingDecisionArea = layoutBreedingDecision();
+        layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         //the steps on the second column   
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
+        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
         topInPixels = top + "px";
-        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + ARROW_IMAGE_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
         String leftInPixels = left + "px";
         
         Component genotypingArea = layoutGenotypingStep();
         layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
         
+        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 40; 
+        topInPixels = top + "px";
+        left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        leftInPixels = left + "px";
+        layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
+
         panel.setContent(layout);
         return panel;
     }

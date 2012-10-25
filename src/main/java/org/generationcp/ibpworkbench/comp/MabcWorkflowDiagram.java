@@ -214,8 +214,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
         
         top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component progenySelectionArea = layoutStatisticalAnalysis();
-        layout.addComponent(progenySelectionArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        Component statisticalAnalysisArea = layoutStatisticalAnalysis();
+        layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
@@ -223,8 +223,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
         
         top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component projectCompletionArea = layoutBreedingDecision();
-        layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        Component breedingDecisionArea = layoutBreedingDecision();
+        layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
         //the steps on the second column   
         top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
