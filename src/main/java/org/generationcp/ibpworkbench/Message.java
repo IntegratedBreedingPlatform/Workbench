@@ -85,4 +85,13 @@ public enum Message {
     // Tool configuration update
     ,UPDATING
     ,UPDATING_TOOLS_CONFIGURATION
+    
+    // Create new project
+    ,BASIC_DETAILS_LABEL
+    ,USER_ROLES_LABEL
+    ,PROJECT_MEMBERS_LABEL
+    ,BREEDING_METHODS_LABEL
+    ,LOCATIONS_LABEL
+    
+    
 }

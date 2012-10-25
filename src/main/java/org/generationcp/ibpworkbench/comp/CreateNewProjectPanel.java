@@ -49,6 +49,7 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 
+@Deprecated
 @Configurable
 public class CreateNewProjectPanel extends VerticalLayout implements InitializingBean{
 
@@ -228,7 +229,7 @@ public class CreateNewProjectPanel extends VerticalLayout implements Initializin
     protected void initializeActions() {
         Field field = projectForm.getField("cropType");
         CropTypeComboAction cropTypeComboAction = projectFormFieldFactory.getCropTypeComboAction();
-        cropTypeComboAction.setSourcePanel(this);
+//        cropTypeComboAction.setSourcePanel(this);
         field.addListener(cropTypeComboAction);
     }
 

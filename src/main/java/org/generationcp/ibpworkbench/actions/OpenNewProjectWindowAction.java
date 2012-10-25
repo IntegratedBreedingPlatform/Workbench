@@ -25,6 +25,7 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+@Deprecated
 public class OpenNewProjectWindowAction implements Command, ClickListener{
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenNewProjectWindowAction.class);

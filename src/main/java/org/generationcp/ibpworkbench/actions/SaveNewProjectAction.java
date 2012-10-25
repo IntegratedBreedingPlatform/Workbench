@@ -45,6 +45,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.TwinColSelect;
 
+@Deprecated
 @Configurable
 public class SaveNewProjectAction implements ClickListener {
 
@@ -52,7 +53,6 @@ public class SaveNewProjectAction implements ClickListener {
     private static final long serialVersionUID = 1L;
 
     private Form newProjectForm;
-    private TwinColSelect selectMethods;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -63,9 +63,8 @@ public class SaveNewProjectAction implements ClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public SaveNewProjectAction(Form newProjectForm,TwinColSelect selectMethods) {
+    public SaveNewProjectAction(Form newProjectForm) {
         this.newProjectForm = newProjectForm;
-        this.selectMethods=selectMethods;
     }
 
     @Override
@@ -92,7 +91,7 @@ public class SaveNewProjectAction implements ClickListener {
             // FIXME: Set type parameter to avoid compiler warning
 //            Set methods= (Set) newProjectForm.getField("methods").getValue();
             @SuppressWarnings("rawtypes")
-			Set methods=(Set)selectMethods.getValue();
+			Set methods =(Set) newProjectForm.getField("methods").getValue();
             @SuppressWarnings("rawtypes")
 			Set locations= (Set) newProjectForm.getField("locations").getValue();
             

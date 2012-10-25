@@ -45,6 +45,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TwinColSelect;
 
+@Deprecated
 @Configurable
 public class ProjectFormFieldFactory extends DefaultFieldFactory{
 

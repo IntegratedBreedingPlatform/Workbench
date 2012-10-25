@@ -26,6 +26,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
+@Deprecated
 public class ProjectFormPanel extends VerticalLayout{
 
     private static final long serialVersionUID = 1L;

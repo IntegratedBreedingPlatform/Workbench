@@ -13,8 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.CreateNewProjectPanel;
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.comp.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
@@ -44,9 +43,13 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
         
-        CreateNewProjectPanel newProjectPanel = new CreateNewProjectPanel();
         try {
-            newProjectPanel = new CreateNewProjectPanel();
+            CreateProjectPanel newProjectPanel = new CreateProjectPanel();
+            newProjectPanel.setWidth("800px");
+            
+            w.showContent(newProjectPanel);
+            
+            NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
@@ -56,17 +59,6 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
             return;
         }
         
-        newProjectPanel.setWidth("800px");
-        
-        //newProjectPanel.getAddLocationButton().addListener(new SaveNewLocationAction(newProjectPanel.getLocationForm()));
-        
-        newProjectPanel.getSaveProjectButton().addListener(new SaveNewProjectAction(newProjectPanel.getProjectForm(),newProjectPanel.getSelectMethods()));
-        newProjectPanel.getShowLocationWindowButton().addListener(new OpenAddLocationWindowAction());
-        newProjectPanel.getCancelButton().addListener(new HomeAction());
-        
-        w.showContent(newProjectPanel);
-        
-        NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
     }
 
 }

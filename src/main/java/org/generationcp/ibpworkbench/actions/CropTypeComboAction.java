@@ -15,7 +15,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.CreateNewProjectPanel;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectBasicDetailsComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -42,7 +42,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    private CreateNewProjectPanel sourcePanel;
+    private ProjectBasicDetailsComponent sourceComponent;
     private ComboBox cropTypeComboBox;
 
     // Used to keep track if the selected item is the last item added to crop type combo box
@@ -60,18 +60,18 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
         this();
         setCropTypeComboBox(cropTypeComboBox);
     }
-
-    public CropTypeComboAction(CreateNewProjectPanel sourcePanel, ComboBox cropTypeComboBox) {
+    
+    public CropTypeComboAction(ProjectBasicDetailsComponent sourceComponent, ComboBox cropTypeComboBox) {
         this(cropTypeComboBox);
-        setSourcePanel(sourcePanel);
+        setSourceComponent(sourceComponent);
     }
 
-    public CreateNewProjectPanel getSourcePanel() {
-        return sourcePanel;
+    public ProjectBasicDetailsComponent getSourceComponent() {
+        return sourceComponent;
     }
 
-    public void setSourcePanel(CreateNewProjectPanel sourcePanel) {
-        this.sourcePanel = sourcePanel;
+    public void setSourceComponent(ProjectBasicDetailsComponent sourceComponent) {
+        this.sourceComponent = sourceComponent;
     }
 
     public ComboBox getCropTypeComboBox() {
@@ -84,7 +84,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
 
     @Override
     public void valueChange(ValueChangeEvent event) {
-        String value = (String) event.getProperty().getValue();
+        String value = ((CropType) event.getProperty().getValue()).getCropName();
         boolean sameAsLastValue = lastValue == null ? value == null : lastValue.equals(value);
 
         if (sameAsLastValue || cropTypeComboBoxLastAdded) {
@@ -95,7 +95,9 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
         }
 
         // set the visible properties again, so that all fields gets renewed
-        sourcePanel.refreshVisibleItems();
+        if (sourceComponent != null){
+            sourceComponent.refreshVisibleItems();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -105,11 +107,11 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
         try {
             // if not yet in the database
             if (!cropTypeComboBox.containsId(workbenchDataManager.getCropTypeByName(newItemCaption))) {
-                
+
                 // add crop to database
                 CropType cropType = new CropType(newItemCaption);
                 workbenchDataManager.addCropType(cropType);
-                sourcePanel.getWindow().showNotification("Added crop " + newItemCaption);
+                sourceComponent.getWindow().showNotification("Added crop " + newItemCaption);
 
                 // add the item to the combo box
                 CropType newCropType = workbenchDataManager.getCropTypeByName(newItemCaption);
@@ -119,11 +121,17 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
 
                 // set the combo box value to the newly added crop
                 cropTypeComboBox.setValue(newCropType);
+                
+                sourceComponent.setCropType(newCropType);
+                
+                if (sourceComponent != null){
+                    sourceComponent.refreshVisibleItems();
+                }
             }
 
         } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to add crop type.", e);
-            MessageNotifier.showError(sourcePanel.getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
+            MessageNotifier.showError(sourceComponent.getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
                     messageSource.getMessage(Message.ADD_CROP_TYPE_ERROR_DESC));
             return;
         }
