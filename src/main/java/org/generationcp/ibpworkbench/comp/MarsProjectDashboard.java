@@ -25,11 +25,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -40,6 +42,8 @@ import com.vaadin.ui.themes.BaseTheme;
 public class MarsProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final String DOWN_ARROW_THEME_RESOURCE = "images/blc-arrow-d.png";
 
     private Project project;
 
@@ -82,6 +86,14 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label recombinationCycleTitle;
 
     private Button breedingManagerButton;
+    
+    private Embedded downArrow11;
+    private Embedded downArrow12;
+    private Embedded downArrow13;
+    
+    private Embedded downArrow31;
+    private Embedded downArrow32;
+    private Embedded downArrow33;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -202,6 +214,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Nursery Manager");
 
+        downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrow12 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrow13 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        
+        downArrow31 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrow32 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        downArrow33 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
     }
 
     protected void initializeLayout() {
@@ -246,9 +265,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("540px");
+        layout.setHeight("630px");
         layout.setMargin(true);
-        layout.setSpacing(true);
+        layout.setSpacing(false);
 
         breedingManagementTitle.setSizeUndefined();
         layout.addComponent(breedingManagementTitle);
@@ -256,12 +275,21 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea);
+        
+        layout.addComponent(downArrow11);
+        layout.setComponentAlignment(downArrow11, Alignment.MIDDLE_CENTER);
 
         Component populationManagementArea = layoutPopulationDevelopment();
         layout.addComponent(populationManagementArea);
+        
+        layout.addComponent(downArrow12);
+        layout.setComponentAlignment(downArrow12, Alignment.MIDDLE_CENTER);
 
         Component fieldTrialArea = layoutFieldTrialManagement();
         layout.addComponent(fieldTrialArea);
+        
+        layout.addComponent(downArrow13);
+        layout.setComponentAlignment(downArrow13, Alignment.MIDDLE_CENTER);
 
         Component genotypingArea = layoutGenotyping();
         layout.addComponent(genotypingArea);
@@ -363,7 +391,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("540px");
+        layout.setHeight("630px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -409,7 +437,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("540px");
+        layout.setHeight("630px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -421,18 +449,21 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         // Component ideotypeDesignArea = createPanel("9. Ideotype Design",
         // "Selection Index");
         // layout.addComponent(ideotypeDesignArea);
-
+        
         Component plantSelectionArea = layoutPlantSelection();
         layout.addComponent(plantSelectionArea);
         layout.setExpandRatio(plantSelectionArea, 0);
-
+        
+        layout.addComponent(downArrow31);
+        layout.setComponentAlignment(downArrow31, Alignment.MIDDLE_CENTER);
+        
         Component recombinationCycleArea = layoutRecombinationCycle();
         layout.addComponent(recombinationCycleArea);
         layout.setExpandRatio(recombinationCycleArea, 0);
 
-        // Component genotypingArea = createPanel("Genotyping", "Lab Book");
-        // layout.addComponent(genotypingArea);
-
+        layout.addComponent(downArrow32);
+        layout.setComponentAlignment(downArrow32, Alignment.MIDDLE_CENTER);
+        
         Component projectCompletionArea = createPanel("8. Project Completion");
         layout.addComponent(projectCompletionArea);
         layout.setExpandRatio(recombinationCycleArea, 0);
