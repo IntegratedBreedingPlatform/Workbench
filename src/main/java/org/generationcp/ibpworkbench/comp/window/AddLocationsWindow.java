@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.comp.window;
 import org.generationcp.ibpworkbench.actions.CancelSaveLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.model.LocationModel;
 
 import com.vaadin.ui.Button;
@@ -31,7 +32,10 @@ public class AddLocationsWindow extends Window {
     
     private VerticalLayout layout;
     
-    public AddLocationsWindow() {
+    private ProjectLocationsComponent projectLocationComponent;
+    
+	public AddLocationsWindow(ProjectLocationsComponent projectLocationComponent) {
+		 this.projectLocationComponent=projectLocationComponent;
         /*
          * Make the window modal, which will disable all other components while
          * it is visible
@@ -49,6 +53,7 @@ public class AddLocationsWindow extends Window {
         assemble();
         
         setCaption("Add Location");
+       
 
     }
     
@@ -80,7 +85,7 @@ public class AddLocationsWindow extends Window {
     
     protected void initializeActions() {
         
-        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this));  
+        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, this.projectLocationComponent));  
         
         cancelButton.addListener(new CancelSaveLocationAction(this));
     }
@@ -105,5 +110,7 @@ public class AddLocationsWindow extends Window {
         initializeLayout();
         initializeActions();
     }
+    
+    
 }
 

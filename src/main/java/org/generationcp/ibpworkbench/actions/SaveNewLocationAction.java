@@ -13,9 +13,11 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.Location;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -33,11 +35,16 @@ public class SaveNewLocationAction implements ClickListener {
     private AddLocationForm newLocationForm;
     
     private AddLocationsWindow window;
-
-    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window) {
+    
+	private ProjectLocationsComponent projectLocationsComponent;
+    
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,ProjectLocationsComponent projectLocationsComponent) {
         this.newLocationForm = newLocationForm;
         this.window = window;
+        this.projectLocationsComponent=projectLocationsComponent;
+
     }
+    
     
     @Override
     public void buttonClick(ClickEvent event) {
@@ -61,20 +68,32 @@ public class SaveNewLocationAction implements ClickListener {
         	
         	newLocation.setLocationName(location.getLocationName());
         	newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
-        	
         	newLocation.setLocationId(nextKey);
         
             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
-            
-            newLocation = null;
             
             LOG.info(app.getSessionData().getProjectLocationData().toString());
         // go back to dashboard
         //HomeAction home = new HomeAction();
         //home.buttonClick(event);
-            
+         
             newLocationForm.commit();
             
+            Location newLoc=new Location();
+            newLoc.setLocid(newLocation.getLocationId());
+        	newLoc.setLname(newLocation.getLocationName());
+        	newLoc.setLabbr(newLocation.getLocationAbbreviation());
+        
+        	projectLocationsComponent.getBeanItemContainer().addBean(newLoc);
+	
+        	projectLocationsComponent.getSelect().setContainerDataSource(projectLocationsComponent.getBeanItemContainer());
+            for (Object itemId :projectLocationsComponent.getBeanItemContainer().getItemIds()) {
+                Location loc = (Location) itemId;
+                projectLocationsComponent.getSelect().setItemCaption(itemId, loc.getLname());
+            }
+            projectLocationsComponent.getSelect().requestRepaint();
+            
+            newLocation = null;
             window.getParent().removeWindow(window);
         
         }

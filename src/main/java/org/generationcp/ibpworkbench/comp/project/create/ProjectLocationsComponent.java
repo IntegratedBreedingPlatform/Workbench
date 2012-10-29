@@ -23,6 +23,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TwinColSelect;
@@ -59,12 +61,14 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     private Button previousButton;
     private Button showLocationWindowButton;
     private Component buttonArea;
-
+    BeanItemContainer<Location> beanItemContainer;
     TwinColSelect select;
 
-    @Autowired
+	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
+	private Button testButton;
 
+	
     public ProjectLocationsComponent(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
     }
@@ -93,7 +97,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         select.setLeftColumnCaption("Available Locations");
         select.setRightColumnCaption("Selected Locations");
         select.setRows(10);
-        select.setWidth("400px");
+        select.setWidth("690px");
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
 
@@ -130,7 +134,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
     protected void initializeActions() {
         previousButton.addListener(new PreviousButtonClickListener());
-        showLocationWindowButton.addListener(new OpenAddLocationWindowAction());
+        showLocationWindowButton.addListener(new OpenAddLocationWindowAction(this));
     }
 
     protected Component layoutButtonArea() {
@@ -140,6 +144,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
         showLocationWindowButton = new Button("Add Location");
         previousButton = new Button("Previous");
+
         buttonLayout.addComponent(showLocationWindowButton);
         buttonLayout.addComponent(previousButton);
         return buttonLayout;
@@ -148,7 +153,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     private Container createLocationsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
 
-        BeanItemContainer<Location> beanItemContainer = new BeanItemContainer<Location>(Location.class);
+        beanItemContainer = new BeanItemContainer<Location>(Location.class);
         if (managerFactory == null) {
             return beanItemContainer;
         }
@@ -197,9 +202,14 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
           createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
         }
     }
+    public BeanItemContainer<Location> getBeanItemContainer() {
+		return beanItemContainer;
+	}
 
+	public TwinColSelect getSelect() {
+		return select;
+	}
 
-    
 
 
 }

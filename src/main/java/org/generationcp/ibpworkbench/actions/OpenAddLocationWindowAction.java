@@ -12,7 +12,9 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +28,16 @@ public class OpenAddLocationWindowAction implements ClickListener{
 
     private static final long serialVersionUID = 1L;
 
-    public OpenAddLocationWindowAction() {
+	private ProjectLocationsComponent projectLocationComponent;
 
+    public OpenAddLocationWindowAction(ProjectLocationsComponent projectLocationComponent) {
+    	this.projectLocationComponent=projectLocationComponent;
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
-        event.getComponent().getWindow().addWindow(new AddLocationsWindow());
+        event.getComponent().getWindow().addWindow(new AddLocationsWindow(this.projectLocationComponent));
     }
 
+    
 }
