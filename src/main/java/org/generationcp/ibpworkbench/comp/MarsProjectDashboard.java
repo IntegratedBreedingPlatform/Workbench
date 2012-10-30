@@ -118,35 +118,35 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagementTitle.setStyleName("gcp-section-title");
 
         // project planning
-        projectPlanningTitle = new Label("1. Project Planning");
+        projectPlanningTitle = new Label("Project Planning");
         projectPlanningTitle.setStyleName("gcp-section-title");
         projectPlanningTitle.setSizeUndefined();
 
-        populationDevelopmentTitle = new Label("2. Population Development");
+        populationDevelopmentTitle = new Label("Population Development");
         populationDevelopmentTitle.setStyleName("gcp-section-title");
         populationDevelopmentTitle.setSizeUndefined();
 
-        fieldTrialManagementTitle = new Label("3. Field Trial Management");
+        fieldTrialManagementTitle = new Label("Field Trial Management");
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
         fieldTrialManagementTitle.setSizeUndefined();
 
-        genotypingTitle = new Label("4. Genotyping");
+        genotypingTitle = new Label("Genotyping");
         genotypingTitle.setStyleName("gcp-section-title");
         genotypingTitle.setSizeUndefined();
 
-        loadDataSetsTitle = new Label("5. Load Datasets");
+        loadDataSetsTitle = new Label("Load Datasets");
         loadDataSetsTitle.setStyleName("gcp-section-title");
         loadDataSetsTitle.setSizeUndefined();
 
-        phenotypicAnalysisTitle = new Label("6. Phenotypic Analysis");
+        phenotypicAnalysisTitle = new Label("Phenotypic Analysis");
         phenotypicAnalysisTitle.setStyleName("gcp-section-title");
         phenotypicAnalysisTitle.setSizeUndefined();
 
-        genotypicAnalysisTitle = new Label("7. Genotypic Analysis");
+        genotypicAnalysisTitle = new Label("Genotypic Analysis");
         genotypicAnalysisTitle.setStyleName("gcp-section-title");
         genotypicAnalysisTitle.setSizeUndefined();
 
-        qtlAnalysisTitle = new Label("8. QTL Analysis");
+        qtlAnalysisTitle = new Label("QTL Analysis");
         qtlAnalysisTitle.setStyleName("gcp-section-title");
         qtlAnalysisTitle.setSizeUndefined();
 
@@ -201,11 +201,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         markerImplementationTitle = new Label("Marker Implementation");
         markerImplementationTitle.setStyleName("gcp-section-title");
 
-        plantSelectionTitle = new Label("6. Plant Selection");
+        plantSelectionTitle = new Label("Plant Selection");
         plantSelectionTitle.setStyleName("gcp-section-title");
         plantSelectionTitle.setSizeUndefined();
 
-        recombinationCycleTitle = new Label("7. Recombination Cycle");
+        recombinationCycleTitle = new Label("Recombination Cycle");
         recombinationCycleTitle.setStyleName("gcp-section-title");
         recombinationCycleTitle.setSizeUndefined();
 
