@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,6 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
     }
 
     protected void initializeValues() {
-        //TODO
     }
 
     protected void initializeLayout() {
@@ -130,27 +130,41 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
         for (Role role : roles) {
             CheckBox cb = new CheckBox(role.getName());
+            cb.setData(role.getRoleId());
             if (cb.getCaption().contains("Manager")) {
                 cb.setValue(true);
             }
             rolesCheckBoxList.add(cb);
+
         }
 
         return rolesCheckBoxList;
 
     }
 
-    private boolean validate() {
-        // TODO
+    private boolean validate() { 
+        // Check if at least one role is selected
+        boolean withCheckedItem = false;
+        
+        for (CheckBox cb : userRoleCheckBoxList) {
+            if ((Boolean) cb.getValue() == true){
+                withCheckedItem = true;
+                break;
+            }
+        }
+        
+        if (!withCheckedItem){
+            MessageNotifier.showError(getWindow(), "Error", "No role selected.");
+            return false;
+        }
         return true;
     }
 
     public boolean validateAndSave() {
         if (validate()) {
-            Project project = createProjectPanel.getProject();
-            //TODO set project user roles in createProjectPanel
+            return true;
         }
-        return true;
+        return false; 
 
     }
 
@@ -170,8 +184,30 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
         @Override
         public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            //validate();
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
+            if (validate()){
+                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
+            }
         }
     }
+    
+    public List<ProjectUserRole> getProjectUserRoles() {
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        for (CheckBox cb : userRoleCheckBoxList) {
+            if ((Boolean) cb.getValue() == true) {
+                Role role;
+                try {
+                    role = workbenchDataManager.getRoleById((Integer) cb.getData());
+                    ProjectUserRole projectUserRole = new ProjectUserRole();
+                    projectUserRole.setRole(role);
+                    projectUserRoles.add(projectUserRole);
+                } catch (MiddlewareQueryException e) {
+                  LOG.error("Error encountered while saving project user roles", e);
+                  throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                }
+            }
+        }
+        return projectUserRoles;
+
+    }
+
 }

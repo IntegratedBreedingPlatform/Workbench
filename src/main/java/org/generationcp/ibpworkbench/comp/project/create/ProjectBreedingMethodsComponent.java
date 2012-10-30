@@ -278,7 +278,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
             project.setMethods(methods);
             createProjectPanel.setProject(project);
         }
-        return true; // returns true. methods not required.
+        return true;     // methods not required, so even if there are no values, this returns true
     }
 
     private class PreviousButtonClickListener implements ClickListener{

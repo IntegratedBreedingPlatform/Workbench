@@ -36,6 +36,7 @@ import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,17 @@ public class SaveNewProjectAction implements ClickListener{
                 if ((locations != null) && (!locations.isEmpty())) {
                     saveProjectLocation(locations, projectSaved);
                 }
+                
+                List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
+                if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
+                    saveProjectUserRoles(projectUserRoles, projectSaved);
+                }
+                
+                List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
+                if ((projectMembers != null) && (!projectMembers.isEmpty())) {
+                    saveProjectMembers(projectMembers, projectSaved);
+                }
+                
 
             } catch (MiddlewareQueryException e) {
                 LOG.error("Error encountered while trying to save the project.", e);
@@ -213,5 +225,27 @@ public class SaveNewProjectAction implements ClickListener{
         workbenchDataManager.addProjectLocationMap(projectLocationMapList);
 
     }
+
+    private void saveProjectUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        Integer userId = app.getSessionData().getUserData().getUserid();
+
+        for (ProjectUserRole projectUserRole : projectUserRoles){
+            projectUserRole.setProject(projectSaved);
+            projectUserRole.setUserId(userId);
+            workbenchDataManager.addProjectUserRole(projectUserRole);
+        }
+        
+    }
+
+    private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+        for (ProjectUserRole projectUserRole : projectUserRoles){
+            projectUserRole.setProject(projectSaved);
+            workbenchDataManager.addProjectUserRole(projectUserRole);
+        }
+        
+    }
+
 
 }

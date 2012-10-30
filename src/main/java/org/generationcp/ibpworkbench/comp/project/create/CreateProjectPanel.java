@@ -20,6 +20,7 @@ import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -98,6 +99,14 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     
     public void setNewUsers(List<User> newUsers) {
         this.newUsers = newUsers;
+    }
+
+    public List<ProjectUserRole> getProjectUserRoles(){
+        return createProjectAccordion.getProjectUserRoles();
+    }
+
+    public List<ProjectUserRole> getProjectMembers(){
+        return createProjectAccordion.getProjectMembers();
     }
 
     public CreateProjectAccordion getCreateProjectAccordion() {

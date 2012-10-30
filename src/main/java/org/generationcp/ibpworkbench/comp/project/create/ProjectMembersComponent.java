@@ -23,6 +23,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -188,7 +189,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             project.setMembers(members);
             createProjectPanel.setProject(project);
         }
-        return true;
+        return true;    // members not required, so even if there are no values, this returns true
     }
     
     private class PreviousButtonClickListener implements ClickListener{
@@ -208,5 +209,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
         }
     }
-
+   
+    public List<ProjectUserRole> getProjectMembers() {
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        
+        //TODO Add project members with role and user id. See ProjectUserRolesComponent.getProjectUserRoles() for reference
+        
+        
+        return projectUserRoles;
+    }
+    
 }

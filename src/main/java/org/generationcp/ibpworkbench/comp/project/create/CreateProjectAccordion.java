@@ -12,10 +12,13 @@
 
 package org.generationcp.ibpworkbench.comp.project.create;
 
+import java.util.List;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -233,6 +236,14 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         this.addTab(layoutLocations, messageSource.getMessage(Message.LOCATIONS_LABEL));
 
         this.addListener(new WorkbenchSelectedTabChangeListener(this));
+    }
+
+    public List<ProjectUserRole> getProjectUserRoles(){
+        return userRolesTab.getProjectUserRoles();
+    }
+
+    public List<ProjectUserRole> getProjectMembers(){
+        return membersTab.getProjectMembers();
     }
 
 }
