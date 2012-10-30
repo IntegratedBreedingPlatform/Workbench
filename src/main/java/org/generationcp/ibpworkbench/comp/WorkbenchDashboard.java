@@ -33,9 +33,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -52,6 +55,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private Label lblDashboardTitle;
     
     private Table tblProject;
+    
+    private Label lblProjectDetailTitle;
     
     private Table tblActivity;
     
@@ -77,6 +82,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     protected void initializeComponents() {
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName("gcp-content-title");
+        
+        lblProjectDetailTitle = new Label();
+        lblProjectDetailTitle.setStyleName("gcp-content-title");
 
         initializeProjectTable();
         initializeActivityTable();
@@ -194,7 +202,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setContainerDataSource(projectContainer);
 
         // set the visible columns on the Project Table
-        String[] columns = new String[] { "startDate", "projectName", "action", "status", "owner" };
+        String[] columns = new String[] { "startDate", "projectName" };
         tblProject.setVisibleColumns(columns);
     }
 
@@ -216,19 +224,29 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
     
     private Component layoutProjectDetailArea() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setWidth("100%");
-        layout.setMargin(false);
-        layout.setSpacing(true);
+        // layout the tables
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setSpacing(true);
         
         tblActivity.setWidth("100%");
-        layout.addComponent(tblActivity);
-        layout.setExpandRatio(tblActivity, 1.0f);
+        horizontalLayout.addComponent(tblActivity);
+        horizontalLayout.setExpandRatio(tblActivity, 1.0f);
         
         tblRoles.setWidth("300px");
-        layout.addComponent(tblRoles);
+        horizontalLayout.addComponent(tblRoles);
         
-        return layout;
+        // layout the project detail area
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setWidth("100%");
+        verticalLayout.setMargin(false);
+        verticalLayout.setSpacing(true);
+        
+        verticalLayout.addComponent(lblProjectDetailTitle);
+        verticalLayout.addComponent(horizontalLayout);
+        
+        return verticalLayout;
     }
     
     @Override
@@ -243,10 +261,41 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setValue(lblDashboardTitle, Message.dashboard);
         messageSource.setCaption(tblProject, Message.project_table_caption);
         
-        messageSource.setColumnHeader(tblProject, "startDate", Message.date);
+        messageSource.setValue(lblProjectDetailTitle, Message.PROJECT_DETAIL);
+        
+        messageSource.setColumnHeader(tblProject, "startDate", Message.START_DATE);
         messageSource.setColumnHeader(tblProject, "projectName", Message.project);
         messageSource.setColumnHeader(tblProject, "action", Message.action);
         messageSource.setColumnHeader(tblProject, "status", Message.status);
         messageSource.setColumnHeader(tblProject, "owner", Message.owner);
+        
+        messageSource.setCaption(tblActivity, Message.ACTIVITIES);
+        
+        messageSource.setCaption(tblRoles, Message.ROLE_TABLE_TITLE);
+        
+        tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+                return messageSource.getMessage(Message.PROJECT_TABLE_TOOLTIP);
+            }
+        });
+        
+        tblRoles.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+                Table table = (Table) source;
+                Container container = table.getContainerDataSource();
+                
+                @SuppressWarnings("unchecked")
+                BeanItem<Role> item = (BeanItem<Role>) container.getItem(itemId);
+                Role role = item.getBean();
+                
+                return role == null ? "" : messageSource.getMessage(Message.ROLE_TABLE_TOOLTIP, role.getName());
+            }
+        });
     }
 }

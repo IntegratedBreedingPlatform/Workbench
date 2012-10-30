@@ -30,10 +30,19 @@ public enum Message {
     ,user_guide
     ,user_guide_1
     ,USERNAME
-    ,workbench_title,
+    ,workbench_title
+    
+    // Workbench Dashboard
+    ,ACTIVITIES
+    ,PROJECT_DETAIL
+    ,ROLES
+    ,ROLE_TABLE_TITLE
+    ,PROJECT_TABLE_TOOLTIP
+    ,ROLE_TABLE_TOOLTIP
+    ,START_DATE
     
     //General
-    SAVE,
+    ,SAVE,
     CANCEL,
     
     //Register User Account
@@ -92,6 +101,4 @@ public enum Message {
     ,PROJECT_MEMBERS_LABEL
     ,BREEDING_METHODS_LABEL
     ,LOCATIONS_LABEL
-    
-    
 }
