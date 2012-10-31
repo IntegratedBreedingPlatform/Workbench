@@ -37,13 +37,6 @@
     border: 2px solid;
 }
 
-.gcp-mars-workflow-step-thumb {
-    background-image: url(images/mars_workflow_button_thumb.png);
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: 100%;
-}
-
 .gcp-hand-cursor {
     cursor: pointer;
 }
