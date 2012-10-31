@@ -110,7 +110,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setImmediate(true); // react at once when something is selected
 
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-        projectContainer.setBeanIdProperty("projectName");
+        projectContainer.setBeanIdProperty("projectId");
         tblProject.setContainerDataSource(projectContainer);
 
         tblProject.setColumnCollapsingAllowed(true);
