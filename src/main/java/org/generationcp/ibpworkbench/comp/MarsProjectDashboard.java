@@ -193,7 +193,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         markerTraitAnalysisTitle.setStyleName("gcp-section-title");
         markerTraitAnalysisTitle.setSizeUndefined();
 
-        markerTraitAnalysisAreaTitle = new Label("5. Marker Trait Analysis");
+        markerTraitAnalysisAreaTitle = new Label("Marker Trait Analysis");
         markerTraitAnalysisAreaTitle.setStyleName("gcp-section-title");
         markerTraitAnalysisAreaTitle.setSizeUndefined();
 
@@ -464,7 +464,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(downArrow32);
         layout.setComponentAlignment(downArrow32, Alignment.MIDDLE_CENTER);
         
-        Component projectCompletionArea = createPanel("8. Project Completion");
+        Component projectCompletionArea = createPanel("Project Completion");
         layout.addComponent(projectCompletionArea);
         layout.setExpandRatio(recombinationCycleArea, 0);
 
