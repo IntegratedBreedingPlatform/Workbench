@@ -12,18 +12,22 @@
 package org.generationcp.ibpworkbench.comp.project.create;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,14 +35,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickListener;
 
 
 /**
@@ -53,9 +66,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponent.class);
     private static final long serialVersionUID = 1L;
     
-
     private CreateProjectPanel createProjectPanel;
+   
     private TwinColSelect select;
+    
+    private Table tblMembers;
     
     private Button previousButton;
     private Button nextButton;
@@ -94,14 +109,66 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         select.setWidth("400px");
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
+        select.setImmediate(true);
         
         addComponent(select);
+        
+        initializeMembersTable();
+        addComponent(tblMembers);
         
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
         
     }
 
+    private void initializeMembersTable() {
+        tblMembers = new Table();
+        tblMembers.setImmediate(true);
+        
+        List<Role> roleList = null;
+        try {
+            roleList = workbenchDataManager.getAllRoles();
+        }
+        catch (MiddlewareQueryException e) {
+            LOG.error("Error encountered while getting workbench roles", e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                   Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+        
+        final List<Object> columnIds = new ArrayList<Object>();
+        columnIds.add("userName");
+        List<String> columnHeaders = new ArrayList<String>();
+        columnHeaders.add("Member");
+        
+        // prepare the container
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("userId", Integer.class, null);
+        container.addContainerProperty("userName", String.class, null);
+        for (Role role : roleList) {
+            columnIds.add("role_" + role.getRoleId());
+            columnHeaders.add(role.getName());
+            
+            container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
+        }
+        tblMembers.setContainerDataSource(container);
+        
+        tblMembers.setVisibleColumns(columnIds.toArray(new Object[0]));
+        tblMembers.setColumnHeaders(columnHeaders.toArray(new String[0]));
+        
+        tblMembers.setEditable(true);
+        tblMembers.setTableFieldFactory(new TableFieldFactory() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+                int columnIndex = columnIds.indexOf(propertyId);
+                if (columnIndex >= 1) {
+                    return new CheckBox();
+                }
+                return null;
+            }
+        });
+    }
 
     protected void initializeValues() {
         try {
@@ -130,6 +197,41 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     protected void initializeActions() {
         previousButton.addListener(new PreviousButtonClickListener());
         nextButton.addListener(new NextButtonClickListener());
+        
+        select.addListener(new ValueChangeListener() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                Property property = event.getProperty();
+                Set<User> selectedItems = (Set<User>) property.getValue();
+                
+                System.out.println("Selected " + property);
+                Container container = tblMembers.getContainerDataSource();
+                
+                // remove non-selected items
+                Collection<?> itemIds = container.getItemIds();
+                List<Object> deleteTargets = new ArrayList<Object>();
+                for (Object itemId : itemIds) {
+                    if (!selectedItems.contains(itemId)) {
+                        deleteTargets.add(itemId);
+                    }
+                }
+                for (Object itemId : deleteTargets) {
+                    container.removeItem(itemId);
+                }
+                
+                // add newly selected items
+                itemIds = container.getItemIds();
+                for (User user : selectedItems) {
+                    if (!itemIds.contains(user)) {
+                        Item item = container.addItem(user);
+                        item.getItemProperty("userId").setValue(1);
+                        item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
+                    }
+                }
+            }
+        });
     }
     
     protected Component layoutButtonArea() {
@@ -148,6 +250,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     private Container createUsersContainer() throws MiddlewareQueryException {
         List<User> validUserList = new ArrayList<User>();
         
+        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
+        
         // TODO: This can be improved once we implement proper User-Person mapping
         List<User> userList = workbenchDataManager.getAllUsers();
         for (User user : userList) {
@@ -161,6 +265,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
+            if (user.equals(sessionData.getUserData())) {
+                continue;
+            }
+            
             beanItemContainer.addBean(user);
         }
         
@@ -213,10 +321,37 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
-        //TODO Add project members with role and user id. See ProjectUserRolesComponent.getProjectUserRoles() for reference
+        Container container = tblMembers.getContainerDataSource();
+        Collection<User> userList = (Collection<User>) container.getItemIds();
         
+        List<Role> roleList = null;
+        try {
+            roleList = workbenchDataManager.getAllRoles();
+        }
+        catch (MiddlewareQueryException e) {
+            LOG.error("Error encountered while getting workbench roles", e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                   Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+        
+        for (User user : userList) {
+            Item item = container.getItem(user);
+            
+            for (Role role : roleList) {
+                String propertyId = "role_" + role.getRoleId();
+                Property property = item.getItemProperty(propertyId);
+                Boolean value = (Boolean) property.getValue();
+                
+                if (value != null & value.booleanValue()) {
+                    ProjectUserRole projectUserRole = new ProjectUserRole();
+                    projectUserRole.setUserId(user.getUserid());
+                    projectUserRole.setRole(role);
+                    
+                    projectUserRoles.add(projectUserRole);
+                }
+            }
+        }
         
         return projectUserRoles;
     }
-    
 }
