@@ -21,6 +21,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * This class will be deleted soon.
+ * 
+ * @author Glenn
+ */
+@Deprecated
 public abstract class ProjectThumbnailPanel extends VerticalLayout implements IProjectProvider{
 
     private static final long serialVersionUID = 1L;
