@@ -12,13 +12,17 @@
 
 package org.generationcp.ibpworkbench.comp.project.create;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -65,6 +69,9 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     private VerticalLayout layoutBreedingMethods;
     private VerticalLayout layoutLocations;
 
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
@@ -239,11 +246,27 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     }
 
     public List<ProjectUserRole> getProjectUserRoles(){
-        return userRolesTab.getProjectUserRoles();
+        if (userRolesTab != null) {
+            return userRolesTab.getProjectUserRoles();
+        }
+        
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        try {
+            Role managerRole = workbenchDataManager.getRoleById(Role.MANAGER_ROLE_ID);
+            
+            ProjectUserRole projectUserRole = new ProjectUserRole();
+            projectUserRole.setRole(managerRole);
+            projectUserRoles.add(projectUserRole);
+        }
+        catch (MiddlewareQueryException e) {
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+        
+        return projectUserRoles;
     }
 
     public List<ProjectUserRole> getProjectMembers(){
-        return membersTab.getProjectMembers();
+        return membersTab == null ? new ArrayList<ProjectUserRole>() : membersTab.getProjectMembers();
     }
 
 }

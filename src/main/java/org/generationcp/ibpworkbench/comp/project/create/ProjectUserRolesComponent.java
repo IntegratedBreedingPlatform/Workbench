@@ -131,7 +131,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         for (Role role : roles) {
             CheckBox cb = new CheckBox(role.getName());
             cb.setData(role.getRoleId());
-            if (cb.getCaption().contains("Manager")) {
+            if (role.getRoleId().equals(Role.MANAGER_ROLE_ID)) {
                 cb.setValue(true);
             }
             rolesCheckBoxList.add(cb);
