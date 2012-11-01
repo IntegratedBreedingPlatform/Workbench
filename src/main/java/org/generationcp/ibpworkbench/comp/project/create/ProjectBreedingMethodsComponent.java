@@ -258,17 +258,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
     }
 
     private boolean validate() {
-        boolean success = true;
-        if (selectMethods != null) {
-            Set<Method> methods = (Set<Method>) selectMethods.getValue();
-            if (methods.size() == 0) {
-                MessageNotifier.showWarning(getWindow(), "Warning", "No method selected.");
-            }
-        } else {
-            MessageNotifier.showWarning(getWindow(), "Warning", "No method selected.");
-        }
-        return success; // returns true. methods not required.
-
+        return true;
     }
 
     public boolean validateAndSave() {

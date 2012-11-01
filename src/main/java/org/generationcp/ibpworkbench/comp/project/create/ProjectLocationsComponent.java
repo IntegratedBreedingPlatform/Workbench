@@ -16,14 +16,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -36,12 +34,11 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickListener;
 
 /**
  * The fifth tab (Locations) in Create Project Accordion Component.
@@ -170,17 +167,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
 
     public boolean validate(){
-        boolean success = true;
-        if (select != null) {
-            Set<Location> locations = (Set<Location>) select.getValue();
-            if (locations.size() == 0){
-                MessageNotifier.showWarning(getWindow(), "Warning", "No location selected.");  
-                success = false;
-            }
-        } else {
-            MessageNotifier.showWarning(getWindow(), "Warning", "No location selected.");
-        }  
-        return success;
+        return true;
     }
     
 

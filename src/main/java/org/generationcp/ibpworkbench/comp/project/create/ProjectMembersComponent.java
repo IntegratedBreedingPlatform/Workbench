@@ -277,17 +277,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 
     private boolean validate(){
-        boolean success = true;
-        if (select != null) {
-            Set<User> members = (Set<User>) select.getValue();
-            if (members.size() == 0){
-                MessageNotifier.showWarning(getWindow(), "Warning", "No members selected.");  
-            }
-        } else {
-            MessageNotifier.showWarning(getWindow(), "Warning", "No members selected.");
-        }     
-        return success;
-
+        return true;
     }
 
     public boolean validateAndSave(){
