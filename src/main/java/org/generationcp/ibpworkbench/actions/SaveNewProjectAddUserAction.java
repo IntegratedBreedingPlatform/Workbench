@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -29,26 +32,29 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
+import com.vaadin.ui.TwinColSelect;
 
 
 /**
- * <b>Description</b>: Listerner responsible for saving new Users and Persons record.
+ * <b>Description</b>: Listener responsible for saving new Users and Persons records
+ * created from the Create New Project screen.
  * 
  * <br>
  * <br>
  * 
- * <b>Author</b>: Michael Blancaflor
+ * <b>Author</b>: Mark Agarrado
  * <br>
- * <b>File Created</b>: Jul 17, 2012
+ * <b>File Created</b>: October 15, 2012
  */
 @Configurable
-public class SaveUserAccountAction implements ClickListener {
+public class SaveNewProjectAddUserAction implements ClickListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaveUserAccountAction.class);
     
     private static final long serialVersionUID = 5386242653138617919L;
 
     private Form userAccountForm;
+    private TwinColSelect membersSelect;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -56,8 +62,9 @@ public class SaveUserAccountAction implements ClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    public SaveUserAccountAction(Form userAccountForm) {
+    public SaveNewProjectAddUserAction(Form userAccountForm, TwinColSelect membersSelect) {
         this.userAccountForm = userAccountForm;
+        this.membersSelect = membersSelect;
     }
     
     @Override
@@ -80,7 +87,7 @@ public class SaveUserAccountAction implements ClickListener {
         }
         
         try {
-            saveUserAccount(userAccount);
+            saveUserAccount(userAccount, membersSelect);
         } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to save user account details.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
@@ -89,12 +96,12 @@ public class SaveUserAccountAction implements ClickListener {
             return;
         }
         
-        OpenLoginWindowAction action = new OpenLoginWindowAction();
+        CloseWindowAction action = new CloseWindowAction();
         action.buttonClick(event);
         
     }
 
-    private void saveUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
+    private void saveUserAccount(UserAccountModel userAccount, TwinColSelect membersSelect) throws MiddlewareQueryException {
         userAccount.trimAll();
         
         Person person = new Person();
@@ -117,7 +124,8 @@ public class SaveUserAccountAction implements ClickListener {
         user.setPersonid(person.getId());
         user.setPerson(person);
         user.setName(userAccount.getUsername());
-        user.setPassword(userAccount.getPassword());
+        //set default password for the new user 
+        user.setPassword(userAccount.getUsername());
         user.setAccess(0);
         user.setAdate(0);
         user.setCdate(0);
@@ -125,6 +133,15 @@ public class SaveUserAccountAction implements ClickListener {
         user.setStatus(0);
         user.setType(0);
         workbenchDataManager.addUser(user);
+        
+        // add new user to the TwinColumnSelect
+        membersSelect.addItem(user);
+        membersSelect.setItemCaption(user, person.getDisplayName());
+        // get currently selected users and add the new user
+        @SuppressWarnings("unchecked")
+        HashSet<User> selectedMembers = new HashSet<User>((Collection<User>) membersSelect.getValue());
+        selectedMembers.add(user);
+        membersSelect.setValue(selectedMembers);
     }
 
 }

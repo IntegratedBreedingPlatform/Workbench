@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -70,6 +70,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
    
     private TwinColSelect select;
     
+    private Button newMemberButton;
+    
     private Table tblMembers;
     
     private Button previousButton;
@@ -102,7 +104,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         setSpacing(true);
         setMargin(true);
         
-        select = new TwinColSelect("Project Members");
+        select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Project Members");
         select.setRows(10);
@@ -195,6 +197,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     }
 
     protected void initializeActions() {
+        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        
         previousButton.addListener(new PreviousButtonClickListener());
         nextButton.addListener(new NextButtonClickListener());
         
@@ -206,7 +210,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                 Property property = event.getProperty();
                 Set<User> selectedItems = (Set<User>) property.getValue();
                 
-                System.out.println("Selected " + property);
                 Container container = tblMembers.getContainerDataSource();
                 
                 // remove non-selected items
@@ -239,8 +242,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
+        newMemberButton = new Button("Add New Member");
         previousButton = new Button("Previous");
         nextButton = new Button("Next");
+        buttonLayout.addComponent(newMemberButton);
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
