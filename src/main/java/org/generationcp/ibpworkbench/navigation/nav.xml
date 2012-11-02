@@ -22,17 +22,17 @@
     
     <view path="/gdms"
           label="Genotyping Data Management System"
-          level="3"
+          level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />        
           
     <view path="/germplasm_browser"
           label="Browse Germplasm Information"
-          level="3"
+          level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
           
     <view path="/germplasm_phenotypic"
           label="Retrieve Germplasm by Phenotypic Data"
-          level="3"
+          level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
     <view path="/CreateProject"
