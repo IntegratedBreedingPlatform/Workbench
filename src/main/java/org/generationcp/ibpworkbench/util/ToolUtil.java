@@ -193,7 +193,7 @@ public class ToolUtil {
             }
         }
         else if (Util.isOneOf(tool.getToolName(), ToolName.germplasm_browser.name())) {
-            File configurationFile = new File("tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties").getAbsoluteFile();
+            File configurationFile = new File("infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties").getAbsoluteFile();
             
             String format = "central.driver=com.mysql.jdbc.Driver\r\n"
                           + "central.url=%s\r\n"
@@ -231,11 +231,11 @@ public class ToolUtil {
         }
         else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
             // update hibernate configuration
-            String[] configurationFiles = new String[] { "tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml"
-                                                        ,"tomcat/webapps/GDMS/WEB-INF/struts-config.xml"
+            String[] configurationFiles = new String[] { "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml"
+                                                        ,"infrastructure/tomcat/webapps/GDMS/WEB-INF/struts-config.xml"
                                         };
-            String[] templateFiles = new String[] { "tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml.template"
-                                                   ,"tomcat/webapps/GDMS/WEB-INF/struts-config.xml.template"
+            String[] templateFiles = new String[] { "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml.template"
+                                                   ,"infrastructure/tomcat/webapps/GDMS/WEB-INF/struts-config.xml.template"
                                    };
             
             for (int index = 0; index < configurationFiles.length; index++) {
