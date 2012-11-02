@@ -103,17 +103,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
         decisionSupportTitle.setStyleName("gcp-section-title-large");
         decisionSupportTitle.setSizeUndefined();
         
-        browseGermplasmButton = new Button("Browse Germplasm Information");
+        browseGermplasmButton = new Button("Germplasm Browser");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
         browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
 
-        browseStudiesButton = new Button("Browse Studies and Datasets");
+        browseStudiesButton = new Button("Study Browser");
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
 
-        browseGermplasmListsButton = new Button("Browser Germplasm Lists");
+        browseGermplasmListsButton = new Button("Germplasm List Browser");
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
@@ -123,7 +123,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
 
-        gdmsButton = new Button("Manage Genotyping Data");
+        gdmsButton = new Button("GDMS");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");

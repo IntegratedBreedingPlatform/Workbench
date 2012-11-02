@@ -128,7 +128,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
 
-        browseGermplasmListsButton = new Button("Browser Germplasm Lists");
+        browseGermplasmListsButton = new Button("Browse Germplasm Lists");
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
