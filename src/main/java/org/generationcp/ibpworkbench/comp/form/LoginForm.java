@@ -126,7 +126,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         // title label
         lblTitle = new Label();
         lblTitle.setWidth(null);
-        lblTitle.setStyleName("gcp-form-title");
+        lblTitle.setStyleName("gcp-section-title-large");
         loginPanelLayout.addComponent(lblTitle);
         loginPanelLayout.setComponentAlignment(lblTitle, Alignment.TOP_CENTER);
         loginPanelLayout.setExpandRatio(lblTitle, 0);
