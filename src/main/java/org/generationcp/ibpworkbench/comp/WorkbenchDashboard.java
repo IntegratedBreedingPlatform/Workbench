@@ -258,16 +258,16 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     @Override
     public void updateLabels() {
-        messageSource.setValue(lblDashboardTitle, Message.dashboard);
-        messageSource.setCaption(tblProject, Message.project_table_caption);
+        messageSource.setValue(lblDashboardTitle, Message.DASHBOARD);
+        messageSource.setCaption(tblProject, Message.PROJECT_TABLE_CAPTION);
         
         messageSource.setValue(lblProjectDetailTitle, Message.PROJECT_DETAIL);
         
         messageSource.setColumnHeader(tblProject, "startDate", Message.START_DATE);
-        messageSource.setColumnHeader(tblProject, "projectName", Message.project);
-        messageSource.setColumnHeader(tblProject, "action", Message.action);
-        messageSource.setColumnHeader(tblProject, "status", Message.status);
-        messageSource.setColumnHeader(tblProject, "owner", Message.owner);
+        messageSource.setColumnHeader(tblProject, "projectName", Message.PROJECT);
+        messageSource.setColumnHeader(tblProject, "action", Message.ACTION);
+        messageSource.setColumnHeader(tblProject, "status", Message.STATUS);
+        messageSource.setColumnHeader(tblProject, "owner", Message.OWNER);
         
         messageSource.setCaption(tblActivity, Message.ACTIVITIES);
         

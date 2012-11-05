@@ -312,21 +312,21 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     @Override
     public void updateLabels() {
-        String title = messageSource.getMessage(Message.workbench_title) + " " + VERSION;
+        String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION;
         workbenchTitle.setValue(title);
         
-        messageSource.setCaption(homeButton, Message.home);
-        messageSource.setCaption(signOutButton, Message.signout);
-        messageSource.setCaption(accountButton, Message.account);
-        messageSource.setCaption(helpButton, Message.help);
+        messageSource.setCaption(homeButton, Message.HOME);
+        messageSource.setCaption(signOutButton, Message.SIGNOUT);
+        messageSource.setCaption(accountButton, Message.ACCOUNT);
+        messageSource.setCaption(helpButton, Message.HELP);
         
-        messageSource.setCaption(actionsTitle, Message.actions);
-        messageSource.setCaption(createProjectButton, Message.project_create);
-        messageSource.setCaption(createContactButton, Message.contact_create);
+        messageSource.setCaption(actionsTitle, Message.ACTIONS);
+        messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
+        messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
         
-        messageSource.setValue(recentTitle, Message.recent);
-        messageSource.setValue(usersGuideTitle, Message.user_guide);
+        messageSource.setValue(recentTitle, Message.RECENT);
+        messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
         
-        messageSource.setValue(hint1, Message.user_guide_1);
+        messageSource.setValue(hint1, Message.USER_GUIDE_1);
     }
 }

@@ -1,36 +1,36 @@
 package org.generationcp.ibpworkbench;
 
 public enum Message {
-     account
-    ,actions
-    ,activity_next
-    ,activity_recent
-    ,contact_create
-    ,dashboard
-    ,datasets
-    ,error_login_invalid
-    ,help
-    ,home
-    ,email
-    ,login
-    ,password
-    ,login_title
-    ,project_create
-    ,project_dashboard_title
-    ,project_title
-    ,project_table_caption
-    ,project
-    ,action
-    ,date
-    ,date_due
-    ,owner
-    ,status
-    ,recent
-    ,signout
-    ,user_guide
-    ,user_guide_1
+     ACCOUNT
+    ,ACTIONS
+    ,ACTIVITY_NEXT
+    ,ACTIVITY_RECENT
+    ,CONTACT_CREATE
+    ,DASHBOARD
+    ,DATASETS
+    ,ERROR_LOGIN_INVALID
+    ,HELP
+    ,HOME
+    ,EMAIL
+    ,LOGIN
+    ,PASSWORD
+    ,LOGIN_TITLE
+    ,PROJECT_CREATE
+    ,PROJECT_DASHBOARD_TITLE
+    ,PROJECT_TITLE
+    ,PROJECT_TABLE_CAPTION
+    ,PROJECT
+    ,ACTION
+    ,DATE
+    ,DATE_DUE
+    ,OWNER
+    ,STATUS
+    ,RECENT
+    ,SIGNOUT
+    ,USER_GUIDE
+    ,USER_GUIDE_1
     ,USERNAME
-    ,workbench_title
+    ,WORKBENCH_TITLE
     
     // Workbench Dashboard
     ,ACTIVITIES

@@ -453,6 +453,6 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.project_title, project.getProjectName());
+        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
     }
 }

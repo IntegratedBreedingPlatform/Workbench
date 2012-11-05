@@ -443,6 +443,6 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.project_title, project.getProjectName());
+        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
     }
 }

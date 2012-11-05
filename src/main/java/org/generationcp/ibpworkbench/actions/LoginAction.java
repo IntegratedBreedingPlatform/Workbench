@@ -82,7 +82,7 @@ public class LoginAction implements ClickListener{
             // loginForm.getMessageLabel().setVisible(true);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.LOGIN_ERROR), 
-                    "<br />" + messageSource.getMessage(Message.error_login_invalid));
+                    "<br />" + messageSource.getMessage(Message.ERROR_LOGIN_INVALID));
             return;
         }
         

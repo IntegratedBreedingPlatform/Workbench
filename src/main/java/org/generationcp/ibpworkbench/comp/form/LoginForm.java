@@ -203,11 +203,11 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
     @Override
     public void updateLabels() {
-        messageSource.setValue(lblTitle, Message.login_title);
-        messageSource.setCaption(btnLogin, Message.login);
+        messageSource.setValue(lblTitle, Message.LOGIN_TITLE);
+        messageSource.setCaption(btnLogin, Message.LOGIN);
         messageSource.setValue(lblUsername, Message.USERNAME);
-        messageSource.setValue(lblPassword, Message.password);
-        messageSource.setValue(lblMessage, Message.error_login_invalid);
+        messageSource.setValue(lblPassword, Message.PASSWORD);
+        messageSource.setValue(lblMessage, Message.ERROR_LOGIN_INVALID);
         messageSource.setCaption(registerUserAccountButton, Message.REGISTER_USER_ACCOUNT);
     }
 }
