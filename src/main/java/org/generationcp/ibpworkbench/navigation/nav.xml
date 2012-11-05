@@ -29,7 +29,12 @@
           label="Browse Germplasm Information"
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
-          
+    
+    <view path="/study_browser"
+          label="Browse Studies"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+    
     <view path="/germplasm_phenotypic"
           label="Retrieve Germplasm by Phenotypic Data"
           level="2"
