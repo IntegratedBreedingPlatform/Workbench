@@ -37,6 +37,11 @@
     border: 2px solid;
 }
 
+.v-verticallayout-gcp-mars-workflow-step
+        .v-verticallayout-margin {
+    padding-top:    10px;
+}
+
 .gcp-hand-cursor {
     cursor: pointer;
 }

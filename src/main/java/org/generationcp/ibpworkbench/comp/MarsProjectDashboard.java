@@ -70,6 +70,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label populationDevelopmentTitle;
     private Button browseGermplasmButton;
     private Button browseStudiesButton;
+    private Button browseGermplasmListsButton;
     private Button gdmsButton;
 
     private Button breedingViewButton;
@@ -115,7 +116,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         // breeding management
         breedingManagementTitle = new Label("Breeding Management");
-        breedingManagementTitle.setStyleName("gcp-section-title");
+        breedingManagementTitle.setStyleName("gcp-section-title-large");
 
         // project planning
         projectPlanningTitle = new Label("Project Planning");
@@ -172,6 +173,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
+        
+        browseGermplasmListsButton = new Button("Browse Germplasm Lists");
+        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmListsButton.setSizeUndefined();
+        browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
 
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -190,7 +196,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         // marker trait analysis
         markerTraitAnalysisTitle = new Label("Marker Trait Analysis");
-        markerTraitAnalysisTitle.setStyleName("gcp-section-title");
+        markerTraitAnalysisTitle.setStyleName("gcp-section-title-large");
         markerTraitAnalysisTitle.setSizeUndefined();
 
         markerTraitAnalysisAreaTitle = new Label("Marker Trait Analysis");
@@ -199,7 +205,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         // marker implementation
         markerImplementationTitle = new Label("Marker Implementation");
-        markerImplementationTitle.setStyleName("gcp-section-title");
+        markerImplementationTitle.setStyleName("gcp-section-title-large");
 
         plantSelectionTitle = new Label("Plant Selection");
         plantSelectionTitle.setStyleName("gcp-section-title");
@@ -308,7 +314,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("10px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
@@ -318,8 +324,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
+        
+        layout.addComponent(browseGermplasmListsButton);
+        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGermplasmListsButton, 0);
 
         return layout;
     }
@@ -574,6 +585,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
         browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
 
         gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 

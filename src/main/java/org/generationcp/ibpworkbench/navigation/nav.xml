@@ -31,7 +31,12 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
     
     <view path="/study_browser"
-          label="Browse Studies"
+          label="Browse Studies and Datasets"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          
+    <view path="/germplasm_list_browser"
+          label="Browse Germplasm Lists"
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
     
