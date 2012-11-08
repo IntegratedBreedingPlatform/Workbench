@@ -89,7 +89,7 @@ public class SaveUserAccountAction implements ClickListener {
             return;
         }
         
-        OpenLoginWindowAction action = new OpenLoginWindowAction();
+        OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();
         action.buttonClick(event);
         
     }
