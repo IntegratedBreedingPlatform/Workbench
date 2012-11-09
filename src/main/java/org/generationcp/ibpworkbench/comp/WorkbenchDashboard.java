@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -182,9 +183,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         
         try {
-            projects = workbenchDataManager.getProjects();
+            User currentUser = app.getSessionData().getUserData();
+            projects = workbenchDataManager.getProjectsByUser(currentUser);
             lastOpenedProject = workbenchDataManager.getLastOpenedProject(
-            		app.getSessionData().getUserData().getUserid());
+            		currentUser.getUserid());
         } catch (MiddlewareQueryException e) {
             LOG.error("Exception", e);
             throw new InternationalizableException(e, 
