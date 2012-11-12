@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -21,6 +21,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -34,13 +35,19 @@ public class ShowProjectDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
+    private Label projectDetailLabel;
+    
+    private Table tblProject;
+    
     private Table tblActivity;
 
     private Table tblRoles;
     
     private OpenWorkflowForRoleAction openWorkflowForRoleAction;
-    
-    public ShowProjectDetailAction(Table tblActivity, Table tblRoles) {
+
+    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles) {
+        this.projectDetailLabel = projectDetailLabel;
+        this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
     }
@@ -69,6 +76,12 @@ public class ShowProjectDetailAction implements ItemClickListener {
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
             
             List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
+            
+            String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
+            projectDetailLabel.setValue(label);
+            
+            tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));
+            tblProject.refreshRowCache();
             
             updateActivityTable(activityList);
             updateRoleTable(roleList);

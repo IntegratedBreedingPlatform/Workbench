@@ -80,8 +80,17 @@
     background: #dfffcf;
 }
 
+.v-table-row-gcp-selected-project, .v-table-cell-content-gcp-selected-project {
+    cursor: pointer;
+    background: #ffffaa
+}
+
 .gcp-highlight {
     background: #dfffcf !important;
+}
+
+.gcp-selected-project {
+    background: #ffffaa !important;
 }
 
 /* Modify default styles for the progress indicator */

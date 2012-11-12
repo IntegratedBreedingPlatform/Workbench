@@ -22,6 +22,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
+import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -115,23 +116,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setContainerDataSource(projectContainer);
 
         tblProject.setColumnCollapsingAllowed(true);
-        tblProject.setCellStyleGenerator(new CellStyleGenerator() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getStyle(Object itemId, Object propertyId) {
-                Item item = tblProject.getItem(itemId);
-                //TODO: remove checking when projects retrieved are only for the user
-                if(lastOpenedProject != null) {
-                    if(lastOpenedProject.getProjectId() == 
-                       item.getItemProperty("projectId").getValue()) {
-                        return "gcp-highlight";
-                    }
-                }
-                return "project-table";
-            }
-        });
+        tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     }
     
     private void initializeActivityTable() {
@@ -209,7 +194,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeActions() {
-        tblProject.addListener(new ShowProjectDetailAction(tblActivity, tblRoles));
+        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles));
     }
 
     protected void assemble() {
