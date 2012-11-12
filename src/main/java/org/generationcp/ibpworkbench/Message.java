@@ -9,6 +9,7 @@ public enum Message {
     ,DASHBOARD
     ,DATASETS
     ,ERROR_LOGIN_INVALID
+    ,TOOL_VERSIONS
     ,HELP
     ,HOME
     ,EMAIL
@@ -31,6 +32,10 @@ public enum Message {
     ,USER_GUIDE_1
     ,USERNAME
     ,WORKBENCH_TITLE
+    
+    // Workbench Dashboard Window
+    ,TOOL_NAME
+    ,VERSION
     
     // Workbench Dashboard
     ,ACTIVITIES

@@ -20,6 +20,11 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction" />
     
+    <view path="/ToolVersions"
+          label="Tool Versions"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.OpenToolVersionsAction" />
+    
     <view path="/gdms"
           label="Genotyping Data Management System"
           level="2"

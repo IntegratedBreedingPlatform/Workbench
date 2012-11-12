@@ -18,6 +18,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
+import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
@@ -49,6 +50,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Button homeButton;
     private Button signOutButton;
     private Button accountButton;
+    private Button toolVersionsButton;
     private Button helpButton;
 
     private Label actionsTitle;
@@ -102,6 +104,10 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         accountButton.setStyleName(BaseTheme.BUTTON_LINK);
         accountButton.setSizeUndefined();
 
+        toolVersionsButton = new Button();
+        toolVersionsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        toolVersionsButton.setSizeUndefined();
+        
         helpButton = new Button();
         helpButton.setStyleName(BaseTheme.BUTTON_LINK);
         helpButton.setSizeUndefined();
@@ -185,6 +191,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     protected void initializeActions() {
         homeButton.addListener(new HomeAction());
         signOutButton.addListener(new SignoutAction());
+        toolVersionsButton.addListener(new OpenToolVersionsAction());
         createProjectButton.addListener(new OpenNewProjectAction());
         createContactButton.addListener(new CreateContactAction());
     }
@@ -227,6 +234,11 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         headerRightLayout.addComponent(accountButton);
         headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
 
+        headerRightLayout.addComponent(new Label("|"));
+
+        headerRightLayout.addComponent(toolVersionsButton);
+        headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
+        
         headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(helpButton);
@@ -318,6 +330,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         messageSource.setCaption(homeButton, Message.HOME);
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
         messageSource.setCaption(accountButton, Message.ACCOUNT);
+        messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
         messageSource.setCaption(helpButton, Message.HELP);
         
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
