@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -22,6 +24,7 @@ import java.util.Set;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.slf4j.Logger;
@@ -72,6 +75,7 @@ public class IBDBGenerator{
     private static final String DEFAULT_COLLATE = "utf8_general_ci";
     
     private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private String workbenchHost;
     private String workbenchPort;
@@ -415,6 +419,85 @@ public class IBDBGenerator{
     	
     	return areLocationsAdded;
     	
+    }
+    
+public boolean addCachedBreedingMethods(Map<Integer, BreedingMethodModel> cachedBreedingMethods) {
+        
+        boolean areBreedingMethodsAdded = false;
+        
+        try {
+            
+            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
+        
+            connection.setCatalog(generatedDatabaseName);
+        
+            Set<Integer> keySet = cachedBreedingMethods.keySet();
+        
+            Iterator<Integer> keyIter = keySet.iterator();
+        
+            BreedingMethodModel breedingMethod;
+        
+            PreparedStatement preparedStatement = null;
+        
+            while(keyIter.hasNext()) {
+            
+                breedingMethod = cachedBreedingMethods.get(keyIter.next());
+            
+                preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
+                
+   /*             mid int
+                mtype combo string
+                mgrp string 3  -
+                mcode string 8
+                mname string 50
+                mdesc string 255
+                mref int 0
+                mprgn int 0
+                mfprg int 0
+                mattr int 0
+                geneq int 0
+                muid int 0
+                lmid int 0
+                mdate int*/
+                
+                preparedStatement.setInt(1, breedingMethod.getMethodId());
+                preparedStatement.setString(2, breedingMethod.getMethodType());
+                preparedStatement.setString(3, "-");
+                preparedStatement.setString(4, breedingMethod.getMethodCode());
+                preparedStatement.setString(5, breedingMethod.getMethodName());
+                preparedStatement.setString(6, breedingMethod.getMethodDescription());
+                preparedStatement.setInt(7, 0);
+                preparedStatement.setInt(8, 0);
+                preparedStatement.setInt(9, 0);
+                preparedStatement.setInt(10, 0);
+                preparedStatement.setInt(11, 0);
+                preparedStatement.setInt(12, 0);
+                preparedStatement.setInt(13, 0);
+                
+                Calendar currentDate = Calendar.getInstance();
+                SimpleDateFormat formatter= 
+                new SimpleDateFormat("yyyy/MMM/dd");
+                String dateNow = formatter.format(currentDate.getTime());
+                System.out.println(dateNow);
+                
+                preparedStatement.setInt(14, 0);
+                
+                preparedStatement.executeUpdate();
+                
+                preparedStatement = null;
+            
+            }
+            
+            areBreedingMethodsAdded = true;
+            
+            closeConnection();
+
+        } catch (SQLException e) {
+            handleDatabaseError(e);
+        }
+        
+        return areBreedingMethodsAdded;
+        
     }
 
     @Override

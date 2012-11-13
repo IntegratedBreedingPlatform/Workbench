@@ -95,8 +95,13 @@ public enum Message {
     UPLOAD_SUCCESS,
     UPLOAD_SUCCESS_DESC,
     
-    LOC_NAME,
-    LOC_ABBR
+    LOC_NAME
+    ,LOC_ABBR
+    ,BREED_METH_NAME
+    ,BREED_METH_DESC
+    ,BREED_METH_GRP
+    ,BREED_METH_CODE
+    ,BREED_METH_TYPE
     
     // Tool configuration update
     ,UPDATING

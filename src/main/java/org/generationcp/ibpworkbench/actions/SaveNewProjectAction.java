@@ -129,6 +129,7 @@ public class SaveNewProjectAction implements ClickListener {
 
         if (isGenerationSuccess) {
             generator.addCachedLocations(app.getSessionData().getProjectLocationData());
+            generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
             
             User currentUser = app.getSessionData().getUserData();
             User user = currentUser.copy();
@@ -176,8 +177,14 @@ public class SaveNewProjectAction implements ClickListener {
         app.getSessionData().getProjectLocationData().clear();
 
         app.getSessionData().getUniqueLocations().clear();
+        
+        app.getSessionData().getProjectBreedingMethodData().clear();
+
+        app.getSessionData().getUniqueBreedingMethods().clear();
 
         LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getStartDate() + " " + project.getTemplate().getTemplateId());
+        
+        
         LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
 
         // go back to dashboard
