@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
+/**
+ * 
+ * @author Jeffrey Morales
+ * 
+ */
 @Configurable
 public class CancelSaveLocationAction implements ClickListener {
     

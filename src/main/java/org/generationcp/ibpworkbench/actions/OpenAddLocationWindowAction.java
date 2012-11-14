@@ -14,13 +14,17 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
-import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+
+/**
+ * 
+ * @author Jeffrey Morales
+ * 
+ */
 
 public class OpenAddLocationWindowAction implements ClickListener{
     

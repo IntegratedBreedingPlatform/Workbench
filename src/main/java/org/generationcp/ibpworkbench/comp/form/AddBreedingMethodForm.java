@@ -63,7 +63,7 @@ public class AddBreedingMethodForm extends Form{
     
     protected void initializeComponents() { 
         
-        grid = new GridLayout(4, 1);
+        grid = new GridLayout(5, 1);
         grid.setSpacing(true);
         grid.setMargin(true);
         
@@ -75,7 +75,7 @@ public class AddBreedingMethodForm extends Form{
         setComponentError(null);
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "methodName", "methodDescription", "methodType", "methodCode" }));
+                new String[] { "methodName", "methodDescription", "methodType", "methodGroup", "methodCode" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -90,8 +90,10 @@ public class AddBreedingMethodForm extends Form{
             grid.addComponent(field, 1, 0);
         } else if ("methodType".equals(propertyId)) {
             grid.addComponent(field, 2, 0);
-        } else if ("methodCode".equals(propertyId)) {
+        } else if ("methodGroup".equals(propertyId)) {
             grid.addComponent(field, 3, 0);
+        } else if ("methodCode".equals(propertyId)) {
+            grid.addComponent(field, 4, 0);
         }
     }
     

@@ -139,6 +139,7 @@ public class SaveNewProjectAction implements ClickListener{
 
             if (isGenerationSuccess) {
                 generator.addCachedLocations(app.getSessionData().getProjectLocationData());
+                generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
 
                 User currentUser = app.getSessionData().getUserData();
                 User user = currentUser.copy();

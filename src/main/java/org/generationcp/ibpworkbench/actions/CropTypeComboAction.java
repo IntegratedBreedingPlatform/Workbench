@@ -43,6 +43,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     private SimpleResourceBundleMessageSource messageSource;
 
     private ProjectBasicDetailsComponent sourceComponent;
+    
     private ComboBox cropTypeComboBox;
 
     // Used to keep track if the selected item is the last item added to crop type combo box

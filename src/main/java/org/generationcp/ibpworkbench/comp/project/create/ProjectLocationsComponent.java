@@ -49,6 +49,7 @@ import com.vaadin.ui.VerticalLayout;
  * The fifth tab (Locations) in Create Project Accordion Component.
  * 
  * @author Joyce Avestro
+ * @author Jeffrey Morales
  */
 //TODO Modify AddLocation action to save locations to CreateProjectPanel
 @SuppressWarnings("unchecked")

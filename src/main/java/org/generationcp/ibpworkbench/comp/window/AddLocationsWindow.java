@@ -16,7 +16,7 @@ import com.vaadin.ui.Window;
 public class AddLocationsWindow extends Window {
     
     /**
-     * 
+     *  @author Jeffrey Morales
      */
     private static final long serialVersionUID = 3983198771242295731L;
 

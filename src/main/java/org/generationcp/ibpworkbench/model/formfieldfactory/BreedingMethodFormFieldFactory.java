@@ -11,21 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 
 
@@ -46,7 +42,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
     
     private Field methodName;
     private Field methodDescription;
-    private ComboBox comboBox;
+    private Select methodSelectType;
+    private Select methodSelectGroup;
     private Field methodCode;
     
     // For new item handling and listener of crop type combo box
@@ -77,16 +74,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
         
 
-
-        
-        //methodTypeComboAction = new MethodTypeComboAction();
-
-
     }
     
-/*    public MethodTypeComboAction getMethodTypeComboAction() {
-        return methodTypeComboAction;
-    }*/
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -103,32 +92,38 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         } else if ("methodCode".equals(propertyId)) {
             messageSource.setCaption(methodCode, Message.BREED_METH_CODE);
             return methodCode;
-        }else if ("methodType".equals(propertyId)) {
+        } else if ("methodType".equals(propertyId)) {
             
-            comboBox = new ComboBox();
+            methodSelectType = new Select();
             
-            messageSource.setCaption(comboBox, Message.BREED_METH_TYPE);
-            
-            List<String> methodTypes = new ArrayList<String>();
-         
-            methodTypes.add("DER");
-            methodTypes.add("MAN");
-            methodTypes.add("GEN");
-            
-            BeanItemContainer<String> beanItemContainer = new BeanItemContainer<String>(String.class);
-            for (String methodType : methodTypes) {
-                beanItemContainer.addBean(methodType);
-            }
-
-            comboBox.setContainerDataSource(beanItemContainer);
-            comboBox.setNewItemsAllowed(false);
-            
-            //comboBox.setItemCaptionPropertyId("methodType");
-            comboBox.setRequired(true);
-            comboBox.setRequiredError("Please select a Breeding Method Type.");
-            comboBox.setImmediate(true);
+            messageSource.setCaption(methodSelectType, Message.BREED_METH_TYPE);
+            methodSelectType.addItem("GEN");
+            methodSelectType.setItemCaption("GEN", "Generative");
+            methodSelectType.addItem("DER");
+            methodSelectType.setItemCaption("DER", "Derivative");
+            methodSelectType.addItem("MAN");
+            methodSelectType.setItemCaption("MAN", "Maintenance");
+            methodSelectType.select("GEN");
+            methodSelectType.setNullSelectionAllowed(false);
                 
-            return comboBox;
+            return methodSelectType;
+        } else if ("methodGroup".equals(propertyId)) {
+            
+            methodSelectGroup = new Select();
+            
+            messageSource.setCaption(methodSelectGroup, Message.BREED_METH_GRP);
+            methodSelectGroup.addItem("S");
+            methodSelectGroup.setItemCaption("S", "Self Fertilizing");
+            methodSelectGroup.addItem("O");
+            methodSelectGroup.setItemCaption("O", "Cross Pollinating");
+            methodSelectGroup.addItem("C");
+            methodSelectGroup.setItemCaption("C", "Clonolly Propogating");
+            methodSelectGroup.addItem("G");
+            methodSelectGroup.setItemCaption("G", "All System");
+            methodSelectGroup.select("");
+            methodSelectGroup.setNullSelectionAllowed(false);
+                
+            return methodSelectGroup;
         }
         
         return field;

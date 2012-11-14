@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,19 +20,28 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
+/**
+ * 
+ * @author Jeffrey Morales
+ * 
+ */
+
 public class OpenAddBreedingMethodWindowAction implements ClickListener{
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenAddBreedingMethodWindowAction.class);
 
     private static final long serialVersionUID = 1L;
+    
+    private ProjectBreedingMethodsComponent projectBreedingMethodsComponent;
 
-    public OpenAddBreedingMethodWindowAction() {
-
+    public OpenAddBreedingMethodWindowAction(ProjectBreedingMethodsComponent projectBreedingMethodsComponent) {
+        this.projectBreedingMethodsComponent=projectBreedingMethodsComponent;
+        
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
-        event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow());
+        event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(projectBreedingMethodsComponent));
     }
 
 }

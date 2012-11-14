@@ -13,8 +13,10 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
+import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,6 +24,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+
+/**
+ * 
+ * @author Jeffrey Morales
+ * 
+ */
 
 @Configurable
 public class SaveNewBreedingMethodAction implements ClickListener {
@@ -32,10 +40,14 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     private AddBreedingMethodForm newBreedingMethodForm;
     
     private AddBreedingMethodsWindow window;
+    
+    private ProjectBreedingMethodsComponent projectBreedingMethodsComponent;
 
-    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window) {
+    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, ProjectBreedingMethodsComponent projectBreedingMethodsComponent) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
+        this.projectBreedingMethodsComponent = projectBreedingMethodsComponent;
+        
     }
     
     @Override
@@ -63,21 +75,35 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newBreedingMethod.setMethodName(breedingMethod.getMethodName());
             newBreedingMethod.setMethodDescription(breedingMethod.getMethodDescription());
             newBreedingMethod.setMethodCode(breedingMethod.getMethodCode());
+            newBreedingMethod.setMethodGroup(breedingMethod.getMethodGroup());
             newBreedingMethod.setMethodType(breedingMethod.getMethodType());
         
             newBreedingMethod.setMethodId(nextKey);
         
             app.getSessionData().getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
             
-            newBreedingMethod = null;
-            
             LOG.info(app.getSessionData().getProjectBreedingMethodData().toString());
-        // go back to dashboard
-        //HomeAction home = new HomeAction();
-        //home.buttonClick(event);
             
             newBreedingMethodForm.commit();
             
+            Method newMethod=new Method();
+            newMethod.setMid(newBreedingMethod.getMethodId());
+            newMethod.setMname(newBreedingMethod.getMethodName());
+            newMethod.setMdesc(newBreedingMethod.getMethodDescription());
+            newMethod.setMcode(newBreedingMethod.getMethodCode());
+            newMethod.setMgrp(newBreedingMethod.getMethodGroup());
+            newMethod.setMtype(newBreedingMethod.getMethodType());
+        
+            projectBreedingMethodsComponent.getBeanItemContainer().addBean(newMethod);
+    
+            projectBreedingMethodsComponent.getSelect().setContainerDataSource(projectBreedingMethodsComponent.getBeanItemContainer());
+            for (Object itemId :projectBreedingMethodsComponent.getBeanItemContainer().getItemIds()) {
+                Method method = (Method) itemId;
+                projectBreedingMethodsComponent.getSelect().setItemCaption(itemId, method.getMname());
+            }
+            projectBreedingMethodsComponent.getSelect().requestRepaint();
+            
+            newBreedingMethod = null;
             window.getParent().removeWindow(window);
         
         }

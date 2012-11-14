@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.comp.window;
 import org.generationcp.ibpworkbench.actions.CancelSaveBreedingMethodAction;
 import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
+import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 
 import com.vaadin.ui.Button;
@@ -31,13 +33,17 @@ public class AddBreedingMethodsWindow extends Window {
     
     private VerticalLayout layout;
     
+    private ProjectBreedingMethodsComponent projectBreedingMethodsComponent;
+    
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
     
-    public AddBreedingMethodsWindow() {
+    public AddBreedingMethodsWindow(ProjectBreedingMethodsComponent projectBreedingMethodsComponent) {
         /*
          * Make the window modal, which will disable all other components while
          * it is visible
          */
+        
+        this.projectBreedingMethodsComponent=projectBreedingMethodsComponent;
         setModal(true);
 
        /* Make the sub window 50% the size of the browser window */
@@ -82,7 +88,7 @@ public class AddBreedingMethodsWindow extends Window {
     
     protected void initializeActions() {
         
-        addBreedingMethodButton.addListener(new SaveNewBreedingMethodAction(addBreedingMethodForm, this));  
+        addBreedingMethodButton.addListener(new SaveNewBreedingMethodAction(addBreedingMethodForm, this, this.projectBreedingMethodsComponent));  
         
         cancelButton.addListener(new CancelSaveBreedingMethodAction(this));
     }

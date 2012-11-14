@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenAddBreedingMethodWindowAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -34,6 +34,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -41,12 +42,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickListener;
 
 /**
  * The fourth tab (Breeding Methods) in Create Project Accordion Component.
  * 
  * @author Joyce Avestro
+ * @author Jeffrey Morales
  * 
  */
 @SuppressWarnings("unchecked")
@@ -57,10 +58,12 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
     private static final long serialVersionUID = 1L;
 
-    private Button addMethodButton;
     private Button previousButton;
     private Button nextButton;
+    private Button showMethodWindowButton;
     private Component buttonArea;
+    
+    BeanItemContainer<Method> beanItemContainer;
 
     private GridLayout gridMethodLayout;
     private Select selectMethodType;
@@ -110,7 +113,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
     }
 
     protected void initializeActions() {
-        //TODO addMethodButton.addListener(new ButtonClickListener());
+        showMethodWindowButton.addListener(new OpenAddBreedingMethodWindowAction(this));
         previousButton.addListener(new PreviousButtonClickListener());
         nextButton.addListener(new NextButtonClickListener());
     }
@@ -120,10 +123,10 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        addMethodButton = new Button("Add Breeding Method");
+        showMethodWindowButton = new Button("Add Breeding Method");
         previousButton = new Button("Previous");
         nextButton = new Button("Next");
-        buttonLayout.addComponent(addMethodButton);
+        buttonLayout.addComponent(showMethodWindowButton);
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
@@ -226,9 +229,13 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
     }
 
+    public Button getShowMethodWindowButton() {
+        return showMethodWindowButton;
+    }
+    
     private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-        BeanItemContainer<Method> beanItemContainer = new BeanItemContainer<Method>(Method.class);
+        beanItemContainer = new BeanItemContainer<Method>(Method.class);
         if (managerFactory == null) {
             return beanItemContainer;
         }
@@ -251,10 +258,6 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         }
 
         return beanItemContainer;
-    }
-
-    public TwinColSelect getSelectMethods() {
-        return selectMethods;
     }
 
     private boolean validate() {
@@ -290,5 +293,13 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
             createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FIFTH_TAB_LOCATIONS);
         }
     }
+    
+    public BeanItemContainer<Method> getBeanItemContainer() {
+        return beanItemContainer;
+    }
 
+    public TwinColSelect getSelect() {
+        return selectMethods;
+    }
+    
 }

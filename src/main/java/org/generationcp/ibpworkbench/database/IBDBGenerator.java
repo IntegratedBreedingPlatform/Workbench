@@ -421,7 +421,7 @@ public class IBDBGenerator{
     	
     }
     
-public boolean addCachedBreedingMethods(Map<Integer, BreedingMethodModel> cachedBreedingMethods) {
+    public boolean addCachedBreedingMethods(Map<Integer, BreedingMethodModel> cachedBreedingMethods) {
         
         boolean areBreedingMethodsAdded = false;
         
@@ -462,7 +462,7 @@ public boolean addCachedBreedingMethods(Map<Integer, BreedingMethodModel> cached
                 
                 preparedStatement.setInt(1, breedingMethod.getMethodId());
                 preparedStatement.setString(2, breedingMethod.getMethodType());
-                preparedStatement.setString(3, "-");
+                preparedStatement.setString(3, breedingMethod.getMethodGroup());
                 preparedStatement.setString(4, breedingMethod.getMethodCode());
                 preparedStatement.setString(5, breedingMethod.getMethodName());
                 preparedStatement.setString(6, breedingMethod.getMethodDescription());

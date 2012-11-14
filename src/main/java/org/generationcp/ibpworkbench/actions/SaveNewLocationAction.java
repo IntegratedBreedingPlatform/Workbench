@@ -26,6 +26,12 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
+/**
+ * 
+ * @author Jeffrey Morales
+ * 
+ */
+
 @Configurable
 public class SaveNewLocationAction implements ClickListener {
     
@@ -38,7 +44,7 @@ public class SaveNewLocationAction implements ClickListener {
     
 	private ProjectLocationsComponent projectLocationsComponent;
     
-    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,ProjectLocationsComponent projectLocationsComponent) {
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window, ProjectLocationsComponent projectLocationsComponent) {
         this.newLocationForm = newLocationForm;
         this.window = window;
         this.projectLocationsComponent=projectLocationsComponent;
@@ -75,9 +81,6 @@ public class SaveNewLocationAction implements ClickListener {
             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
             
             LOG.info(app.getSessionData().getProjectLocationData().toString());
-        // go back to dashboard
-        //HomeAction home = new HomeAction();
-        //home.buttonClick(event);
          
             newLocationForm.commit();
             
