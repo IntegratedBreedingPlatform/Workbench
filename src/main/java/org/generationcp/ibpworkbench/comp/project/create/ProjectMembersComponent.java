@@ -258,7 +258,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
         
         // TODO: This can be improved once we implement proper User-Person mapping
-        List<User> userList = workbenchDataManager.getAllUsers();
+        List<User> userList = workbenchDataManager.getAllUsersSorted();
         for (User user : userList) {
             Person person = workbenchDataManager.getPersonById(user.getPersonid());
             user.setPerson(person);
