@@ -76,7 +76,7 @@ public class BreedingViewXmlWriter implements Serializable{
         try{
             org.generationcp.middleware.pojos.Trait blockTrait = studyDataManager.getBlockTrait();
             if(blockTrait != null){
-                Factor blockFactor = studyDataManager.getFactorOfDatasetByTid(datasetId, blockTrait.getId());
+                Factor blockFactor = studyDataManager.getFactorOfDatasetByTraitid(datasetId, blockTrait.getTraitId());
                 if(blockFactor != null){
                     blocks = new Blocks();
                     blocks.setName(blockFactor.getName());
@@ -92,7 +92,7 @@ public class BreedingViewXmlWriter implements Serializable{
         try{
             org.generationcp.middleware.pojos.Trait repTrait = studyDataManager.getReplicationTrait();
             if(repTrait != null){
-                Factor repFactor = studyDataManager.getFactorOfDatasetByTid(datasetId, repTrait.getId());
+                Factor repFactor = studyDataManager.getFactorOfDatasetByTraitid(datasetId, repTrait.getTraitId());
                 if(repFactor != null){
                     replicates = new Replicates();
                     replicates.setName(repFactor.getName());
@@ -106,22 +106,6 @@ public class BreedingViewXmlWriter implements Serializable{
         //create Fieldbook element
         Fieldbook fieldbook = new Fieldbook();
         fieldbook.setFile(fieldbookFilePath);
-        
-        //check the design type and if the required blocks or replicates element are present
-        if(designType == DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN){
-            if(blocks == null || replicates == null){
-                throw new BreedingViewXmlWriterException("Error with writing project.xml as the design type "
-                        + "specified is Resolvable Incomplete Block Design and it needs both "
-                        + "the BLOCK and REPLICATION factor in the dataset. Given dataset id = "
-                        + datasetId, null);
-            }
-        } else{
-            if(blocks == null){
-                throw new BreedingViewXmlWriterException("Error with writing project.xml as "
-                        + "there is no BLOCK factor in the dataset.  Given dataset id = "
-                        + datasetId, null);
-            }
-        }
         
         //create the Phenotypic element
         Phenotypic phenotypic = new Phenotypic();
