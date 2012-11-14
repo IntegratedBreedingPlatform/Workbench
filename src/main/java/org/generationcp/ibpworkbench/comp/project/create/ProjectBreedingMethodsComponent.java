@@ -191,10 +191,10 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
             }
         });
 
-        gridMethodLayout.addComponent(new Label("Select Methods Type To Filter"), 1, 1);
-        gridMethodLayout.addComponent(selectMethodType, 2, 1);
-        gridMethodLayout.addComponent(new Label("Select Methods Group To Filter"), 1, 2);
-        gridMethodLayout.addComponent(selectMethodGroup, 2, 2);
+        gridMethodLayout.addComponent(new Label("Select Methods Group To Filter"), 1, 1);
+        gridMethodLayout.addComponent(selectMethodGroup, 2, 1);
+        gridMethodLayout.addComponent(new Label("Select Methods Type To Filter"), 1, 2);
+        gridMethodLayout.addComponent(selectMethodType, 2, 2);
         gridMethodLayout.addComponent(btnFilterMethod, 3, 1);
 
         selectMethods = new TwinColSelect("");
@@ -246,7 +246,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         if (selectMethodType.getValue().toString() != "" && selectMethodGroup.getValue().toString() == "") {
             methodList = managerFactory.getGermplasmDataManager().getMethodsByType(selectMethodType.getValue().toString());
         } else if (selectMethodType.getValue().toString() == "" && selectMethodGroup.getValue().toString() != "") {
-            methodList = managerFactory.getGermplasmDataManager().getMethodsByGroup(selectMethodGroup.getValue().toString());
+            methodList = managerFactory.getGermplasmDataManager().getMethodsByGroupIncludesGgroup(selectMethodGroup.getValue().toString());
         } else if (selectMethodType.getValue().toString() != "" && selectMethodGroup.getValue().toString() != "") {
             methodList = managerFactory.getGermplasmDataManager().getMethodsByGroupAndType(methodGroup, methodType);
         } else {
