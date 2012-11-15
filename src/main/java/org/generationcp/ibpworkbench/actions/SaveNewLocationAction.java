@@ -11,12 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,16 +93,13 @@ public class SaveNewLocationAction implements ClickListener {
             newLoc.setLocid(newLocation.getLocationId());
         	newLoc.setLname(newLocation.getLocationName());
         	newLoc.setLabbr(newLocation.getLocationAbbreviation());
-        
-        	projectLocationsComponent.getBeanItemContainer().addBean(newLoc);
-	
-        	projectLocationsComponent.getSelect().setContainerDataSource(projectLocationsComponent.getBeanItemContainer());
-            for (Object itemId :projectLocationsComponent.getBeanItemContainer().getItemIds()) {
-                Location loc = (Location) itemId;
-                projectLocationsComponent.getSelect().setItemCaption(itemId, loc.getLname());
-            }
-            projectLocationsComponent.getSelect().requestRepaint();
-            
+
+            projectLocationsComponent.getSelect().addItem(newLoc);
+            projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());
+        	
+            projectLocationsComponent.getSelect().select(newLoc);
+            projectLocationsComponent.getSelect().setValue(newLoc);
+
             newLocation = null;
             window.getParent().removeWindow(window);
         

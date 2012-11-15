@@ -297,10 +297,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
           createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
         }
     }
-    
-    public BeanItemContainer<Location> getBeanItemContainer() {
-		return beanItemContainer;
-	}
+
 
 	public TwinColSelect getSelect() {
 		return selectLocation;

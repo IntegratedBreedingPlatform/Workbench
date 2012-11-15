@@ -93,15 +93,11 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMcode(newBreedingMethod.getMethodCode());
             newMethod.setMgrp(newBreedingMethod.getMethodGroup());
             newMethod.setMtype(newBreedingMethod.getMethodType());
-        
-            projectBreedingMethodsComponent.getBeanItemContainer().addBean(newMethod);
-    
-            projectBreedingMethodsComponent.getSelect().setContainerDataSource(projectBreedingMethodsComponent.getBeanItemContainer());
-            for (Object itemId :projectBreedingMethodsComponent.getBeanItemContainer().getItemIds()) {
-                Method method = (Method) itemId;
-                projectBreedingMethodsComponent.getSelect().setItemCaption(itemId, method.getMname());
-            }
-            projectBreedingMethodsComponent.getSelect().requestRepaint();
+             
+            projectBreedingMethodsComponent.getSelect().addItem(newMethod);
+            projectBreedingMethodsComponent.getSelect().setItemCaption(newMethod, newMethod.getMname());
+            projectBreedingMethodsComponent.getSelect().select(newMethod);
+            projectBreedingMethodsComponent.getSelect().setValue(newMethod);
             
             newBreedingMethod = null;
             window.getParent().removeWindow(window);
