@@ -66,7 +66,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         
             app.getSessionData().getUniqueBreedingMethods().add(breedingMethod.getMethodName());
         
-            Integer nextKey = app.getSessionData().getProjectBreedingMethodData().keySet().size();
+            Integer nextKey = app.getSessionData().getProjectBreedingMethodData().keySet().size() + 1;
             
             nextKey = nextKey*-1;
         

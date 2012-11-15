@@ -73,7 +73,7 @@ public class SaveNewLocationAction implements ClickListener {
         
         	app.getSessionData().getUniqueLocations().add(location.getLocationName());
         	
-        	Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size();
+        	Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size()+1;
         	
         	nextKey = nextKey*-1;
         	
