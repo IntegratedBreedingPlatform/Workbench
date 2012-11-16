@@ -180,6 +180,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         comboBox.setRequired(true);
         comboBox.setRequiredError("Please select a Crop.");
         comboBox.setImmediate(true);
+        
+        if (cropTypes.size() == 1){     //If there is only one crop, set this by default
+            comboBox.setValue(cropTypes.get(0));
+        }
 
         return comboBox;
     }

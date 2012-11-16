@@ -130,6 +130,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         List<Role> roleList = null;
         try {
             roleList = workbenchDataManager.getAllRoles();
+            List<Role> rolesToRemove = new ArrayList<Role>();
+            for (Role role : roleList){
+                if (role.getName().contains("Manager")){
+                    rolesToRemove.add(role);
+                }
+            }
+            roleList.removeAll(rolesToRemove);
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting workbench roles", e);
