@@ -15,11 +15,8 @@ package org.generationcp.ibpworkbench.comp;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.FieldBookUploadSucceededListener;
-import org.generationcp.ibpworkbench.actions.FileUploadFailedListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
-import org.generationcp.ibpworkbench.comp.window.FileUploadWindow;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +25,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
@@ -49,52 +44,46 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     private Label dashboardTitle;
 
-    // Breeding Management controls
-    private Label breedingManagementTitle;
-
+    // titles
     private Label projectPlanningTitle;
+    private Label populationDevelopmentTitle;
     private Label fieldTrialManagementTitle;
     private Label genotypingTitle;
 
-    private Label loadDataSetsTitle;
     private Label phenotypicAnalysisTitle;
-    private Label genotypicAnalysisTitle;
     private Label qtlAnalysisTitle;
 
-    private Label plantSelectionTitle;
+    private Label qtlSelectionTitle;
+    
+    private Label recombinationCycleTitle;
+    
+    private Label finalBreedingDecisionTitle;
 
-    // private Link fieldBookLink;
-    private Button fieldBookButton;
-    private Button uploadFieldBookDataButton; // NOTE: We can remove this later
-
-    private Label populationDevelopmentTitle;
+    // buttons
     private Button browseGermplasmButton;
     private Button browseStudiesButton;
     private Button browseGermplasmListsButton;
-    private Button gdmsButton;
-
-    private Button breedingViewButton;
-
-    private Button optimasButton;
-
-    // Marker Trait Analysis controls
-    private Label markerTraitAnalysisTitle;
-    private Label markerTraitAnalysisAreaTitle;
-
-    // Marker Implementation controls
-    private Label markerImplementationTitle;
-
-    private Label recombinationCycleTitle;
 
     private Button breedingManagerButton;
     
+    private Button fieldBookButton;
+    
+    private Button gdmsButton;
+
+    private Button phenotypicBreedingViewButton;
+    
+    private Button qtlBreedingViewButton;
+
+    private Button optimasButton;
+
     private Embedded downArrow11;
     private Embedded downArrow12;
     private Embedded downArrow13;
     
+    private Embedded downArrow21;
+    
     private Embedded downArrow31;
     private Embedded downArrow32;
-    private Embedded downArrow33;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -114,119 +103,95 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        // breeding management
-        breedingManagementTitle = new Label("Breeding Management");
-        breedingManagementTitle.setStyleName("gcp-section-title-large");
-
         // project planning
-        projectPlanningTitle = new Label("Project Planning");
+        projectPlanningTitle = new Label();
         projectPlanningTitle.setStyleName("gcp-section-title");
         projectPlanningTitle.setSizeUndefined();
 
-        populationDevelopmentTitle = new Label("Population Development");
+        populationDevelopmentTitle = new Label();
         populationDevelopmentTitle.setStyleName("gcp-section-title");
         populationDevelopmentTitle.setSizeUndefined();
 
-        fieldTrialManagementTitle = new Label("Field Trial Management");
+        fieldTrialManagementTitle = new Label();
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
         fieldTrialManagementTitle.setSizeUndefined();
 
-        genotypingTitle = new Label("Genotyping");
+        genotypingTitle = new Label();
         genotypingTitle.setStyleName("gcp-section-title");
         genotypingTitle.setSizeUndefined();
 
-        loadDataSetsTitle = new Label("Load Datasets");
-        loadDataSetsTitle.setStyleName("gcp-section-title");
-        loadDataSetsTitle.setSizeUndefined();
-
-        phenotypicAnalysisTitle = new Label("Phenotypic Analysis");
+        phenotypicAnalysisTitle = new Label();
         phenotypicAnalysisTitle.setStyleName("gcp-section-title");
         phenotypicAnalysisTitle.setSizeUndefined();
-
-        genotypicAnalysisTitle = new Label("Genotypic Analysis");
-        genotypicAnalysisTitle.setStyleName("gcp-section-title");
-        genotypicAnalysisTitle.setSizeUndefined();
-
-        qtlAnalysisTitle = new Label("QTL Analysis");
+        
+        qtlAnalysisTitle = new Label();
         qtlAnalysisTitle.setStyleName("gcp-section-title");
         qtlAnalysisTitle.setSizeUndefined();
-
-        // fieldBookLink = new Link("Field Book", new
-        // ExternalResource("http://localhost:10080/ibfb/master.jnlp"));
-        // fieldBookLink.setSizeUndefined();
-
-        fieldBookButton = new Button("Field Book");
-        fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK);
-        fieldBookButton.setSizeUndefined();
-        fieldBookButton.setDescription("Click to launch Fieldbook");
-
-        uploadFieldBookDataButton = new Button("Upload Field Book Data");
-        uploadFieldBookDataButton.setStyleName(BaseTheme.BUTTON_LINK);
-        uploadFieldBookDataButton.setSizeUndefined();
-
-        browseGermplasmButton = new Button("Browse Germplasm Information");
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
-        browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
-
-        browseStudiesButton = new Button("Browse Studies and Datasets");
-        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
-        browseStudiesButton.setSizeUndefined();
-        browseStudiesButton.setDescription("Click to launch Study Browser");
         
-        browseGermplasmListsButton = new Button("Browse Germplasm Lists");
-        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
-        browseGermplasmListsButton.setSizeUndefined();
-        browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
-
-        gdmsButton = new Button("Manage Genotyping Data");
-        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
-        gdmsButton.setSizeUndefined();
-        gdmsButton.setDescription("Click to launch GDMS");
-
-        breedingViewButton = new Button("Breeding View");
-        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
-        breedingViewButton.setSizeUndefined();
-        breedingViewButton.setDescription("Click to launch Breeding View");
-
-        optimasButton = new Button("OptiMAS");
-        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
-        optimasButton.setSizeUndefined();
-        optimasButton.setDescription("Click to launch OptiMAS");
-
-        // marker trait analysis
-        markerTraitAnalysisTitle = new Label("Marker Trait Analysis");
-        markerTraitAnalysisTitle.setStyleName("gcp-section-title-large");
-        markerTraitAnalysisTitle.setSizeUndefined();
-
-        markerTraitAnalysisAreaTitle = new Label("Marker Trait Analysis");
-        markerTraitAnalysisAreaTitle.setStyleName("gcp-section-title");
-        markerTraitAnalysisAreaTitle.setSizeUndefined();
-
-        // marker implementation
-        markerImplementationTitle = new Label("Marker Implementation");
-        markerImplementationTitle.setStyleName("gcp-section-title-large");
-
-        plantSelectionTitle = new Label("Plant Selection");
-        plantSelectionTitle.setStyleName("gcp-section-title");
-        plantSelectionTitle.setSizeUndefined();
-
-        recombinationCycleTitle = new Label("Recombination Cycle");
+        qtlSelectionTitle = new Label();
+        qtlSelectionTitle.setStyleName("gcp-section-title");
+        qtlSelectionTitle.setSizeUndefined();
+        
+        recombinationCycleTitle = new Label();
         recombinationCycleTitle.setStyleName("gcp-section-title");
         recombinationCycleTitle.setSizeUndefined();
+        
+        finalBreedingDecisionTitle = new Label();
+        finalBreedingDecisionTitle.setStyleName("gcp-section-title");
+        finalBreedingDecisionTitle.setSizeUndefined();
 
-        breedingManagerButton = new Button("Breeding Manager");
+        // project planning buttons
+        browseGermplasmButton = new Button();
+        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmButton.setSizeUndefined();
+
+        browseStudiesButton = new Button();
+        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseStudiesButton.setSizeUndefined();
+        
+        browseGermplasmListsButton = new Button();
+        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmListsButton.setSizeUndefined();
+        
+        // population development buttons
+        breedingManagerButton = new Button();
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingManagerButton.setSizeUndefined();
-        breedingManagerButton.setDescription("Click to launch Nursery Manager");
+        
+        // field trial management buttons
+        fieldBookButton = new Button();
+        fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK);
+        fieldBookButton.setSizeUndefined();
 
+        // genotyping buttons
+        gdmsButton = new Button();
+        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        gdmsButton.setSizeUndefined();
+
+        // phenotypic analysis buttons
+        phenotypicBreedingViewButton = new Button();
+        phenotypicBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        phenotypicBreedingViewButton.setSizeUndefined();
+
+        // qtl analysis buttons
+        qtlBreedingViewButton = new Button();
+        qtlBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        qtlBreedingViewButton.setSizeUndefined();
+        
+        // qtl selection buttons
+        optimasButton = new Button();
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
+        optimasButton.setSizeUndefined();
+
+        // arrows
         downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow12 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow13 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         
+        downArrow21 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        
         downArrow31 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow32 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        downArrow33 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
     }
 
     protected void initializeLayout() {
@@ -255,11 +220,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagementArea.setHeight("100%");
         layout.addComponent(breedingManagementArea);
 
-        Component markerTraitAnalysisArea = layoutMarkerTraitAnalysis();
+        Component markerTraitAnalysisArea = layoutMarkerTraitAnalysisArea();
         markerTraitAnalysisArea.setHeight("100%");
         layout.addComponent(markerTraitAnalysisArea);
 
-        Component markerImplementationArea = layoutMarkerImplementation();
+        Component markerImplementationArea = layoutMarkerImplementationArea();
         markerImplementationArea.setHeight("100%");
         layout.addComponent(markerImplementationArea);
 
@@ -274,10 +239,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setHeight("630px");
         layout.setMargin(true);
         layout.setSpacing(false);
-
-        breedingManagementTitle.setSizeUndefined();
-        layout.addComponent(breedingManagementTitle);
-        layout.setComponentAlignment(breedingManagementTitle, Alignment.TOP_CENTER);
 
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea);
@@ -398,7 +359,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component layoutMarkerTraitAnalysis() {
+    protected Component layoutMarkerTraitAnalysisArea() {
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
@@ -406,12 +367,14 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        layout.addComponent(markerTraitAnalysisTitle);
-        layout.setComponentAlignment(markerTraitAnalysisTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(markerTraitAnalysisTitle, 0);
-
-        Component markerTraitAnalysisArea = layoutMarkerTraitAnalysisButton();
+        Component markerTraitAnalysisArea = layoutPhenotypicAnalysis();
         layout.addComponent(markerTraitAnalysisArea);
+        
+        layout.addComponent(downArrow21);
+        layout.setComponentAlignment(downArrow21, Alignment.MIDDLE_CENTER);
+        
+        Component qtlAnalysisArea = layoutQtlAnalysis();
+        layout.addComponent(qtlAnalysisArea);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -423,13 +386,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return panel;
     }
 
-    protected Component layoutMarkerTraitAnalysisButton() {
+    protected Component layoutPhenotypicAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(markerTraitAnalysisAreaTitle);
-        layout.setComponentAlignment(markerTraitAnalysisAreaTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(markerTraitAnalysisAreaTitle, 0);
+        layout.addComponent(phenotypicAnalysisTitle);
+        layout.setComponentAlignment(phenotypicAnalysisTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(phenotypicAnalysisTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -437,14 +400,35 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(breedingViewButton);
-        layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewButton, 0);
+        layout.addComponent(phenotypicBreedingViewButton);
+        layout.setComponentAlignment(phenotypicBreedingViewButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(phenotypicBreedingViewButton, 0);
+
+        return layout;
+    }
+    
+    protected Component layoutQtlAnalysis() {
+        VerticalLayout layout = new VerticalLayout();
+        configureWorkflowStepLayout(layout);
+
+        layout.addComponent(qtlAnalysisTitle);
+        layout.setComponentAlignment(qtlAnalysisTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(qtlAnalysisTitle, 0);
+
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+
+        layout.addComponent(qtlBreedingViewButton);
+        layout.setComponentAlignment(qtlBreedingViewButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(qtlBreedingViewButton, 0);
 
         return layout;
     }
 
-    protected Component layoutMarkerImplementation() {
+    protected Component layoutMarkerImplementationArea() {
         Panel panel = new Panel();
 
         VerticalLayout layout = new VerticalLayout();
@@ -452,44 +436,38 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        markerImplementationTitle.setSizeUndefined();
-        layout.addComponent(markerImplementationTitle);
-        layout.setComponentAlignment(markerImplementationTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(markerImplementationTitle, 0);
-
-        // Component ideotypeDesignArea = createPanel("9. Ideotype Design",
-        // "Selection Index");
-        // layout.addComponent(ideotypeDesignArea);
-        
-        Component plantSelectionArea = layoutPlantSelection();
-        layout.addComponent(plantSelectionArea);
-        layout.setExpandRatio(plantSelectionArea, 0);
+        Component qtlSelectionArea = layoutQtlSelection();
+        layout.addComponent(qtlSelectionArea);
         
         layout.addComponent(downArrow31);
         layout.setComponentAlignment(downArrow31, Alignment.MIDDLE_CENTER);
         
         Component recombinationCycleArea = layoutRecombinationCycle();
         layout.addComponent(recombinationCycleArea);
-        layout.setExpandRatio(recombinationCycleArea, 0);
 
         layout.addComponent(downArrow32);
         layout.setComponentAlignment(downArrow32, Alignment.MIDDLE_CENTER);
         
-        Component projectCompletionArea = createPanel("Project Completion");
-        layout.addComponent(projectCompletionArea);
-        layout.setExpandRatio(recombinationCycleArea, 0);
+        Component finalBreedingDecisionArea = layoutFinalBreedingDecision();
+        layout.addComponent(finalBreedingDecisionArea);
 
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+        
         panel.setContent(layout);
         return panel;
     }
 
-    protected Component layoutPlantSelection() {
+    protected Component layoutQtlSelection() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(plantSelectionTitle);
-        layout.setComponentAlignment(plantSelectionTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(plantSelectionTitle, 0);
+        layout.addComponent(qtlSelectionTitle);
+        layout.setComponentAlignment(qtlSelectionTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(qtlSelectionTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -511,6 +489,23 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(recombinationCycleTitle);
         layout.setComponentAlignment(recombinationCycleTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(recombinationCycleTitle, 0);
+
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+
+        return layout;
+    }
+    
+    protected Component layoutFinalBreedingDecision() {
+        VerticalLayout layout = new VerticalLayout();
+        configureWorkflowStepLayout(layout);
+
+        layout.addComponent(finalBreedingDecisionTitle);
+        layout.setComponentAlignment(finalBreedingDecisionTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(finalBreedingDecisionTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -559,30 +554,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected void initializeActions() {
-        uploadFieldBookDataButton.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                FileUploadWindow fileUploadWindow = new FileUploadWindow();
-                fileUploadWindow.setWidth("380px");
-                fileUploadWindow.setHeight("240px");
-                fileUploadWindow.setModal(true);
-
-                // set allowed mime types
-                fileUploadWindow.getUpload().addAllowedMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                fileUploadWindow.getUpload().addAllowedMimeType("application/vnd.ms-excel");
-
-                // set the upload listeners
-                fileUploadWindow.getUpload().addListener(new FieldBookUploadSucceededListener(fileUploadWindow));
-                fileUploadWindow.getUpload().addListener(new FileUploadFailedListener());
-
-                getWindow().addWindow(fileUploadWindow);
-                fileUploadWindow.center();
-            }
-        });
-
         browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
         browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
         browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
@@ -595,7 +566,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+        phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+        qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
     }
 
     protected void assemble() {
@@ -614,5 +586,48 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     @Override
     public void updateLabels() {
         messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        
+        // titles
+        messageSource.setValue(projectPlanningTitle, Message.PROJECT_PLANNING);
+        messageSource.setValue(populationDevelopmentTitle, Message.POPULATION_DEVELOPMENT);
+        messageSource.setValue(fieldTrialManagementTitle, Message.FIELD_TRIAL_MANAGEMENT);
+        messageSource.setValue(genotypingTitle, Message.GENOTYPING);
+
+        messageSource.setValue(phenotypicAnalysisTitle, Message.PHENOTYPIC_ANALYSIS);
+        messageSource.setValue(qtlAnalysisTitle, Message.QTL_ANALYSIS);
+
+        messageSource.setValue(qtlSelectionTitle, Message.QTL_SELECTION);
+        
+        messageSource.setValue(recombinationCycleTitle, Message.RECOMBINATION_CYCLE);
+        
+        messageSource.setValue(finalBreedingDecisionTitle, Message.FINAL_BREEDING_DECISION);
+        
+        // buttons
+        messageSource.setCaption(browseGermplasmButton, Message.BROWSE_GERMPLASM_INFORMATION);
+        messageSource.setDescription(browseGermplasmButton, Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER);
+        
+        messageSource.setCaption(browseStudiesButton, Message.BROWSE_STUDIES_AND_DATASETS);
+        messageSource.setDescription(browseStudiesButton, Message.CLICK_TO_LAUNCH_STUDY_BROWSER);
+        
+        messageSource.setCaption(browseGermplasmListsButton, Message.BROWSE_GERMPLAM_LISTS);
+        messageSource.setDescription(browseGermplasmListsButton, Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER);
+
+        messageSource.setCaption(breedingManagerButton, Message.BREEDING_MANAGER);
+        messageSource.setDescription(breedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
+        
+        messageSource.setCaption(fieldBookButton, Message.FIELDBOOK);
+        messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
+        
+        messageSource.setCaption(gdmsButton, Message.MANAGE_GENOTYPING_DATA);
+        messageSource.setDescription(gdmsButton, Message.CLICK_TO_LAUNCH_GDMS);
+
+        messageSource.setCaption(phenotypicBreedingViewButton, Message.BREEDING_VIEW);
+        messageSource.setDescription(phenotypicBreedingViewButton, Message.CLICK_TO_LAUNCH_BREEDING_VIEW);
+        
+        messageSource.setCaption(qtlBreedingViewButton, Message.BREEDING_VIEW);
+        messageSource.setDescription(qtlBreedingViewButton, Message.CLICK_TO_LAUNCH_BREEDING_VIEW);
+
+        messageSource.setCaption(optimasButton, Message.OPTIMAS);
+        messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
     }
 }
