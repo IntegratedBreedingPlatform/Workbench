@@ -15,20 +15,30 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
@@ -84,6 +94,9 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -152,7 +165,51 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                     showLaunchError(window, absoluteToolFile.getAbsolutePath());
                 }
                 
-            } else {
+            }
+            else if (tool.getToolType() == ToolType.WEB_WITH_LOGIN) {
+                String loginUrl = tool.getPath();
+                
+                // get the currently logged in user's local database username and password
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+                
+                User localIbdbUser = null;
+                try {
+                    if (user != null && currentProject != null) {
+                        Integer localIbdbUserId = workbenchDataManager.getLocalIbdbUserId(user.getUserid(), currentProject.getProjectId());
+                        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+                        UserDataManager userDataManager = managerFactory.getUserDataManager();
+
+                        localIbdbUser = userDataManager.getUserById(localIbdbUserId);
+                    }
+                }
+                catch (MiddlewareQueryException e) {
+                    LOG.error("QueryException", e);
+                    MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                            "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                    return;
+                }
+                finally {
+                    String url = tool.getPath();
+                    if (localIbdbUser != null) {
+                        url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
+                    }
+                    
+                    
+                    Embedded browser = new Embedded("", new ExternalResource(url));
+                    browser.setType(Embedded.TYPE_BROWSER);
+                    browser.setSizeFull();
+                    browser.setHeight("800px");
+                    browser.setWidth("100%");
+                    
+                    NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
+                    
+                    IContentWindow contentWindow = (IContentWindow) window;
+                    contentWindow.showContent(browser);
+                }
+            }
+            else {
                 
                 Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
                 browser.setType(Embedded.TYPE_BROWSER);
@@ -173,5 +230,17 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                 "<br />" + messageSource.getMessage(Message.LAUNCH_TOOL_ERROR_DESC, tool));
     }
     
-
+    private String getWebLoginForwardUrl(String url, String username, String password) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = requestAttributes.getRequest();
+        
+        String urlFormat = "%s://%s:%d/%s/web_login_forward?login_url=%s&username=%s&password=%s";
+        
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        String contextPath = request.getContextPath();
+        int port = request.getServerPort();
+        
+        return String.format(urlFormat, scheme, serverName, port, contextPath, url, username, password);
+    }
 }
