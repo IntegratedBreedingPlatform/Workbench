@@ -23,6 +23,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -162,16 +163,25 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+            	Set<Location> selectedLocation = (Set<Location>)selectLocation.getValue(); 
             	selectLocation.removeAllItems();
                 cropType = createProjectPanel.getSelectedCropType();
                 if (cropType != null) {
                     try {
-                        Container container = createLocationsContainer(cropType);
+                        Container container = createLocationsContainer(cropType,selectedLocation);
                         selectLocation.setContainerDataSource(container);
 
                         for (Object itemId : container.getItemIds()) {
                             Location loc = (Location) itemId;
                             selectLocation.setItemCaption(itemId, loc.getLname());
+                        }
+                        
+                        if(selectedLocation.size() >0){
+                        	for(Location location:selectedLocation){
+                        		selectLocation.select(location);
+                        		selectLocation.setValue(location);
+                        	}
+                        	
                         }
                     } catch (MiddlewareQueryException e) {
                         LOG.error("Error encountered while getting central methods", e);
@@ -196,9 +206,9 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         selectLocation.setNullSelectionAllowed(true);
 
         if (cropType != null) {
-        	selectLocation.removeAllItems();
             try {
-                Container container = createLocationsContainer(cropType);
+            	Set<Location> selectedLocation = (Set<Location>)selectLocation.getValue(); 
+                Container container = createLocationsContainer(cropType,selectedLocation);
                 selectLocation.setContainerDataSource(container);
 
                 for (Object itemId : container.getItemIds()) {
@@ -241,7 +251,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     	}
 	}
 
-	private Container createLocationsContainer(CropType cropType) throws MiddlewareQueryException {
+	private Container createLocationsContainer(CropType cropType, Set<Location> selectedLocation) throws MiddlewareQueryException {
 		
 		ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
 		beanItemContainer = new BeanItemContainer<Location>(Location.class);
@@ -271,6 +281,11 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
             beanItemContainer.addBean(loc);
         }
         
+        if(selectedLocation.size() > 0){
+        	for(Location location:selectedLocation){
+        		beanItemContainer.addBean(location);
+        	}
+        }
         return beanItemContainer;
     }
 

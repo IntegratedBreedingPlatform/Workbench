@@ -171,11 +171,14 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+            	
+            	Set<Method> selectedMethod = (Set<Method>)selectMethods.getValue(); 
+            	
                 selectMethods.removeAllItems();
                 CropType cropType = createProjectPanel.getSelectedCropType();
                 if (cropType != null) {
                     try {
-                        Container container = createMethodsContainer(cropType);
+                        Container container = createMethodsContainer(cropType,selectedMethod);
                         selectMethods.setContainerDataSource(container);
 
                         for (Object itemId : container.getItemIds()) {
@@ -183,6 +186,15 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
                             selectMethods.setItemCaption(itemId, method.getMname());
                         }
+                        
+                        if(selectedMethod.size() >0){
+                        	for(Method method:selectedMethod){
+                        		selectMethods.select(method);
+                        		selectMethods.setValue(method);
+                        	}
+                        	
+                        }
+                        
                     } catch (MiddlewareQueryException e) {
                         LOG.error("Error encountered while getting central methods", e);
                         throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -208,7 +220,8 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         CropType cropType = createProjectPanel.getSelectedCropType();
         if (cropType != null) {
             try {
-                Container container = createMethodsContainer(cropType);
+            	Set<Method> selectedMethod = (Set<Method>)selectMethods.getValue(); 
+                Container container = createMethodsContainer(cropType,selectedMethod);
                 selectMethods.setContainerDataSource(container);
 
                 for (Object itemId : container.getItemIds()) {
@@ -233,7 +246,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         return showMethodWindowButton;
     }
     
-    private Container createMethodsContainer(CropType cropType) throws MiddlewareQueryException {
+    private Container createMethodsContainer(CropType cropType, Set<Method> selectedMethod) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         beanItemContainer = new BeanItemContainer<Method>(Method.class);
         if (managerFactory == null) {
@@ -255,6 +268,12 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
         for (Method method : methodList) {
             beanItemContainer.addBean(method);
+        }
+        
+        if(selectedMethod.size() > 0){
+        	for(Method method:selectedMethod){
+        		beanItemContainer.addBean(method);
+        	}
         }
 
         return beanItemContainer;
