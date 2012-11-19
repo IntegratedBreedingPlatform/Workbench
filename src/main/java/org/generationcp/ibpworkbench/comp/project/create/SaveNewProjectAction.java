@@ -48,205 +48,221 @@ import com.vaadin.ui.Button.ClickListener;
 @Configurable
 public class SaveNewProjectAction implements ClickListener{
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaveNewProjectAction.class);
-    private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(SaveNewProjectAction.class);
+	private static final long serialVersionUID = 1L;
 
-    private CreateProjectPanel createProjectPanel;
-    private Project project;
+	private CreateProjectPanel createProjectPanel;
+	private Project project;
 
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
+	@Autowired
+	private ManagerFactoryProvider managerFactoryProvider;
 
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
+	private Project projectSaved;
+	private ManagerFactory managerFactory;
 
-    public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
-        this.createProjectPanel = createProjectPanel;
-    }
+	public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
+		this.createProjectPanel = createProjectPanel;
+	}
 
-    @Override
-    public void buttonClick(ClickEvent event) {
+	@Override
+	public void buttonClick(ClickEvent event) {
 
-        boolean validProjectValues = createProjectPanel.validate();
+		boolean validProjectValues = createProjectPanel.validate();
 
-        if (validProjectValues) {
+		if (validProjectValues) {
 
-            project = createProjectPanel.getProject();
+			project = createProjectPanel.getProject();
 
-            boolean isGenerationSuccess = false;
+			boolean isGenerationSuccess = false;
 
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
-            project.setUserId(app.getSessionData().getUserData().getUserid());
+			project.setUserId(app.getSessionData().getUserData().getUserid());
 
-            //TODO: REMOVE Once template is no longer required in Project
-            try {
-                project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
-            } catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage());
-            }
+			//TODO: REMOVE Once template is no longer required in Project
+			try {
+				project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
+				project.setLastOpenDate(null);
+				projectSaved = workbenchDataManager.saveOrUpdateProject(project);
 
-            //TODO: Verify the try-catch flow      
-            try {
-                project.setLastOpenDate(null);
-                Project projectSaved = workbenchDataManager.saveOrUpdateProject(project);
+			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage());
+			}
 
-                Set<Method> methods = project.getMethods();
-                Set<Location> locations = project.getLocations();
+			IBDBGenerator generator;
 
-                // FIXME: What happens when the user deletes all associated methods and locations?
-                // Ideally, the methods and locations will be saved automatically when we save a project.
-                // However, we need to fix the Project POJOs mapping in order to do that
-                if ((methods != null) && (!methods.isEmpty())) {
-                    saveProjectMethods(methods, projectSaved);
-                }
+			try {
+				generator = new IBDBGenerator(project.getCropType(), project.getProjectId());
+				isGenerationSuccess = generator.generateDatabase();
+			} catch (InternationalizableException e) {
+				LOG.error(e.toString(), e);
+				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+				return;
+			}
 
-                if ((locations != null) && (!locations.isEmpty())) {
-                    saveProjectLocation(locations, projectSaved);
-                }
-                
-                List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
-                if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
-                    saveProjectUserRoles(projectUserRoles, projectSaved);
-                }
-                
-                List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
-                if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-                    saveProjectMembers(projectMembers, projectSaved);
-                }
-                
+			if (isGenerationSuccess) {
+				//generator.addCachedLocations(app.getSessionData().getProjectLocationData());
+				//generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
 
-            } catch (MiddlewareQueryException e) {
-                LOG.error("Error encountered while trying to save the project.", e);
-                MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
-                        + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-                return;
-            }
+				User currentUser = app.getSessionData().getUserData();
+				User user = currentUser.copy();
 
-            IBDBGenerator generator;
+				try {
 
-            try {
-                generator = new IBDBGenerator(project.getCropType(), project.getProjectId());
-                isGenerationSuccess = generator.generateDatabase();
-            } catch (InternationalizableException e) {
-                LOG.error(e.toString(), e);
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-                return;
-            }
+					List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
+					if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
+						saveProjectUserRoles(projectUserRoles, projectSaved);
+					}
 
-            if (isGenerationSuccess) {
-                generator.addCachedLocations(app.getSessionData().getProjectLocationData());
-                generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
+					List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
+					if ((projectMembers != null) && (!projectMembers.isEmpty())) {
+						saveProjectMembers(projectMembers, projectSaved);
+					}
 
-                User currentUser = app.getSessionData().getUserData();
-                User user = currentUser.copy();
+					Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
+					Person person = currentPerson.copy();
 
-                try {
-                    Person currentPerson = workbenchDataManager.getPersonById(currentUser.getPersonid());
-                    Person person = currentPerson.copy();
+					// create the project's local person and user data
+					managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+					UserDataManager userDataManager = managerFactory.getUserDataManager();
 
-                    // create the project's local person and user data
-                    ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-                    UserDataManager userDataManager = managerFactory.getUserDataManager();
+					// add the person to the project's local database
+					userDataManager.addPerson(person);
 
-                    // add the person to the project's local database
-                    userDataManager.addPerson(person);
+					// add a user to project's local database
+					user.setPersonid(person.getId());
+					userDataManager.addUser(user);
 
-                    // add a user to project's local database
-                    user.setPersonid(person.getId());
-                    userDataManager.addUser(user);
-                } catch (MiddlewareQueryException e) {
-                    LOG.error(e.getMessage(), e);
-                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
-                            + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-                    return;
-                }
 
-                // add a workbench user to ibdb user mapping
-                IbdbUserMap ibdbUserMap = new IbdbUserMap();
-                ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
-                ibdbUserMap.setProjectId(project.getProjectId());
-                ibdbUserMap.setIbdbUserId(user.getUserid());
-                try {
-                    workbenchDataManager.addIbdbUserMap(ibdbUserMap);
-                } catch (MiddlewareQueryException e) {
-                    LOG.error(e.getMessage(), e);
-                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
-                            + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-                    return;
-                }
-            }
+				} catch (MiddlewareQueryException e) {
+					LOG.error(e.getMessage(), e);
+					MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
+							+ messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+					return;
+				}
 
-            app.getSessionData().getProjectLocationData().clear();
+				// add a workbench user to ibdb user mapping
+				IbdbUserMap ibdbUserMap = new IbdbUserMap();
+				ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
+				ibdbUserMap.setProjectId(project.getProjectId());
+				ibdbUserMap.setIbdbUserId(user.getUserid());
+				try {
+					workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 
-            app.getSessionData().getUniqueLocations().clear();
+					// FIXME: What happens when the user deletes all associated methods and locations?
+					// Ideally, the methods and locations will be saved automatically when we save a project.
+					// However, we need to fix the Project POJOs mapping in order to do that
 
-            LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getStartDate() + " "
-                    + project.getTemplate().getTemplateId());
-            LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
+					Set<Method> methods = project.getMethods();
+					if ((methods != null) && (!methods.isEmpty())) {
+						saveProjectMethods(methods, projectSaved);
+					}
 
-            // go back to dashboard
-            HomeAction home = new HomeAction();
-            home.buttonClick(event);
-        }
+					//add a project location to workbench
+					Set<Location> locations = project.getLocations();
+					if ((locations != null) && (!locations.isEmpty())) {
+						saveProjectLocation(locations, projectSaved);
+					}
 
-    }
+				} catch (MiddlewareQueryException e) {
+					LOG.error(e.getMessage(), e);
+					MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
+							+ messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+					return;
+				}
+			}
 
-    private void saveProjectMethods(Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
+//			app.getSessionData().getProjectLocationData().clear();
+//			app.getSessionData().getUniqueLocations().clear();
 
-        ArrayList<Method> method = new ArrayList<Method>(methods);
-        List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
+			LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getStartDate() + " "
+					+ project.getTemplate().getTemplateId());
+			LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
 
-        for (Method m : method) {
-            ProjectMethod projectMethod = new ProjectMethod();
-            projectMethod.setMethodId(m.getMid());
-            projectMethod.setProject(projectSaved);
-            projectMethodList.add(projectMethod);
-        }
+			// go back to dashboard
+			HomeAction home = new HomeAction();
+			home.buttonClick(event);
+		}
 
-        workbenchDataManager.addProjectMethod(projectMethodList);
+	}
 
-    }
+	private void saveProjectMethods(Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
 
-    private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
+		List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
+		int mID = 0;
+		for (Method m : methods) {
+			ProjectMethod projectMethod = new ProjectMethod();
+			if(m.getMid() < 1){
+				//save the added  method to the local database created
+				mID = managerFactory.getGermplasmDataManager().addMethod(new Method(m.getMid(), m.getMtype(), m.getMgrp(),
+						m.getMcode(), m.getMname(), m.getMdesc(),0, 0, 0,0, 0,0, 0, 0));
+			}else{
+				mID=m.getMid();
+			}
+			projectMethod.setMethodId(mID);
+			projectMethod.setProject(projectSaved);
+			projectMethodList.add(projectMethod);
+		}
+		workbenchDataManager.addProjectMethod(projectMethodList);
 
-        ArrayList<Location> loc = new ArrayList<Location>(locations);
-        List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();
+	}
 
-        for (Location l : loc) {
-            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
-            projectLocationMap.setLocationId(new Long(l.getLocid()));
-            projectLocationMap.setProject(projectSaved);
-            projectLocationMapList.add(projectLocationMap);
-        }
+	private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
 
-        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+		List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();
+		long locID=0;
+		for (Location l : locations) {
+			ProjectLocationMap projectLocationMap = new ProjectLocationMap();
+			if(l.getLocid() < 1){
+				//save the added new location to the local database created
+		        Location location = new Location();
+		        location.setLocid(l.getLocid());
+		        location.setCntryid(0);
+		        location.setLabbr(l.getLabbr());
+		        location.setLname(l.getLname());
+		        location.setLrplce(0);
+		        location.setLtype(0);
+		        location.setNllp(0);
+		        location.setSnl1id(0);
+		        location.setSnl2id(0);
+		        location.setSnl3id(0);
+				
+				locID= managerFactory.getGermplasmDataManager().addLocation(location);
+			}else{
+				locID=l.getLocid();
+			}
+			projectLocationMap.setLocationId(locID);
+			projectLocationMap.setProject(projectSaved);
+			projectLocationMapList.add(projectLocationMap);
+		}
 
-    }
+		workbenchDataManager.addProjectLocationMap(projectLocationMapList);
 
-    private void saveProjectUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+	}
 
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        Integer userId = app.getSessionData().getUserData().getUserid();
+	private void saveProjectUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
 
-        for (ProjectUserRole projectUserRole : projectUserRoles){
-            projectUserRole.setProject(projectSaved);
-            projectUserRole.setUserId(userId);
-            workbenchDataManager.addProjectUserRole(projectUserRole);
-        }
-        
-    }
+		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+		Integer userId = app.getSessionData().getUserData().getUserid();
 
-    private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
-        for (ProjectUserRole projectUserRole : projectUserRoles){
-            projectUserRole.setProject(projectSaved);
-            workbenchDataManager.addProjectUserRole(projectUserRole);
-        }
-        
-    }
+		for (ProjectUserRole projectUserRole : projectUserRoles){
+			projectUserRole.setProject(projectSaved);
+			projectUserRole.setUserId(userId);
+			workbenchDataManager.addProjectUserRole(projectUserRole);
+		}
 
+	}
+
+	private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+		for (ProjectUserRole projectUserRole : projectUserRoles){
+			projectUserRole.setProject(projectSaved);
+			workbenchDataManager.addProjectUserRole(projectUserRole);
+		}
+	}
 
 }

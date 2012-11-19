@@ -344,7 +344,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                 Property property = item.getItemProperty(propertyId);
                 Boolean value = (Boolean) property.getValue();
                 
-                if (value != null & value.booleanValue()) {
+                if (value != null && value.booleanValue()) {
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
@@ -353,7 +353,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                 }
             }
         }
-        
         return projectUserRoles;
     }
 }
