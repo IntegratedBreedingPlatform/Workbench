@@ -12,7 +12,9 @@
 
 package org.generationcp.ibpworkbench.comp.project.create;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +28,6 @@ import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -50,6 +51,9 @@ public class SaveNewProjectAction implements ClickListener{
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaveNewProjectAction.class);
 	private static final long serialVersionUID = 1L;
+    private static final int PROJECT_USER_ACCESS_NUMBER = 100;
+    private static final int PROJECT_USER_TYPE = 422;
+    
 
 	private CreateProjectPanel createProjectPanel;
 	private Project project;
@@ -64,7 +68,7 @@ public class SaveNewProjectAction implements ClickListener{
 	private SimpleResourceBundleMessageSource messageSource;
 	private Project projectSaved;
 	private ManagerFactory managerFactory;
-
+	
 	public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
 		this.createProjectPanel = createProjectPanel;
 	}
@@ -84,9 +88,10 @@ public class SaveNewProjectAction implements ClickListener{
 
 			project.setUserId(app.getSessionData().getUserData().getUserid());
 
-			//TODO: REMOVE Once template is no longer required in Project
 			try {
+	            //TODO: REMOVE Once template is no longer required in Project
 				project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
+
 				project.setLastOpenDate(null);
 				projectSaved = workbenchDataManager.saveOrUpdateProject(project);
 
@@ -114,30 +119,31 @@ public class SaveNewProjectAction implements ClickListener{
 
 				try {
 
-					List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
-					if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
-						saveProjectUserRoles(projectUserRoles, projectSaved);
-					}
-
-					List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
-					if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-						saveProjectMembers(projectMembers, projectSaved);
-					}
-
+                    managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+                    
+                    // create the project's local person and user data
 					Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
 					Person person = currentPerson.copy();
 
-					// create the project's local person and user data
-					managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-					UserDataManager userDataManager = managerFactory.getUserDataManager();
-
 					// add the person to the project's local database
-					userDataManager.addPerson(person);
+					managerFactory.getUserDataManager().addPerson(person);
 
 					// add a user to project's local database
 					user.setPersonid(person.getId());
-					userDataManager.addUser(user);
+					user.setAccess(PROJECT_USER_ACCESS_NUMBER);
+					user.setType(PROJECT_USER_TYPE);
+					user.setAdate(getCurrentDate());
+					managerFactory.getUserDataManager().addUser(user);
 
+                    List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
+                    if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
+                        saveProjectUserRoles(projectUserRoles, projectSaved);
+                    }
+
+                    List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
+                    if ((projectMembers != null) && (!projectMembers.isEmpty())) {
+                        saveProjectMembers(projectMembers, projectSaved);
+                    }
 
 				} catch (MiddlewareQueryException e) {
 					LOG.error(e.getMessage(), e);
@@ -260,9 +266,36 @@ public class SaveNewProjectAction implements ClickListener{
 
 	private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
 		for (ProjectUserRole projectUserRole : projectUserRoles){
+		    
+		    // Save role
 			projectUserRole.setProject(projectSaved);
 			workbenchDataManager.addProjectUserRole(projectUserRole);
+
+            // Save User to local db
+			User workbenchUser = workbenchDataManager.getUserById(projectUserRole.getUserId());
+			
+            Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+            Person localPerson = currentPerson.copy();
+            managerFactory.getUserDataManager().addPerson(localPerson);
+           
+            User localUser =  workbenchUser.copy();
+            localUser.setPersonid(localPerson.getId());
+            localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+            localUser.setType(PROJECT_USER_TYPE);
+            localUser.setAdate(getCurrentDate());
+            
+            managerFactory.getUserDataManager().addUser(localUser);
+
 		}
+	}
+	
+	private Integer getCurrentDate(){
+        Calendar now = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        String dateNowStr = formatter.format(now.getTime());
+        Integer dateNowInt = Integer.valueOf(dateNowStr);
+        return dateNowInt;
+
 	}
 
 }
