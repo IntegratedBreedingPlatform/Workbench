@@ -252,15 +252,21 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         if (managerFactory == null) {
             return beanItemContainer;
         }
-        String methodType = selectMethodType.getValue().toString();
-        String methodGroup = selectMethodGroup.getValue().toString();
+        String methodType = "";
+        if(selectMethodType.getValue() != null){
+            methodType = selectMethodType.getValue().toString();
+        }
+        String methodGroup = "";
+        if(selectMethodGroup.getValue() != null){
+            methodGroup = selectMethodGroup.getValue().toString();
+        }
 
         List<Method> methodList = null;
-        if (selectMethodType.getValue().toString() != "" && selectMethodGroup.getValue().toString() == "") {
-            methodList = managerFactory.getGermplasmDataManager().getMethodsByType(selectMethodType.getValue().toString());
-        } else if (selectMethodType.getValue().toString() == "" && selectMethodGroup.getValue().toString() != "") {
-            methodList = managerFactory.getGermplasmDataManager().getMethodsByGroupIncludesGgroup(selectMethodGroup.getValue().toString());
-        } else if (selectMethodType.getValue().toString() != "" && selectMethodGroup.getValue().toString() != "") {
+        if (!methodType.equals("") && methodGroup.equals("")) {
+            methodList = managerFactory.getGermplasmDataManager().getMethodsByType(methodType);
+        } else if (methodType.equals("") && !methodGroup.equals("")) {
+            methodList = managerFactory.getGermplasmDataManager().getMethodsByGroupIncludesGgroup(methodGroup);
+        } else if (!methodType.equals("") && !methodGroup.equals("")) {
             methodList = managerFactory.getGermplasmDataManager().getMethodsByGroupAndType(methodGroup, methodType);
         } else {
             methodList = managerFactory.getGermplasmDataManager().getAllMethods();

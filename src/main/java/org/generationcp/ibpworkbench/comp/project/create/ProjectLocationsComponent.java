@@ -23,7 +23,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -249,7 +248,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     		 selectLocationType.addItem(String.valueOf(u.getFldno()));
     		 selectLocationType.setItemCaption(String.valueOf(u.getFldno()), u.getFname());
     	}
-	}
+    }
 
 	private Container createLocationsContainer(CropType cropType, Set<Location> selectedLocation) throws MiddlewareQueryException {
 		
@@ -258,23 +257,30 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         if (managerFactory == null) {
             return beanItemContainer;
         }
-        String locationCountryID =selectLocationCountry.getValue().toString();
-        String locationType = selectLocationType.getValue().toString();
+        
+        String locationCountryID = "";
+        if(selectLocationCountry.getValue() != null){
+            locationCountryID =selectLocationCountry.getValue().toString();
+        }
+        String locationType = "";
+        if(selectLocationType.getValue() != null){
+            locationType = selectLocationType.getValue().toString();
+        }
         Country country;
 
         long locCount = managerFactory.getGermplasmDataManager().countAllLocations();
         List<Location> locationList = null;
-        if (selectLocationCountry.getValue().toString() != "" && selectLocationType.getValue().toString() == "") {
+        if (!locationCountryID.equals("") && locationType.equals("")) {
         	country=managerFactory.getGermplasmDataManager().getCountryById(Integer.valueOf(locationCountryID));
         	locCount=(int) managerFactory.getGermplasmDataManager().countLocationsByCountry(country);
         	locationList = managerFactory.getGermplasmDataManager().getLocationsByCountry(country, 0, (int)locCount);
-        } else if (selectLocationCountry.getValue().toString() == "" && selectLocationType.getValue().toString() != "") {
+        } else if (locationCountryID.equals("") && !locationType.equals("")) {
         	locationList = managerFactory.getGermplasmDataManager().getLocationsByType(Integer.valueOf(locationType));
-        } else if (selectLocationCountry.getValue().toString() != "" && selectLocationType.getValue().toString() != "") {
+        } else if (!locationCountryID.equals("") && !locationType.equals("")) {
         	country=managerFactory.getGermplasmDataManager().getCountryById(Integer.valueOf(locationCountryID));
         	locationList = managerFactory.getGermplasmDataManager().getLocationsByCountryAndType(country, Integer.valueOf(locationType));
         } else {
-//        	locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
+        	locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
         }
 
         for (Location loc : locationList) {
