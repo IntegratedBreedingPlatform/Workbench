@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.comp.ConventionalBreedingWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.MabcWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.ManagerWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
@@ -153,6 +154,10 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
             else if (workflowName.equals("MABC")) {
                 MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(project);
                 contentWindow.showContent(mabcWorkflowDiagram);
+            }
+            else if (workflowName.equals("CB")) {
+                ConventionalBreedingWorkflowDiagram cbDiagram = new ConventionalBreedingWorkflowDiagram(project);
+                contentWindow.showContent(cbDiagram);
             }
         }
     }
