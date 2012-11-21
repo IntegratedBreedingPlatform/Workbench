@@ -11,10 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.middleware.manager.Database;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -22,25 +23,29 @@ import com.vaadin.ui.Button.ClickListener;
 /**
  * 
  * @author Jeffrey Morales
- * 
+ *
  */
-@Configurable
-public class CancelSaveBreedingMethodAction implements ClickListener {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(CancelSaveBreedingMethodAction.class);
+public class OpenSelectDatasetForBreedingViewAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
-    private AddBreedingMethodsWindow window;
-
-    public CancelSaveBreedingMethodAction(AddBreedingMethodsWindow window) {
-        this.window = window;
+    private Project currentProject;
+    private Project lastOpenedProject;
+    
+    public OpenSelectDatasetForBreedingViewAction(Project currentProject) {
+        
+        this.currentProject = currentProject;
+        
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForBreedingViewAction.class);
     
     @Override
     public void buttonClick(ClickEvent event) {
-            
-        window.getParent().removeWindow(window);
-    
-    }
         
+        System.out.println(currentProject);
+        
+        event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.CENTRAL));
+
+    }
+    
 }

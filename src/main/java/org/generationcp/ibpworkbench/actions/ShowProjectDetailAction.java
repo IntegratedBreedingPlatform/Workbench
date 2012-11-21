@@ -21,6 +21,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -43,13 +44,18 @@ public class ShowProjectDetailAction implements ItemClickListener {
 
     private Table tblRoles;
     
+    private OpenSelectDatasetForBreedingViewAction openSelectDatasetForBreedingViewAction;
+    
     private OpenWorkflowForRoleAction openWorkflowForRoleAction;
+    
+    private Button selectDatasetForBreedingViewButton;
 
-    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles) {
+    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, Button selectDatasetForBreedingViewButton) {
         this.projectDetailLabel = projectDetailLabel;
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
+        this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
     }
     
     @Override
@@ -61,6 +67,13 @@ public class ShowProjectDetailAction implements ItemClickListener {
         if (project == null) {
             return;
         }
+        
+        // update the project activity table's listener
+        if (openSelectDatasetForBreedingViewAction != null) {
+            selectDatasetForBreedingViewButton.removeListener(openSelectDatasetForBreedingViewAction);
+        }
+        openSelectDatasetForBreedingViewAction = new OpenSelectDatasetForBreedingViewAction(project);
+        selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         
         // update the project activity table's listener
         if (openWorkflowForRoleAction != null) {

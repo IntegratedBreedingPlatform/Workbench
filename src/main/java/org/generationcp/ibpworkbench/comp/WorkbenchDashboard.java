@@ -36,16 +36,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
@@ -58,7 +58,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     private Table tblProject;
     
+    private Project currentProject;
+    
     private Label lblProjectDetailTitle;
+    
+    private Button selectDatasetForBreedingViewButton;
     
     private Table tblActivity;
     
@@ -87,6 +91,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         lblProjectDetailTitle = new Label();
         lblProjectDetailTitle.setStyleName("gcp-content-title");
+        
+        selectDatasetForBreedingViewButton = new Button("Breeding View Input Window");
+        selectDatasetForBreedingViewButton.setWidth("200px");
 
         initializeProjectTable();
         initializeActivityTable();
@@ -194,7 +201,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeActions() {
-        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles));
+        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton));
     }
 
     protected void assemble() {
@@ -233,6 +240,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         verticalLayout.addComponent(lblProjectDetailTitle);
         verticalLayout.addComponent(horizontalLayout);
         
+        verticalLayout.addComponent(selectDatasetForBreedingViewButton);
+        verticalLayout.setComponentAlignment(selectDatasetForBreedingViewButton, Alignment.TOP_LEFT);
+        
         return verticalLayout;
     }
     
@@ -255,6 +265,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setColumnHeader(tblProject, "action", Message.ACTION);
         messageSource.setColumnHeader(tblProject, "status", Message.STATUS);
         messageSource.setColumnHeader(tblProject, "owner", Message.OWNER);
+        messageSource.setCaption(selectDatasetForBreedingViewButton, Message.BREEDING_VIEW_DATASET_SELECT);
         
         messageSource.setCaption(tblActivity, Message.ACTIVITIES);
         
@@ -284,5 +295,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 return role == null ? "" : messageSource.getMessage(Message.ROLE_TABLE_TOOLTIP, role.getName());
             }
         });
+    }
+
+    public Project getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject(Project currentProject) {
+        this.currentProject = currentProject;
     }
 }

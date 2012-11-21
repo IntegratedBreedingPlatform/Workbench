@@ -1,10 +1,9 @@
 package org.generationcp.ibpworkbench.comp.window;
 
-import org.generationcp.ibpworkbench.actions.CancelSaveBreedingMethodAction;
+import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
 import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 
 import com.vaadin.ui.Button;
@@ -90,7 +89,7 @@ public class AddBreedingMethodsWindow extends Window {
         
         addBreedingMethodButton.addListener(new SaveNewBreedingMethodAction(addBreedingMethodForm, this, this.projectBreedingMethodsComponent));  
         
-        cancelButton.addListener(new CancelSaveBreedingMethodAction(this));
+        cancelButton.addListener(new CancelBreedingMethodAction(this));
     }
     
 

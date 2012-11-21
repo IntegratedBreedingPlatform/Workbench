@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -25,14 +25,14 @@ import com.vaadin.ui.Button.ClickListener;
  * 
  */
 @Configurable
-public class CancelSaveLocationAction implements ClickListener {
+public class CancelBreedingMethodAction implements ClickListener {
     
-    private static final Logger LOG = LoggerFactory.getLogger(CancelSaveLocationAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CancelBreedingMethodAction.class);
     private static final long serialVersionUID = 1L;
     
-    private AddLocationsWindow window;
+    private AddBreedingMethodsWindow window;
 
-    public CancelSaveLocationAction(AddLocationsWindow window) {
+    public CancelBreedingMethodAction(AddBreedingMethodsWindow window) {
         this.window = window;
     }
     

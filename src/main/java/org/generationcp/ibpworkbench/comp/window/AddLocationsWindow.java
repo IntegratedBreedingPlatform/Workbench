@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.comp.window;
 
-import org.generationcp.ibpworkbench.actions.CancelSaveLocationAction;
+import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
@@ -87,7 +87,7 @@ public class AddLocationsWindow extends Window {
         
         addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, this.projectLocationComponent));  
         
-        cancelButton.addListener(new CancelSaveLocationAction(this));
+        cancelButton.addListener(new CancelLocationAction(this));
     }
     
 
