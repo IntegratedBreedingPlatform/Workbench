@@ -29,9 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -45,7 +47,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
-    private static final String VERSION = "1.1.1";
+    private static final String VERSION = "1.1.2";
     
     private Label workbenchTitle;
     private Button homeButton;
@@ -208,14 +210,21 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidth("100%");
         headerLayout.setHeight("100%");
-        headerLayout.setMargin(false, true, false, true);
+        headerLayout.setMargin(false, false, false, false);
         headerLayout.setSpacing(false);
+        
+        Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo.jpg"));
+        ibpLogo.setWidth("50px");
+        ibpLogo.setHeight("50px");
+        headerLayout.addComponent(ibpLogo);
+        headerLayout.setExpandRatio(ibpLogo, 0.0f);
 
         // workbench title area
         headerLayout.addComponent(workbenchTitle);
-        headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_CENTER);
+        headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_LEFT);
+        headerLayout.setExpandRatio(workbenchTitle, 1.0f);
 
-        headerLayout.addComponent(uriFragUtil);
+//        headerLayout.addComponent(uriFragUtil);
 
         // right side button area
         HorizontalLayout headerRightLayout = new HorizontalLayout();
@@ -248,6 +257,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         headerLayout.addComponent(headerRightLayout);
         headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);
+        headerLayout.setExpandRatio(headerRightLayout, 0.0f);
 
         return headerLayout;
     }
