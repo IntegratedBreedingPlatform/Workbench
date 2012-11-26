@@ -13,11 +13,11 @@ public class DatabaseOptionAction implements ValueChangeListener{
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseOptionAction.class);
     private static final long serialVersionUID = -5091664285613837786L;
 
-    private SelectDatasetForBreedingViewWindow source;
+    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
 
-    public DatabaseOptionAction(SelectDatasetForBreedingViewWindow source) {
+    public DatabaseOptionAction(SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
         
-        this.source = source;
+        this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
 
     }
 
@@ -25,12 +25,15 @@ public class DatabaseOptionAction implements ValueChangeListener{
     public void valueChange(ValueChangeEvent event) {
 
             if (event.getProperty().getValue() == Database.CENTRAL) {
-                source.refreshStudyTreeTable(Database.CENTRAL);    
+                selectDatasetForBreedingViewWindow.refreshStudyTreeTable(Database.CENTRAL);   
+                
             } else {
-                source.refreshStudyTreeTable(Database.LOCAL);
+                selectDatasetForBreedingViewWindow.refreshStudyTreeTable(Database.LOCAL);
             }
             
-            
+            selectDatasetForBreedingViewWindow.setCurrentStudy(null);
+            selectDatasetForBreedingViewWindow.setCurrentRepresentationId(null);
+            selectDatasetForBreedingViewWindow.setCurrentDatasetName(null);
             
     }
 }

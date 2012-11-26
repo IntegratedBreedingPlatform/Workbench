@@ -21,6 +21,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -92,7 +93,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblProjectDetailTitle = new Label();
         lblProjectDetailTitle.setStyleName("gcp-content-title");
         
-        selectDatasetForBreedingViewButton = new Button("Breeding View Input Window");
+        selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
         selectDatasetForBreedingViewButton.setWidth("200px");
 
         initializeProjectTable();
@@ -201,7 +202,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeActions() {
-        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton));
+        
+        OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
+        
+        selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
+        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction));
+
     }
 
     protected void assemble() {

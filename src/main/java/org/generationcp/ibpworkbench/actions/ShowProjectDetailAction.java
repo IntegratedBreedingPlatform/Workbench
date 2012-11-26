@@ -44,18 +44,20 @@ public class ShowProjectDetailAction implements ItemClickListener {
 
     private Table tblRoles;
     
-    private OpenSelectDatasetForBreedingViewAction openSelectDatasetForBreedingViewAction;
+    private OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction;
     
     private OpenWorkflowForRoleAction openWorkflowForRoleAction;
     
     private Button selectDatasetForBreedingViewButton;
 
-    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, Button selectDatasetForBreedingViewButton) {
+    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, 
+            Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction) {
         this.projectDetailLabel = projectDetailLabel;
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
+        this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
     }
     
     @Override
@@ -72,7 +74,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
         if (openSelectDatasetForBreedingViewAction != null) {
             selectDatasetForBreedingViewButton.removeListener(openSelectDatasetForBreedingViewAction);
         }
-        openSelectDatasetForBreedingViewAction = new OpenSelectDatasetForBreedingViewAction(project);
+        openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(project);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         
         // update the project activity table's listener

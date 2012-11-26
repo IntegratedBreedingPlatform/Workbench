@@ -15,7 +15,6 @@ import java.util.Arrays;
 
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
-import org.generationcp.middleware.pojos.Location;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;

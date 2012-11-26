@@ -11,18 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.User;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;

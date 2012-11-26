@@ -18,7 +18,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
