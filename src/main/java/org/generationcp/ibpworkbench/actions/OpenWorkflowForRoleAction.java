@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -212,9 +213,17 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         }
         
         // get web tools
-        List<Tool> webTools = null;
+        List<Tool> webTools = new ArrayList<Tool>();
         try {
-            webTools = workbenchDataManager.getToolsWithType(ToolType.WEB);
+            List<Tool> webTools1 = workbenchDataManager.getToolsWithType(ToolType.WEB);
+            List<Tool> webTools2 = workbenchDataManager.getToolsWithType(ToolType.WEB_WITH_LOGIN);
+            
+            if (webTools1 != null) {
+                webTools.addAll(webTools1);
+            }
+            if (webTools2 != null) {
+                webTools.addAll(webTools2);
+            }
         }
         catch (MiddlewareQueryException e2) {
             LOG.error("QueryException", e2);
