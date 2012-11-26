@@ -1,5 +1,9 @@
 @import url(../reindeer/styles.css);
 
+.v-panel-content-gcp-login > div {
+    background-image: url(images/login.png);
+}
+
 .gcp-window-title {
     font-weight: bold;
     font-size: 24px;
