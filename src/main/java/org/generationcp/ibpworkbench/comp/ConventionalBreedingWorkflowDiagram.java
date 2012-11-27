@@ -406,7 +406,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     @Override
     public void updateLabels() {
         if (workflowPreview) {
-            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+            messageSource.setValue(dashboardTitle, Message.WORKFLOW_PREVIEW_TITLE, "Conventional Breeding");
         } else { 
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }

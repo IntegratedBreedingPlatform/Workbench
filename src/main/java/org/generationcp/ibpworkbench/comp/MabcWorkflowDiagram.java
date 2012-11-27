@@ -451,7 +451,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     @Override
     public void updateLabels() {
         if (workflowPreview) {
-            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+            messageSource.setValue(dashboardTitle, Message.WORKFLOW_PREVIEW_TITLE, "MABC");
         } else {
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }

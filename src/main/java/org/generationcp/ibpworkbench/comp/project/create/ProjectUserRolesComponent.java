@@ -40,7 +40,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * The second tab (My Roles) in Create Project Accordion Component.
+ * The second tab (Breeding Workflows) in Create Project Accordion Component.
  *
  * @author Joyce Avestro
  */
@@ -101,10 +101,21 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
         for (CheckBox checkBox : userRoleCheckBoxList) {
             if (checkBox.getCaption().equals(MANAGER_ROLE_LABEL)) {
+                //add some space before the Manager role option
                 Label emptyLabel2 = new Label(" ");
                 emptyLabel2.setWidth("100%");
                 emptyLabel2.setHeight("10px");
                 rolesLayout.addComponent(emptyLabel2);
+                
+                Label emptyLabel3 = new Label(" ");
+                emptyLabel3.setWidth("100%");
+                emptyLabel3.setHeight("10px");
+                rolesLayout.addComponent(emptyLabel3);
+                
+                Label emptyLabel4 = new Label(" ");
+                emptyLabel4.setWidth("100%");
+                emptyLabel4.setHeight("10px");
+                rolesLayout.addComponent(emptyLabel4);
             }
             
             HorizontalLayout checkboxButtonLayout = new HorizontalLayout();

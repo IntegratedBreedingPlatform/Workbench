@@ -36,6 +36,7 @@ public enum Message {
     ,USER_GUIDE_1
     ,USERNAME
     ,WORKBENCH_TITLE
+    ,WORKFLOW_PREVIEW_TITLE
     
     // Workbench Dashboard Window
     ,TOOL_NAME

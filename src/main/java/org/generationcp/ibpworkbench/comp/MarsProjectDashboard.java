@@ -593,7 +593,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     @Override
     public void updateLabels() {
         if (workflowPreview) {
-            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+            messageSource.setValue(dashboardTitle, Message.WORKFLOW_PREVIEW_TITLE, "MARS");
         } else {
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
