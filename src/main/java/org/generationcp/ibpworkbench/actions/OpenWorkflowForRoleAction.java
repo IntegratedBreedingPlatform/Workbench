@@ -141,23 +141,23 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName != null){
             if (workflowName.equals("MARS")) {
-                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(project);
+                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(false, project);
                 contentWindow.showContent(projectDashboard);
             }
             else if (workflowName.equals("MAS")) {
-                MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(project);
+                MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(false, project);
                 contentWindow.showContent(masWorkflowDiagram);
             }
             else if (workflowName.equals("Manager")) {
-                ManagerWorkflowDiagram projectDashboard = new ManagerWorkflowDiagram(project);
+                ManagerWorkflowDiagram projectDashboard = new ManagerWorkflowDiagram(false, project);
                 contentWindow.showContent(projectDashboard);
             }
             else if (workflowName.equals("MABC")) {
-                MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(project);
+                MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(false, project);
                 contentWindow.showContent(mabcWorkflowDiagram);
             }
             else if (workflowName.equals("CB")) {
-                ConventionalBreedingWorkflowDiagram cbDiagram = new ConventionalBreedingWorkflowDiagram(project);
+                ConventionalBreedingWorkflowDiagram cbDiagram = new ConventionalBreedingWorkflowDiagram(false, project);
                 contentWindow.showContent(cbDiagram);
             }
         }

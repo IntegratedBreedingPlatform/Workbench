@@ -48,6 +48,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     
+    private boolean workflowPreview;
+    
     private Project project;
 
     private Label dashboardTitle;
@@ -75,8 +77,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public ConventionalBreedingWorkflowDiagram(Project project) {
-        this.project = project;
+    public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project) {
+        this.workflowPreview = workflowPreview;
+        
+        if (!workflowPreview) {
+            this.project = project;
+        }
     }
     
     @Override
@@ -374,13 +380,15 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     }
     
     protected void initializeActions() {
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-        fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        if (!workflowPreview) {
+            browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        }
     }
 
     protected void assemble() {
@@ -397,6 +405,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        if (workflowPreview) {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+        } else { 
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        }
     }
 }

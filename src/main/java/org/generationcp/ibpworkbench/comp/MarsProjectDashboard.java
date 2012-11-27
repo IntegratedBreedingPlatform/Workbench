@@ -39,6 +39,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private static final long serialVersionUID = 1L;
     
     private static final String DOWN_ARROW_THEME_RESOURCE = "images/blc-arrow-d.png";
+    
+    private boolean workflowPreview;
 
     private Project project;
 
@@ -87,10 +89,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-
-    public MarsProjectDashboard(Project project) {
-        super();
-        this.project = project;
+    
+    public MarsProjectDashboard(boolean workflowPreview, Project project) {
+    	this.workflowPreview = workflowPreview;
+    	
+        if (!workflowPreview) {
+            this.project = project;
+        }
     }
     
     @Override
@@ -554,20 +559,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected void initializeActions() {
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+        if (!workflowPreview) {
+            browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
 
-        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 
-        fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
 
-        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
-        phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-        qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+        }
     }
 
     protected void assemble() {
@@ -585,7 +592,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        if (workflowPreview) {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+        } else {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        }
         
         // titles
         messageSource.setValue(projectPlanningTitle, Message.PROJECT_PLANNING);

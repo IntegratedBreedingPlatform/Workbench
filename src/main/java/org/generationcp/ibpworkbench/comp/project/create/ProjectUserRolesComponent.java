@@ -18,6 +18,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowPreviewAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
@@ -30,11 +31,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * The second tab (My Roles) in Create Project Accordion Component.
@@ -46,6 +49,12 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectUserRolesComponent.class);
     private static final long serialVersionUID = 1L;
+    
+    private static final String MANAGER_ROLE_LABEL = "Access all tools with a menu interface (MENU)";
+    private static final String MARS_ROLE_LABEL = "Marker assisted recurrent selection (MARS)";
+    private static final String MAS_ROLE_LABEL = "Breeding with marker assisted selection (MAS)";
+    private static final String MABC_ROLE_LABEL = "Marker assisted backcrossing (MABC)";
+    private static final String CB_ROLE_LABEL = "Conventional breeding (CB)";
 
     private CreateProjectPanel createProjectPanel;
 
@@ -80,9 +89,35 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
         userRoleCheckBoxList = createUserRolesCheckBoxList();
         VerticalLayout rolesLayout = new VerticalLayout();
+        
+        Label instruction = new Label();
+        instruction.setCaption("Identify the workflow(s) you want to use for this project:");
+        rolesLayout.addComponent(instruction);
+        
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        rolesLayout.addComponent(emptyLabel);
 
         for (CheckBox checkBox : userRoleCheckBoxList) {
-            rolesLayout.addComponent(checkBox);
+            if (checkBox.getCaption().equals(MANAGER_ROLE_LABEL)) {
+                Label emptyLabel2 = new Label(" ");
+                emptyLabel2.setWidth("100%");
+                emptyLabel2.setHeight("10px");
+                rolesLayout.addComponent(emptyLabel2);
+            }
+            
+            HorizontalLayout checkboxButtonLayout = new HorizontalLayout();
+            checkboxButtonLayout.setSpacing(true);
+            
+            Button showButton = new Button("Show");
+            showButton.setStyleName(Reindeer.BUTTON_SMALL);
+            showButton.addListener(new OpenWorkflowPreviewAction());
+            showButton.setData(checkBox.getData());
+            
+            checkboxButtonLayout.addComponent(checkBox);
+            checkboxButtonLayout.addComponent(showButton);
+            rolesLayout.addComponent(checkboxButtonLayout);
         }
 
         addComponent(rolesLayout);
@@ -122,7 +157,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         List<Role> roles = null;
         List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
         try {
-            roles = workbenchDataManager.getAllRoles();
+            roles = workbenchDataManager.getAllRolesDesc();
         } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting roles", e);
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -131,8 +166,18 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         for (Role role : roles) {
             CheckBox cb = new CheckBox(role.getName());
             cb.setData(role.getRoleId());
-            if (role.getRoleId().equals(Role.MANAGER_ROLE_ID)) {
+            if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
+                cb.setCaption(MANAGER_ROLE_LABEL);
+                //set default checked value
                 cb.setValue(true);
+            } else if (role.getName().equals(Role.MARS_ROLE_NAME)) {
+                cb.setCaption(MARS_ROLE_LABEL);
+            } else if (role.getName().equals(Role.MAS_ROLE_NAME)) {
+                cb.setCaption(MAS_ROLE_LABEL);
+            } else if (role.getName().equals(Role.MABC_ROLE_NAME)) {
+                cb.setCaption(MABC_ROLE_LABEL);
+            } else if (role.getName().equals(Role.CB_ROLE_NAME)) {
+                cb.setCaption(CB_ROLE_LABEL);
             }
             rolesCheckBoxList.add(cb);
 

@@ -49,6 +49,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     private static final String TWO_HEADED_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-lr.png";
     
+    private boolean workflowPreview;
+    
     private Project project;
 
     private Label dashboardTitle;
@@ -80,8 +82,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public MasWorkflowDiagram(Project project) {
-        this.project = project;
+    public MasWorkflowDiagram(boolean workflowPreview, Project project) {
+        this.workflowPreview = workflowPreview;
+        
+        if (!workflowPreview) {
+            this.project = project;
+        }
     }
     
     @Override
@@ -429,14 +435,16 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     }
     
     protected void initializeActions() {
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-        breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-        fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        if (!workflowPreview) {
+            browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        }
     }
 
     protected void assemble() {
@@ -453,6 +461,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        if (workflowPreview) {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+        } else {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        }
     }
 }

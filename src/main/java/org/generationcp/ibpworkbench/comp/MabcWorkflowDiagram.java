@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench.comp;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
@@ -50,6 +49,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     private static final String TWO_HEADED_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-lr.png";
     
+    private boolean workflowPreview;
+    
     private Project project;
 
     private Label dashboardTitle;
@@ -80,8 +81,12 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public MabcWorkflowDiagram(Project project) {
-        this.project = project;
+    public MabcWorkflowDiagram(boolean workflowPreview, Project project) {
+        this.workflowPreview = workflowPreview;
+        
+        if (!workflowPreview) {
+            this.project = project;
+        }
     }
     
     @Override
@@ -420,13 +425,15 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     }
     
     protected void initializeActions() {
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-        fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        if (!workflowPreview) {
+            browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+        }
     }
 
     protected void assemble() {
@@ -443,6 +450,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements InitializingB
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        if (workflowPreview) {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+        } else {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        }
     }
 }

@@ -41,6 +41,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
+    private boolean workflowPreview;
+    
     private Project project;
 
     private Label dashboardTitle;
@@ -65,8 +67,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public ManagerWorkflowDiagram(Project project) {
-        this.project = project;
+    public ManagerWorkflowDiagram(boolean workflowPreview, Project project) {
+        this.workflowPreview = workflowPreview;
+        
+        if (!workflowPreview) {
+            this.project = project;
+        }
     }
     
     @Override
@@ -389,14 +395,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
     }
     
     protected void initializeActions() {
-        browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
-        browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-        browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-        gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-        breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-        fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-        optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-        nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+        if (!workflowPreview) {
+            browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
+            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+            nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+        }
     }
 
     protected void assemble() {
@@ -413,6 +421,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
     
     @Override
     public void updateLabels() {
-        messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        if (workflowPreview) {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, "WORKFLOW PREVIEW");
+        } else {
+            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
+        }
     }
 }
