@@ -223,7 +223,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_LEFT);
         headerLayout.setExpandRatio(workbenchTitle, 1.0f);
 
-//        headerLayout.addComponent(uriFragUtil);
+        headerLayout.addComponent(uriFragUtil);
 
         // right side button area
         HorizontalLayout headerRightLayout = new HorizontalLayout();
