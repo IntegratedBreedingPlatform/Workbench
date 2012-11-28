@@ -89,10 +89,22 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             try {
                 
                 //TODO make relative where workbench is installed
-                String filePath = FilenameUtils.separatorsToWindows(System.getProperty("user.home") + File.separator + "Desktop" 
-                        + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls");
+                String directoryPath = FilenameUtils.separatorsToWindows(System.getenv("ProgramFiles(x86)") + "\\IBWorkflowSystem\\tools\\breeding_view\\input\\");
                 
-                datasetExporter.exportToFieldBookExcel(filePath);
+                File file = new File(directoryPath);
+                if(file.exists()){
+                    System.out.println("File Exists");
+                }else{
+                    boolean wasDirectoryMade = file.mkdirs();
+                    if(wasDirectoryMade)
+                        LOG.info("Directory Created");
+                    else 
+                        LOG.info("Sorry could not create directory");
+                }
+                
+                String fileName = directoryPath + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
+                
+                datasetExporter.exportToFieldBookExcel(fileName);
                 
             } catch (DatasetExporterException e) {
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
