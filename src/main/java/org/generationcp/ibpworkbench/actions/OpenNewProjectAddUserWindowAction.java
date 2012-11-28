@@ -13,8 +13,6 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.comp.window.NewProjectAddUserWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -22,8 +20,6 @@ import com.vaadin.ui.TwinColSelect;
 
 public class OpenNewProjectAddUserWindowAction implements ClickListener{
     
-    private static final Logger LOG = LoggerFactory.getLogger(OpenAddLocationWindowAction.class);
-
     private static final long serialVersionUID = 1L;
     
     private TwinColSelect membersSelect;
