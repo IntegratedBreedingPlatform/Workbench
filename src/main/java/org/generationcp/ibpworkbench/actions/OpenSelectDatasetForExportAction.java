@@ -13,16 +13,20 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 
-import org.apache.commons.io.FilenameUtils;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
+import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.TraitDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +45,18 @@ import com.vaadin.ui.Window.Notification;
 public class OpenSelectDatasetForExportAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
+    private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
+    
     private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow; 
     
     @Autowired 
-    ManagerFactoryProvider managerFactoryProvider;
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private ToolUtil toolUtil;
     
     public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
         
@@ -52,8 +64,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
-    
     @Override
     public void buttonClick(ClickEvent event) {
         
@@ -87,26 +97,17 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                     selectDatasetForBreedingViewWindow.getCurrentRepresentationId());
             
             try {
+                Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+                String inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
                 
-                //TODO make relative where workbench is installed
-                String directoryPath = FilenameUtils.separatorsToWindows(System.getenv("ProgramFiles(x86)") + "\\IBWorkflowSystem\\tools\\breeding_view\\input\\");
-                
-                File file = new File(directoryPath);
-                if(file.exists()){
-                    System.out.println("File Exists");
-                }else{
-                    boolean wasDirectoryMade = file.mkdirs();
-                    if(wasDirectoryMade)
-                        LOG.info("Directory Created");
-                    else 
-                        LOG.info("Sorry could not create directory");
-                }
-                
-                String fileName = directoryPath + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
+                String fileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
                 
                 datasetExporter.exportToFieldBookExcel(fileName);
                 
             } catch (DatasetExporterException e) {
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+            }
+            catch (MiddlewareQueryException e) {
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
             }
             
@@ -117,5 +118,4 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         }
 
     }
-    
 }

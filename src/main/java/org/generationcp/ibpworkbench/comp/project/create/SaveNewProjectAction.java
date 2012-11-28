@@ -25,6 +25,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -63,6 +64,9 @@ public class SaveNewProjectAction implements ClickListener{
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private ToolUtil toolUtil;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -95,6 +99,8 @@ public class SaveNewProjectAction implements ClickListener{
                 project.setLastOpenDate(null);
                 projectSaved = workbenchDataManager.saveOrUpdateProject(project);
 
+                // create the project's workspace directories
+                toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
             } catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage());
             }
@@ -297,5 +303,4 @@ public class SaveNewProjectAction implements ClickListener{
         return dateNowInt;
 
     }
-
 }

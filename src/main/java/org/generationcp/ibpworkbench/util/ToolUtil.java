@@ -16,14 +16,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.poi.util.IOUtils;
 import org.generationcp.commons.util.Util;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class ToolUtil {
     private String jdbcHost;
     private Long jdbcPort;
@@ -31,6 +38,11 @@ public class ToolUtil {
     private String centralPassword;
     private String localUser;
     private String localPassword;
+    
+    private String workspaceDirectory = "workspace";
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
     
     public String getJdbcHost() {
         return jdbcHost;
@@ -78,6 +90,14 @@ public class ToolUtil {
 
     public void setLocalPassword(String localPassword) {
         this.localPassword = localPassword;
+    }
+
+    public String getWorkspaceDirectory() {
+        return workspaceDirectory;
+    }
+
+    public void setWorkspaceDirectory(String workspaceDirectory) {
+        this.workspaceDirectory = workspaceDirectory;
     }
 
     /**
@@ -267,5 +287,58 @@ public class ToolUtil {
                 }
             }
         }
+    }
+    
+    public void createWorkspaceDirectoriesForProject(Project project) throws MiddlewareQueryException {
+        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+        if (workbenchSetting == null) return;
+        
+        String installationDirectory = workbenchSetting.getInstallationDirectory();
+        
+        // create the directory for the project
+        String projectDirName = String.format("%d-%s", project.getProjectId(), project.getProjectName());
+        File projectDir = new File(installationDirectory + File.separator + workspaceDirectory, projectDirName);
+        projectDir.mkdirs();
+        
+        // create the directory for each tool
+        List<Tool> toolList = workbenchDataManager.getAllTools();
+        for (Tool tool : toolList) {
+            File toolDir = new File(projectDir, tool.getToolName());
+            toolDir.mkdirs();
+            
+            // create the input and output directories
+            new File(toolDir, "input").mkdirs();
+            new File(toolDir, "output").mkdirs();
+        }
+    }
+    
+    public String getInputDirectoryForTool(Project project, Tool tool) throws MiddlewareQueryException {
+        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+        if (workbenchSetting == null) {
+            throw new IllegalStateException("Workbench Setting record was not found!");
+        }
+        
+        String projectDirName = String.format("%d-%s", project.getProjectId(), project.getProjectName());
+        
+        String installationDirectory = workbenchSetting.getInstallationDirectory();
+        File projectDir = new File(installationDirectory + File.separator + workspaceDirectory, projectDirName);
+        File toolDir = new File(projectDir, tool.getToolName());
+        
+        return new File(toolDir, "input").getAbsolutePath();
+    }
+    
+    public String getOutputDirectoryForTool(Project project, Tool tool) throws MiddlewareQueryException {
+        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+        if (workbenchSetting == null) {
+            throw new IllegalStateException("Workbench Setting record was not found!");
+        }
+        
+        String projectDirName = String.format("%d-%s", project.getProjectId(), project.getProjectName());
+        
+        String installationDirectory = workbenchSetting.getInstallationDirectory();
+        File projectDir = new File(installationDirectory + File.separator + workspaceDirectory, projectDirName);
+        File toolDir = new File(projectDir, tool.getToolName());
+        
+        return new File(toolDir, "input").getAbsolutePath();
     }
 }
