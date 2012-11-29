@@ -50,12 +50,6 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
     private static final Logger LOG = LoggerFactory.getLogger(ProjectUserRolesComponent.class);
     private static final long serialVersionUID = 1L;
     
-    private static final String MANAGER_ROLE_LABEL = "Access all tools with a menu interface (MENU)";
-    private static final String MARS_ROLE_LABEL = "Marker assisted recurrent selection (MARS)";
-    private static final String MAS_ROLE_LABEL = "Breeding with marker assisted selection (MAS)";
-    private static final String MABC_ROLE_LABEL = "Marker assisted backcrossing (MABC)";
-    private static final String CB_ROLE_LABEL = "Conventional breeding (CB)";
-
     private CreateProjectPanel createProjectPanel;
 
     private List<CheckBox> userRoleCheckBoxList;
@@ -100,7 +94,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         rolesLayout.addComponent(emptyLabel);
 
         for (CheckBox checkBox : userRoleCheckBoxList) {
-            if (checkBox.getCaption().equals(MANAGER_ROLE_LABEL)) {
+            if (checkBox.getCaption().contains(Role.MANAGER_ROLE_NAME)) {
                 //add some space before the Manager role option
                 Label emptyLabel2 = new Label(" ");
                 emptyLabel2.setWidth("100%");
@@ -178,18 +172,10 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
             CheckBox cb = new CheckBox(role.getName());
             cb.setData(role.getRoleId());
             if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
-                cb.setCaption(MANAGER_ROLE_LABEL);
                 //set default checked value
                 cb.setValue(true);
-            } else if (role.getName().equals(Role.MARS_ROLE_NAME)) {
-                cb.setCaption(MARS_ROLE_LABEL);
-            } else if (role.getName().equals(Role.MAS_ROLE_NAME)) {
-                cb.setCaption(MAS_ROLE_LABEL);
-            } else if (role.getName().equals(Role.MABC_ROLE_NAME)) {
-                cb.setCaption(MABC_ROLE_LABEL);
-            } else if (role.getName().equals(Role.CB_ROLE_NAME)) {
-                cb.setCaption(CB_ROLE_LABEL);
             }
+            cb.setCaption(role.getLabel());
             rolesCheckBoxList.add(cb);
 
         }

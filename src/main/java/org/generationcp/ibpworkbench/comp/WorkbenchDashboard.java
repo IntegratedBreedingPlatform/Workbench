@@ -147,7 +147,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         container.setBeanIdProperty("roleId");
         tblRoles.setContainerDataSource(container);
         
-        String[] columns = new String[] {"name"};
+        String[] columns = new String[] {"label"};
         tblRoles.setVisibleColumns(columns);
     }
 
@@ -275,6 +275,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         messageSource.setCaption(tblActivity, Message.ACTIVITIES);
         
+        messageSource.setColumnHeader(tblRoles, "label", Message.NAME);
         messageSource.setCaption(tblRoles, Message.ROLE_TABLE_TITLE);
         
         tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
@@ -298,7 +299,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 BeanItem<Role> item = (BeanItem<Role>) container.getItem(itemId);
                 Role role = item.getBean();
                 
-                return role == null ? "" : messageSource.getMessage(Message.ROLE_TABLE_TOOLTIP, role.getName());
+                return role == null ? "" : messageSource.getMessage(Message.ROLE_TABLE_TOOLTIP, role.getLabel());
             }
         });
     }

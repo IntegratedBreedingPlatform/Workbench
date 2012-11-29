@@ -29,6 +29,7 @@ public enum Message {
     ,DATE
     ,DATE_DUE
     ,OWNER
+    ,NAME
     ,STATUS
     ,RECENT
     ,SIGNOUT
