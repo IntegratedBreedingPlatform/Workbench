@@ -170,16 +170,18 @@ public class SaveNewProjectAction implements ClickListener{
                     // Ideally, the methods and locations will be saved automatically when we save a project.
                     // However, we need to fix the Project POJOs mapping in order to do that
 
-                    Set<Method> methods = project.getMethods();
-                    if ((methods != null) && (!methods.isEmpty())) {
-                        saveProjectMethods(methods, projectSaved);
-                    }
+                    // FOR FOURTH TAB: SELECT BREEDING METHODS
+//                    Set<Method> methods = project.getMethods();
+//                    if ((methods != null) && (!methods.isEmpty())) {
+//                        saveProjectMethods(methods, projectSaved);
+//                    }
 
-                    //add a project location to workbench
-                    Set<Location> locations = project.getLocations();
-                    if ((locations != null) && (!locations.isEmpty())) {
-                        saveProjectLocation(locations, projectSaved);
-                    }
+                    // FOR FIFTH TAB: SELECT LOCATION
+//                    //add a project location to workbench
+//                    Set<Location> locations = project.getLocations();
+//                    if ((locations != null) && (!locations.isEmpty())) {
+//                        saveProjectLocation(locations, projectSaved);
+//                    }
 
                 } catch (MiddlewareQueryException e) {
                     LOG.error(e.getMessage(), e);

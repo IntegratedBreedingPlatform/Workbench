@@ -257,7 +257,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
                     projectUserRole.setRole(role);
                     projectUserRoles.add(projectUserRole);
                 } catch (MiddlewareQueryException e) {
-                  LOG.error("Error encountered while saving project user roles", e);
+                  LOG.error("Error encountered while getting project user roles", e);
                   throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
                 }
             }
@@ -265,5 +265,24 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         return projectUserRoles;
 
     }
+    
+    public List<Role> getRolesForProjectMembers(){
+        List<Role> roles = new ArrayList<Role>();
+
+        for (CheckBox cb : userRoleCheckBoxList) {
+            if ((Boolean) cb.getValue() == true) {
+                try {
+                    Role role = workbenchDataManager.getRoleById((Integer) cb.getData());
+                    if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
+                        roles.add(role);
+                    }
+                } catch (MiddlewareQueryException e) {
+                  LOG.error("Error encountered while getting creator user roles", e);
+                  throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                }
+            }
+        }
+        return roles;
+}
 
 }

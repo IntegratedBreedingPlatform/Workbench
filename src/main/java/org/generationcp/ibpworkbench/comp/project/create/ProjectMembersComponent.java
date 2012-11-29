@@ -28,6 +28,7 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -75,7 +76,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     private Table tblMembers;
     
     private Button previousButton;
-    private Button nextButton;
+//    private Button nextButton;
     private Component buttonArea;
 
     @Autowired
@@ -127,16 +128,29 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         tblMembers = new Table();
         tblMembers.setImmediate(true);
         
-        List<Role> roleList = null;
+        List<Role> inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
+        
+        List<Role> roleList = new ArrayList<Role>();
         try {
-            roleList = workbenchDataManager.getAllRoles();
-            List<Role> rolesToRemove = new ArrayList<Role>();
-            for (Role role : roleList){
-                if (role.getName().contains("Manager")){
-                    rolesToRemove.add(role);
-                }
-            }
-            roleList.removeAll(rolesToRemove);
+            
+            // Add the roles in this order: CB, MAS, MABC, MARS
+            roleList.add (
+                    workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.CB_ROLE_NAME, 
+                            workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.CB_NAME).get(0))
+                    );
+            roleList.add (
+                    workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MAS_ROLE_NAME, 
+                            workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MAS_NAME).get(0))
+                    );
+            roleList.add (
+                    workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MABC_ROLE_NAME, 
+                            workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MABC_NAME).get(0))
+                    );
+            roleList.add (
+                    workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MARS_ROLE_NAME, 
+                            workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MARS_NAME).get(0))
+                    );
+            
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting workbench roles", e);
@@ -156,8 +170,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         for (Role role : roleList) {
             columnIds.add("role_" + role.getRoleId());
             columnHeaders.add(role.getName());
-            
-            container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
+            if (inheritedRoles.contains(role)){
+                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
+            } else {
+                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
+            }
         }
         tblMembers.setContainerDataSource(container);
         
@@ -207,7 +224,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         
         previousButton.addListener(new PreviousButtonClickListener());
-        nextButton.addListener(new NextButtonClickListener());
+//        nextButton.addListener(new NextButtonClickListener());
         
         select.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
@@ -251,10 +268,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
         newMemberButton = new Button("Add New Member");
         previousButton = new Button("Previous");
-        nextButton = new Button("Next");
+//        nextButton = new Button("Next");
         buttonLayout.addComponent(newMemberButton);
         buttonLayout.addComponent(previousButton);
-        buttonLayout.addComponent(nextButton);
+//        buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }
     
@@ -311,14 +328,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         }
     }
     
-    private class NextButtonClickListener implements ClickListener{
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
-        }
-    }
+//    private class NextButtonClickListener implements ClickListener{
+//        private static final long serialVersionUID = 1L;
+//
+//        @Override
+//        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+//            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
+//        }
+//    }
    
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
