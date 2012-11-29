@@ -235,7 +235,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         //        layoutLocations.setData(FIFTH_TAB_LOCATIONS);
 
         this.addTab(layoutBasicDetails, messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
-        this.addTab(layoutUserRoles, messageSource.getMessage(Message.USER_ROLES_LABEL));
+        this.addTab(layoutUserRoles, messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL));
         this.addTab(layoutProjectMembers, messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL));
         //        this.addTab(layoutBreedingMethods, messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
         //        this.addTab(layoutLocations, messageSource.getMessage(Message.LOCATIONS_LABEL));

@@ -29,6 +29,7 @@ import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -273,6 +274,9 @@ public class SaveNewProjectAction implements ClickListener{
     }
 
     private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+        
+        UserDataManager userDataManager = managerFactory.getUserDataManager();
+        
         for (ProjectUserRole projectUserRole : projectUserRoles){
             
             // Save role
@@ -281,18 +285,36 @@ public class SaveNewProjectAction implements ClickListener{
 
             // Save User to local db
             User workbenchUser = workbenchDataManager.getUserById(projectUserRole.getUserId());
+            User localUser =  workbenchUser.copy();
             
             Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
             Person localPerson = currentPerson.copy();
-            managerFactory.getUserDataManager().addPerson(localPerson);
-           
-            User localUser =  workbenchUser.copy();
-            localUser.setPersonid(localPerson.getId());
-            localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-            localUser.setType(PROJECT_USER_TYPE);
-            localUser.setAdate(getCurrentDate());
             
-            managerFactory.getUserDataManager().addUser(localUser);
+            // Check if the Person record already exists
+            if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())){
+                userDataManager.addPerson(localPerson);
+            } else {
+                // set localPerson to the existing person
+                List<Person> persons = userDataManager.getAllPersons();
+                for (Person person : persons){
+                    if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) && 
+                            person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
+                        localPerson = person;
+                        break;
+                    }
+                }
+            }
+            
+            // If the selected member does not exist yet in the local database, then add
+            if (!userDataManager.isUsernameExists(localUser.getName())){
+                localUser.setPersonid(localPerson.getId());
+                localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+                localUser.setType(PROJECT_USER_TYPE);
+                localUser.setAdate(getCurrentDate());
+                userDataManager.addUser(localUser);
+            }
+
+            
 
         }
     }

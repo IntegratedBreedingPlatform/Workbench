@@ -114,7 +114,7 @@ public enum Message {
     
     // Create new project
     ,BASIC_DETAILS_LABEL
-    ,USER_ROLES_LABEL
+    ,BREEDING_WORKFLOWS_LABEL
     ,PROJECT_MEMBERS_LABEL
     ,BREEDING_METHODS_LABEL
     ,LOCATIONS_LABEL

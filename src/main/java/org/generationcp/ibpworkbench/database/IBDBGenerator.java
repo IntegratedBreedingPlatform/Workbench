@@ -39,7 +39,6 @@ public class IBDBGenerator{
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
     private static final String WORKBENCH_PROP = "workbench.properties";
     
-    private static final String WORKBENCH_GDMS_USER_SQL = "IBDBv1_GDMS_User.sql";
     private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
     private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
     private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
@@ -210,7 +209,6 @@ public class IBDBGenerator{
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_USER_SQL).toURI()));
             
             LOG.info("IB Local Database Generation Successful");
 
