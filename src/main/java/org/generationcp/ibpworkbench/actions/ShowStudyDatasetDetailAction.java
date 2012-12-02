@@ -1,12 +1,15 @@
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -29,7 +32,7 @@ import com.vaadin.ui.Window;
 @Configurable
 public class ShowStudyDatasetDetailAction implements ItemClickListener {
     private static final long serialVersionUID = 1L;
-
+    
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
@@ -72,7 +75,51 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
             StudyDataManager studyDataManager = managerFactoryProvider.getManagerFactoryForProject(selectDatasetForBreedingViewWindow.getCurrentProject()).getStudyDataManager();
             List<Representation> datasetList = studyDataManager.getRepresentationByStudyID(study.getId());
             
-            updateDatasetTable(datasetList, tblFactors, tblVariates);
+            Iterator<Representation> datasetIterator = datasetList.iterator();
+            
+            List<RepresentationModel> refinedDatasetList = new ArrayList<RepresentationModel>();
+            
+            Representation representation;
+            
+            RepresentationModel representationModel;
+            
+            String userFriendlyName;
+            
+            while (datasetIterator.hasNext()) {
+                
+                representation = datasetIterator.next();
+                
+                userFriendlyName = messageSource.getMessage(Message.DATASET_OF_TEXT) + "_" + representation.getId();
+                
+                if (representation.getName() != null && !representation.getName().equals("")) {
+                    
+                    if (!representation.getName().equals(messageSource.getMessage(Message.STUDY_EFFECT))) {
+                        
+                        userFriendlyName = userFriendlyName + "_" + representation.getName();
+                        
+                        representationModel = new RepresentationModel(representation.getId()
+                                , representation.getEffectId()
+                                , representation.getName()
+                                , userFriendlyName); 
+                        
+                        refinedDatasetList.add(representationModel);
+                        
+                    }
+                            
+                } else {
+                
+                    representationModel = new RepresentationModel(representation.getId()
+                            , representation.getEffectId()
+                            , representation.getName()
+                            , userFriendlyName); 
+                    
+                    refinedDatasetList.add(representationModel);
+                
+                }
+                
+            }
+            
+            updateDatasetTable(refinedDatasetList, tblFactors, tblVariates);
 
         }
         catch (MiddlewareQueryException e) {
@@ -80,16 +127,16 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         }
     }
     
-    private void updateDatasetTable(List<Representation> datasetList, Table tblFactors, Table tblVariates) {
+    private void updateDatasetTable(List<RepresentationModel> datasetList, Table tblFactors, Table tblVariates) {
         Object[] oldColumns = tblDataset.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
         
-        BeanContainer<Integer, Representation> container = new BeanContainer<Integer, Representation>(Representation.class);
+        BeanContainer<Integer, RepresentationModel> container = new BeanContainer<Integer, RepresentationModel>(RepresentationModel.class);
         container.setBeanIdProperty("id");
         tblDataset.setContainerDataSource(container);
         
-        for (Representation representation : datasetList) {
-            container.addBean(representation);
+        for (RepresentationModel representationModel : datasetList) {
+            container.addBean(representationModel);
         }
         
         tblDataset.setContainerDataSource(container);

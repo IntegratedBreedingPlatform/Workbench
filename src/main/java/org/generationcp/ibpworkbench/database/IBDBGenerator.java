@@ -14,8 +14,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -75,6 +77,7 @@ public class IBDBGenerator{
     
     private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private String workbenchHost;
     private String workbenchPort;
@@ -497,6 +500,59 @@ public class IBDBGenerator{
         return areBreedingMethodsAdded;
         
     }
+    
+    public boolean addLocalInstallationRecord(String projectName) {
+        
+        boolean isInstallationInserted = false;
+
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            
+            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
+        
+            connection.setCatalog(generatedDatabaseName);
+            
+            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
+            
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            Date date = new Date();
+            dateFormat.format(date);
+            
+            preparedStatement.setInt(1, -1);
+            preparedStatement.setInt(2, -1);
+            preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date)));
+            preparedStatement.setInt(4, 0);
+            preparedStatement.setInt(5, 0);
+            preparedStatement.setInt(6, 0);
+            preparedStatement.setInt(7, 0);
+            preparedStatement.setInt(8, 0);
+            preparedStatement.setInt(9, 0);
+            preparedStatement.setInt(10, 0);
+            preparedStatement.setInt(11, 0);
+            preparedStatement.setInt(12, 0);
+            preparedStatement.setInt(13, 0);
+            preparedStatement.setString(14, projectName);
+            preparedStatement.setInt(15, 0);
+            preparedStatement.setInt(16, 0);
+            preparedStatement.setInt(17, 0);
+            
+            preparedStatement.executeUpdate();
+            
+            preparedStatement = null;
+
+            isInstallationInserted = true;
+            
+            closeConnection();
+
+        } catch (SQLException e) {
+            handleDatabaseError(e);
+        }
+        
+        return isInstallationInserted;
+        
+    }
+
 
     @Override
     protected void finalize() throws Throwable {

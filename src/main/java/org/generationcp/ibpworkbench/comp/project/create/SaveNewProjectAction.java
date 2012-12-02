@@ -121,6 +121,8 @@ public class SaveNewProjectAction implements ClickListener{
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
 
+                generator.addLocalInstallationRecord(project.getProjectName());
+                
                 User currentUser = app.getSessionData().getUserData();
                 User user = currentUser.copy();
 
@@ -206,6 +208,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     }
 
+    @SuppressWarnings("unused")
     private void saveProjectMethods(Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
 
         List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
@@ -227,6 +230,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     }
 
+    @SuppressWarnings("unused")
     private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
 
         List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();

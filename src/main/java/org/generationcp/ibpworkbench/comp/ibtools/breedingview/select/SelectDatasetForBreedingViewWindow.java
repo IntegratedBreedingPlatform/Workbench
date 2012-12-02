@@ -25,12 +25,12 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.ShowStudyDatasetDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
+import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.Representation;
 import org.generationcp.middleware.pojos.Study;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -206,8 +206,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         datasetVariablesDetailLayout.addComponent(tblFactors);
         datasetVariablesDetailLayout.addComponent(tblVariates);
         
-        studyDetailsLayout.addComponent(studyDatasetDetailLayout, 0, 0, 1, 0);
-        studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 2, 0, 9, 0);
+        studyDetailsLayout.addComponent(studyDatasetDetailLayout, 0, 0, 2, 0);
+        studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 3, 0, 9, 0);
         
         generalLayout.addComponent(studyTreeLayout);
         generalLayout.addComponent(studyDetailsLayout);
@@ -258,12 +258,14 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         tblDataset.setWidth("100%");
         tblDataset.setHeight("100%");
         
-        BeanContainer<Integer, Representation> container = new BeanContainer<Integer, Representation>(Representation.class);
+        BeanContainer<Integer, RepresentationModel> container = new BeanContainer<Integer, RepresentationModel>(RepresentationModel.class);
         container.setBeanIdProperty("id");
         tblDataset.setContainerDataSource(container);
         
-        String[] columns = new String[] {"name"};
+        String[] columns = new String[] {"userFriendlyName"};
+        String[] columnHeaders = new String[] {"Name"};
         tblDataset.setVisibleColumns(columns);
+        tblDataset.setColumnHeaders(columnHeaders);
         
     }
 

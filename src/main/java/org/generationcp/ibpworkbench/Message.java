@@ -148,6 +148,8 @@ public enum Message {
     ,CLICK_TO_LAUNCH_OPTIMAS
     
     //Breeding View Window
+    ,STUDY_EFFECT
+    ,DATASET_OF_TEXT
     ,NAME_HEADER
     ,DESCRIPTION_HEADER
     ,PROPERTY_HEADER
