@@ -144,7 +144,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblRoles.setImmediate(true);
         
         BeanContainer<Integer, Role> container = new BeanContainer<Integer, Role>(Role.class);
-        container.setBeanIdProperty("roleId");
+        container.setBeanIdProperty("label");
         tblRoles.setContainerDataSource(container);
         
         String[] columns = new String[] {"label"};

@@ -23,6 +23,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -92,9 +93,18 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         rolesLayout.addComponent(emptyLabel);
+        
+        String managerRoleLabel = "";
+        try {
+            Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, workbenchDataManager
+                    .getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0));
+            managerRoleLabel = managerRole.getLabel();
+        } catch (MiddlewareQueryException e) {
+            LOG.error("Error in getting role");
+        }
 
         for (CheckBox checkBox : userRoleCheckBoxList) {
-            if (checkBox.getCaption().contains(Role.MANAGER_ROLE_NAME)) {
+            if (checkBox.getCaption().contains(managerRoleLabel)) {
                 //add some space before the Manager role option
                 Label emptyLabel2 = new Label(" ");
                 emptyLabel2.setWidth("100%");
@@ -162,7 +172,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         List<Role> roles = null;
         List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
         try {
-            roles = workbenchDataManager.getAllRolesDesc();
+            roles = workbenchDataManager.getAllRolesOrderedByLabel();
         } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting roles", e);
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -196,7 +206,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         }
         
         if (!withCheckedItem){
-            MessageNotifier.showError(getWindow(), "Error", "No role selected.");
+            MessageNotifier.showError(getWindow(), "Error", "No breeding workflow(s) selected.");
             return false;
         }
         return true;

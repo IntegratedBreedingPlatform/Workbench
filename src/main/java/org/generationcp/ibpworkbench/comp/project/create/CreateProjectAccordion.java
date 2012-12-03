@@ -53,6 +53,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     private boolean projectMembersEnabled;
     //    private boolean breedingMethodsEnabled;
     //    private boolean locationsEnabled;
+    private int previousTabOnFocus;
 
     private CreateProjectPanel createProjectPanel; // the containing panel
 
@@ -99,10 +100,24 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutUserRoles.addComponent(userRolesTab);
                         layoutUserRoles.setSpacing(true);
                         layoutUserRoles.setMargin(true);
+                    } else {
+                        setFocusToTab(SECOND_TAB_USER_ROLES);
                     }
                 } else {
-                    MessageNotifier.showError(getWindow(), "Error",
-                            "Please supply the necessary details in the previous tab before continuing.");
+                    if (basicDetailsTab != null && basicDetailsTab.validateAndSave()){
+                        if (layoutUserRoles.getComponentCount() == 0) {
+                            userRolesTab = new ProjectUserRolesComponent(createProjectPanel);
+                            layoutUserRoles.addComponent(userRolesTab);
+                            layoutUserRoles.setSpacing(true);
+                            layoutUserRoles.setMargin(true);
+                        }
+                        setFocusToTab(SECOND_TAB_USER_ROLES);
+                    } else {
+                        MessageNotifier.showError(getWindow(), "Error",
+                                "Please supply the necessary details in the previous tab before continuing.");
+                        
+                        setFocusToTab(previousTabOnFocus);
+                    }
                 }
             } else if (((VerticalLayout) tab.getComponent()).getData().equals(THIRD_TAB_PROJECT_MEMBERS)) {
                 if (projectMembersEnabled) {
@@ -111,35 +126,79 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutProjectMembers.addComponent(membersTab);
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);
+                    } else {
+                        setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
                     }
                 } else {
-                    MessageNotifier.showError(getWindow(), "Error",
+                    if (userRolesTab != null && userRolesTab.validateAndSave()){
+                        if (layoutProjectMembers.getComponentCount() == 0) {
+                            membersTab = new ProjectMembersComponent(createProjectPanel);
+                            layoutProjectMembers.addComponent(membersTab);
+                            layoutProjectMembers.setSpacing(true);
+                            layoutProjectMembers.setMargin(true);
+                        }
+                        setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                    } else {
+                        MessageNotifier.showError(getWindow(), "Error",
                             "Please supply the necessary details in the previous tab before continuing.");
+                        
+                        setFocusToTab(previousTabOnFocus);
+                    }
                 }
-                //            } else if (((VerticalLayout) tab.getComponent()).getData().equals(FOURTH_TAB_BREEDING_METHODS)) {
-                //                if (breedingMethodsEnabled) {
-                //                    if (layoutBreedingMethods.getComponentCount() == 0) {
-                //                        breedingMethodsTab = new ProjectBreedingMethodsComponent(createProjectPanel);
-                //                        layoutBreedingMethods.addComponent(breedingMethodsTab);
-                //                        layoutBreedingMethods.setSpacing(true);
-                //                        layoutBreedingMethods.setMargin(true);
-                //                    }
-                //                } else {
-                //                    MessageNotifier.showError(getWindow(), "Error",
-                //                            "Please supply the necessary details in the previous tab before continuing.");
-                //                }
-                //            } else if (((VerticalLayout) tab.getComponent()).getData().equals(FIFTH_TAB_LOCATIONS)) {
-                //                if (locationsEnabled) {
-                //                    if (layoutLocations.getComponentCount() == 0) {
-                //                        locationsTab = new ProjectLocationsComponent(createProjectPanel);
-                //                        layoutLocations.addComponent(locationsTab);
-                //                        layoutLocations.setSpacing(true);
-                //                        layoutLocations.setMargin(true);
-                //                    } 
-                //                } else {
-                //                    MessageNotifier.showError(getWindow(), "Error",
-                //                            "Please supply the necessary details in the previous tab before continuing.");
-                //                }
+//            } else if (((VerticalLayout) tab.getComponent()).getData().equals(FOURTH_TAB_BREEDING_METHODS)) {
+//                if (breedingMethodsEnabled) {
+//                    if (layoutBreedingMethods.getComponentCount() == 0) {
+//                        breedingMethodsTab = new ProjectBreedingMethodsComponent(createProjectPanel);
+//                        layoutBreedingMethods.addComponent(breedingMethodsTab);
+//                        layoutBreedingMethods.setSpacing(true);
+//                        layoutBreedingMethods.setMargin(true);
+//                    } else {
+//                        setFocusToTab(FOURTH_TAB_BREEDING_METHODS);
+//                    }
+//                } else {
+//                    if (membersTab != null && membersTab.validateAndSave()){
+//                        if (layoutBreedingMethods.getComponentCount() == 0) {
+//                            breedingMethodsTab = new ProjectBreedingMethodsComponent(createProjectPanel);
+//                            layoutBreedingMethods.addComponent(breedingMethodsTab);
+//                            layoutBreedingMethods.setSpacing(true);
+//                            layoutBreedingMethods.setMargin(true);
+//                        } else {
+//                            setFocusToTab(FOURTH_TAB_BREEDING_METHODS);
+//                        }
+//                    } else {
+//                        MessageNotifier.showError(getWindow(), "Error",
+//                            "Please supply the necessary details in the previous tab before continuing.");
+//                        
+//                        setFocusToTab(previousTabOnFocus);
+//                    }
+//                }
+//            } else if (((VerticalLayout) tab.getComponent()).getData().equals(FIFTH_TAB_LOCATIONS)) {
+//                if (locationsEnabled) {
+//                    if (layoutLocations.getComponentCount() == 0) {
+//                        locationsTab = new ProjectLocationsComponent(createProjectPanel);
+//                        layoutLocations.addComponent(locationsTab);
+//                        layoutLocations.setSpacing(true);
+//                        layoutLocations.setMargin(true);
+//                    } else {
+//                        setFocusToTab(FIFTH_TAB_LOCATIONS);
+//                    }
+//                } else {
+//                    if (membersTab != null && membersTab.validateAndSave()){
+//                        if (layoutLocations.getComponentCount() == 0) {
+//                            locationsTab = new ProjectLocationsComponent(createProjectPanel);
+//                            layoutLocations.addComponent(locationsTab);
+//                            layoutLocations.setSpacing(true);
+//                            layoutLocations.setMargin(true);
+//                        } else {
+//                            setFocusToTab(FIFTH_TAB_LOCATIONS);
+//                        }
+//                    } else {
+//                        MessageNotifier.showError(getWindow(), "Error",
+//                            "Please supply the necessary details in the previous tab before continuing.");
+//                        
+//                        setFocusToTab(previousTabOnFocus);
+//                    }
+//                }
             }
         }
     }
@@ -152,23 +211,31 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         switch (tab) {
             case FIRST_TAB_BASIC_DETAILS:
                 this.setSelectedTab(layoutBasicDetails);
+                previousTabOnFocus = FIRST_TAB_BASIC_DETAILS;
                 break;
             case SECOND_TAB_USER_ROLES:
                 userRolesEnabled = true;
+                previousTabOnFocus = SECOND_TAB_USER_ROLES;
                 this.setSelectedTab(layoutUserRoles);
                 break;
             case THIRD_TAB_PROJECT_MEMBERS:
                 projectMembersEnabled = true;
+                if (membersTab != null){
+                    membersTab.setInheritedRoles();
+                }
+                previousTabOnFocus = THIRD_TAB_PROJECT_MEMBERS;
                 this.setSelectedTab(layoutProjectMembers);
                 break;
-        //            case FOURTH_TAB_BREEDING_METHODS:
-        //                breedingMethodsEnabled = true;
-        //                this.setSelectedTab(layoutBreedingMethods);                
-        //                break;
-        //            case FIFTH_TAB_LOCATIONS:
-        //                locationsEnabled = true;
-        //                this.setSelectedTab(layoutLocations);                
-        //                break;
+//            case FOURTH_TAB_BREEDING_METHODS:
+//                breedingMethodsEnabled = true;
+//                this.setSelectedTab(layoutBreedingMethods);
+//                previousTabOnFocus = FOURTH_TAB_BREEDING_METHODS;
+//                break;
+//            case FIFTH_TAB_LOCATIONS:
+//                locationsEnabled = true;
+//                this.setSelectedTab(layoutLocations);
+//                previousTabOnFocus = FIFTH_TAB_LOCATIONS;
+//                break;
         }
     }
 
@@ -184,7 +251,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         boolean success = true;
 
         success = basicDetailsTab.validateAndSave();
-
+        
         if (success) {
             if (userRolesTab != null) {
                 success = userRolesTab.validateAndSave();
@@ -214,6 +281,8 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
 
     @Override
     public void afterPropertiesSet() {
+
+        previousTabOnFocus = FIRST_TAB_BASIC_DETAILS; // the focus is initially on the first tab
 
         layoutBasicDetails = new VerticalLayout();
         layoutBasicDetails.setData(FIRST_TAB_BASIC_DETAILS);
