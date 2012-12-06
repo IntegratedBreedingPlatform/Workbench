@@ -5,7 +5,7 @@
     <artifactId>ibpworkbench</artifactId>
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
-    <version>1.1.1</version>
+    <version>1.1.2.1</version>
     <developers>
         <developer>
             <id>gmarintes</id>
