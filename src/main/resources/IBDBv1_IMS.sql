@@ -19,7 +19,7 @@
 -- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 -- =======================================================================================
 --
---
+-- MySQL MyISAM storage engine
 
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE ims_label_otherinfo (
   fieldname varchar(50) default '-',
   foreign_fieldname varchar(50) default '-',
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -51,7 +51,7 @@ CREATE TABLE ims_labelinfo (
   group_prefix varchar(50) default '-',
   labelitemcount int(11) default 0,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -71,7 +71,7 @@ CREATE TABLE ims_lot (
   sourceid int(11) default 0,
   comments varchar(255) default '-',
   PRIMARY KEY (lotid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX ims_lot_idx01 ON ims_lot (eid);
 CREATE INDEX ims_lot_idx02 ON ims_lot (locid);
@@ -102,7 +102,7 @@ CREATE TABLE ims_transaction (
   prevamount double default 0,
   personid int(11) default 0,
   PRIMARY KEY (trnid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX ims_transaction_idx01 ON ims_transaction (lotid);
 CREATE INDEX ims_transaction_idx02 ON ims_transaction (personid);

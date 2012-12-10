@@ -45,6 +45,7 @@ public class IBDBGenerator{
     private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
     private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
     private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
+    private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
     
     private static final String WORKBENCH_PROP_HOST = "workbench.host";
     private static final String WORKBENCH_PROP_PORT = "workbench.port";
@@ -209,6 +210,7 @@ public class IBDBGenerator{
         try {
 
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_SQL).toURI()));
+            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_TMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));

@@ -29,7 +29,7 @@
 -- Description - create the icis GMS tables (ver 5.6) / IBDB GMS v1 LOCAL
 --
 
--- storage ENGINE=InnoDB DEFAULT CHARSET=utf8
+-- storage ENGINE=MyISAM DEFAULT CHARSET=utf8
 --
 
 
@@ -46,7 +46,7 @@ CREATE TABLE atributs (
   alocn INT DEFAULT 0,
   aref INT DEFAULT 0,
   adate INT DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX atributs_idx01 ON atributs (alocn);
 CREATE INDEX atributs_idx02 ON atributs (atype);
@@ -77,7 +77,7 @@ CREATE TABLE bibrefs (
   authorlist INT DEFAULT NULL,		-- new column: points to PERSONLIST.PERSONLISTID
   editorlist INT DEFAULT NULL,		-- new column: points to PERSONLIST.PERSONLISTID
   PRIMARY KEY (refid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX bibrefs_idx01 ON bibrefs (refid); 
 CREATE INDEX bibrefs_idx02 ON bibrefs (authorlist);
@@ -101,7 +101,7 @@ CREATE TABLE changes (
   cref INT DEFAULT 0,
   cstatus INT DEFAULT 0,
   cdesc VARCHAR(255) NOT NULL DEFAULT '-'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX changes_idx01 ON changes (cid,ctable,crecord,cstatus);
 CREATE INDEX changes_idx02 ON changes (crecord);
@@ -127,7 +127,7 @@ DROP TABLE IF EXISTS cntry;
   ecntry INT DEFAULT 0,
   cchange INT DEFAULT 0,
   PRIMARY KEY (cntryid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX cntry_idx01 ON cntry (cntryid);
 CREATE INDEX cntry_idx02 ON cntry (isonum);
@@ -149,7 +149,7 @@ CREATE TABLE filelink (
   filesubcat INT,
   remarks VARCHAR(255) DEFAULT '-',
   PRIMARY KEY (fileid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX filelink_idx01 on filelink(filepath);
 CREATE INDEX filelink_idx02 on filelink(filename);
@@ -178,7 +178,7 @@ CREATE TABLE georef (
   llref INT DEFAULT 0,		-- new column, references bibrefs.refid
   lldate INT DEFAULT 0,		-- new column
   lluid INT DEFAULT 0		-- new column, references users.userid
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX georef_idx01 on georef (locid);     -- do not define locid as primary key..create index instead.
 --
@@ -206,7 +206,7 @@ CREATE TABLE germplsm (
   cid INT,				-- added 20091216 mhabito
   sid INT,				-- added 20091216 mhabito
   gchange INT                           -- added 20091216 mhabito
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX germplsm_idx01 ON germplsm (glocn);
 CREATE INDEX germplsm_idx02 ON germplsm (gpid1);
@@ -246,7 +246,7 @@ CREATE TABLE instln (
   dms_status INT DEFAULT 0,
   ulrecid INT DEFAULT 0,
   PRIMARY KEY (instalid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX instln_idx01 ON instln (admin);
 CREATE INDEX instln_idx02 ON instln (instalid);
@@ -275,7 +275,7 @@ CREATE TABLE listdata (
   lrstatus INT NOT NULL DEFAULT 0,
   llrecid INT DEFAULT 0,
   PRIMARY KEY (listid,lrecid)                     
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX listdata_idx02 ON listdata (entrycd);
 CREATE INDEX listdata_idx03 ON listdata (gid);
@@ -311,7 +311,7 @@ DROP TABLE IF EXISTS listnms;
   listref INT DEFAULT NULL,			-- new column: references bibrefs.refid
   projectid INT DEFAULT 0,			-- new column: points to project managing the list			
   PRIMARY KEY (listid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX listnms_idx01 ON listnms (listid,lhierarchy);
 CREATE INDEX listnms_idx02 ON listnms (listid);          -- added 20091103 mhabito: define regular index on column(s) with UNIQUE KEY constraint
@@ -336,7 +336,7 @@ CREATE TABLE location (
   lrplce INT NOT NULL DEFAULT 0,
   nnpid INT NOT NULL DEFAULT 0,		-- new column: LOCID of the nearest named place
   PRIMARY KEY (locid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX location_idx01 ON location (cntryid);
 CREATE INDEX location_idx02 ON location (snl1id);
@@ -360,7 +360,7 @@ CREATE TABLE locdes (
   ddate INT NOT NULL DEFAULT 0,
   dref INT NOT NULL DEFAULT 0,
   PRIMARY KEY (ldid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX locdes_idx01 ON locdes (dtype);
 CREATE INDEX locdes_idx02 ON locdes (duid);
@@ -389,7 +389,7 @@ CREATE TABLE methods (
   lmid INT NOT NULL DEFAULT 0,
   mdate INT NOT NULL DEFAULT 0,
   PRIMARY KEY (mid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX methods_idx01 ON methods (lmid);
 CREATE INDEX methods_idx02 ON methods (mcode);
@@ -412,7 +412,7 @@ CREATE TABLE names (
   nlocn INT NOT NULL DEFAULT 0,
   ndate INT NOT NULL DEFAULT 0,
   nref INT NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX names_idx01 ON names (gid);
 CREATE INDEX names_idx02 ON names (nlocn);
@@ -436,7 +436,7 @@ CREATE TABLE reflinks (
   refdate varchar(50) DEFAULT NULL,
   refuid INT DEFAULT NULL, 
   reflinksid INT NOT NULL AUTO_INCREMENT PRIMARY KEY       -- new column
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -449,7 +449,7 @@ DROP TABLE IF EXISTS progntrs;
   pno INT NOT NULL DEFAULT 0,
   pid INT NOT NULL DEFAULT 0,
   PRIMARY KEY (gid,pno)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX progntrs_idx01 ON progntrs (gid);
 CREATE INDEX progntrs_idx02 ON progntrs (pid);
@@ -470,7 +470,7 @@ CREATE TABLE sndivs (
   isofull VARCHAR(60) NOT NULL DEFAULT '-',
   schange INT DEFAULT 0,
   PRIMARY KEY (snlid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX sndivs_idx01 ON sndivs (cntryid);
 CREATE INDEX sndivs_idx02 on sndivs (snlid);        -- added 20091103 mhabito: define regular index on column(s) with UNIQUE KEY constraint
@@ -494,7 +494,7 @@ CREATE TABLE udflds (
   fdate INT NOT NULL DEFAULT 0,
   scaleid INT DEFAULT 0,
   PRIMARY KEY (fldno)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX udflds_idx01 ON udflds (fcode);
 CREATE INDEX udflds_idx02 ON udflds (fuid);
@@ -519,7 +519,7 @@ CREATE TABLE users (
   adate INT NOT NULL DEFAULT 0,
   cdate INT NOT NULL DEFAULT 0,
   PRIMARY KEY (userid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 --
 CREATE INDEX users_idx01 ON users (instalid);
 CREATE INDEX users_idx02 ON users (personid);
