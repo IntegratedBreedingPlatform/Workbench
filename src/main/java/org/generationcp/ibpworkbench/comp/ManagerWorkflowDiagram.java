@@ -400,7 +400,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements Initializi
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));

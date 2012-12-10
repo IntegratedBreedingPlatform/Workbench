@@ -572,8 +572,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
-            phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
+            qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
         }
     }
 

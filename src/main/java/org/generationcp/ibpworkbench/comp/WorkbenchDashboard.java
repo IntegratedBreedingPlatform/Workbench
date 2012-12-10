@@ -41,7 +41,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;

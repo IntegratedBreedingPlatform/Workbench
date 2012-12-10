@@ -441,7 +441,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
         }
