@@ -362,7 +362,16 @@ public class SaveNewProjectAction implements ClickListener{
                     localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     localUser.setType(PROJECT_USER_TYPE);
                     localUser.setAdate(getCurrentDate());
-                    userDataManager.addUser(localUser);
+                    Integer userId = userDataManager.addUser(localUser);                
+
+                    // add a workbench user to ibdb user mapping
+                    User ibdbUser = userDataManager.getUserById(userId);
+                    IbdbUserMap ibdbUserMap = new IbdbUserMap();
+                    ibdbUserMap.setWorkbenchUserId(workbenchUser.getUserid());
+                    ibdbUserMap.setProjectId(project.getProjectId());
+                    ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
+                    workbenchDataManager.addIbdbUserMap(ibdbUserMap);
+
                 }
                 
                 usersAccountedFor.put(projectUserRole.getUserId(), newUserNameAndPassword);
