@@ -15,7 +15,9 @@ package org.generationcp.ibpworkbench.comp.project.create;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -55,7 +57,7 @@ public class SaveNewProjectAction implements ClickListener{
     private static final long serialVersionUID = 1L;
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
-    
+    private static final String TIMESTAMP_FORMAT = "yyMMddHHmmssSS";
 
     private CreateProjectPanel createProjectPanel;
     private Project project;
@@ -138,6 +140,27 @@ public class SaveNewProjectAction implements ClickListener{
                     managerFactory.getUserDataManager().addPerson(person);
 
                     // add a user to project's local database
+                    //append a timestamp to the username and password
+                    long currentTime = System.currentTimeMillis();
+                    SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
+                    String timestamp = timestampFormat.format(currentTime);
+                    
+                    //and change the start of the username of be the initials of the user
+                    StringBuilder initials = new StringBuilder();
+                    if(person.getFirstName() != null){
+                        initials.append(person.getFirstName().charAt(0));
+                    }
+                    if(person.getMiddleName() != null) {
+                        initials.append(person.getMiddleName().charAt(0));
+                    }
+                    if(person.getLastName() != null) {
+                        initials.append(person.getLastName().charAt(0));
+                    }
+                    String userInitials = initials.toString().toLowerCase();
+                    String newUserNameAndPassword = userInitials + timestamp;
+                    
+                    user.setName(newUserNameAndPassword);
+                    user.setPassword(newUserNameAndPassword);
                     user.setPersonid(person.getId());
                     user.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     user.setType(PROJECT_USER_TYPE);
@@ -280,6 +303,7 @@ public class SaveNewProjectAction implements ClickListener{
     private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
         
         UserDataManager userDataManager = managerFactory.getUserDataManager();
+        Map<Integer,String> usersAccountedFor = new HashMap<Integer, String>();
         
         for (ProjectUserRole projectUserRole : projectUserRoles){
             
@@ -288,38 +312,61 @@ public class SaveNewProjectAction implements ClickListener{
             workbenchDataManager.addProjectUserRole(projectUserRole);
 
             // Save User to local db
-            User workbenchUser = workbenchDataManager.getUserById(projectUserRole.getUserId());
-            User localUser =  workbenchUser.copy();
-            
-            Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
-            Person localPerson = currentPerson.copy();
-            
-            // Check if the Person record already exists
-            if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())){
-                userDataManager.addPerson(localPerson);
-            } else {
-                // set localPerson to the existing person
-                List<Person> persons = userDataManager.getAllPersons();
-                for (Person person : persons){
-                    if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) && 
-                            person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
-                        localPerson = person;
-                        break;
+            //check if this user has already been accounted for, because each user may have many roles so this check is needed
+            if(!usersAccountedFor.containsKey(projectUserRole.getUserId())){
+                User workbenchUser = workbenchDataManager.getUserById(projectUserRole.getUserId());
+                User localUser =  workbenchUser.copy();
+                
+                Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+                Person localPerson = currentPerson.copy();
+                
+                // Check if the Person record already exists
+                if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())){
+                    userDataManager.addPerson(localPerson);
+                } else {
+                    // set localPerson to the existing person
+                    List<Person> persons = userDataManager.getAllPersons();
+                    for (Person person : persons){
+                        if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) && 
+                                person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
+                            localPerson = person;
+                            break;
+                        }
                     }
                 }
+                
+                //append a timestamp to the username and password
+                long currentTime = System.currentTimeMillis();
+                SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
+                String timestamp = timestampFormat.format(currentTime);
+                
+                //and change the start of the username of be the initials of the user
+                StringBuilder initials = new StringBuilder();
+                if(localPerson.getFirstName() != null){
+                    initials.append(localPerson.getFirstName().charAt(0));
+                }
+                if(localPerson.getMiddleName() != null) {
+                    initials.append(localPerson.getMiddleName().charAt(0));
+                }
+                if(localPerson.getLastName() != null) {
+                    initials.append(localPerson.getLastName().charAt(0));
+                }
+                String userInitials = initials.toString().toLowerCase();
+                String newUserNameAndPassword = userInitials + timestamp;
+                localUser.setName(newUserNameAndPassword);
+                localUser.setPassword(newUserNameAndPassword);
+                
+                // If the selected member does not exist yet in the local database, then add
+                if (!userDataManager.isUsernameExists(localUser.getName())){
+                    localUser.setPersonid(localPerson.getId());
+                    localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+                    localUser.setType(PROJECT_USER_TYPE);
+                    localUser.setAdate(getCurrentDate());
+                    userDataManager.addUser(localUser);
+                }
+                
+                usersAccountedFor.put(projectUserRole.getUserId(), newUserNameAndPassword);
             }
-            
-            // If the selected member does not exist yet in the local database, then add
-            if (!userDataManager.isUsernameExists(localUser.getName())){
-                localUser.setPersonid(localPerson.getId());
-                localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-                localUser.setType(PROJECT_USER_TYPE);
-                localUser.setAdate(getCurrentDate());
-                userDataManager.addUser(localUser);
-            }
-
-            
-
         }
     }
     
