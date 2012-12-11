@@ -21,13 +21,11 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -281,6 +279,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         ConfirmDialog.show(selectedWindow, "Please Confirm:", "Assign a target Analysis Project?",
                 "Yes", "No", new ConfirmDialog.Listener() {
     
+                    private static final long serialVersionUID = -7840555816177922409L;
+
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             // Confirmed to continue

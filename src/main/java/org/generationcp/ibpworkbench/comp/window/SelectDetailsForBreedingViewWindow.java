@@ -72,7 +72,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         setModal(true);
 
        /* Make the sub window 50% the size of the browser window */
-        setWidth("50%");
+        setWidth("40%");
         /*
          * Center the window both horizontally and vertically in the browser
          * window
@@ -80,7 +80,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         center();
         
 
-        setCaption("Breeding View Entry Form: ");
+        setCaption("Enter Breeding View Project Details: ");
         
     }
     
@@ -128,35 +128,46 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         //lblDesignType.setStyleName("gcp-content-title");
         
         txtName = new TextField();
+        txtName.setNullSettingAllowed(false);
+        txtName.setRequired(true);
+        txtName.setNullRepresentation("");
         txtVersion = new TextField();
+        txtVersion.setNullSettingAllowed(false);
+        txtVersion.setRequired(true);
+        txtVersion.setNullRepresentation("");
         txtEnvironment = new TextField();
+        txtEnvironment.setNullSettingAllowed(false);
+        txtEnvironment.setRequired(true);
+        txtEnvironment.setNullRepresentation("");
         
         selProjectType = new Select();
         selProjectType.setImmediate(true); 
-        selProjectType.addItem(ProjectType.FIELD_TRIAL.getName());
+        selProjectType.addItem(ProjectType.FIELD_TRIAL);
+        selProjectType.setNullSelectionAllowed(false);
+        selProjectType.setNewItemsAllowed(false);
         
         selDesignType = new Select();
         selDesignType.setImmediate(true); 
-        selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
-        selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-        selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+        selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN);
+        selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN);
+        selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN);
+        selDesignType.setNullSelectionAllowed(false);
+        selDesignType.setNewItemsAllowed(false);
         
         btnAccept = new Button();
         btnCancel = new Button();
         
-        entryLayout = new GridLayout(8, 7);
-        entryLayout.setMargin(true, false, false, false);
-        entryLayout.setWidth("250px");
-        entryLayout.addComponent(lblName, 2, 0, 3, 0);
-        entryLayout.addComponent(txtName, 2, 1, 3, 1);
-        entryLayout.addComponent(lblVersion, 4, 0, 5, 0);
-        entryLayout.addComponent(txtVersion, 4, 1, 5, 1);
-        entryLayout.addComponent(lblEnvironment, 2, 2, 3, 2);
-        entryLayout.addComponent(txtEnvironment, 2, 3, 3, 3);
-        entryLayout.addComponent(lblProjectType, 2, 4, 3, 4);
-        entryLayout.addComponent(selProjectType, 2, 5, 3, 5);
-        entryLayout.addComponent(lblDesignType, 4, 4, 5, 4);
-        entryLayout.addComponent(selDesignType, 4, 5, 5, 5);
+        entryLayout = new GridLayout(4, 7);
+        entryLayout.addComponent(lblName, 0, 0, 1, 0);
+        entryLayout.addComponent(txtName, 0, 1, 1, 1);
+        entryLayout.addComponent(lblVersion, 2, 0, 3, 0);
+        entryLayout.addComponent(txtVersion, 2, 1, 3, 1);
+        entryLayout.addComponent(lblEnvironment, 0, 2, 1, 2);
+        entryLayout.addComponent(txtEnvironment, 0, 3, 1, 3);
+        entryLayout.addComponent(lblProjectType, 0, 4, 1, 4);
+        entryLayout.addComponent(selProjectType, 0, 5, 1, 5);
+        entryLayout.addComponent(lblDesignType, 2, 4, 3, 4);
+        entryLayout.addComponent(selDesignType, 2, 5, 3, 5);
         
         buttonArea = layoutButtonArea();
         
@@ -169,8 +180,16 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     protected void initializeLayout() {
         
         generalLayout.setMargin(true);
+        generalLayout.setWidth("100%");
         
+        entryLayout.setMargin(true, false, true, false);
         entryLayout.setWidth("100%");
+        entryLayout.setSpacing(true);
+        //entryLayout.setWidth("250px");
+        
+        selProjectType.setWidth("100%");
+        selDesignType.setWidth("100%");
+    
         
     }
 

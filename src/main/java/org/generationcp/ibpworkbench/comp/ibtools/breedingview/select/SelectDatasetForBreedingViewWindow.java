@@ -128,7 +128,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
          */
         center();
         
-        setCaption("View Studies and Datasets");
+        setCaption("Select a Study and a Dataset to run the Breeding View: ");
         
     }
     
@@ -403,7 +403,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        selectDatasetForExportButton = new Button("Export Dataset");
+        selectDatasetForExportButton = new Button("Run Breeding View");
 
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(selectDatasetForExportButton);

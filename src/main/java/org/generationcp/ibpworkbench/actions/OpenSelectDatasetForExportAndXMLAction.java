@@ -12,9 +12,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewXmlWriter;
@@ -107,38 +106,50 @@ public class OpenSelectDatasetForExportAndXMLAction implements ClickListener {
                 
                 inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
                 
+                toolUtil.createWorkspaceDirectoriesForProject(project);
+                
                 fileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
+                
+                LOG.info("inputDir: " + inputDir);
+                
+                LOG.info("XLS: " + fileName);
                 
                 datasetExporter.exportToFieldBookExcel(fileName);
                 
-            } catch (DatasetExporterException e) {
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-            }
-            catch (MiddlewareQueryException e) {
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-            }
-            
-            ProjectType projectElement = ProjectType.valueOf(selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getProjectType());
-            DesignType designElement = DesignType.valueOf(selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getDesignType());
-            
-            try {
-                
                 String xmlFileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xml"; 
+                
+                LOG.info("XML: " + xmlFileName);
                 
                 BreedingViewXmlWriter.write(studyDataManager, 
                         xmlFileName, 
                         selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getName(), 
                         selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getVersion(), 
-                        projectElement, 
-                        designElement, 
+                        selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getProjectType(), 
+                        selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getDesignType(), 
                         selectDatasetForBreedingViewWindow.getBreedingViewEntryModel().getEnvironment(), 
                         selectDatasetForBreedingViewWindow.getCurrentRepresentationId(), 
                         fileName);
                 
+                File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
+                Runtime runtime = Runtime.getRuntime();
+                
+                LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" + xmlFileName + "\"");
+                
+                runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" + xmlFileName + "\"");
+                
+                event.getComponent().getWindow().getParent().removeWindow(event.getComponent().getWindow());
+
+            } catch (DatasetExporterException e) {
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+            } catch (MiddlewareQueryException e) {
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
             } catch (BreedingViewXmlWriterException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+            } catch (IOException e) {
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
             }
+            
+            
             
             
         } else {

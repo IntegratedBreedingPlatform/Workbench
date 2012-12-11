@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.window.SelectDetailsForBreedingViewWindow;
@@ -59,23 +61,39 @@ public class OpenAndSaveFromBreedingViewAction implements ClickListener {
             breedingViewEntryModel = createBreedingViewEntryModel(selectDetailsForBreedingViewWindow.getTxtName().getValue().toString(),
                                         selectDetailsForBreedingViewWindow.getTxtVersion().getValue().toString(),
                                         selectDetailsForBreedingViewWindow.getTxtEnvironment().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getSelProjectType().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getSelDesignType().getValue().toString());
+                                        (ProjectType)selectDetailsForBreedingViewWindow.getSelProjectType().getValue(),
+                                        (DesignType)selectDetailsForBreedingViewWindow.getSelDesignType().getValue());
             
-            app.getMainWindow().removeWindow(event.getComponent().getWindow());
-            app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.CENTRAL, breedingViewEntryModel));
+            if (areValidBreedingViewEntries(breedingViewEntryModel)) {
+            
+                app.getMainWindow().removeWindow(event.getComponent().getWindow());
+                app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.CENTRAL, breedingViewEntryModel));
+            
+            } else {
+                
+                event.getComponent().getWindow().showNotification("Please Fill All Required Fields and/or Selections.", Notification.TYPE_ERROR_MESSAGE);
+                
+            }
             
         } else if (lastOpenedProject != null) {
             
             breedingViewEntryModel = createBreedingViewEntryModel(selectDetailsForBreedingViewWindow.getTxtName().getValue().toString(),
                                         selectDetailsForBreedingViewWindow.getTxtVersion().getValue().toString(),
                                         selectDetailsForBreedingViewWindow.getTxtEnvironment().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getSelProjectType().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getSelDesignType().getValue().toString());
+                                        (ProjectType)selectDetailsForBreedingViewWindow.getSelProjectType().getValue(),
+                                        (DesignType)selectDetailsForBreedingViewWindow.getSelDesignType().getValue());
             
-            app.getMainWindow().removeWindow(event.getComponent().getWindow());
-            app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.CENTRAL, breedingViewEntryModel));
+            if (areValidBreedingViewEntries(breedingViewEntryModel)) {
             
+                app.getMainWindow().removeWindow(event.getComponent().getWindow());
+                app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.CENTRAL, breedingViewEntryModel));
+                
+            } else {
+                
+                event.getComponent().getWindow().showNotification("Please Fill All Required Fields and/or Selections.", Notification.TYPE_ERROR_MESSAGE);
+                
+            }
+                
         } else {
             
             event.getComponent().getWindow().showNotification("Please select a Project first.", Notification.TYPE_ERROR_MESSAGE);
@@ -84,7 +102,29 @@ public class OpenAndSaveFromBreedingViewAction implements ClickListener {
 
     }
     
-    private BreedingViewEntryModel createBreedingViewEntryModel(String name, String version, String environment, String projectType, String designType) {
+    private boolean areValidBreedingViewEntries(BreedingViewEntryModel breedingViewEntryModel) {
+        
+        boolean areValid = true;
+        
+        String name = breedingViewEntryModel.getName();
+        String version = breedingViewEntryModel.getVersion();
+        String environment = breedingViewEntryModel.getEnvironment();
+        ProjectType projectType = breedingViewEntryModel.getProjectType();
+        DesignType designType = breedingViewEntryModel.getDesignType();
+        
+        if (name.trim().equals("") 
+                || version.trim().equals("") 
+                || environment.trim().equals("") 
+                || projectType == null
+                || designType == null) {
+            areValid = false;
+        }
+        
+        return areValid;
+        
+    }
+    
+    private BreedingViewEntryModel createBreedingViewEntryModel(String name, String version, String environment, ProjectType projectType, DesignType designType) {
         
         BreedingViewEntryModel breedingViewEntryModel = new BreedingViewEntryModel();
         

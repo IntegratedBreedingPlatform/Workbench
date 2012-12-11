@@ -13,6 +13,9 @@ package org.generationcp.ibpworkbench.model;
 
 import java.io.Serializable;
 
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.breedingview.xml.ProjectType;
+
 /**
  * 
  * <br>
@@ -29,8 +32,8 @@ public class BreedingViewEntryModel implements Serializable{
     private String name;
     private String version;
     private String environment;
-    private String projectType;
-    private String designType;
+    private ProjectType projectType;
+    private DesignType designType;
 
     /**
      * Initialize fields so that the "null" String value does not appear.
@@ -39,8 +42,6 @@ public class BreedingViewEntryModel implements Serializable{
         setName("");
         setVersion("");
         setEnvironment("");
-        setProjectType("");
-        setDesignType("");
 
     }
 
@@ -68,23 +69,22 @@ public class BreedingViewEntryModel implements Serializable{
         this.name = name;
     }
 
-    public String getProjectType() {
+    public ProjectType getProjectType() {
         return projectType;
     }
 
-    public void setProjectType(String projectType) {
+    public void setProjectType(ProjectType projectType) {
         this.projectType = projectType;
     }
 
-    public String getDesignType() {
+    public DesignType getDesignType() {
         return designType;
     }
 
-    public void setDesignType(String designType) {
+    public void setDesignType(DesignType designType) {
         this.designType = designType;
     }
-    
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -109,10 +109,7 @@ public class BreedingViewEntryModel implements Serializable{
         if (getClass() != obj.getClass())
             return false;
         BreedingViewEntryModel other = (BreedingViewEntryModel) obj;
-        if (designType == null) {
-            if (other.designType != null)
-                return false;
-        } else if (!designType.equals(other.designType))
+        if (designType != other.designType)
             return false;
         if (environment == null) {
             if (other.environment != null)
@@ -124,10 +121,7 @@ public class BreedingViewEntryModel implements Serializable{
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (projectType == null) {
-            if (other.projectType != null)
-                return false;
-        } else if (!projectType.equals(other.projectType))
+        if (projectType != other.projectType)
             return false;
         if (version == null) {
             if (other.version != null)
