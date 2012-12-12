@@ -106,7 +106,7 @@ public class OpenSelectDatasetForExportAndXMLAction implements ClickListener {
                 
                 inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
                 
-                toolUtil.createWorkspaceDirectoriesForProject(project);
+                //toolUtil.createWorkspaceDirectoriesForProject(project);
                 
                 fileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
                 
