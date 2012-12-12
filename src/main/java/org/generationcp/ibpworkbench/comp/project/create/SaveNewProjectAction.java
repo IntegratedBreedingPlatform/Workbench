@@ -345,7 +345,7 @@ public class SaveNewProjectAction implements ClickListener{
                 if(localPerson.getFirstName() != null){
                     initials.append(localPerson.getFirstName().charAt(0));
                 }
-                if(localPerson.getMiddleName() != null) {
+                if(localPerson.getMiddleName() != null && !localPerson.getMiddleName().trim().equals("")) {
                     initials.append(localPerson.getMiddleName().charAt(0));
                 }
                 if(localPerson.getLastName() != null) {

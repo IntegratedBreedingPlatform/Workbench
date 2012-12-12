@@ -100,23 +100,57 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
             for (Factor factor : factorList) {
                 
-                
-                
                 FactorModel factorModel = new FactorModel();
                 
                 factorModel.setId(factor.getId());
                 factorModel.setName(factor.getName());
                 factorModel.setTraitid(factor.getTraitId());
-    
-                factorModel.setTrname(traitDataManager.getTraitById(factor.getTraitId()).getName());
+                
+                if (traitDataManager.getTraitById(factor.getTraitId()) != null) {
+                
+                    if (traitDataManager.getTraitById(factor.getTraitId()).getName() != null) {
+        
+                        factorModel.setTrname(traitDataManager.getTraitById(factor.getTraitId()).getName());
+                    
+                    } else {
+                        
+                        factorModel.setTrname(factor.getTraitId().toString());
+                        
+                    }
+                
+                }
                 
                 factorModel.setScaleid(factor.getScaleId());
                 
-                factorModel.setScname(traitDataManager.getScaleByID(factor.getScaleId()).getName());
+                if (traitDataManager.getScaleByID(factor.getScaleId()) != null) {
+                
+                    if (traitDataManager.getScaleByID(factor.getScaleId()).getName() != null) {
+                    
+                        factorModel.setScname(traitDataManager.getScaleByID(factor.getScaleId()).getName());
+                    
+                    } else {
+                        
+                        factorModel.setScname(factor.getScaleId().toString());
+                        
+                    }
+                    
+                }
                 
                 factorModel.setTmethid(factor.getMethodId());
                 
-                factorModel.setTmname(traitDataManager.getTraitMethodById(factor.getMethodId()).getName());
+                if (traitDataManager.getTraitMethodById(factor.getMethodId()) != null) {
+                
+                    if (traitDataManager.getTraitMethodById(factor.getMethodId()).getName() != null) {
+                    
+                        factorModel.setTmname(traitDataManager.getTraitMethodById(factor.getMethodId()).getName());
+                    
+                    } else {
+                        
+                        factorModel.setTmname(factor.getMethodId().toString());
+                        
+                    }
+                
+                }
                 
                 container.addBean(factorModel);
                 
@@ -149,16 +183,52 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                 variateModel.setId(variate.getId());
                 variateModel.setName(variate.getName());
                 variateModel.setTraitid(variate.getTraitId());
-    
-                variateModel.setTrname(traitDataManager.getTraitById(variate.getTraitId()).getName());
+                
+                if (traitDataManager.getTraitById(variate.getTraitId()) != null) {
+
+                    if (traitDataManager.getTraitById(variate.getTraitId()).getName() != null) {
+                    
+                        variateModel.setTrname(traitDataManager.getTraitById(variate.getTraitId()).getName());
+                        
+                    } else {
+                        
+                        variateModel.setTmname(variate.getTraitId().toString());
+                        
+                    }
+                
+                }
                 
                 variateModel.setScaleid(variate.getScaleId());
                 
-                variateModel.setScname(traitDataManager.getScaleByID(variate.getScaleId()).getName());
+                if (traitDataManager.getScaleByID(variate.getScaleId()) != null) {
                 
+                    if (traitDataManager.getScaleByID(variate.getScaleId()).getName() != null) {
+                    
+                        variateModel.setScname(traitDataManager.getScaleByID(variate.getScaleId()).getName());
+                    
+                    } else {
+                        
+                        variateModel.setTmname(variate.getScaleId().toString());
+                        
+                    }
+                
+                }
+                    
                 variateModel.setTmethid(variate.getMethodId());
                 
-                variateModel.setTmname(traitDataManager.getTraitMethodById(variate.getMethodId()).getName());
+                if (traitDataManager.getTraitMethodById(variate.getMethodId()) != null) {
+                
+                    if (traitDataManager.getTraitMethodById(variate.getMethodId()).getName() != null) {
+                    
+                        variateModel.setTmname(traitDataManager.getTraitMethodById(variate.getMethodId()).getName());
+                        
+                    } else {
+                        
+                        variateModel.setTmname(variate.getMethodId().toString());
+                        
+                    }
+                
+                }
                 
                 container.addBean(variateModel);
                 

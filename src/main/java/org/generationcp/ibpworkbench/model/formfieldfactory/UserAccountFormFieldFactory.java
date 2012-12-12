@@ -90,7 +90,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         
         if("positionTitle".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_POS_TITLE);
-            field.setRequired(true);
+            field.setRequired(false);
             field.setRequiredError("Please enter a Position Title.");
             field.addValidator(new StringLengthValidator("Position Title must be 2-25 characters.", 2, 25, false));
         } else if ("firstName".equals(propertyId)) {
@@ -101,7 +101,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
             return lastName;
         } else if ("middleName".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_MIDNAME);
-            field.setRequired(true);
+            field.setRequired(false);
             field.setRequiredError("Please enter a Middle Initial.");
             field.addValidator(new StringLengthValidator("Middle Initial must be 1-15 characters.", 1, 15, false));
         } else if ("email".equals(propertyId)) {

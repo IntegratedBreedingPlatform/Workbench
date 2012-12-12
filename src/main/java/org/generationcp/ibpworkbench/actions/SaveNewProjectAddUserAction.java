@@ -49,7 +49,7 @@ import com.vaadin.ui.TwinColSelect;
 @Configurable
 public class SaveNewProjectAddUserAction implements ClickListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaveUserAccountAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SaveNewProjectAddUserAction.class);
     
     private static final long serialVersionUID = 5386242653138617919L;
 
@@ -78,11 +78,23 @@ public class SaveNewProjectAddUserAction implements ClickListener {
             userAccountForm.commit();
         } catch (Exception e) {
             //TODO: investigate. Exception still not properly handled.
-            //vaadin shows an "Internal Error" message
-            InternationalizableException i = (InternationalizableException) e;
-            MessageNotifier.showError(event.getComponent().getWindow(), 
-                    i.getCaption(), 
-                    i.getDescription());
+            //vaadin shows an "Internal Error" message 
+            if (e instanceof InternationalizableException) {
+            
+                InternationalizableException i = (InternationalizableException) e;
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                        i.getCaption(), 
+                        i.getDescription());
+                
+            } else {
+                
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                        e.getMessage(), 
+                        "");
+                
+            }
+            
+            
             return;
         }
         
