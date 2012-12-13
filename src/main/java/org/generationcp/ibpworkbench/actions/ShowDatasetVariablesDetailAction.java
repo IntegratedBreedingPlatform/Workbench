@@ -20,7 +20,6 @@ import org.generationcp.middleware.pojos.Variate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -97,6 +96,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         tblFactors.setContainerDataSource(container);
         
         try {
+            
+            //TODO
+            // Curation errors must be handled here correctly
         
             for (Factor factor : factorList) {
                 
@@ -176,6 +178,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
         try {
         
+            //TODO
+            // Curation errors must be handled here correctly
+            
             for (Variate variate : variateList) {
                 
                 VariateModel variateModel = new VariateModel();

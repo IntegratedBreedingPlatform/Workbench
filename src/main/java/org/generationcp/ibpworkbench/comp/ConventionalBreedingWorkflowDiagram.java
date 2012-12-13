@@ -34,7 +34,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implements WorkflowConstants, InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +44,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
-    private static final int ARROW_IMAGE_WIDTH = 40;
+    //private static final int ARROW_IMAGE_WIDTH = 40;
     private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     
@@ -66,6 +66,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private Button browseGermplasmListsButton;
     private Button breedingManagerButton;
     private Button breedingViewButton;
+    private Button breedingViewSingleSiteAnalysisButton;
     private Button fieldbookButton;
     private Button optimasButton;
     
@@ -139,6 +140,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
+        
+        breedingViewSingleSiteAnalysisButton = new Button("Single-Site Analysis");
+        breedingViewSingleSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisButton.setSizeUndefined();
+        breedingViewSingleSiteAnalysisButton.setDescription("Click to launch Single-Site Analysis");
 
         fieldbookButton = new Button("Fieldbook");
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -251,9 +257,9 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
-        layout.addComponent(browseGermplasmListsButton);
+/*        layout.addComponent(browseGermplasmListsButton);
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmListsButton, 0);
+        layout.setExpandRatio(browseGermplasmListsButton, 0);*/
 
         return layout;
     }
@@ -317,6 +323,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
+        
+        layout.addComponent(breedingViewSingleSiteAnalysisButton);
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);
 
         return layout;
     }
@@ -385,7 +395,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            breedingViewSingleSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
         }

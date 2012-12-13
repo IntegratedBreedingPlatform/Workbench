@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.window.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewXmlWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXmlWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
@@ -106,8 +107,6 @@ public class OpenSelectDatasetForExportAndXMLAction implements ClickListener {
                 
                 inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
                 
-                //toolUtil.createWorkspaceDirectoriesForProject(project);
-                
                 fileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xls";
                 
                 LOG.info("inputDir: " + inputDir);
@@ -116,7 +115,7 @@ public class OpenSelectDatasetForExportAndXMLAction implements ClickListener {
                 
                 datasetExporter.exportToFieldBookExcel(fileName);
                 
-                String xmlFileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xml"; 
+/*                String xmlFileName = inputDir + File.separator + studyId + "_" + studyName.trim() + "_" + representationId + "_" + datasetName.trim() + ".xml"; 
                 
                 LOG.info("XML: " + xmlFileName);
                 
@@ -135,17 +134,14 @@ public class OpenSelectDatasetForExportAndXMLAction implements ClickListener {
                 
                 LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" + xmlFileName + "\"");
                 
-                runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" + xmlFileName + "\"");
+                runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" + xmlFileName + "\"");*/
                 
                 event.getComponent().getWindow().getParent().removeWindow(event.getComponent().getWindow());
+                event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(project));
 
             } catch (DatasetExporterException e) {
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
             } catch (MiddlewareQueryException e) {
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-            } catch (BreedingViewXmlWriterException e) {
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-            } catch (IOException e) {
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
             }
             

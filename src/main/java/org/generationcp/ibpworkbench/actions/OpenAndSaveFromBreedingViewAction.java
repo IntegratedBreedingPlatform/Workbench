@@ -67,33 +67,13 @@ public class OpenAndSaveFromBreedingViewAction implements ClickListener {
             if (areValidBreedingViewEntries(breedingViewEntryModel)) {
             
                 app.getMainWindow().removeWindow(event.getComponent().getWindow());
-                app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.CENTRAL, breedingViewEntryModel));
             
             } else {
                 
                 event.getComponent().getWindow().showNotification("Please Fill All Required Fields and/or Selections.", Notification.TYPE_ERROR_MESSAGE);
                 
             }
-            
-        } else if (lastOpenedProject != null) {
-            
-            breedingViewEntryModel = createBreedingViewEntryModel(selectDetailsForBreedingViewWindow.getTxtName().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getTxtVersion().getValue().toString(),
-                                        selectDetailsForBreedingViewWindow.getTxtEnvironment().getValue().toString(),
-                                        (ProjectType)selectDetailsForBreedingViewWindow.getSelProjectType().getValue(),
-                                        (DesignType)selectDetailsForBreedingViewWindow.getSelDesignType().getValue());
-            
-            if (areValidBreedingViewEntries(breedingViewEntryModel)) {
-            
-                app.getMainWindow().removeWindow(event.getComponent().getWindow());
-                app.getMainWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.CENTRAL, breedingViewEntryModel));
-                
-            } else {
-                
-                event.getComponent().getWindow().showNotification("Please Fill All Required Fields and/or Selections.", Notification.TYPE_ERROR_MESSAGE);
-                
-            }
-                
+
         } else {
             
             event.getComponent().getWindow().showNotification("Please select a Project first.", Notification.TYPE_ERROR_MESSAGE);

@@ -92,16 +92,13 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     
     private String currentDatasetName;
 
-    private BreedingViewEntryModel breedingViewEntryModel = null;
-
     //private Label selectDatasetTitle;
     private Button cancelButton;
     private Button selectDatasetForExportButton;
     private Component buttonArea;
 
     private Database database;
-    
-    private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
+
     private OpenSelectDatasetForExportAndXMLAction openSelectDatasetForExportAndXMLAction;
     
     @Autowired
@@ -129,13 +126,6 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         center();
         
         setCaption("Select a Study and a Dataset to run the Breeding View: ");
-        
-    }
-    
-    public SelectDatasetForBreedingViewWindow(Project currentProject, Database database, BreedingViewEntryModel breedingViewEntryModel) {
-        
-        this(currentProject, database);
-        this.setBreedingViewEntryModel(breedingViewEntryModel);
         
     }
     
@@ -169,14 +159,6 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
     public void setCurrentDatasetName(String currentDatasetName) {
         this.currentDatasetName = currentDatasetName;
-    }
-
-    public BreedingViewEntryModel getBreedingViewEntryModel() {
-        return breedingViewEntryModel;
-    }
-
-    private void setBreedingViewEntryModel(BreedingViewEntryModel breedingViewEntryModel) {
-        this.breedingViewEntryModel = breedingViewEntryModel;
     }
 
     protected void initializeComponents() {
@@ -265,18 +247,9 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     protected void initializeActions() {
         cancelButton.addListener(new CancelDatasetAsInputForBreedingViewAction(this));
         databaseOption.addListener(new DatabaseOptionAction(this));
-        
-        if (breedingViewEntryModel == null) {
-        
-            openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
-            selectDatasetForExportButton.addListener(openSelectDatasetForExportAction);
-        
-        } else {
-            
-            openSelectDatasetForExportAndXMLAction = new OpenSelectDatasetForExportAndXMLAction(this);
-            selectDatasetForExportButton.addListener(openSelectDatasetForExportAndXMLAction);
-            
-        }
+        openSelectDatasetForExportAndXMLAction = new OpenSelectDatasetForExportAndXMLAction(this);
+        selectDatasetForExportButton.addListener(openSelectDatasetForExportAndXMLAction);
+
     }
     
     protected void initializeDatasetTable() {

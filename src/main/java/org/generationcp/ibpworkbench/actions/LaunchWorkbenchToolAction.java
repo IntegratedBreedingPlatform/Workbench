@@ -17,15 +17,21 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
+import org.generationcp.ibpworkbench.comp.WorkflowConstants;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -40,24 +46,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class LaunchWorkbenchToolAction implements ClickListener, ActionListener {
+public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
     
     private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
     
-    Window selectedWindow;
     Project project;
-    boolean isLinkAccessed;
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
@@ -96,6 +100,8 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     }
 
     private ToolEnum toolEnum;
+    
+    private String toolConfiguration;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -114,28 +120,22 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
     
     public LaunchWorkbenchToolAction(ToolEnum toolEnum) {
         this.toolEnum = toolEnum;
+        this.toolConfiguration = WorkflowConstants.DEFAULT;
     }
     
-    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project) {
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration) {
         this.toolEnum = toolEnum;
         this.project = project;
+        this.toolConfiguration = toolConfiguration;
     }
     
     @Override
     public void buttonClick(ClickEvent event) {
         
-        selectedWindow = event.getComponent().getWindow();
+        Window window = event.getComponent().getWindow();
         
-        if (toolEnum.getToolName().equals(ToolEnum.BREEDING_VIEW.getToolName())) {
-            
-            showBreedingViewConfirmationDialog(true);
-            
-        } else {
-            
-            launchTool(toolEnum.getToolName(), selectedWindow, true);
+        launchTool(toolEnum.getToolName(), window, true);
         
-        }
-
     }
 
     @Override
@@ -149,18 +149,9 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         String toolName = uriFragment.split("/")[1];
         
         if(ToolEnum.isCorrectTool(toolName)) {
-            
-            if (toolEnum.getToolName().equals(ToolEnum.BREEDING_VIEW.getToolName())) {
                 
-                showBreedingViewConfirmationDialog(isLinkAccessed);
-                
-            } else {
-                
-                launchTool(toolName, window, isLinkAccessed);
+            launchTool(toolName, window, isLinkAccessed);
             
-            }
-            
-            //launchTool(toolName, window, isLinkAccessed);
         } else {
             LOG.debug("Cannot launch tool due to invalid tool: {}", toolName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
@@ -187,14 +178,24 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
         } else {
             if (tool.getToolType() == ToolType.NATIVE) {
                 
-                try {
-                    toolUtil.launchNativeTool(tool);
-                }
-                catch (IOException e) {
-                    File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-                    
-                    LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
-                    showLaunchError(window, absoluteToolFile.getAbsolutePath());
+                if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
+                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS)
+                        ) {
+                        
+                        window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
+                        
+                } else {
+                
+                    try {
+                        toolUtil.launchNativeTool(tool);
+                    }
+                    catch (IOException e) {
+                        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+                        
+                        LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
+                        showLaunchError(window, absoluteToolFile.getAbsolutePath());
+                    }
+                
                 }
                 
             }
@@ -255,46 +256,6 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
                 contentWindow.showContent(browser);
             }
         }
-    }
-    
-    private void setConfiguration(boolean isConfirmed, Window window) {
-        
-        if (isConfirmed) {
-            
-            selectedWindow.addWindow(new SelectDetailsForBreedingViewWindow(project));
-            
-        } else {
-            
-            launchTool(toolEnum.getToolName(), window, isLinkAccessed);
-            
-        }
-
-        
-    }
-    
-    private void showBreedingViewConfirmationDialog(boolean isLinkAccessed) {
-        
-        this.isLinkAccessed = isLinkAccessed;
-        
-        ConfirmDialog.show(selectedWindow, "Please Confirm:", "Assign a target Analysis Project?",
-                "Yes", "No", new ConfirmDialog.Listener() {
-    
-                    private static final long serialVersionUID = -7840555816177922409L;
-
-                    public void onClose(ConfirmDialog dialog) {
-                        if (dialog.isConfirmed()) {
-                            // Confirmed to continue
-                            LOG.info("Yes");
-                            
-                            setConfiguration(dialog.isConfirmed(), selectedWindow);
-                        } else {
-                            // User did not confirm
-                            LOG.info("No");
-                            setConfiguration(dialog.isConfirmed(), selectedWindow);
-                        }
-                    }
-                });
-
     }
     
     private void showLaunchError(Window window, String tool) {

@@ -70,6 +70,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button gdmsButton;
     private Button breedingManagerButton;
     private Button breedingViewButton;
+    private Button breedingViewSingleSiteAnalysisButton;
     private Button fieldbookButton;
     private Button optimasButton;
     
@@ -148,6 +149,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
+        
+        breedingViewSingleSiteAnalysisButton = new Button("Single-Site Analysis");
+        breedingViewSingleSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisButton.setSizeUndefined();
+        breedingViewSingleSiteAnalysisButton.setDescription("Click to launch Single-Site Analysis");
 
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -372,6 +378,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
+        
+/*        layout.addComponent(breedingViewSingleSiteAnalysisButton);
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);*/
 
         return layout;
     }
@@ -441,7 +451,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
+            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            breedingViewSingleSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
         }

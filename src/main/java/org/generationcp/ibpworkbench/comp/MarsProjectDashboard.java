@@ -54,6 +54,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     private Label phenotypicAnalysisTitle;
     private Label qtlAnalysisTitle;
+    private Label singleSiteAnalysisTitle;
 
     private Label qtlSelectionTitle;
     
@@ -73,6 +74,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button gdmsButton;
 
     private Button phenotypicBreedingViewButton;
+    private Button breedingViewSingleSiteAnalysisButton;
     
     private Button qtlBreedingViewButton;
 
@@ -133,6 +135,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         qtlAnalysisTitle.setStyleName("gcp-section-title");
         qtlAnalysisTitle.setSizeUndefined();
         
+        singleSiteAnalysisTitle = new Label();
+        singleSiteAnalysisTitle.setStyleName("gcp-section-title");
+        singleSiteAnalysisTitle.setSizeUndefined();
+        
         qtlSelectionTitle = new Label();
         qtlSelectionTitle.setStyleName("gcp-section-title");
         qtlSelectionTitle.setSizeUndefined();
@@ -182,6 +188,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         qtlBreedingViewButton = new Button();
         qtlBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         qtlBreedingViewButton.setSizeUndefined();
+        
+        breedingViewSingleSiteAnalysisButton = new Button("Single-Site Analysis");
+        breedingViewSingleSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisButton.setSizeUndefined();
+        breedingViewSingleSiteAnalysisButton.setDescription("Click to launch Single-Site Analysis");
         
         // qtl selection buttons
         optimasButton = new Button();
@@ -432,6 +443,27 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         return layout;
     }
+    
+    protected Component layoutSingleSiteAnalysis() {
+        VerticalLayout layout = new VerticalLayout();
+        configureWorkflowStepLayout(layout);
+
+        layout.addComponent(singleSiteAnalysisTitle);
+        layout.setComponentAlignment(singleSiteAnalysisTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(singleSiteAnalysisTitle, 0);
+
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+
+/*        layout.addComponent(breedingViewSingleSiteAnalysisButton);
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);*/
+
+        return layout;
+    }
 
     protected Component layoutMarkerImplementationArea() {
         Panel panel = new Panel();
@@ -572,8 +604,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
-            phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
-            qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project));
+            phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            breedingViewSingleSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS));
+            
         }
     }
 
@@ -637,6 +671,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         messageSource.setCaption(qtlBreedingViewButton, Message.BREEDING_VIEW);
         messageSource.setDescription(qtlBreedingViewButton, Message.CLICK_TO_LAUNCH_BREEDING_VIEW);
+        
+        messageSource.setCaption(breedingViewSingleSiteAnalysisButton, Message.BREEDING_VIEW_SINGLE_SITE_ANALYSIS);
+        messageSource.setDescription(breedingViewSingleSiteAnalysisButton, Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS);
 
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
