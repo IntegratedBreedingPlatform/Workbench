@@ -120,6 +120,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                         
                     }
                 
+                } else {
+                    
+                    factorModel.setTrname(factor.getTraitId().toString());
                 }
                 
                 factorModel.setScaleid(factor.getScaleId());
@@ -136,6 +139,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                         
                     }
                     
+                } else {
+                    
+                    factorModel.setScname(factor.getScaleId().toString());
                 }
                 
                 factorModel.setTmethid(factor.getMethodId());
@@ -152,6 +158,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                         
                     }
                 
+                } else {
+                    
+                    factorModel.setTmname(factor.getMethodId().toString());
                 }
                 
                 container.addBean(factorModel);
@@ -197,10 +206,13 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                         
                     } else {
                         
-                        variateModel.setTmname(variate.getTraitId().toString());
+                        variateModel.setTrname(variate.getTraitId().toString());
                         
                     }
                 
+                } else {
+                    
+                    variateModel.setTrname(variate.getTraitId().toString());
                 }
                 
                 variateModel.setScaleid(variate.getScaleId());
@@ -213,10 +225,13 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                     
                     } else {
                         
-                        variateModel.setTmname(variate.getScaleId().toString());
+                        variateModel.setScname(variate.getScaleId().toString());
                         
                     }
                 
+                } else {
+                    
+                    variateModel.setScname(variate.getScaleId().toString());
                 }
                     
                 variateModel.setTmethid(variate.getMethodId());
@@ -233,6 +248,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
                         
                     }
                 
+                } else {
+                    
+                    variateModel.setTmname(variate.getMethodId().toString());
                 }
                 
                 container.addBean(variateModel);

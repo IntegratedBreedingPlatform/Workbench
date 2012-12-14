@@ -22,36 +22,57 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Fieldbook;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
-import org.generationcp.commons.breedingview.xml.ProjectType;
-import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.Variate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 
-public class BreedingViewXmlWriter implements Serializable{
+@Configurable
+public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
     private static final long serialVersionUID = 8844276834893749854L;
 
-    public static void write(StudyDataManager studyDataManager, String filename, String projectName, String version
-            , ProjectType projectType, DesignType designType, String environmentName, Integer datasetId
-            , String fieldbookFilePath) throws BreedingViewXmlWriterException{
+    private final static Logger LOG = LoggerFactory.getLogger(BreedingViewXMLWriter.class);
+    
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    private BreedingViewInput breedingViewInput;
+    
+    public BreedingViewXMLWriter(BreedingViewInput breedingViewInput) {
+        
+        this.breedingViewInput = breedingViewInput;
+        
+    }
+    
+    public void writeProjectXML() throws BreedingViewXMLWriterException{
+        
+        LOG.info("This Ran!: " + breedingViewInput.toString());
+        
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
+        
+        StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
         
         //get the variates of the dataset, the names of the numeric ones will be included in the xml
         List<Variate> variates = null;
         try{
-            variates = studyDataManager.getVariatesByRepresentationId(datasetId);
+            variates = studyDataManager.getVariatesByRepresentationId(breedingViewInput.getDatasetId());
         } catch(MiddlewareQueryException ex){
-            throw new BreedingViewXmlWriterException("Error with getting variates of dataset with id: " + datasetId
+            throw new BreedingViewXMLWriterException("Error with getting variates of dataset with id: " + breedingViewInput.getDatasetId()
                     + ": " + ex.getMessage(), ex);
         }
         
@@ -71,64 +92,28 @@ public class BreedingViewXmlWriter implements Serializable{
         Genotypes genotypes = new Genotypes();
         genotypes.setName("GID");
         
-        //create Blocks element
-        Blocks blocks = null;
-        try{
-            org.generationcp.middleware.pojos.Trait blockTrait = studyDataManager.getBlockTrait();
-            if(blockTrait != null){
-                Factor blockFactor = studyDataManager.getFactorOfDatasetByTraitid(datasetId, blockTrait.getTraitId());
-                if(blockFactor != null){
-                    blocks = new Blocks();
-                    blocks.setName(blockFactor.getName());
-                }
-            }
-        } catch(MiddlewareQueryException ex){
-            throw new BreedingViewXmlWriterException("Error with getting BLOCK factor of dataset with id: " + datasetId
-                    + ": " + ex.getMessage(), ex);
-        }
-        
-        //create Replicates element
-        Replicates replicates = null;
-        try{
-            org.generationcp.middleware.pojos.Trait repTrait = studyDataManager.getReplicationTrait();
-            if(repTrait != null){
-                Factor repFactor = studyDataManager.getFactorOfDatasetByTraitid(datasetId, repTrait.getTraitId());
-                if(repFactor != null){
-                    replicates = new Replicates();
-                    replicates.setName(repFactor.getName());
-                }
-            }
-        } catch(MiddlewareQueryException ex){
-            throw new BreedingViewXmlWriterException("Error with getting REPLICATION factor of dataset with id: " + datasetId
-                    + ": " + ex.getMessage(), ex);
-        }
-        
         //create Fieldbook element
         Fieldbook fieldbook = new Fieldbook();
-        fieldbook.setFile(fieldbookFilePath);
+        fieldbook.setFile(breedingViewInput.getSourceXLSFilePath());
         
         //create the Phenotypic element
         Phenotypic phenotypic = new Phenotypic();
         phenotypic.setTraits(traits);
-        if(blocks != null){
-            phenotypic.setBlocks(blocks);
-        }
-        if(replicates != null){
-            phenotypic.setReplicates(replicates);
-        }
+        phenotypic.setBlocks(breedingViewInput.getBlocks());
+        phenotypic.setReplicates(breedingViewInput.getReplicates());
         phenotypic.setGenotypes(genotypes);
         phenotypic.setFieldbook(fieldbook);
         
         //create the ProjectType element
         BreedingViewProjectType projectTypeElem = new BreedingViewProjectType();
-        projectTypeElem.setDesign(designType.getName());
-        projectTypeElem.setType(projectType.getName());
-        projectTypeElem.setEnvname(environmentName);
+        projectTypeElem.setDesign(breedingViewInput.getDesignType());
+        projectTypeElem.setType(breedingViewInput.getProjectType());
+        projectTypeElem.setEnvname(breedingViewInput.getEnvironmentName());
         
         //create the Breeding View project element
         BreedingViewProject project = new BreedingViewProject();
-        project.setName(projectName);
-        project.setVersion(version);
+        project.setName(breedingViewInput.getBreedingViewProjectName());
+        project.setVersion(breedingViewInput.getVersion());
         project.setType(projectTypeElem);
         project.setPhenotypic(phenotypic);
         
@@ -140,18 +125,24 @@ public class BreedingViewXmlWriter implements Serializable{
             marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         } catch(JAXBException ex){
-            throw new BreedingViewXmlWriterException("Error with opening JAXB context and marshaller: "
+            throw new BreedingViewXMLWriterException("Error with opening JAXB context and marshaller: "
                     + ex.getMessage(), ex);
         }
         
         //write the xml
         try{
-            FileWriter fileWriter = new FileWriter(filename);
+            FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
             marshaller.marshal(project, fileWriter);
             fileWriter.flush();
             fileWriter.close();
         } catch(Exception ex){
-            throw new BreedingViewXmlWriterException("Error with writing xml to: " + filename + ": " + ex.getMessage(), ex);
+            throw new BreedingViewXMLWriterException("Error with writing xml to: " + breedingViewInput.getDestXMLFilePath() + ": " + ex.getMessage(), ex);
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -16,16 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelDatasetAsInputForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.DatabaseOptionAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
-import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAndXMLAction;
 import org.generationcp.ibpworkbench.actions.ShowStudyDatasetDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
-import org.generationcp.ibpworkbench.model.BreedingViewEntryModel;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
@@ -58,7 +57,7 @@ import com.vaadin.ui.Window;
  *
  */
 @Configurable
-public class SelectDatasetForBreedingViewWindow extends Window implements InitializingBean {
+public class SelectDatasetForBreedingViewWindow extends Window implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -92,14 +91,13 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     
     private String currentDatasetName;
 
-    //private Label selectDatasetTitle;
-    private Button cancelButton;
-    private Button selectDatasetForExportButton;
+    private Button btnCancel;
+    private Button btnNext;
     private Component buttonArea;
 
     private Database database;
 
-    private OpenSelectDatasetForExportAndXMLAction openSelectDatasetForExportAndXMLAction;
+    private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -245,10 +243,10 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     }
 
     protected void initializeActions() {
-        cancelButton.addListener(new CancelDatasetAsInputForBreedingViewAction(this));
+        btnCancel.addListener(new CancelDatasetAsInputForBreedingViewAction(this));
         databaseOption.addListener(new DatabaseOptionAction(this));
-        openSelectDatasetForExportAndXMLAction = new OpenSelectDatasetForExportAndXMLAction(this);
-        selectDatasetForExportButton.addListener(openSelectDatasetForExportAndXMLAction);
+        openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
+        btnNext.addListener(openSelectDatasetForExportAction);
 
     }
     
@@ -375,11 +373,11 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        cancelButton = new Button("Cancel");
-        selectDatasetForExportButton = new Button("Run Breeding View");
+        btnCancel = new Button();
+        btnNext = new Button();
 
-        buttonLayout.addComponent(cancelButton);
-        buttonLayout.addComponent(selectDatasetForExportButton);
+        buttonLayout.addComponent(btnCancel);
+        buttonLayout.addComponent(btnNext);
 
         return buttonLayout;
     }
@@ -510,6 +508,19 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         
         assemble();
         
+    }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    }
+
+    @Override
+    public void updateLabels() {
+        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnNext, Message.NEXT);
     }
 
 }

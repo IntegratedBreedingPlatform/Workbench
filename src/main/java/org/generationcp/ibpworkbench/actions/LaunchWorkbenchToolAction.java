@@ -17,17 +17,13 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.comp.window.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -51,7 +47,6 @@ import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 
@@ -182,7 +177,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS)
                         ) {
                         
-                        window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
+                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
                         
                 } else {
                 

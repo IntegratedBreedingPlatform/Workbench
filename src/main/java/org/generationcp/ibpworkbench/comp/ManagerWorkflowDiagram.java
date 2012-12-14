@@ -339,9 +339,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
         
-/*        layout.addComponent(breedingViewSingleSiteAnalysisButton);
+        layout.addComponent(breedingViewSingleSiteAnalysisButton);
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);*/
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);
 
         return layout;
     }

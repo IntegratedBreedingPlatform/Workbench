@@ -14,10 +14,10 @@
 package org.generationcp.ibpworkbench.util;
 
 
-public class BreedingViewXmlWriterException extends Exception{
+public class BreedingViewXMLWriterException extends Exception{
     private static final long serialVersionUID = -1510057823499826562L;
 
-    public BreedingViewXmlWriterException(String message, Throwable cause){
+    public BreedingViewXMLWriterException(String message, Throwable cause){
         super(message, cause);
     }
 }
