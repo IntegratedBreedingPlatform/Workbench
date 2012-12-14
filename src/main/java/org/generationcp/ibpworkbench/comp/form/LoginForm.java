@@ -16,6 +16,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
+import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -46,6 +47,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private Label lblMessage;
     private int userId;
     private Button registerUserAccountButton;
+    private Button forgotPasswordButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -100,6 +102,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
     protected void initializeActions() {
         registerUserAccountButton.addListener(new OpenRegisterUserAccountAction());
+        forgotPasswordButton.addListener(new OpenSecurityQuestionAction());
     }
 
     protected void assemble() {
@@ -141,6 +144,11 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         btnLogin = new Button();
         loginPanelLayout.addComponent(btnLogin);
         loginPanelLayout.setComponentAlignment(btnLogin, Alignment.TOP_CENTER);
+        
+        forgotPasswordButton = new Button();
+        forgotPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
+        loginPanelLayout.addComponent(forgotPasswordButton);
+        loginPanelLayout.setComponentAlignment(forgotPasswordButton, Alignment.BOTTOM_CENTER);
         
         registerUserAccountButton = new Button();
         registerUserAccountButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -210,6 +218,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         messageSource.setValue(lblUsername, Message.USERNAME);
         messageSource.setValue(lblPassword, Message.PASSWORD);
         messageSource.setValue(lblMessage, Message.ERROR_LOGIN_INVALID);
+        messageSource.setCaption(forgotPasswordButton, Message.FORGOT_PASSWORD);
         messageSource.setCaption(registerUserAccountButton, Message.REGISTER_USER_ACCOUNT);
     }
 }

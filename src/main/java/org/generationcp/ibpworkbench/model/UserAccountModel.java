@@ -31,12 +31,14 @@ public class UserAccountModel implements Serializable{
     private String firstName;
     private String lastName;
     private String middlename;
-    private String positionTitle;
+    //private String positionTitle;
     private String email;
     
     private String username;
     private String password;
     private String passwordConfirmation;
+    private String securityQuestion;
+    private String securityAnswer;
     
     /**
      * Initialize fields so that the "null" String value does not appear.
@@ -45,12 +47,14 @@ public class UserAccountModel implements Serializable{
         firstName = "";
         lastName = "";
         middlename = "";
-        positionTitle = "";
+        //positionTitle = "";
         email = "";
         
         username = "";
         password = "";
         passwordConfirmation = "";
+        securityQuestion = "";
+        securityAnswer = "";
     }
     
     public String getFirstName() {
@@ -77,13 +81,13 @@ public class UserAccountModel implements Serializable{
         this.middlename = ioname;
     }
     
-    public String getPositionTitle() {
+    /*public String getPositionTitle() {
         return positionTitle;
     }
     
     public void setPositionTitle(String positionTitle) {
         this.positionTitle = positionTitle;
-    }
+    }*/
     
     public String getEmail() {
         return email;
@@ -117,16 +121,34 @@ public class UserAccountModel implements Serializable{
         this.passwordConfirmation = passwordConfirmation;
     }
     
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+    
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+    
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+    
     public void trimAll() {
         firstName = firstName.trim();
         lastName = lastName.trim();
         middlename = middlename.trim();
-        positionTitle = positionTitle.trim();
+        //positionTitle = positionTitle.trim();
         email = email.trim();
         
         username = username.trim();
         password = password.trim();
         passwordConfirmation = passwordConfirmation.trim();
+        securityQuestion = securityQuestion.trim();
+        securityAnswer = securityAnswer.trim();
     }
     
 }

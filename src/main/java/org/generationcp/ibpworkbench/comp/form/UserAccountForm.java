@@ -60,7 +60,7 @@ public class UserAccountForm extends Form{
 
     protected void initializeComponents() { 
         
-        grid = new GridLayout(4, 5);
+        grid = new GridLayout(4, 7);
         grid.setSpacing(true);
         grid.setMargin(true);
         
@@ -72,8 +72,9 @@ public class UserAccountForm extends Form{
         setComponentError(null);
         setFormFieldFactory(new UserAccountFormFieldFactory());
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "positionTitle", "firstName", "middleName", "lastName", "email", 
-                               "username", "password", "passwordConfirmation"}));
+                new String[] { "firstName", "middleName", "lastName", "email", 
+                               "username", "password", "passwordConfirmation",
+                               "securityQuestion", "securityAnswer"}));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -82,14 +83,15 @@ public class UserAccountForm extends Form{
     @Override
     protected void attachField(Object propertyId, Field field) {
         
-        if("positionTitle".equals(propertyId)) {
+        /*if("positionTitle".equals(propertyId)) {
             grid.addComponent(field, 0, 0);
-        } else if ("firstName".equals(propertyId)) {
-            grid.addComponent(field, 1, 0);
+        } else */
+        if ("firstName".equals(propertyId)) {
+            grid.addComponent(field, 0, 0);
         } else if ("middleName".equals(propertyId)) {
-            grid.addComponent(field, 2, 0);
+            grid.addComponent(field, 1, 0);
         } else if ("lastName".equals(propertyId)) {
-            grid.addComponent(field, 3, 0);
+            grid.addComponent(field, 2, 0);
         } else if ("email".equals(propertyId)) {
             grid.addComponent(field, 0, 1);
         } else if ("username".equals(propertyId)) {
@@ -98,6 +100,10 @@ public class UserAccountForm extends Form{
             grid.addComponent(field, 0, 3);
         } else if ("passwordConfirmation".equals(propertyId)) {
             grid.addComponent(field, 0, 4);
+        } else if ("securityQuestion".equals(propertyId)) {
+            grid.addComponent(field, 0, 5, 2, 5);
+        } else if ("securityAnswer".equals(propertyId)) {
+            grid.addComponent(field, 0, 6, 2, 6);
         } 
     }
     

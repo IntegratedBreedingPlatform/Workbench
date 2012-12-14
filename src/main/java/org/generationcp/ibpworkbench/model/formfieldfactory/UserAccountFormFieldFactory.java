@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -49,6 +50,8 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
     
     private PasswordField password;
     private PasswordField passwordConfirmation;
+    
+    private ComboBox securityQuestion;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -80,7 +83,9 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         passwordConfirmation.setRequiredError("Please re-type your password for confirmation.");
         passwordConfirmation.addValidator(new StringLengthValidator("Password confirmation must be 1-30 characters.", 1, 30, false));
         
-        password.addValidator(new UserPasswordValidator(password, passwordConfirmation));        
+        password.addValidator(new UserPasswordValidator(password, passwordConfirmation));
+        
+        securityQuestion = new ComboBox();
     }
 
     @Override
@@ -88,12 +93,13 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
          
         Field field = super.createField(item, propertyId, uiContext);
         
-        if("positionTitle".equals(propertyId)) {
+        /*if("positionTitle".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_POS_TITLE);
             field.setRequired(false);
             field.setRequiredError("Please enter a Position Title.");
             field.addValidator(new StringLengthValidator("Position Title must be 2-25 characters.", 2, 25, false));
-        } else if ("firstName".equals(propertyId)) {
+        } else */
+        if ("firstName".equals(propertyId)) {
             messageSource.setCaption(firstName, Message.USER_ACC_FNAME);
             return firstName;
         } else if ("lastName".equals(propertyId)) {
@@ -102,7 +108,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         } else if ("middleName".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_MIDNAME);
             field.setRequired(false);
-            field.setRequiredError("Please enter a Middle Initial.");
+            //field.setRequiredError("Please enter a Middle Initial.");
             field.addValidator(new StringLengthValidator("Middle Initial must be 1-15 characters.", 1, 15, false));
         } else if ("email".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_EMAIL);
@@ -122,6 +128,23 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         } else if ("passwordConfirmation".equals(propertyId)) {
             messageSource.setCaption(passwordConfirmation, Message.USER_ACC_PASSWORD_CONFIRM);
             return passwordConfirmation;
+        } else if ("securityQuestion".equals(propertyId)) {
+            messageSource.setCaption(securityQuestion, Message.SECURITY_QUESTION);
+            securityQuestion.setWidth("100%");
+            securityQuestion.setRequired(true);
+            securityQuestion.setRequiredError("Please specify a security question that only you can answer.");
+            
+            securityQuestion.setTextInputAllowed(false);
+            securityQuestion.addItem("What is your mother's maiden name?");
+            securityQuestion.addItem("What is your first pet's name?");
+            securityQuestion.addItem("What is your town of birth?");
+            
+            return securityQuestion;
+        } else if ("securityAnswer".equals(propertyId)) {
+            messageSource.setCaption(field, Message.SECURITY_ANSWER);
+            field.setWidth("100%");
+            field.setRequired(true);
+            field.setRequiredError("Please enter the answer to your security question.");
         } 
         
         return field;

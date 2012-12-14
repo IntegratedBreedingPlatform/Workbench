@@ -85,7 +85,7 @@ public class UserAccountPanel extends Panel {
         setImmediate(false);
         setWidth("675px");
         
-        form.setHeight("340px");
+        form.setHeight("400px");
         
         vl.setMargin(true);
         vl.setComponentAlignment(form, Alignment.MIDDLE_CENTER);

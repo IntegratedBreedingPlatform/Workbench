@@ -55,8 +55,8 @@ public class NewProjectAddUserPanel extends Panel {
     private TwinColSelect membersSelect;
     
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { 
-        "positionTitle", "firstName", "middleName", "lastName", "email", 
-        "username"};
+        "firstName", "middleName", "lastName", "email", 
+        "username", "securityQuestion",  "securityAnswer"};
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -93,7 +93,7 @@ public class NewProjectAddUserPanel extends Panel {
         setImmediate(false);
         setWidth("675px");
         
-        userForm.setHeight("200px");
+        userForm.setHeight("320px");
         
         vl.setMargin(true);
         vl.setComponentAlignment(userForm, Alignment.MIDDLE_CENTER);

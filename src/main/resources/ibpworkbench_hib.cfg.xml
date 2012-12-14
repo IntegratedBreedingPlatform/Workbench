@@ -37,5 +37,7 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.ToolConfiguration"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchSetting"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.SecurityQuestion"/>
+        
     </session-factory>
 </hibernate-configuration>

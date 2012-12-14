@@ -23,6 +23,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,7 +122,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         person.setMiddleName(userAccount.getMiddleName());
         person.setLastName(userAccount.getLastName());
         person.setEmail(userAccount.getEmail());
-        person.setTitle(userAccount.getPositionTitle());
+        person.setTitle("-");
         person.setContact("-");
         person.setExtension("-");
         person.setFax("-");
@@ -145,6 +146,12 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         user.setStatus(0);
         user.setType(0);
         workbenchDataManager.addUser(user);
+        
+        SecurityQuestion question = new SecurityQuestion();
+        question.setUserId(user.getUserid());
+        question.setSecurityQuestion(userAccount.getSecurityQuestion());
+        question.setSecurityAnswer(userAccount.getSecurityAnswer());
+        workbenchDataManager.addSecurityQuestion(question);
         
         // add new user to the TwinColumnSelect
         membersSelect.addItem(user);
