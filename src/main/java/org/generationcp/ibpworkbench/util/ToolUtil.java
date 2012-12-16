@@ -20,9 +20,12 @@ import java.util.List;
 
 import org.apache.poi.util.IOUtils;
 import org.generationcp.commons.util.Util;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -158,6 +161,26 @@ public class ToolUtil {
         String centralDbName = String.format("ibdb_%s_central", project.getCropType().getCropName().toLowerCase());
         String localDbName = String.format("%s_%d_local", project.getCropType().getCropName().toLowerCase(), project.getProjectId());
         
+        //get mysql user name and password to use
+        String username = null;
+        String password = null;
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
+        if(app != null){
+            User currentUser = app.getSessionData().getUserData();
+            
+            if(currentUser != null){
+                try{
+                    ProjectUserMysqlAccount account = this.workbenchDataManager.getProjectUserMysqlAccountByProjectIdAndUserId(
+                            Integer.valueOf(project.getProjectId().intValue()), currentUser.getUserid());
+                    username = account.getMysqlUsername();
+                    password = account.getMysqlPassword();
+                } catch(MiddlewareQueryException ex){
+                    //do nothing, use the default central and local mysql user accounts
+                }
+            }
+        }
+        
         if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name(), ToolName.breeding_manager.name())) {
             File configurationFile = new File("tools/" + tool.getToolName() + "/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
             
@@ -195,11 +218,20 @@ public class ToolUtil {
             String centralJdbcString = String.format(jdbcFormat, jdbcHost, jdbcPort, centralDbName);
             String localJdbcString = String.format(jdbcFormat, jdbcHost, jdbcPort, localDbName);
             
-            String configuration = String.format(format, centralJdbcString, centralUser, centralPassword
-                                                       , centralJdbcString, centralUser, centralPassword
-                                                       , localJdbcString, localUser, localPassword
-                                                       , localJdbcString, localUser, localPassword);
-            
+            String configuration = "";
+            if((username != null && !(username.trim().equals("")))
+                    && (password != null && !(password.trim().equals("")))){
+                configuration = String.format(format, centralJdbcString, username, password
+                        , centralJdbcString, username, password
+                        , localJdbcString, username, password
+                        , localJdbcString, username, password);
+            } else {
+                configuration = String.format(format, centralJdbcString, centralUser, centralPassword
+                                                           , centralJdbcString, centralUser, centralPassword
+                                                           , localJdbcString, localUser, localPassword
+                                                           , localJdbcString, localUser, localPassword);
+            }
+                
             FileOutputStream fos = new FileOutputStream(configurationFile);
             try {
                 fos.write(configuration.getBytes());
@@ -234,8 +266,15 @@ public class ToolUtil {
             String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, centralDbName);
             String localUrl   = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, localDbName);
             
-            String configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
-                                                       , localUrl, localDbName, jdbcHost, jdbcPort, localUser, localPassword);
+            String configuration = "";
+            if((username != null && !(username.trim().equals("")))
+                    && (password != null && !(password.trim().equals("")))){
+                configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, username, password
+                        , localUrl, localDbName, jdbcHost, jdbcPort, username, password);
+            } else {
+                configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
+                                                           , localUrl, localDbName, jdbcHost, jdbcPort, localUser, localPassword);
+            }
             
             FileOutputStream fos = new FileOutputStream(configurationFile);
             try {
@@ -272,7 +311,13 @@ public class ToolUtil {
                 }
                 String templateStr = new String(templateBytes);
 
-                String configuration = String.format(templateStr, jdbcHost, jdbcPort, localDbName, localUser, localPassword);
+                String configuration = "";
+                if((username != null && !(username.trim().equals("")))
+                        && (password != null && !(password.trim().equals("")))){
+                    configuration = String.format(templateStr, jdbcHost, jdbcPort, localDbName, username, password);
+                } else {
+                    configuration = String.format(templateStr, jdbcHost, jdbcPort, localDbName, localUser, localPassword);
+                }
 
                 FileOutputStream fos = new FileOutputStream(configurationFile);
                 try {
