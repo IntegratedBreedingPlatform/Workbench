@@ -38,6 +38,7 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchSetting"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.SecurityQuestion"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount"/>
         
     </session-factory>
 </hibernate-configuration>

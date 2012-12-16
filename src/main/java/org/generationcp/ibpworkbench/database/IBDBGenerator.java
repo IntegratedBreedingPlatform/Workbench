@@ -1,3 +1,15 @@
+/***************************************************************
+ * Copyright (c) 2012, All Rights Reserved.
+ * 
+ * Generation Challenge Programme (GCP)
+ * 
+ * 
+ * This software is licensed for use under the terms of the 
+ * GNU General Public License (http://bit.ly/8Ztv8M) and the 
+ * provisions of Part F of the Generation Challenge Programme 
+ * Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * 
+ **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
 import java.io.BufferedReader;
@@ -39,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class IBDBGenerator{
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
-    private static final String WORKBENCH_PROP = "workbench.properties";
+    public static final String WORKBENCH_PROP = "workbench.properties";
     
     private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
     private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
@@ -47,32 +59,32 @@ public class IBDBGenerator{
     private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
     private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
     
-    private static final String WORKBENCH_PROP_HOST = "workbench.host";
-    private static final String WORKBENCH_PROP_PORT = "workbench.port";
-    private static final String WORKBENCH_PROP_USER = "workbench.username";
-    private static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
+    public static final String WORKBENCH_PROP_HOST = "workbench.host";
+    public static final String WORKBENCH_PROP_PORT = "workbench.port";
+    public static final String WORKBENCH_PROP_USER = "workbench.username";
+    public static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
     
-    private static final String DB_LOCAL_NAME_SUFFIX = "_local";
+    public static final String DB_LOCAL_NAME_SUFFIX = "_local";
     
     private static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
     private static final String SQL_CHAR_SET = " CHARACTER SET ";
     private static final String SQL_COLLATE = " COLLATE ";
-    private static final String SQL_GRANT_ALL = "GRANT ALL ON ";
-    private static final String SQL_TO = " TO ";
-    private static final String SQL_IDENTIFIED_BY = " IDENTIFIED BY ";
-    private static final String SQL_FLUSH_PRIVILEGES = "FLUSH PRIVILEGES ";
+    public static final String SQL_GRANT_ALL = "GRANT ALL ON ";
+    public static final String SQL_TO = " TO ";
+    public static final String SQL_IDENTIFIED_BY = " IDENTIFIED BY ";
+    public static final String SQL_FLUSH_PRIVILEGES = "FLUSH PRIVILEGES ";
     private static final String SQL_LINE_COMMENT = "--";
     private static final String SQL_BEGIN_COMMENT = "/*";
     private static final String SQL_END_COMMENT = "*/";
-    private static final String SQL_SINGLE_QUOTE = "'";
-    private static final String SQL_AT_SIGN = "@";
-    private static final String SQL_PERIOD = ".";
-    private static final String SQL_END = ";";
+    public static final String SQL_SINGLE_QUOTE = "'";
+    public static final String SQL_AT_SIGN = "@";
+    public static final String SQL_PERIOD = ".";
+    public static final String SQL_END = ";";
     
     private static final String DEFAULT_LOCAL_USER = "local";
-    private static final String DEFAULT_LOCAL_HOST = "localhost";
+    public static final String DEFAULT_LOCAL_HOST = "localhost";
     private static final String DEFAULT_LOCAL_PASSWORD = "local";
-    private static final String DEFAULT_ALL = "*";
+    public static final String DEFAULT_ALL = "*";
     private static final String DEFAULT_CHAR_SET = "utf8";
     private static final String DEFAULT_COLLATE = "utf8_general_ci";
     
@@ -562,13 +574,13 @@ public class IBDBGenerator{
         closeConnection();
     }
     
-    private void handleDatabaseError(Exception e) throws InternationalizableException {
+    public static void handleDatabaseError(Exception e) throws InternationalizableException {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e, 
                 Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
     
-    private void handleConfigurationError(Exception e) throws InternationalizableException {
+    public static void handleConfigurationError(Exception e) throws InternationalizableException {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e, 
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);

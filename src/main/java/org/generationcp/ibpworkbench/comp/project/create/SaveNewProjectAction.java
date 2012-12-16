@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
+import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -90,6 +92,7 @@ public class SaveNewProjectAction implements ClickListener{
             project = createProjectPanel.getProject();
 
             boolean isGenerationSuccess = false;
+            boolean isMysqlAccountGenerationSuccess = false;
 
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
@@ -106,6 +109,7 @@ public class SaveNewProjectAction implements ClickListener{
                 toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
             } catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage());
+                //TODO display error message and clean-up
             }
 
             IBDBGenerator generator;
@@ -116,6 +120,7 @@ public class SaveNewProjectAction implements ClickListener{
             } catch (InternationalizableException e) {
                 LOG.error(e.toString(), e);
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+                //TODO cleanup of records already saved for the project needed
                 return;
             }
 
@@ -181,9 +186,39 @@ public class SaveNewProjectAction implements ClickListener{
                     LOG.error(e.getMessage(), e);
                     MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
                             + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                    //TODO cleanup of records already saved for the project needed
                     return;
                 }
 
+                // create mysql user accounts for members of the project
+                if(isGenerationSuccess){
+                    Set<User> projectMembers = new HashSet<User>();
+                    projectMembers.add(currentUser);
+                    
+                    List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectMembers();
+                    for(ProjectUserRole projectUserRole : projectUserRoles){
+                        try{
+                            User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
+                            projectMembers.add(member);
+                        } catch(MiddlewareQueryException ex) {
+                            //do nothing because getting the User will not fail
+                        }
+                    }
+                    
+                    MysqlAccountGenerator mysqlAccountGenerator = new MysqlAccountGenerator(this.project.getCropType(), this.project.getProjectId(), 
+                            projectMembers, this.workbenchDataManager);
+                    
+                    try {
+                        isMysqlAccountGenerationSuccess = mysqlAccountGenerator.generateMysqlAccounts();
+                    } catch (InternationalizableException e) {
+                        LOG.error(e.toString(), e);
+                        MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+                        //TODO cleanup of records already saved for the project needed
+                        return;
+                    }
+                }
+                
+                
                 // add a workbench user to ibdb user mapping
                 IbdbUserMap ibdbUserMap = new IbdbUserMap();
                 ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
@@ -213,6 +248,7 @@ public class SaveNewProjectAction implements ClickListener{
                     LOG.error(e.getMessage(), e);
                     MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
                             + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                    //TODO cleanup of records already saved for the project needed
                     return;
                 }
             }
@@ -223,7 +259,8 @@ public class SaveNewProjectAction implements ClickListener{
             LOG.info(project.getProjectId() + "  " + project.getProjectName() + " " + project.getStartDate() + " "
                     + project.getTemplate().getTemplateId());
             LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
-
+            LOG.info("Mysql Accounts Generation Successful?: " + isMysqlAccountGenerationSuccess);
+            
             // go back to dashboard
             HomeAction home = new HomeAction();
             home.buttonClick(event);
