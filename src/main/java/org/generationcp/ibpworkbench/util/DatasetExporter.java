@@ -463,23 +463,38 @@ public class DatasetExporter {
     }
     
     private String[] getTraitScaleMethodInfo(Integer traitId, Integer scaleId, Integer methodId) throws DatasetExporterException {
-        String toreturn[] = new String[4];
+String toreturn[] = new String[4];
         
         try {
             Trait trait = this.traitDataManager.getTraitById(traitId);
             Scale scale = this.traitDataManager.getScaleByID(scaleId);
             TraitMethod method = this.traitDataManager.getTraitMethodById(methodId);
             
-            toreturn[0] = trait.getDescripton();
-            toreturn[1] = trait.getName();
-            toreturn[2] = scale.getName();
-            toreturn[3] = method.getName();
+            if(trait != null){
+                toreturn[0] = trait.getDescripton();
+                toreturn[1] = trait.getName();
+            } else {
+                toreturn[0] = "Not specified";
+                toreturn[1] = "Not specified";
+            }
+            
+            if(scale != null){
+                toreturn[2] = scale.getName();
+            } else {
+                toreturn[2] = "Not specified";
+            }
+            
+            if(method != null){
+                toreturn[3] = method.getName();
+            } else {
+                toreturn[3] = "Not specified";
+            }
         }
         catch(Exception ex) {
             throw new DatasetExporterException("Error with getting trait, scale, and method information for " +
-            		"trait id = " + traitId +
-            		" scale id = " + scaleId + 
-            		" method id = " + methodId, ex);
+                        "trait id = " + traitId +
+                        " scale id = " + scaleId + 
+                        " method id = " + methodId, ex);
         }
         
         return toreturn;
