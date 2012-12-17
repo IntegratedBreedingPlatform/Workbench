@@ -2,6 +2,8 @@
 
 .v-panel-content-gcp-login > div {
     background-image: url(images/login.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
 }
 
 .gcp-window-title {
