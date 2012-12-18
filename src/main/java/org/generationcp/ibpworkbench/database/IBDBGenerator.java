@@ -58,6 +58,12 @@ public class IBDBGenerator{
     private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
     private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
     private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
+
+    private static final String GDMS_INSERT_CASSAVA_SQL = "icass_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_CHICKPEA_SQL = "ichis_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_GROUNDNUT_SQL = "ignis_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_RICE_SQL = "iris_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_WHEAT_SQL = "iwis_ibdb_gdms_insert_only.sql";
     
     public static final String WORKBENCH_PROP_HOST = "workbench.host";
     public static final String WORKBENCH_PROP_PORT = "workbench.port";
@@ -226,6 +232,18 @@ public class IBDBGenerator{
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));
+            
+            if (cropType.getCropName().equalsIgnoreCase(CropType.CASSAVA)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CASSAVA_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.CHICKPEA)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CHICKPEA_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.GROUNDNUT)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_GROUNDNUT_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.RICE)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_RICE_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.WHEAT)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_WHEAT_SQL).toURI()));
+            }  
             
             LOG.info("IB Local Database Generation Successful");
 
