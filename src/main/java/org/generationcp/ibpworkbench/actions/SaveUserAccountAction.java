@@ -73,10 +73,16 @@ public class SaveUserAccountAction implements ClickListener {
         } catch (Exception e) {
             //TODO: investigate. Exception still not properly handled.
             //vaadin shows an "Internal Error" message
-            InternationalizableException i = (InternationalizableException) e;
-            MessageNotifier.showError(event.getComponent().getWindow(), 
-                    i.getCaption(), 
-                    i.getDescription());
+            if (e instanceof InternationalizableException) {                
+                InternationalizableException i = (InternationalizableException) e;
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                        i.getCaption(), 
+                        i.getDescription());
+            } else {
+                MessageNotifier.showError(event.getComponent().getWindow(), 
+                        e.getMessage(), 
+                        "");
+            }
             return;
         }
         
