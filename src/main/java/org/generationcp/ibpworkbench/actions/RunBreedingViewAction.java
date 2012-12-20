@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
@@ -187,18 +189,17 @@ public class RunBreedingViewAction implements ClickListener {
             breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
             breedingViewXMLWriter.writeProjectXML();
             
-            /**
-            File absoluteToolFile = new File(selectDetailsForBreedingViewWindow.getTool().getPath()).getAbsoluteFile();
+            File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
             Runtime runtime = Runtime.getRuntime();
             LOG.info(breedingViewInput.toString());
             LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
             runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
-            **/
+            
         } catch (BreedingViewXMLWriterException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        } /**catch (IOException e) {
+        } catch (IOException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }**/
+        }
             
         event.getComponent().getWindow().getParent().removeWindow(this.source);
     }   
