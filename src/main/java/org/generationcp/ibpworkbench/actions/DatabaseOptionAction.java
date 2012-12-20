@@ -24,10 +24,12 @@ public class DatabaseOptionAction implements ValueChangeListener{
     @Override
     public void valueChange(ValueChangeEvent event) {
 
-            if (event.getProperty().getValue() == Database.CENTRAL) {
+            if (event.getProperty().getValue().equals(Database.CENTRAL)) {
+                LOG.info("Swtiched Database to CENTRAL");
                 selectDatasetForBreedingViewWindow.refreshStudyTreeTable(Database.CENTRAL);   
                 
             } else {
+                LOG.info("Swtiched Database to LOCAL");
                 selectDatasetForBreedingViewWindow.refreshStudyTreeTable(Database.LOCAL);
             }
             

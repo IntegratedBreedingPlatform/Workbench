@@ -12,10 +12,10 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ProjectType;
-import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
@@ -30,7 +30,6 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.TraitDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Factor;
-import org.generationcp.middleware.pojos.Trait;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -87,10 +86,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         Integer representationId = selectDatasetForBreedingViewWindow.getCurrentRepresentationId();
         String datasetName = selectDatasetForBreedingViewWindow.getCurrentDatasetName();
         
-        Blocks blocks = null;
-        Replicates replicates = null;
-        String environment = null;
-        String design = null;
+        List<Factor> factorsInDataset = new ArrayList<Factor>();
         
         if (selectDatasetForBreedingViewWindow.getCurrentStudy() != null) {
             
@@ -100,40 +96,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                     && datasetName != null) {
 
                 try {
-                    Trait blockTrait = studyDataManager.getBlockTrait();
-                    if(blockTrait != null){
-                        Factor blockFactor = studyDataManager.getFactorOfDatasetByTraitid(representationId, blockTrait.getTraitId());
-                        if(blockFactor != null){
-                            blocks = new Blocks();
-                            blocks.setName(blockFactor.getName());
-                        }
-                    }
-        
-                    Trait repTrait = studyDataManager.getReplicationTrait();
-                    if(repTrait != null){
-                        Factor repFactor = studyDataManager.getFactorOfDatasetByTraitid(representationId, repTrait.getTraitId());
-                        if(repFactor != null){
-                            replicates = new Replicates();
-                            replicates.setName(repFactor.getName());
-                        }
-                    }
-                    
-                    Trait envTrait = studyDataManager.getEnvironmentTrait();
-                    if(envTrait != null){
-                        Factor envFactor = studyDataManager.getFactorOfDatasetByTraitid(representationId, envTrait.getTraitId());
-                        if(envFactor != null){
-                            environment = envFactor.getName();
-                        }
-                    }
-                    
-                    Trait desTrait = studyDataManager.getDesignTrait();
-                    if(desTrait != null){
-                        Factor desFactor = studyDataManager.getFactorOfDatasetByTraitid(representationId, desTrait.getTraitId());
-                        if(desFactor != null){
-                            design = desFactor.getName();
-                        }
-                    }
-                    
+                    factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
                 } catch(MiddlewareQueryException e){
                     MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                 }
@@ -175,16 +138,13 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                     BreedingViewInput breedingViewInput = new BreedingViewInput(project
                             , breedingViewProjectName
                             , representationId
-                            , environment
                             , breedingViewTool.getVersion()
                             , sourceXLSFilePath
                             , destXMLFilePath
-                            , ProjectType.FIELD_TRIAL.getName()
-                            , design
-                            , blocks
-                            , replicates);
+                            , ProjectType.FIELD_TRIAL.getName());
                     
-                    event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput));
+                    event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
+                            , project));
                     event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
     
                 } catch (DatasetExporterException e) {

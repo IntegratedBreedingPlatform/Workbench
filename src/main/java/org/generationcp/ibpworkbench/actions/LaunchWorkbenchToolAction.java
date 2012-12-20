@@ -174,12 +174,18 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             if (tool.getToolType() == ToolType.NATIVE) {
                 
                 if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
-                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS)
+                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)
                         ) {
                         
                     window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
                         
-                } else {
+                } else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
+                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL))
+                 {
+                
+                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.LOCAL));
+                
+                }else {
                 
                     try {
                         toolUtil.launchNativeTool(tool);

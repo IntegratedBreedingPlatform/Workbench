@@ -14,10 +14,11 @@ package org.generationcp.ibpworkbench.util;
 import java.io.Serializable;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.ProjectType;
+import org.generationcp.commons.breedingview.xml.Columns;
+import org.generationcp.commons.breedingview.xml.Environment;
+import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 /**
@@ -44,24 +45,26 @@ public class BreedingViewInput implements Serializable {
     private String designType;
     private Blocks blocks;
     private Replicates replicates;
+    private Genotypes genotypes;
+    private Rows rows;
+    private Columns columns;
+    private Environment environment;
     
     public BreedingViewInput(Project project, String breedingViewProjectName,
-            Integer datasetId, String environmentName, String version,
+            Integer datasetId, String version,
             String sourceXLSFilePath, String destXMLFilePath,
-            String projectType, String designType, Blocks blocks,
-            Replicates replicates) {
+            String projectType) {
         super();
         this.project = project;
         BreedingViewProjectName = breedingViewProjectName;
         this.datasetId = datasetId;
-        this.environmentName = environmentName;
         this.version = version;
         this.sourceXLSFilePath = sourceXLSFilePath;
         this.destXMLFilePath = destXMLFilePath;
         this.projectType = projectType;
-        this.designType = designType;
-        this.blocks = blocks;
-        this.replicates = replicates;
+        this.blocks = null;
+        this.rows = null;
+        this.columns = null;
     }
 
     public Project getProject() {
@@ -150,6 +153,38 @@ public class BreedingViewInput implements Serializable {
 
     public void setReplicates(Replicates replicates) {
         this.replicates = replicates;
+    }
+
+    public Genotypes getGenotypes() {
+        return genotypes;
+    }
+    
+    public void setGenotypes(Genotypes genotypes) {
+        this.genotypes = genotypes;
+    }
+    
+    public Rows getRows() {
+        return rows;
+    }
+    
+    public void setRows(Rows rows) {
+        this.rows = rows;
+    }
+    
+    public Columns getColumns() {
+        return columns;
+    }
+    
+    public void setColumns(Columns columns) {
+        this.columns = columns;
+    }
+    
+    public Environment getEnvironment() {
+        return environment;
+    }
+    
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     @Override

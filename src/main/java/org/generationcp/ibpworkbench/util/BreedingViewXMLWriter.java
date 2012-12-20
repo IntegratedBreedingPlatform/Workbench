@@ -25,10 +25,8 @@ import javax.xml.bind.Marshaller;
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.Fieldbook;
-import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -88,10 +86,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
             }
         }
         
-        //create Genotypes element with name = GID
-        Genotypes genotypes = new Genotypes();
-        genotypes.setName("GID");
-        
         //create Fieldbook element
         Fieldbook fieldbook = new Fieldbook();
         fieldbook.setFile(breedingViewInput.getSourceXLSFilePath());
@@ -99,9 +93,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         //create the Phenotypic element
         Phenotypic phenotypic = new Phenotypic();
         phenotypic.setTraits(traits);
+        phenotypic.setEnvironments(breedingViewInput.getEnvironment());
         phenotypic.setBlocks(breedingViewInput.getBlocks());
         phenotypic.setReplicates(breedingViewInput.getReplicates());
-        phenotypic.setGenotypes(genotypes);
+        phenotypic.setRows(breedingViewInput.getRows());
+        phenotypic.setColumns(breedingViewInput.getColumns());
+        phenotypic.setGenotypes(breedingViewInput.getGenotypes());
         phenotypic.setFieldbook(fieldbook);
         
         //create the ProjectType element

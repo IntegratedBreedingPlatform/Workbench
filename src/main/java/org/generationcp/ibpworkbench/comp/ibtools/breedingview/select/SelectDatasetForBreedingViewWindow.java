@@ -21,7 +21,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelDatasetAsInputForBreedingViewAction;
-import org.generationcp.ibpworkbench.actions.DatabaseOptionAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.ShowStudyDatasetDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
@@ -45,7 +44,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -60,16 +58,6 @@ import com.vaadin.ui.Window;
 public class SelectDatasetForBreedingViewWindow extends Window implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
-    
-    private OptionGroup databaseOption;
-    
-    private TreeTable tr;
-    
-    private Table tblDataset;
-    
-    private Table tblFactors;
-    
-    private Table tblVariates;
     
     private Label lblStudyTreeDetailTitle;
     
@@ -175,34 +163,24 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         //selectDatasetTitle.setStyleName("gcp-content-title");
         
         //studyTreeLayout.addComponent(selectDatasetTitle);
-        
-        databaseOption = new OptionGroup("Select Database Location to Query: ");
-        databaseOption.addItem(Database.CENTRAL);
-        databaseOption.addItem(Database.LOCAL);
-
-        databaseOption.setMultiSelect(false);
-        databaseOption.setImmediate(true); 
-        databaseOption.select(Database.CENTRAL);
-
-        studyTreeLayout.addComponent(databaseOption);
-        
         lblStudyTreeDetailTitle = new Label();
         lblStudyTreeDetailTitle.setStyleName("gcp-content-title");
 
-        initializeFactorsTable();
+        Table factors = initializeFactorsTable();
         
-        initializeVariatesTable();
+        Table variates = initializeVariatesTable();
         
-        initializeDatasetTable();
+        Table datasets = initializeDatasetTable();
         
-        createStudyTreeTable(this.database);
+        TreeTable tr = createStudyTreeTable(this.database, datasets, factors, variates);
+        studyTreeLayout.addComponent(tr);
         
         buttonArea = layoutButtonArea();
         
-        studyDatasetDetailLayout.addComponent(tblDataset);
+        studyDatasetDetailLayout.addComponent(datasets);
         
-        datasetVariablesDetailLayout.addComponent(tblFactors);
-        datasetVariablesDetailLayout.addComponent(tblVariates);
+        datasetVariablesDetailLayout.addComponent(factors);
+        datasetVariablesDetailLayout.addComponent(variates);
         
         studyDetailsLayout.addComponent(studyDatasetDetailLayout, 0, 0, 2, 0);
         studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 3, 0, 9, 0);
@@ -244,15 +222,14 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
     protected void initializeActions() {
         btnCancel.addListener(new CancelDatasetAsInputForBreedingViewAction(this));
-        databaseOption.addListener(new DatabaseOptionAction(this));
         openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
         btnNext.addListener(openSelectDatasetForExportAction);
 
     }
     
-    protected void initializeDatasetTable() {
+    protected Table initializeDatasetTable() {
         
-        tblDataset = new Table("Datasets Of Selected Study: ");
+        Table tblDataset = new Table("Datasets Of Selected Study: ");
         tblDataset.setImmediate(true);
         tblDataset.setWidth("100%");
         tblDataset.setHeight("100%");
@@ -265,12 +242,12 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         String[] columnHeaders = new String[] {"Name"};
         tblDataset.setVisibleColumns(columns);
         tblDataset.setColumnHeaders(columnHeaders);
-        
+        return tblDataset;
     }
 
-    protected void initializeFactorsTable() {
+    protected Table initializeFactorsTable() {
         
-        tblFactors = new Table("Factors of the Selected Dataset: ");
+        Table tblFactors = new Table("Factors of the Selected Dataset: ");
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
         tblFactors.setHeight("100%");
@@ -283,12 +260,12 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
-        
+        return tblFactors;
     }
     
-    protected void initializeVariatesTable() {
+    protected Table initializeVariatesTable() {
         
-        tblVariates = new Table("Variates of the Selected Dataset: ");
+        Table tblVariates = new Table("Variates of the Selected Dataset: ");
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
         tblVariates.setHeight("100%");
@@ -301,46 +278,26 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
-        
+        return tblVariates;
     }
     
-    private void refreshDatasetTable() {
-        
-        if (tblDataset != null) {
-            studyDatasetDetailLayout.removeComponent(tblDataset);
-            tblDataset.removeAllItems();
-        }
-        
-        initializeDatasetTable();
-        
-        studyDatasetDetailLayout.addComponent(tblDataset);
-        
+    private Table refreshDatasetTable() {
+        studyDatasetDetailLayout.removeAllComponents();
+        Table datasets = initializeDatasetTable();
+        studyDatasetDetailLayout.addComponent(datasets);
+        return datasets;
     }
     
-    private void refreshFactorsTable() {
-        
-        if (tblFactors != null) {
-            datasetVariablesDetailLayout.removeComponent(tblFactors);
-            tblFactors.removeAllItems();
-        }
-        
-        initializeFactorsTable();
-        
-        datasetVariablesDetailLayout.addComponent(tblFactors);
-        
-    }
-    
-    private void refreshVariatesTable() {
-        
-        if (tblVariates != null) {
-            datasetVariablesDetailLayout.removeComponent(tblVariates);
-            tblVariates.removeAllItems();
-        }
-        
-        initializeVariatesTable();
-        
-        datasetVariablesDetailLayout.addComponent(tblVariates);
-        
+    private Table[] refreshFactorsAndVariatesTable() {
+        Table toreturn[] = new Table[2];
+        datasetVariablesDetailLayout.removeAllComponents();
+        Table factors = initializeFactorsTable();
+        Table variates = initializeVariatesTable();
+        datasetVariablesDetailLayout.addComponent(factors);
+        datasetVariablesDetailLayout.addComponent(variates);
+        toreturn[0] = factors;
+        toreturn[1] = variates;
+        return toreturn;
     }
     
 /*    private Component layoutStudyTreeDetailArea() {
@@ -389,9 +346,9 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         initializeActions();
     }
     
-    private void createStudyTreeTable(Database database) {
+    private TreeTable createStudyTreeTable(Database database, Table datasets, Table factors, Table variates) {
         
-        tr = new TreeTable("Study Tree Selection: ");
+        TreeTable tr = new TreeTable("Study Tree Selection: ");
             
         
         tr.addContainerProperty("Study Name", String.class, "sname");
@@ -429,29 +386,23 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         tr.setWidth("100%");
         tr.setColumnExpandRatio("Study Name", 1);
         
-        tr.addListener(new StudyTreeExpandAction(this));
-        tr.addListener(new ShowStudyDatasetDetailAction(tblDataset, tblFactors, tblVariates, this));
+        tr.addListener(new StudyTreeExpandAction(this, tr));
+        tr.addListener(new ShowStudyDatasetDetailAction(datasets, factors, variates, this));
         
-        studyTreeLayout.addComponent(tr);
-       
+        return tr;
     }
     
     public void refreshStudyTreeTable(Database database) {
         
-        refreshFactorsTable();
-        refreshVariatesTable();
-        refreshDatasetTable();
+        Table variables[] =  refreshFactorsAndVariatesTable();
+        Table datasets = refreshDatasetTable();
         
-        if (tr != null) {
-            studyTreeLayout.removeComponent(tr);
-            tr.removeAllItems();
-        }
-        
-        createStudyTreeTable(database);
-
+        this.studyTreeLayout.removeAllComponents();
+        TreeTable tr = createStudyTreeTable(database, datasets, variables[0], variables[1]);
+        this.studyTreeLayout.addComponent(tr);
     }
     
-    public void queryChildrenStudies(Study parentStudy) throws InternationalizableException{
+    public void queryChildrenStudies(Study parentStudy, TreeTable tr) throws InternationalizableException{
         List<Study> studyChildren = new ArrayList<Study>();
         try {
             studyChildren = this.studyDataManager.getStudiesByParentFolderID(parentStudy.getId(), 0, 

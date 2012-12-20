@@ -70,7 +70,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button gdmsButton;
     private Button breedingManagerButton;
     private Button breedingViewButton;
-    private Button breedingViewSingleSiteAnalysisButton;
+    private Button breedingViewSingleSiteAnalysisCentralButton;
+    private Button breedingViewSingleSiteAnalysisLocalButton;
     private Button fieldbookButton;
     private Button optimasButton;
     
@@ -145,15 +146,20 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Breeding Manager");
 
-        breedingViewButton = new Button("Breeding View");
+        breedingViewButton = new Button("Breeding View Standalone (all analysis)");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
         
-        breedingViewSingleSiteAnalysisButton = new Button("Single-Site Analysis");
-        breedingViewSingleSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
-        breedingViewSingleSiteAnalysisButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisButton.setDescription("Click to launch Single-Site Analysis");
+        breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
+        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
+        breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
+        
+        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
+        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
+        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
 
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -369,20 +375,20 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(statisticalAnalysisTitle, 0);
 
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
+        layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
+        breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
+        
+        layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
+        breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
         
-        layout.addComponent(breedingViewSingleSiteAnalysisButton);
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisButton, 0);
-
         return layout;
     }
 
@@ -452,7 +458,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            breedingViewSingleSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS));
+            breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
+            breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
         }

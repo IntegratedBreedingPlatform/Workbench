@@ -50,11 +50,11 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         
         if (currentProject != null) {
             
-            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.CENTRAL));
+            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.LOCAL));
             
         } else if (lastOpenedProject != null) {
             
-            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.CENTRAL));
+            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.LOCAL));
             
         } else {
             
