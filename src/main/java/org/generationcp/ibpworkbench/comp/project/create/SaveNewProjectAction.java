@@ -59,6 +59,8 @@ public class SaveNewProjectAction implements ClickListener{
     private static final long serialVersionUID = 1L;
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
+    private static final int PROJECT_USER_INSTALLID = -1;
+    private static final int PROJECT_USER_STATUS = 100;
     private static final String TIMESTAMP_FORMAT = "yyMMddHHmmssSS";
 
     private CreateProjectPanel createProjectPanel;
@@ -169,6 +171,8 @@ public class SaveNewProjectAction implements ClickListener{
                     user.setPersonid(person.getId());
                     user.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     user.setType(PROJECT_USER_TYPE);
+                    user.setInstalid(Integer.valueOf(PROJECT_USER_INSTALLID));
+                    user.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     user.setAdate(getCurrentDate());
                     managerFactory.getUserDataManager().addUser(user);
 
@@ -398,6 +402,8 @@ public class SaveNewProjectAction implements ClickListener{
                     localUser.setPersonid(localPerson.getId());
                     localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     localUser.setType(PROJECT_USER_TYPE);
+                    localUser.setInstalid(Integer.valueOf(PROJECT_USER_INSTALLID));
+                    localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     localUser.setAdate(getCurrentDate());
                     Integer userId = userDataManager.addUser(localUser);                
 
