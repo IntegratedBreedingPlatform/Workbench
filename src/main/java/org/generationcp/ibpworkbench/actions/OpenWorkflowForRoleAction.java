@@ -246,7 +246,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     private void updateProjectLastOpenedDate(Window window, Project project) {
         try {
             project.setLastOpenDate(new Date());
-            workbenchDataManager.saveOrUpdateProject(project);
+            workbenchDataManager.mergeProject(project);
             
             // set the last opened project in the session
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();

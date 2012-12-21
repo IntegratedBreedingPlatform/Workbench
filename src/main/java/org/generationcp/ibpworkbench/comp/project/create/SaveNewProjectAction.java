@@ -105,13 +105,15 @@ public class SaveNewProjectAction implements ClickListener{
                 project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 
                 project.setLastOpenDate(null);
-                projectSaved = workbenchDataManager.saveOrUpdateProject(project);
+                projectSaved = workbenchDataManager.addProject(project);
 
                 // create the project's workspace directories
                 toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
             } catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage());
-                //TODO display error message and clean-up
+                MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
+                    + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                return;
             }
 
             IBDBGenerator generator;
