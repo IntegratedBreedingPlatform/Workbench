@@ -153,17 +153,7 @@ public class MysqlAccountGenerator implements Serializable{
             for(User member : projectMembers){
                 Person personForUser = this.dataManager.getPersonById(member.getPersonid());
                 
-                StringBuilder initials = new StringBuilder();
-                if(personForUser.getFirstName() != null){
-                    initials.append(personForUser.getFirstName().charAt(0));
-                }
-                if(!StringUtils.isNullOrEmpty(personForUser.getMiddleName())) {
-                    initials.append(personForUser.getMiddleName().charAt(0));
-                }
-                if(personForUser.getLastName() != null) {
-                    initials.append(personForUser.getLastName().charAt(0));
-                }
-                String userInitials = initials.toString().toLowerCase();
+                String userInitials = personForUser.getInitials();
                 
                 StringBuilder username = new StringBuilder();
                 username.append(userInitials);

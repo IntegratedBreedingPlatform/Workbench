@@ -147,24 +147,7 @@ public class SaveNewProjectAction implements ClickListener{
                     managerFactory.getUserDataManager().addPerson(person);
 
                     // add a user to project's local database
-                    //append a timestamp to the username and password
-                    long currentTime = System.currentTimeMillis();
-                    SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
-                    String timestamp = timestampFormat.format(currentTime);
-                    
-                    //and change the start of the username of be the initials of the user
-                    StringBuilder initials = new StringBuilder();
-                    if(person.getFirstName() != null){
-                        initials.append(person.getFirstName().charAt(0));
-                    }
-                    if(person.getMiddleName() != null) {
-                        initials.append(person.getMiddleName().charAt(0));
-                    }
-                    if(person.getLastName() != null) {
-                        initials.append(person.getLastName().charAt(0));
-                    }
-                    String userInitials = initials.toString().toLowerCase();
-                    String newUserNameAndPassword = userInitials + timestamp;
+                    String newUserNameAndPassword = person.getInitialsWithTimestamp();
                     
                     user.setName(newUserNameAndPassword);
                     user.setPassword(newUserNameAndPassword);
