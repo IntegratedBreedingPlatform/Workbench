@@ -383,7 +383,11 @@ public class DatasetExporter {
                                 short columnIndex = columnsMap.get(factorName).shortValue();
                                 if(columnIndex >= 0) {
                                     Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
-                                    cell.setCellValue(elem.getValue());
+                                    double elemValue = 0;
+                                    if(elem.getValue() != null){
+                                        elemValue = elem.getValue().doubleValue();
+                                    }
+                                    cell.setCellValue(elemValue);
                                 }
                             }
                         }
@@ -431,7 +435,11 @@ public class DatasetExporter {
                             }
                             short columnIndex = columnsMap.get(variateName).shortValue();
                             Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
-                            cell.setCellValue(elem.getValue());
+                            double elemValue = 0;
+                            if(elem.getValue() != null){
+                                elemValue = elem.getValue().doubleValue();
+                            }
+                            cell.setCellValue(elemValue);
                         }
                     }
                 }
