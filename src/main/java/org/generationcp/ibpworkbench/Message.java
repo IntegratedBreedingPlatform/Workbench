@@ -31,6 +31,7 @@ public enum Message {
     ,OWNER
     ,NAME
     ,STATUS
+    ,STUDY_NAME
     ,RECENT
     ,SIGNOUT
     ,USER_GUIDE

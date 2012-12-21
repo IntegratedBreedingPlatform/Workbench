@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.Representation;
 import org.generationcp.middleware.pojos.Study;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,19 +96,34 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
                     
                     if (!representation.getName().equals(messageSource.getMessage(Message.STUDY_EFFECT))) {
                         
-                        userFriendlyName = userFriendlyName + "_" + representation.getName();
+                        List<Factor> factors = studyDataManager.getFactorsByRepresentationId(representation.getId());
                         
+                        int count = factors.size();
+                        
+                        userFriendlyName = userFriendlyName + "_" + representation.getName();
+
                         representationModel = new RepresentationModel(representation.getId()
                                 , representation.getEffectId()
                                 , representation.getName()
                                 , userFriendlyName); 
                         
-                        refinedDatasetList.add(representationModel);
-                        
-                    }
+                        if (count>1) {
+
+                            refinedDatasetList.add(representationModel);
                             
+                        } else if (count == 1) {
+                            
+                            Factor factor = factors.get(0);
+                            
+                            if (!factor.getName().toUpperCase().equals(messageSource.getMessage(Message.STUDY_NAME).toUpperCase())) {
+                                
+                                refinedDatasetList.add(representationModel);
+                                
+                            }
+                        }  
+                    }      
                 } else {
-                
+
                     representationModel = new RepresentationModel(representation.getId()
                             , representation.getEffectId()
                             , representation.getName()
