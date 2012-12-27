@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.poi.util.IOUtils;
+import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -219,8 +220,7 @@ public class ToolUtil {
             String localJdbcString = String.format(jdbcFormat, jdbcHost, jdbcPort, localDbName);
             
             String configuration = "";
-            if((username != null && !(username.trim().equals("")))
-                    && (password != null && !(password.trim().equals("")))){
+            if (!StringUtil.isEmptyOrWhitespaceOnly(username) && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
                 configuration = String.format(format, centralJdbcString, username, password
                         , centralJdbcString, username, password
                         , localJdbcString, username, password
@@ -245,50 +245,11 @@ public class ToolUtil {
             }
         }
         else if (Util.isOneOf(tool.getToolName(), ToolName.germplasm_browser.name())) {
-            File configurationFile = new File("infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties").getAbsoluteFile();
-            
-            String format = "central.driver=com.mysql.jdbc.Driver\r\n"
-                          + "central.url=%s\r\n"
-                          + "central.dbname=%s\r\n"
-                          + "central.host=%s\r\n"
-                          + "central.port=%s\r\n"
-                          + "central.username=%s\r\n"
-                          + "central.password=%s\r\n"
-                          + "local.driver=com.mysql.jdbc.Driver\r\n"
-                          + "local.url=%s\r\n"
-                          + "local.dbname=%s\r\n"
-                          + "local.host=%s\r\n"
-                          + "local.port=%s\r\n"
-                          + "local.username=%s\r\n"
-                          + "local.password=%s\r\n"
-                          ;
-            
-            String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, centralDbName);
-            String localUrl   = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, localDbName);
-            
-            String configuration = "";
-            if((username != null && !(username.trim().equals("")))
-                    && (password != null && !(password.trim().equals("")))){
-                configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, username, password
-                        , localUrl, localDbName, jdbcHost, jdbcPort, username, password);
-            } else {
-                configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
-                                                           , localUrl, localDbName, jdbcHost, jdbcPort, localUser, localPassword);
-            }
-            
-            FileOutputStream fos = new FileOutputStream(configurationFile);
-            try {
-                fos.write(configuration.getBytes());
-                fos.flush();
-            }
-            catch (IOException e) {
-                throw new IOException(e);
-            }
-            finally {
-                fos.close();
-            }
+            updateToolMiddlewareDatabaseConfiguration("infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties", centralDbName, localDbName, username, password);
         }
         else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
+            updateToolMiddlewareDatabaseConfiguration("infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties", centralDbName, localDbName, username, password);
+            
             // update hibernate configuration
             String[] configurationFiles = new String[] { "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml"
                                                         ,"infrastructure/tomcat/webapps/GDMS/WEB-INF/struts-config.xml"
@@ -312,8 +273,7 @@ public class ToolUtil {
                 String templateStr = new String(templateBytes);
 
                 String configuration = "";
-                if((username != null && !(username.trim().equals("")))
-                        && (password != null && !(password.trim().equals("")))){
+                if (!StringUtil.isEmptyOrWhitespaceOnly(username) && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
                     configuration = String.format(templateStr, jdbcHost, jdbcPort, localDbName, username, password);
                 } else {
                     configuration = String.format(templateStr, jdbcHost, jdbcPort, localDbName, localUser, localPassword);
@@ -331,6 +291,52 @@ public class ToolUtil {
                     fos.close();
                 }
             }
+        }
+    }
+    
+    public void updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName, String localDbName, String username, String password) throws IOException {
+        File configurationFile = new File(ibpDatasourcePropertyFile).getAbsoluteFile();
+        
+        String format = "central.driver=com.mysql.jdbc.Driver\r\n"
+                      + "central.url=%s\r\n"
+                      + "central.dbname=%s\r\n"
+                      + "central.host=%s\r\n"
+                      + "central.port=%s\r\n"
+                      + "central.username=%s\r\n"
+                      + "central.password=%s\r\n"
+                      + "local.driver=com.mysql.jdbc.Driver\r\n"
+                      + "local.url=%s\r\n"
+                      + "local.dbname=%s\r\n"
+                      + "local.host=%s\r\n"
+                      + "local.port=%s\r\n"
+                      + "local.username=%s\r\n"
+                      + "local.password=%s\r\n"
+                      ;
+        
+        String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, centralDbName);
+        String localUrl   = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, localDbName);
+        
+        // if the specified MySQL username and password
+        // use the configured central user and password
+        String configuration = "";
+        if (!StringUtil.isEmptyOrWhitespaceOnly(username) && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
+            configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, username, password
+                    , localUrl, localDbName, jdbcHost, jdbcPort, username, password);
+        } else {
+            configuration = String.format(format, centralUrl, centralDbName, jdbcHost, jdbcPort, centralUser, centralPassword
+                                                       , localUrl, localDbName, jdbcHost, jdbcPort, localUser, localPassword);
+        }
+        
+        FileOutputStream fos = new FileOutputStream(configurationFile);
+        try {
+            fos.write(configuration.getBytes());
+            fos.flush();
+        }
+        catch (IOException e) {
+            throw new IOException(e);
+        }
+        finally {
+            fos.close();
         }
     }
     
