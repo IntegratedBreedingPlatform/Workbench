@@ -227,9 +227,11 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 finally {
                     String url = tool.getPath();
                     if (localIbdbUser != null) {
+                        url = getWebLoginForwardUrl(loginUrl, localIbdbUser.getName(), localIbdbUser.getPassword());
+                    }
+                    else if (user != null) {
                         url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
                     }
-                    
                     
                     Embedded browser = new Embedded("", new ExternalResource(url));
                     browser.setType(Embedded.TYPE_BROWSER);
