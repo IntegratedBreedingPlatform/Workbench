@@ -61,8 +61,7 @@ public class SaveNewProjectAction implements ClickListener{
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_INSTALLID = -1;
     private static final int PROJECT_USER_STATUS = 100;
-    private static final String TIMESTAMP_FORMAT = "yyMMddHHmmssSS";
-
+    
     private CreateProjectPanel createProjectPanel;
     private Project project;
 
@@ -362,23 +361,8 @@ public class SaveNewProjectAction implements ClickListener{
                 }
                 
                 //append a timestamp to the username and password
-                long currentTime = System.currentTimeMillis();
-                SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
-                String timestamp = timestampFormat.format(currentTime);
-                
                 //and change the start of the username of be the initials of the user
-                StringBuilder initials = new StringBuilder();
-                if(localPerson.getFirstName() != null){
-                    initials.append(localPerson.getFirstName().charAt(0));
-                }
-                if(localPerson.getMiddleName() != null && !localPerson.getMiddleName().trim().equals("")) {
-                    initials.append(localPerson.getMiddleName().charAt(0));
-                }
-                if(localPerson.getLastName() != null) {
-                    initials.append(localPerson.getLastName().charAt(0));
-                }
-                String userInitials = initials.toString().toLowerCase();
-                String newUserNameAndPassword = userInitials + timestamp;
+                String newUserNameAndPassword = localPerson.getInitialsWithTimestamp();
                 localUser.setName(newUserNameAndPassword);
                 localUser.setPassword(newUserNameAndPassword);
                 

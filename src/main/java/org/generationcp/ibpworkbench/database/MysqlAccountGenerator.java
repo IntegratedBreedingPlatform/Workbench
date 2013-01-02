@@ -43,8 +43,6 @@ import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.StringUtils;
-
 /**
  * Class which takes care of adding mysql user accounts for members of a workbench project.
  * Patterned after IBDBGenerator.
@@ -153,16 +151,9 @@ public class MysqlAccountGenerator implements Serializable{
             for(User member : projectMembers){
                 Person personForUser = this.dataManager.getPersonById(member.getPersonid());
                 
-                String userInitials = personForUser.getInitials();
+                String username = personForUser.getInitialsWithTimestamp();
                 
-                StringBuilder username = new StringBuilder();
-                username.append(userInitials);
-                username.append("_");
-                username.append(member.getUserid());
-                username.append("_");
-                username.append(this.projectId);
-                
-                usernames.put(member.getUserid(), username.toString());
+                usernames.put(member.getUserid(), username);
             }
         } catch(MiddlewareQueryException ex) {
             LOG.error(ex.toString(), ex);
