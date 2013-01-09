@@ -85,7 +85,12 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
 
     @Override
     public void valueChange(ValueChangeEvent event) {
-        String value = ((CropType) event.getProperty().getValue()).getCropName();
+        
+        String value = null;        
+        if ((CropType) event.getProperty().getValue() != null) {
+           value = ((CropType) event.getProperty().getValue()).getCropName();
+        }
+        
         boolean sameAsLastValue = lastValue == null ? value == null : lastValue.equals(value);
 
         if (sameAsLastValue || cropTypeComboBoxLastAdded) {
