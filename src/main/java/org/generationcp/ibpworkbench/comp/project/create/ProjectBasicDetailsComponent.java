@@ -194,17 +194,23 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         Date startDate = (Date) startDateField.getValue();
         CropType cropType = (CropType) cropTypeCombo.getValue();
         
+        StringBuffer errorDescription = new StringBuffer();
+        
         if ((projectName == null) || (projectName.equals(""))){
-            MessageNotifier.showError(getWindow(), "Error", "No project name supplied.");  
+            errorDescription.append("No project name supplied. ");
             success = false;
         }
         if (startDate == null){
-            MessageNotifier.showError(getWindow(), "Error", "No start date given.");  
+            errorDescription.append("No start date given. ");
             success = false;
         }
         if (cropType == null){
-            MessageNotifier.showError(getWindow(), "Error", "No crop type selected.");  
+            errorDescription.append("No crop type selected. ");
             success = false;
+        }
+        
+        if (!success){
+            MessageNotifier.showError(getWindow(), "Error", errorDescription.toString());
         }
             
         return success;
