@@ -70,7 +70,7 @@ public class RunBreedingViewAction implements ClickListener {
         String envFactor = (String) this.source.getSelEnvFactor().getValue();
         if(!StringUtils.isNullOrEmpty(envFactor)){
             Environment environment = new Environment();
-            environment.setName(envFactor);
+            environment.setName(envFactor.trim());
             
             String envForAnalysis = (String) this.source.getSelEnvForAnalysis().getValue();
             if(StringUtils.isNullOrEmpty(envForAnalysis)){
@@ -86,6 +86,7 @@ public class RunBreedingViewAction implements ClickListener {
                 
                 EnvironmentLabel label = new EnvironmentLabel();
                 label.setName(envForAnalysis);
+                label.setTrial(envForAnalysis);
                 label.setSubset(true);
                 
                 environment.setLabel(label);
@@ -121,7 +122,7 @@ public class RunBreedingViewAction implements ClickListener {
             }
         } else{
             Replicates reps = new Replicates();
-            reps.setName(replicates);
+            reps.setName(replicates.trim());
             breedingViewInput.setReplicates(reps);
             
             if(designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())){
@@ -141,7 +142,7 @@ public class RunBreedingViewAction implements ClickListener {
             }
         } else{
             Blocks blocks = new Blocks();
-            blocks.setName(blocksName);
+            blocks.setName(blocksName.trim());
             breedingViewInput.setBlocks(blocks);
         }
         
@@ -155,7 +156,7 @@ public class RunBreedingViewAction implements ClickListener {
             }
         } else{
             Rows rows = new Rows();
-            rows.setName(rowName);
+            rows.setName(rowName.trim());
             breedingViewInput.setRows(rows);
         }
         
@@ -169,7 +170,7 @@ public class RunBreedingViewAction implements ClickListener {
             }
         } else{
             Columns columns = new Columns();
-            columns.setName(columnName);
+            columns.setName(columnName.trim());
             breedingViewInput.setColumns(columns);
         }
         
@@ -179,7 +180,7 @@ public class RunBreedingViewAction implements ClickListener {
             return;
         } else{
             Genotypes genotypes = new Genotypes();
-            genotypes.setName(genotypesName);
+            genotypes.setName(genotypesName.trim());
             breedingViewInput.setGenotypes(genotypes);
         }
         
