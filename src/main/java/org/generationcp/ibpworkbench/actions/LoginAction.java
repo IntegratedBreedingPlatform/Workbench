@@ -62,8 +62,8 @@ public class LoginAction implements ClickListener{
         TextField txtUsername = loginForm.getTxtUsername();
         PasswordField pfPassword = loginForm.getPfPassword();
         
-        String username = (String) txtUsername.getValue();
-        String password = (String) pfPassword.getValue();
+        String username = ((String) txtUsername.getValue()).trim();
+        String password = ((String) pfPassword.getValue()).trim();
         
         LOG.trace("Login with " + txtUsername.getValue() + "/" + pfPassword.getValue());
         

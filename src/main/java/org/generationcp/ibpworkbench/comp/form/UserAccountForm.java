@@ -54,10 +54,6 @@ public class UserAccountForm extends Form{
         initializeLayout();
     }
 
-    protected void initializeLayout() {
-        
-    }
-
     protected void initializeComponents() { 
         
         grid = new GridLayout(4, 7);
@@ -78,6 +74,11 @@ public class UserAccountForm extends Form{
         
         setWriteThrough(false);
         setInvalidCommitted(false);
+        
+    }
+    
+    protected void initializeLayout() {
+        
     }
     
     @Override

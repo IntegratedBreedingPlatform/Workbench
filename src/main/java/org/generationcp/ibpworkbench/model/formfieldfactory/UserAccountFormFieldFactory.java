@@ -131,12 +131,13 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         } else if ("securityQuestion".equals(propertyId)) {
             messageSource.setCaption(securityQuestion, Message.SECURITY_QUESTION);
             securityQuestion.setWidth("100%");
+            securityQuestion.setNullSelectionAllowed(false);
             securityQuestion.setRequired(true);
             securityQuestion.setRequiredError("Please specify a security question that only you can answer.");
             
             securityQuestion.setTextInputAllowed(false);
-            securityQuestion.addItem("What is your mother's maiden name?");
             securityQuestion.addItem("What is your first pet's name?");
+            securityQuestion.addItem("What is your mother's maiden name?");
             securityQuestion.addItem("What is your town of birth?");
             
             return securityQuestion;
@@ -145,6 +146,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
             field.setWidth("100%");
             field.setRequired(true);
             field.setRequiredError("Please enter the answer to your security question.");
+            field.addValidator(new StringLengthValidator("Security Answer must be 1-255 characters.", 1, 255, false));
         } 
         
         return field;

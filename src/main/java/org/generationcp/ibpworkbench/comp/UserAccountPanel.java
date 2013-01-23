@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.comp;
 
+import java.util.Collection;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenLoginWindowAction;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -61,6 +64,7 @@ public class UserAccountPanel extends Panel {
 
     protected void assemble() {
         initializeComponents();
+        initializeValues();
         initializeLayout();
         initializeActions();
     }
@@ -79,6 +83,13 @@ public class UserAccountPanel extends Panel {
         buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
         vl.addComponent(buttonLayout);
+    }
+    
+    protected void initializeValues() {
+    	//set default value for Security Question
+        ComboBox questionField = (ComboBox) form.getField("securityQuestion");
+        Collection<?> itemIds = questionField.getItemIds();
+        questionField.setValue(itemIds.iterator().next());
     }
 
     protected void initializeLayout() {
