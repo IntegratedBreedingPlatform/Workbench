@@ -61,7 +61,9 @@ public class IBDBGenerator{
 
     private static final String GDMS_INSERT_CASSAVA_SQL = "icass_ibdb_gdms_insert_only.sql";
     private static final String GDMS_INSERT_CHICKPEA_SQL = "ichis_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_COWPEA_SQL = "ibdbv1_ivis_local_with_gdms_datainserts.sql";
     private static final String GDMS_INSERT_GROUNDNUT_SQL = "ignis_ibdb_gdms_insert_only.sql";
+    private static final String GDMS_INSERT_PHASEOLUS_SQL = "ibdbv1_iphis_local_with_gdms_datainserts.sql";
     private static final String GDMS_INSERT_RICE_SQL = "iris_ibdb_gdms_insert_only.sql";
     private static final String GDMS_INSERT_WHEAT_SQL = "iwis_ibdb_gdms_insert_only.sql";
     
@@ -235,10 +237,14 @@ public class IBDBGenerator{
             
             if (cropType.getCropName().equalsIgnoreCase(CropType.CASSAVA)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CASSAVA_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.COWPEA)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_COWPEA_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.CHICKPEA)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CHICKPEA_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.GROUNDNUT)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_GROUNDNUT_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.PHASEOLUS)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_PHASEOLUS_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.RICE)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_RICE_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.WHEAT)){
@@ -358,12 +364,12 @@ public class IBDBGenerator{
                 }
 
             }
-
+            
             in.close();
-
+            
             statement.executeBatch();
 
-            LOG.info("Tables in " + sqlFile.getName() + " Generated.");
+            LOG.info(sqlFile.getName() + " executed.");
 
         } catch (IOException e) {
             handleConfigurationError(e);
