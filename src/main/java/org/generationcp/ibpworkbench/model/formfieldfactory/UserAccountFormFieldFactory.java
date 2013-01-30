@@ -101,9 +101,13 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         } else */
         if ("firstName".equals(propertyId)) {
             messageSource.setCaption(firstName, Message.USER_ACC_FNAME);
+            firstName.setRequired(true);
+            lastName.setRequiredError("Please enter First Name");
             return firstName;
         } else if ("lastName".equals(propertyId)) {
             messageSource.setCaption(lastName, Message.USER_ACC_LNAME);
+            lastName.setRequired(true);
+            lastName.setRequiredError("Please enter Last Name");
             return lastName;
         } else if ("middleName".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_MIDNAME);

@@ -26,10 +26,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
+import com.vaadin.ui.Window.Notification;
 
 
 /**
@@ -78,6 +80,18 @@ public class SaveUserAccountAction implements ClickListener {
                 MessageNotifier.showError(event.getComponent().getWindow(), 
                         i.getCaption(), 
                         i.getDescription());
+            } else if(e instanceof InvalidValueException){
+            	String errorMessage=e.getMessage();
+            	
+            	if(errorMessage==null){
+            		errorMessage="Please enter valid Email Address";
+            	}
+            
+            	this.userAccountForm.getWindow().showNotification(
+    					null,
+    					errorMessage,
+    					Notification.TYPE_WARNING_MESSAGE);
+
             } else {
                 MessageNotifier.showError(event.getComponent().getWindow(), 
                         e.getMessage(), 
