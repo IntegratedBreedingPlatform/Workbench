@@ -143,6 +143,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
          */
         center();
         
+        setScrollable(true);
 
         setCaption("Breeding View Analysis Specifications: ");
         
@@ -633,8 +634,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     protected void initializeLayout() {
-        mainLayout.setWidth("100%");
-        mainLayout.setHeight("100%");
+        mainLayout.setWidth("500");
+        mainLayout.setHeight("500");
         
         mainLayout.addComponent(lblVersion, "left: 5px; top: 0px;");
         mainLayout.addComponent(txtVersion, "left: 105px; top: 0px;");
@@ -664,6 +665,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         mainLayout.addComponent(selGenotypes, "left: 105px; top: 390px;");
         mainLayout.addComponent(btnCancel, "left: 5px; top: 430px;");
         mainLayout.addComponent(btnRun, "left: 75px; top: 430px;");
+        
+        mainLayout.setMargin(true);
         
         setContent(mainLayout);
     }
