@@ -256,7 +256,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
             txtAnalysisName.setValue(breedingViewInput.getBreedingViewProjectName());
         }
         txtAnalysisName.setRequired(false);
-        txtAnalysisName.setWidth("100%");
+        txtAnalysisName.setWidth("95%");
         
         factorIdsMap = new HashMap<String, Integer>();
         labelIdsMap = new HashMap<String, Integer>();
@@ -634,39 +634,41 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     protected void initializeLayout() {
-        mainLayout.setWidth("500");
+        mainLayout.setWidth("570");
         mainLayout.setHeight("500");
         
-        mainLayout.addComponent(lblVersion, "left: 5px; top: 0px;");
-        mainLayout.addComponent(txtVersion, "left: 105px; top: 0px;");
-        mainLayout.addComponent(lblProjectType, "left: 5px; top: 30px;");
-        mainLayout.addComponent(txtProjectType, "left: 105px; top: 30px;");
-        mainLayout.addComponent(lblAnalysisName, "left: 5px; top: 60px;");
-        mainLayout.addComponent(txtAnalysisName, "left: 105px; top: 60px;");
-        mainLayout.addComponent(lblSiteEnvironment, "left: 5px; top: 90px;");
-        mainLayout.addComponent(lblSpecifyEnvFactor, "left: 55px; top: 120px;");
-        mainLayout.addComponent(selEnvFactor, "left: 275px; top: 120px;");
-        mainLayout.addComponent(lblSelectEnvironmentForAnalysis, "left: 55px; top: 150px;");
-        mainLayout.addComponent(selEnvForAnalysis, "left: 275px; top: 150px;");
-        mainLayout.addComponent(lblSpecifyNameForAnalysisEnv, "left: 55px; top: 180px;");
-        mainLayout.addComponent(txtNameForAnalysisEnv, "left: 275px; top: 180px;");
-        mainLayout.addComponent(lblDesign, "left: 5px; top: 210px;");
-        mainLayout.addComponent(lblDesignType, "left: 55px; top: 240px;");
-        mainLayout.addComponent(selDesignType, "left: 275px; top: 240px;");
-        mainLayout.addComponent(lblReplicates, "left: 55px; top: 270px;");
-        mainLayout.addComponent(selReplicates, "left: 275px; top: 270px;");
-        mainLayout.addComponent(lblBlocks, "left: 55px; top: 300px;");
-        mainLayout.addComponent(selBlocks, "left: 275px; top: 300px;");
-        mainLayout.addComponent(lblSpecifyRowFactor, "left: 55px; top: 330px;");
-        mainLayout.addComponent(selRowFactor, "left: 275px; top: 330px;");
-        mainLayout.addComponent(lblSpecifyColumnFactor, "left: 55px; top: 360px;");
-        mainLayout.addComponent(selColumnFactor, "left: 275px; top: 360px;");
-        mainLayout.addComponent(lblGenotypes, "left: 5px; top: 390px;");
-        mainLayout.addComponent(selGenotypes, "left: 105px; top: 390px;");
-        mainLayout.addComponent(btnCancel, "left: 5px; top: 430px;");
-        mainLayout.addComponent(btnRun, "left: 75px; top: 430px;");
+        mainLayout.addComponent(lblVersion, "left: 35px; top: 30px;");
+        mainLayout.addComponent(txtVersion, "left: 135px; top: 30px;");
+        mainLayout.addComponent(lblProjectType, "left: 35px; top: 60px;");
+        mainLayout.addComponent(txtProjectType, "left: 135px; top: 60px;");
+        mainLayout.addComponent(lblAnalysisName, "left: 35px; top: 90px;");
+        mainLayout.addComponent(txtAnalysisName, "left: 135px; top: 90px;");
+        mainLayout.addComponent(lblSiteEnvironment, "left: 35px; top: 120px;");
+        mainLayout.addComponent(lblSpecifyEnvFactor, "left: 85px; top: 150px;");
+        mainLayout.addComponent(selEnvFactor, "left: 305px; top: 150px;");
+        mainLayout.addComponent(lblSelectEnvironmentForAnalysis, "left: 85px; top: 180px;");
+        mainLayout.addComponent(selEnvForAnalysis, "left: 305px; top: 180px;");
+        mainLayout.addComponent(lblSpecifyNameForAnalysisEnv, "left: 85px; top: 210px;");
+        mainLayout.addComponent(txtNameForAnalysisEnv, "left: 305px; top: 210px;");
+        mainLayout.addComponent(lblDesign, "left: 35px; top: 240px;");
+        mainLayout.addComponent(lblDesignType, "left: 85px; top: 270px;");
+        mainLayout.addComponent(selDesignType, "left: 305px; top: 270px;");
+        mainLayout.addComponent(lblReplicates, "left: 85px; top: 300px;");
+        mainLayout.addComponent(selReplicates, "left: 305px; top: 300px;");
+        mainLayout.addComponent(lblBlocks, "left: 85px; top: 330px;");
+        mainLayout.addComponent(selBlocks, "left: 305px; top: 330px;");
+        mainLayout.addComponent(lblSpecifyRowFactor, "left: 85px; top: 360px;");
+        mainLayout.addComponent(selRowFactor, "left: 305px; top: 360px;");
+        mainLayout.addComponent(lblSpecifyColumnFactor, "left: 85px; top: 390px;");
+        mainLayout.addComponent(selColumnFactor, "left: 305px; top: 390px;");
+        mainLayout.addComponent(lblGenotypes, "left: 35px; top: 430px;");
+        mainLayout.addComponent(selGenotypes, "left: 135px; top: 430px;");
+        mainLayout.addComponent(btnCancel, "left: 35px; top: 460px;");
+        mainLayout.addComponent(btnRun, "left: 105px; top: 460px;");
         
         mainLayout.setMargin(true);
+        
+       
         
         setContent(mainLayout);
     }
