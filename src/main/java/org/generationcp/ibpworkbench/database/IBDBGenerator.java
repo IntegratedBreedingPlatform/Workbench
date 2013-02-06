@@ -16,19 +16,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,6 +36,7 @@ import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
+import org.generationcp.commons.util.ScriptRunner;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
@@ -81,9 +81,6 @@ public class IBDBGenerator{
     public static final String SQL_TO = " TO ";
     public static final String SQL_IDENTIFIED_BY = " IDENTIFIED BY ";
     public static final String SQL_FLUSH_PRIVILEGES = "FLUSH PRIVILEGES ";
-    private static final String SQL_LINE_COMMENT = "--";
-    private static final String SQL_BEGIN_COMMENT = "/*";
-    private static final String SQL_END_COMMENT = "*/";
     public static final String SQL_SINGLE_QUOTE = "'";
     public static final String SQL_AT_SIGN = "@";
     public static final String SQL_PERIOD = ".";
@@ -127,13 +124,15 @@ public class IBDBGenerator{
             createLocalConnection();
             createLocalDatabase();
             createManagementSystems();
-            closeConnection();
             
             isGenerationSuccess = true;
         } catch (InternationalizableException e) {
             isGenerationSuccess = false;            
             throw e;
         } 
+        finally {
+            closeConnection();
+        }
 
         return isGenerationSuccess;
     }
@@ -144,28 +143,38 @@ public class IBDBGenerator{
 
             Properties prop = new Properties();
 
+            InputStream in = null;
             try {
-                InputStream in = null;
-
                 try {
                     in = new FileInputStream(new File(ResourceFinder.locateFile(WORKBENCH_PROP).toURI()));
+                    prop.load(in);
                 } catch (IllegalArgumentException ex) {
                     in = Thread.currentThread().getContextClassLoader().getResourceAsStream(WORKBENCH_PROP);
                 }
-                prop.load(in);
+                finally {
+                    if (in != null) {
+                        in.close();
+                    }
+                }
 
                 workbenchHost = prop.getProperty(WORKBENCH_PROP_HOST);
                 workbenchPort = prop.getProperty(WORKBENCH_PROP_PORT);
                 workbenchUsername = prop.getProperty(WORKBENCH_PROP_USER);
                 workbenchPassword = prop.getProperty(WORKBENCH_PROP_PASSWORD);
                 workbenchURL = "jdbc:mysql://" + workbenchHost + ":" + workbenchPort;
-
-                in.close();
-
             } catch (URISyntaxException e) {
                 handleConfigurationError(e);
             } catch (IOException e) {
                 handleConfigurationError(e);
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    }
+                    catch (IOException e) {
+                    }
+                }
             }
 
             try {
@@ -262,127 +271,22 @@ public class IBDBGenerator{
     }
 
     private void executeSQLFile(File sqlFile) throws InternationalizableException {
-
-        /*
-         * if (!sqlFile.toString().endsWith(".sql")) { throw new
-         * IllegalArgumentException("Wrong file type."); }
-         */
-
-        StringBuffer batch = null;
-        Statement statement = null;
-
-        boolean isEndCommentFound = true;
-
+        ScriptRunner scriptRunner = new ScriptRunner(connection);
+        BufferedReader br = null;
         try {
-
-            statement = this.connection.createStatement();
-
-        } catch (SQLException sqle) {
-            handleDatabaseError(sqle);
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
+            scriptRunner.runScript(br);
         }
-
-        BufferedReader in = null;
-
-        try {
-
-            try {
-
-                in = new BufferedReader(new FileReader(sqlFile));
-
-            } catch (IllegalArgumentException ex) {
-                handleConfigurationError(ex);
-            }
-
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-
-                if (inputLine.startsWith(SQL_LINE_COMMENT)) {
-
-                    continue;
-
-                } else if (inputLine.startsWith(SQL_BEGIN_COMMENT) && inputLine.endsWith(SQL_END_COMMENT)) {
-
-                    isEndCommentFound = true;
-
-                    continue;
-
-                } else if (inputLine.startsWith(SQL_BEGIN_COMMENT)) {
-
-                    isEndCommentFound = false;
-
-                    continue;
-
-                } else if (inputLine.endsWith(SQL_END_COMMENT)) {
-
-                    isEndCommentFound = true;
-
-                    continue;
-
-                } else if (isEndCommentFound) {
-
-                    if (inputLine.contains(SQL_LINE_COMMENT)) {
-
-                        inputLine = inputLine.substring(0, inputLine.indexOf(SQL_LINE_COMMENT));
-
-                    }
-
-                    if (inputLine.contains(SQL_BEGIN_COMMENT) && inputLine.contains(SQL_END_COMMENT)) {
-
-                        inputLine = inputLine.substring(0, inputLine.indexOf(SQL_BEGIN_COMMENT));
-
-                        isEndCommentFound = true;
-
-                    }
-
-                    if (batch != null) {
-
-                        batch.append(inputLine);
-
-                        if (batch.toString().contains(SQL_END)) {
-
-                            statement.addBatch(batch.toString().replace(SQL_END, ""));
-
-                            batch = null;
-
-                        }
-
-                    } else {
-
-                        batch = new StringBuffer(inputLine);
-
-                        if (batch.toString().contains(SQL_END)) {
-
-                            statement.addBatch(batch.toString().replace(SQL_END, ""));
-
-                            batch = null;
-
-                        }
-
-                    }
-
-                }
-
-            }
-            
-            in.close();
-            
-            statement.executeBatch();
-
-            LOG.info(sqlFile.getName() + " executed.");
-
-        } catch (IOException e) {
+        catch (FileNotFoundException e) {
             handleConfigurationError(e);
-        } catch (BatchUpdateException e) {
-            handleDatabaseError(e);
-        } catch (SQLException e) {
-            handleDatabaseError(e);
-        }  finally {
-            if (statement != null) {
+        }
+        finally {
+            if (br != null) {
                 try {
-                    statement.close();
-                } catch (SQLException e) {
-                    handleDatabaseError(e);
+                    br.close();
+                }
+                catch (IOException e) {
+                    // intentionally empty
                 }
             }
         }
@@ -410,6 +314,7 @@ public class IBDBGenerator{
     	
     	boolean areLocationsAdded = false;
     	
+    	PreparedStatement preparedStatement = null;
     	try {
     		
 		    connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
@@ -422,14 +327,12 @@ public class IBDBGenerator{
     	
     	    LocationModel location;
     	
-    	    PreparedStatement preparedStatement = null;
+    	    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
     	
     	    while(keyIter.hasNext()) {
     		
     	    	location = cachedLocations.get(keyIter.next());
     		
-    		    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
-    		    
     		    preparedStatement.setInt(1, location.getLocationId());
     		    preparedStatement.setInt(2, 0);
     		    preparedStatement.setInt(3, 0);
@@ -443,18 +346,23 @@ public class IBDBGenerator{
     		    preparedStatement.setInt(11, 0);
     		    
     		    preparedStatement.executeUpdate();
-    		    
-    		    preparedStatement = null;
-    		
     	    }
     	    
     	    areLocationsAdded = true;
-    	    
-    	    closeConnection();
 
 		} catch (SQLException e) {
 		    handleDatabaseError(e);
 		}
+    	finally {
+    	    if (preparedStatement != null) {
+    	        try {
+                    preparedStatement.close();
+                }
+                catch (SQLException e) {
+                }
+    	    }
+    	    closeConnection();
+    	}
     	
     	return areLocationsAdded;
     	
@@ -464,6 +372,7 @@ public class IBDBGenerator{
         
         boolean areBreedingMethodsAdded = false;
         
+        PreparedStatement preparedStatement = null;
         try {
             
             connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
@@ -476,14 +385,12 @@ public class IBDBGenerator{
         
             BreedingMethodModel breedingMethod;
         
-            PreparedStatement preparedStatement = null;
+            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
         
             while(keyIter.hasNext()) {
             
                 breedingMethod = cachedBreedingMethods.get(keyIter.next());
             
-                preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
-                
    /*             mid int
                 mtype combo string
                 mgrp string 3  -
@@ -513,26 +420,25 @@ public class IBDBGenerator{
                 preparedStatement.setInt(12, 0);
                 preparedStatement.setInt(13, 0);
                 
-                Calendar currentDate = Calendar.getInstance();
-                SimpleDateFormat formatter= 
-                new SimpleDateFormat("yyyy/MMM/dd");
-                String dateNow = formatter.format(currentDate.getTime());
-                System.out.println(dateNow);
-                
                 preparedStatement.setInt(14, 0);
                 
                 preparedStatement.executeUpdate();
-                
-                preparedStatement = null;
             
             }
             
             areBreedingMethodsAdded = true;
-            
-            closeConnection();
-
         } catch (SQLException e) {
             handleDatabaseError(e);
+        }
+        finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                }
+                catch (SQLException e) {
+                }
+            }
+            closeConnection();
         }
         
         return areBreedingMethodsAdded;
@@ -544,12 +450,22 @@ public class IBDBGenerator{
         boolean isInstallationInserted = false;
 
         PreparedStatement preparedStatement = null;
-        
+        Statement stmt = null;
+        ResultSet resultSet = null;
         try {
             
             connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
         
             connection.setCatalog(generatedDatabaseName);
+            
+            stmt = connection.createStatement();
+            resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
+            
+            int installId = -1;
+            if (resultSet.next()) {
+                installId = resultSet.getInt(1);
+                installId--;
+            }
             
             preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
             
@@ -557,7 +473,7 @@ public class IBDBGenerator{
             Date date = new Date();
             dateFormat.format(date);
             
-            preparedStatement.setInt(1, -1);
+            preparedStatement.setInt(1, installId);
             preparedStatement.setInt(2, -1);
             preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date)));
             preparedStatement.setInt(4, 0);
@@ -580,22 +496,35 @@ public class IBDBGenerator{
             preparedStatement = null;
 
             isInstallationInserted = true;
-            
-            closeConnection();
-
         } catch (SQLException e) {
             handleDatabaseError(e);
         }
+        finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                }
+                catch (SQLException e) {
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                }
+                catch (SQLException e) {
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                }
+                catch (SQLException e) {
+                }
+            }
+            closeConnection();
+        }
         
         return isInstallationInserted;
-        
-    }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        closeConnection();
     }
     
     public static void handleDatabaseError(Exception e) throws InternationalizableException {
