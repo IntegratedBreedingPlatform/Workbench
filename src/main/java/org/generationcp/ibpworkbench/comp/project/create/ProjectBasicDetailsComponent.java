@@ -29,6 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
@@ -196,11 +197,11 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         
         StringBuffer errorDescription = new StringBuffer();
         
-
         if ((projectName == null) || (projectName.equals(""))){
             errorDescription.append("No project name supplied. ");
             success = false;
-        } else {  // Check if the project name already exists
+        } else {
+        	// Check if the project name already exists
             try {
                 Project project = workbenchDataManager.getProjectByName(projectName);
                 if (project != null && project.getProjectName() != null && project.getProjectName().equals(projectName)){
@@ -212,6 +213,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
                 LOG.error("Error encountered while getting project by name", e);
                 throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                         Message.CONTACT_ADMIN_ERROR_DESC);
+            }
+            // Run assigned validators
+            try {
+            	projectNameField.validate();
+            } catch (InvalidValueException e) {
+            	errorDescription.append(e.getMessage() + ". ");
+            	success = false;
             }
 
         }
