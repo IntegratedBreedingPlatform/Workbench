@@ -196,9 +196,24 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         
         StringBuffer errorDescription = new StringBuffer();
         
+
         if ((projectName == null) || (projectName.equals(""))){
             errorDescription.append("No project name supplied. ");
             success = false;
+        } else {  // Check if the project name already exists
+            try {
+                Project project = workbenchDataManager.getProjectByName(projectName);
+                if (project != null && project.getProjectName() != null && project.getProjectName().equals(projectName)){
+                    errorDescription.append("There is already a project with the given name. ");
+                    success = false;
+                }
+            }
+            catch (MiddlewareQueryException e) {
+                LOG.error("Error encountered while getting project by name", e);
+                throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                        Message.CONTACT_ADMIN_ERROR_DESC);
+            }
+
         }
         if (startDate == null){
             errorDescription.append("No start date given. ");
