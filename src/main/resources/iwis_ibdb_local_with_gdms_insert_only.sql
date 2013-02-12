@@ -1,6 +1,6 @@
 /*
 SQLyog Community Edition- MySQL GUI v8.05 
-MySQL - 5.0.16-nt : Database - iwis_ibdb_gdms_2012
+MySQL - 5.0.16-nt : Database - iwis_ibdb_local_2013
 *********************************************************************
 */
 
@@ -8,7 +8,36 @@ MySQL - 5.0.16-nt : Database - iwis_ibdb_gdms_2012
 
 /*!40101 SET SQL_MODE=''*/;
 
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+/*Data for the table `address` */
+
+/*Data for the table `atributs` */
+
+/*Data for the table `bibrefs` */
+
+/*Data for the table `changes` */
+
+/*Data for the table `cntry` */
+
+/*Data for the table `data_c` */
+
+/*Data for the table `data_n` */
+
+/*Data for the table `data_t` */
+
+/*Data for the table `datattr` */
+
+/*Data for the table `dmsattr` */
+
+/*Data for the table `dudflds` */
+
+/*Data for the table `effect` */
+
+/*Data for the table `factor` */
+
+/*Data for the table `filelink` */
 
 /*Data for the table `gdms_acc_metadataset` */
 
@@ -64,4 +93,115 @@ insert  into `gdms_markers_onmap`(`map_id`,`marker_id`,`start_position`,`end_pos
 
 /*Data for the table `gdms_track_markers` */
 
+/*Data for the table `georef` */
+
+/*Data for the table `germplsm` */
+
+/*Data for the table `grplevel` */
+
+/*Data for the table `grplevelval` */
+
+/*Data for the table `grpuser` */
+
+/*Data for the table `ims_label_otherinfo` */
+
+/*Data for the table `ims_labelinfo` */
+
+/*Data for the table `ims_lot` */
+
+/*Data for the table `ims_transaction` */
+
+/*Data for the table `institut` */
+
+/*Data for the table `instln` */
+
+insert  into `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`uaid`,`uldid`,`umethn`,`ufldno`,`urefno`,`upid`,`idesc`,`ulistid`,`dms_status`,`ulrecid`) values (-1,-1,20130125,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Wheat',0,0,0);
+
+/*Data for the table `level_c` */
+
+/*Data for the table `level_n` */
+
+/*Data for the table `level_t` */
+
+/*Data for the table `levels` */
+
+/*Data for the table `listdata` */
+
+/*Data for the table `listnms` */
+
+/*Data for the table `location` */
+
+/*Data for the table `locdes` */
+
+/*Data for the table `methods` */
+
+/*Data for the table `names` */
+
+/*Data for the table `obsunit` */
+
+/*Data for the table `oindex` */
+
+/*Data for the table `personlist` */
+
+/*Data for the table `persons` */
+
+/*Data for the table `progntrs` */
+
+/*Data for the table `project` */
+
+/*Data for the table `reflinks` */
+
+/*Data for the table `represtn` */
+
+/*Data for the table `scale` */
+
+/*Data for the table `scalecon` */
+
+/*Data for the table `scaledis` */
+
+/*Data for the table `scaletab` */
+
+/*Data for the table `sndivs` */
+
+/*Data for the table `steffect` */
+
+/*Data for the table `study` */
+
+/*Data for the table `tmethod` */
+
+/*Data for the table `tmsconsistency_checks` */
+
+/*Data for the table `tmscontinuous_conversion` */
+
+/*Data for the table `tmscontinuous_function` */
+
+/*Data for the table `tmsdiscrete_conversion` */
+
+/*Data for the table `tmsmeasuredin` */
+
+/*Data for the table `tmsmethod` */
+
+/*Data for the table `tmsscalecon` */
+
+/*Data for the table `tmsscaledis` */
+
+/*Data for the table `tmsscales` */
+
+/*Data for the table `tmstraits` */
+
+/*Data for the table `tmstransformations` */
+
+/*Data for the table `trait` */
+
+/*Data for the table `udflds` */
+
+/*Data for the table `users` */
+
+insert  into `users`(`userid`,`instalid`,`ustatus`,`uaccess`,`utype`,`uname`,`upswd`,`personid`,`adate`,`cdate`) values (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130125,0);
+
+/*Data for the table `variate` */
+
+/*Data for the table `veffect` */
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

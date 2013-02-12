@@ -75,4 +75,26 @@ INSERT  INTO `gdms_marker_user_info`(`marker_id`,`principal_investigator`,`conta
 
 /*Data for the table `gdms_track_markers` */
 
+
+/*Data for the table `instln` */
+
+INSERT  INTO `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`uaid`,`uldid`,`umethn`,`ufldno`,`urefno`,`upid`,`idesc`,`ulistid`,`dms_status`,`ulrecid`) VALUES (-1,-1,20130125,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Chickpea',0,0,0);
+
+/*Data for the table `users` */
+
+INSERT  INTO `users`(`userid`,`instalid`,`ustatus`,`uaccess`,`utype`,`uname`,`upswd`,`personid`,`adate`,`cdate`) VALUES (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130125,0);
+
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-1', '1500','0','Storage Room A','RM A','0','0','0','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-2', '1500','0','Cabinet 1','A-1','0','0','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-3','1500','0','Cabinet 2','A-2','0','0','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-4','1500','0','Cab. 1, Shelf 1','A-1-1','0','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-5','1500','0','Cab. 1, Shelf 2','A-1-2','0','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-6','1500','0','Cab. 1, Shelf 1, Cont. 1','A-1-1-1','-4','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-7','1500','0','Cab. 1, Shelf 1, Cont. 2','A-1-1-2','-4','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-8','1500','0','Cab. 1, Shelf 1, Cont. 3','A-1-1-3','-4','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-9','1500','0','Cab. 1, Shelf 1, Cont. 4','A-1-1-4','-4','-2','-1','171','0');
+INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-10','1500','0','Cab. 1, Shelf 2, Cont. 1','A-1-2-1','-5','-2','-1','171','0');
+
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
