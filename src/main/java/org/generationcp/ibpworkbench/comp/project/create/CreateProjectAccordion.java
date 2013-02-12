@@ -101,7 +101,11 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutUserRoles.setSpacing(true);
                         layoutUserRoles.setMargin(true);
                     } else {
-                        setFocusToTab(SECOND_TAB_USER_ROLES);
+                        if (basicDetailsTab.validate()) {
+                            setFocusToTab(SECOND_TAB_USER_ROLES);
+                        } else {
+                            setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+                        }
                     }
                 } else {
                     if (basicDetailsTab != null && basicDetailsTab.validateAndSave()){
@@ -110,8 +114,13 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                             layoutUserRoles.addComponent(userRolesTab);
                             layoutUserRoles.setSpacing(true);
                             layoutUserRoles.setMargin(true);
+                        } else {
+                            if (basicDetailsTab.validate()) {
+                                setFocusToTab(SECOND_TAB_USER_ROLES);
+                            } else {
+                                setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+                            }
                         }
-                        setFocusToTab(SECOND_TAB_USER_ROLES);
                     } else {
                         MessageNotifier.showError(getWindow(), "Error",
                                 "Please supply the necessary details in the previous tab before continuing.");
@@ -127,7 +136,11 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);
                     } else {
-                        setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                        if (userRolesTab.validate()) {
+                            setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                        } else {
+                            setFocusToTab(SECOND_TAB_USER_ROLES);
+                        }
                     }
                 } else {
                     if (userRolesTab != null && userRolesTab.validateAndSave()){
@@ -136,8 +149,13 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                             layoutProjectMembers.addComponent(membersTab);
                             layoutProjectMembers.setSpacing(true);
                             layoutProjectMembers.setMargin(true);
+                        } else {
+                            if (userRolesTab.validate()) {
+                                setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                            } else {
+                                setFocusToTab(SECOND_TAB_USER_ROLES);
+                            }
                         }
-                        setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
                     } else {
                         MessageNotifier.showError(getWindow(), "Error",
                             "Please supply the necessary details in the previous tab before continuing.");

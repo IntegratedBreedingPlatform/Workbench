@@ -194,7 +194,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
     }
 
-    private boolean validate() { 
+    public boolean validate() { 
         // Check if at least one role is selected
         boolean withCheckedItem = false;
         

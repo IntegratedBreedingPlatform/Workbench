@@ -297,7 +297,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     }
 
 
-    private boolean validate(){
+    public boolean validate(){
         return true;
     }
 

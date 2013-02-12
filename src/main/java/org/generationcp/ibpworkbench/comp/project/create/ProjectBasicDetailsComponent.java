@@ -189,7 +189,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         return comboBox;
     }
     
-    private boolean validate(){
+    public boolean validate(){
         boolean success = true;
         String projectName = (String) projectNameField.getValue();
         Date startDate = (Date) startDateField.getValue();
