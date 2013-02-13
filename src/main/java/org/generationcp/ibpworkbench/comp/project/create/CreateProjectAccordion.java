@@ -23,6 +23,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -337,7 +338,8 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         try {
-            Role managerRole = workbenchDataManager.getRoleById(Role.MANAGER_ROLE_ID);
+            WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
+        	Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
 
             ProjectUserRole projectUserRole = new ProjectUserRole();
             projectUserRole.setRole(managerRole);
