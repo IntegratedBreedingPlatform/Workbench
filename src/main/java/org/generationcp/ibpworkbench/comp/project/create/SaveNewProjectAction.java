@@ -59,8 +59,9 @@ public class SaveNewProjectAction implements ClickListener{
     private static final long serialVersionUID = 1L;
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
-    private static final int PROJECT_USER_INSTALLID = -1;
     private static final int PROJECT_USER_STATUS = 100;
+    
+    private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
     private CreateProjectPanel createProjectPanel;
     private Project project;
@@ -131,8 +132,6 @@ public class SaveNewProjectAction implements ClickListener{
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
 
-                generator.addLocalInstallationRecord(project.getProjectName());
-                
                 User currentUser = app.getSessionData().getUserData();
                 User user = currentUser.copy();
 
@@ -155,10 +154,16 @@ public class SaveNewProjectAction implements ClickListener{
                     user.setPersonid(person.getId());
                     user.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     user.setType(PROJECT_USER_TYPE);
-                    user.setInstalid(Integer.valueOf(PROJECT_USER_INSTALLID));
                     user.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     user.setAdate(getCurrentDate());
-                    managerFactory.getUserDataManager().addUser(user);
+                    int localUserId = managerFactory.getUserDataManager().addUser(user);
+                    
+                    // Add the installation record in the local db with the given project name and the newly added local user
+                    projectUserInstalId = generator.addLocalInstallationRecord(project.getProjectName(), localUserId);
+
+                    // Set the instalId of the local user
+                    user.setInstalid(Integer.valueOf(projectUserInstalId));
+                    managerFactory.getUserDataManager().updateUser(user);
 
                     List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
                     if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
@@ -371,7 +376,7 @@ public class SaveNewProjectAction implements ClickListener{
                     localUser.setPersonid(localPerson.getId());
                     localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     localUser.setType(PROJECT_USER_TYPE);
-                    localUser.setInstalid(Integer.valueOf(PROJECT_USER_INSTALLID));
+                    localUser.setInstalid(Integer.valueOf(projectUserInstalId));
                     localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     localUser.setAdate(getCurrentDate());
                     Integer userId = userDataManager.addUser(localUser);                
@@ -385,7 +390,6 @@ public class SaveNewProjectAction implements ClickListener{
                     workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 
                 }
-                
                 usersAccountedFor.put(projectUserRole.getUserId(), newUserNameAndPassword);
             }
         }

@@ -452,9 +452,13 @@ public class IBDBGenerator{
         
     }
     
-    public boolean addLocalInstallationRecord(String projectName) {
-        
-        boolean isInstallationInserted = false;
+    /**
+     * @param projectName
+     * @return instalid of the installation created. -1 otherwise (default instalid)
+     */
+    public int addLocalInstallationRecord(String projectName, int localUserId) {
+
+        int installId = -1;
 
         PreparedStatement preparedStatement = null;
         Statement stmt = null;
@@ -468,7 +472,6 @@ public class IBDBGenerator{
             stmt = connection.createStatement();
             resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
             
-            int installId = -1;
             if (resultSet.next()) {
                 installId = resultSet.getInt(1);
                 installId--;
@@ -480,29 +483,29 @@ public class IBDBGenerator{
             Date date = new Date();
             dateFormat.format(date);
             
-            preparedStatement.setInt(1, installId);
-            preparedStatement.setInt(2, -1);
-            preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date)));
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setInt(5, 0);
-            preparedStatement.setInt(6, 0);
-            preparedStatement.setInt(7, 0);
-            preparedStatement.setInt(8, 0);
-            preparedStatement.setInt(9, 0);
-            preparedStatement.setInt(10, 0);
-            preparedStatement.setInt(11, 0);
-            preparedStatement.setInt(12, 0);
-            preparedStatement.setInt(13, 0);
-            preparedStatement.setString(14, projectName);
-            preparedStatement.setInt(15, 0);
-            preparedStatement.setInt(16, 0);
-            preparedStatement.setInt(17, 0);
+            preparedStatement.setInt(1, installId); // instalid
+            preparedStatement.setInt(2, localUserId);        // admin
+            preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date))); // udate
+            preparedStatement.setInt(4, 0);         // ugid
+            preparedStatement.setInt(5, 0);         // ulocn
+            preparedStatement.setInt(6, 0);         // ucid
+            preparedStatement.setInt(7, 0);         // unid
+            preparedStatement.setInt(8, 0);         // uaid
+            preparedStatement.setInt(9, 0);         // uldid
+            preparedStatement.setInt(10, 0);        // umethn
+            preparedStatement.setInt(11, 0);        // ufldno
+            preparedStatement.setInt(12, 0);        // urefno
+            preparedStatement.setInt(13, 0);        // upid
+            preparedStatement.setString(14, projectName);   // idesc
+            preparedStatement.setInt(15, 0);        // ulistid
+            preparedStatement.setInt(16, 0);        // dms_status
+            preparedStatement.setInt(17, 0);        // ulrecid
             
             preparedStatement.executeUpdate();
             
             preparedStatement = null;
 
-            isInstallationInserted = true;
+            
         } catch (SQLException e) {
             handleDatabaseError(e);
         }
@@ -531,7 +534,7 @@ public class IBDBGenerator{
             closeConnection();
         }
         
-        return isInstallationInserted;
+        return installId;
     }
     
     public static void handleDatabaseError(Exception e) throws InternationalizableException {
