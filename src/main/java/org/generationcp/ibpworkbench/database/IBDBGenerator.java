@@ -256,9 +256,9 @@ public class IBDBGenerator{
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.GROUNDNUT)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_GROUNDNUT_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.PHASEOLUS)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_MAIZE_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.MAIZE)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_PHASEOLUS_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase(CropType.MAIZE)){
+                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_MAIZE_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.RICE)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_RICE_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.SORGHUM)){
