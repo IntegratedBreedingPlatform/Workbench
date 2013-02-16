@@ -59,7 +59,7 @@ public class SaveNewProjectAction implements ClickListener{
     private static final long serialVersionUID = 1L;
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
-    private static final int PROJECT_USER_STATUS = 100;
+    private static final int PROJECT_USER_STATUS = 1;
     
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
