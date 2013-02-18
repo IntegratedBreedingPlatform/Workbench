@@ -24,18 +24,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -63,7 +60,7 @@ public class MysqlAccountGenerator implements Serializable{
     
     private CropType cropType;
     private Long projectId;
-    private Set<User> projectMembers;
+    private Map<Integer, String> idAndNameOfProjectMembers;
     private WorkbenchDataManager dataManager;
     
     private String workbenchHost;
@@ -74,10 +71,10 @@ public class MysqlAccountGenerator implements Serializable{
     
     private Connection connection;
 
-    public MysqlAccountGenerator(CropType cropType, Long projectId, Set<User> projectMembers, WorkbenchDataManager dataManager){
+    public MysqlAccountGenerator(CropType cropType, Long projectId, Map<Integer, String> idAndNameOfProjectMembers, WorkbenchDataManager dataManager){
         this.cropType = cropType;
         this.projectId = projectId;
-        this.projectMembers = projectMembers;
+        this.idAndNameOfProjectMembers = idAndNameOfProjectMembers;
         this.dataManager = dataManager;
     }
     
@@ -86,9 +83,9 @@ public class MysqlAccountGenerator implements Serializable{
         
         try{
             createLocalConnection();
-            Map<Integer, String> usernames = createAccounts();
-            executeGrantStatements(usernames);
-            storeWokrbenchUserToMysqlAccountMappings(usernames);
+            createAccounts();
+            executeGrantStatements();
+            storeWokrbenchUserToMysqlAccountMappings();
             
             isGenerationSuccess = true;
         } catch (InternationalizableException e) {
@@ -144,30 +141,16 @@ public class MysqlAccountGenerator implements Serializable{
      * @return
      * @throws InternationalizableException
      */
-    private Map<Integer, String> createAccounts() throws InternationalizableException {
-        //prepare the mysql username and passwords
-        Map<Integer, String> usernames = new HashMap<Integer, String>();
-        try{
-            for(User member : projectMembers){
-                Person personForUser = this.dataManager.getPersonById(member.getPersonid());
-                
-                String username = personForUser.getInitialsWithTimestamp();
-                
-                usernames.put(member.getUserid(), username);
-            }
-        } catch(MiddlewareQueryException ex) {
-            LOG.error(ex.toString(), ex);
-            throw new InternationalizableException(ex, 
-                    Message.DATABASE_ERROR, Message.CONTACT_DEV_ERROR_DESC);
-        }
-        
+    private void createAccounts() throws InternationalizableException {
         //execute create user statements
         Statement statement = null;
         
         try{
             statement = this.connection.createStatement();
         
-            for(String username : usernames.values()){
+            for(Integer id : this.idAndNameOfProjectMembers.keySet()){
+                String username = this.idAndNameOfProjectMembers.get(id);
+                String password = username.substring(0, 11);
                 StringBuilder createUserStatement = new StringBuilder();
                 
                 createUserStatement.append(SQL_CREATE_USER);
@@ -181,7 +164,7 @@ public class MysqlAccountGenerator implements Serializable{
                 createUserStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
                 createUserStatement.append(IBDBGenerator.SQL_IDENTIFIED_BY);
                 createUserStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                createUserStatement.append(username);
+                createUserStatement.append(password);
                 createUserStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
                 
                 statement.addBatch(createUserStatement.toString());
@@ -199,11 +182,9 @@ public class MysqlAccountGenerator implements Serializable{
                 }
             }
         }
-        
-        return usernames;
     }
     
-    private void executeGrantStatements(Map<Integer, String> usernames) throws InternationalizableException {
+    private void executeGrantStatements() throws InternationalizableException {
         //execute grant statements
         Statement statement = null;
         String centralDatabaseName = this.cropType.getCentralDbName();
@@ -217,7 +198,8 @@ public class MysqlAccountGenerator implements Serializable{
         try{
             statement = this.connection.createStatement();
             
-            for(String username : usernames.values()){
+            for(Integer id : this.idAndNameOfProjectMembers.keySet()){
+                String username = this.idAndNameOfProjectMembers.get(id);
                 StringBuilder grantStatementForCentral = new StringBuilder();
                 
                 //grant statement for central IBDB access
@@ -270,7 +252,7 @@ public class MysqlAccountGenerator implements Serializable{
         }
     }
     
-    private void storeWokrbenchUserToMysqlAccountMappings(Map<Integer, String> usernames) throws InternationalizableException {
+    private void storeWokrbenchUserToMysqlAccountMappings() throws InternationalizableException {
         List<ProjectUserMysqlAccount> mappingRecords = new ArrayList<ProjectUserMysqlAccount>();
         Project project = null;
         try{
@@ -284,16 +266,17 @@ public class MysqlAccountGenerator implements Serializable{
         
         if(project != null){
             try{
-                for(Integer userid : usernames.keySet()){
+                for(Integer userid : this.idAndNameOfProjectMembers.keySet()){
                     User userRecord = this.dataManager.getUserById(userid.intValue());
-                    String username = usernames.get(userid);
+                    String username = this.idAndNameOfProjectMembers.get(userid);
+                    String password = username.substring(0, 11);
                     
                     if(userRecord != null){
                         ProjectUserMysqlAccount mappingRecord = new ProjectUserMysqlAccount();
                         mappingRecord.setProject(project);
                         mappingRecord.setUser(userRecord);
                         mappingRecord.setMysqlUsername(username);
-                        mappingRecord.setMysqlPassword(username);
+                        mappingRecord.setMysqlPassword(password);
                         mappingRecords.add(mappingRecord);
                     }
                 }

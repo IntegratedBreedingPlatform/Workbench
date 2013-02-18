@@ -65,6 +65,8 @@ public class SaveNewProjectAction implements ClickListener{
     
     private CreateProjectPanel createProjectPanel;
     private Project project;
+    
+    private Map<Integer, String> idAndNameOfProjectMembers;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -90,6 +92,8 @@ public class SaveNewProjectAction implements ClickListener{
         boolean validProjectValues = createProjectPanel.validate();
 
         if (validProjectValues) {
+            
+            this.idAndNameOfProjectMembers = new HashMap<Integer, String>();
 
             project = createProjectPanel.getProject();
 
@@ -147,16 +151,20 @@ public class SaveNewProjectAction implements ClickListener{
                     managerFactory.getUserDataManager().addPerson(person);
 
                     // add a user to project's local database
-                    String newUserNameAndPassword = person.getInitialsWithTimestamp();
+                    String newUserName = person.getInitialsWithTimestamp();
+                    //password should be 11 chars long only
+                    String newPassword = newUserName.substring(0, 11);
                     
-                    user.setName(newUserNameAndPassword);
-                    user.setPassword(newUserNameAndPassword);
+                    user.setName(newUserName);
+                    user.setPassword(newPassword);
                     user.setPersonid(person.getId());
                     user.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     user.setType(PROJECT_USER_TYPE);
                     user.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     user.setAdate(getCurrentDate());
                     int localUserId = managerFactory.getUserDataManager().addUser(user);
+                    //add to map of project members
+                    this.idAndNameOfProjectMembers.put(currentUser.getUserid(), newUserName);
                     
                     // Add the installation record in the local db with the given project name and the newly added local user
                     projectUserInstalId = generator.addLocalInstallationRecord(project.getProjectName(), localUserId);
@@ -199,7 +207,7 @@ public class SaveNewProjectAction implements ClickListener{
                     }
                     
                     MysqlAccountGenerator mysqlAccountGenerator = new MysqlAccountGenerator(this.project.getCropType(), this.project.getProjectId(), 
-                            projectMembers, this.workbenchDataManager);
+                            this.idAndNameOfProjectMembers, this.workbenchDataManager);
                     
                     try {
                         isMysqlAccountGenerationSuccess = mysqlAccountGenerator.generateMysqlAccounts();
@@ -367,9 +375,12 @@ public class SaveNewProjectAction implements ClickListener{
                 
                 //append a timestamp to the username and password
                 //and change the start of the username of be the initials of the user
-                String newUserNameAndPassword = localPerson.getInitialsWithTimestamp();
-                localUser.setName(newUserNameAndPassword);
-                localUser.setPassword(newUserNameAndPassword);
+                String newUserName = localPerson.getInitialsWithTimestamp();
+                //password must be 11 chars long
+                String newPassword = newUserName.substring(0, 11);
+                
+                localUser.setName(newUserName);
+                localUser.setPassword(newPassword);
                 
                 // If the selected member does not exist yet in the local database, then add
                 if (!userDataManager.isUsernameExists(localUser.getName())){
@@ -379,7 +390,8 @@ public class SaveNewProjectAction implements ClickListener{
                     localUser.setInstalid(Integer.valueOf(projectUserInstalId));
                     localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     localUser.setAdate(getCurrentDate());
-                    Integer userId = userDataManager.addUser(localUser);                
+                    Integer userId = userDataManager.addUser(localUser);      
+                    this.idAndNameOfProjectMembers.put(workbenchUser.getUserid(), newUserName);
 
                     // add a workbench user to ibdb user mapping
                     User ibdbUser = userDataManager.getUserById(userId);
@@ -390,7 +402,7 @@ public class SaveNewProjectAction implements ClickListener{
                     workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 
                 }
-                usersAccountedFor.put(projectUserRole.getUserId(), newUserNameAndPassword);
+                usersAccountedFor.put(projectUserRole.getUserId(), newUserName);
             }
         }
     }
