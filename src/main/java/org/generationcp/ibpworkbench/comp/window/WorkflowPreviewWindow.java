@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, All Rights Reserved.
+ * 
+ * Generation Challenge Programme (GCP)
+ * 
+ * 
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * 
+ *******************************************************************************/
 package org.generationcp.ibpworkbench.comp.window;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -78,7 +89,7 @@ public class WorkflowPreviewWindow extends Window implements InitializingBean {
             setContent(masWorkflowDiagram);
         }
         else if (workflowName.equals("Manager")) {
-            ManagerWorkflowDiagram managerWorkflowDiagram = new ManagerWorkflowDiagram(true, null);
+            ManagerWorkflowDiagram managerWorkflowDiagram = new ManagerWorkflowDiagram(true, null, null);
             setHeight(managerWorkflowDiagram.getHeight(), managerWorkflowDiagram.getHeightUnits());
             setWidth(managerWorkflowDiagram.getWidth(), managerWorkflowDiagram.getWidthUnits());
             setContent(managerWorkflowDiagram);

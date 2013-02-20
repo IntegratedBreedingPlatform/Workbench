@@ -17,7 +17,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
+import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -44,6 +46,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private boolean workflowPreview;
     
     private Project project;
+    private Role role;
 
     private Label dashboardTitle;
 
@@ -65,15 +68,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button fieldbookButton;
     private Button optimasButton;
     private Button nurseryManagerButton;
+    private Button projectLocationButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public ManagerWorkflowDiagram(boolean workflowPreview, Project project) {
+    public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
         
         if (!workflowPreview) {
             this.project = project;
+            this.role = role;
         }
     }
     
@@ -160,6 +165,13 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         nurseryManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         nurseryManagerButton.setSizeUndefined();
         nurseryManagerButton.setDescription("Click to launch Nursery Manager");
+        
+        projectLocationButton = new Button("Project Locations");
+        projectLocationButton.setStyleName(BaseTheme.BUTTON_LINK);
+        projectLocationButton.setSizeUndefined();
+        projectLocationButton.setDescription("Click to configure project locations");
+
+
     }
 
     protected void initializeLayout() {
@@ -297,6 +309,13 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(projectLocationButton);
+        browseGermplasmButton.setHeight("20px");
+        layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectLocationButton, 0);
+
+
 
         return layout;
     }
@@ -428,6 +447,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
         }
     }
 

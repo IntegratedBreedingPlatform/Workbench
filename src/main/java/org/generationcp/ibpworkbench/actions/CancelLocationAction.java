@@ -11,36 +11,78 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 
 /**
  * 
- * @author Jeffrey Morales
+ * @author Jeffrey Morales, Joyce Avestro
+ * 
  * 
  */
 @Configurable
-public class CancelLocationAction implements ClickListener {
+public class CancelLocationAction implements ClickListener, ActionListener  {
     
     private static final Logger LOG = LoggerFactory.getLogger(CancelLocationAction.class);
     private static final long serialVersionUID = 1L;
     
     private AddLocationsWindow window;
+    private ProjectLocationPanel projectLocationPanel;
 
     public CancelLocationAction(AddLocationsWindow window) {
         this.window = window;
     }
-    
+
+    public CancelLocationAction(ProjectLocationPanel projectLocationPanel) {
+        this.projectLocationPanel = projectLocationPanel;
+    }
+
     @Override
     public void buttonClick(ClickEvent event) {
             
-        window.getParent().removeWindow(window);
+        if (window != null){
+            window.getParent().removeWindow(window);
+        } else if (projectLocationPanel != null){
+            doAction(event.getComponent().getWindow(), null, true);
+        }
     
+    }
+
+    @Override
+    public void doAction(Event event) {
+        NavManager.breadCrumbClick(this, event);        
+    }
+
+    @Override
+    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+        try {
+            Project project = projectLocationPanel.getProject();
+            Role role = projectLocationPanel.getRole();
+
+            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
+            (new OpenWorkflowForRoleAction(projectLocationPanel.getProject())).doAction(window, url, isLinkAccessed);
+        } catch (Exception e) {
+            LOG.error("Exception", e);
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+            }
+            return;
+        }
+        
     }
         
 }

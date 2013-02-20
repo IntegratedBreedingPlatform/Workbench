@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import com.vaadin.ui.Button.ClickListener;
 
 /**
  * 
- * @author Jeffrey Morales
+ * @author Jeffrey Morales, Joyce Avestro
  * 
  */
 
@@ -32,15 +33,24 @@ public class OpenAddLocationWindowAction implements ClickListener{
 
     private static final long serialVersionUID = 1L;
 
-	private ProjectLocationsComponent projectLocationComponent;
+    private ProjectLocationsComponent projectLocationComponent;  // from Create Project Panel
+    private ProjectLocationPanel projectLocationPanel;           // from Manager Workflow configuration - project locations panel
 
     public OpenAddLocationWindowAction(ProjectLocationsComponent projectLocationComponent) {
-    	this.projectLocationComponent=projectLocationComponent;
+        this.projectLocationComponent = projectLocationComponent;
+    }
+
+    public OpenAddLocationWindowAction(ProjectLocationPanel projectLocationPanel) {
+        this.projectLocationPanel = projectLocationPanel;
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
-        event.getComponent().getWindow().addWindow(new AddLocationsWindow(this.projectLocationComponent));
+        if (projectLocationComponent != null) {
+            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationComponent));
+        } else if (projectLocationPanel != null) {
+            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationPanel));
+        }
     }
 
     

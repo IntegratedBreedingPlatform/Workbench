@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
@@ -27,77 +28,91 @@ import com.vaadin.ui.Button.ClickListener;
 
 /**
  * 
- * @author Jeffrey Morales
+ * @author Jeffrey Morales, Joyce Avestro
  * 
  */
 
 @Configurable
-public class SaveNewLocationAction implements ClickListener {
-    
+public class SaveNewLocationAction implements ClickListener{
+
     private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
     private static final long serialVersionUID = 1L;
-   
+
     private AddLocationForm newLocationForm;
-    
+
     private AddLocationsWindow window;
-    
-	private ProjectLocationsComponent projectLocationsComponent;
-    
-    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window, ProjectLocationsComponent projectLocationsComponent) {
+
+    private ProjectLocationsComponent projectLocationsComponent;
+    private ProjectLocationPanel projectLocationPanel;
+
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
+            ProjectLocationsComponent projectLocationsComponent) {
         this.newLocationForm = newLocationForm;
         this.window = window;
-        this.projectLocationsComponent=projectLocationsComponent;
-
+        this.projectLocationsComponent = projectLocationsComponent;
     }
-    
-    
+
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window, ProjectLocationPanel projectLocationPanel) {
+        this.newLocationForm = newLocationForm;
+        this.window = window;
+        this.projectLocationPanel = projectLocationPanel;
+    }
+
     @Override
     public void buttonClick(ClickEvent event) {
-    	newLocationForm.commit();
+        newLocationForm.commit();
 
         @SuppressWarnings("unchecked")
         BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
         LocationModel location = locationBean.getBean();
-        
-        newLocationForm.commit();
-        
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
-        if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())){
-        
-        	app.getSessionData().getUniqueLocations().add(location.getLocationName());
-        	
-        	Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size()+1;
-        	
-        	nextKey = nextKey*-1;
-        	
-        	LocationModel newLocation = new LocationModel();
-        	
-        	newLocation.setLocationName(location.getLocationName());
-        	newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
-        	newLocation.setLocationId(nextKey);
-        
-            app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
-            
-            LOG.info(app.getSessionData().getProjectLocationData().toString());
-         
-            newLocationForm.commit();
-            
-            Location newLoc=new Location();
-            newLoc.setLocid(newLocation.getLocationId());
-        	newLoc.setLname(newLocation.getLocationName());
-        	newLoc.setLabbr(newLocation.getLocationAbbreviation());
 
-            projectLocationsComponent.getSelect().addItem(newLoc);
-            projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());
-        	
-            projectLocationsComponent.getSelect().select(newLoc);
-            projectLocationsComponent.getSelect().setValue(newLoc);
+        newLocationForm.commit();
+
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+        if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
+
+            app.getSessionData().getUniqueLocations().add(location.getLocationName());
+
+            Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+
+            nextKey = nextKey * -1;
+
+            LocationModel newLocation = new LocationModel();
+
+            newLocation.setLocationName(location.getLocationName());
+            newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
+            newLocation.setLocationId(nextKey);
+
+            app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
+
+            LOG.info(app.getSessionData().getProjectLocationData().toString());
+
+            newLocationForm.commit();
+
+            Location newLoc = new Location();
+            newLoc.setLocid(newLocation.getLocationId());
+            newLoc.setLname(newLocation.getLocationName());
+            newLoc.setLabbr(newLocation.getLocationAbbreviation());
+
+            if (projectLocationsComponent != null) {
+                projectLocationsComponent.getSelect().addItem(newLoc);
+                projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());
+
+                projectLocationsComponent.getSelect().select(newLoc);
+                projectLocationsComponent.getSelect().setValue(newLoc);
+            } else if (projectLocationPanel != null) {
+                projectLocationPanel.getSelect().addItem(newLoc);
+                projectLocationPanel.getSelect().setItemCaption(newLoc, newLoc.getLname());
+
+                projectLocationPanel.getSelect().select(newLoc);
+                projectLocationPanel.getSelect().setValue(newLoc);
+            }
 
             newLocation = null;
             window.getParent().removeWindow(window);
-        
+
         }
-        
+
     }
 }

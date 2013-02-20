@@ -80,14 +80,15 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         }
         
         public static boolean isCorrectTool(String toolName) {
-            if(ToolEnum.GERMPLASM_BROWSER.getToolName().equals(toolName) ||
-               ToolEnum.STUDY_BROWSER.getToolName().equals(toolName) ||
-               ToolEnum.GERMPLASM_LIST_BROWSER.getToolName().equals(toolName) ||
-               ToolEnum.GDMS.getToolName().equals(toolName) ||
-               ToolEnum.FIELDBOOK.getToolName().equals(toolName) ||
-               ToolEnum.OPTIMAS.getToolName().equals(toolName) ||
-               ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) ||
-               ToolEnum.BREEDING_VIEW.getToolName().equals(toolName)) {
+            if(ToolEnum.GERMPLASM_BROWSER.getToolName().equals(toolName) 
+                    || ToolEnum.STUDY_BROWSER.getToolName().equals(toolName) 
+                    || ToolEnum.GERMPLASM_LIST_BROWSER.getToolName().equals(toolName) 
+                    || ToolEnum.GDMS.getToolName().equals(toolName) 
+                    || ToolEnum.FIELDBOOK.getToolName().equals(toolName) 
+                    || ToolEnum.OPTIMAS.getToolName().equals(toolName) 
+                    || ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) 
+                    || ToolEnum.BREEDING_VIEW.getToolName().equals(toolName) 
+                    ) {
                 return true;
             }   return false;
             

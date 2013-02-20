@@ -50,6 +50,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
+    <view path="/ProjectLocation"
+          label="Project Locations"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+    
     <view path="/CreateProject"
           label="Create Project"
           level="1"

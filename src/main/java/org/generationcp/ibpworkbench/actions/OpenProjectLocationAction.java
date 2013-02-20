@@ -13,9 +13,11 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ToolVersionsPanel;
+import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +26,22 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 
-public class OpenToolVersionsAction implements ClickListener, ActionListener {
+/**
+ *  @author Joyce Avestro
+ */
+public class OpenProjectLocationAction implements ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
     
-    private static final Logger LOG = LoggerFactory.getLogger(OpenToolVersionsAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenProjectLocationAction.class);
+   
+    private Project project;
+    private Role role;
     
+    public OpenProjectLocationAction(Project project, Role role) {
+        this.project = project;
+        this.role = role;
+    }
+
     @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
@@ -44,12 +57,12 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
         IContentWindow w = (IContentWindow) window;
         
         try {
-            ToolVersionsPanel toolVersionsPanel = new ToolVersionsPanel();
-            toolVersionsPanel.setWidth("420px");
+            ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
+            projectLocationPanel.setWidth("730px"); 
             
-            w.showContent(toolVersionsPanel);
+            w.showContent(projectLocationPanel);
             
-            NavManager.navigateApp(window, "/ToolVersions", isLinkAccessed);
+            NavManager.navigateApp(window, "/ProjectLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
