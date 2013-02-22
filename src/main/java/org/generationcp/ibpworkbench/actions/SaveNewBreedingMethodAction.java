@@ -12,8 +12,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.middleware.pojos.Method;
@@ -41,12 +41,12 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     
     private AddBreedingMethodsWindow window;
     
-    private ProjectBreedingMethodsComponent projectBreedingMethodsComponent;
+    private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
 
-    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, ProjectBreedingMethodsComponent projectBreedingMethodsComponent) {
+    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
-        this.projectBreedingMethodsComponent = projectBreedingMethodsComponent;
+        this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;
         
     }
     
@@ -94,10 +94,10 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMgrp(newBreedingMethod.getMethodGroup());
             newMethod.setMtype(newBreedingMethod.getMethodType());
              
-            projectBreedingMethodsComponent.getSelect().addItem(newMethod);
-            projectBreedingMethodsComponent.getSelect().setItemCaption(newMethod, newMethod.getMname());
-            projectBreedingMethodsComponent.getSelect().select(newMethod);
-            projectBreedingMethodsComponent.getSelect().setValue(newMethod);
+            projectBreedingMethodsPanel.getSelect().addItem(newMethod);
+            projectBreedingMethodsPanel.getSelect().setItemCaption(newMethod, newMethod.getMname());
+            projectBreedingMethodsPanel.getSelect().select(newMethod);
+            projectBreedingMethodsPanel.getSelect().setValue(newMethod);
             
             newBreedingMethod = null;
             window.getParent().removeWindow(window);

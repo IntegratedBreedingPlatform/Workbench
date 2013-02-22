@@ -208,6 +208,7 @@ public enum Message {
     ,LOCATION_SUCCESSFULLY_CONFIGURED
     ,SAVE_CHANGES
     ,SUCCESS
+    ,METHODS_ADD_NEW
 
     
 }

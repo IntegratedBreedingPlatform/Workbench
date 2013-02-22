@@ -55,6 +55,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
     
+    <view path="/ProjectMethods"
+          label="Project Methods"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+    
     <view path="/CreateProject"
           label="Create Project"
           level="1"

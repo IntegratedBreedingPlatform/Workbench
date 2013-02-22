@@ -12,7 +12,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
+import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,16 +32,18 @@ public class OpenAddBreedingMethodWindowAction implements ClickListener{
 
     private static final long serialVersionUID = 1L;
     
-    private ProjectBreedingMethodsComponent projectBreedingMethodsComponent;
+	private ProjectBreedingMethodsPanel projectMethodsPanel;
 
-    public OpenAddBreedingMethodWindowAction(ProjectBreedingMethodsComponent projectBreedingMethodsComponent) {
-        this.projectBreedingMethodsComponent=projectBreedingMethodsComponent;
+    public OpenAddBreedingMethodWindowAction(ProjectBreedingMethodsPanel projectMethodsPanel) {
+        this.projectMethodsPanel=projectMethodsPanel;
         
     }
 
-    @Override
+
+
+	@Override
     public void buttonClick(ClickEvent event) {
-        event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(projectBreedingMethodsComponent));
+        event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(projectMethodsPanel));
     }
 
 }

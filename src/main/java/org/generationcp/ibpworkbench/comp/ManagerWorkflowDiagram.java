@@ -18,6 +18,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
+import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
@@ -69,6 +70,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button optimasButton;
     private Button nurseryManagerButton;
     private Button projectLocationButton;
+    private Button projectMethodsButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -165,6 +167,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         nurseryManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         nurseryManagerButton.setSizeUndefined();
         nurseryManagerButton.setDescription("Click to launch Nursery Manager");
+        
+        
+        projectMethodsButton = new Button("Project Methods");
+        projectMethodsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        projectMethodsButton.setSizeUndefined();
+        projectMethodsButton.setDescription("Click to configure project methods");
         
         projectLocationButton = new Button("Project Locations");
         projectLocationButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -310,12 +318,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        layout.addComponent(projectMethodsButton);
+        projectMethodsButton.setHeight("20px");
+        layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectMethodsButton, 0);
+        
         layout.addComponent(projectLocationButton);
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
-
-
 
         return layout;
     }
@@ -448,6 +459,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
+            projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
         }
     }
 
