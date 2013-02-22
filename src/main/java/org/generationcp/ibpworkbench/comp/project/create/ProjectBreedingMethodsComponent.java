@@ -113,7 +113,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
     }
 
     protected void initializeActions() {
-        showMethodWindowButton.addListener(new OpenAddBreedingMethodWindowAction(this));
+//        showMethodWindowButton.addListener(new OpenAddBreedingMethodWindowAction(this));
         previousButton.addListener(new PreviousButtonClickListener());
         nextButton.addListener(new NextButtonClickListener());
     }
