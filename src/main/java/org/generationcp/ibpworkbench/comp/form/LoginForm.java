@@ -141,6 +141,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         loginPanelLayout.setExpandRatio(usernamePasswordArea, 0);
 
         btnLogin = new Button();
+        btnLogin.setClickShortcut(13);  //KeyCode.ENTER);
+        btnLogin.addStyleName("primary");
         loginPanelLayout.addComponent(btnLogin);
         loginPanelLayout.setComponentAlignment(btnLogin, Alignment.TOP_CENTER);
         
@@ -163,6 +165,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         lblUsername.setWidth(null);
 
         txtUsername = new TextField();
+        txtUsername.focus();
 
         // password
         lblPassword = new Label();
