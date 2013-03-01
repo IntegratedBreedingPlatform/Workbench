@@ -78,11 +78,7 @@ INSERT  INTO `gdms_marker_user_info`(`marker_id`,`principal_investigator`,`conta
 
 /*Data for the table `instln` */
 
-INSERT  INTO `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`uaid`,`uldid`,`umethn`,`ufldno`,`urefno`,`upid`,`idesc`,`ulistid`,`dms_status`,`ulrecid`) VALUES (-1,-1,20130125,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Chickpea',0,0,0);
-
 /*Data for the table `users` */
-
-INSERT  INTO `users`(`userid`,`instalid`,`ustatus`,`uaccess`,`utype`,`uname`,`upswd`,`personid`,`adate`,`cdate`) VALUES (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130125,0);
 
 INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-1', '1500','0','Storage Room A','RM A','0','0','0','171','0');
 INSERT INTO `location` (`locid`,`ltype`, `nllp`, `lname`, `labbr`, `snl3id`, `snl2id`, `snl1id`, `cntryid`, `lrplce`) VALUES('-2', '1500','0','Cabinet 1','A-1','0','0','-1','171','0');

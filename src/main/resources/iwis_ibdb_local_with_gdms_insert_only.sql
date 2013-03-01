@@ -115,8 +115,6 @@ insert  into `gdms_markers_onmap`(`map_id`,`marker_id`,`start_position`,`end_pos
 
 /*Data for the table `instln` */
 
-insert  into `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`uaid`,`uldid`,`umethn`,`ufldno`,`urefno`,`upid`,`idesc`,`ulistid`,`dms_status`,`ulrecid`) values (-1,-1,20130125,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Wheat',0,0,0);
-
 /*Data for the table `level_c` */
 
 /*Data for the table `level_n` */
@@ -196,8 +194,6 @@ insert  into `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`u
 /*Data for the table `udflds` */
 
 /*Data for the table `users` */
-
-insert  into `users`(`userid`,`instalid`,`ustatus`,`uaccess`,`utype`,`uname`,`upswd`,`personid`,`adate`,`cdate`) values (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130125,0);
 
 /*Data for the table `variate` */
 

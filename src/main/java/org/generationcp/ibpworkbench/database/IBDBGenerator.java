@@ -69,6 +69,9 @@ public class IBDBGenerator{
     private static final String GDMS_INSERT_RICE_SQL = "iris_ibdb_local_with_gdms_insert_only.sql";
     private static final String GDMS_INSERT_SORGHUM_SQL = "ibdbv1_isgis_local_with_gdms_datainserts.sql";
     private static final String GDMS_INSERT_WHEAT_SQL = "iwis_ibdb_local_with_gdms_insert_only.sql";
+    
+    private static final String LOCAL_INSERT_LENTIL_SQL = "ilis_ibdb_local_insert_only.sql";
+    private static final String LOCAL_INSERT_SOYBEAN_SQL = "isbis_ibdb_local_insert_only.sql";
 
     public static final String WORKBENCH_PROP_HOST = "workbench.host";
     public static final String WORKBENCH_PROP_PORT = "workbench.port";
@@ -265,7 +268,12 @@ public class IBDBGenerator{
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_SORGHUM_SQL).toURI()));
             } else if (cropType.getCropName().equalsIgnoreCase(CropType.WHEAT)){
                 executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_WHEAT_SQL).toURI()));
-            }  
+            } else if (cropType.getCropName().equalsIgnoreCase("lentil")){
+            	//TODO add lentil and soybean to CropType
+                executeSQLFile(new File(ResourceFinder.locateFile(LOCAL_INSERT_LENTIL_SQL).toURI()));
+            } else if (cropType.getCropName().equalsIgnoreCase("soybean")){
+                executeSQLFile(new File(ResourceFinder.locateFile(LOCAL_INSERT_SOYBEAN_SQL).toURI()));
+            }
 
             LOG.info("IB Local Database Generation Successful");
 

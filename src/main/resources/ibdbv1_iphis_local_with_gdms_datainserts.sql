@@ -427,16 +427,6 @@ LOCK TABLES `institut` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `instln`
---
-
-LOCK TABLES `instln` WRITE;
-/*!40000 ALTER TABLE `instln` DISABLE KEYS */;
-INSERT INTO `instln` (`instalid`, `admin`, `udate`, `ugid`, `ulocn`, `ucid`, `unid`, `uaid`, `uldid`, `umethn`, `ufldno`, `urefno`, `upid`, `idesc`, `ulistid`, `dms_status`, `ulrecid`) VALUES (-1,-1,20130113,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Beans',0,0,0);
-/*!40000 ALTER TABLE `instln` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `level_c`
 --
 
@@ -794,7 +784,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`userid`, `instalid`, `ustatus`, `uaccess`, `utype`, `uname`, `upswd`, `personid`, `adate`, `cdate`) VALUES (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130113,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -137,8 +137,6 @@ insert  into `germplsm`(`gid`,`methn`,`gnpgs`,`gpid1`,`gpid2`,`germuid`,`lgid`,`
 
 /*Data for the table `instln` */
 
-insert  into `instln`(`instalid`,`admin`,`udate`,`ugid`,`ulocn`,`ucid`,`unid`,`uaid`,`uldid`,`umethn`,`ufldno`,`urefno`,`upid`,`idesc`,`ulistid`,`dms_status`,`ulrecid`) values (-1,-1,20130125,0,0,0,0,0,0,0,0,0,0,'IBFieldbook Local Database for Groundnut',0,0,0);
-
 /*Data for the table `level_c` */
 
 /*Data for the table `level_n` */
@@ -226,8 +224,6 @@ insert  into `names`(`nid`,`gid`,`ntype`,`nstat`,`nuid`,`nval`,`nlocn`,`ndate`,`
 /*Data for the table `udflds` */
 
 /*Data for the table `users` */
-
-insert  into `users`(`userid`,`instalid`,`ustatus`,`uaccess`,`utype`,`uname`,`upswd`,`personid`,`adate`,`cdate`) values (-1,-1,1,100,422,'IBFieldbook','IBFieldbook',0,20130125,0);
 
 /*Data for the table `variate` */
 
