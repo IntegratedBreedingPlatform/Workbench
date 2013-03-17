@@ -120,6 +120,21 @@ public class ToolUtil {
         }
         
         File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+        
+        // if we can get the workbench installation directory
+        // from the workbench setting table, use it.
+        WorkbenchSetting workbenchSetting = null;
+        try {
+            workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+            
+            if (workbenchSetting != null && !StringUtil.isEmpty(workbenchSetting.getInstallationDirectory())) {
+                absoluteToolFile = new File(workbenchSetting.getInstallationDirectory(), tool.getPath()).getAbsoluteFile();
+            }
+        }
+        catch (MiddlewareQueryException e) {
+            // intentionally empty
+        }
+        
         Runtime runtime = Runtime.getRuntime();
         return runtime.exec(absoluteToolFile.getAbsolutePath());
     }
