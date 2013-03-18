@@ -135,7 +135,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         setModal(true);
         
        /* Make the sub window 50% the size of the browser window */
-        setWidth("40%");
+        setWidth("60%");
         setHeight("70%");
         /*
          * Center the window both horizontally and vertically in the browser
