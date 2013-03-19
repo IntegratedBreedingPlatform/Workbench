@@ -11,9 +11,15 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 
 import com.vaadin.Application;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PopupView.Content;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -34,12 +40,23 @@ public class OpenLoginWindowAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
+    	
         LoginWindow window = new LoginWindow();
         new LoginAction(window);
         Application app = event.getComponent().getApplication();
         
-        app.removeWindow(app.getMainWindow());
-        app.setMainWindow(window);
+        window.setWidth("100%");
+        window.center();
+        window.setPositionY(0);
+        window.setClosable(false);
+        window.setDraggable(false);
+        window.setHeight("100%");
+        window.setBorder(0);       
+        
+        app.getMainWindow().removeAllComponents();
+        app.getMainWindow().addComponent(new Label("<style> .v-window-outerheader { height:0 !important; border:0 !important; margin:0 !important; padding:0 !important; }</style>",Label.CONTENT_XHTML));
+        app.getMainWindow().addWindow(window);
+        
     }
 
 }

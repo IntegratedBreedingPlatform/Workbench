@@ -47,8 +47,17 @@ public class OpenLoginWindowFromRegistrationAction implements ClickListener{
         new LoginAction(window);
         Application app = event.getComponent().getApplication();
         
-        app.removeWindow(app.getMainWindow());
-        app.setMainWindow(window);
+        window.setWidth("100%");
+        window.center();
+        window.setPositionY(0);
+        window.setClosable(false);
+        window.setDraggable(false);
+        window.setHeight("100%");
+        window.setBorder(0);       
+        
+        app.getMainWindow().removeAllComponents();
+        app.getMainWindow().addWindow(window);
+        
         
         MessageNotifier.showWarning(window, 
                 messageSource.getMessage(Message.REGISTER_SUCCESS),

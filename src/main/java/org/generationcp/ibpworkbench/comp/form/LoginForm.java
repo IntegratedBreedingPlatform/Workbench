@@ -21,6 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -48,6 +49,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private int userId;
     private Button registerUserAccountButton;
     private Button forgotPasswordButton;
+    private Panel loginPanel; 
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -85,6 +87,10 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         return lblMessage;
     }
 
+    public Panel getLoginPanel() {
+    	return loginPanel;
+    }
+    
     protected void initialize() {
     }
 
@@ -93,8 +99,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         setWidth("100.0%");
         setHeight("100.0%");
         
-        Panel panel = buildLoginPanel();
-        setCompositionRoot(panel);
+        this.loginPanel = buildLoginPanel();
+        setCompositionRoot(loginPanel);
     }
 
     protected void initializeLayout() {
@@ -111,7 +117,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         initializeLayout();
         initializeActions();
     }
-
+    
     private Panel buildLoginPanel() {
         // common part: create layout
         Panel loginPanel = new Panel();
@@ -141,8 +147,9 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         loginPanelLayout.setExpandRatio(usernamePasswordArea, 0);
 
         btnLogin = new Button();
-        btnLogin.setClickShortcut(13);  //KeyCode.ENTER);
-        btnLogin.addStyleName("primary");
+        btnLogin.setClickShortcut(KeyCode.ENTER);
+        
+        //btnLogin.addStyleName("primary");
         loginPanelLayout.addComponent(btnLogin);
         loginPanelLayout.setComponentAlignment(btnLogin, Alignment.TOP_CENTER);
         
@@ -156,6 +163,9 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         loginPanelLayout.addComponent(registerUserAccountButton);
         loginPanelLayout.setComponentAlignment(registerUserAccountButton, Alignment.BOTTOM_CENTER);
 
+        loginPanelLayout.requestRepaint();
+        loginPanel.requestRepaint();
+        
         return loginPanel;
     }
 
