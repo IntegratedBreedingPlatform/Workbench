@@ -94,11 +94,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        administrationTitle = new Label("Administration");
+        administrationTitle = new Label("Administration & Configuration");
         administrationTitle.setStyleName("gcp-section-title-large");
         administrationTitle.setSizeUndefined();
 
-        configurationTitle = new Label("Configuration");
+        configurationTitle = new Label("Genotyping");
         configurationTitle.setStyleName("gcp-section-title-large");
         configurationTitle.setSizeUndefined();
 
@@ -300,6 +300,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(projectMethodsButton);
+        projectMethodsButton.setHeight("20px");
+        layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectMethodsButton, 0);
+        
+        layout.addComponent(projectLocationButton);
+        browseGermplasmButton.setHeight("20px");
+        layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectLocationButton, 0);
 
         return layout;
     }
@@ -318,6 +328,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        /*
         layout.addComponent(projectMethodsButton);
         projectMethodsButton.setHeight("20px");
         layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
@@ -327,7 +338,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
-
+         */
         return layout;
     }
 
