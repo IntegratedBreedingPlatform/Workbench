@@ -52,7 +52,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Label dashboardTitle;
 
     private Label administrationTitle;
-    private Label configurationTitle;
+    private Label genoTypingTitle;
     private Label projectPlanningTitle;
     private Label breedingManagementTitle;
     private Label analysisPipelineTitle;
@@ -98,9 +98,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         administrationTitle.setStyleName("gcp-section-title-large");
         administrationTitle.setSizeUndefined();
 
-        configurationTitle = new Label("Genotyping");
-        configurationTitle.setStyleName("gcp-section-title-large");
-        configurationTitle.setSizeUndefined();
+        genoTypingTitle = new Label("Genotyping");
+        genoTypingTitle.setStyleName("gcp-section-title-large");
+        genoTypingTitle.setSizeUndefined();
 
         projectPlanningTitle = new Label("Project Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
@@ -318,15 +318,20 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.addComponent(configurationTitle);
-        layout.setComponentAlignment(configurationTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(configurationTitle, 0);
+        layout.addComponent(genoTypingTitle);
+        layout.setComponentAlignment(genoTypingTitle, Alignment.TOP_CENTER);
+        layout.setExpandRatio(genoTypingTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(gdmsButton);
+        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(gdmsButton, 0);
+
         
         /*
         layout.addComponent(projectMethodsButton);
