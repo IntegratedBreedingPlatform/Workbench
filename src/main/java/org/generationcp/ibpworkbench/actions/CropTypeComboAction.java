@@ -116,8 +116,8 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
 
                 // add crop to database
                 CropType cropType = new CropType(newItemCaption);
-                workbenchDataManager.addCropType(cropType);
-                sourceComponent.getWindow().showNotification("Added crop " + newItemCaption);
+                //workbenchDataManager.addCropType(cropType);
+               // sourceComponent.getWindow().showNotification("Added crop " + newItemCaption);
 
                 // add the item to the combo box
                 CropType newCropType = workbenchDataManager.getCropTypeByName(newItemCaption);

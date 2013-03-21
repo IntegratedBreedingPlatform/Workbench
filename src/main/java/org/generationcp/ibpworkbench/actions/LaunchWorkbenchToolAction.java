@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +37,8 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,9 +126,24 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this.toolEnum = toolEnum;
         this.project = project;
         this.toolConfiguration = toolConfiguration;
+        
+        /*
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        User user = app.getSessionData().getUserData();
+        
+        ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, project.getProjectName(), project.getProjectName(), user, new Date());
+        try {
+			workbenchDataManager.addProjectActivity(projAct);
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
     }
     
-    @Override
+    
+
+	@Override
     public void buttonClick(ClickEvent event) {
         
         Window window = event.getComponent().getWindow();
@@ -158,8 +176,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
         Tool tool = null;
         
+       
         try {
             tool = workbenchDataManager.getToolWithName(toolName);
+            
+            
+            
         } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
@@ -167,11 +189,30 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             return;
         }
         
+        
+        
         if (tool == null) {
             LOG.warn("Cannot find tool " + toolEnum);
             showLaunchError(window, toolEnum.toString());
             return;
         } else {
+        	
+        	try {
+    	        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+    	        User user = app.getSessionData().getUserData();
+    	        Project currentProject = app.getSessionData().getLastOpenedProject();
+    	        
+    	        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getToolName(), "Launched "+tool.getToolName(), user, new Date());
+           
+    	        workbenchDataManager.addProjectActivity(projAct);
+    	        
+    		} catch (MiddlewareQueryException e1) {
+    			// TODO Auto-generated catch block
+    			
+    			e1.printStackTrace();
+    			
+    		}
+        	
             if (tool.getToolType() == ToolType.NATIVE) {
                 
                 if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 

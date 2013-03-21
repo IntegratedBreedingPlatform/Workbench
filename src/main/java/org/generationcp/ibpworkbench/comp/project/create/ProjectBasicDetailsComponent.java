@@ -131,7 +131,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     }
 
     protected void initializeActions() {
-        cropTypeCombo.addListener(cropTypeComboAction);
+       // cropTypeCombo.addListener(cropTypeComboAction);
         nextButton.addListener(new NextButtonClickListener());
 
     }
@@ -172,11 +172,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
         ComboBox comboBox = new ComboBox();
         comboBox.setContainerDataSource(beanItemContainer);
-        comboBox.setNewItemsAllowed(true);
+        comboBox.setNewItemsAllowed(false);
         cropTypeComboAction = new CropTypeComboAction();
         cropTypeComboAction.setSourceComponent(this);
         cropTypeComboAction.setCropTypeComboBox(comboBox);
-        comboBox.setNewItemHandler(cropTypeComboAction);
+       
+        //comboBox.setNewItemHandler(cropTypeComboAction);
+        
         comboBox.setItemCaptionPropertyId("cropName");
         comboBox.setRequired(true);
         comboBox.setRequiredError("Please select a Crop.");

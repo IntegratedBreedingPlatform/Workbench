@@ -137,11 +137,19 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);
                     } else {
-                        if (userRolesTab.validate()) {
-                            setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
-                        } else {
-                            setFocusToTab(SECOND_TAB_USER_ROLES);
-                        }
+                    	//added the validate for this item. -- aabr
+                    	 if (basicDetailsTab.validate()) {
+                             setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                             if (userRolesTab.validate()) {
+                                 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                             } else {
+                                 setFocusToTab(SECOND_TAB_USER_ROLES);
+                             }
+                         } else {
+                             setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+                         }
+                    	 
+                        
                     }
                 } else {
                     if (userRolesTab != null && userRolesTab.validateAndSave()){
