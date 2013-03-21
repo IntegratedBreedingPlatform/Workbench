@@ -70,6 +70,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
         ,BREEDING_VIEW("breeding_view")
+        ,MBDT("mbdt")
         ;
         
         String toolName;

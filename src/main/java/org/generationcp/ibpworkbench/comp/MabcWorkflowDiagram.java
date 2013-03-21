@@ -73,6 +73,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     private Button breedingViewSingleSiteAnalysisLocalButton;
     private Button fieldbookButton;
     private Button optimasButton;
+    private Button mbdtButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -159,6 +160,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");
+        
+        mbdtButton = new Button("MBDT");
+        mbdtButton.setStyleName(BaseTheme.BUTTON_LINK);
+        mbdtButton.setSizeUndefined();
+        mbdtButton.setDescription("Click to launch MBDT");
         
         fieldbookButton = new Button("Fieldbook");
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -353,6 +359,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(gdmsButton);
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(gdmsButton, 0);
+        
+        
 
         return layout;
     }
@@ -396,10 +404,15 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        layout.addComponent(mbdtButton);
+        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mbdtButton, 0);
+        
+        /*
         layout.addComponent(optimasButton);
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
-        
+        */
         return layout;
     }
 
@@ -442,6 +455,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     
     protected void initializeActions() {
         if (!workflowPreview) {
+        	mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
