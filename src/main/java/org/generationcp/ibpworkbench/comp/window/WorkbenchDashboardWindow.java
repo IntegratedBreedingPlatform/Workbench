@@ -138,7 +138,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         hint1.setContentMode(Label.CONTENT_PREFORMATTED);
         hint1.setSizeUndefined();
 
-        workbenchDashboard = new WorkbenchDashboard();
+        workbenchDashboard = new WorkbenchDashboard(this);
 
         verticalSplitPanel = new VerticalSplitPanel();
         contentAreaSplitPanel = new HorizontalSplitPanel();
@@ -333,6 +333,12 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         updateLabels();
     }
 
+    
+    public void addTitle(String myTitle)
+    {
+    	 String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION+ " " + myTitle;
+         workbenchTitle.setValue(title);
+    }
     @Override
     public void updateLabels() {
         String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION;

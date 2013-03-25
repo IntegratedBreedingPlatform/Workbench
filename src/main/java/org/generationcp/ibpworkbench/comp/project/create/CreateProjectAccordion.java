@@ -141,7 +141,12 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                     	 if (basicDetailsTab.validate()) {
                              setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
                              if (userRolesTab.validate()) {
-                                 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                            	 if (basicDetailsTab.validate()) {
+                            		 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                                 } else {
+                                     setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+                                 }
+                                 
                              } else {
                                  setFocusToTab(SECOND_TAB_USER_ROLES);
                              }

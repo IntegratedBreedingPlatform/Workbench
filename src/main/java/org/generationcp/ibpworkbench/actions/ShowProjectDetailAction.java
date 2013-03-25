@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
+import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -50,7 +51,8 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private Label projectDetailLabel;
     
     private Table tblProject;
-    
+    private WorkbenchDashboardWindow workbenchDashboardwindow;
+    private Label lblDashboardTitle;
     private Table tblActivity;
 
     private Table tblRoles;
@@ -67,6 +69,17 @@ public class ShowProjectDetailAction implements ItemClickListener {
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
+        this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
+        this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
+    }
+    
+    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, 
+            Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,WorkbenchDashboardWindow workbenchDashboardwindow) {
+        this.projectDetailLabel = projectDetailLabel;
+        this.tblProject = tblProject;
+        this.tblActivity = tblActivity;
+        this.tblRoles = tblRoles;
+        this.workbenchDashboardwindow = workbenchDashboardwindow;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
     }
@@ -104,7 +117,10 @@ public class ShowProjectDetailAction implements ItemClickListener {
             List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
             
             String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
-            projectDetailLabel.setValue(label);
+            //projectDetailLabel.setValue(label);
+           
+            workbenchDashboardwindow.addTitle(project.getProjectName());
+            
             
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));
             tblProject.refreshRowCache();
