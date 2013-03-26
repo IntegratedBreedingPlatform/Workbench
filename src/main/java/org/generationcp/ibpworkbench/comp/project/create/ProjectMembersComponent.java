@@ -247,8 +247,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                         Item item = container.addItem(user);
                         item.getItemProperty("userId").setValue(1);
                         item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
+                        //item.getItemProperty("")
+                        setInheritedRoles(item);
+                      
                     }
                 }
+               
             }
         });
     }
@@ -407,9 +411,51 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                 }
             }
             
+        }
             requestRepaintAll();
                 
         }
+        
+        public void setInheritedRoles(Item currentItem){
+            inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
+
+            if (tblMembers != null){
+
+                Container container = tblMembers.getContainerDataSource();
+                Collection<User> userList = (Collection<User>) container.getItemIds();
+
+                
+
+                    List<Role> roleList = null;
+                    try {
+                        roleList = workbenchDataManager.getAllRoles();
+                    } catch (MiddlewareQueryException e) {
+                        LOG.error("Error encountered while getting workbench roles", e);
+                        throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                    }
+
+                    // Reset old values
+                    for (Role role : roleList) {
+                        String propertyId = "role_" + role.getRoleId();
+                        Property property = currentItem.getItemProperty(propertyId);
+                        if (property.getType() == Boolean.class){
+                            property.setValue(Boolean.FALSE);
+                        }
+                    }
+
+                    // Set checked boxes based on inherited roles
+                    for (Role inheritedRole : inheritedRoles) {
+                        String propertyId = "role_" + inheritedRole.getRoleId();
+                        Property property = currentItem.getItemProperty(propertyId);
+                        if (property.getType() == Boolean.class)
+                            property.setValue(Boolean.TRUE);
+
+                    }
+                
+                
+                requestRepaintAll();
+                    
+            }
 
             
 

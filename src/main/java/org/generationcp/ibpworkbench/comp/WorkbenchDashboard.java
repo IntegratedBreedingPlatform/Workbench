@@ -212,7 +212,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,workbenchDashboardwindow));
+        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction));
 
     }
 

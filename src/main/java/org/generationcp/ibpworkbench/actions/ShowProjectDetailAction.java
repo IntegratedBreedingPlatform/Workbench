@@ -73,16 +73,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
     }
     
-    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, 
-            Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,WorkbenchDashboardWindow workbenchDashboardwindow) {
-        this.projectDetailLabel = projectDetailLabel;
-        this.tblProject = tblProject;
-        this.tblActivity = tblActivity;
-        this.tblRoles = tblRoles;
-        this.workbenchDashboardwindow = workbenchDashboardwindow;
-        this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
-        this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
-    }
+   
     
     @Override
     public void itemClick(ItemClickEvent event) {
@@ -119,6 +110,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
             //projectDetailLabel.setValue(label);
            
+            workbenchDashboardwindow = (WorkbenchDashboardWindow) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
             
             

@@ -253,7 +253,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
             case THIRD_TAB_PROJECT_MEMBERS:
                 projectMembersEnabled = true;
                 if (membersTab != null){
-                    membersTab.setInheritedRoles();
+                  //  membersTab.setInheritedRoles();
                 }
                 previousTabOnFocus = THIRD_TAB_PROJECT_MEMBERS;
                 this.setSelectedTab(layoutProjectMembers);

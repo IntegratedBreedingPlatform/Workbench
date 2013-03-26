@@ -138,7 +138,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         hint1.setContentMode(Label.CONTENT_PREFORMATTED);
         hint1.setSizeUndefined();
 
-        workbenchDashboard = new WorkbenchDashboard(this);
+        workbenchDashboard = new WorkbenchDashboard();
 
         verticalSplitPanel = new VerticalSplitPanel();
         contentAreaSplitPanel = new HorizontalSplitPanel();
