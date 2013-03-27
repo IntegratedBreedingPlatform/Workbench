@@ -66,6 +66,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button browseGermplasmButton;
     private Button browseStudiesButton;
     private Button browseGermplasmListsButton;
+    private Button browseGenotypingDataButton;
 
     private Button breedingManagerButton;
     
@@ -164,6 +165,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         browseGermplasmListsButton = new Button();
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
+        
+        browseGenotypingDataButton = new Button("Browse Genotyping Data");
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGenotypingDataButton.setSizeUndefined();
+        browseGenotypingDataButton.setDescription("Click to launch genotyping data");
+        
         
         // population development buttons
         breedingManagerButton = new Button();
@@ -297,23 +304,27 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("10px");
+        emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
+       // browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        browseStudiesButton.setHeight("20px");
+     //   browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
+        
+        layout.addComponent(browseGenotypingDataButton);
+        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         return layout;
     }
@@ -526,9 +537,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(optimasButton);
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
+       
 
         return layout;
     }
@@ -541,6 +550,15 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(recombinationCycleTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(recombinationCycleTitle, 0);
 
+        
+        layout.addComponent(optimasButton);
+        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(optimasButton, 0);
+        
+        layout.addComponent(breedingManagerButton);
+        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerButton, 0);
+        
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
@@ -609,7 +627,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-
+            
+            browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 
             fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
@@ -672,6 +692,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(browseGermplasmListsButton, Message.BROWSE_GERMPLAM_LISTS);
         messageSource.setDescription(browseGermplasmListsButton, Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER);
 
+        //messageSource.setCaption(browseGenotypingDataButton, Message.BROWSE_GENOTYPING_DATA);
+        //messageSource.setDescription(browseGenotypingDataButton, Message.CLICK_TO_LAUNCH_GENOTYPING_DATA);
+	
         messageSource.setCaption(breedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(breedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         
