@@ -91,10 +91,9 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     public void selectedTabChangeAction() throws InternationalizableException {
         Component selected = this.getSelectedTab();
         Tab tab = this.getTab(selected);
-
+       
         if (tab.getComponent() instanceof VerticalLayout) {
-
-            if (((VerticalLayout) tab.getComponent()).getData().equals(SECOND_TAB_USER_ROLES)) {
+             if (((VerticalLayout) tab.getComponent()).getData().equals(SECOND_TAB_USER_ROLES)) {
                 if (userRolesEnabled) {
                     if (layoutUserRoles.getComponentCount() == 0) {
                         userRolesTab = new ProjectUserRolesComponent(createProjectPanel);
@@ -130,16 +129,19 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                     }
                 }
             } else if (((VerticalLayout) tab.getComponent()).getData().equals(THIRD_TAB_PROJECT_MEMBERS)) {
-                if (projectMembersEnabled) {
+            	 
+            	if (projectMembersEnabled) {
                     if (layoutProjectMembers.getComponentCount() == 0) {
                         membersTab = new ProjectMembersComponent(createProjectPanel);
                         layoutProjectMembers.addComponent(membersTab);
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);
+                       
                     } else {
                     	//added the validate for this item. -- aabr
+                    	
                     	 if (basicDetailsTab.validate()) {
-                             setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                            // setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
                              if (userRolesTab.validate()) {
                             	 if (basicDetailsTab.validate()) {
                             		 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
@@ -157,15 +159,31 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         
                     }
                 } else {
+                	
                     if (userRolesTab != null && userRolesTab.validateAndSave()){
                         if (layoutProjectMembers.getComponentCount() == 0) {
                             membersTab = new ProjectMembersComponent(createProjectPanel);
-                            layoutProjectMembers.addComponent(membersTab);
+                            
+                            if (userRolesTab.validate()) {
+								if (basicDetailsTab.validate()) {
+									layoutProjectMembers.addComponent(membersTab);
+		                    	} else {
+								    setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+								}
+                            }
+                            
                             layoutProjectMembers.setSpacing(true);
                             layoutProjectMembers.setMargin(true);
+                            
+                          
                         } else {
                             if (userRolesTab.validate()) {
-                                setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+								if (basicDetailsTab.validate()) {
+									 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+								} else {
+								    setFocusToTab(FIRST_TAB_BASIC_DETAILS);
+								}
+
                             } else {
                                 setFocusToTab(SECOND_TAB_USER_ROLES);
                             }
@@ -173,7 +191,6 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                     } else {
                         MessageNotifier.showError(getWindow(), "Error",
                             "Please supply the necessary details in the previous tab before continuing.");
-                        
                         setFocusToTab(previousTabOnFocus);
                     }
                 }
