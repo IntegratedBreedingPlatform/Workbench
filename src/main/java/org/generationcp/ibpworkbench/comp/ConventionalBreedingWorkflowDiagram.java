@@ -69,6 +69,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private Button breedingViewSingleSiteAnalysisCentralButton;
     private Button breedingViewSingleSiteAnalysisLocalButton;
     private Button fieldbookButton;
+    private Button browseGenotypingDataButton;
     private Button optimasButton;
     
     private Embedded downArrowImage1;
@@ -121,6 +122,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
         browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
+        
+        browseGenotypingDataButton = new Button("Browse Genotyping Data");
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGenotypingDataButton.setSizeUndefined();
+        browseGenotypingDataButton.setDescription("Click to launch genotyping data");
 
         browseStudiesButton = new Button("Browse Studies and Datasets");
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -249,23 +255,27 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
+        //browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        browseStudiesButton.setHeight("20px");
+      //  browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
+        
+        layout.addComponent(browseGenotypingDataButton);
+        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         return layout;
     }
@@ -350,11 +360,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-
+        
+        /*
         layout.addComponent(optimasButton);
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
-        
+        */
         return layout;
     }
 
@@ -406,6 +417,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+            browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
         }
     }
 
