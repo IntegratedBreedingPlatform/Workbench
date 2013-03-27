@@ -198,21 +198,21 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             return;
         } else {
         	
-        	try {
-    	        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-    	        User user = app.getSessionData().getUserData();
-    	        Project currentProject = app.getSessionData().getLastOpenedProject();
-    	        
-    	        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getToolName(), "Launched "+tool.getToolName(), user, new Date());
-           
-    	        workbenchDataManager.addProjectActivity(projAct);
-    	        
-    		} catch (MiddlewareQueryException e1) {
-    			// TODO Auto-generated catch block
-    			
-    			e1.printStackTrace();
-    			
-    		}
+//        	try {
+//    	        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+//    	        User user = app.getSessionData().getUserData();
+//    	        Project currentProject = app.getSessionData().getLastOpenedProject();
+//    	        
+//    	        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getToolName(), "Launched "+tool.getToolName(), user, new Date());
+//           
+//    	        workbenchDataManager.addProjectActivity(projAct);
+//    	        
+//    		} catch (MiddlewareQueryException e1) {
+//    			// TODO Auto-generated catch block
+//    			
+//    			e1.printStackTrace();
+//    			
+//    		}
         	
             if (tool.getToolType() == ToolType.NATIVE) {
                 
