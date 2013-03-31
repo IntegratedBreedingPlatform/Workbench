@@ -24,7 +24,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -76,13 +75,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private SimpleResourceBundleMessageSource messageSource;
 
     private Project lastOpenedProject;
-    private WorkbenchDashboardWindow workbenchDashboardwindow;
     
-    public WorkbenchDashboard(WorkbenchDashboardWindow workbenchDashboardwindow)
-    {
-    	super();
-    	this.workbenchDashboardwindow = workbenchDashboardwindow;
-    }
     public WorkbenchDashboard() {
         super();
     }
