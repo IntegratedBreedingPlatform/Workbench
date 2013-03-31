@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -676,6 +677,9 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     protected void initializeActions() {
        btnCancel.addListener(new CancelDetailsAsInputForBreedingViewAction(this));
        btnRun.addListener(new RunBreedingViewAction(this));
+       
+       btnRun.setClickShortcut(KeyCode.ENTER);
+       btnRun.addStyleName("primary");
        
        selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
        selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
