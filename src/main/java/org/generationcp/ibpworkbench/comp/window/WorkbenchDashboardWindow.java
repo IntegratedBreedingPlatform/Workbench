@@ -145,8 +145,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         mainContent = new VerticalLayout();
         crumbTrail = new CrumbTrail();
-        crumbTrail.setMargin(true);
-        crumbTrail.setSpacing(true);
+        crumbTrail.setMargin(true, true, false, true);
+        crumbTrail.setSpacing(false);
+        crumbTrail.setSizeUndefined();
 
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
@@ -179,6 +180,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         Component leftArea = layoutLeftArea();
         contentAreaSplitPanel.addComponent(leftArea);
 
+        mainContent.setMargin(false);
+        mainContent.setSpacing(false);
         mainContent.addComponent(crumbTrail);
         mainContent.addComponent(workbenchDashboard);
 
