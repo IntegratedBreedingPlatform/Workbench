@@ -233,6 +233,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         tblDataset.setImmediate(true);
         tblDataset.setWidth("100%");
         tblDataset.setHeight("100%");
+        tblDataset.setSelectable(true);
         
         BeanContainer<Integer, RepresentationModel> container = new BeanContainer<Integer, RepresentationModel>(RepresentationModel.class);
         container.setBeanIdProperty("id");
@@ -385,6 +386,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         // reserve excess space for the "treecolumn"
         tr.setWidth("100%");
         tr.setColumnExpandRatio("Study Name", 1);
+        tr.setSelectable(true);
         
         tr.addListener(new StudyTreeExpandAction(this, tr));
         tr.addListener(new ShowStudyDatasetDetailAction(datasets, factors, variates, this));
