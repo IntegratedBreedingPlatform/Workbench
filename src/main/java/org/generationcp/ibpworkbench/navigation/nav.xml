@@ -16,7 +16,7 @@
           class="org.generationcp.ibpworkbench.actions.HomeAction" />
     
     <view path="/OpenProjectWorkflowForRole"
-          label="Project Workflow: "
+          label=""
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction" />
     
