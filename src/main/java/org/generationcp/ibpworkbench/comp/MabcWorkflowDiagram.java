@@ -74,6 +74,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     private Button fieldbookButton;
     private Button optimasButton;
     private Button mbdtButton;
+    private Button browseGenotypingDataButton;
+    private Button breedingManagerButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -130,6 +132,16 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
         browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
+        
+        browseGenotypingDataButton = new Button("Browse Genotyping Data");
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGenotypingDataButton.setSizeUndefined();
+        browseGenotypingDataButton.setDescription("Click to launch genotyping data");
+        
+        breedingManagerButton = new Button("Breeding Manager");
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingManagerButton.setSizeUndefined();
+        breedingManagerButton.setDescription("Click to launch Breeding Manager");
 
         browseStudiesButton = new Button("Browse Studies and Datasets");
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -288,18 +300,22 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
+      //  browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        browseStudiesButton.setHeight("20px");
+      //  browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
+        
+        layout.addComponent(browseGenotypingDataButton);
+        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         return layout;
     }
@@ -311,12 +327,22 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(backcrossingTitle);
         layout.setComponentAlignment(backcrossingTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(backcrossingTitle, 0);
-
+        
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(breedingManagerButton);
+        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerButton, 0);
+        
+        layout.addComponent(mbdtButton);
+        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mbdtButton, 0);
+
+        
 
         return layout;
     }
@@ -404,9 +430,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(mbdtButton);
-        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(mbdtButton, 0);
+       
         
         /*
         layout.addComponent(optimasButton);
@@ -465,6 +489,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+            browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
         }
     }
 
