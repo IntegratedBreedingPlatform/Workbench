@@ -116,7 +116,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     
     @Override
     public void doAction(Event event) {
-        NavManager.CrumbClick(this, event);
+        NavManager.breadCrumbClick(this, event);
     }
     
     @Override
