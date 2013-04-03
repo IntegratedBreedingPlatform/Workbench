@@ -197,23 +197,22 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             showLaunchError(window, toolEnum.toString());
             return;
         } else {
-        	
-//        	try {
-//    	        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-//    	        User user = app.getSessionData().getUserData();
-//    	        Project currentProject = app.getSessionData().getLastOpenedProject();
-//    	        
-//    	        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getToolName(), "Launched "+tool.getToolName(), user, new Date());
-//           
-//    	        workbenchDataManager.addProjectActivity(projAct);
-//    	        
-//    		} catch (MiddlewareQueryException e1) {
-//    			// TODO Auto-generated catch block
-//    			
-//    			e1.printStackTrace();
-//    			
-//    		}
-        	
+
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getTitle(), "Launched "+tool.getTitle(), user, new Date());
+
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                          "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
+
             if (tool.getToolType() == ToolType.NATIVE) {
                 
                 if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
