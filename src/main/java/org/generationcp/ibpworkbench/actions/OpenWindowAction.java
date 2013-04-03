@@ -144,9 +144,13 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     
     public void launchWindow(Window window, String windowName)
     {
+    	Window mywindow = null;
     	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
-    		window.addWindow(new ProjectMemberWindow(this.project));
+    		mywindow = new ProjectMemberWindow(this.project);
+    		mywindow.setWidth("700");
+    		
+    		window.addWindow(mywindow);
     	} else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 

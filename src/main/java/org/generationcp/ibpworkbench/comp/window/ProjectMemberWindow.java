@@ -48,11 +48,8 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
     private static final String VERSION = "1.1.3.10";
     
     private Label workbenchTitle;
-    private Button homeButton;
-    private Button signOutButton;
-    private Button accountButton;
-    private Button toolVersionsButton;
-    private Button helpButton;
+    private Button saveButton;
+   
 
     private Label actionsTitle;
     private Button createProjectButton;
@@ -88,36 +85,11 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
 
-        homeButton = new Button();
-        homeButton.setStyleName(BaseTheme.BUTTON_LINK);
-        homeButton.setSizeUndefined();
+        saveButton = new Button("Save");
+        saveButton.setStyleName(BaseTheme.BUTTON_LINK);
+        saveButton.setSizeUndefined();
 
-        signOutButton = new Button();
-        signOutButton.setStyleName(BaseTheme.BUTTON_LINK);
-        signOutButton.setSizeUndefined();
-
-        accountButton = new Button();
-        accountButton.setStyleName(BaseTheme.BUTTON_LINK);
-        accountButton.setSizeUndefined();
-
-        toolVersionsButton = new Button();
-        toolVersionsButton.setStyleName(BaseTheme.BUTTON_LINK);
-        toolVersionsButton.setSizeUndefined();
-        
-        helpButton = new Button();
-        helpButton.setStyleName(BaseTheme.BUTTON_LINK);
-        helpButton.setSizeUndefined();
-
-        // left area components
-        actionsTitle = new Label();
-        actionsTitle.setStyleName("gcp-section-title");
-        actionsTitle.setSizeUndefined();
-
-        createProjectButton = new Button("Create Project");
-        createProjectButton.setWidth("120px");
-
-        createContactButton = new Button("Create Contact");
-        createContactButton.setWidth("120px");
+       
 
         recentTitle = new Label();
         recentTitle.setStyleName("gcp-section-title");
@@ -164,11 +136,8 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
     }
 
     protected void initializeActions() {
-        homeButton.addListener(new HomeAction());
-        signOutButton.addListener(new SignoutAction());
-        toolVersionsButton.addListener(new OpenToolVersionsAction());
-        createProjectButton.addListener(new OpenNewProjectAction());
-        createContactButton.addListener(new CreateContactAction());
+    	saveButton.addListener(new HomeAction());
+       
     }
 
     protected void assemble() throws Exception {
@@ -203,28 +172,10 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
         headerRightLayout.setMargin(false);
         headerRightLayout.setSpacing(true);
 
-        headerRightLayout.addComponent(homeButton);
-        headerRightLayout.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
+        headerRightLayout.addComponent(saveButton);
+        headerRightLayout.setComponentAlignment(saveButton, Alignment.TOP_LEFT);
 
-        headerRightLayout.addComponent(new Label("|"));
-
-        headerRightLayout.addComponent(signOutButton);
-        headerRightLayout.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
-
-        headerRightLayout.addComponent(new Label("|"));
-
-        headerRightLayout.addComponent(accountButton);
-        headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
-
-        headerRightLayout.addComponent(new Label("|"));
-
-        headerRightLayout.addComponent(toolVersionsButton);
-        headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
         
-        headerRightLayout.addComponent(new Label("|"));
-
-        headerRightLayout.addComponent(helpButton);
-        headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
 
         headerLayout.addComponent(headerRightLayout);
         headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);
@@ -308,12 +259,6 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
     public void updateLabels() {
         String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION;
         workbenchTitle.setValue(title);
-        
-        messageSource.setCaption(homeButton, Message.HOME);
-        messageSource.setCaption(signOutButton, Message.SIGNOUT);
-        messageSource.setCaption(accountButton, Message.ACCOUNT);
-        messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
-        messageSource.setCaption(helpButton, Message.HELP);
         
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
         messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);

@@ -71,6 +71,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     private TwinColSelect select;
     
     private Button newMemberButton;
+    private Button saveButton;
     
     private Table tblMembers;
     
@@ -279,7 +280,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        
+       // saveButton.addListener(null);
         
         
         select.addListener(new ValueChangeListener() {
@@ -327,10 +328,10 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         buttonLayout.setMargin(true, false, false, false);
 
         newMemberButton = new Button("Add New Member");
-       
+        saveButton = new Button("Save");
 //        nextButton = new Button("Next");
         buttonLayout.addComponent(newMemberButton);
-       
+        buttonLayout.addComponent(saveButton);
 //        buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }
