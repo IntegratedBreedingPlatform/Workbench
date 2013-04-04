@@ -52,6 +52,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
+        //,BACKUP_IBDB("backup_ibdb")
+        //,RESTORE_IBDB("restore_ibdb")
         ;
         
         String windowName;
@@ -65,6 +67,16 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         }
         
         public static boolean isCorrectTool(String windowName) {
+        	
+        	for (WindowEnum winEnum : WindowEnum.values()) {
+        		if (winEnum.equals(windowName)) {
+        			return true;
+        		}
+        	}
+        	
+        	return false;
+
+        	/*
             if(WindowEnum.GERMPLASM_BROWSER.getwindowName().equals(windowName) 
                     || WindowEnum.STUDY_BROWSER.getwindowName().equals(windowName) 
                     || WindowEnum.GERMPLASM_LIST_BROWSER.getwindowName().equals(windowName) 
@@ -73,11 +85,11 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
                     || WindowEnum.OPTIMAS.getwindowName().equals(windowName) 
                     || WindowEnum.BREEDING_MANAGER.getwindowName().equals(windowName) 
                     || WindowEnum.BREEDING_VIEW.getwindowName().equals(windowName) 
-                    || WindowEnum.MEMBER.getwindowName().equals(windowName) 
+                    || WindowEnum.MEMBER.getwindowName().equals(windowName)
                     ) {
                 return true;
             }   return false;
-            
+            */
         }
     }
 
