@@ -90,38 +90,62 @@ public class SaveUsersInProjectAction implements ClickListener{
     public void buttonClick(ClickEvent event) {
 
     	boolean isMysqlAccountGenerationSuccess = false;
-    	System.out.println("project is : "+ this.project.getProjectName());
+    	System.out.println("2project is : "+ this.project.getProjectName());
     	if (this.project != null) {
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
-    			System.out.println("project is : "+ this.project.getProjectName());
-                try {
+    			System.out.println("1project is : "+ this.project.getProjectName());
+                                   try {
+                        
+                        //creates the access for the local db        	   
+                        managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
+                    	System.out.println("3project is : "+ this.project.getProjectName());
+                    //    List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
+                        if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
+                            saveProjectUserRoles(projectUserRoles, this.project);
+                        }
+                       
+                      //  List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
+                        if ((projectMembers != null) && (!projectMembers.isEmpty())) {
+                            saveProjectMembers(projectMembers, this.project);
+                        }
 
-                    managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-                   
-                    if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
-                        saveProjectUserRoles(this.projectUserRoles, this.project);
+                    } catch (MiddlewareQueryException e) {
+                        LOG.error(e.getMessage(), e);
+                        MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
+                                + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                        //TODO cleanup of records already saved for the project needed
+                        //return;
                     }
 
-                    if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-                        saveProjectMembers(this.projectMembers, this.project);
-                    }
-
-                } catch (MiddlewareQueryException e) {
-                    LOG.error(e.getMessage(), e);
-                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
-                            + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-                    //TODO cleanup of records already saved for the project needed
-                    return;
-                }
 
                 // create mysql user accounts for members of the project
                 if(this.project != null){
                     Set<User> projectMembers = new HashSet<User>();
                     
+                    //delete all existing first
+                    try{
+					List<ProjectUserRole> deleteRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
+                    List<User> deleteUsers = this.workbenchDataManager.getUsersByProjectId(this.project.getProjectId());
+					//delete all user role
+                    	for(ProjectUserRole projectUserRole : deleteRoles){
+                    	 	 this.workbenchDataManager.deleteProjectUserRole(projectUserRole);
+                    	 	 
+                    	 }
+						//delete all users
+					 	for(User user : deleteUsers){
+	               	 	// 	this.workbenchDataManager.deleteUser(user);
+	               		}
+		               
+                    } catch(MiddlewareQueryException ex) {
+                        //do nothing because getting the User will not fail
+                    }
+                    
+                   
                     for(ProjectUserRole projectUserRole : this.projectUserRoles){
                         try{
                             User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
+                           
                             projectMembers.add(member);
                             System.out.println("member is added "+ member.getName() + " : "+ this.project.getProjectName());
                         } catch(MiddlewareQueryException ex) {

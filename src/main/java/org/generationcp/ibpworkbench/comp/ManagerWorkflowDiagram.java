@@ -331,11 +331,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        /*
         layout.addComponent(membersButton);
         membersButton.setHeight("20px");
         layout.setComponentAlignment(membersButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(membersButton, 0);
-        
+        */
         layout.addComponent(projectMethodsButton);
         projectMethodsButton.setHeight("20px");
         layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);

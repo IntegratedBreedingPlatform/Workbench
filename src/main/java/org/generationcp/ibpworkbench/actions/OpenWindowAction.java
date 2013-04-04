@@ -52,8 +52,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
-        //,BACKUP_IBDB("backup_ibdb")
-        //,RESTORE_IBDB("restore_ibdb")
+        ,BACKUP_IBDB("backup_ibdb")
+        ,RESTORE_IBDB("restore_ibdb")
         ;
         
         String windowName;
