@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
+import org.generationcp.ibpworkbench.actions.SaveUsersInProjectAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -28,7 +29,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,7 +44,6 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -280,7 +279,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-       // saveButton.addListener(null);
+        saveButton.addListener(new SaveUsersInProjectAction(this.project,  (List<ProjectUserRole>)getProjectUserRoles(),(List<ProjectUserRole>)getProjectMembers() ));
         
         
         select.addListener(new ValueChangeListener() {
@@ -322,7 +321,10 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         });
     }
     
-    protected Component layoutButtonArea() {
+   
+
+
+	protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
