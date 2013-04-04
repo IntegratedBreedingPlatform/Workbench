@@ -42,7 +42,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 130;
+    private static final int WORKFLOW_STEP_HEIGHT = 160;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -78,6 +78,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+	private Button backupIBDBButton;
+
+	private Button restoreIBDBButton;
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -193,6 +197,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         projectLocationButton.setSizeUndefined();
         projectLocationButton.setDescription("Click to configure project locations");
 
+        backupIBDBButton = new Button("Backup IBDB");
+        backupIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
+        backupIBDBButton.setSizeUndefined();
+        backupIBDBButton.setDescription("Click to backup the current IB database");
+        
+        restoreIBDBButton = new Button("Restore IBDB from a Backup");
+        restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
+        restoreIBDBButton.setSizeUndefined();
+        restoreIBDBButton.setDescription("Click to restore IB database from a backup ");
+        
 
     }
 
@@ -216,7 +230,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("300px");
+        layout.setHeight("360px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -328,10 +342,20 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(projectMethodsButton, 0);
         
         layout.addComponent(projectLocationButton);
-        browseGermplasmButton.setHeight("20px");
+        projectLocationButton.setHeight("20px");
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
 
+        layout.addComponent(backupIBDBButton);
+        backupIBDBButton.setHeight("20px");
+        layout.setComponentAlignment(backupIBDBButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(backupIBDBButton, 0);
+
+        layout.addComponent(restoreIBDBButton);
+        restoreIBDBButton.setHeight("20px");
+        layout.setComponentAlignment(restoreIBDBButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(restoreIBDBButton, 0);
+        
         return layout;
     }
 
@@ -500,7 +524,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
             membersButton.addListener(new OpenWindowAction(WindowEnum.MEMBER));
-             
+            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB));
+            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB));
+            
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
