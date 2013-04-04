@@ -117,6 +117,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         this.toolConfiguration = WorkflowConstants.DEFAULT;
     }
     
+    public OpenWindowAction(WindowEnum windowEnum, Project project) {
+        this.windowEnum = windowEnum;
+        this.project = project;
+      
+    }
+    
     public OpenWindowAction(WindowEnum windowEnum, Project project, String toolConfiguration) {
         this.windowEnum = windowEnum;
         this.project = project;
@@ -159,6 +165,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	Window mywindow = null;
     	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
+    		System.out.println("Project Name is "+ this.project.getProjectName());
     		mywindow = new ProjectMemberWindow(this.project);
     		mywindow.setWidth("700");
     		

@@ -57,7 +57,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * The third tab (Project Members) in Create Project Accordion Component.
  * 
- * @author Joyce Avestro
+ * @author Aldrich Abrogena
  */
 @SuppressWarnings("unchecked")
 @Configurable
@@ -86,6 +86,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     private  List<Role> inheritedRoles;
 
     public ProjectMembersComponentPanel(Project project) {
+    	//System.out.println("Project is " + project.getProjectName());
         this.project = project;
     }
 

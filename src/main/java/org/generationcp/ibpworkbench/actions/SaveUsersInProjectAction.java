@@ -90,11 +90,11 @@ public class SaveUsersInProjectAction implements ClickListener{
     public void buttonClick(ClickEvent event) {
 
     	boolean isMysqlAccountGenerationSuccess = false;
-    	
+    	System.out.println("project is : "+ this.project.getProjectName());
     	if (this.project != null) {
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
-
+    			System.out.println("project is : "+ this.project.getProjectName());
                 try {
 
                     managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
@@ -123,6 +123,7 @@ public class SaveUsersInProjectAction implements ClickListener{
                         try{
                             User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
                             projectMembers.add(member);
+                            System.out.println("member is added "+ member.getName() + " : "+ this.project.getProjectName());
                         } catch(MiddlewareQueryException ex) {
                             //do nothing because getting the User will not fail
                         }

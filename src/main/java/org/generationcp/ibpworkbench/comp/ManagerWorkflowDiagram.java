@@ -523,7 +523,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
-            membersButton.addListener(new OpenWindowAction(WindowEnum.MEMBER));
+            membersButton.addListener(new OpenWindowAction(WindowEnum.MEMBER, this.project));
             backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB));
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB));
             
