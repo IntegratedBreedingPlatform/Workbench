@@ -95,9 +95,8 @@ public class SaveUsersInProjectAction implements ClickListener{
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
     			System.out.println("1project is : "+ this.project.getProjectName());
-                                   try {
-                        
-                        //creates the access for the local db        	   
+                try {
+                     	//creates the access for the local db        	   
                         managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
                     	System.out.println("3project is : "+ this.project.getProjectName());
                     //    List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
@@ -125,52 +124,21 @@ public class SaveUsersInProjectAction implements ClickListener{
                     
                     //delete all existing first
                     try{
-					List<ProjectUserRole> deleteRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
-                    List<User> deleteUsers = this.workbenchDataManager.getUsersByProjectId(this.project.getProjectId());
-					//delete all user role
-                    	for(ProjectUserRole projectUserRole : deleteRoles){
-                    	 	 this.workbenchDataManager.deleteProjectUserRole(projectUserRole);
-                    	 	 
-                    	 }
-						//delete all users
-					 	for(User user : deleteUsers){
-	               	 	// 	this.workbenchDataManager.deleteUser(user);
-	               		}
-		               
+                    	 this.workbenchDataManager.updateProjectsRolesForProject(this.project, this.projectUserRoles);
                     } catch(MiddlewareQueryException ex) {
                         //do nothing because getting the User will not fail
                     }
                     
+                    }
+                    
                    
-                    for(ProjectUserRole projectUserRole : this.projectUserRoles){
-                        try{
-                            User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
-                           
-                            projectMembers.add(member);
-                            System.out.println("member is added "+ member.getName() + " : "+ this.project.getProjectName());
-                        } catch(MiddlewareQueryException ex) {
-                            //do nothing because getting the User will not fail
-                        }
-                    }
-                    
-                    MysqlAccountGenerator mysqlAccountGenerator = new MysqlAccountGenerator(this.project.getCropType(), this.project.getProjectId(), 
-                            this.idAndNameOfProjectMembers, this.workbenchDataManager);
-                    
-                    try {
-                        isMysqlAccountGenerationSuccess = mysqlAccountGenerator.generateMysqlAccounts();
-                    } catch (InternationalizableException e) {
-                        LOG.error(e.toString(), e);
-                        MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-                        //TODO cleanup of records already saved for the project needed
-                        return;
-                    }
                 }
                 // add a workbench user to ibdb user mapping
                
         }
         
 
-    }
+    
 
     
 
