@@ -130,6 +130,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     private List<CheckBox> createUserRolesCheckBoxList() {
         List<Role> roles = null;
         List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
+        
+        System.out.println("createUserRolesCheckBoxList");
+        
         try {
             roles = workbenchDataManager.getAllRolesOrderedByLabel();
         } catch (MiddlewareQueryException e) {
@@ -155,14 +158,19 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     public List<Role> getRolesForProjectMembers(){
         List<Role> roles = new ArrayList<Role>();
-
+        System.out.println("getRolesForProjectMembers");
         for (CheckBox cb : createUserRolesCheckBoxList()) {
-            if ((Boolean) cb.getValue() == true) {
+            
+        	
+        	
+        	if ((Boolean) cb.getValue() == true) {
                 try {
                     Role role = workbenchDataManager.getRoleById((Integer) cb.getData());
-                    if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
+                    //if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
+                    System.out.println("getRolesForProjectMembers id : "+cb.getData());
+                    System.out.println("getRolesForProjectMembers name : "+role.getName());
                         roles.add(role);
-                    }
+                    //}
                 } catch (MiddlewareQueryException e) {
                   LOG.error("Error encountered while getting creator user roles", e);
                   throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -174,6 +182,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     
     public List<ProjectUserRole> getProjectUserRoles() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        System.out.println("getProjectUserRoles");
         for (CheckBox cb : createUserRolesCheckBoxList()) {
             if ((Boolean) cb.getValue() == true) {
                 Role role;
@@ -181,6 +190,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                     role = workbenchDataManager.getRoleById((Integer) cb.getData());
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setRole(role);
+                    
                     projectUserRoles.add(projectUserRole);
                 } catch (MiddlewareQueryException e) {
                   LOG.error("Error encountered while getting project user roles", e);
@@ -203,9 +213,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
             // Add the roles in this order: CB, MAS, MABC, MARS
             List<Role> roles = workbenchDataManager.getAllRolesOrderedByLabel();
             for (Role role: roles){
-                if (!role.getName().equals(Role.MANAGER_ROLE_NAME)) {
+              //  if (!role.getName().equals(Role.MANAGER_ROLE_NAME)) {
                     roleList.add(role);
-                }
+               // }
             }
             
             
@@ -280,7 +290,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        saveButton.addListener(new SaveUsersInProjectAction(this.project,  (List<ProjectUserRole>)getProjectUserRoles(),(List<ProjectUserRole>)getProjectMembers() ));
+        saveButton.addListener(new SaveUsersInProjectAction(this.project, tblMembers ));
         
         
         select.addListener(new ValueChangeListener() {
@@ -397,6 +407,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
+        System.out.println("getProjectMembers");
+        
         Container container = tblMembers.getContainerDataSource();
         Collection<User> userList = (Collection<User>) container.getItemIds();
         
@@ -422,7 +434,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
-                    
+                    System.out.println("getProjectMembers name "+ user.getName());
                     projectUserRoles.add(projectUserRole);
                 }
             }
@@ -524,4 +536,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         
         
     }
+        
+       
+        
+        
 }

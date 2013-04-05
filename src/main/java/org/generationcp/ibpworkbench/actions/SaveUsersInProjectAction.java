@@ -13,7 +13,9 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,11 +39,18 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -57,6 +66,8 @@ public class SaveUsersInProjectAction implements ClickListener{
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
     private Project project;
+    
+    private Table tblMembers;
     
     private Map<Integer, String> idAndNameOfProjectMembers;
 
@@ -80,6 +91,11 @@ public class SaveUsersInProjectAction implements ClickListener{
         this.projectUserRoles = projectUserRoles;
         this.projectMembers = projectMembers;
     }
+    
+    public SaveUsersInProjectAction(Project project,  Table tblMembers ) {
+        this.project = project;
+        this.tblMembers = tblMembers;
+    }
 
     public boolean validate(){
         return true;
@@ -95,7 +111,8 @@ public class SaveUsersInProjectAction implements ClickListener{
                 //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
                 //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
     			System.out.println("1project is : "+ this.project.getProjectName());
-                try {
+                /*
+    			try {
                      	//creates the access for the local db        	   
                         managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
                     	System.out.println("3project is : "+ this.project.getProjectName());
@@ -117,14 +134,14 @@ public class SaveUsersInProjectAction implements ClickListener{
                         //return;
                     }
 
-
+				*/
                 // create mysql user accounts for members of the project
                 if(this.project != null){
                     Set<User> projectMembers = new HashSet<User>();
                     
                     //delete all existing first
                     try{
-                    	 this.workbenchDataManager.updateProjectsRolesForProject(this.project, this.projectUserRoles);
+                    	 this.workbenchDataManager.updateProjectsRolesForProject(this.project, getProjectMembers());
                     } catch(MiddlewareQueryException ex) {
                         //do nothing because getting the User will not fail
                     }
@@ -230,6 +247,127 @@ public class SaveUsersInProjectAction implements ClickListener{
         String dateNowStr = formatter.format(now.getTime());
         Integer dateNowInt = Integer.valueOf(dateNowStr);
         return dateNowInt;
+
+    }
+    
+    public List<ProjectUserRole> getProjectMembers() {
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        
+        System.out.println("getProjectMembers");
+        
+        Container container = tblMembers.getContainerDataSource();
+        Collection<User> userList = (Collection<User>) container.getItemIds();
+        
+        List<Role> roleList = null;
+        try {
+            roleList = workbenchDataManager.getAllRoles();
+        }
+        catch (MiddlewareQueryException e) {
+            LOG.error("Error encountered while getting workbench roles", e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
+                                                   Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+        
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        User currentUser = app.getSessionData().getUserData();
+        
+        
+        try {
+        	List<Role> roles = null;
+            roles = workbenchDataManager.getAllRolesOrderedByLabel();
+            
+            for (Role role : roles) {
+                CheckBox cb = new CheckBox(role.getName());
+                cb.setData(role.getRoleId());
+                if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
+                    //set default checked value
+                	ProjectUserRole currentProjectUserRole = new ProjectUserRole();
+                    currentProjectUserRole.setUserId(currentUser.getUserid());
+                    currentProjectUserRole.setRole(role);
+                    System.out.println("getProjectMembers name "+ currentUser.getName());
+                    projectUserRoles.add(currentProjectUserRole);
+                }
+                
+            }
+        } catch (MiddlewareQueryException e) {
+            LOG.error("Error encountered while getting roles", e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+
+       
+           
+        
+        
+        
+        
+        for (User user : userList) {
+            Item item = container.getItem(user);
+            
+            for (Role role : roleList) {
+                String propertyId = "role_" + role.getRoleId();
+                Property property = item.getItemProperty(propertyId);
+                Boolean value = (Boolean) property.getValue();
+                
+                if (value != null && value.booleanValue()) {
+                    ProjectUserRole projectUserRole = new ProjectUserRole();
+                    projectUserRole.setUserId(user.getUserid());
+                    projectUserRole.setRole(role);
+                    System.out.println("getProjectMembers name "+ user.getName());
+                    projectUserRoles.add(projectUserRole);
+                }
+            }
+        }
+        return projectUserRoles;
+    }
+    
+    public List<ProjectUserRole> getProjectUserRoles() {
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        System.out.println("getProjectUserRoles");
+        for (CheckBox cb : createUserRolesCheckBoxList()) {
+            if ((Boolean) cb.getValue() == true) {
+                Role role;
+                try {
+                    role = workbenchDataManager.getRoleById((Integer) cb.getData());
+                    ProjectUserRole projectUserRole = new ProjectUserRole();
+                    projectUserRole.setRole(role);
+                    
+                    projectUserRoles.add(projectUserRole);
+                } catch (MiddlewareQueryException e) {
+                  LOG.error("Error encountered while getting project user roles", e);
+                  throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+                }
+            }
+        }
+        return projectUserRoles;
+
+    }
+    
+    private List<CheckBox> createUserRolesCheckBoxList() {
+        List<Role> roles = null;
+        List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
+        
+        System.out.println("createUserRolesCheckBoxList");
+        
+        try {
+            roles = workbenchDataManager.getAllRolesOrderedByLabel();
+        } catch (MiddlewareQueryException e) {
+            LOG.error("Error encountered while getting roles", e);
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+
+        for (Role role : roles) {
+            CheckBox cb = new CheckBox(role.getName());
+            cb.setData(role.getRoleId());
+            if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
+                //set default checked value
+                cb.setValue(true);
+            }
+            cb.setCaption(role.getLabel());
+            rolesCheckBoxList.add(cb);
+
+        }
+
+        return rolesCheckBoxList;
 
     }
 }
