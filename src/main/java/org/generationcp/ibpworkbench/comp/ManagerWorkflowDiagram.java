@@ -337,6 +337,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(membersButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(membersButton, 0);
         */
+        
         layout.addComponent(projectMethodsButton);
         projectMethodsButton.setHeight("20px");
         layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
@@ -525,8 +526,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
             membersButton.addListener(new OpenWindowAction(WindowEnum.MEMBER, this.project));
-            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB));
-            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB));
+            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
+            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));

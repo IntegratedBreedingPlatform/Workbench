@@ -17,6 +17,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
+import org.generationcp.ibpworkbench.comp.window.BackupIBDBWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -163,6 +164,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     public void launchWindow(Window window, String windowName)
     {
     	Window mywindow = null;
+    	
+    	
     	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
     		System.out.println("Project Name is "+ this.project.getProjectName());
@@ -170,10 +173,17 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		mywindow.setWidth("700");
     		
     		window.addWindow(mywindow);
-    	} else {
+    	} else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName)) {
+    		LOG.debug("Add Backup IBDB Window");
+    		window.addWindow(new BackupIBDBWindow(this.project));
+    		
+    	} else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName)) {
+    		LOG.debug("Add Restore IBDB Window");
+    	}
+    	else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
-                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
+            messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
         }
     	
     }
