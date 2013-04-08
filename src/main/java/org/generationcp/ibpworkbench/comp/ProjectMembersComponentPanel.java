@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.comp;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
    
     private TwinColSelect select;
     
-    private Button newMemberButton;
+   // private Button newMemberButton;
     private Button saveButton;
     
     private Table tblMembers;
@@ -101,6 +102,12 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         initializeValues();
         initializeLayout();
         initializeActions();
+        try{
+        	initializeUsers();
+        }catch(Exception e)
+        {
+        	e.printStackTrace();
+        }
     }
 
     protected void initializeComponents(){
@@ -118,6 +125,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         select.setImmediate(true);
         
         addComponent(select);
+        
+        
         
         initializeMembersTable();
         addComponent(tblMembers);
@@ -267,8 +276,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     protected void initializeValues() {
         try {
             Container container = createUsersContainer();
+            
             select.setContainerDataSource(container);
-
+            	
             for (Object itemId : container.getItemIds()) {
                 User user = (User) itemId;
                 select.setItemCaption(itemId, user.getPerson().getDisplayName());
@@ -287,9 +297,37 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         setMargin(true);
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
-
+    	
+    protected void initializeUsers() throws MiddlewareQueryException 
+    {
+    	 Container container = tblMembers.getContainerDataSource();
+    	 
+    	 List<ProjectUserRole> projectUserRoles = workbenchDataManager.getProjectUserRolesByProject(this.project);
+         // remove non-selected items
+         Collection<?> itemIds = container.getItemIds();
+         List<Object> deleteTargets = new ArrayList<Object>();
+         Set<User> selectedItems = new HashSet();
+         
+         for (ProjectUserRole projrole : projectUserRoles) {
+        	 User userTemp = workbenchDataManager.getUserById(projrole.getUserId());
+        	 selectedItems.add(userTemp);
+        	 
+        	 container.removeItem(userTemp);
+        	
+        	 Item item = container.addItem(userTemp);
+             item.getItemProperty("userId").setValue(1);
+             item.getItemProperty("userName").setValue(userTemp.getPerson().getDisplayName());
+             item.getItemProperty("role_" + projrole.getRole().getRoleId()).setValue("true");
+             //item.getItemProperty("")
+             setInheritedRoles(item);
+             this.select.select(userTemp);
+            
+           
+         }
+        
+    }
     protected void initializeActions() {
-        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        //newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         saveButton.addListener(new SaveUsersInProjectAction(this.project, tblMembers ));
         
         
@@ -300,7 +338,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
             public void valueChange(ValueChangeEvent event) {
                 Property property = event.getProperty();
                 Set<User> selectedItems = (Set<User>) property.getValue();
-                
+                System.out.println("valueChange");
                 Container container = tblMembers.getContainerDataSource();
 
                 // remove non-selected items
@@ -309,6 +347,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                 for (Object itemId : itemIds) {
                     if (!selectedItems.contains(itemId)) {
                         deleteTargets.add(itemId);
+                        System.out.println("deleteTargets " +itemId );
                     }
                 }
                 for (Object itemId : deleteTargets) {
@@ -329,7 +368,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                 }
                
             }
-        });
+        }); 
     }
     
    
@@ -340,10 +379,10 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        newMemberButton = new Button("Add New Member");
+      //  newMemberButton = new Button("Add New Member");
         saveButton = new Button("Save");
 //        nextButton = new Button("Next");
-        buttonLayout.addComponent(newMemberButton);
+       // buttonLayout.addComponent(newMemberButton);
         buttonLayout.addComponent(saveButton);
 //        buttonLayout.addComponent(nextButton);
         return buttonLayout;
@@ -369,7 +408,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
             if (user.equals(sessionData.getUserData())) {
-                continue;
+              //  continue;
             }
             
             beanItemContainer.addBean(user);
@@ -518,6 +557,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                     }
 
                     // Set checked boxes based on inherited roles
+                   
                     for (Role inheritedRole : inheritedRoles) {
                         String propertyId = "role_" + inheritedRole.getRoleId();
                         Property property = currentItem.getItemProperty(propertyId);
