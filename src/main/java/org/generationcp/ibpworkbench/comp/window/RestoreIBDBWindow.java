@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
+import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
@@ -225,15 +226,23 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			}
 		});
     
-    	saveBtn.addListener(new BackupIBDBSaveAction(select));
+    	saveBtn.addListener(new RestoreIBDBSaveAction(select,table));
     	
+    	// Select action
+    	select.addListener(new Property.ValueChangeListener() {
+			
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				RestoreIBDBWindow.LOG.info("Select > Item selected : " + event.getProperty().getValue());
+			}
+		});
     	
     	// Table actions
     	table.addListener(new Property.ValueChangeListener() {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				RestoreIBDBWindow.LOG.info("Backup Table : Item selected");
+				RestoreIBDBWindow.LOG.info("Backup Table > Item selected");
 			}
     	});
     }

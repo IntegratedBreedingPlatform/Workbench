@@ -96,7 +96,7 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 		select.setFilteringMode(Select.FILTERINGMODE_OFF);
 		select.setImmediate(true);
 		
-		saveBtn = new Button("Save");
+		saveBtn = new Button("Restore");
 		saveBtn.setSizeUndefined();
 		cancelBtn = new Button("Cancel");
 		cancelBtn.setSizeUndefined();
