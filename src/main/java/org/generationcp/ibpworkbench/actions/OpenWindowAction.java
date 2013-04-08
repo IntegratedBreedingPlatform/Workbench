@@ -12,9 +12,11 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.BackupIBDBWindow;
@@ -22,9 +24,12 @@ import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,11 +174,26 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	
     	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
-    		System.out.println("Project Name is "+ this.project.getProjectName());
     		mywindow = new ProjectMemberWindow(this.project);
     		mywindow.setWidth("700");
     		
+    		
     		window.addWindow(mywindow);
+    		
+    		 try {
+                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                 User user = app.getSessionData().getUserData();
+                 Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+
+                 workbenchDataManager.addProjectActivity(projAct);
+
+             } catch (MiddlewareQueryException e1) {
+                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                 return;
+             }
     	} else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName)) {
     		LOG.debug("Add Backup IBDB Window");
     		window.addWindow(new BackupIBDBWindow(this.project));

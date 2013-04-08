@@ -11,15 +11,25 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Date;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
+import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -29,13 +39,19 @@ import com.vaadin.ui.Window;
 /**
  *  @author Joyce Avestro
  */
-public class OpenProjectLocationAction implements ClickListener, ActionListener {
+@Configurable
+public class OpenProjectLocationAction implements WorkflowConstants, ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
+    
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectLocationAction.class);
    
     private Project project;
     private Role role;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    
     
     public OpenProjectLocationAction(Project project, Role role) {
         this.project = project;
@@ -59,6 +75,21 @@ public class OpenProjectLocationAction implements ClickListener, ActionListener 
         try {
             ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
             projectLocationPanel.setWidth("730px"); 
+            
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Launched Project Locations", user, new Date());
+                System.out.println(projAct);
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, "Database Error",
+                                          "<br />" + "Contact your administrator");
+              
+            }
             
             w.showContent(projectLocationPanel);
             
