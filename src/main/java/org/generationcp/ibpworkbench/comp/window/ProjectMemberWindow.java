@@ -260,13 +260,13 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
         String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION;
         workbenchTitle.setValue(title);
         
-        messageSource.setCaption(actionsTitle, Message.ACTIONS);
-        messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
-        messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
+  //      messageSource.setCaption(actionsTitle, Message.ACTIONS);
+  //      messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
+ //       messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
         
-        messageSource.setValue(recentTitle, Message.RECENT);
-        messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
+//        messageSource.setValue(recentTitle, Message.RECENT);
+  //      messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
         
-        messageSource.setValue(hint1, Message.USER_GUIDE_1);
+    //    messageSource.setValue(hint1, Message.USER_GUIDE_1);
     }
 }
