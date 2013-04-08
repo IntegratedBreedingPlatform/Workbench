@@ -171,8 +171,8 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 
 	@Override
 	public void updateLabels() {
-		//messageSource.setCaption(this, Message.BACKUP_IBDBWINDOW);
-		//messageSource.setCaption(select, Message.BACKUP_IBDBROJ_DROPDOWN);
+		messageSource.setCaption(this, Message.BACKUP_IBDB_WINDOW_CAPTION);
+		messageSource.setCaption(select, Message.BACKUP_IBDB_SELECT_PROJECT_CAPTION);
 		messageSource.setCaption(saveBtn,Message.SAVE);
 		messageSource.setCaption(cancelBtn,Message.CANCEL);
 	}

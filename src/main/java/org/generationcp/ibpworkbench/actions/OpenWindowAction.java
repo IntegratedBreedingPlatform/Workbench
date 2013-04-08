@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.BackupIBDBWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
+import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -179,6 +180,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     	} else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName)) {
     		LOG.debug("Add Restore IBDB Window");
+    		window.addWindow(new RestoreIBDBWindow(this.project));
     	}
     	else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
