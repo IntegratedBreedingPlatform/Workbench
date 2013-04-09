@@ -23,6 +23,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenAddBreedingMethodWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveProjectMethodsAction;
+import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -49,7 +50,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
-import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -75,7 +75,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     private GridLayout gridMethodLayout;
     private Select selectMethodType;
     private Select selectMethodGroup;
-    private TwinColSelect selectMethods;
+    private TwoColumnSelect selectMethods;
     private VerticalLayout methodsLayout;
     private CropType cropType;
     private ManagerFactory managerFactory;
@@ -237,7 +237,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
          gridMethodLayout.addComponent(selectMethodType, 2, 2);
          gridMethodLayout.addComponent(btnFilterMethod, 3, 1);
 
-         selectMethods = new TwinColSelect("");
+         selectMethods = new TwoColumnSelect("");
          selectMethods.setLeftColumnCaption("Available Methods");
          selectMethods.setRightColumnCaption("Selected Methods");
          selectMethods.setRows(10);
@@ -399,7 +399,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
     
     
-    public TwinColSelect getSelect() {
+    public TwoColumnSelect getSelect() {
         return selectMethods;
     }
 
