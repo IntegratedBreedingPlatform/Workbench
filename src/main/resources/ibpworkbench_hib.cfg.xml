@@ -39,6 +39,6 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchSetting"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.SecurityQuestion"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount"/>
-        
+        <mapping class="org.generationcp.middleware.pojos.workbench.ProjectBackup"/>  
     </session-factory>
 </hibernate-configuration>
