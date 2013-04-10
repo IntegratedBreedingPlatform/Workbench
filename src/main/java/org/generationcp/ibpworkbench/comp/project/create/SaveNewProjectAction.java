@@ -111,6 +111,15 @@ public class SaveNewProjectAction implements ClickListener{
                 project.setLastOpenDate(null);
                 projectSaved = workbenchDataManager.addProject(project);
 
+                // set the project's local database name
+                String cropName = project.getCropType().getCropName().toLowerCase();
+                String localDatabaseName = String.format("%s_%d_local", cropName, project.getProjectId());
+                String centralDatabaseName = String.format("ibdb_%s_central", cropName);
+                project.setLocalDbName(localDatabaseName);
+                project.setCentralDbName(centralDatabaseName);
+                
+                workbenchDataManager.saveOrUpdateProject(project);
+                
                 // create the project's workspace directories
                 toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
             } catch (MiddlewareQueryException e) {
