@@ -28,6 +28,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -51,6 +52,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -142,8 +144,10 @@ public class SaveUsersInProjectAction implements ClickListener{
                     //delete all existing first
                     try{
                     	 this.workbenchDataManager.updateProjectsRolesForProject(this.project, getProjectMembers());
+                    	 event.getComponent().getWindow().showNotification("Added Members");
                     } catch(MiddlewareQueryException ex) {
                         //do nothing because getting the User will not fail
+                    	 event.getComponent().getWindow().showNotification("Failed to add members");
                     }
                     
                     }
@@ -238,7 +242,10 @@ public class SaveUsersInProjectAction implements ClickListener{
                 }
                 usersAccountedFor.put(projectUserRole.getUserId(), newUserName);
             }
+           
         }
+        
+        
     }
     
     private Integer getCurrentDate(){
@@ -285,7 +292,7 @@ public class SaveUsersInProjectAction implements ClickListener{
                     currentProjectUserRole.setUserId(currentUser.getUserid());
                     currentProjectUserRole.setRole(role);
                     System.out.println("getProjectMembers name "+ currentUser.getName());
-                    projectUserRoles.add(currentProjectUserRole);
+                  //  projectUserRoles.add(currentProjectUserRole);
                 }
                 
             }
@@ -313,10 +320,17 @@ public class SaveUsersInProjectAction implements ClickListener{
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
                     System.out.println("getProjectMembers name "+ user.getName());
+                    
                     projectUserRoles.add(projectUserRole);
                 }
             }
         }
+        
+        for(ProjectUserRole pur: projectUserRoles)
+        {
+        	System.out.println("pur " + pur);
+        }
+        
         return projectUserRoles;
     }
     
