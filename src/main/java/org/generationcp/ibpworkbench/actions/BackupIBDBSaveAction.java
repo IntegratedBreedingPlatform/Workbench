@@ -1,5 +1,7 @@
 package org.generationcp.ibpworkbench.actions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -30,10 +32,13 @@ import com.vaadin.ui.Window;
 @Configurable
 public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
+
+	private static final String BACKUP_DIR = "backup";
 	
 	private Window sourceWindow;
 	private Window parentWindow;
 	private Select select;
+
 	
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -43,26 +48,46 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
 
 	private ProjectBackup projectBackup;
 
+	//TODO AUTOWIRE this
+	private MySQLUtil dbUtil;
+
+	private Project selectedProject;
+
 
 	public BackupIBDBSaveAction(Select select,Window sourceWindow) {
 		this.select = select;
 		this.sourceWindow = sourceWindow;
+		
+    	// for now, manually init MySQLUtil
+    	initDB();	
 	}
 	
+    private void initDB() {
+    	dbUtil = new MySQLUtil();
+    	dbUtil.setMysqlDumpPath("C:/IBWorkflowSystem/infrastructure/mysql/bin/mysqldump.exe");
+    	dbUtil.setBackupDir(BACKUP_DIR);
+    	dbUtil.setMysqlDriver("com.mysql.jdbc.Driver");
+        dbUtil.setMysqlHost("localhost");
+        dbUtil.setMysqlPort(13306);
+        dbUtil.setUsername("root");
+	}
+
 	@Override
 	public void run() {
-		try {
-			workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
-			parentWindow.showNotification("Backup Saved!");
+			try {
+				//File backupFile = dbUtil.backupDatabase(selectedProject.getLocalDbName());
 			
-			MySQLUtil mysqlutil = new MySQLUtil();
-			
-			
-		} catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				//projectBackup.setBackupPath(backupFile.getAbsolutePath());
+				
+				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
+				
+				parentWindow.showNotification("Backup Saved!");
+			} catch (Exception e) {
+				LOG.error(e.getMessage());
+				MessageNotifier.showError(parentWindow,"An error occured while creating the backup",e.getLocalizedMessage());
+			}
 		
+			
 	}
 
 	@Override
@@ -70,39 +95,28 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
 		if (dialog.isConfirmed()) {
 			LOG.debug("onClick > do save backup");
 			
-			Project p = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
+			selectedProject = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
 			
-			LOG.debug("Selected ProjectID: " + p.getProjectId());
+			LOG.debug("Selected ProjectID: " + selectedProject.getProjectId());
 			
 			//sourceWindow = event.getButton().getWindow();
 			parentWindow = sourceWindow.getParent();
 			
 			//sourceWindow.showNotification();
 			
-			MessageNotifier.showTrayNotification(parentWindow,"Backup in progress...","Creating a backup for " + p.getProjectName());
+			MessageNotifier.showTrayNotification(parentWindow,"Backup in progress...","Creating a backup for " + selectedProject.getProjectName());
 			
 			projectBackup = new ProjectBackup();
-	        projectBackup.setProjectId(p.getProjectId());
+	        projectBackup.setProjectId(selectedProject.getProjectId());
 	        projectBackup.setBackupPath("target/resource");
 	        projectBackup.setBackupTime(Calendar.getInstance().getTime());
 			
-	        
-	        try {
-				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
-				//parentWindow.showNotification("Backup Saved!");
+	        ExecutorService ex = Executors.newSingleThreadExecutor();
+			ex.execute(this);
+			ex.shutdown();
 			
-		        MessageNotifier.showMessage(parentWindow,"Success!","A backup for " + p.getProjectName() + " has been created");				
-			} catch (MiddlewareQueryException e) {
-				e.printStackTrace();
-			
-		        MessageNotifier.showError(parentWindow,"Error!",e.getMessage());
-			}
-	        
-	        //ExecutorService ex = Executors.newSingleThreadExecutor();
-	        
-	        //ex.execute(this);
-	        //ex.shutdown();
-	        	        
+			MessageNotifier.showMessage(parentWindow,"Success!","A backup for " + selectedProject.getProjectName() + " has been created");
+	            
 	        parentWindow.removeWindow(sourceWindow);
 		}
 	}	
