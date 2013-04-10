@@ -5,10 +5,12 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -81,7 +83,9 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 	        }
     	
 	        select.setContainerDataSource(projectContainer);
-    	
+	        select.setValue(select.getItemIds().iterator().next());
+	        
+	        
     	} catch (MiddlewareQueryException e) {
     		 LOG.error("Exception", e);
              throw new InternationalizableException(e, 
@@ -96,7 +100,8 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 		select.setFilteringMode(Select.FILTERINGMODE_OFF);
 		select.setImmediate(true);
 		
-		saveBtn = new Button("Restore");
+		saveBtn = new Button("Save");
+		//saveBtn.setEnabled(false);
 		saveBtn.setSizeUndefined();
 		cancelBtn = new Button("Cancel");
 		cancelBtn.setSizeUndefined();
@@ -151,8 +156,15 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 			}
 		});
     
-    	saveBtn.addListener(new BackupIBDBSaveAction(select));
-    	
+    	saveBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final Window sourceWindow = event.getButton().getWindow();
+				
+				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Backup?",new BackupIBDBSaveAction(select, sourceWindow));
+			}
+		});
     }
 
     protected void assemble() throws Exception {

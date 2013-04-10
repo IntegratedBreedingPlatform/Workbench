@@ -9,21 +9,14 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
-import org.generationcp.ibpworkbench.actions.CreateContactAction;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
-import org.generationcp.ibpworkbench.actions.SignoutAction;
-import org.generationcp.ibpworkbench.comp.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.comp.project.create.CreateProjectPanel;
-import org.generationcp.ibpworkbench.navigation.CrumbTrail;
-import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,22 +26,17 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class RestoreIBDBWindow extends Window implements InitializingBean, InternationalizableComponent {
@@ -82,6 +70,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 
 	private Table table;
 
+	private BeanContainer<String, ProjectBackup> projectBackupContainer;
+
     
     
     public RestoreIBDBWindow(Project project) {
@@ -110,37 +100,38 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	        }
     	
 	        select.setContainerDataSource(projectContainer);
-    	
+	        select.setValue(select.getItemIds().iterator().next());
+	        
+	        projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
+	        projectBackupContainer.setBeanIdProperty("projectBackupId");
+	        
+	        /*
+	        String _log = "";
+	        for (String i : projectBackupContainer.getContainerPropertyIds()) {
+	        	_log +=  i + ", ";
+	        }
+	        
+	        LOG.debug(_log);
+	        */
+	        
+	        table.setContainerDataSource(projectBackupContainer);
+	        table.setVisibleColumns(new String[] {"backupTime","backupPath"});
+	        table.setColumnHeader("backupTime","Backup Time");
+	        table.setColumnHeader("backupPath","Backup Path");
+	        
+	        // init table contents
+	        Project p = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
+	        for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
+	        	projectBackupContainer.addBean(pb);
+	        }
+	        
+	        table.setValue(table.firstItemId());
+	        
     	} catch (MiddlewareQueryException e) {
     		 LOG.error("Exception", e);
              throw new InternationalizableException(e, 
                      Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
-    	
-    	
-    	// TODO Initialize Table Data
-    	String[] colProperties = {"backupName","date"};
-		String[] colHeaders = {"Backup Name","Backup Date"};
-		
-		//for (int i = 0; i < colProperties.length; i++) {
-		//	table.setColumnHeader(colProperties[i],colHeaders[i]);
-		//}
-		
-		//table.setVisibleColumns(colProperties);
-		
-		table.addContainerProperty("Backup Name",String.class,null);
-		table.addContainerProperty("Date",java.util.Date.class,null);
-		
-		// test data
-		table.addItem(new Object[] { "Backup 1", new java.util.Date() },1);
-		table.addItem(new Object[] { "Backup 2", new java.util.Date() },2);
-		table.addItem(new Object[] { "Backup 3", new java.util.Date() },3);
-		
-		// BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-		// projectContainer.setBeanIdProperty("projectId");
-		// table.setContainerDataSource(projectContainer);
-		// table.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
-    	
     }
     
     protected void initializeComponents() throws Exception {
@@ -150,8 +141,10 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		select.setFilteringMode(Select.FILTERINGMODE_OFF);
 		select.setImmediate(true);
 		
-		saveBtn = new Button("Save");
+		saveBtn = new Button("Restore");
 		saveBtn.setSizeUndefined();
+		//saveBtn.setEnabled(false);
+		
 		cancelBtn = new Button("Cancel");
 		cancelBtn.setSizeUndefined();
     
@@ -226,7 +219,18 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			}
 		});
     
-    	saveBtn.addListener(new RestoreIBDBSaveAction(select,table));
+    	
+    	saveBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final Window sourceWindow = event.getButton().getWindow();
+				
+				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Restore?",new RestoreIBDBSaveAction(select,table,sourceWindow));
+			}
+		});
+    	
+    	//saveBtn.addListener(new RestoreIBDBSaveAction(select,table));
     	
     	// Select action
     	select.addListener(new Property.ValueChangeListener() {
@@ -234,6 +238,28 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				RestoreIBDBWindow.LOG.info("Select > Item selected : " + event.getProperty().getValue());
+				
+				Project p = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
+				
+				projectBackupContainer.removeAllItems();
+				
+				try {
+					for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
+			        	projectBackupContainer.addBean(pb);
+			        }
+					
+					if (table.getItemIds().size() > 0)
+						table.setValue(table.firstItemId());
+					
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 			}
 		});
     	
@@ -243,6 +269,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				RestoreIBDBWindow.LOG.info("Backup Table > Item selected");
+				
+				saveBtn.setEnabled(true);
 			}
     	});
     }
