@@ -2,12 +2,16 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.generationcp.commons.util.MySQLUtil;
+import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.util.BeanItem;
@@ -30,14 +35,13 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
+public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
 
 	private static final String BACKUP_DIR = "backup";
 	
 	private Window sourceWindow;
 	private Window parentWindow;
-	private Select select;
 
 	
 	@Autowired
@@ -53,17 +57,20 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
 
 	private Project selectedProject;
 
-
-	public BackupIBDBSaveAction(Select select,Window sourceWindow) {
-		this.select = select;
-		this.sourceWindow = sourceWindow;
-		
+	public BackupIBDBSaveAction(Project project, Window window) {
+    	this.sourceWindow = sourceWindow;
+    	this.selectedProject = project;
     	// for now, manually init MySQLUtil
     	initDB();	
-	}
-	
-    private void initDB() {
+    }
+
+	private void initDB() {
     	dbUtil = new MySQLUtil();
+    	
+    	File saveDir = new File(BACKUP_DIR);
+    	if (!saveDir.exists() || !saveDir.isDirectory())
+    		saveDir.mkdirs();
+    	
     	dbUtil.setMysqlDumpPath("C:/IBWorkflowSystem/infrastructure/mysql/bin/mysqldump.exe");
     	dbUtil.setBackupDir(BACKUP_DIR);
     	dbUtil.setMysqlDriver("com.mysql.jdbc.Driver");
@@ -73,51 +80,43 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Runnable {
 	}
 
 	@Override
-	public void run() {
-			try {
-				//File backupFile = dbUtil.backupDatabase(selectedProject.getLocalDbName());
-			
-				//projectBackup.setBackupPath(backupFile.getAbsolutePath());
-				
-				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
-				
-				parentWindow.showNotification("Backup Saved!");
-			} catch (Exception e) {
-				LOG.error(e.getMessage());
-				MessageNotifier.showError(parentWindow,"An error occured while creating the backup",e.getLocalizedMessage());
-			}
-		
-			
-	}
-
-	@Override
 	public void onClose(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
 			LOG.debug("onClick > do save backup");
-			
-			selectedProject = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
-			
-			LOG.debug("Selected ProjectID: " + selectedProject.getProjectId());
+			LOG.debug("Current ProjectID: " + selectedProject.getProjectId());
 			
 			//sourceWindow = event.getButton().getWindow();
 			parentWindow = sourceWindow.getParent();
 			
-			//sourceWindow.showNotification();
-			
-			MessageNotifier.showTrayNotification(parentWindow,"Backup in progress...","Creating a backup for " + selectedProject.getProjectName());
+			//MessageNotifier.showTrayNotification(parentWindow,"Backup in progress...","Creating a backup for " + selectedProject.getProjectName());
 			
 			projectBackup = new ProjectBackup();
 	        projectBackup.setProjectId(selectedProject.getProjectId());
-	        projectBackup.setBackupPath("target/resource");
 	        projectBackup.setBackupTime(Calendar.getInstance().getTime());
 			
-	        ExecutorService ex = Executors.newSingleThreadExecutor();
-			ex.execute(this);
-			ex.shutdown();
-			
-			MessageNotifier.showMessage(parentWindow,"Success!","A backup for " + selectedProject.getProjectName() + " has been created");
-	            
-	        parentWindow.removeWindow(sourceWindow);
+	        try {
+        		// Attempt backup, store absolutepath to projectBackup bean
+				projectBackup.setBackupPath(dbUtil.backupDatabase(selectedProject.getLocalDbName()).getAbsolutePath());
+				
+				// save result to DB
+				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
+		
+				MessageNotifier.showMessage(parentWindow,"Success!","A backup for " + selectedProject.getProjectName() + " has been created");
+				
+        	} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				MessageNotifier.showError(parentWindow, "Error saving to database",e.getMessage());
+			} finally {
+			    parentWindow.removeWindow(sourceWindow);			
+			}
 		}
-	}	
+	}
 }

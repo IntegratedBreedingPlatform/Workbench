@@ -19,6 +19,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.window.BackupIBDBWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
@@ -195,11 +196,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
                  return;
              }
     	} else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName)) {
-    		LOG.debug("Add Backup IBDB Window");
-    		window.addWindow(new BackupIBDBWindow(this.project));
+    		//LOG.debug("Add Backup IBDB Window");
+    		//window.addWindow(new BackupIBDBWindow(this.project));
+    		ConfirmDialog.show(window,"Backup IB Local Database","Do you want to create a local database backup for " + this.project.getProjectName() + "?","Yes","Cancel",new BackupIBDBSaveAction(this.project, window));
     		
     	} else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName)) {
-    		LOG.debug("Add Restore IBDB Window");
+    		//LOG.debug("Add Restore IBDB Window");
     		window.addWindow(new RestoreIBDBWindow(this.project));
     	}
     	else {

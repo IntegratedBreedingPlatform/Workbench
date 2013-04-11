@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.comp.window;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -46,7 +47,8 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 	
 	private static final String WINDOW_WIDTH = "400px";
 	private static final String WINDOW_HEIGHT = "190px";
-    
+
+	
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -59,9 +61,11 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
     
     public BackupIBDBWindow(Project project) {
     	this.project = project;
+    	
+
     }
 
-    /**
+	/**
      * Assemble the UI after all dependencies has been set.
      */
     @Override
@@ -155,16 +159,16 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 				event.getButton().getWindow().getParent().removeWindow(event.getButton().getWindow());
 			}
 		});
-    
+    	/*
     	saveBtn.addListener(new Button.ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final Window sourceWindow = event.getButton().getWindow();
 				
-				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Backup?",new BackupIBDBSaveAction(select, sourceWindow));
+				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Backup?",new BackupIBDBSaveAction(this.project, sourceWindow));
 			}
-		});
+		}); */
     }
 
     protected void assemble() throws Exception {
