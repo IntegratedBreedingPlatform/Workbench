@@ -127,14 +127,26 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
     
     private void initializeActivityTable() {
-        tblActivity = new Table();
+        tblActivity = new Table() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+                if (property.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
         tblActivity.setImmediate(true);
         
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
         container.setBeanIdProperty("projectActivityId");
         tblActivity.setContainerDataSource(container);
         
-        String[] columns = new String[] {"date", "name", "description"};
+        String[] columns = new String[] {"createdAt", "name", "description"};
         tblActivity.setVisibleColumns(columns);
     }
     
@@ -273,6 +285,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         //messageSource.setCaption(selectDatasetForBreedingViewButton, Message.BREEDING_VIEW_DATASET_SELECT);
         
         messageSource.setCaption(tblActivity, Message.ACTIVITIES);
+        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
+        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
+        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
         
         messageSource.setColumnHeader(tblRoles, "label", Message.NAME);
         messageSource.setCaption(tblRoles, Message.ROLE_TABLE_TITLE);
