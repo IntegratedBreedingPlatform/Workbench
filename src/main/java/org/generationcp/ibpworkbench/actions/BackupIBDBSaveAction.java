@@ -41,8 +41,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 	private static final String BACKUP_DIR = "backup";
 	
 	private Window sourceWindow;
-	private Window parentWindow;
-
 	
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -58,7 +56,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 	private Project selectedProject;
 
 	public BackupIBDBSaveAction(Project project, Window window) {
-    	this.sourceWindow = sourceWindow;
+    	this.sourceWindow = window;
     	this.selectedProject = project;
     	// for now, manually init MySQLUtil
     	initDB();	
@@ -85,11 +83,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 			LOG.debug("onClick > do save backup");
 			LOG.debug("Current ProjectID: " + selectedProject.getProjectId());
 			
-			//sourceWindow = event.getButton().getWindow();
-			parentWindow = sourceWindow.getParent();
-			
-			//MessageNotifier.showTrayNotification(parentWindow,"Backup in progress...","Creating a backup for " + selectedProject.getProjectName());
-			
 			projectBackup = new ProjectBackup();
 	        projectBackup.setProjectId(selectedProject.getProjectId());
 	        projectBackup.setBackupTime(Calendar.getInstance().getTime());
@@ -101,7 +94,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 				// save result to DB
 				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
 		
-				MessageNotifier.showMessage(parentWindow,"Success!","A backup for " + selectedProject.getProjectName() + " has been created");
+				MessageNotifier.showMessage(sourceWindow,"Success!","A backup for " + selectedProject.getProjectName() + " has been created");
 				
         	} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -113,9 +106,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				
-				MessageNotifier.showError(parentWindow, "Error saving to database",e.getMessage());
-			} finally {
-			    parentWindow.removeWindow(sourceWindow);			
+				MessageNotifier.showError(sourceWindow, "Error saving to database",e.getMessage());
 			}
 		}
 	}

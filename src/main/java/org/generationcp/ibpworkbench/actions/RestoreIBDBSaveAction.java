@@ -1,7 +1,11 @@
 package org.generationcp.ibpworkbench.actions;
 
+import java.io.File;
+
+import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
@@ -21,7 +25,7 @@ import com.vaadin.ui.Window;
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 	private Window sourceWindow;
-	private Select select;
+	//private Select select;
 	private Table table;
 	
 	@Autowired
@@ -29,11 +33,26 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 	
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+	private MySQLUtil dbUtil;
+	private static final String BACKUP_DIR = "backup";
 	
-	public RestoreIBDBSaveAction(Select select,Table table,Window sourceWindow) {
-		this.select = select;
+	public RestoreIBDBSaveAction(Table table,Window sourceWindow) {
+		//this.select = select;
 		this.table = table;
 		this.sourceWindow = sourceWindow;
+		
+		initDB();
+	}
+	
+	private void initDB() {
+    	dbUtil = new MySQLUtil();
+    	    	
+    	dbUtil.setMysqlDumpPath("C:/IBWorkflowSystem/infrastructure/mysql/bin/mysqldump.exe");
+    	dbUtil.setBackupDir(BACKUP_DIR );
+    	dbUtil.setMysqlDriver("com.mysql.jdbc.Driver");
+        dbUtil.setMysqlHost("localhost");
+        dbUtil.setMysqlPort(13306);
+        dbUtil.setUsername("root");
 	}
 	
 	@Override
@@ -46,14 +65,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 			try {
 				ProjectBackup pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
 				
-				MessageNotifier.showTrayNotification(sourceWindow.getParent(),"Restore in progress...","");
-				
-				//TODO do restore here
-				LOG.debug("TODO: do restore here");
-				
-				//workbenchDataManager.
-				
-				MessageNotifier.showMessage(sourceWindow.getParent(),"Backup Restoration Complete","");
+				MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 				
 				sourceWindow.getParent().removeWindow(sourceWindow);
 				

@@ -8,7 +8,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
@@ -29,6 +28,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -36,7 +36,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 @Configurable
 public class RestoreIBDBWindow extends Window implements InitializingBean, InternationalizableComponent {
@@ -52,13 +51,13 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
         
     // Components
 	private ComponentContainer rootLayout;
-	private FormLayout formLayout;
-	private Select select;
+	//private FormLayout formLayout;
+	//private Select select;
 	private Button cancelBtn;
 	private Button saveBtn;
 	
 	private static final String WINDOW_WIDTH = "400px";
-	private static final String WINDOW_HEIGHT = "390px";
+	private static final String WINDOW_HEIGHT = "340px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -72,8 +71,6 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 
 	private BeanContainer<String, ProjectBackup> projectBackupContainer;
 
-    
-    
     public RestoreIBDBWindow(Project project) {
     	this.project = project;
     }
@@ -99,8 +96,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	            projectContainer.addBean(project);
 	        }
     	
-	        select.setContainerDataSource(projectContainer);
-	        select.setValue(select.getItemIds().iterator().next());
+	        //select.setContainerDataSource(projectContainer);
+	        //select.setValue(select.getItemIds().iterator().next());
 	        
 	        projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
 	        projectBackupContainer.setBeanIdProperty("projectBackupId");
@@ -120,10 +117,13 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	        table.setColumnHeader("backupPath","Backup Path");
 	        
 	        // init table contents
-	        Project p = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
+	        Project p = this.project;
 	        for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
 	        	projectBackupContainer.addBean(pb);
 	        }
+	        
+	        if (table.getItemIds().isEmpty())
+	        	saveBtn.setEnabled(false);
 	        
 	        table.setValue(table.firstItemId());
 	        
@@ -135,11 +135,11 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
     }
     
     protected void initializeComponents() throws Exception {
-		select = new Select("Choose a project to restore");
-		select.setNullSelectionAllowed(false);
-		select.setNewItemsAllowed(false);
-		select.setFilteringMode(Select.FILTERINGMODE_OFF);
-		select.setImmediate(true);
+		//select = new Select("Choose a project to restore");
+		//select.setNullSelectionAllowed(false);
+		//select.setNewItemsAllowed(false);
+		//select.setFilteringMode(Select.FILTERINGMODE_OFF);
+		//select.setImmediate(true);
 		
 		saveBtn = new Button("Restore");
 		saveBtn.setSizeUndefined();
@@ -162,7 +162,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 				return super.formatPropertyValue(rowId, colId, property);
 			}
 		};
-	
+		
 		table.setSelectable(true);
 		table.setImmediate(true);
 		table.setWidth("100%");
@@ -178,15 +178,19 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		this.setModal(true);
 				
 		rootLayout = this.getContent();
-		formLayout = new FormLayout();
-		formLayout.setMargin(true);
-		formLayout.setSizeFull();
 		
-		rootLayout.addComponent(formLayout);
+		//formLayout = new FormLayout();
+		//formLayout.setMargin(true);
+		//formLayout.setSizeFull();
+		
+		//rootLayout.addComponent(formLayout);
+		
+		rootLayout.addComponent(new Label(messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
+		
 		rootLayout.addComponent(table);
 		
 		// bind components to layout
-		formLayout.addComponent(select);
+		//formLayout.addComponent(select);
 		
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setWidth("100%");
@@ -226,13 +230,19 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			public void buttonClick(ClickEvent event) {
 				final Window sourceWindow = event.getButton().getWindow();
 				
-				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Restore?",new RestoreIBDBSaveAction(select,table,sourceWindow));
+				ConfirmDialog.show(sourceWindow.getParent(),
+						messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
+						messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
+						messageSource.getMessage(Message.RESTORE),
+						messageSource.getMessage(Message.CANCEL),
+						new RestoreIBDBSaveAction(table,sourceWindow));
 			}
 		});
     	
     	//saveBtn.addListener(new RestoreIBDBSaveAction(select,table));
     	
     	// Select action
+    	/*
     	select.addListener(new Property.ValueChangeListener() {
 			
 			@Override
@@ -262,6 +272,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 				
 			}
 		});
+    	*/
     	
     	// Table actions
     	table.addListener(new Property.ValueChangeListener() {
@@ -292,7 +303,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	@Override
 	public void updateLabels() {
 		messageSource.setCaption(this, Message.RESTORE_IBDB_WINDOW_CAPTION);
-		messageSource.setCaption(select, Message.RESTORE_IBDB_TABLE_SELECT_CAPTION);
+		//messageSource.setCaption(select, Message.RESTORE_IBDB_TABLE_SELECT_CAPTION);
 		messageSource.setCaption(saveBtn,Message.SAVE);
 		messageSource.setCaption(cancelBtn,Message.CANCEL);
 	}

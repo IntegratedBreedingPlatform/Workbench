@@ -197,15 +197,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         projectLocationButton.setSizeUndefined();
         projectLocationButton.setDescription("Click to configure project locations");
 
-        backupIBDBButton = new Button("Backup IBDB");
+        backupIBDBButton = new Button(messageSource.getMessage(Message.BACKUP_IBDB_LINK));
         backupIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
         backupIBDBButton.setSizeUndefined();
-        backupIBDBButton.setDescription("Click to backup the current IB database");
+        backupIBDBButton.setDescription(messageSource.getMessage(Message.BACKUP_IBDB_LINK_DESC));
         
-        restoreIBDBButton = new Button("Restore IBDB from a Backup");
+        restoreIBDBButton = new Button(messageSource.getMessage(Message.RESTORE_IBDB_LINK));
         restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
         restoreIBDBButton.setSizeUndefined();
-        restoreIBDBButton.setDescription("Click to restore IB database from a backup ");
+        restoreIBDBButton.setDescription(messageSource.getMessage(Message.RESTORE_IBDB_LINK_DESC));
         
 
     }
