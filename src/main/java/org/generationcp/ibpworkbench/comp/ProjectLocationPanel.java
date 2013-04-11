@@ -25,6 +25,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveProjectLocationAction;
+import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -32,6 +33,7 @@ import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -44,17 +46,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
-import com.vaadin.ui.TwinColSelect;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickListener;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -75,6 +83,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     private Button saveLocationButton;
     private Button cancelButton;
     BeanItemContainer<Location> beanItemContainer;
+    
+    private Table dataTable;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -83,7 +93,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     private Select selectLocationCountry;
     private Select selectLocationType;
     private Button btnFilterLocation;
-    private TwinColSelect selectLocation;
+    private TwoColumnSelect selectLocation;
     private CropType cropType;
     private ManagerFactory managerFactory;
 
@@ -137,11 +147,36 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     protected void initializeComponents() throws MiddlewareQueryException {
         setSpacing(true);
         setMargin(true);
-
+        
+        dataTable = new Table();
+    	dataTable.setImmediate(true);
+        
         addComponent(layoutLocationArea());
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
 
+    }
+    
+    protected void repaintTable()
+    {
+    	
+         
+    	List<String> columnHeaders = new ArrayList<String>();
+        columnHeaders.add("Location Type");
+        columnHeaders.add("Location Name");
+        columnHeaders.add("Location Abbreviation");
+        
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("Location Type", String.class, null);
+        container.addContainerProperty("Location Name", String.class, null);
+        container.addContainerProperty("Location Abbreviation", String.class, null);
+        dataTable.setContainerDataSource(container);
+        
+        dataTable.setVisibleColumns(columnHeaders.toArray(new String[0]));
+        dataTable.setColumnHeaders(columnHeaders.toArray(new String[0]));
+        
+        
+        
     }
 
     protected void initializeValues() throws MiddlewareQueryException {
@@ -158,6 +193,46 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         addLocationWindowButton.addListener(new OpenAddLocationWindowAction(this));
         saveLocationButton.addListener(new SaveProjectLocationAction(this));
         cancelButton.addListener(new CancelLocationAction(this));
+        selectLocation.getLeftSelect().setImmediate(true);
+        selectLocation.getLeftSelect().addListener(new ChangeValueAction());
+    }
+    
+    
+    private class ChangeValueAction implements ValueChangeListener {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		
+		
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			// TODO Auto-generated method stub\
+			Property prop = event.getProperty();
+			
+			ListSelect locations = (ListSelect) prop;
+			
+			
+			Container indexContainer = dataTable.getContainerDataSource();
+            
+			indexContainer.removeAllItems();
+            
+			for (Object itemId : (Set)locations.getValue()) {
+	                Location loc = (Location) itemId;
+	                Item item = indexContainer.addItem(itemId);
+	                item.getItemProperty("Location Type").setValue(loc.getLtype());
+	                item.getItemProperty("Location Name").setValue(loc.getLname());
+	                item.getItemProperty("Location Abbreviation").setValue(loc.getLabbr());
+				}
+			
+	        requestRepaintAll();
+	   }
+		
+	
+
+	
     }
 
     protected Component layoutButtonArea() {
@@ -200,7 +275,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         btnFilterLocation.addListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
-
+            	
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 Set<Location> selectedLocation = (Set<Location>) selectLocation.getValue();
@@ -237,7 +312,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         gridLocationLayout.addComponent(selectLocationType, 2, 2);
         gridLocationLayout.addComponent(btnFilterLocation, 3, 1);
 
-        selectLocation = new TwinColSelect();
+        selectLocation = new TwoColumnSelect();
         selectLocation.setLeftColumnCaption(messageSource.getMessage(Message.LOCATION_AVAILABLE_LOCATIONS)); //"Available Locations"
         selectLocation.setRightColumnCaption(messageSource.getMessage(Message.LOCATION_SELECTED_LOCATIONS)); //"Selected Locations"
         selectLocation.setRows(10);
@@ -264,8 +339,13 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
 
         locationLayout.addComponent(gridLocationLayout);
+        
+       
         locationLayout.addComponent(selectLocation);
-
+ 
+        repaintTable();
+        
+        locationLayout.addComponent(dataTable);
         return locationLayout;
 
     }
@@ -436,7 +516,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     }
 
-    public TwinColSelect getSelect() {
+    public TwoColumnSelect getSelect() {
         return selectLocation;
     }
 

@@ -18,6 +18,7 @@ import java.util.Set;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
+import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -33,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Container.PropertySetChangeEvent;
+import com.vaadin.data.Container.PropertySetChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -73,7 +76,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 	private Select selectLocationCountry;
 	private Select selectLocationType;
 	private Button btnFilterLocation;
-	private TwinColSelect selectLocation;
+	private TwoColumnSelect selectLocation;
 	private ManagerFactory managerFactory;
 	private CropType cropType;
 	
@@ -120,6 +123,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     protected void initializeActions() {
         previousButton.addListener(new PreviousButtonClickListener());
         showLocationWindowButton.addListener(new OpenAddLocationWindowAction(this));
+        selectLocation.getLeftSelect().addListener( new CheckButtonClickListener(this));
     }
 
     protected Component layoutButtonArea() {
@@ -196,7 +200,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         gridLocationLayout.addComponent(selectLocationType, 2, 2);
         gridLocationLayout.addComponent(btnFilterLocation, 3, 1);
 
-        selectLocation = new TwinColSelect();
+        selectLocation = new TwoColumnSelect();
         selectLocation.setLeftColumnCaption("Available Locations");
         selectLocation.setRightColumnCaption("Selected Locations");
         selectLocation.setRows(10);
@@ -318,9 +322,29 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
           createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
         }
     }
+    
+    private class CheckButtonClickListener implements PropertySetChangeListener{
+        private static final long serialVersionUID = 1L;
+
+        public CheckButtonClickListener(
+				ProjectLocationsComponent projectLocationsComponent) {
+			// TODO Auto-generated constructor stub
+        	System.out.println("projectLocationsComponent "+projectLocationsComponent);
+		}
+
+	
+
+		@Override
+		public void containerPropertySetChange(PropertySetChangeEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println("Event "+event);
+			
+		}
+    }
 
 
-	public TwinColSelect getSelect() {
+
+	public TwoColumnSelect getSelect() {
 		return selectLocation;
 	}
 
