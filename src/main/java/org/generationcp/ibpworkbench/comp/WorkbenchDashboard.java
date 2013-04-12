@@ -146,7 +146,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         container.setBeanIdProperty("projectActivityId");
         tblActivity.setContainerDataSource(container);
         
-        String[] columns = new String[] {"createdAt", "name", "description"};
+        String[] columns = new String[] {"name", "description"};
         tblActivity.setVisibleColumns(columns);
     }
     

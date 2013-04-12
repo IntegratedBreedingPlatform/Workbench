@@ -12,7 +12,11 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,16 +45,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Container.PropertySetChangeEvent;
+import com.vaadin.data.Container.PropertySetChangeListener;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -85,10 +97,17 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+	
+	private Window bmPopupWindow;
+	private Method currentMethod;
 
+	private ProjectBreedingMethodsPanel thisInstance;
+	
     public ProjectBreedingMethodsPanel(Project project, Role role) {
         this.project = project;
         this.role = role;
+        
+        this.thisInstance = this;
     }
 
 
@@ -98,6 +117,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
     public void setProject(Project project) {
         this.project = project;
+        
     }
 
     public Role getRole() {
@@ -120,10 +140,10 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         initializeActions();
     }
 
-    protected void initializeComponents() throws MiddlewareQueryException {
-        setSpacing(true);
+    protected void initializeComponents() throws MiddlewareQueryException {    		
+    	setSpacing(true);
         setMargin(true);
-
+        
         addComponent(layoutMethodsArea());
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
@@ -144,6 +164,66 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     	addMethodsWindowButton.addListener(new OpenAddBreedingMethodWindowAction(this));
         saveLocationButton.addListener(new SaveProjectMethodsAction(this));
         cancelButton.addListener(new CancelMethodsAction(this));
+        
+        selectMethods.getLeftSelect().setImmediate(true);
+        selectMethods.getLeftSelect().addListener(new Property.ValueChangeListener() {
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				ProjectBreedingMethodsPanel.LOG.debug("ValueChangeEvent triggered");
+				
+				Window parentWindow = thisInstance.getApplication().getMainWindow();
+				Object selectedItem = selectMethods.getLeftSelect().getValue();
+				
+				if (selectedItem instanceof Set) {
+					ProjectBreedingMethodsPanel.LOG.debug("Set returned, either items moved to right or left column is multi selected");
+					Set<Object> set = (Set<Object>) selectedItem;
+					
+					
+					
+					if (set.size() == 0) {
+						if (bmPopupWindow != null) {
+							parentWindow.removeWindow(bmPopupWindow);
+						}
+					} else if (set.size() == 1) {
+						currentMethod = ((BeanItem<Method>)selectMethods.getLeftSelect().getItem(set.iterator().next())).getBean();
+						ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
+						
+						openWindow(parentWindow);
+					}
+					
+				} else {
+					currentMethod = ((BeanItem<Method>)selectMethods.getLeftSelect().getItem(selectedItem)).getBean();
+					ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
+					
+					openWindow(parentWindow);
+				}
+				
+			}});        
+    }
+    
+    private void openWindow(Window parentWindow) {
+    	if (bmPopupWindow != null) {
+			parentWindow.removeWindow(bmPopupWindow);
+		}
+		
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		try {
+			Date date = df.parse(String.valueOf(currentMethod.getMdate()));
+		
+			String formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
+			
+			bmPopupWindow = new ProjectBreedingMethodsPopup(currentMethod.getMname(),currentMethod.getMdesc(),currentMethod.getMgrp(),currentMethod.getMcode(),formattedDate);
+			//bmPopupWindow.setPositionX((int) (parentWindow.getBorder() - bmPopupWindow.getWidth() - 20));
+			bmPopupWindow.setPositionX(910);
+			bmPopupWindow.setPositionY(60);
+			
+			parentWindow.addWindow(bmPopupWindow);
+		
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     protected Component layoutButtonArea() {
@@ -270,7 +350,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
          return methodsLayout;
 
     }
-
+    
     private Container createMethodsContainer(CropType cropType, Set<Method> selectedMethod) throws MiddlewareQueryException {
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
        
@@ -408,4 +488,58 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         super.attach();
     }
 
+    
+    class ProjectBreedingMethodsPopup extends Window {
+    	private VerticalLayout main = new VerticalLayout();
+    	private CustomLayout custom = null;
+  		 
+    	private ProjectBreedingMethodsPopup() {
+    		main.setStyleName("popup position");
+    		
+    		this.setResizable(false);
+    		this.setDraggable(false);
+    		this.setWidth("400px");
+    		this.setHeight("300px");
+    		
+    		this.addComponent(main);
+    		
+    	}
+    	
+    	public ProjectBreedingMethodsPopup(String mtitle, String mdesc,String mgrp, String mcode, String mdate) {
+    		this();
+    		
+    		//this.setCaption(mtitle);
+    		this.setCaption("Breeding Method Details");
+    		
+    		setBreedingMethodDetailsValues(mtitle,mdesc,mgrp,mcode,mdate);
+    	}
+    	
+    	public void setBreedingMethodDetailsValues(String mtitle, String mdesc,String mgrp, String mcode, String mdate) {
+	   		 Label mtitleLbl = new Label(mtitle);
+	   		 Label mdescLbl = new Label(mdesc);
+	   		 Label mgrpLbl = new Label(mgrp);
+	   		 Label mcodeLbl = new Label(mcode);
+	   		 Label mdateLbl = new Label(mdate);
+
+	   		
+			CustomLayout c = new CustomLayout("breedingMethodsPopupLayout");
+   			c.addStyleName("bmPopupLayout");
+		
+			c.addComponent(mtitleLbl,"mtitle");
+	   		c.addComponent(mdescLbl,"mdesc");
+	   		c.addComponent(mgrpLbl,"mgrp");
+	   		c.addComponent(mcodeLbl,"mcode");
+	   		c.addComponent(mdateLbl,"mdate");
+	   	
+	   		if (this.custom == null) {
+	   			this.custom = c;	
+	   			main.addComponent(c);
+	   		} else {
+	   			main.replaceComponent(this.custom, c);
+	   			this.custom = c;
+	   		}
+		   	
+	   		 
+    	}    	
+    }
 }
