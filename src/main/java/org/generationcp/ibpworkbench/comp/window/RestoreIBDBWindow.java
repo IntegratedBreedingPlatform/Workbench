@@ -235,7 +235,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 						messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
 						messageSource.getMessage(Message.RESTORE),
 						messageSource.getMessage(Message.CANCEL),
-						new RestoreIBDBSaveAction(table,sourceWindow));
+						new RestoreIBDBSaveAction(project,table,sourceWindow));
 			}
 		});
     	
@@ -304,7 +304,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	public void updateLabels() {
 		messageSource.setCaption(this, Message.RESTORE_IBDB_WINDOW_CAPTION);
 		//messageSource.setCaption(select, Message.RESTORE_IBDB_TABLE_SELECT_CAPTION);
-		messageSource.setCaption(saveBtn,Message.SAVE);
+		messageSource.setCaption(saveBtn,Message.RESTORE);
 		messageSource.setCaption(cancelBtn,Message.CANCEL);
 	}
 }

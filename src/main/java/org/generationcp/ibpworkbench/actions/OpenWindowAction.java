@@ -198,7 +198,11 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	} else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName)) {
     		//LOG.debug("Add Backup IBDB Window");
     		//window.addWindow(new BackupIBDBWindow(this.project));
-    		ConfirmDialog.show(window,messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION),messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_DESC) + this.project.getProjectName() + "?","Yes",messageSource.getMessage(Message.CANCEL),new BackupIBDBSaveAction(this.project, window));
+    		ConfirmDialog.show(window,messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION),
+    				messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_DESC),
+    				messageSource.getMessage(Message.YES),
+    				messageSource.getMessage(Message.CANCEL),
+    				new BackupIBDBSaveAction(this.project, window));
     		//
     	} else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName)) {
     		//LOG.debug("Add Restore IBDB Window");

@@ -8,6 +8,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +35,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 	private MySQLUtil dbUtil;
+	private Project project;
 	private static final String BACKUP_DIR = "backup";
 	
-	public RestoreIBDBSaveAction(Table table,Window sourceWindow) {
+	public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
 		//this.select = select;
 		this.table = table;
 		this.sourceWindow = sourceWindow;
-		
+		this.project = project;
 		initDB();
 	}
 	
@@ -64,6 +66,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 
 			try {
 				ProjectBackup pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
+			
+				dbUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
 				
 				MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 				
