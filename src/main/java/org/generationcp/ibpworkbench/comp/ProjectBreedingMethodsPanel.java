@@ -224,23 +224,15 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
     
     private void openWindow(Window parentWindow,List<Method> selectedMethods) {
-    	
-    	if (bmPopupWindow != null) {
-			parentWindow.removeWindow(bmPopupWindow);
-		}
-		
-	
-			WebApplicationContext wac = (WebApplicationContext)parentWindow.getApplication().getContext();
-			
-			Float browserWidth = !browserResized ? wac.getBrowser().getScreenWidth() : parentWindow.getWidth();
-			//TODO: better solution is to call parentWindow.getBrowserWindowWidth() which api call is available on Vaadin 6.8
-			
-			bmPopupWindow = new ProjectBreedingMethodsPopup(selectedMethods);
-			bmPopupWindow.setPositionX((int) (browserWidth.intValue() - bmPopupWindow.getWidth() - 20));
-			//bmPopupWindow.setPositionX(910);
-			bmPopupWindow.setPositionY(60);
-			
-			parentWindow.addWindow(bmPopupWindow);
+        if (bmPopupWindow != null) {
+            parentWindow.removeWindow(bmPopupWindow);
+        }
+
+        bmPopupWindow = new ProjectBreedingMethodsPopup(selectedMethods);
+        bmPopupWindow.setPositionX(223);
+        bmPopupWindow.setPositionY(381);
+
+        parentWindow.addWindow(bmPopupWindow);
     }
 
     protected Component layoutButtonArea() {
@@ -504,23 +496,30 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     public void attach() {
         super.attach();
     }
-
+    
+    @Override
+    public void detach() {
+        super.detach();
+        
+        final Window parentWindow = thisInstance.getApplication().getMainWindow();
+        parentWindow.removeWindow(bmPopupWindow);
+    }
     
     class ProjectBreedingMethodsPopup extends Window {
     	private VerticalLayout main = new VerticalLayout();
     	
     	private ProjectBreedingMethodsPopup() {
     		main.setSpacing(true);
+    		main.setMargin(false);
     		
     		this.setCaption("Breeding Method Details");
     		
-    		this.setResizable(false);
-    		this.setDraggable(false);
+    		this.setResizable(true);
+    		this.setDraggable(true);
     		this.setWidth("400px");
-    		this.setHeight("300px");
+    		this.setHeight("200px");
     		
-    		this.addComponent(main);
-    		
+    		setContent(main);
     	}
     	
     	

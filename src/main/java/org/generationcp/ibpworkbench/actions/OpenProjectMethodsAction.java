@@ -77,7 +77,7 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
         
         try {
         	ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
-        	projectMethodsPanel.setWidth("730px"); 
+        	projectMethodsPanel.setWidth("780px"); 
             
             w.showContent(projectMethodsPanel);
             
