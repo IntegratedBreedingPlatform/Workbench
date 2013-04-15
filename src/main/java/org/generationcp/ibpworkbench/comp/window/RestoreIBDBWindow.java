@@ -57,7 +57,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	private Button saveBtn;
 	
 	private static final String WINDOW_WIDTH = "400px";
-	private static final String WINDOW_HEIGHT = "340px";
+	private static final String WINDOW_HEIGHT = "355px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;

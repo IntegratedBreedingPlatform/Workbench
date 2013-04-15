@@ -51,9 +51,12 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.gwt.client.BrowserInfo;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.ResizeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.GridLayout;
@@ -89,8 +92,6 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     private Select selectMethodGroup;
     private TwoColumnSelect selectMethods;
     private VerticalLayout methodsLayout;
-    private CropType cropType;
-    private ManagerFactory managerFactory;
     private Button addMethodsWindowButton;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -103,7 +104,9 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
 	private ProjectBreedingMethodsPanel thisInstance;
 	
-    public ProjectBreedingMethodsPanel(Project project, Role role) {
+	private Boolean browserResized = false;
+	
+	public ProjectBreedingMethodsPanel(Project project, Role role) {
         this.project = project;
         this.role = role;
         
@@ -155,6 +158,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
 
     protected void initializeLayout() {
+    	setSizeFull();
         setSpacing(true);
         setMargin(true);
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
@@ -172,9 +176,21 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 			public void valueChange(ValueChangeEvent event) {
 				ProjectBreedingMethodsPanel.LOG.debug("ValueChangeEvent triggered");
 				
-				Window parentWindow = thisInstance.getApplication().getMainWindow();
-				Object selectedItem = selectMethods.getLeftSelect().getValue();
+				final Window parentWindow = thisInstance.getApplication().getMainWindow();
 				
+				if (!browserResized) {
+					parentWindow.setImmediate(true);
+					
+					parentWindow.addListener(new Window.ResizeListener() {
+
+						@Override
+						public void windowResized(ResizeEvent e) {
+							browserResized = true;
+						}});
+				}
+				
+				
+				Object selectedItem = selectMethods.getLeftSelect().getValue();
 				if (selectedItem instanceof Set) {
 					ProjectBreedingMethodsPanel.LOG.debug("Set returned, either items moved to right or left column is multi selected");
 					Set<Object> set = (Set<Object>) selectedItem;
@@ -203,6 +219,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
     
     private void openWindow(Window parentWindow) {
+    	
     	if (bmPopupWindow != null) {
 			parentWindow.removeWindow(bmPopupWindow);
 		}
@@ -213,9 +230,14 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 		
 			String formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
 			
+			WebApplicationContext wac = (WebApplicationContext)parentWindow.getApplication().getContext();
+			
+			Float browserWidth = !browserResized ? wac.getBrowser().getScreenWidth() : parentWindow.getWidth();
+			//TODO: better solution is to call parentWindow.getBrowserWindowWidth() which api call is available on Vaadin 6.8
+			
 			bmPopupWindow = new ProjectBreedingMethodsPopup(currentMethod.getMname(),currentMethod.getMdesc(),currentMethod.getMgrp(),currentMethod.getMcode(),formattedDate);
-			//bmPopupWindow.setPositionX((int) (parentWindow.getBorder() - bmPopupWindow.getWidth() - 20));
-			bmPopupWindow.setPositionX(910);
+			bmPopupWindow.setPositionX((int) (browserWidth.intValue() - bmPopupWindow.getWidth() - 20));
+			//bmPopupWindow.setPositionX(910);
 			bmPopupWindow.setPositionY(60);
 			
 			parentWindow.addWindow(bmPopupWindow);
