@@ -16,8 +16,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -49,27 +47,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Container.PropertySetChangeEvent;
-import com.vaadin.data.Container.PropertySetChangeListener;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.ResizeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.ResizeEvent;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -107,8 +100,6 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 	private Method currentMethod;
 
 	private ProjectBreedingMethodsPanel thisInstance;
-	
-	private Boolean browserResized = false;
 	
 	public ProjectBreedingMethodsPanel(Project project, Role role) {
         this.project = project;
@@ -182,39 +173,19 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 				
 				final Window parentWindow = thisInstance.getApplication().getMainWindow();
 				
-				if (!browserResized) {
-					parentWindow.setImmediate(true);
-					
-					parentWindow.addListener(new Window.ResizeListener() {
-
-						@Override
-						public void windowResized(ResizeEvent e) {
-							browserResized = true;
-						}});
-				}
-				
-				
 				Object selectedItem = selectMethods.getLeftSelect().getValue();
 				if (selectedItem instanceof Set) {
 					ProjectBreedingMethodsPanel.LOG.debug("Set returned, either items moved to right or left column is multi selected");
 					
-					Set<Object> set = (Set<Object>) selectedItem;
+					@SuppressWarnings("unchecked")
+                    Set<Method> methodSet = (Set<Method>) selectedItem;
 					
-					ArrayList<Method> selectedMethods = new ArrayList<Method>();
-					
-					
-					if (set.size() == 0) {
+					if (methodSet.size() == 0) {
 						if (bmPopupWindow != null) {
 							parentWindow.removeWindow(bmPopupWindow);
 						}
-					} else if (set.size() > 0) {
-					
-						for (Object item : set) {
-							//ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
-							selectedMethods.add(((BeanItem<Method>)selectMethods.getLeftSelect().getItem(item)).getBean());
-						}
-						
-						
+					} else if (methodSet.size() > 0) {
+					    List<Method> selectedMethods = new ArrayList<Method>(methodSet);
 						openWindow(parentWindow,selectedMethods);
 					}
 					
