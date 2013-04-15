@@ -16,6 +16,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -193,59 +197,50 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 				Object selectedItem = selectMethods.getLeftSelect().getValue();
 				if (selectedItem instanceof Set) {
 					ProjectBreedingMethodsPanel.LOG.debug("Set returned, either items moved to right or left column is multi selected");
+					
 					Set<Object> set = (Set<Object>) selectedItem;
 					
+					ArrayList<Method> selectedMethods = new ArrayList<Method>();
 					
 					
 					if (set.size() == 0) {
 						if (bmPopupWindow != null) {
 							parentWindow.removeWindow(bmPopupWindow);
 						}
-					} else if (set.size() == 1) {
-						currentMethod = ((BeanItem<Method>)selectMethods.getLeftSelect().getItem(set.iterator().next())).getBean();
-						ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
+					} else if (set.size() > 0) {
+					
+						for (Object item : set) {
+							//ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
+							selectedMethods.add(((BeanItem<Method>)selectMethods.getLeftSelect().getItem(item)).getBean());
+						}
 						
-						openWindow(parentWindow);
+						
+						openWindow(parentWindow,selectedMethods);
 					}
 					
-				} else {
-					currentMethod = ((BeanItem<Method>)selectMethods.getLeftSelect().getItem(selectedItem)).getBean();
-					ProjectBreedingMethodsPanel.LOG.debug(currentMethod.toString());
-					
-					openWindow(parentWindow);
 				}
 				
 			}});        
     }
     
-    private void openWindow(Window parentWindow) {
+    private void openWindow(Window parentWindow,List<Method> selectedMethods) {
     	
     	if (bmPopupWindow != null) {
 			parentWindow.removeWindow(bmPopupWindow);
 		}
 		
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		try {
-			Date date = df.parse(String.valueOf(currentMethod.getMdate()));
-		
-			String formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
-			
+	
 			WebApplicationContext wac = (WebApplicationContext)parentWindow.getApplication().getContext();
 			
 			Float browserWidth = !browserResized ? wac.getBrowser().getScreenWidth() : parentWindow.getWidth();
 			//TODO: better solution is to call parentWindow.getBrowserWindowWidth() which api call is available on Vaadin 6.8
 			
-			bmPopupWindow = new ProjectBreedingMethodsPopup(currentMethod.getMname(),currentMethod.getMdesc(),currentMethod.getMgrp(),currentMethod.getMcode(),formattedDate);
+			bmPopupWindow = new ProjectBreedingMethodsPopup(selectedMethods);
 			bmPopupWindow.setPositionX((int) (browserWidth.intValue() - bmPopupWindow.getWidth() - 20));
 			//bmPopupWindow.setPositionX(910);
 			bmPopupWindow.setPositionY(60);
 			
 			parentWindow.addWindow(bmPopupWindow);
-		
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     protected Component layoutButtonArea() {
@@ -513,10 +508,11 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     
     class ProjectBreedingMethodsPopup extends Window {
     	private VerticalLayout main = new VerticalLayout();
-    	private CustomLayout custom = null;
-  		 
+    	
     	private ProjectBreedingMethodsPopup() {
-    		main.setStyleName("popup position");
+    		main.setSpacing(true);
+    		
+    		this.setCaption("Breeding Method Details");
     		
     		this.setResizable(false);
     		this.setDraggable(false);
@@ -527,41 +523,74 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     		
     	}
     	
-    	public ProjectBreedingMethodsPopup(String mtitle, String mdesc,String mgrp, String mcode, String mdate) {
+    	
+    	public ProjectBreedingMethodsPopup(List<Method> selectedMethods) {
     		this();
     		
-    		//this.setCaption(mtitle);
-    		this.setCaption("Breeding Method Details");
     		
-    		setBreedingMethodDetailsValues(mtitle,mdesc,mgrp,mcode,mdate);
+    		Collections.sort(selectedMethods,new Comparator<Method>() {
+				@Override
+				public int compare(Method o1, Method o2) {
+					return o1.getMname().compareTo(o2.getMname());
+				}
+			});
+    		
+    		for (int i = 0; i < selectedMethods.size(); i++) {
+    			if (i % 2 == 0)
+    				init(selectedMethods.get(i),false);
+    			else {
+    				init(selectedMethods.get(i),true);
+    			}
+    		}
+    		
+    		
     	}
     	
-    	public void setBreedingMethodDetailsValues(String mtitle, String mdesc,String mgrp, String mcode, String mdate) {
+    	public ProjectBreedingMethodsPopup(Method m) {
+    		this();
+    		
+    		init(m,false);
+    	}
+    
+    	private void init(Method m,boolean isOdd) {
+    		
+    		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+    		
+    		Date date;
+			try {
+				date = df.parse(String.valueOf(m.getMdate()));
+				String formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
+				
+				setBreedingMethodDetailsValues(m.getMname(),m.getMdesc(),m.getMgrp(),m.getMcode(),m.getMtype(),formattedDate,isOdd);
+				
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	public void setBreedingMethodDetailsValues(String mtitle, String mdesc,String mgrp, String mcode,String mtype, String mdate,boolean isOdd) {
 	   		 Label mtitleLbl = new Label(mtitle);
 	   		 Label mdescLbl = new Label(mdesc);
 	   		 Label mgrpLbl = new Label(mgrp);
 	   		 Label mcodeLbl = new Label(mcode);
 	   		 Label mdateLbl = new Label(mdate);
-
+	   		 Label mtypeLbl = new Label(mtype);
 	   		
 			CustomLayout c = new CustomLayout("breedingMethodsPopupLayout");
    			c.addStyleName("bmPopupLayout");
-		
+   			
+   			if (isOdd)
+   				c.addStyleName("odd");
+   			
 			c.addComponent(mtitleLbl,"mtitle");
 	   		c.addComponent(mdescLbl,"mdesc");
 	   		c.addComponent(mgrpLbl,"mgrp");
 	   		c.addComponent(mcodeLbl,"mcode");
+	   		c.addComponent(mtypeLbl,"mtype");
 	   		c.addComponent(mdateLbl,"mdate");
 	   	
-	   		if (this.custom == null) {
-	   			this.custom = c;	
-	   			main.addComponent(c);
-	   		} else {
-	   			main.replaceComponent(this.custom, c);
-	   			this.custom = c;
-	   		}
-		   	
-	   		 
+	   		main.addComponent(c);
     	}    	
     }
 }

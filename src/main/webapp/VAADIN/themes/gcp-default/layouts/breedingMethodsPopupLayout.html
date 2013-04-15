@@ -1,10 +1,15 @@
 <style type="text/css">
-.bmPopupLayout { max-width: 360px; }
+.bmPopupLayout { max-width: 360px; padding-left: 5px !important; padding-right: 5px !important;}
 .bmPopupWrap .v-label { display: inline; }
 
 .bmPopupWrap td { font-size: 10pt; }
-.bmPopupWrap td.v-label { font-weight: bold; vertical-align: top; }
+.bmPopupWrap span.b { font-weight: bold; }
 .bmPopupWrap h1 .v-label { line-height: 25px; }
+
+.bmPopupWrap tr.label {margin-top: 5px;}
+
+.odd { background-color: #F5F5F5;  }
+
 </style>
 
 <div class="bmPopupWrap">
@@ -12,22 +17,15 @@
 	
 	<table>
 		<tr>
-			<td class="label">Description:</td>
-			<td><span location="mdesc"></span></td>
+			<!-- <td class="label">Description:</td> -->
+			<td colspan="4"><span location="mdesc"></span></td>
 		</tr>
 		<tr>
-			<td class="label">mgrp:</td>
-			<td><span location="mgrp"></span></td>
+			<td class="label"><span class="b">Group:</span> <span location="mgrp"></span></td>
+			<td class="label"><span class="b">Code:</span> <span location="mcode"></span></td>
+			<td class="label"><span class="b">Type:</span> <span location="mtype"></span></td>
+			<td class="label"><span class="b">Date:</span> <span location="mdate"></span></td>
 		</tr>
-		<tr>
-			<td class="label">mcode:</td>
-			<td><span location="mcode"></span></td>
-		</tr>
-		<tr>
-			<td class="label">Date:</td>
-			<td><span location="mdate"></span></td>
-		</tr>
-	</table>
-	
+	</table>	
 </div>
 	   		 
