@@ -49,7 +49,7 @@ public class AddBreedingMethodsWindow extends Window {
         setModal(true);
 
        /* Make the sub window 50% the size of the browser window */
-        setWidth("58%");
+        setWidth("64%");
         /*
          * Center the window both horizontally and vertically in the browser
          * window
