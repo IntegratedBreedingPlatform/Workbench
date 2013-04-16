@@ -149,6 +149,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         setMargin(true);
         
         dataTable = new Table();
+        dataTable.setWidth("690px");
     	dataTable.setImmediate(true);
         
         addComponent(layoutLocationArea());
@@ -341,11 +342,11 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
         locationLayout.addComponent(gridLocationLayout);
         
-       
+        locationLayout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
         locationLayout.addComponent(selectLocation);
  
         repaintTable();
-        
+        locationLayout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
         locationLayout.addComponent(dataTable);
         return locationLayout;
 
