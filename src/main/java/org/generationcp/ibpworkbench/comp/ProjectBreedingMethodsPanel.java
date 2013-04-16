@@ -171,7 +171,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 			public void valueChange(ValueChangeEvent event) {
 				ProjectBreedingMethodsPanel.LOG.debug("ValueChangeEvent triggered");
 				
-				final Window parentWindow = thisInstance.getApplication().getMainWindow();
+				final Window parentWindow = thisInstance.getWindow();
 				
 				Object selectedItem = selectMethods.getLeftSelect().getValue();
 				if (selectedItem instanceof Set) {
