@@ -51,6 +51,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
@@ -324,6 +325,8 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
              }
          }
 
+         selectMethods.getRightSelect().select(selectMethods.getRightSelect().getNullSelectionItemId());
+         
          methodsLayout.addComponent(gridMethodLayout);
          methodsLayout.addComponent(selectMethods);
 
