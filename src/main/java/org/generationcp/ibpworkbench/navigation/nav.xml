@@ -60,6 +60,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
     
+    <view path="/ProjectMembers"
+          label="Project Members"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+    
     <view path="/CreateProject"
           label="Create Project"
           level="1"

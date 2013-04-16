@@ -221,6 +221,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
             
 			for (Object itemId : (Set)locations.getValue()) {
 	                Location loc = (Location) itemId;
+	                System.out.println(loc);
 	                Item item = indexContainer.addItem(itemId);
 	                item.getItemProperty("Location Type").setValue(loc.getLtype());
 	                item.getItemProperty("Location Name").setValue(loc.getLname());

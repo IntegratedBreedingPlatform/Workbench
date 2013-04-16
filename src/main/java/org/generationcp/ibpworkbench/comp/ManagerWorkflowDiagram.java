@@ -15,6 +15,8 @@ package org.generationcp.ibpworkbench.comp;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
@@ -525,7 +527,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
-            membersButton.addListener(new OpenWindowAction(WindowEnum.MEMBER, this.project));
+            membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
             backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             

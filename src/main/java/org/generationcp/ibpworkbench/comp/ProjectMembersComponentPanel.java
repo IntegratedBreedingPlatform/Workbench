@@ -557,7 +557,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                     }
 
                     // Set checked boxes based on inherited roles
-                   
+                  
+                    /*
+                     *  NO inherited roles for now
                     for (Role inheritedRole : inheritedRoles) {
                         String propertyId = "role_" + inheritedRole.getRoleId();
                         Property property = currentItem.getItemProperty(propertyId);
@@ -565,7 +567,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                             property.setValue(Boolean.TRUE);
 
                     }
-                
+                     */
                 
                 requestRepaintAll();
                     
