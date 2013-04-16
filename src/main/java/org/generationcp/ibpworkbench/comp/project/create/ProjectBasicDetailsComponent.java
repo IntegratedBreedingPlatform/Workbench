@@ -106,12 +106,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
         cropTypeCombo = createCropTypeComboBox();
         
-        gridLayout.addComponent(new Label("Project Name"), 1, 1);
-        gridLayout.addComponent(projectNameField, 2, 1);
-        gridLayout.addComponent(new Label("Start Date"), 1, 2);
-        gridLayout.addComponent(startDateField, 2, 2);
-        gridLayout.addComponent(new Label("Crop"), 1, 3);
-        gridLayout.addComponent(cropTypeCombo, 2, 3);
+        gridLayout.addComponent(new Label("Crop"), 1, 1);
+        gridLayout.addComponent(cropTypeCombo, 2, 1);
+        gridLayout.addComponent(new Label("Project Name"), 1, 2);
+        gridLayout.addComponent(projectNameField, 2, 2);
+        gridLayout.addComponent(new Label("Start Date"), 1, 3);
+        gridLayout.addComponent(startDateField, 2, 3);
+        
 
         addComponent(gridLayout);
         
