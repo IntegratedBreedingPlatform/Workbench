@@ -10,3 +10,4 @@ workbench.port=3306
 workbench.dbname=workbench
 workbench.username=root
 workbench.password=fs0123456
+workbench.mysqlDumpPath=infrastructure/mysql/bin/mysqldump.exe

@@ -12,30 +12,33 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
+public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
+	
 	private Window sourceWindow;
 	//private Select select;
 	private Table table;
+	
 	
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
 	
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-	private MySQLUtil dbUtil;
-	private Project project;
+	
+    @Autowired
+    private MySQLUtil mysqlUtil;
+	
+    private Project project;
 	private static final String BACKUP_DIR = "backup";
 	
 	public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
@@ -43,20 +46,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 		this.table = table;
 		this.sourceWindow = sourceWindow;
 		this.project = project;
-		initDB();
 	}
-	
-	private void initDB() {
-    	dbUtil = new MySQLUtil();
-    	    	
-    	dbUtil.setMysqlDumpPath("C:/IBWorkflowSystem/infrastructure/mysql/bin/mysqldump.exe");
-    	dbUtil.setBackupDir(BACKUP_DIR );
-    	dbUtil.setMysqlDriver("com.mysql.jdbc.Driver");
-        dbUtil.setMysqlHost("localhost");
-        dbUtil.setMysqlPort(13306);
-        dbUtil.setUsername("root");
-	}
-	
+		
 	@Override
 	public void onClose(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
@@ -67,7 +58,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 			try {
 				ProjectBackup pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
 			
-				dbUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
+				mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
 				
 				MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 				
@@ -79,6 +70,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener {
 				sourceWindow.showNotification("No project backup is selected");
 			}		
 		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		mysqlUtil.setBackupDir(BACKUP_DIR);
 	}
 
 }

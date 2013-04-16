@@ -2,16 +2,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.generationcp.commons.util.MySQLUtil;
-import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
@@ -21,21 +13,13 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.stereotype.Component;
-
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
+public class BackupIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
 
 	private static final String BACKUP_DIR = "backup";
@@ -50,8 +34,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 
 	private ProjectBackup projectBackup;
 
-	//TODO AUTOWIRE this
-	private MySQLUtil dbUtil;
+	@Autowired
+	private MySQLUtil mysqlUtil;
 
 	private Project selectedProject;
 
@@ -59,23 +43,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
     	this.sourceWindow = window;
     	this.selectedProject = project;
     	// for now, manually init MySQLUtil
-    	initDB();	
     }
 
-	private void initDB() {
-    	dbUtil = new MySQLUtil();
-    	
-    	File saveDir = new File(BACKUP_DIR);
-    	if (!saveDir.exists() || !saveDir.isDirectory())
-    		saveDir.mkdirs();
-    	
-    	dbUtil.setMysqlDumpPath("C:/IBWorkflowSystem/infrastructure/mysql/bin/mysqldump.exe");
-    	dbUtil.setBackupDir(BACKUP_DIR);
-    	dbUtil.setMysqlDriver("com.mysql.jdbc.Driver");
-        dbUtil.setMysqlHost("localhost");
-        dbUtil.setMysqlPort(13306);
-        dbUtil.setUsername("root");
-	}
 
 	@Override
 	public void onClose(ConfirmDialog dialog) {
@@ -89,7 +58,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 			
 	        try {
         		// Attempt backup, store absolutepath to projectBackup bean
-				projectBackup.setBackupPath(dbUtil.backupDatabase(selectedProject.getLocalDbName()).getAbsolutePath());
+				projectBackup.setBackupPath(mysqlUtil.backupDatabase(selectedProject.getLocalDbName()).getAbsolutePath());
 				
 				// save result to DB
 				workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
@@ -109,5 +78,16 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener {
 				MessageNotifier.showError(sourceWindow, "Error saving to database",e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+    	File saveDir = new File(BACKUP_DIR);
+    	if (!saveDir.exists() || !saveDir.isDirectory())
+    		saveDir.mkdirs();
+    	
+    	mysqlUtil.setBackupDir(BACKUP_DIR);
+    	
+    	LOG.debug("dumppath: " + new File(mysqlUtil.getMysqlDumpPath()).getAbsolutePath() );
 	}
 }

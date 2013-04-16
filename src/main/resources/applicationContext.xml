@@ -85,6 +85,15 @@
         <constructor-arg ref="hibernateSessionProvider" />
     </bean>
 
+	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
+        <property name="mysqlDriver" value="${workbench.driver}"/>
+        <property name="mysqlHost" value="${workbench.host}"/>
+        <property name="mysqlPort" value="${workbench.port}"/>
+        <property name="username" value="${workbench.username}"/>
+        <property name="password" value="${workbench.password}"/>
+        <property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}"/>
+    </bean>
+
     <bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
         <property name="jdbcHost"           value="${workbench.host}"/>
         <property name="jdbcPort"           value="${workbench.port}"/>
