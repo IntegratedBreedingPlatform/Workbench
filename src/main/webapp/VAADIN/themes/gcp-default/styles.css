@@ -11,6 +11,19 @@
     font-size: 24px;
 }
 
+.gcp-window-title H1 {
+    font-weight: bold;
+    font-size: 24px;
+    display: inline; 
+}
+
+.gcp-window-title H2 {
+    font-weight: bold;
+    font-size: 18px;
+    display: inline; 
+}
+
+
 .gcp-content-title {
     font-weight: bold;
     font-size: 16px;

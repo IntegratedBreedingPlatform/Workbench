@@ -339,14 +339,17 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     public void addTitle(String myTitle)
     {
-    	 String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION+ " " + myTitle;
+    	 String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> : <h1>" + myTitle+"</h1>";
          workbenchTitle.setValue(title);
+         workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+
     }
     @Override
     public void updateLabels() {
-        String title = messageSource.getMessage(Message.WORKBENCH_TITLE) + " " + VERSION;
+        String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
         workbenchTitle.setValue(title);
-        
+        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+
         messageSource.setCaption(homeButton, Message.HOME);
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
         messageSource.setCaption(accountButton, Message.ACCOUNT);
