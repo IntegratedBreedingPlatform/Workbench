@@ -485,10 +485,12 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     		
     		this.setCaption("Breeding Method Details");
     		
-    		this.setResizable(true);
+    		this.setResizable(false);
+    		this.setScrollable(true);
     		this.setDraggable(true);
     		this.setWidth("400px");
-    		this.setHeight("200px");
+    		this.setHeight("250px");
+
     		
     		setContent(main);
     	}
