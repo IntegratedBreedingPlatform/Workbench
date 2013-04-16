@@ -1,9 +1,19 @@
 package org.generationcp.ibpworkbench.comp.common;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
+
+import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
+import org.generationcp.middleware.pojos.workbench.ProjectBackup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Indexed;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Alignment;
@@ -25,6 +35,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author Glenn Marintes
  */
 public class TwoColumnSelect extends HorizontalLayout {
+	private static final Logger LOG = LoggerFactory.getLogger(TwoColumnSelect.class);
     private static final long serialVersionUID = 1L;
     
     private ListSelect leftSelect;
@@ -150,6 +161,9 @@ public class TwoColumnSelect extends HorizontalLayout {
     }
 
     public Object getValue() {
+        // select all items in the right pane
+        rightSelect.setValue(rightSelect.getItemIds());
+        
         return rightSelect.getValue();
     }
 
