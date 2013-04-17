@@ -373,7 +373,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         if (existingProjectLocations.size() > 0) {
             for (Location location : existingProjectLocations) {
                 selectLocation.select(location);
-                selectLocation.getRightSelect().setItemCaption(location,location.getLname());
+                selectLocation.setItemCaption(location,location.getLname());
                 selectLocation.setValue(location);
             }
         }
