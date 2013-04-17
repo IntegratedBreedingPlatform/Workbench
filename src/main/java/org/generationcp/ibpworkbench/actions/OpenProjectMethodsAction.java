@@ -52,6 +52,9 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
     private Project project;
     private Role role;
     
+    public OpenProjectMethodsAction() {
+      
+    }
     public OpenProjectMethodsAction(Project project, Role role) {
         this.project = project;
         this.role = role;

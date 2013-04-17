@@ -53,12 +53,12 @@
     <view path="/ProjectLocation"
           label="Project Locations"
           level="2"
-          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          class="org.generationcp.ibpworkbench.actions.OpenProjectLocationAction" />
     
     <view path="/ProjectMethods"
           label="Project Methods"
           level="2"
-          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          class="org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction" />
     
     <view path="/ProjectMembers"
           label="Project Members"
