@@ -80,7 +80,6 @@ public class SaveNewProjectAction implements ClickListener{
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     private Project projectSaved;
-    private ManagerFactory managerFactory;
     
     public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
@@ -149,8 +148,7 @@ public class SaveNewProjectAction implements ClickListener{
                 User user = currentUser.copy();
 
                 try {
-
-                    managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+                    ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
                     
                     // create the project's local person and user data
                     Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
@@ -189,7 +187,7 @@ public class SaveNewProjectAction implements ClickListener{
 
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-                        saveProjectMembers(projectMembers, projectSaved);
+                        saveProjectMembers(managerFactory, projectMembers, projectSaved);
                     }
 
                 } catch (MiddlewareQueryException e) {
@@ -279,7 +277,7 @@ public class SaveNewProjectAction implements ClickListener{
     }
 
     @SuppressWarnings("unused")
-    private void saveProjectMethods(Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
+    private void saveProjectMethods(ManagerFactory managerFactory, Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
 
         List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
         int mID = 0;
@@ -301,7 +299,7 @@ public class SaveNewProjectAction implements ClickListener{
     }
 
     @SuppressWarnings("unused")
-    private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
+    private void saveProjectLocation(ManagerFactory managerFactory, Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
 
         List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();
         long locID=0;
@@ -347,7 +345,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     }
 
-    private void saveProjectMembers(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+    private void saveProjectMembers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
         
         UserDataManager userDataManager = managerFactory.getUserDataManager();
         Map<Integer,String> usersAccountedFor = new HashMap<Integer, String>();

@@ -72,7 +72,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
     @Override
     public void buttonClick(ClickEvent event) {
-        
         Project project = selectDatasetForBreedingViewWindow.getCurrentProject();
         
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
@@ -86,85 +85,75 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         Integer representationId = selectDatasetForBreedingViewWindow.getCurrentRepresentationId();
         String datasetName = selectDatasetForBreedingViewWindow.getCurrentDatasetName();
         
-        List<Factor> factorsInDataset = new ArrayList<Factor>();
-        
-        if (selectDatasetForBreedingViewWindow.getCurrentStudy() != null) {
-            
-            if (studyId != null 
-                    && studyName != null
-                    && representationId != null 
-                    && datasetName != null) {
-
-                try {
-                    factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
-                } catch(MiddlewareQueryException e){
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-                }
-                
-                String breedingViewProjectName;
-                String defaultFilePath = "";
-                String inputDir = "";
-
-
-                DatasetExporter datasetExporter = new DatasetExporter(studyDataManager, traitDataManager, 
-                        studyId, 
-                        representationId);
-                
-                try {
-                    
-                    Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-                    LOG.info(breedingViewTool + "");
-                    
-                    inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
-                    
-                    LOG.info("Input Directory: " + inputDir);
-                    
-                    breedingViewProjectName = project.getProjectName().trim() + "_" + representationId + "_" + datasetName.trim();
-                    
-                    defaultFilePath = File.separator + breedingViewProjectName;
-                    
-                    LOG.info("Default File Path: " + defaultFilePath);
-                    
-                    String sourceXLSFilePath = inputDir + defaultFilePath + ".xls";
-                    
-                    LOG.info("Source XLS File Path: " + sourceXLSFilePath);
-                    
-                    datasetExporter.exportToFieldBookExcel(sourceXLSFilePath);
-                    
-                    String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 
-                    
-                    LOG.info("Destination XML File Path: " + destXMLFilePath);
-                    
-                    BreedingViewInput breedingViewInput = new BreedingViewInput(project
-                            , breedingViewProjectName
-                            , representationId
-                            , breedingViewTool.getVersion()
-                            , sourceXLSFilePath
-                            , destXMLFilePath
-                            , ProjectType.FIELD_TRIAL.getName());
-                    
-                    event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
-                            , project));
-                    event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
-    
-                } catch (DatasetExporterException e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-                } catch (MiddlewareQueryException e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-                }
-            
-            } else {
-                
-                event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
-                
-            }
-
-
-        } else {
-          
+        // study is required
+        if (selectDatasetForBreedingViewWindow.getCurrentStudy() == null) {
             event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
-            
+            return;
         }
+        
+        // data set is required
+        if (studyId == null 
+            || studyName == null
+            || representationId == null 
+            || datasetName == null) {
+            event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            List<Factor> factorsInDataset = new ArrayList<Factor>();
+            factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
 
+            String breedingViewProjectName;
+            String defaultFilePath = "";
+            String inputDir = "";
+
+
+            DatasetExporter datasetExporter = new DatasetExporter(studyDataManager, traitDataManager, 
+                                                                  studyId, 
+                                                                  representationId);
+
+            Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+            LOG.info(breedingViewTool + "");
+
+            inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
+
+            LOG.info("Input Directory: " + inputDir);
+
+            breedingViewProjectName = project.getProjectName().trim() + "_" + representationId + "_" + datasetName.trim();
+
+            defaultFilePath = File.separator + breedingViewProjectName;
+
+            LOG.info("Default File Path: " + defaultFilePath);
+
+            String sourceXLSFilePath = inputDir + defaultFilePath + ".xls";
+
+            LOG.info("Source XLS File Path: " + sourceXLSFilePath);
+
+            datasetExporter.exportToFieldBookExcel(sourceXLSFilePath);
+
+            String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 
+
+            LOG.info("Destination XML File Path: " + destXMLFilePath);
+
+            BreedingViewInput breedingViewInput = new BreedingViewInput(project
+                                                                        , breedingViewProjectName
+                                                                        , representationId
+                                                                        , breedingViewTool.getVersion()
+                                                                        , sourceXLSFilePath
+                                                                        , destXMLFilePath
+                                                                        , ProjectType.FIELD_TRIAL.getName());
+
+            event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
+                                                                                                          , project));
+            event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
+
+        }
+        catch (DatasetExporterException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+        }
+        catch (MiddlewareQueryException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+        }
     }
 }

@@ -49,9 +49,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
@@ -63,14 +61,13 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.ResizeEvent;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
  *  
  */
 @Configurable
-public class ProjectBreedingMethodsPanel extends VerticalLayout implements InitializingBean{
+public class ProjectBreedingMethodsPanel extends VerticalLayout implements InitializingBean {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(ProjectBreedingMethodsPanel.class);
@@ -96,9 +93,10 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    private ManagerFactory managerFactory;
 	
 	private Window bmPopupWindow;
-	private Method currentMethod;
 
 	private ProjectBreedingMethodsPanel thisInstance;
 	
@@ -129,9 +127,11 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+        
         assemble();
     }
-
+    
     protected void assemble() throws MiddlewareQueryException {
         initializeComponents();
         initializeValues();
@@ -167,8 +167,9 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         
         selectMethods.getLeftSelect().setImmediate(true);
         selectMethods.getLeftSelect().addListener(new Property.ValueChangeListener() {
+            private static final long serialVersionUID = 1L;
 
-			@Override
+            @Override
 			public void valueChange(ValueChangeEvent event) {
 				ProjectBreedingMethodsPanel.LOG.debug("ValueChangeEvent triggered");
 				
@@ -401,41 +402,35 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     
     
     private void populateExistingBreedingMethods() throws MiddlewareQueryException {
-
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
         Long projectId = project.getProjectId();
         List<Integer> projectMethodsIds = workbenchDataManager.getMethodIdsByProjectId(projectId, 0, (int) workbenchDataManager.countMethodIdsByProjectId(projectId));
-        		
+
 
         Set<Method> existingProjectMethods = new HashSet<Method>(); 
         for (Integer methodsId : projectMethodsIds){
             Method method = managerFactory.getGermplasmDataManager().getMethodByID(methodsId);
             if (method != null){
-            	existingProjectMethods.add(method);
-            	if(method.getMid() < 1){
-            		selectMethods.addItem(method);
-            		selectMethods.setItemCaption(method, method.getMname());
-            	}
+                existingProjectMethods.add(method);
+                if(method.getMid() < 1){
+                    selectMethods.addItem(method);
+                    selectMethods.setItemCaption(method, method.getMname());
+                }
             }
         }
-        
-        
+
+
         // Add existing project methods to selection
         if (existingProjectMethods.size() > 0) {
             for (Method method : existingProjectMethods) {
-            	selectMethods.select(method);
-            	selectMethods.setValue(method);
+                selectMethods.select(method);
+                selectMethods.setValue(method);
             }
         }
-
     }
     
     
-    @SuppressWarnings("unused")
     private void saveProjectMethods(Set<Method> methods, Project projectSaved) throws MiddlewareQueryException {
-
-    	
-        GermplasmDataManager germplasmDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 
         List<ProjectMethod> projectMethods = workbenchDataManager.getProjectMethodByProject(project, 0, (int) workbenchDataManager.countMethodIdsByProjectId(project.getProjectId()));
                
@@ -480,7 +475,9 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
     
     class ProjectBreedingMethodsPopup extends Window {
-    	private VerticalLayout main = new VerticalLayout();
+        private static final long serialVersionUID = 1L;
+        
+        private VerticalLayout main = new VerticalLayout();
     	
     	private ProjectBreedingMethodsPopup() {
     		main.setSpacing(true);

@@ -33,7 +33,6 @@ import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -47,7 +46,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
@@ -59,7 +57,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -69,7 +66,7 @@ import com.vaadin.ui.VerticalLayout;
  *  
  */
 @Configurable
-public class ProjectLocationPanel extends VerticalLayout implements InitializingBean{
+public class ProjectLocationPanel extends VerticalLayout implements InitializingBean {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationPanel.class);
@@ -95,13 +92,14 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     private Button btnFilterLocation;
     private TwoColumnSelect selectLocation;
     private CropType cropType;
-    private ManagerFactory managerFactory;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    private ManagerFactory managerFactory;
 
     public ProjectLocationPanel(Project project, Role role) {
         this.project = project;
@@ -134,9 +132,11 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+        
         assemble();
     }
-
+    
     protected void assemble() throws MiddlewareQueryException {
         initializeComponents();
         initializeValues();
@@ -150,6 +150,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         
         dataTable = new Table();
         dataTable.setWidth("690px");
+        dataTable.setHeight("150px");
     	dataTable.setImmediate(true);
         
         addComponent(layoutLocationArea());
@@ -175,9 +176,6 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         
         dataTable.setVisibleColumns(columnHeaders.toArray(new String[0]));
         dataTable.setColumnHeaders(columnHeaders.toArray(new String[0]));
-        
-        
-        
     }
 
     protected void initializeValues() throws MiddlewareQueryException {
@@ -200,41 +198,24 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     
     
     private class ChangeValueAction implements ValueChangeListener {
+        private static final long serialVersionUID = 1L;
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            Container indexContainer = dataTable.getContainerDataSource();
 
-		
-		
-		@Override
-		public void valueChange(ValueChangeEvent event) {
-			// TODO Auto-generated method stub\
-			Property prop = event.getProperty();
-			
-			ListSelect locations = (ListSelect) prop;
-			
-			
-			Container indexContainer = dataTable.getContainerDataSource();
+            indexContainer.removeAllItems();
+
+            @SuppressWarnings("unchecked")
+            Set<Location> locationSet = (Set<Location>) event.getProperty().getValue();
             
-			indexContainer.removeAllItems();
-            
-			for (Object itemId : (Set)locations.getValue()) {
-	                Location loc = (Location) itemId;
-	                System.out.println(loc);
-	                Item item = indexContainer.addItem(itemId);
-	                item.getItemProperty("Location Type").setValue(loc.getLtype());
-	                item.getItemProperty("Location Name").setValue(loc.getLname());
-	                item.getItemProperty("Location Abbreviation").setValue(loc.getLabbr());
-				}
-			
-	        requestRepaintAll();
-	   }
-		
-	
-
-	
+            for (Location location : locationSet) {
+                Item item = indexContainer.addItem(location);
+                item.getItemProperty("Location Type").setValue(location.getLtype());
+                item.getItemProperty("Location Name").setValue(location.getLname());
+                item.getItemProperty("Location Abbreviation").setValue(location.getLabbr());
+            }
+        }
     }
 
     protected Component layoutButtonArea() {
@@ -377,8 +358,6 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     }
 
     private void populateExistingProjectLocations() throws MiddlewareQueryException {
-
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
         Long projectId = project.getProjectId();
         List<Long> projectLocationIds = workbenchDataManager.getLocationIdsByProjectId(projectId, 0, (int) workbenchDataManager.countLocationIdsByProjectId(projectId));
 
@@ -389,7 +368,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
                 existingProjectLocations.add(location);
             }
         }
-        
+
         // Add existing project locations to selection
         if (existingProjectLocations.size() > 0) {
             for (Location location : existingProjectLocations) {
@@ -397,7 +376,6 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
                 selectLocation.setValue(location);
             }
         }
-
     }
 
     private Container createLocationsContainer(CropType cropType, Set<Location> selectedLocation) throws MiddlewareQueryException {
@@ -473,12 +451,11 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     }
 
     private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
-
-        GermplasmDataManager germplasmDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocations = workbenchDataManager.getProjectLocationMapByProjectId(
-                                                project.getProjectId(), 0, (int) workbenchDataManager.countLocationIdsByProjectId(project.getProjectId()));
+                                                                                                          project.getProjectId(), 0, (int) workbenchDataManager.countLocationIdsByProjectId(project.getProjectId()));
         for (ProjectLocationMap projectLocationMap : projectLocations){
             workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
         }

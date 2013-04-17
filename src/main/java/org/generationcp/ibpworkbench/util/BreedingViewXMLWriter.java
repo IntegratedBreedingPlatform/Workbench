@@ -50,7 +50,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     private ManagerFactoryProvider managerFactoryProvider;
     
     private BreedingViewInput breedingViewInput;
-    
+
     public BreedingViewXMLWriter(BreedingViewInput breedingViewInput) {
         
         this.breedingViewInput = breedingViewInput;
@@ -58,7 +58,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     }
     
     public void writeProjectXML() throws BreedingViewXMLWriterException{
-        
         LOG.info("This Ran!: " + breedingViewInput.toString());
         
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
@@ -71,9 +70,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
             variates = studyDataManager.getVariatesByRepresentationId(breedingViewInput.getDatasetId());
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting variates of dataset with id: " + breedingViewInput.getDatasetId()
-                    + ": " + ex.getMessage(), ex);
+                                                     + ": " + ex.getMessage(), ex);
         }
-        
+
         //create List of Trait XML elements from List of Variate objects
         List<Trait> traits = new ArrayList<Trait>();
         for(Variate variate : variates){
@@ -139,7 +138,5 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // TODO Auto-generated method stub
-        
     }
 }

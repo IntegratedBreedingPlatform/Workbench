@@ -82,7 +82,6 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Launched Project Locations", user, new Date());
-                System.out.println(projAct);
                 workbenchDataManager.addProjectActivity(projAct);
 
             } catch (MiddlewareQueryException e1) {

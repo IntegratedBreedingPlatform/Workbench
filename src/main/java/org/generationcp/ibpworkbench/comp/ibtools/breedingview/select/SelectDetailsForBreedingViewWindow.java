@@ -30,8 +30,6 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.TraitDataManager;
 import org.generationcp.middleware.pojos.CharacterLevel;
 import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.NumericLevel;
@@ -113,14 +111,14 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     //for mapping label ids with the key being the trait name of the factors identified by the ids
     private Map<String, Integer> labelIdsMap;
     
-    private StudyDataManager studyDataManager;
-    private TraitDataManager traitDataManager;
     private Project project;
     
     private AbsoluteLayout mainLayout;
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
+    
+    private ManagerFactory managerFactory;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -329,7 +327,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     private void populateFactorAndLabelIdsMap(){
         for(Factor factor : this.factorsInDataset){
             try{
-                Trait trait = this.traitDataManager.getTraitById(factor.getTraitId());
+                Trait trait = managerFactory.getTraitDataManager().getTraitById(factor.getTraitId());
                 if(trait != null){
                     String traitName = trait.getName().trim().toLowerCase();
                     
@@ -431,13 +429,13 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
             if(envFactor != null){
                 try{
                     if(envFactor.getDataType().equals("C")){
-                        List<CharacterLevel> levelsOfEnvFactor = this.studyDataManager.getCharacterLevelsByFactorAndDatasetId(envFactor
+                        List<CharacterLevel> levelsOfEnvFactor = managerFactory.getStudyDataManager().getCharacterLevelsByFactorAndDatasetId(envFactor
                                 , this.breedingViewInput.getDatasetId());
                         for(CharacterLevel level : levelsOfEnvFactor){
                             this.selEnvForAnalysis.addItem(level.getValue());
                         }
                     } else if(envFactor.getDataType().equals("N")){
-                        List<NumericLevel> levelsOfEnvFactor = this.studyDataManager.getNumericLevelsByFactorAndDatasetId(envFactor
+                        List<NumericLevel> levelsOfEnvFactor = managerFactory.getStudyDataManager().getNumericLevelsByFactorAndDatasetId(envFactor
                                 , this.breedingViewInput.getDatasetId());
                         for(NumericLevel level : levelsOfEnvFactor){
                             this.selEnvForAnalysis.addItem("" + level.getValue().intValue());
@@ -614,7 +612,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
             if(this.labelIdsMap.get(EXPERIMENTAL_DESIGN) != null){
                 Factor designFactor = getFactorByLabelId(this.labelIdsMap.get(EXPERIMENTAL_DESIGN));
                 
-                List<CharacterLevel> levelsForDesign = this.studyDataManager.getCharacterLevelsByFactorAndDatasetId(designFactor
+                List<CharacterLevel> levelsForDesign = managerFactory.getStudyDataManager().getCharacterLevelsByFactorAndDatasetId(designFactor
                         , this.breedingViewInput.getDatasetId());
                 
                 if(!levelsForDesign.isEmpty()){
@@ -696,10 +694,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     @Override
     public void afterPropertiesSet() {
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
-        
-        this.studyDataManager = managerFactory.getStudyDataManager();
-        this.traitDataManager = managerFactory.getTraitDataManager();
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
         
         assemble();
     }
@@ -710,7 +705,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         
         updateLabels();
     }
-
+    
     @Override
     public void updateLabels() {
         messageSource.setValue(lblVersion, Message.BV_VERSION);
