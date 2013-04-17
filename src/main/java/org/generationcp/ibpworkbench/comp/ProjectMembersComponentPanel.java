@@ -319,7 +319,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
              item.getItemProperty("userName").setValue(userTemp.getPerson().getDisplayName());
              item.getItemProperty("role_" + projrole.getRole().getRoleId()).setValue("true");
              //item.getItemProperty("")
-             setInheritedRoles(item);
+             List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, userTemp);
+             setInheritedRoles(item,projroles);
+             
              this.select.select(userTemp);
             
            
@@ -336,7 +338,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                Property property = event.getProperty();
+            try{   
+            	Property property = event.getProperty();
                 Set<User> selectedItems = (Set<User>) property.getValue();
                 System.out.println("valueChange");
                 Container container = tblMembers.getContainerDataSource();
@@ -362,11 +365,17 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                         item.getItemProperty("userId").setValue(1);
                         item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
                         //item.getItemProperty("")
-                        setInheritedRoles(item);
+                        List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, user);
+                        setInheritedRoles(item,projroles);
                       
                     }
                 }
                
+            
+            }catch(MiddlewareQueryException e)
+            {
+            	
+            }
             }
         }); 
     }
@@ -529,7 +538,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                 
         }
         
-        public void setInheritedRoles(Item currentItem){
+        public void setInheritedRoles(Item currentItem, List<Role> myinheritedRoles){
          //   inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
 
             if (tblMembers != null){
@@ -558,16 +567,16 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
                     // Set checked boxes based on inherited roles
                   
-                    /*
-                     *  NO inherited roles for now
-                    for (Role inheritedRole : inheritedRoles) {
+                    for (Role inheritedRole : myinheritedRoles) {
                         String propertyId = "role_" + inheritedRole.getRoleId();
+                        System.out.println("inheritedRole " + inheritedRole);
+                        System.out.println("currentItem " + currentItem);
                         Property property = currentItem.getItemProperty(propertyId);
                         if (property.getType() == Boolean.class)
                             property.setValue(Boolean.TRUE);
 
                     }
-                     */
+                
                 
                 requestRepaintAll();
                     

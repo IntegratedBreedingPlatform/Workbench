@@ -63,7 +63,7 @@
     <view path="/ProjectMembers"
           label="Project Members"
           level="2"
-          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
     
     <view path="/CreateProject"
           label="Create Project"
