@@ -11,3 +11,5 @@ workbench.dbname=workbench
 workbench.username=root
 workbench.password=fs0123456
 workbench.mysqlDumpPath=infrastructure/mysql/bin/mysqldump.exe
+#env settings
+web.api.url=http://localhost:18080/web/api/url.do

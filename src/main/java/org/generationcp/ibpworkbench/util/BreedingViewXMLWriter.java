@@ -27,16 +27,20 @@ import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.Fieldbook;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Variate;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @Configurable
@@ -48,7 +52,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
-    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    @Value("${web.api.url}")
+    private String webApiUrl;
+
     private BreedingViewInput breedingViewInput;
 
     public BreedingViewXMLWriter(BreedingViewInput breedingViewInput) {
@@ -99,7 +107,20 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         phenotypic.setColumns(breedingViewInput.getColumns());
         phenotypic.setGenotypes(breedingViewInput.getGenotypes());
         phenotypic.setFieldbook(fieldbook);
-        
+        phenotypic.setWebApiUrl(webApiUrl);
+
+        Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+        if(workbenchProject != null) {
+            phenotypic.setWorkbenchProjectId(workbenchProject.getProjectId());
+        }
+        try{
+            String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+            phenotypic.setOutputDirectory(installationDirectory);
+        } catch(MiddlewareQueryException ex){
+            throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
+                    + ": " + ex.getMessage(), ex);
+        }
+
         //create the ProjectType element
         BreedingViewProjectType projectTypeElem = new BreedingViewProjectType();
         projectTypeElem.setDesign(breedingViewInput.getDesignType());
