@@ -20,7 +20,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
-import org.generationcp.ibpworkbench.comp.window.BackupIBDBWindow;
+import org.generationcp.ibpworkbench.comp.window.GxeAnalysisWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -57,6 +57,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
+        ,BREEDING_GXE("breeding_gxe")
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
@@ -84,20 +85,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         	
         	return false;
 
-        	/*
-            if(WindowEnum.GERMPLASM_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.STUDY_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.GERMPLASM_LIST_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.GDMS.getwindowName().equals(windowName) 
-                    || WindowEnum.FIELDBOOK.getwindowName().equals(windowName) 
-                    || WindowEnum.OPTIMAS.getwindowName().equals(windowName) 
-                    || WindowEnum.BREEDING_MANAGER.getwindowName().equals(windowName) 
-                    || WindowEnum.BREEDING_VIEW.getwindowName().equals(windowName) 
-                    || WindowEnum.MEMBER.getwindowName().equals(windowName)
-                    ) {
-                return true;
-            }   return false;
-            */
+        	
         }
     }
 
@@ -173,7 +161,29 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	Window mywindow = null;
     	
     	
-    	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
+    	if(WindowEnum.BREEDING_GXE.getwindowName().equals(windowName) )
+    	{
+    		mywindow = new GxeAnalysisWindow(this.project);
+    		mywindow.setWidth("1000");
+    		
+    		
+    		window.addWindow(mywindow);
+    		
+    		 try {
+                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                 User user = app.getSessionData().getUserData();
+                 Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+
+                 workbenchDataManager.addProjectActivity(projAct);
+
+             } catch (MiddlewareQueryException e1) {
+                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                 return;
+             }
+    	} else if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
     		mywindow = new ProjectMemberWindow(this.project);
     		mywindow.setWidth("700");

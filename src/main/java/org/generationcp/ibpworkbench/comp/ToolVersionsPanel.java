@@ -1,6 +1,8 @@
 package org.generationcp.ibpworkbench.comp;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -11,6 +13,9 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Label;
@@ -51,14 +56,41 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
         BeanContainer<Long, Tool> toolContainer = new BeanContainer<Long, Tool>(Tool.class);
         toolContainer.setBeanIdProperty("toolId");
         
+        String[] propertyNames = new String[] {"mysql","flapjack","jre","tomcat","r"};
+        
         try {
+        	
+        	Resource resource = new ClassPathResource("/workbench_tools.properties");
+            Properties props = PropertiesLoaderUtils.loadProperties(resource);
+        	Long toolId = 0L;
             List<Tool> tools = workbenchDataManager.getAllTools();
             for (Tool tool : tools) {
                 toolContainer.addBean(tool);
+                System.out.println(tool);
+                toolId++;
             }
+            
+            for(String name: propertyNames)
+            {
+            	 toolId++;
+            	 Tool t = new Tool();
+                 t.setToolName(props.getProperty("tool_name."+name));
+                 t.setVersion(props.getProperty("tool_version."+name));
+                 t.setParameter(props.getProperty("tool_name."+name));
+                 t.setPath(props.getProperty("tool_name."+name));
+                 t.setToolId(toolId);
+                 t.setTitle(props.getProperty("tool_name."+name));
+                 System.out.println(props.getProperty("tool_name."+name) + " : " + props.getProperty("tool_version."+name));
+                 System.out.println(t);
+                 toolContainer.addBean(t);
+            }
+           
         }
         catch (MiddlewareQueryException e) {
             e.printStackTrace();
+        }
+        catch (IOException ioe) {
+        	ioe.printStackTrace();
         }
         
         tblTools.setContainerDataSource(toolContainer);
