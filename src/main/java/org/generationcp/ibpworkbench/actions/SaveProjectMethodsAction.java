@@ -13,7 +13,9 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -21,6 +23,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -39,6 +42,9 @@ public class SaveProjectMethodsAction implements ClickListener, ActionListener{
     private static final long serialVersionUID = 1L;
 
 	private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
+	
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public SaveProjectMethodsAction(ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
         this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;
@@ -63,6 +69,8 @@ public class SaveProjectMethodsAction implements ClickListener, ActionListener{
 
             String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
             (new OpenWorkflowForRoleAction(projectBreedingMethodsPanel.getProject())).doAction(window, url, isLinkAccessed);
+            
+            MessageNotifier.showMessage(window,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
         } catch (Exception e) {
             LOG.error("Exception", e);
             if (e.getCause() instanceof InternationalizableException) {

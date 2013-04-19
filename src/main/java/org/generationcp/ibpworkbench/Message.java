@@ -213,6 +213,7 @@ public enum Message {
     ,SAVE_CHANGES
     ,SUCCESS
     ,METHODS_ADD_NEW
+    ,METHODS_SUCCESSFULLY_CONFIGURED
     
     // Backup + Restore IBDB
     ,BACKUP_IBDB_WINDOW_CAPTION
