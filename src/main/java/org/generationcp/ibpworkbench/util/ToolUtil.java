@@ -215,6 +215,13 @@ public class ToolUtil {
 			}
 		}
 
+		if (Util.isOneOf(tool.getToolName(),ToolName.fieldbook.name())) {
+			File configFile = new File("core.properties");
+			
+			
+			
+		}
+		
 		
 		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name(),
 				ToolName.breeding_manager.name())) {

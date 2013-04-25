@@ -75,6 +75,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         methodCode.setRequired(true);
         methodCode.setRequiredError("Please enter a Breeding Method Code.");
         methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
+        methodCode.setWidth("60px");
         
 
     }

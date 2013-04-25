@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ConversionException;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
@@ -53,11 +55,13 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	private Button cancelBtn;
 	private ListSelect userToolsListSelect;
 	
+	private Window thisWindow;
+	
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
-	private static final String WIDTH = "700px";
+	private static final String WIDTH = "800px";
 	private static final String HEIGHT = "320px";
     
     @Autowired
@@ -82,7 +86,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	private void initializeActions() {
-		final Window thisWindow = this;
 		addBtn.addListener(new Button.ClickListener() {
 
 			@Override
@@ -185,10 +188,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	private void initializeComponents() {
-
+		if (thisWindow == null)
+			thisWindow = this;
+		
 		userToolsForm = new Form();
-		userToolsForm.setWidth("250px");
-		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory());
+		userToolsForm.setWidth("350px");
+		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory(thisWindow));
 		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
 		
 		addBtn = new Button(messageSource.getMessage(Message.ADD));
@@ -215,7 +220,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		private TextField parameterFld;
 		private ServerFilePicker filePicker;
 
-		public UserToolsFormFieldFactory() {
+		public UserToolsFormFieldFactory(Window parentWindow) {
 			//TODO: replace with internationalized messages
 			nameFld = new TextField("Name");			
 			titleFld = new TextField("Title");
@@ -233,7 +238,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			// init validators here
 			//pathFld.addValidator(this.initPathValidator());
 		
-			filePicker = new ServerFilePicker();
+			filePicker = new ServerFilePicker(parentWindow);
+			filePicker.setCaption("Path");
 		}
 		
 		@Override
@@ -266,42 +272,53 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	
 	// TODO: Refactor this later into a reusable component
 	class ServerFilePicker extends CustomField {
+		private HorizontalLayout root;
 		private TextField pathFld;
 		private Button browseBtn;
 		private Window pickerWindow;
 		private Label pathLbl;
 		private FilesystemContainer fsContainer;
 		private TreeTable treetable;
+		private Window parentWin;
 		
-		public ServerFilePicker() {
-			final Label label = new Label("Path:");
-			pathFld = new TextField("Path");
+		public ServerFilePicker(Window parentWindow) {
+			this.parentWin = parentWindow;
+			
+			root = new HorizontalLayout();
+			
+			this.setCompositionRoot(root);
+			
+			pathFld = new TextField();
+			pathLbl = new Label();
 			browseBtn = new Button("Browse");
+			pathFld.setNullRepresentation("");
 		
-			this.addComponent(label);
-			this.addComponent(pathFld);
-			this.addComponent(browseBtn);
+			root.addComponent(pathFld);
+			root.addComponent(browseBtn);
 			
 			initPicker();
 			
-			final Component thisPanel = this;
-			
+			this.setPropertyDataSource(pathFld.getPropertyDataSource());
+				
 			browseBtn.addListener(new Button.ClickListener() {
 				
 				@Override
 				public void buttonClick(ClickEvent event) {
-					thisPanel.getWindow().addWindow(pickerWindow);
+					
+					LOG.debug("pause here");
+					
+					
+					//parentWin.addWindow(pickerWindow);
+					parentWin.getParent().addWindow(pickerWindow);
 				}
 			});
-			
-			this.pathLbl = new Label();
 		}
 		
 		private void initPicker() {
 			pickerWindow = new Window("Select an executable file");
 			pickerWindow.setWidth("500px");
 			pickerWindow.setHeight("300px");
-			pickerWindow.setModal(true);
+			//pickerWindow.setModal(true);
 			
 			final HorizontalLayout hl = new HorizontalLayout();
 			
@@ -310,7 +327,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			treetable = new TreeTable("Select an executable file");
 			
-			fsContainer = new FilesystemContainer(new File("C:\\IBWorkflowSystem\\tools"),new FilenameFilter() {
+			fsContainer = new FilesystemContainer(new File("tools"),new FilenameFilter() {
 				
 				@Override
 				public boolean accept(File dir, String name) {
@@ -375,6 +392,30 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			// TODO Auto-generated method stub
 			return pathFld.getType();
 		}
+
+		@Override
+		public Object getValue() {
+			// TODO Auto-generated method stub
+			return super.getValue();
+		}
+
+		@Override
+		public void setValue(Object newValue) throws ReadOnlyException,
+				ConversionException {
+			super.setValue(newValue);
+			pathFld.setValue(newValue);
+		}
+
+		@Override
+		protected void setInternalValue(Object newValue) {
+			// TODO Auto-generated method stub
+			super.setInternalValue(newValue);
+			pathFld.setValue(newValue);
+		}
+		
+		
+		
+		
 		
 	}
 	
