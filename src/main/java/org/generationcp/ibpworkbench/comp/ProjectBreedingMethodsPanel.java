@@ -334,10 +334,14 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
          return methodsLayout;
 
     }
-    
+    public ManagerFactory getManagerFactory()
+    {
+    	return managerFactory;
+    }
     private Container createMethodsContainer(CropType cropType, Set<Method> selectedMethod) throws MiddlewareQueryException {
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-       
+       // ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+    	 ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+         
         
         beanItemContainer = new BeanItemContainer<Method>(Method.class);
         if (managerFactory == null) {

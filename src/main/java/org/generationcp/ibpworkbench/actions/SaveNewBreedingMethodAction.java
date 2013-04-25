@@ -11,14 +11,20 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Date;
+
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
@@ -43,6 +49,9 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     
     private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
 
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+    
     public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
@@ -93,7 +102,27 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMcode(newBreedingMethod.getMethodCode());
             newMethod.setMgrp(newBreedingMethod.getMethodGroup());
             newMethod.setMtype(newBreedingMethod.getMethodType());
-             
+            newMethod.setUser(app.getSessionData().getUserData().getUserid());
+            newMethod.setLmid(newBreedingMethod.getMethodId());
+            newMethod.setGeneq(newBreedingMethod.getMethodId());
+            newMethod.setMattr(0);
+            newMethod.setMprgn(0);
+            newMethod.setReference(0);
+            Date d = new Date();
+            
+            newMethod.setMdate(d.getDate());
+            newMethod.setMfprg(0);
+            
+            ManagerFactory managerFactory = projectBreedingMethodsPanel.getManagerFactory();
+            
+            try {
+            	 managerFactory.getGermplasmDataManager().addMethod(newMethod);
+            	
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
             projectBreedingMethodsPanel.getSelect().addItem(newMethod);
             projectBreedingMethodsPanel.getSelect().setItemCaption(newMethod, newMethod.getMname());
             projectBreedingMethodsPanel.getSelect().select(newMethod);
