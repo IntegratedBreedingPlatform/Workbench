@@ -441,6 +441,11 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         for (ProjectMethod projectMethod : projectMethods){
             workbenchDataManager.deleteProjectMethod(projectMethod);
         }
+        //delete all method first in the local database
+        List<Method> methodsList = germplasmDataManager.getAllMethods();
+        for (Method method : methodsList){
+            germplasmDataManager.deleteMethod(method);
+        }
 
         List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
         int mID = 0;
@@ -448,7 +453,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
             ProjectMethod projectMethod = new ProjectMethod();
             if(m.getMid() < 1){
                 //save the added  method to the local database created
-            	Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,0);
+                Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,0);
                 mID = germplasmDataManager.addMethod(newMethod);
             }else{
                 mID=m.getMid();
