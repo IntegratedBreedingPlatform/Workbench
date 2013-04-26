@@ -389,17 +389,14 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     public boolean validateAndSave() {
 
         if (validate()) { // save if valid
-        	  Set<Method> methods = (Set<Method>) selectMethods.getValue();
+        	Set<Method> methods = (Set<Method>) selectMethods.getValue();
             //Save project
-            if ((methods != null) && (!methods.isEmpty())) {
-                try {
-                	saveProjectMethods(methods, project);
-                } catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while saving project locations", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
+            try {
+                saveProjectMethods(methods, project);
+            } catch (MiddlewareQueryException e) {
+                LOG.error("Error encountered while saving project locations", e);
+                throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
             }
-
         }
         return true; 
     }
