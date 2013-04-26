@@ -14,9 +14,14 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.poi.util.IOUtils;
 import org.generationcp.commons.util.StringUtil;
@@ -45,6 +50,9 @@ public class ToolUtil {
 
 	private String workspaceDirectory = "workspace";
 
+	public static String APPDATA_ENV = System.getenv("APPDATA");
+	public static String WORKBENCH_R_DIR = "infrastructure/R";
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -215,16 +223,23 @@ public class ToolUtil {
 			}
 		}
 
-		if (Util.isOneOf(tool.getToolName(),ToolName.fieldbook.name())) {
-			File configFile = new File("core.properties");
-			
-			
-			
-		}
-		
 		
 		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name(),
 				ToolName.breeding_manager.name())) {
+			
+			// save the location of R_PATH to "infrastracture/R" in the core.properties file
+			File configFile = new File( APPDATA_ENV +  "/.ibfb/dev/config/Preferences/ibfb/settings/core.properties").getAbsoluteFile();
+			File rDir = new File(WORKBENCH_R_DIR).getAbsoluteFile();
+			
+			Properties p = new Properties();
+			FileInputStream fs = new FileInputStream(configFile);				
+			p.load(fs);
+			fs.close();
+			p.setProperty("R_PATH",rDir.getCanonicalPath());
+			this.savePropertyFile(p, configFile.getAbsolutePath());
+			
+			
+			// Update databaseconfig.properties
 			File configurationFile = new File("tools/" + tool.getToolName()
 					+ "/IBFb/ibfb/modules/ext/databaseconfig.properties")
 					.getAbsoluteFile();
@@ -457,5 +472,24 @@ public class ToolUtil {
 		File toolDir = new File(projectDir, tool.getToolName());
 
 		return new File(toolDir, "input").getAbsolutePath();
+	}
+	
+	/**
+	 * Use this instead of the {@link Properties Properties.}{@link Properties#store(java.io.OutputStream, String) store(...)} method as this method does not escape the colon <b>:</b> character
+	 * 
+	 * @param props
+	 * @param propertyFilePath
+	 * @throws FileNotFoundException
+	 */
+	public void savePropertyFile(Properties props, String propertyFilePath)
+	        throws FileNotFoundException {
+
+	    PrintWriter pw = new PrintWriter(propertyFilePath);
+	    
+	    for (Enumeration<?> e = props.propertyNames(); e.hasMoreElements();) {
+	        String key = (String)e.nextElement();
+	        pw.println(key + "=" + props.getProperty(key).replace("\\","\\\\"));
+	    }
+	    pw.close();
 	}
 }
