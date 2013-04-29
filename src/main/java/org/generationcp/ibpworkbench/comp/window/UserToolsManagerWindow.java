@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.comp.window;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilesystemContainer;
@@ -59,8 +62,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
     private SimpleResourceBundleMessageSource messageSource;
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
-	private static final String WIDTH = "760px";
-	private static final String HEIGHT = "340px";
+	private static final String WIDTH = "780px";
+	private static final String HEIGHT = "350px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -87,7 +90,13 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				userToolsForm.commit();
+				
+				try {
+					userToolsForm.commit();
+				} catch (InvalidValueException e) {
+					MessageNotifier.showError(thisWindow,"Form validation failed","One or more fields is invalid.");
+					return;
+				}
 				
 				LOG.debug(userToolFormData.toString());
 				
@@ -113,8 +122,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					MessageNotifier.showMessage(thisWindow,"Success",clone.getTitle() + " has been added");
 					
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					MessageNotifier.showError(thisWindow,"Fail","Cannot add to database, a user tool of the same tool name already exists.");
 				}
 			}
 		});
@@ -123,34 +131,49 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				userToolsForm.commit();
-
-				Tool selected = (Tool) userToolsListSelect.getValue();
-				//userToolsListContainer.removeItem(selected);
-				
-				selected.setToolId(userToolFormData.getToolId());
-				selected.setParameter(userToolFormData.getParameter());
-				selected.setPath(userToolFormData.getPath());
-				selected.setTitle(userToolFormData.getTitle());
-				selected.setToolName(userToolFormData.getToolName());
-				selected.setToolType(userToolFormData.getToolType());
-				selected.setUserTool(true);
-				selected.setVersion(userToolFormData.getVersion());
-				
-				userToolsListContainer.addItem(selected);
-				userToolsListSelect.setItemCaption(selected,userToolFormData.getTitle());
 
 				try {
+					userToolsForm.commit();
+				} catch (InvalidValueException e) {
+					MessageNotifier.showError(thisWindow,"Form validation failed","One or more fields is invalid.");
+					return;
+				}
+				
+				userToolsForm.commit();
+
+				try {
+					Tool selected = (Tool) userToolsListSelect.getValue();
+					//userToolsListContainer.removeItem(selected);
+
+					Collection<Tool> toolList = userToolsListContainer.getItemIds();
+					
+					for (Tool t : toolList) {
+						if (t.getToolName().equals(userToolFormData.getToolName()) && t.getToolId() != userToolFormData.getToolId()) {
+							MessageNotifier.showError(thisWindow,"Fail","Cannot modify user tool, a user tool of the same name already exists.");
+							return;
+						}
+					}
+					
+					
+					selected.setToolId(userToolFormData.getToolId());
+					selected.setParameter(userToolFormData.getParameter());
+					selected.setPath(userToolFormData.getPath());
+					selected.setTitle(userToolFormData.getTitle());
+					selected.setToolName(userToolFormData.getToolName());
+					selected.setToolType(userToolFormData.getToolType());
+					selected.setUserTool(true);
+					selected.setVersion(userToolFormData.getVersion());
+					
+					userToolsListContainer.addItem(selected);
+					userToolsListSelect.setItemCaption(selected,userToolFormData.getTitle());
+					
 					workbenchDataManager.getToolDao().update(selected);
 					
 					MessageNotifier.showMessage(thisWindow,"Success",selected.getTitle() + " has been modified");
-					
-					
+										
 				} catch (MiddlewareQueryException e) {
-					e.printStackTrace();
+					MessageNotifier.showError(thisWindow,"Fail","Cannot modify user tool.\n" + e.getMessage());
 				}
-				
-				
 			}
 		});
 		
@@ -276,7 +299,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		
 		
 		userToolsForm = new Form();
-		userToolsForm.setWidth("350px");
+		userToolsForm.setWidth("380px");
 		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory(thisWindow));
 		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
 		
@@ -309,10 +332,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			nameFld = new TextField("Name");
 			nameFld.setWidth("190px");
 			nameFld.setRequired(true);
+			nameFld.setRequiredError("Tool Name is Required.");
 			
 			titleFld = new TextField("Title");
 			titleFld.setWidth("190px");
 			titleFld.setRequired(true);
+			titleFld.setRequiredError("Title is Required.");
 			
 			parameterFld = new TextField("Parameter");
 			parameterFld.setWidth("190px");
@@ -323,6 +348,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			toolTypeFld = new NativeSelect("Tool Type",Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
 			toolTypeFld.setWidth("120px");
 			toolTypeFld.setRequired(true);
+			toolTypeFld.setRequiredError("Tool Type is Required.");			
 			
 			nameFld.setNullRepresentation("");
 			titleFld.setNullRepresentation("");
@@ -332,11 +358,46 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 			// init validators here
 			//pathFld.addValidator(this.initPathValidator());
-		
+			nameFld.addValidator(new Validator() {
+
+				@Override
+				public void validate(Object value) throws InvalidValueException {
+					if (!this.isValid(value))
+						throw new InvalidValueException("Only alphanumeric characters allowed, no spaces.");
+					
+				}
+
+				@Override
+				public boolean isValid(Object value) {
+					return value.toString().matches("^[a-zA-Z0-9\\-_]{0,40}$");
+				}});
+			
+			
 			filePicker = new ServerFilePicker(parentWindow);
 			filePicker.setCaption("Path");
 			filePicker.setWidth("190px");
+			filePicker.addValidator(new Validator() {
+				
+				@Override
+				public void validate(Object value) throws InvalidValueException {
+					if (!this.isValid(value))
+						throw new InvalidValueException("Invalid windows path or URL");
+				}
+				
+				@Override
+				public boolean isValid(Object value) {
+					
+					if (!value.toString().matches("^(?:[a-zA-Z]\\:(\\\\|\\/)|file\\:\\/\\/|\\\\\\\\|\\.(\\/|\\\\))([^\\\\\\/\\:\\*\\?\\<\\>\\\"\\|]+(\\\\|\\/){0,1})+$")) {
+						if (!value.toString().matches("^(https?|ftp|file)://.+$")) {
+							return false;
+						}
+					}
+					return true;
+				}
+			});
+			
 			filePicker.getPathField().setRequired(true);
+			filePicker.getPathField().setRequiredError("Tool Path is Required.");
 		}
 		
 		@Override
@@ -418,6 +479,24 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			});
 		}
 		
+		@Override
+		public void addValidator(Validator validator) {
+			//super.addValidator(validator);
+			this.getPathField().addValidator(validator);
+		}
+		
+		
+
+		@Override
+		public boolean isValid() {
+			return this.getPathField().isValid();
+		}
+
+		@Override
+		public void validate() throws InvalidValueException {
+			this.getPathField().validate();
+		}
+
 		private void initPicker() {
 			pickerWindow = new Window("Select an executable file");
 			pickerWindow.center();
@@ -435,6 +514,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			treetable = new TreeTable();
 			
+			//TODO: refactor this to make this more generic / reusable
 			fsContainer = new FilesystemContainer(new File("tools"),new FilenameFilter() {
 				
 				@Override
