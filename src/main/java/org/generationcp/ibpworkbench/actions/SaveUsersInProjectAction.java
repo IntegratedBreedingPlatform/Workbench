@@ -114,10 +114,8 @@ public class SaveUsersInProjectAction implements ClickListener{
      	   Container container = tblMembers.getContainerDataSource();
            Collection<User> userList = (Collection<User>) container.getItemIds();
             for (User u : userList){
-         	  System.out.println("Users: " + u.getUserid() + " | " + u.getPerson().getFirstName()); 
          	  if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(), u.getUserid()) == null) {
          		  ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),u.getUserid());
-         		  pUserInfo.setLastOpenDate(new Date());
          		  workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo); 
          	  }
             }

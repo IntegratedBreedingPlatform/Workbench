@@ -236,7 +236,6 @@ public class SaveNewProjectAction implements ClickListener{
                  		try {
 							if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(),  e.getKey())==null){
 								ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),  e.getKey());
-								pUserInfo.setLastOpenDate(new Date());
 								workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 							}
 						} catch (MiddlewareQueryException e1) {
