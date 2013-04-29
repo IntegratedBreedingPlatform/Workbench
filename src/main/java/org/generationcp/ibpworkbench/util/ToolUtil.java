@@ -147,7 +147,13 @@ public class ToolUtil {
 		}
 
 		Runtime runtime = Runtime.getRuntime();
-		return runtime.exec(absoluteToolFile.getAbsolutePath());
+		
+		String toolParam = "";
+		if (tool.getParameter() != null) {
+			toolParam = tool.getParameter();
+		}
+		
+		return runtime.exec(new String[]{absoluteToolFile.getAbsolutePath(),toolParam});
 	}
 
 	/**
