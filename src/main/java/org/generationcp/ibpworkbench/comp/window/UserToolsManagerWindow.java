@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.MessageSourceResolvable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -94,7 +95,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				try {
 					userToolsForm.commit();
 				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,"Form validation failed","One or more fields is invalid.");
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
+							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
 				
@@ -119,10 +121,10 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					userToolsListContainer.addItem(newTool);
 					userToolsListSelect.select(newTool);
 					
-					MessageNotifier.showMessage(thisWindow,"Success",clone.getTitle() + " has been added");
+					MessageNotifier.showMessage(thisWindow,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.USER_TOOLS_ADDED));
 					
 				} catch (MiddlewareQueryException e) {
-					MessageNotifier.showError(thisWindow,"Fail","Cannot add to database, a user tool of the same tool name already exists.");
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FAIL),messageSource.getMessage(Message.USER_TOOLS_ADD_EXISTS_ERROR));
 				}
 			}
 		});
@@ -135,7 +137,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				try {
 					userToolsForm.commit();
 				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,"Form validation failed","One or more fields is invalid.");
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
+							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
 				
@@ -149,7 +152,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					
 					for (Tool t : toolList) {
 						if (t.getToolName().equals(userToolFormData.getToolName()) && t.getToolId() != userToolFormData.getToolId()) {
-							MessageNotifier.showError(thisWindow,"Fail","Cannot modify user tool, a user tool of the same name already exists.");
+							MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FAIL),messageSource.getMessage(Message.USER_TOOLS_ADD_EXISTS_ERROR));
 							return;
 						}
 					}
@@ -169,10 +172,10 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					
 					workbenchDataManager.getToolDao().update(selected);
 					
-					MessageNotifier.showMessage(thisWindow,"Success",selected.getTitle() + " has been modified");
+					MessageNotifier.showMessage(thisWindow,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.USER_TOOLS_UPDATED));
 										
 				} catch (MiddlewareQueryException e) {
-					MessageNotifier.showError(thisWindow,"Fail","Cannot modify user tool.\n" + e.getMessage());
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FAIL),messageSource.getMessage(Message.USER_TOOLS_EDIT_EXISTS_ERROR));
 				}
 			}
 		});
@@ -329,26 +332,26 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 		public UserToolsFormFieldFactory(Window parentWindow) {
 			//TODO: replace with internationalized messages
-			nameFld = new TextField("Name");
+			nameFld = new TextField(messageSource.getMessage(Message.NAME));
 			nameFld.setWidth("190px");
 			nameFld.setRequired(true);
-			nameFld.setRequiredError("Tool Name is Required.");
+			nameFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_NAME_REQUIRED));
 			
-			titleFld = new TextField("Title");
+			titleFld = new TextField(messageSource.getMessage(Message.TITLE));
 			titleFld.setWidth("190px");
 			titleFld.setRequired(true);
-			titleFld.setRequiredError("Title is Required.");
+			titleFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_TITLE_REQUIRED));
 			
-			parameterFld = new TextField("Parameter");
+			parameterFld = new TextField(messageSource.getMessage(Message.PARAMETER));
 			parameterFld.setWidth("190px");
 			
-			versionFld = new TextField("Version");
+			versionFld = new TextField(messageSource.getMessage(Message.VERSION));
 			versionFld.setWidth("80px");
 			
-			toolTypeFld = new NativeSelect("Tool Type",Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
+			toolTypeFld = new NativeSelect(messageSource.getMessage(Message.TOOL_TYPE),Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
 			toolTypeFld.setWidth("120px");
 			toolTypeFld.setRequired(true);
-			toolTypeFld.setRequiredError("Tool Type is Required.");			
+			toolTypeFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_TYPE_REQUIRED));			
 			
 			nameFld.setNullRepresentation("");
 			titleFld.setNullRepresentation("");
@@ -363,7 +366,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				@Override
 				public void validate(Object value) throws InvalidValueException {
 					if (!this.isValid(value))
-						throw new InvalidValueException("Only alphanumeric characters allowed, no spaces.");
+						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_ALPHANUM_ONLY));
 					
 				}
 
@@ -374,14 +377,14 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			
 			filePicker = new ServerFilePicker(parentWindow);
-			filePicker.setCaption("Path");
+			filePicker.setCaption(messageSource.getMessage(Message.TOOL_PATH));
 			filePicker.setWidth("190px");
 			filePicker.addValidator(new Validator() {
 				
 				@Override
 				public void validate(Object value) throws InvalidValueException {
 					if (!this.isValid(value))
-						throw new InvalidValueException("Invalid windows path or URL");
+						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
 				}
 				
 				@Override
@@ -397,7 +400,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			});
 			
 			filePicker.getPathField().setRequired(true);
-			filePicker.getPathField().setRequiredError("Tool Path is Required.");
+			filePicker.getPathField().setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
 		}
 		
 		@Override
@@ -577,8 +580,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	        final HorizontalLayout btnPanel = new HorizontalLayout();
 			final Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
 
-			final Button selectBtn = new Button("Select");
-			final Button cancelSelectBtn = new Button("Cancel");
+			final Button selectBtn = new Button(messageSource.getMessage(Message.SELECT));
+			final Button cancelSelectBtn = new Button(messageSource.getMessage(Message.CANCEL));
 			
 			
 	        btnPanel.setWidth("100%");
