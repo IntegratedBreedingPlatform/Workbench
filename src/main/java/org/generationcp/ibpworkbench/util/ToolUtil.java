@@ -145,15 +145,14 @@ public class ToolUtil {
 		} catch (MiddlewareQueryException e) {
 			// intentionally empty
 		}
+		
+        Runtime runtime = Runtime.getRuntime();
 
-		Runtime runtime = Runtime.getRuntime();
-		
-		String toolParam = "";
-		if (tool.getParameter() != null) {
-			toolParam = tool.getParameter();
-		}
-		
-		return runtime.exec(new String[]{absoluteToolFile.getAbsolutePath(),toolParam});
+        String parameter = "";
+        if (!StringUtil.isEmpty(tool.getParameter())) {
+            parameter = tool.getParameter();
+        }
+        return runtime.exec(new String[] { absoluteToolFile.getAbsolutePath(), parameter });
 	}
 
 	/**
