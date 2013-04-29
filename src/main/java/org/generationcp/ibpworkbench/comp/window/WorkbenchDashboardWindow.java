@@ -40,6 +40,7 @@ import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
@@ -79,6 +80,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+	private Button userToolsButton;
+
     public WorkbenchDashboardWindow() {
     }
 
@@ -107,6 +110,10 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         accountButton.setStyleName(BaseTheme.BUTTON_LINK);
         accountButton.setSizeUndefined();
 
+        userToolsButton = new Button();
+        userToolsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        userToolsButton.setSizeUndefined();
+        
         toolVersionsButton = new Button();
         toolVersionsButton.setStyleName(BaseTheme.BUTTON_LINK);
         toolVersionsButton.setSizeUndefined();
@@ -195,11 +202,27 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     }
 
     protected void initializeActions() {
-        homeButton.addListener(new HomeAction());
+        final Window thisWindow = this;
+        
+    	homeButton.addListener(new HomeAction());
         signOutButton.addListener(new SignoutAction());
+        
+        Button.ClickListener userToolsClickListener = new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				thisWindow.addWindow(new UserToolsManagerWindow());
+			}
+		};
+        
+        userToolsButton.addListener (userToolsClickListener);
+        
         toolVersionsButton.addListener(new OpenToolVersionsAction());
         createProjectButton.addListener(new OpenNewProjectAction());
         createContactButton.addListener(new CreateContactAction());
+        
+        
+        
     }
 
     protected void assemble() throws Exception {
@@ -247,6 +270,12 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         headerRightLayout.addComponent(accountButton);
         headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
 
+        headerRightLayout.addComponent(new Label("|"));
+
+        headerRightLayout.addComponent(userToolsButton);
+        headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
+
+        
         headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(toolVersionsButton);
@@ -354,7 +383,10 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
+        messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
         messageSource.setCaption(helpButton, Message.HELP);
+        
+        
         
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
         messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);

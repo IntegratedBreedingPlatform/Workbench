@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.comp.common.customfield.CustomField;
-import org.generationcp.middleware.dao.ToolDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ConversionException;
-import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilesystemContainer;
@@ -37,7 +34,6 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormFieldFactory;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
@@ -55,20 +51,22 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	private Button cancelBtn;
 	private ListSelect userToolsListSelect;
 	
+	private Tool userToolFormData = new Tool();
+	
 	private Window thisWindow;
 	
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
-	private static final String WIDTH = "800px";
-	private static final String HEIGHT = "320px";
+	private static final String WIDTH = "760px";
+	private static final String HEIGHT = "340px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-
-    private ToolDAO toolDAO;
+    
 	private Button editBtn;
+	private BeanItemContainer<Tool> userToolsListContainer;
     
     
 	@Override
@@ -77,7 +75,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	protected void assemble() throws MiddlewareQueryException {
-		toolDAO = workbenchDataManager.getToolDao();
 		
 		initializeComponents();
 		initializeData();
@@ -90,25 +87,110 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				userToolsForm.commit();
+				
+				LOG.debug(userToolFormData.toString());
+				
+				Tool clone = new Tool();
+				clone.setToolId(null);
+				clone.setParameter(userToolFormData.getParameter());
+				clone.setPath(userToolFormData.getPath());
+				clone.setTitle(userToolFormData.getTitle());
+				clone.setToolName(userToolFormData.getToolName());
+				clone.setToolType(userToolFormData.getToolType());
+				clone.setUserTool(true);
+				clone.setVersion(userToolFormData.getVersion());
+				
+
+				try {
+					workbenchDataManager.getToolDao().save(clone);
+					
+					Tool newTool = workbenchDataManager.getToolDao().getByToolName(userToolFormData.getToolName());
+					
+					userToolsListContainer.addItem(newTool);
+					userToolsListSelect.select(newTool);
+					
+					MessageNotifier.showMessage(thisWindow,"Success",clone.getTitle() + " has been added");
+					
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 
+		editBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				userToolsForm.commit();
+
+				Tool selected = (Tool) userToolsListSelect.getValue();
+				//userToolsListContainer.removeItem(selected);
+				
+				selected.setToolId(userToolFormData.getToolId());
+				selected.setParameter(userToolFormData.getParameter());
+				selected.setPath(userToolFormData.getPath());
+				selected.setTitle(userToolFormData.getTitle());
+				selected.setToolName(userToolFormData.getToolName());
+				selected.setToolType(userToolFormData.getToolType());
+				selected.setUserTool(true);
+				selected.setVersion(userToolFormData.getVersion());
+				
+				userToolsListContainer.addItem(selected);
+				userToolsListSelect.setItemCaption(selected,userToolFormData.getTitle());
+
+				try {
+					workbenchDataManager.getToolDao().update(selected);
+					
+					MessageNotifier.showMessage(thisWindow,"Success",selected.getTitle() + " has been modified");
+					
+					
+				} catch (MiddlewareQueryException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
+		});
+		
 		cancelBtn.addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				thisWindow.detach();
+				thisWindow.getApplication().getMainWindow().removeWindow(thisWindow);
 			}
 		});
 
-		// TODO userToolsListSelect on select
 		userToolsListSelect.addListener(new Property.ValueChangeListener() {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// event.getProperty returns the itemID of the selected item
-
-				userToolsForm.setPropertyDataSource(event.getProperty());
+				
+				//Tool selectedTool = (Tool)event.getProperty().getValue();
+			
+				Tool selectedTool = (Tool)event.getProperty().getValue();
+						
+				
+				// clone selectedTool to userToolFormData
+				userToolFormData.setParameter(selectedTool.getParameter());
+				userToolFormData.setPath(selectedTool.getPath());
+				userToolFormData.setTitle(selectedTool.getTitle());
+				userToolFormData.setToolId(selectedTool.getToolId());
+				userToolFormData.setToolName(selectedTool.getToolName());
+				userToolFormData.setToolType(selectedTool.getToolType());
+				userToolFormData.setVersion(selectedTool.getVersion());
+				userToolFormData.setUserTool(selectedTool.getUserTool());
+				
+				// hack: access the customField path directly to set the value since it is not updated even if the formBean is changed
+				userToolsForm.getField("path").setValue(selectedTool.getPath());
+				
+				userToolsForm.commit();
+				
+				
+				//userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData));
+				
 				editBtn.setEnabled(true);
 			}
 		});
@@ -163,12 +245,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	private void initializeData() {
 
 		try {
-			List<Tool> userTools = toolDAO.getUserTools();
+			List<Tool> userTools = workbenchDataManager.getToolDao().getUserTools();
 			
-			userToolsListSelect.setContainerDataSource(new BeanItemContainer<Tool>(Tool.class,userTools));
-			
-			userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()));
-			
+			userToolsListContainer = new BeanItemContainer<Tool>(Tool.class,userTools);
+			userToolsListSelect.setContainerDataSource(userToolsListContainer);
+			userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData));
+			userToolsForm.setWriteThrough(false);
 			/*
 			if (userTools.size() > 0) {
 				Tool item = userTools.iterator().next();
@@ -177,7 +259,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			}*/
 				
 			userToolsListSelect.setItemCaptionPropertyId("title");
-			
 			
 			userToolsForm.setVisibleItemProperties(new String[] {"toolName","title","toolType","version","path","parameter"});
 		} catch (IllegalArgumentException e) {
@@ -191,16 +272,19 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		if (thisWindow == null)
 			thisWindow = this;
 		
+		this.setResizable(false);
+		
+		
 		userToolsForm = new Form();
 		userToolsForm.setWidth("350px");
 		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory(thisWindow));
 		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
 		
-		addBtn = new Button(messageSource.getMessage(Message.ADD));
-		editBtn = new Button(messageSource.getMessage(Message.EDIT));
+		addBtn = new Button(messageSource.getMessage(Message.ADD),userToolsForm,"commit");
+		editBtn = new Button(messageSource.getMessage(Message.EDIT),userToolsForm,"commit");
 		editBtn.setEnabled(false);
 		
-		cancelBtn = new Button(messageSource.getMessage(Message.CANCEL));
+		cancelBtn = new Button(messageSource.getMessage(Message.CANCEL),userToolsForm,"discard");
 
 		userToolsListSelect = new ListSelect();
 		userToolsListSelect.setWidth("100%");
@@ -222,13 +306,24 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 		public UserToolsFormFieldFactory(Window parentWindow) {
 			//TODO: replace with internationalized messages
-			nameFld = new TextField("Name");			
+			nameFld = new TextField("Name");
+			nameFld.setWidth("190px");
+			nameFld.setRequired(true);
+			
 			titleFld = new TextField("Title");
-			//pathFld = new TextField("Path");
+			titleFld.setWidth("190px");
+			titleFld.setRequired(true);
+			
 			parameterFld = new TextField("Parameter");
+			parameterFld.setWidth("190px");
+			
 			versionFld = new TextField("Version");
+			versionFld.setWidth("80px");
+			
 			toolTypeFld = new NativeSelect("Tool Type",Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
-		
+			toolTypeFld.setWidth("120px");
+			toolTypeFld.setRequired(true);
+			
 			nameFld.setNullRepresentation("");
 			titleFld.setNullRepresentation("");
 			//pathFld.setNullRepresentation("");
@@ -240,6 +335,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		
 			filePicker = new ServerFilePicker(parentWindow);
 			filePicker.setCaption("Path");
+			filePicker.setWidth("190px");
+			filePicker.getPathField().setRequired(true);
 		}
 		
 		@Override
@@ -249,7 +346,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				
 				
 			}
-			else if ("name".equals((String)propertyId)) {
+			else if ("toolName".equals((String)propertyId)) {
 				return nameFld;
 			}
 			else if ("title".equals((String)propertyId)) {
@@ -281,10 +378,15 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		private TreeTable treetable;
 		private Window parentWin;
 		
+		private ServerFilePicker thisInstance;
+		
 		public ServerFilePicker(Window parentWindow) {
+			thisInstance = this;
+			
 			this.parentWin = parentWindow;
 			
 			root = new HorizontalLayout();
+			root.setSpacing(true);
 			
 			this.setCompositionRoot(root);
 			
@@ -295,6 +397,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		
 			root.addComponent(pathFld);
 			root.addComponent(browseBtn);
+			
+			
 			
 			initPicker();
 			
@@ -316,8 +420,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		
 		private void initPicker() {
 			pickerWindow = new Window("Select an executable file");
+			pickerWindow.center();
+			pickerWindow.setModal(true);
+			
 			pickerWindow.setWidth("500px");
-			pickerWindow.setHeight("300px");
+			pickerWindow.setHeight("400px");
+			pickerWindow.setResizable(false);
 			//pickerWindow.setModal(true);
 			
 			final HorizontalLayout hl = new HorizontalLayout();
@@ -325,7 +433,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			hl.addComponent(new Label("Selected file: "));
 			hl.addComponent(pathLbl);
 			
-			treetable = new TreeTable("Select an executable file");
+			treetable = new TreeTable();
 			
 			fsContainer = new FilesystemContainer(new File("tools"),new FilenameFilter() {
 				
@@ -358,7 +466,9 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	        // END-EXAMPLE: datamodel.container.filesystemcontainer.basic
 	        
 	        treetable.setImmediate(true);
-	        treetable.setSizeFull();
+	        treetable.setWidth("100%");
+	        treetable.setHeight("240px");
+	        //treetable.setSizeFull();
 	        treetable.setSelectable(true);
 	        treetable.addListener(new Property.ValueChangeListener() {
 
@@ -370,7 +480,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					String filePath = event.getProperty().getValue().toString();
 					
 					if (!(new File(filePath)).isDirectory()) {
-						pathLbl.setValue(filePath);
+						pathLbl.setValue((new File(filePath)).getAbsolutePath());
 					} else
 						pathLbl.setValue("");
 				}
@@ -381,6 +491,47 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	        pickerWindow.addComponent(treetable);
 		
 	        pickerWindow.addComponent(hl);
+	        
+	        
+	        
+	        final HorizontalLayout btnPanel = new HorizontalLayout();
+			final Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
+
+			final Button selectBtn = new Button("Select");
+			final Button cancelSelectBtn = new Button("Cancel");
+			
+			
+	        btnPanel.setWidth("100%");
+			btnPanel.setSpacing(true);
+			btnPanel.setMargin(true);
+			
+			btnPanel.addComponentAsFirst(spacer);
+			btnPanel.addComponent(selectBtn);
+			btnPanel.addComponent(cancelSelectBtn);
+			
+			btnPanel.setComponentAlignment(selectBtn, Alignment.MIDDLE_RIGHT);
+			btnPanel.setComponentAlignment(cancelSelectBtn, Alignment.MIDDLE_RIGHT);
+			btnPanel.setExpandRatio(spacer,1.0f);
+			
+			pickerWindow.getContent().addComponent(btnPanel);
+
+			// Listeners:
+			cancelSelectBtn.addListener(new Button.ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					parentWin.getApplication().getMainWindow().removeWindow(pickerWindow);
+				}
+			});
+			
+			selectBtn.addListener(new Button.ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					// TODO Auto-generated method stub
+					thisInstance.setValue((new File(treetable.getValue().toString())).getAbsolutePath());
+					parentWin.getApplication().getMainWindow().removeWindow(pickerWindow);				}
+			});
 		}
 		
 		public TextField getPathField() {
@@ -389,35 +540,37 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 
 		@Override
 		public Class<?> getType() {
-			// TODO Auto-generated method stub
 			return pathFld.getType();
 		}
 
 		@Override
 		public Object getValue() {
-			// TODO Auto-generated method stub
-			return super.getValue();
+			return pathFld.getValue();
 		}
-
+		
+		@Override
+		public Object getData() {
+			return pathFld.getData();
+		}
+		
+		
 		@Override
 		public void setValue(Object newValue) throws ReadOnlyException,
 				ConversionException {
 			super.setValue(newValue);
 			pathFld.setValue(newValue);
 		}
-
+		
 		@Override
 		protected void setInternalValue(Object newValue) {
-			// TODO Auto-generated method stub
 			super.setInternalValue(newValue);
 			pathFld.setValue(newValue);
 		}
-		
-		
-		
-		
-		
+
+		@Override
+		public void setWidth(String width) {
+			//super.setWidth(width);
+			pathFld.setWidth(width);
+		}
 	}
-	
-	
 }
