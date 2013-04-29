@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -35,6 +36,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +109,23 @@ public class SaveUsersInProjectAction implements ClickListener{
             //do nothing because getting the User will not fail
             event.getComponent().getWindow().showNotification("Failed to add members");
         }
+        
+        try{
+     	   Container container = tblMembers.getContainerDataSource();
+           Collection<User> userList = (Collection<User>) container.getItemIds();
+            for (User u : userList){
+         	  System.out.println("Users: " + u.getUserid() + " | " + u.getPerson().getFirstName()); 
+         	  if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(), u.getUserid()) == null) {
+         		  ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),u.getUserid());
+         		  pUserInfo.setLastOpenDate(new Date());
+         		  workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo); 
+         	  }
+            }
+     
+	     }catch(Exception e){
+	     	System.out.println(e.getMessage());
+	     	
+	     }
     }
     
     protected void createMySQLUsers(List<ProjectUserRole> projectUserRoles) {

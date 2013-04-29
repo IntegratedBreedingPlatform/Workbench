@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.comp.project.create;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,7 +187,7 @@ public class SaveNewProjectAction implements ClickListener{
                         saveProjectUserRoles(projectUserRoles, projectSaved);
                     }
 
-                    List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers();
+                    List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, projectSaved);
                     }
@@ -226,6 +228,24 @@ public class SaveNewProjectAction implements ClickListener{
                     }
                 }
                 
+
+                //Create records for workbench_project_user_info table
+                    for (Map.Entry<Integer, String> e : idAndNameOfProjectMembers.entrySet()){
+                 	   
+                 	
+                 		try {
+							if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(),  e.getKey())==null){
+								ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),  e.getKey());
+								pUserInfo.setLastOpenDate(new Date());
+								workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+							}
+						} catch (MiddlewareQueryException e1) {
+							// do nothing
+						}
+        
+                }
+          
+             
                 
                 // add a workbench user to ibdb user mapping
                 IbdbUserMap ibdbUserMap = new IbdbUserMap();

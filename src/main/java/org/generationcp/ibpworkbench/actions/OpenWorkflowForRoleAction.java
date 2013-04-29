@@ -32,9 +32,11 @@ import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -262,12 +264,23 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     
     private void updateProjectLastOpenedDate(Window window, Project project) {
         try {
-            project.setLastOpenDate(new Date());
+        	
+        	// set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            
+            
+        	ProjectUserInfoDAO projectUserInfoDao = workbenchDataManager.getProjectUserInfoDao();
+        	ProjectUserInfo	projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+        	if (projectUserInfo != null) {
+            	projectUserInfo.setLastOpenDate(new Date());
+            	workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
+        	}
+    
+        	project.setLastOpenDate(new Date());
             workbenchDataManager.mergeProject(project);
             
-            // set the last opened project in the session
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             app.getSessionData().setLastOpenedProject(project);
+            
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
             showDatabaseError(window);
