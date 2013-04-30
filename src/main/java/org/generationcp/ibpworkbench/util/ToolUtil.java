@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -122,30 +121,13 @@ public class ToolUtil {
 	 * @throws IllegalArgumentException
 	 *             if the specified Tool's type is not {@link ToolType#NATIVE}
 	 */
-	public Process launchNativeTool(Tool tool) throws IOException {
-		if (tool.getToolType() != ToolType.NATIVE) {
-			throw new IllegalArgumentException("Tool must be a native tool");
-		}
+    public Process launchNativeTool(Tool tool) throws IOException {
+        if (tool.getToolType() != ToolType.NATIVE) {
+            throw new IllegalArgumentException("Tool must be a native tool");
+        }
 
-		File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
 
-		// if we can get the workbench installation directory
-		// from the workbench setting table, use it.
-		WorkbenchSetting workbenchSetting = null;
-		try {
-			workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-
-			if (workbenchSetting != null
-					&& !StringUtil.isEmpty(workbenchSetting
-							.getInstallationDirectory())) {
-				absoluteToolFile = new File(
-						workbenchSetting.getInstallationDirectory(),
-						tool.getPath()).getAbsoluteFile();
-			}
-		} catch (MiddlewareQueryException e) {
-			// intentionally empty
-		}
-		
         Runtime runtime = Runtime.getRuntime();
 
         String parameter = "";
@@ -153,7 +135,7 @@ public class ToolUtil {
             parameter = tool.getParameter();
         }
         return runtime.exec(new String[] { absoluteToolFile.getAbsolutePath(), parameter });
-	}
+    }
 
 	/**
 	 * Close the specified native tool.
@@ -229,8 +211,7 @@ public class ToolUtil {
 		}
 
 		
-		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name(),
-				ToolName.breeding_manager.name())) {
+		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name())) {
 			
 			// save the location of R_PATH to "infrastracture/R" in the core.properties file
 			File configFile = new File( APPDATA_ENV +  "/.ibfb/dev/config/Preferences/ibfb/settings/core.properties").getAbsoluteFile();
