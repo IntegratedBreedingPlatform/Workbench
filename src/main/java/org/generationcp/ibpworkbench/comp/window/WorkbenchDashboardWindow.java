@@ -226,9 +226,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				//(new OpenNewProjectAction()).buttonClick(event);
-				//workbenchTitle.setCaption(messageSource.getMessage(Message.PROJECT_CREATE));
-				thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE));
+				thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
 			}
 		});
         
