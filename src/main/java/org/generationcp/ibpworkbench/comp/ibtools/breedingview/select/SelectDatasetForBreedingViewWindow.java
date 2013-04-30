@@ -29,8 +29,8 @@ import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
+import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Study;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -93,7 +93,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private StudyDataManager studyDataManager;
+    private ManagerFactory managerFactory;
 
 
     public SelectDatasetForBreedingViewWindow(Project currentProject, Database database) {
@@ -215,9 +215,6 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     }
     
     protected void initialize() {
-        
-        studyDataManager = managerFactoryProvider.getManagerFactoryForProject(currentProject).getStudyDataManager();
-        
     }
 
     protected void initializeActions() {
@@ -359,8 +356,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         List<Study> studyParent = new ArrayList<Study>();
 
         try {
-            studyParent = studyDataManager.getAllTopLevelStudies(0, 
-                    (int) studyDataManager.countAllTopLevelStudies(this.database), 
+            studyParent = managerFactory.getStudyDataManager().getAllTopLevelStudies(0, 
+                    (int) managerFactory.getStudyDataManager().countAllTopLevelStudies(this.database), 
                     this.database);
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
@@ -407,8 +404,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     public void queryChildrenStudies(Study parentStudy, TreeTable tr) throws InternationalizableException{
         List<Study> studyChildren = new ArrayList<Study>();
         try {
-            studyChildren = this.studyDataManager.getStudiesByParentFolderID(parentStudy.getId(), 0, 
-                    (int) studyDataManager.countAllStudyByParentFolderID(parentStudy.getId(), this.database));
+            studyChildren = managerFactory.getStudyDataManager().getStudiesByParentFolderID(parentStudy.getId(), 0, 
+                    (int) managerFactory.getStudyDataManager().countAllStudyByParentFolderID(parentStudy.getId(), this.database));
         } catch (MiddlewareQueryException e) {
             //LOG.error(e.toString() + "\n" + e.getStackTrace());
             e.printStackTrace();
@@ -442,7 +439,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         List<Study> studyChildren = new ArrayList<Study>();
 
         try {
-            studyChildren = this.studyDataManager.getStudiesByParentFolderID(studyId, 0, 1);
+            studyChildren = managerFactory.getStudyDataManager().getStudiesByParentFolderID(studyId, 0, 1);
         } catch (MiddlewareQueryException e) {
             //LOG.error(e.toString() + "\n" + e.getStackTrace());
             MessageNotifier.showWarning(getWindow(), 
@@ -458,9 +455,9 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
         
         assemble();
-        
     }
     
     @Override
@@ -469,7 +466,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         
         updateLabels();
     }
-
+    
     @Override
     public void updateLabels() {
         messageSource.setCaption(btnCancel, Message.CANCEL);
