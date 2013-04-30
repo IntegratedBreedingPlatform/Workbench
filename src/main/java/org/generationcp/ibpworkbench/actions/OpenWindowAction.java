@@ -159,53 +159,26 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     public void launchWindow(Window window, String windowName)
     {
     	Window mywindow = null;
-    	
-    	
+    	Boolean windowLaunched = false;
     	if(WindowEnum.BREEDING_GXE.getwindowName().equals(windowName) )
     	{
     		mywindow = new GxeAnalysisWindow(this.project);
     		mywindow.setWidth("1000");
     		
-    		
     		window.addWindow(mywindow);
-    		
-    		 try {
-                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                 User user = app.getSessionData().getUserData();
-                 Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
-
-                 workbenchDataManager.addProjectActivity(projAct);
-
-             } catch (MiddlewareQueryException e1) {
-                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                 return;
-             }
-    	} else if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
+    		windowLaunched = true;
+    	}
+    	else if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
     		mywindow = new ProjectMemberWindow(this.project);
     		mywindow.setWidth("700");
     		
     		
     		window.addWindow(mywindow);
-    		
-    		 try {
-                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                 User user = app.getSessionData().getUserData();
-                 Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
-
-                 workbenchDataManager.addProjectActivity(projAct);
-
-             } catch (MiddlewareQueryException e1) {
-                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                 return;
-             }
-    	} else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName)) {
+    		windowLaunched = true;
+    	}
+    	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
+    	{
     		//LOG.debug("Add Backup IBDB Window");
     		//window.addWindow(new BackupIBDBWindow(this.project));
     		ConfirmDialog.show(window,messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION),
@@ -213,17 +186,46 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     				messageSource.getMessage(Message.YES),
     				messageSource.getMessage(Message.CANCEL),
     				new BackupIBDBSaveAction(this.project, window));
-    		//
-    	} else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName)) {
-    		//LOG.debug("Add Restore IBDB Window");
-    		window.addWindow(new RestoreIBDBWindow(this.project));
+    		
+    		// just a dummy window
+    		mywindow = new Window(messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION));
+    		
+    		windowLaunched = true;
     	}
-    	else {
+    	else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName))
+    	{
+    		//LOG.debug("Add Restore IBDB Window");
+    		mywindow = new RestoreIBDBWindow(this.project);
+    		window.addWindow(mywindow);
+    		
+    		windowLaunched = true;
+    		
+    	}
+    	else
+    	{
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
             messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
         }
     	
+    	// Add to Project Activity logs the launched windows
+    	if (windowLaunched)
+    	{
+    		try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+ mywindow.getCaption(), user, new Date());
+
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                          "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
+    	}
     }
    
     

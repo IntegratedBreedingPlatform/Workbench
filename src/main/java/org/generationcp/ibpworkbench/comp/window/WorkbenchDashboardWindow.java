@@ -26,6 +26,7 @@ import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.MessageSourceResolvable;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
@@ -79,6 +80,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    private WorkbenchDashboardWindow thisInstance;
 
 	private Button userToolsButton;
 
@@ -219,6 +222,16 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         
         toolVersionsButton.addListener(new OpenToolVersionsAction());
         createProjectButton.addListener(new OpenNewProjectAction());
+        createProjectButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				//(new OpenNewProjectAction()).buttonClick(event);
+				//workbenchTitle.setCaption(messageSource.getMessage(Message.PROJECT_CREATE));
+				thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE));
+			}
+		});
+        
         createContactButton.addListener(new CreateContactAction());
         
         
@@ -226,6 +239,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     }
 
     protected void assemble() throws Exception {
+    	thisInstance = this;
+    	
         initializeComponents();
         initializeLayout();
         initializeActions();
@@ -368,7 +383,15 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     public void addTitle(String myTitle)
     {
-    	 String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> : <h1>" + myTitle+"</h1>";
+    	
+    	if (myTitle != null && !myTitle.isEmpty()) {
+    		myTitle = ": <h1>" + myTitle +"</h1>";
+    	} else {
+    		myTitle = "";
+    	}
+    	
+    	
+    	 String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> " + myTitle;
          workbenchTitle.setValue(title);
          workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 

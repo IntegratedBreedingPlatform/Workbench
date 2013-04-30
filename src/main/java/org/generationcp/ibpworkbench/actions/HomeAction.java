@@ -89,6 +89,7 @@ public class HomeAction implements ClickListener, ActionListener{
         
         w.setWorkbenchDashboard(workbenchDashboard);
         
+        w.addTitle("");
         w.showContent(w.getWorkbenchDashboard());
         
         NavManager.navigateApp(window, "/Home", isLinkAccessed);
