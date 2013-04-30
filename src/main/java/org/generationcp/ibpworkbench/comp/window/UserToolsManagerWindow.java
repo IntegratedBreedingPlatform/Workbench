@@ -104,7 +104,11 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				
 				Tool clone = new Tool();
 				clone.setToolId(null);
-				clone.setParameter(userToolFormData.getParameter());
+				
+				if (userToolFormData.getParameter() == null)
+					clone.setParameter("");
+				else
+					clone.setParameter(userToolFormData.getParameter());
 				clone.setPath(userToolFormData.getPath());
 				clone.setTitle(userToolFormData.getTitle());
 				clone.setToolName(userToolFormData.getToolName());
@@ -159,7 +163,11 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					
 					
 					selected.setToolId(userToolFormData.getToolId());
-					selected.setParameter(userToolFormData.getParameter());
+					
+					if (userToolFormData.getParameter() == null)
+						selected.setParameter("");
+					else
+						selected.setParameter(userToolFormData.getParameter());
 					selected.setPath(userToolFormData.getPath());
 					selected.setTitle(userToolFormData.getTitle());
 					selected.setToolName(userToolFormData.getToolName());
