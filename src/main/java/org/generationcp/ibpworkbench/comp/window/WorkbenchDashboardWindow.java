@@ -19,19 +19,23 @@ import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.MessageSourceResolvable;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
@@ -41,7 +45,6 @@ import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
@@ -57,6 +60,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Button toolVersionsButton;
     private Button helpButton;
 
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    
     private Label actionsTitle;
     private Button createProjectButton;
 
@@ -242,8 +248,30 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         initializeComponents();
         initializeLayout();
         initializeActions();
+        onLoadOperations();
+        
     }
 
+    protected void onLoadOperations()
+    {
+    	try {
+			//System.out.println("Login Counter" + workbenchDataManager.getUserLogInCounter(username));
+			//User user = (User) event.getComponent().getApplication().getUser();
+			
+			if(workbenchDataManager.getUserLogInCounter("aabro") < 1)
+			{
+				System.out.println("Open Window");
+				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+				ow.launchWindow(this, "change_password");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	//MessageNotifier.showMessage(event.getComponent().getWindow(), "Valid Login", "Valid Login");
+	
+    }
+    	
     private Component layoutWorkbenchHeader() {
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidth("100%");

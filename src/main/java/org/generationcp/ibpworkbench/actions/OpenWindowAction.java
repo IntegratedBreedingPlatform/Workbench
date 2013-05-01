@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
+import org.generationcp.ibpworkbench.comp.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.comp.window.GxeAnalysisWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
@@ -63,6 +64,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,MEMBER("member")
         ,BACKUP_IBDB("backup_ibdb")
         ,RESTORE_IBDB("restore_ibdb")
+        ,CHANGE_PASSWORD("change_password")
         ;
         
         String windowName;
@@ -177,6 +179,17 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		window.addWindow(mywindow);
     		windowLaunched = true;
     	}
+    	
+    	else if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) )
+    	{
+    		mywindow = new ChangePasswordWindow();
+    		mywindow.setWidth("500");
+    		mywindow.setHeight("200");
+    		
+    		
+    		window.addWindow(mywindow);
+    		windowLaunched = true;
+    	}
     	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
     	{
     		//LOG.debug("Add Backup IBDB Window");
@@ -223,7 +236,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
             } catch (MiddlewareQueryException e1) {
                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
+                //return;
             }
     	}
     }

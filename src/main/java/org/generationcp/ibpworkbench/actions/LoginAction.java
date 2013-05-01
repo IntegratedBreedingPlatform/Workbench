@@ -17,6 +17,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
@@ -54,7 +55,7 @@ public class LoginAction implements ClickListener{
 
         loginWindow.getLoginForm().getBtnLogin().addListener(this);
     }
-
+ 
     @Override
     public void buttonClick(ClickEvent event) {
         LoginForm loginForm = loginWindow.getLoginForm();
@@ -79,6 +80,7 @@ public class LoginAction implements ClickListener{
         }
         
         if (!valid) {
+        	
             // loginForm.getMessageLabel().setVisible(true);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.LOGIN_ERROR), 
