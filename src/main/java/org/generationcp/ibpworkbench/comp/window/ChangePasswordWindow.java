@@ -18,7 +18,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -34,6 +37,8 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
     private Label workbenchTitle;
     private Label passwordLabel;
     private Label confirmLabel;
+    private Label gap;
+    private Label space;
     
     private Button cancelButton;
     private Button saveButton;
@@ -56,14 +61,22 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
 
     protected void initializeComponents() throws Exception {
         // workbench header components
-        workbenchTitle = new Label("Change Password");
+        workbenchTitle = new Label("&nbsp;Change Password", Label.CONTENT_XHTML);
         workbenchTitle.setStyleName("gcp-window-title");
 
-        passwordLabel = new Label("Password");
-        confirmLabel = new Label("Change Password");
+        gap = new Label();
+        gap.setHeight("1em");
         
-        workbenchTitle = new Label("Change Password");
-        workbenchTitle.setStyleName("gcp-window-title");
+        space = new Label();
+        space.setWidth("1em");
+        
+
+        passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
+        confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Change Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
+        passwordLabel.setStyleName("v-label");
+        confirmLabel.setStyleName("v-label");
+        
+      
         
         password = new PasswordField();
         confirm_password = new PasswordField();
@@ -85,15 +98,33 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
         layout.setSizeFull();
 
         // add the vertical split panel
+       
+        layout.addComponent(gap);
         layout.addComponent(workbenchTitle);
         
-        layout.addComponent(passwordLabel);
-        layout.addComponent(password);
-        layout.addComponent(confirmLabel);
-        layout.addComponent(confirm_password);
+        gap = new Label();
+        gap.setHeight("1em");
+        layout.addComponent(gap);
         
-        layout.addComponent(saveButton);
-        layout.addComponent(cancelButton);
+        HorizontalLayout fieldslayout = new HorizontalLayout();
+        fieldslayout.addComponent(passwordLabel);
+        fieldslayout.addComponent(password);
+        fieldslayout.addComponent(confirmLabel);
+        fieldslayout.addComponent(confirm_password);
+        
+        
+        HorizontalLayout buttonlayout = new HorizontalLayout();
+        space = new Label();
+        space.setWidth("1em");
+        buttonlayout.addComponent(space);
+        buttonlayout.addComponent(saveButton);
+        space = new Label();
+        space.setWidth("1em");
+        buttonlayout.addComponent(space);
+        buttonlayout.addComponent(cancelButton);
+        
+        layout.addComponent(fieldslayout);
+        layout.addComponent(buttonlayout);
        // layout.setComponentAlignment(saveButton, Alignment.CENTER);
 
        
@@ -108,7 +139,19 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
     protected void initializeActions() {
     	String username = "aabro";
     	saveButton.addListener(new ChangePasswordAction(username,password, confirm_password));
-       
+        cancelButton.addListener(new myListener());
+    }
+    
+    public class myListener implements ClickListener
+    {
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			// TODO Auto-generated method stub
+			event.getComponent().getWindow().getParent().removeWindow(getWindow());
+			
+		}
+    	
     }
 
     protected void assemble() throws Exception {

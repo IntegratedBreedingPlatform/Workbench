@@ -185,7 +185,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		mywindow = new ChangePasswordWindow();
     		mywindow.setWidth("500");
     		mywindow.setHeight("200");
-    		
+    		mywindow.center();
     		
     		window.addWindow(mywindow);
     		windowLaunched = true;
