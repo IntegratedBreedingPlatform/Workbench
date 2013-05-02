@@ -72,7 +72,7 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
         
 
         passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
-        confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Change Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
+        confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
         passwordLabel.setStyleName("v-label");
         confirmLabel.setStyleName("v-label");
         
