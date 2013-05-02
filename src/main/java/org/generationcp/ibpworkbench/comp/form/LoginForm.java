@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.comp.form;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
 import org.springframework.beans.factory.InitializingBean;
@@ -49,8 +50,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private int userId;
     private Button registerUserAccountButton;
     private Button forgotPasswordButton;
-    private Panel loginPanel; 
-    
+    private Panel loginPanel;
+        
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
@@ -108,6 +109,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
     protected void initializeActions() {
         registerUserAccountButton.addListener(new OpenRegisterUserAccountAction());
+        
         forgotPasswordButton.addListener(new OpenSecurityQuestionAction());
     }
 

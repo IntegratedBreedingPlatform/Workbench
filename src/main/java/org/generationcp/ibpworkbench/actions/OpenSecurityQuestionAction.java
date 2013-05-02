@@ -12,24 +12,26 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.SecurityQuestionWindow;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 
 public class OpenSecurityQuestionAction implements ClickListener{
     
     private static final long serialVersionUID = 1L;
 
     public OpenSecurityQuestionAction() {
-        
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
-        SecurityQuestionWindow window = new SecurityQuestionWindow();
-        
-        event.getComponent().getWindow().addWindow(window);
+        //parent.addWindow(new SecurityQuestionWindow());
+    	//event.getComponent().getWindow().addWindow(new SecurityQuestionWindow());
+    	
+    	event.getComponent().getApplication().getMainWindow().addWindow(new SecurityQuestionWindow());
     }
 
 }

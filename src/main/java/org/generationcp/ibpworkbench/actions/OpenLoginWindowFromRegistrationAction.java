@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -43,25 +44,32 @@ public class OpenLoginWindowFromRegistrationAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        LoginWindow window = new LoginWindow();
-        new LoginAction(window);
-        Application app = event.getComponent().getApplication();
+        //LoginWindow window = new LoginWindow();
+        //new LoginAction(window);
+        final Application app = event.getComponent().getApplication();
         
-        window.setWidth("100%");
-        window.center();
-        window.setPositionY(0);
-        window.setClosable(false);
-        window.setDraggable(false);
-        window.setHeight("100%");
-        window.setBorder(0);       
+        //window.setWidth("100%");
+        //window.center();
+        //window.setPositionY(0);
+        //window.setClosable(false);
+        //window.setDraggable(false);
+        //window.setHeight("100%");
+        //window.setBorder(0);       
         
-        app.getMainWindow().removeAllComponents();
-        app.getMainWindow().addWindow(window);
+        //app.getMainWindow().removeAllComponents();
+        //app.getMainWindow().addWindow(window);
         
+        //app.removeWindow(app.getMainWindow());
+        //app.setMainWindow(window);
         
-        MessageNotifier.showWarning(window, 
-                messageSource.getMessage(Message.REGISTER_SUCCESS),
-                messageSource.getMessage(Message.REGISTER_SUCCESS_DESCRIPTION));
+        //event.getComponent().getApplication().close(); // closes the app then reloads if logout url is not set
+        
+        ConfirmDialog.show(app.getMainWindow(),messageSource.getMessage(Message.REGISTER_SUCCESS),messageSource.getMessage(Message.REGISTER_SUCCESS_DESCRIPTION),messageSource.getMessage(Message.OK),null,new ConfirmDialog.Listener() {
+			@Override
+			public void onClose(ConfirmDialog dialog) {
+				app.close();				
+			}
+		});
     }
 
 }

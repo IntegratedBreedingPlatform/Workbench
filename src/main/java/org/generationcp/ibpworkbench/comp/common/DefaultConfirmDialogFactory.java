@@ -101,14 +101,19 @@ public class DefaultConfirmDialogFactory implements ConfirmDialog.Factory  {
         spacer.setWidth("100%");
         buttons.setExpandRatio(spacer, 1f);
 
-        final Button cancel = new Button(cancelCaption != null ? cancelCaption
-                : DEFAULT_CANCEL_CAPTION);
-        cancel.setData(false);
-        cancel.setClickShortcut(KeyCode.ESCAPE, null);
-        buttons.addComponent(cancel);
-        buttons.setComponentAlignment(cancel, Alignment.MIDDLE_RIGHT);
-        confirm.setCancelButton(cancel);
-
+        Button cancel = null;
+        
+        if (cancelCaption != null) {
+        	cancel = new Button(cancelCaption != null ? cancelCaption
+                    : DEFAULT_CANCEL_CAPTION);
+            cancel.setData(false);
+            cancel.setClickShortcut(KeyCode.ESCAPE, null);
+            buttons.addComponent(cancel);
+            buttons.setComponentAlignment(cancel, Alignment.MIDDLE_RIGHT);
+            confirm.setCancelButton(cancel);
+        }
+        
+        
         final Button ok = new Button(okCaption != null ? okCaption
                 : DEFAULT_OK_CAPTION);
         ok.setData(true);
@@ -154,7 +159,9 @@ public class DefaultConfirmDialogFactory implements ConfirmDialog.Factory  {
             }
 
         };
-        cancel.addListener(cb);
+        
+        if (cancel != null)
+        	cancel.addListener(cb);
         ok.addListener(cb);
 
         // Approximate the size of the dialog

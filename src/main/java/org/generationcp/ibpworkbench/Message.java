@@ -60,6 +60,7 @@ public enum Message {
     //General
     ,SAVE
     ,CANCEL
+    ,OK
     ,YES
     ,NO
     

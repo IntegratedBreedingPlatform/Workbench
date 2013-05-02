@@ -17,6 +17,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 
 /**
@@ -33,6 +34,11 @@ public class OpenRegisterUserAccountAction implements ClickListener {
 
     private static final long serialVersionUID = 8120323541231442435L;
 
+    public OpenRegisterUserAccountAction() {
+
+    }
+    
+    
     @Override
     public void buttonClick(ClickEvent event) {
         
@@ -43,7 +49,8 @@ public class OpenRegisterUserAccountAction implements ClickListener {
         vl.setMargin(true);
         vl.setSpacing(true);
         
-        event.getComponent().getWindow().setContent(vl);
+        event.getComponent().getApplication().getMainWindow().setContent(vl);
+        
     }
 
 }
