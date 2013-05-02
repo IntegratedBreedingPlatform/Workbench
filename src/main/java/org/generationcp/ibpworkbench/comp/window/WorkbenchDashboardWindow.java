@@ -14,7 +14,9 @@ package org.generationcp.ibpworkbench.comp.window;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -27,6 +29,7 @@ import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.UserDetails;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -70,7 +73,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Label recentTitle;
     private Label usersGuideTitle;
     private Label hint1;
-
+    private String username;
     private VerticalSplitPanel verticalSplitPanel;
 
     private HorizontalSplitPanel contentAreaSplitPanel;
@@ -92,6 +95,13 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 	private Button userToolsButton;
 
     public WorkbenchDashboardWindow() {
+    	this.username = null;
+    	System.out.println("WorkbenchDashboardWindow is null");
+    }
+    
+    public WorkbenchDashboardWindow(String username) {
+    	this.username = username;
+    	System.out.println("WorkbenchDashboardWindow is username " + username);
     }
 
     /**
@@ -257,13 +267,26 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     	try {
 			//System.out.println("Login Counter" + workbenchDataManager.getUserLogInCounter(username));
 			//User user = (User) event.getComponent().getApplication().getUser();
-			
-			if(workbenchDataManager.getUserLogInCounter("aabro") < 1)
+    		if(username == null)
+    		{
+    			System.out.println("Login Counter : username is null");
+    			return;
+    		}
+    		System.out.println("workbenchDataManager.getUserLogInCounter(username) "+username+" "+ workbenchDataManager.getUserLogInCounter(username));
+			if(workbenchDataManager.getUserLogInCounter(username) < 1)
 			{
 				System.out.println("Open Window");
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				ow.launchWindow(this, "change_password");
+				//OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+				//ow.launchWindow(this, "change_password");
+				
+				UserDetails userDetails = new UserDetails();
+				userDetails.setUname(username);
+				userDetails.setUlogincnt(1);
+				workbenchDataManager.addUserDetailsRecord(userDetails);
+				
 			}
+			workbenchDataManager.incrementUserLogInCounter(username);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

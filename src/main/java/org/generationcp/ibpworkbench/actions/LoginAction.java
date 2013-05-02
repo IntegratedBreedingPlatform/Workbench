@@ -113,7 +113,8 @@ public class LoginAction implements ClickListener{
         
         WorkbenchDashboardWindow window = null;
         try {
-            window = new WorkbenchDashboardWindow();
+        	System.out.println("WorkbenchDashboardWindow(username)");
+            window = new WorkbenchDashboardWindow(username);
             application.removeWindow(application.getMainWindow());
             application.setMainWindow(window);
         } catch (Exception e) {

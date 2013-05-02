@@ -188,7 +188,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		mywindow.center();
     		
     		window.addWindow(mywindow);
-    		windowLaunched = true;
+    		windowLaunched = false;
     	}
     	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
     	{
