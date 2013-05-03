@@ -12,9 +12,13 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.List;
+
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.UserDefinedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,8 @@ public class OpenAddLocationWindowAction implements ClickListener{
     private ProjectLocationsComponent projectLocationComponent;  // from Create Project Panel
     private ProjectLocationPanel projectLocationPanel;           // from Manager Workflow configuration - project locations panel
 
+    private  List<UserDefinedField> udfList; private List<Country> countryList;
+    
     public OpenAddLocationWindowAction(ProjectLocationsComponent projectLocationComponent) {
         this.projectLocationComponent = projectLocationComponent;
     }
@@ -47,9 +53,9 @@ public class OpenAddLocationWindowAction implements ClickListener{
     @Override
     public void buttonClick(ClickEvent event) {
         if (projectLocationComponent != null) {
-            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationComponent));
+            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationComponent,projectLocationComponent.getGermplasmDataManager()));
         } else if (projectLocationPanel != null) {
-            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationPanel));
+            event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationPanel,projectLocationPanel.getGermplasmDataManager()));
         }
     }
 

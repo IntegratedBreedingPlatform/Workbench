@@ -114,8 +114,11 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				clone.setToolName(userToolFormData.getToolName());
 				clone.setToolType(userToolFormData.getToolType());
 				clone.setUserTool(true);
-				clone.setVersion(userToolFormData.getVersion());
 				
+				if (userToolFormData != null)
+					clone.setVersion(userToolFormData.getVersion());
+				else 
+					clone.setVersion("");
 
 				try {
 					workbenchDataManager.getToolDao().save(clone);

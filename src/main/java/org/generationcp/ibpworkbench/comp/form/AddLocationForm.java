@@ -12,9 +12,13 @@
 package org.generationcp.ibpworkbench.comp.form;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.UserDefinedField;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
@@ -32,7 +36,7 @@ import com.vaadin.ui.GridLayout;
  * <br>
  * <b>File Created</b>: August 20, 2012
  */
-public class AddLocationForm extends Form{
+public class AddLocationForm extends Form {
     
 	private static final long serialVersionUID = 865075321914843448L;
 
@@ -42,8 +46,12 @@ public class AddLocationForm extends Form{
     
     private GridLayout grid;
     
-    public AddLocationForm(LocationModel location) {
+	private GermplasmDataManager gdm;
+    
+    public AddLocationForm(LocationModel location,GermplasmDataManager gdm) {
         this.location = location;
+
+        this.gdm = gdm;
         
         assemble();
     }
@@ -60,19 +68,18 @@ public class AddLocationForm extends Form{
 
     protected void initializeComponents() { 
         
-        grid = new GridLayout(2, 1);
+        grid = new GridLayout(4, 1);
         grid.setSpacing(true);
         grid.setMargin(true);
         
         setLayout(grid);
         
         locationBean = new BeanItem<LocationModel>(location);
-        
         setItemDataSource(locationBean);
         setComponentError(null);
-        setFormFieldFactory(new LocationFormFieldFactory());
+        setFormFieldFactory(new LocationFormFieldFactory(gdm));
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "locationName", "locationAbbreviation" }));
+                new String[] { "locationName", "locationAbbreviation","ltype","cntryid" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -85,6 +92,10 @@ public class AddLocationForm extends Form{
             grid.addComponent(field, 0, 0);
         } else if ("locationAbbreviation".equals(propertyId)) {
             grid.addComponent(field, 1, 0);
+        } else if ("ltype".equals(propertyId)) {
+        	grid.addComponent(field,2,0);
+        } else if ("cntryid".equals(propertyId)) {
+        	grid.addComponent(field,3,0);
         }
     }
     

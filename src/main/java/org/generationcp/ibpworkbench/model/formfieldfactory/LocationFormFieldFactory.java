@@ -11,16 +11,28 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.UserDefinedField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 
 
@@ -42,14 +54,25 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     private Field locationName;
     private Field locationAbbreviation;
     
+    private NativeSelect lType;
+    private NativeSelect country;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
+    
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-
-    public LocationFormFieldFactory() {
-        initFields();
+    
+    public LocationFormFieldFactory(GermplasmDataManager gdm) {
+    	
+    	try {
+			initFields(gdm.getUserDefinedFieldByFieldTableNameAndType("LOCATION","LTYPE"),gdm.getAllCountry());
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
     }
     
-    private void initFields() {
+    private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
     	
         locationName = new TextField();
         locationName.setRequired(true);
@@ -60,15 +83,30 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         locationAbbreviation.setRequired(true);
         locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
         locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
+        
+        BeanContainer<String,UserDefinedField> udfBeanContainer = new BeanContainer<String, UserDefinedField>(UserDefinedField.class);        
+        BeanContainer<String,Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
 
+    	udfBeanContainer.setBeanIdProperty("fldno");
+		udfBeanContainer.addAll(udfList);
 
+		countryBeanContainer.setBeanIdProperty("cntryid");
+		countryBeanContainer.addAll(countryList);
+
+		        
+        lType = new NativeSelect();     
+        lType.setContainerDataSource(udfBeanContainer);
+        lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
+        lType.setItemCaptionPropertyId("fname");
+
+        country = new NativeSelect();
+        country.setContainerDataSource(countryBeanContainer);
+        country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
+        country.setItemCaptionPropertyId("isofull");
     }
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
-         
-        Field field = super.createField(item, propertyId, uiContext);
-        
         if ("locationName".equals(propertyId)) {
             messageSource.setCaption(locationName, Message.LOC_NAME);
             return locationName;
@@ -76,8 +114,14 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         } else if ("locationAbbreviation".equals(propertyId)) {
             messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
             return locationAbbreviation;
+        } else if ("ltype".equals(propertyId)) {
+            messageSource.setCaption(lType, Message.LOC_TYPE);
+            return lType;
+        } else if ("cntryid".equals(propertyId)) {
+        	messageSource.setCaption(country, Message.LOC_COUNTRY);
+        	return country;
         }
         
-        return field;
+        return super.createField(item, propertyId, uiContext);
     }
 }

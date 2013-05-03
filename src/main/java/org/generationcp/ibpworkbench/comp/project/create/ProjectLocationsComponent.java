@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
 import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -122,8 +123,15 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
     protected void initializeActions() {
         previousButton.addListener(new PreviousButtonClickListener());
+        
         showLocationWindowButton.addListener(new OpenAddLocationWindowAction(this));
         selectLocation.getLeftSelect().addListener( new CheckButtonClickListener(this));
+    }
+    
+    public GermplasmDataManager getGermplasmDataManager() {
+    	ManagerFactory managerFactory=managerFactoryProvider.getManagerFactoryForCropType(createProjectPanel.getSelectedCropType());
+    	
+    	return managerFactory.getGermplasmDataManager();
     }
 
     protected Component layoutButtonArea() {

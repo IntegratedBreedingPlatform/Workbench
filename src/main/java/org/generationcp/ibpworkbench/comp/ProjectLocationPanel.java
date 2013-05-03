@@ -437,6 +437,9 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
         if (validate()) { // save if valid
             Set<Location> locations = (Set<Location>) selectLocation.getValue();
+            
+            //LOG.debug(locations.toString());
+            
             //Save project
             if ((locations != null) && (!locations.isEmpty())) {
                 try {
@@ -469,11 +472,16 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
                 //save the added new location to the local database created
                 Location location = new Location();
                 location.setLocid(l.getLocid());
-                location.setCntryid(0);
                 location.setLabbr(l.getLabbr());
                 location.setLname(l.getLname());
                 location.setLrplce(0);
-                location.setLtype(0);
+                
+                Integer ltype = (l.getLtype() != null) ? l.getLtype() : 0;
+                Integer cntryid = (l.getCntryid() != null) ? l.getCntryid() : 0; 
+                
+                location.setLtype(ltype);
+                location.setCntryid(cntryid);
+                
                 location.setNllp(0);
                 location.setSnl1id(0);
                 location.setSnl2id(0);
@@ -503,6 +511,12 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     @Override
     public void attach() {
         super.attach();
+    }
+    
+    public GermplasmDataManager getGermplasmDataManager() {
+    	ManagerFactory managerFactory=managerFactoryProvider.getManagerFactoryForCropType(project.getCropType());
+    	
+    	return managerFactory.getGermplasmDataManager();
     }
 
 }

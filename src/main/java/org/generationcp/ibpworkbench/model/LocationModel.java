@@ -35,6 +35,10 @@ public class LocationModel implements Serializable{
     private Integer locationId;
     private String locationName;
     private String locationAbbreviation;
+    private Integer ltype;
+    private Integer cntryid;
+    
+    
     
     /**
      * Initialize fields so that the "null" String value does not appear.
@@ -73,5 +77,21 @@ public class LocationModel implements Serializable{
         locationName = locationName.trim();
         locationAbbreviation = locationAbbreviation.trim();
     }
+
+	public Integer getCntryid() {
+		return cntryid;
+	}
+
+	public void setCntryid(Integer cntryid) {
+		this.cntryid = cntryid;
+	}
+
+	public Integer getLtype() {
+		return ltype;
+	}
+
+	public void setLtype(Integer ltype) {
+		this.ltype = ltype;
+	}
 
 }

@@ -11,12 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.comp.window;
 
+import java.util.List;
+
 import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.UserDefinedField;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -48,13 +53,17 @@ public class AddLocationsWindow extends Window{
     private ProjectLocationsComponent projectLocationComponent;
     private ProjectLocationPanel projectLocationPanel;
 
-    public AddLocationsWindow(ProjectLocationsComponent projectLocationComponent) {
+    private GermplasmDataManager gdm;
+    
+    public AddLocationsWindow(ProjectLocationsComponent projectLocationComponent,GermplasmDataManager gdm) {
         this.projectLocationComponent = projectLocationComponent;
+        this.gdm = gdm;
         initialize();
     }
 
-    public AddLocationsWindow(ProjectLocationPanel projectLocationPanel) {
+    public AddLocationsWindow(ProjectLocationPanel projectLocationPanel,GermplasmDataManager gdm) {
         this.projectLocationPanel = projectLocationPanel;
+        this.gdm = gdm;
         initialize();
     }
 
@@ -66,7 +75,7 @@ public class AddLocationsWindow extends Window{
         setModal(true);
 
         /* Make the sub window 50% the size of the browser window */
-        setWidth("50%");
+        setWidth("900px");
         /*
          * Center the window both horizontally and vertically in the browser
          * window
@@ -89,7 +98,7 @@ public class AddLocationsWindow extends Window{
 
         layout.addComponent(newLocationTitle);
 
-        addLocationForm = new AddLocationForm(new LocationModel());
+        addLocationForm = new AddLocationForm(new LocationModel(),gdm);
         layout.addComponent(addLocationForm);
 
         cancelButton = new Button("Cancel");

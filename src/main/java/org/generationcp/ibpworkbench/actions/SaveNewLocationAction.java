@@ -83,7 +83,10 @@ public class SaveNewLocationAction implements ClickListener{
             newLocation.setLocationName(location.getLocationName());
             newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
             newLocation.setLocationId(nextKey);
-
+            
+            newLocation.setLtype(location.getLtype() != null ? location.getLtype() : 0);
+            newLocation.setCntryid(location.getCntryid() != null ? location.getCntryid() : 0);
+            
             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
 
             LOG.info(app.getSessionData().getProjectLocationData().toString());
@@ -94,7 +97,9 @@ public class SaveNewLocationAction implements ClickListener{
             newLoc.setLocid(newLocation.getLocationId());
             newLoc.setLname(newLocation.getLocationName());
             newLoc.setLabbr(newLocation.getLocationAbbreviation());
-
+            newLoc.setLtype(newLocation.getLtype() != null ? newLocation.getLtype() : 0);
+            newLoc.setCntryid(newLocation.getCntryid() != null ? newLocation.getCntryid() : 0);
+            
             if (projectLocationsComponent != null) {
                 projectLocationsComponent.getSelect().addItem(newLoc);
                 projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());

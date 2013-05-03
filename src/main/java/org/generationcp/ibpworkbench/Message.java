@@ -127,6 +127,8 @@ public enum Message {
     
     ,LOC_NAME
     ,LOC_ABBR
+    ,LOC_TYPE
+    ,LOC_COUNTRY
     ,BREED_METH_NAME
     ,BREED_METH_DESC
     ,BREED_METH_GRP
