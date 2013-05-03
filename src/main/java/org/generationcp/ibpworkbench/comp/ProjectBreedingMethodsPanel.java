@@ -316,7 +316,6 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 
                  for (Object itemId : container.getItemIds()) {
                      Method method = (Method) itemId;
-
                      selectMethods.setItemCaption(itemId, method.getMname());
                  }
                  populateExistingBreedingMethods();
@@ -368,11 +367,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         }
 
         for (Method method : methodList) {
-            beanItemContainer.addBean(method);
-        }
-        
-        if(selectedMethod.size() > 0){
-        	for(Method method:selectedMethod){
+        	if (!selectedMethod.contains(method)){
         		beanItemContainer.addBean(method);
         	}
         }
@@ -439,19 +434,24 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
             workbenchDataManager.deleteProjectMethod(projectMethod);
         }
         //delete all method first in the local database
-        List<Method> methodsList = germplasmDataManager.getAllMethods();
-        for (Method method : methodsList){
-            germplasmDataManager.deleteMethod(method);
-        }
+        //List<Method> methodsList = germplasmDataManager.getAllMethods();
+        //for (Method method : methodsList){
+        //    germplasmDataManager.deleteMethod(method);
+        //}
 
         List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
         int mID = 0;
         for (Method m : methods) {
             ProjectMethod projectMethod = new ProjectMethod();
             if(m.getMid() < 1){
-                //save the added  method to the local database created
-                Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,0);
-                mID = germplasmDataManager.addMethod(newMethod);
+                //save the added  method to the local database if doesn't exist
+            	Method m2 = germplasmDataManager.getMethodByID(m.getMid());
+                if (m2==null){
+                	Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,0);
+                	mID = germplasmDataManager.addMethod(newMethod);
+                }else{
+                	mID = m2.getMid();
+                }
             }else{
                 mID=m.getMid();
             }
@@ -536,12 +536,18 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     		
     		Date date;
 			try {
-				date = df.parse(String.valueOf(m.getMdate()));
-				String formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
+				
+				String formattedDate;
+				try{
+					date = df.parse(String.valueOf(m.getMdate()));
+					formattedDate = (new SimpleDateFormat("MM/dd/yyyy")).format(date);
+				}catch(ParseException e){
+					formattedDate = null;
+				}
 				
 				setBreedingMethodDetailsValues(m.getMname(),m.getMdesc(),m.getMgrp(),m.getMcode(),m.getMtype(),formattedDate,isOdd);
 				
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -566,6 +572,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 	   		c.addComponent(mgrpLbl,"mgrp");
 	   		c.addComponent(mcodeLbl,"mcode");
 	   		c.addComponent(mtypeLbl,"mtype");
+	   		if (mdate != null)
 	   		c.addComponent(mdateLbl,"mdate");
 	   	
 	   		main.addComponent(c);
