@@ -44,6 +44,8 @@ import com.vaadin.ui.Window.Notification;
 public class RunBreedingViewAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
+    private final static Logger log = LoggerFactory.getLogger(RunBreedingViewAction.class);
+    
     private SelectDetailsForBreedingViewWindow source;
     
     public RunBreedingViewAction(SelectDetailsForBreedingViewWindow selectDetailsForBreedingViewWindow) {
@@ -197,8 +199,12 @@ public class RunBreedingViewAction implements ClickListener {
             runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
             
         } catch (BreedingViewXMLWriterException e) {
+            log.debug("Cannot write Breeding View input XML", e);
+            
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         } catch (IOException e) {
+            log.debug("Cannot write Breeding View input XML", e);
+            
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }
             

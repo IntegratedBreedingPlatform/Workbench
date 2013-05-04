@@ -26,6 +26,7 @@ import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.Fieldbook;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
+import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -107,15 +108,18 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         phenotypic.setColumns(breedingViewInput.getColumns());
         phenotypic.setGenotypes(breedingViewInput.getGenotypes());
         phenotypic.setFieldbook(fieldbook);
-        phenotypic.setWebApiUrl(webApiUrl);
+        
+        SSAParameters ssaParameters = new SSAParameters();
+        ssaParameters.setWebApiUrl(webApiUrl);
 
         Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
         if(workbenchProject != null) {
-            phenotypic.setWorkbenchProjectId(workbenchProject.getProjectId());
+            ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
         }
         try{
             String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            phenotypic.setOutputDirectory(installationDirectory);
+            String outputDirectory = String.format("%s/workspace/%s-%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId(), workbenchProject.getProjectName());
+            ssaParameters.setOutputDirectory(outputDirectory);
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
                     + ": " + ex.getMessage(), ex);
@@ -133,6 +137,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         project.setVersion(breedingViewInput.getVersion());
         project.setType(projectTypeElem);
         project.setPhenotypic(phenotypic);
+        project.setSsaParameters(ssaParameters);
         
         //prepare the writing of the xml
         JAXBContext context = null;
