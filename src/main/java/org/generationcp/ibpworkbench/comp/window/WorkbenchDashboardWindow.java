@@ -54,7 +54,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
-    private static final String VERSION = "1.1.3.11";
+    private static final String VERSION = "1.1.4.1";
     
     private Label workbenchTitle;
     private Button homeButton;
