@@ -162,6 +162,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     {
     	Window mywindow = null;
     	Boolean windowLaunched = false;
+    	String windowCaption = "";
+    	
     	if(WindowEnum.BREEDING_GXE.getwindowName().equals(windowName) )
     	{
     		mywindow = new GxeAnalysisWindow(this.project);
@@ -169,6 +171,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		window.addWindow(mywindow);
     		windowLaunched = true;
+    		
+    		windowCaption = mywindow.getCaption();
     	}
     	else if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
@@ -178,6 +182,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		window.addWindow(mywindow);
     		windowLaunched = true;
+    		
+    		windowCaption = mywindow.getCaption();
     	}
     	
     	else if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) )
@@ -189,6 +195,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		window.addWindow(mywindow);
     		windowLaunched = false;
+    		
+    		windowCaption = mywindow.getCaption();
     	}
     	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
     	{
@@ -200,8 +208,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     				messageSource.getMessage(Message.CANCEL),
     				new BackupIBDBSaveAction(this.project, window));
     		
-    		// just a dummy window
-    		mywindow = new Window(messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION));
+
+    		windowCaption = messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION);
     		
     		windowLaunched = true;
     	}
@@ -210,6 +218,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		//LOG.debug("Add Restore IBDB Window");
     		mywindow = new RestoreIBDBWindow(this.project);
     		window.addWindow(mywindow);
+
+    		windowCaption = mywindow.getCaption();
     		
     		windowLaunched = true;
     		
@@ -229,7 +239,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
                 User user = app.getSessionData().getUserData();
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+ mywindow.getCaption(), user, new Date());
+                //TODO: internationalize this
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+ windowCaption, user, new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
 

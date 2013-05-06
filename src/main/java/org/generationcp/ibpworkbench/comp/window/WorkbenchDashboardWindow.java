@@ -458,8 +458,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
         messageSource.setCaption(helpButton, Message.HELP);
         
-        
-        
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
         messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
         messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);

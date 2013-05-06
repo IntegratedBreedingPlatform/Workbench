@@ -542,9 +542,42 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         initializeComponents();
         initializeLayout();
         initializeActions();
+        
+        initializeLabels();
+        
     }
     
-    @Override
+    private void initializeLabels() {
+    	messageSource.setValue(administrationTitle,Message.ADMINISTRATION_TITLE);
+        messageSource.setCaption(membersButton,Message.MEMBERS_LINK);
+        messageSource.setCaption(backupIBDBButton,Message.BACKUP_IBDB_LINK);
+        messageSource.setCaption(restoreIBDBButton,Message.RESTORE_IBDB_LINK);
+        messageSource.setCaption(projectMethodsButton,Message.PROJECT_METHODS_LINK);
+        messageSource.setCaption(projectLocationButton,Message.PROJECT_LOCATIONS_LINK);
+        
+        messageSource.setValue(projectPlanningTitle,Message.PROJECT_PLANNING_TITLE);
+        messageSource.setCaption(browseGermplasmButton,Message.GERMPLASM_BROWSER_LINK);
+        messageSource.setCaption(browseStudiesButton,Message.STUDY_BROWSER_LINK);
+        messageSource.setCaption(browseGermplasmListsButton,Message.GERMPLASM_LIST_BROWSER_LINK);
+        
+        messageSource.setValue(analysisPipelineTitle,Message.ANALYSIS_PIPELINE_TITLE);
+        messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK);
+        messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
+        
+        messageSource.setValue(genoTypingTitle,Message.GENOTYPING_TITLE);
+        messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
+        
+        messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
+        messageSource.setCaption(fieldbookButton,Message.FIELDBOOK_LINK);
+        messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
+        
+        messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
+        messageSource.setCaption(optimasButton, Message.OPTIMAS_LINK);
+        messageSource.setCaption(mbdtButton,Message.MBDT_LINK); 
+	}
+
+	@Override
     public void attach() {
         super.attach();        
         updateLabels();
