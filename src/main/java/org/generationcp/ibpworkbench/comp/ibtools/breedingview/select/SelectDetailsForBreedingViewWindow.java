@@ -215,16 +215,22 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         lblVersion = new Label();
         lblProjectType = new Label();
         lblAnalysisName = new Label();
+        lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
         lblSiteEnvironment = new Label();
         lblSpecifyEnvFactor = new Label();
         lblSelectEnvironmentForAnalysis = new Label();
         lblSpecifyNameForAnalysisEnv = new Label();
+        lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
         lblDesign = new Label();
         lblDesignType = new Label();
+        lblDesignType.setContentMode(Label.CONTENT_XHTML);
         lblReplicates = new Label();
         lblBlocks = new Label();
+        lblBlocks.setContentMode(Label.CONTENT_XHTML);
         lblSpecifyRowFactor = new Label();
+        lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
         lblSpecifyColumnFactor = new Label();
+        lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
         lblGenotypes = new Label();
         
         txtVersion = new TextField();
@@ -410,7 +416,18 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                 && !factor.getFactorId().equals(this.factorIdsMap.get(FIELD_PLOT))){
                 this.selEnvFactor.addItem(factor.getName());
             }
-        }        
+        } 
+        
+        if (this.selEnvFactor.getItemIds().size() < 1) {
+        	this.selEnvFactor.setEnabled(false);
+        }else{
+        	this.selEnvFactor.setEnabled(true);
+        }
+        
+        if (((String)this.selEnvFactor.getValue()) == "" && this.selEnvForAnalysis != null) {
+        	this.selEnvForAnalysis.removeAllItems();
+        	this.selEnvForAnalysis.setEnabled(false);
+        }
     }
     
     public void populateChoicesForEnvForAnalysis(){
@@ -445,8 +462,16 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                     //do nothing for now
                 }
             }
+            
+            if (this.selEnvForAnalysis.getItemIds().size() < 1) {
+            	this.selEnvForAnalysis.setEnabled(false);
+            }else{
+            	this.selEnvForAnalysis.setEnabled(true);
+            }
+            
         } else {
             this.selEnvForAnalysis.removeAllItems();
+            this.selEnvForAnalysis.setEnabled(false);
         }
     }
     
@@ -515,6 +540,12 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                 this.selReplicates.addItem(factor.getName());
             }
         } 
+        
+        if (this.selReplicates.getItemIds().size() < 1) {
+        	this.selReplicates.setEnabled(false);
+        }else{
+        	this.selReplicates.setEnabled(true);
+        }
     }
     
     private void populateChoicesForBlocks(){
@@ -535,6 +566,12 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                 && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
                 this.selBlocks.addItem(factor.getName());
             }
+        }
+        
+        if (this.selBlocks.getItemIds().size() < 1) {
+        	this.selBlocks.setEnabled(false);
+        }else{
+        	this.selBlocks.setEnabled(true);
         }
     }
     
@@ -557,6 +594,12 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                 this.selRowFactor.addItem(factor.getName());
             }
         }
+        
+        if (this.selRowFactor.getItemIds().size() < 1) {
+        	this.selRowFactor.setEnabled(false);
+        }else{
+        	this.selRowFactor.setEnabled(true);
+        }
     }
     
     private void populateChoicesForColumnFactor(){
@@ -577,6 +620,12 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                 && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
                 this.selColumnFactor.addItem(factor.getName());
             }
+        }
+        
+        if (this.selColumnFactor.getItemIds().size() < 1) {
+        	this.selColumnFactor.setEnabled(false);
+        }else{
+        	this.selColumnFactor.setEnabled(true);
         }
     }
     
