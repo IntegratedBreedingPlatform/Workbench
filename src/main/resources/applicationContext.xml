@@ -117,4 +117,6 @@
             </map>
         </property>
     </bean>
+
+    <bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
 </beans>

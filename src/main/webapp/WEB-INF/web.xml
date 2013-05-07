@@ -34,6 +34,19 @@
     <servlet-name>web_login_forward</servlet-name>
     <servlet-class>org.generationcp.ibpworkbench.servlet.WebLoginForwardServlet</servlet-class>
   </servlet>
+    <servlet>
+    <servlet-name>mvcdispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:ibpworkbench-servlet.xml</param-value>
+        </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+    <servlet-mapping>
+        <servlet-name>mvcdispatcher</servlet-name>
+        <url-pattern>/controller/*</url-pattern>
+    </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ibpworkbench</servlet-name>
     <url-pattern>/main/*</url-pattern>
