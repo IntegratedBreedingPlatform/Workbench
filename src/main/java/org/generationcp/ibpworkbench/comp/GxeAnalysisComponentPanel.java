@@ -80,6 +80,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private Accordion accordion;
     private Tree studiesTree;
     private Object[][] studies;
+    private String[] stringList;
     private Panel studiesPanel;
     private TabSheet studiesTabsheet;
     private Button previousButton;
@@ -306,30 +307,104 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         return projectUserRoles;
 
     }
-    private void initializeMembersTable() {
+    
+    private void initializeTable()
+    {
+    	
         tblMembers = new Table();
         tblMembers.setImmediate(true);
         
-        inheritedRoles = getRolesForProjectMembers();
+        final List<Object> columnIds = new ArrayList<Object>();
+       
         
-        List<Role> roleList = new ArrayList<Role>();
-        try {
-            
-            // Add the roles in this order: CB, MAS, MABC, MARS
-            List<Role> roles = workbenchDataManager.getAllRolesOrderedByLabel();
-            for (Role role: roles){
-              //  if (!role.getName().equals(Role.MANAGER_ROLE_NAME)) {
-                    roleList.add(role);
-               // }
+        List<String> columnHeaders = new ArrayList<String>();
+       
+        
+        
+        
+        // prepare the container
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("userId", Integer.class, null);
+        container.addContainerProperty("userName", String.class, null);
+        
+        for (String role : stringList) {
+        	
+        	if(role.equalsIgnoreCase("Environment"))
+            {
+	            columnIds.add("role_" +role);
+	            columnHeaders.add(role);
+	            container.addContainerProperty("role_" + role, String.class, null);
+            }else{
+	            columnIds.add("role_" +role);
+	            columnHeaders.add(role);
+	            container.addContainerProperty("role_" + role, Boolean.class, Boolean.TRUE);
             }
-            
-            
         }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
+        
+        
+        tblMembers.setContainerDataSource(container);
+        
+        tblMembers.setVisibleColumns(columnIds.toArray(new Object[0]));
+        tblMembers.setColumnHeaders(columnHeaders.toArray(new String[0]));
+        
+        tblMembers.setEditable(true);
+        tblMembers.setTableFieldFactory(new TableFieldFactory() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+                int columnIndex = columnIds.indexOf(propertyId);
+               
+                if (!propertyId.toString().equalsIgnoreCase("role_environment")) {
+                    return new CheckBox();
+                }
+                return null;
+            }
+        });
+    }
+    
+    protected void initializeContents() 
+    {
+    	 Container container = tblMembers.getContainerDataSource();
+    	 
+    	
+         Collection<?> itemIds = container.getItemIds();
+         Object obj = new Object();
+         
+         Item item = container.addItem(obj);
+         
+         
+         for (String role : stringList) {
+            
+             if(role.equalsIgnoreCase("environment"))
+             {
+            	 item = container.addItem(role);
+                 item.getItemProperty("userId").setValue(1);
+                 item.getItemProperty("userName").setValue(role);
+                 item.getItemProperty("role_" + role).setValue("Env");
+             }else
+             {
+            	 item = container.addItem(role);
+                 item.getItemProperty("userId").setValue(1);
+                 item.getItemProperty("userName").setValue(role);
+                 item.getItemProperty("role_" + role).setValue("true");
+             }
+             
+             
+         }
+         
+        
+    }
+
+	
+    private void initializeMembersTable() {
+    	
+    	stringList = new String[] {" ","environment","height","maturity","rust","height 1"};
+    	initializeTable();
+    	initializeContents(); 
+    	/*
+        tblMembers = new Table();
+        tblMembers.setImmediate(true);
         
         final List<Object> columnIds = new ArrayList<Object>();
         columnIds.add("userName");
@@ -340,6 +415,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty("userId", Integer.class, null);
         container.addContainerProperty("userName", String.class, null);
+        
         for (Role role : roleList) {
             columnIds.add("role_" + role.getRoleId());
             columnHeaders.add(role.getName());
@@ -367,6 +443,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 return null;
             }
         });
+        
+        */
     }
 
     protected void initializeValues() {
