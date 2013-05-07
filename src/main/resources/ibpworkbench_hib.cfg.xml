@@ -15,9 +15,11 @@
         <property name="hibernate.c3p0.timeout">300</property> 
         <property name="hibernate.c3p0.max_statements">50</property> 
         <property name="hibernate.c3p0.idle_test_period">3000</property>
+        <property name="hibernate.show_sql">true</property>
         
         <mapping class="org.generationcp.middleware.pojos.Person"/> 
         <mapping class="org.generationcp.middleware.pojos.User"/>
+        <mapping class="org.generationcp.middleware.pojos.UserDetails"/>
         
         <mapping class="org.generationcp.middleware.pojos.workbench.Contact"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.CropType"/>

@@ -269,18 +269,18 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 			//User user = (User) event.getComponent().getApplication().getUser();
     		if(username == null)
     		{
-    			System.out.println("Login Counter : username is null");
+    			//System.out.println("Login Counter : username is null");
     			return;
     		}
     		System.out.println("workbenchDataManager.getUserLogInCounter(username) "+username+" "+ workbenchDataManager.getUserLogInCounter(username));
 			if(workbenchDataManager.getUserLogInCounter(username) < 1)
 			{
 				System.out.println("Open Window");
-				//OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				//ow.launchWindow(this, "change_password");
+				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+				ow.launchWindow(this, "change_password");
 				
 				UserDetails userDetails = new UserDetails();
-				userDetails.setUname(username);
+				userDetails.setName(username);
 				userDetails.setUlogincnt(1);
 				workbenchDataManager.addUserDetailsRecord(userDetails);
 				
