@@ -21,7 +21,6 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveUsersInProjectAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -43,15 +42,19 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.TwinColSelect;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 
 
@@ -68,13 +71,17 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private static final long serialVersionUID = 1L;
     
    
-    private TwinColSelect select;
+ //   private TwinColSelect select;
     
     private Button newMemberButton;
     private Button saveButton;
     
     private Table tblMembers;
-    
+    private Accordion accordion;
+    private Tree studiesTree;
+    private Object[][] studies;
+    private Panel studiesPanel;
+    private TabSheet studiesTabsheet;
     private Button previousButton;
 //    private Button nextButton;
     private Component buttonArea;
@@ -110,29 +117,118 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         }
     }
 
+    protected void createStudies()
+    {
+    	studies = new Object[][]{
+                new Object[]{"Mercury"}, 
+                new Object[]{"Venus"},
+                new Object[]{"Earth", "The Moon"},    
+                new Object[]{"Mars", "Phobos", "Deimos"},
+                new Object[]{"Jupiter", "Io", "Europa", "Ganymedes",
+                                        "Callisto"},
+                new Object[]{"Saturn",  "Titan", "Tethys", "Dione",
+                                        "Rhea", "Iapetus"},
+                new Object[]{"Uranus",  "Miranda", "Ariel", "Umbriel",
+                                        "Titania", "Oberon"},
+                new Object[]{"Neptune", "Triton", "Proteus", "Nereid",
+                                        "Larissa"}};
+    }
+    protected void refreshStudies()
+    {
+    	 /* Add planets as root items in the tree. */
+        for (int i=0; i<studies.length; i++) {
+            String planet = (String) (studies[i][0]);
+            studiesTree.addItem(planet);
+            
+            if (studies[i].length == 1) {
+                // The planet has no moons so make it a leaf.
+            	studiesTree.setChildrenAllowed(planet, false);
+            } else {
+                // Add children (moons) under the planets.
+                for (int j=1; j<studies[i].length; j++) {
+                    String moon = (String) studies[i][j];
+                    
+                    // Add the item as a regular item.
+                    studiesTree.addItem(moon);
+                    
+                    // Set it to be a child.
+                    studiesTree.setParent(moon, planet);
+                    
+                    // Make the moons look like leaves.
+                    studiesTree.setChildrenAllowed(moon, false);
+                }
+
+                // Expand the subtree.
+                studiesTree.expandItemsRecursively(studies);
+            }
+        }
+        
+        
+    }
+    
+    protected Accordion generateTabComponent(TabSheet tab, String caption)
+    {
+    	
+    	Accordion accord = new Accordion();
+    	
+    	initializeMembersTable();
+    	accord.addTab(tblMembers);
+    	accord.getTab(tblMembers).setCaption("Table");
+    	tab.addTab(accord);
+    	tab.getTab(accord).setCaption(caption);
+    	
+    	return accord;
+    }
+    protected TabSheet generateTabSheet()
+    {
+    	TabSheet tab = new TabSheet();
+    	generateTabComponent(tab, "ANM87AMA");
+    	generateTabComponent(tab, "ANM87ABA");
+    	generateTabComponent(tab, "ANM87ABK");
+    	generateTabComponent(tab, "AAAAAA");
+    	
+    	tab.setWidth("800px");
+        tab.setHeight("700px");
+        
+    	return tab;
+    }
     protected void initializeComponents(){
 
-        setSpacing(true);
-        setMargin(true);
-        
-        select = new TwinColSelect();
-        select.setLeftColumnCaption("Available Users");
-        select.setRightColumnCaption("Selected Project Members");
-        select.setRows(10);
-        select.setWidth("400px");
-        select.setMultiSelect(true);
-        select.setNullSelectionAllowed(true);
-        select.setImmediate(true);
-        
-        addComponent(select);
-        
+       setSpacing(true);
+       setMargin(true);
+       createStudies();
+       
+       HorizontalLayout horizontal = new HorizontalLayout();
+       
+       
+       studiesTree = new Tree("Studies");
+       studiesTree.setImmediate(true);
+       studiesPanel = new Panel();
+       refreshStudies();
+       
         
         
-        initializeMembersTable();
-        addComponent(tblMembers);
+       
+        
+        
+        studiesTabsheet = generateTabSheet();
+        
+        
+        
+        studiesPanel.addComponent(studiesTree);
+        
+        studiesPanel.setWidth("200px");
+        studiesPanel.setHeight("700px");
+        
+        
+        
+        horizontal.addComponent(studiesPanel);
+        horizontal.addComponent(generateTabSheet());
+        
         
         buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
+       //addComponent(buttonArea);
+        addComponent(horizontal);
         
     }
     
@@ -277,12 +373,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         try {
             Container container = createUsersContainer();
             
-            select.setContainerDataSource(container);
-            	
-            for (Object itemId : container.getItemIds()) {
-                User user = (User) itemId;
-                select.setItemCaption(itemId, user.getPerson().getDisplayName());
-            }
+            
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting workbench users", e);
@@ -295,7 +386,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+      
     }
     	
     protected void initializeUsers() throws MiddlewareQueryException 
@@ -322,65 +413,36 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
              List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, userTemp);
              setInheritedRoles(item,projroles);
              
-             this.select.select(userTemp);
+             //this.select.select(userTemp);
             
            
          }
         
     }
     protected void initializeActions() {
-        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+      //  newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         saveButton.addListener(new SaveUsersInProjectAction(this.project, tblMembers ));
+        studiesTree.addListener(new StudiesTreeAction());
         
         
-        select.addListener(new ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-            try{   
-            	Property property = event.getProperty();
-                Set<User> selectedItems = (Set<User>) property.getValue();
-                System.out.println("valueChange");
-                Container container = tblMembers.getContainerDataSource();
-
-                // remove non-selected items
-                Collection<?> itemIds = container.getItemIds();
-                List<Object> deleteTargets = new ArrayList<Object>();
-                for (Object itemId : itemIds) {
-                    if (!selectedItems.contains(itemId)) {
-                        deleteTargets.add(itemId);
-                        System.out.println("deleteTargets " +itemId );
-                    }
-                }
-                for (Object itemId : deleteTargets) {
-                    container.removeItem(itemId);
-                }
-                
-                // add newly selected items
-                itemIds = container.getItemIds();
-                for (User user : selectedItems) {
-                    if (!itemIds.contains(user)) {
-                        Item item = container.addItem(user);
-                        item.getItemProperty("userId").setValue(1);
-                        item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
-                        //item.getItemProperty("")
-                        List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, user);
-                        setInheritedRoles(item,projroles);
-                      
-                    }
-                }
-               
-            
-            }catch(MiddlewareQueryException e)
-            {
-            	
-            }
-            }
-        }); 
     }
     
-   
+    private class StudiesTreeAction implements ValueChangeListener
+    {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println(event);
+			
+		}
+    	
+    }
 
 
 	protected Component layoutButtonArea() {
@@ -433,9 +495,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 
     public boolean validateAndSave(){
         if (validate()) {
-            Set<User> members = (Set<User>) select.getValue();
+           // Set<User> members = (Set<User>) select.getValue();
            
-            project.setMembers(members);
+           // project.setMembers(members);
            // createProjectPanel.setProject(project);
         }
         return true;    // members not required, so even if there are no values, this returns true
