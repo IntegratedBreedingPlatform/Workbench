@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -483,6 +484,7 @@ public class DatasetExporter {
         
         try {
             //write the excel file
+        	new File(filename).createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             workbook.write(fileOutputStream);
             fileOutputStream.close();

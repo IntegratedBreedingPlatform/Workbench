@@ -81,6 +81,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button qtlBreedingViewButton;
 
     private Button optimasButton;
+    
+    private Button manageGermplasmListsButton;
 
     private Embedded downArrow11;
     private Embedded downArrow12;
@@ -211,7 +213,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         optimasButton = new Button();
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
-
+        
+        manageGermplasmListsButton = new Button();
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setSizeUndefined();
+        
         // arrows
         downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow12 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -342,6 +348,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(manageGermplasmListsButton);
+        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(manageGermplasmListsButton, 0);
 
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
@@ -643,6 +653,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
         }
     }
 
@@ -712,5 +723,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
+        
+        messageSource.setCaption(manageGermplasmListsButton, Message.LIST_MANAGER);
+        messageSource.setDescription(manageGermplasmListsButton, Message.CLICK_TO_LAUNCH_LIST_MANAGER);
     }
 }

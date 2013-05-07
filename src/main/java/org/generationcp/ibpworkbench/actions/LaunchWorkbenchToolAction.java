@@ -71,6 +71,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,BREEDING_MANAGER("breeding_manager")
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
+        ,LIST_MANAGER("list_manager")
         ;
         
         String toolName;
@@ -91,7 +92,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     || ToolEnum.FIELDBOOK.getToolName().equals(toolName) 
                     || ToolEnum.OPTIMAS.getToolName().equals(toolName) 
                     || ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) 
-                    || ToolEnum.BREEDING_VIEW.getToolName().equals(toolName) 
+                    || ToolEnum.BREEDING_VIEW.getToolName().equals(toolName)
+                    || ToolEnum.LIST_MANAGER.getToolName().equals(toolName) 
                     ) {
                 return true;
             }   return false;

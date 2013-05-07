@@ -291,6 +291,11 @@ public class ToolUtil {
 			updateToolMiddlewareDatabaseConfiguration(
 					"infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties",
 					centralDbName, localDbName, username, password);
+		} else if (Util.isOneOf(tool.getToolName(),
+				ToolName.list_manager.name())) {
+			updateToolMiddlewareDatabaseConfiguration(
+					"infrastructure/tomcat/webapps/BreedingManager/WEB-INF/classes/IBPDatasource.properties",
+					centralDbName, localDbName, username, password);
 		} else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
 			updateToolMiddlewareDatabaseConfiguration(
 					"infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties",

@@ -34,6 +34,11 @@
           label="Browse Germplasm Information"
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
+          
+    <view path="/list_manager"
+          label="Manage Germplasm Lists"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
     
     <view path="/study_browser"
           label="Browse Studies and Datasets"
