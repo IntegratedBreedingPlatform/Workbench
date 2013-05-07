@@ -85,6 +85,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+	private Button manageGermplasmListsButton;
+
+	private Button breedingViewMultiSiteAnalysisButton;
+
     public MasWorkflowDiagram(boolean workflowPreview, Project project) {
         this.workflowPreview = workflowPreview;
         
@@ -147,12 +151,17 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Breeding Manager");
         
+        manageGermplasmListsButton = new Button("Manage Germplasm Lists");
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setSizeUndefined();
+        manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
+        
         browseGenotypingDataButton = new Button("Browse Genotyping Data");
         browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGenotypingDataButton.setSizeUndefined();
         browseGenotypingDataButton.setDescription("Click to launch genotyping data");
 
-        breedingViewButton = new Button("Breeding View Standalone (all analysis)");
+        breedingViewButton = new Button("Breeding View Standalone (all analyses)");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
@@ -167,6 +176,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
 
+        breedingViewMultiSiteAnalysisButton = new Button("Multi-Site Analysis");
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setSizeUndefined();
+        breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis");
+        
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
@@ -209,7 +223,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("620px");
-        layout.setHeight("800px");
+        layout.setHeight("850px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -246,7 +260,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Component statisticalAnalysisArea = layoutStatisticalAnalysis();
         layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage4, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
         
@@ -294,20 +308,22 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(browseGermplasmButton);
-       // browseGermplasmButton.setHeight("20px");
+        browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        //browseStudiesButton.setHeight("20px");
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
+        browseGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
         layout.addComponent(browseGenotypingDataButton);
+        browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
@@ -328,10 +344,18 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        layout.addComponent(manageGermplasmListsButton);
+        manageGermplasmListsButton.setHeight("20px");
+        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(manageGermplasmListsButton, 0);
+        
         layout.addComponent(breedingManagerButton);
+        breedingManagerButton.setHeight("20px");
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
 
+        
+        
         return layout;
     }
 
@@ -380,10 +404,17 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     protected Component layoutStatisticalAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
 
         layout.addComponent(statisticalAnalysisTitle);
         layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(statisticalAnalysisTitle, 0);
+        
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("5px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
         breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
@@ -395,6 +426,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
+        layout.addComponent(breedingViewMultiSiteAnalysisButton);
+        breedingViewMultiSiteAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
+        
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
@@ -467,10 +503,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+            breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
         }
@@ -480,9 +518,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         initializeComponents();
         initializeLayout();
         initializeActions();
+        
     }
     
-    @Override
+	@Override
     public void attach() {
         super.attach();        
         updateLabels();
@@ -495,5 +534,9 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         } else {
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
+        
+        messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
+        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
     }
 }

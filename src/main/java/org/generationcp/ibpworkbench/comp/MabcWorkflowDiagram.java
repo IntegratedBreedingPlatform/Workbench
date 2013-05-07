@@ -40,7 +40,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 110;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 130;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 160;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -85,6 +85,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+	private Button manageGermplasmListsButton;
+
+	private Button breedingViewMultiSiteAnalysisButton;
 
     public MabcWorkflowDiagram(boolean workflowPreview, Project project) {
         this.workflowPreview = workflowPreview;
@@ -133,6 +137,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         browseGermplasmButton.setSizeUndefined();
         browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
         
+        manageGermplasmListsButton = new Button("Manage Germplasm Lists");
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setSizeUndefined();
+        manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
+        
         browseGenotypingDataButton = new Button("Browse Genotyping Data");
         browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGenotypingDataButton.setSizeUndefined();
@@ -153,7 +162,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
         
-        breedingViewButton = new Button("Breeding View Standalone (all analysis)");
+        breedingViewButton = new Button("Breeding View Standalone (all analyses)");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
@@ -168,6 +177,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
 
+        breedingViewMultiSiteAnalysisButton = new Button("Multi-site Analysis");
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setSizeUndefined();
+        breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis on Study Datasets");
+        
         gdmsButton = new Button("Manage Genotyping Data");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
@@ -215,7 +229,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("620px");
-        layout.setHeight("800px");
+        layout.setHeight("870px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -252,7 +266,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         Component statisticalAnalysisArea = layoutStatisticalAnalysis();
         layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage4, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
         
@@ -300,20 +314,27 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(browseGermplasmButton);
-      //  browseGermplasmButton.setHeight("20px");
+        browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-      //  browseStudiesButton.setHeight("20px");
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
+        layout.addComponent(manageGermplasmListsButton);
+		manageGermplasmListsButton.setHeight("20px");
+        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(manageGermplasmListsButton, 0);
+          
         layout.addComponent(browseGermplasmListsButton);
+        browseGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
         layout.addComponent(browseGenotypingDataButton);
+        browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
@@ -334,16 +355,16 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        /*
+        layout.addComponent(mbdtButton);
+        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mbdtButton, 0);
+         */
+        
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
         
-        layout.addComponent(mbdtButton);
-        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(mbdtButton, 0);
-
-        
-
         return layout;
     }
 
@@ -395,10 +416,18 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+        
         layout.addComponent(statisticalAnalysisTitle);
         layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(statisticalAnalysisTitle, 0);
 
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+        
         layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
         breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
@@ -409,6 +438,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
+        layout.addComponent(breedingViewMultiSiteAnalysisButton);
+        breedingViewMultiSiteAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
+        
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
@@ -491,6 +525,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));	// TODO
         }
     }
 
@@ -513,5 +550,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         } else {
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
+        
+        messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
+        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
     }
 }

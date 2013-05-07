@@ -87,6 +87,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Link backupIBDBLink;
 	private Button restoreIBDBButton;
 
+	private Button breedingViewMultiSiteAnalysisButton;
+
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -165,6 +167,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
 
+        breedingViewMultiSiteAnalysisButton = new Button();
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setSizeUndefined();
+        breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis");
+        
+        
         gdmsButton = new Button("GDMS");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
@@ -218,8 +226,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
         restoreIBDBButton.setSizeUndefined();
         restoreIBDBButton.setDescription(messageSource.getMessage(Message.RESTORE_IBDB_LINK_DESC));
-        
-
     }
 
     protected void initializeLayout() {
@@ -308,8 +314,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
-
-        
         
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
@@ -348,17 +352,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton.setHeight("20px");
         layout.setComponentAlignment(membersButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(membersButton, 0);
-        
-        
-        layout.addComponent(projectMethodsButton);
-        projectMethodsButton.setHeight("20px");
-        layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectMethodsButton, 0);
-        
-        layout.addComponent(projectLocationButton);
-        projectLocationButton.setHeight("20px");
-        layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectLocationButton, 0);
 
         /*layout.addComponent(backupIBDBButton);
         backupIBDBButton.setHeight("20px");
@@ -379,6 +372,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         restoreIBDBButton.setHeight("20px");
         layout.setComponentAlignment(restoreIBDBButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(restoreIBDBButton, 0);
+
+        
+        layout.addComponent(projectMethodsButton);
+        projectMethodsButton.setHeight("20px");
+        layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectMethodsButton, 0);
+        
+        layout.addComponent(projectLocationButton);
+        projectLocationButton.setHeight("20px");
+        layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(projectLocationButton, 0);
         
         return layout;
     }
@@ -466,6 +470,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
+        layout.addComponent(breedingViewMultiSiteAnalysisButton);
+        breedingViewMultiSiteAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
+        
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
@@ -488,10 +497,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(optimasButton);
+        optimasButton.setHeight("20px");
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
   
         layout.addComponent(mbdtButton);
+        mbdtButton.setHeight("20px");
         layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mbdtButton, 0);
         
@@ -545,6 +556,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+            breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
+            
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
             membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
@@ -583,6 +596,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setValue(analysisPipelineTitle,Message.ANALYSIS_PIPELINE_TITLE);
         messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK);
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
+        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
         
         messageSource.setValue(genoTypingTitle,Message.GENOTYPING_TITLE);
@@ -594,8 +608,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
         messageSource.setCaption(optimasButton, Message.OPTIMAS_LINK);
-        messageSource.setCaption(mbdtButton,Message.MBDT_LINK); 
-	}
+        messageSource.setCaption(mbdtButton,Message.MBDT_LINK);
+
+        messageSource.setCaption(mbdtButton,Message.ACTION);
+    }
 
 	@Override
     public void attach() {
