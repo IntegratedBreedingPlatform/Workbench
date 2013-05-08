@@ -25,16 +25,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Upload;
 import com.vaadin.ui.Window;
 
 @Configurable
@@ -57,7 +55,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	private Button saveBtn;
 	
 	private static final String WINDOW_WIDTH = "400px";
-	private static final String WINDOW_HEIGHT = "355px";
+	private static final String WINDOW_HEIGHT = "400px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -70,6 +68,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	private Table table;
 
 	private BeanContainer<String, ProjectBackup> projectBackupContainer;
+
+	private Upload upload;
 
     public RestoreIBDBWindow(Project project) {
     	this.project = project;
@@ -168,6 +168,9 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		table.setWidth("100%");
 		table.setHeight("200px");
 		
+		upload = new Upload("Or upload an IB local backup file here:",null);
+		
+		
     }
 
     protected void initializeLayout() {
@@ -211,9 +214,16 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		hl.setExpandRatio(spacer,1.0f);
 		
 		rootLayout.addComponent(hl);
+		
+		// add upload
+		rootLayout.addComponent(upload);
+		
     }
 
     protected void initializeActions() {
+    	
+    	final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, table, this);
+    	
     	// DO button listeners + actions here
     	cancelBtn.addListener(new Button.ClickListener() {
 			
@@ -235,7 +245,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 						messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
 						messageSource.getMessage(Message.RESTORE),
 						messageSource.getMessage(Message.CANCEL),
-						new RestoreIBDBSaveAction(project,table,sourceWindow));
+						restoreAction);
 			}
 		});
     	
@@ -284,6 +294,9 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 				saveBtn.setEnabled(true);
 			}
     	});
+    	
+    	upload.setReceiver(restoreAction);
+    	upload.addListener(restoreAction);
     }
 
     protected void assemble() throws Exception {
@@ -306,5 +319,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		//messageSource.setCaption(select, Message.RESTORE_IBDB_TABLE_SELECT_CAPTION);
 		messageSource.setCaption(saveBtn,Message.RESTORE);
 		messageSource.setCaption(cancelBtn,Message.CANCEL);
+		
+		messageSource.setCaption(upload,Message.UPLOAD_IBDB_CAPTION);
 	}
 }
