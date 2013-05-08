@@ -86,6 +86,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private Button previousButton;
 //    private Button nextButton;
     private Component buttonArea;
+    private int countme = 0;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -107,15 +108,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 
     protected void assemble() {
         initializeComponents();
-        initializeValues();
+      
         initializeLayout();
         initializeActions();
-        try{
-        	initializeUsers();
-        }catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+       
     }
 
     protected void createStudies()
@@ -171,8 +167,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     {
     	
     	Accordion accord = new Accordion();
-    	
     	initializeMembersTable();
+    	
     	accord.addTab(tblMembers);
     	accord.getTab(tblMembers).setCaption("Table");
     	tab.addTab(accord);
@@ -198,6 +194,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        setSpacing(true);
        setMargin(true);
        createStudies();
+       
+       initializeMembersTable();
        
        HorizontalLayout horizontal = new HorizontalLayout();
        
@@ -226,88 +224,14 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         horizontal.addComponent(studiesPanel);
         horizontal.addComponent(generateTabSheet());
         
-        
-        buttonArea = layoutButtonArea();
-       //addComponent(buttonArea);
+      
         addComponent(horizontal);
         
     }
     
-    private List<CheckBox> createUserRolesCheckBoxList() {
-        List<Role> roles = null;
-        List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
-        
-        System.out.println("createUserRolesCheckBoxList");
-        
-        try {
-            roles = workbenchDataManager.getAllRolesOrderedByLabel();
-        } catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-        }
+  
 
-        for (Role role : roles) {
-            CheckBox cb = new CheckBox(role.getName());
-            cb.setData(role.getRoleId());
-            if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
-                //set default checked value
-                cb.setValue(true);
-            }
-            cb.setCaption(role.getLabel());
-            rolesCheckBoxList.add(cb);
-
-        }
-
-        return rolesCheckBoxList;
-
-    }
-
-    public List<Role> getRolesForProjectMembers(){
-        List<Role> roles = new ArrayList<Role>();
-        System.out.println("getRolesForProjectMembers");
-        for (CheckBox cb : createUserRolesCheckBoxList()) {
-            
-        	
-        	
-        	if ((Boolean) cb.getValue() == true) {
-                try {
-                    Role role = workbenchDataManager.getRoleById((Integer) cb.getData());
-                    //if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
-                    System.out.println("getRolesForProjectMembers id : "+cb.getData());
-                    System.out.println("getRolesForProjectMembers name : "+role.getName());
-                        roles.add(role);
-                    //}
-                } catch (MiddlewareQueryException e) {
-                  LOG.error("Error encountered while getting creator user roles", e);
-                  throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-            }
-        }
-        return roles;
-    }
-    
-    public List<ProjectUserRole> getProjectUserRoles() {
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        System.out.println("getProjectUserRoles");
-        for (CheckBox cb : createUserRolesCheckBoxList()) {
-            if ((Boolean) cb.getValue() == true) {
-                Role role;
-                try {
-                    role = workbenchDataManager.getRoleById((Integer) cb.getData());
-                    ProjectUserRole projectUserRole = new ProjectUserRole();
-                    projectUserRole.setRole(role);
-                    
-                    projectUserRoles.add(projectUserRole);
-                } catch (MiddlewareQueryException e) {
-                  LOG.error("Error encountered while getting project user roles", e);
-                  throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-            }
-        }
-        return projectUserRoles;
-
-    }
-    
+   
     private void initializeTable()
     {
     	
@@ -324,8 +248,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         // prepare the container
         IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("userId", Integer.class, null);
-        container.addContainerProperty("userName", String.class, null);
+        //container.addContainerProperty("userId", Integer.class, null);
+        //container.addContainerProperty("userName", String.class, null);
         
         for (String role : stringList) {
         	
@@ -333,7 +257,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
             {
 	            columnIds.add("role_" +role);
 	            columnHeaders.add(role);
-	            container.addContainerProperty("role_" + role, String.class, null);
+	            container.addContainerProperty("role_" + role, String.class, role);
             }else{
 	            columnIds.add("role_" +role);
 	            columnHeaders.add(role);
@@ -356,7 +280,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 int columnIndex = columnIds.indexOf(propertyId);
                
                 if (!propertyId.toString().equalsIgnoreCase("role_environment")) {
-                    return new CheckBox();
+                    return new CheckBox(propertyId.toString());
                 }
                 return null;
             }
@@ -368,31 +292,27 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	 Container container = tblMembers.getContainerDataSource();
     	 
     	
+    	 System.out.println("countme : "+ countme);
+    	 countme++;
+    	 
          Collection<?> itemIds = container.getItemIds();
          Object obj = new Object();
          
+         //Item item = container.addItem(obj);
+         
+         int cnt = 0;
          Item item = container.addItem(obj);
-         
-         
          for (String role : stringList) {
-            
-             if(role.equalsIgnoreCase("environment"))
-             {
-            	 item = container.addItem(role);
-                 item.getItemProperty("userId").setValue(1);
-                 item.getItemProperty("userName").setValue(role);
-                 item.getItemProperty("role_" + role).setValue("Env");
-             }else
-             {
-            	 item = container.addItem(role);
-                 item.getItemProperty("userId").setValue(1);
-                 item.getItemProperty("userName").setValue(role);
-                 item.getItemProperty("role_" + role).setValue("true");
-             }
-             
-             
+        	 
+        	 if(role.equalsIgnoreCase("environment"))
+        	 {
+        		 item.getItemProperty("role_" +role).setValue("Environment");
+        	 }else
+        	 {
+        		 item.getItemProperty("role_" +role).setValue(true);
+        	 }
+        	 
          }
-         
         
     }
 
@@ -402,64 +322,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	stringList = new String[] {" ","environment","height","maturity","rust","height 1"};
     	initializeTable();
     	initializeContents(); 
-    	/*
-        tblMembers = new Table();
-        tblMembers.setImmediate(true);
-        
-        final List<Object> columnIds = new ArrayList<Object>();
-        columnIds.add("userName");
-        List<String> columnHeaders = new ArrayList<String>();
-        columnHeaders.add("Member");
-        
-        // prepare the container
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("userId", Integer.class, null);
-        container.addContainerProperty("userName", String.class, null);
-        
-        for (Role role : roleList) {
-            columnIds.add("role_" + role.getRoleId());
-            columnHeaders.add(role.getName());
-            if (inheritedRoles.contains(role)){
-                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
-            } else {
-                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
-            }
-        }
-        tblMembers.setContainerDataSource(container);
-        
-        tblMembers.setVisibleColumns(columnIds.toArray(new Object[0]));
-        tblMembers.setColumnHeaders(columnHeaders.toArray(new String[0]));
-        
-        tblMembers.setEditable(true);
-        tblMembers.setTableFieldFactory(new TableFieldFactory() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-                int columnIndex = columnIds.indexOf(propertyId);
-                if (columnIndex >= 1) {
-                    return new CheckBox();
-                }
-                return null;
-            }
-        });
-        
-        */
+    	
+    
+    
     }
 
-    protected void initializeValues() {
-        try {
-            Container container = createUsersContainer();
-            
-            
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench users", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-
-    }
+   
 
     protected void initializeLayout() {
         setSpacing(true);
@@ -467,40 +335,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
       
     }
     	
-    protected void initializeUsers() throws MiddlewareQueryException 
-    {
-    	 Container container = tblMembers.getContainerDataSource();
-    	 
-    	 List<ProjectUserRole> projectUserRoles = workbenchDataManager.getProjectUserRolesByProject(this.project);
-         // remove non-selected items
-         Collection<?> itemIds = container.getItemIds();
-         List<Object> deleteTargets = new ArrayList<Object>();
-         Set<User> selectedItems = new HashSet();
-         
-         for (ProjectUserRole projrole : projectUserRoles) {
-        	 User userTemp = workbenchDataManager.getUserById(projrole.getUserId());
-        	 selectedItems.add(userTemp);
-        	 
-        	 container.removeItem(userTemp);
-        	
-        	 Item item = container.addItem(userTemp);
-             item.getItemProperty("userId").setValue(1);
-             item.getItemProperty("userName").setValue(userTemp.getPerson().getDisplayName());
-             item.getItemProperty("role_" + projrole.getRole().getRoleId()).setValue("true");
-             //item.getItemProperty("")
-             List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, userTemp);
-             setInheritedRoles(item,projroles);
-             
-             //this.select.select(userTemp);
-            
-           
-         }
-        
-    }
+    
     protected void initializeActions() {
       //  newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        saveButton.addListener(new SaveUsersInProjectAction(this.project, tblMembers ));
-        studiesTree.addListener(new StudiesTreeAction());
+       studiesTree.addListener(new StudiesTreeAction());
         
         
     }
@@ -523,210 +361,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     }
 
 
-	protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
 
-        newMemberButton = new Button("Add New Member");
-        saveButton = new Button("Save");
-//        nextButton = new Button("Next");
-        buttonLayout.addComponent(newMemberButton);
-        buttonLayout.addComponent(saveButton);
-//        buttonLayout.addComponent(nextButton);
-        return buttonLayout;
-    }
     
 
-    private Container createUsersContainer() throws MiddlewareQueryException {
-        List<User> validUserList = new ArrayList<User>();
-        
-        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
-        
-        // TODO: This can be improved once we implement proper User-Person mapping
-        List<User> userList = workbenchDataManager.getAllUsersSorted();
-        for (User user : userList) {
-            Person person = workbenchDataManager.getPersonById(user.getPersonid());
-            user.setPerson(person);
-            
-            if (person != null) {
-                validUserList.add(user);
-            }
-        }
-        
-        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-        for (User user : validUserList) {
-            if (user.equals(sessionData.getUserData())) {
-              //  continue;
-            }
-            
-            beanItemContainer.addBean(user);
-        }
-        
-        return beanItemContainer;
-    }
 
-
-    public boolean validate(){
-        return true;
-    }
-
-    public boolean validateAndSave(){
-        if (validate()) {
-           // Set<User> members = (Set<User>) select.getValue();
-           
-           // project.setMembers(members);
-           // createProjectPanel.setProject(project);
-        }
-        return true;    // members not required, so even if there are no values, this returns true
-    }
-    
-   
-    
-//    private class NextButtonClickListener implements ClickListener{
-//        private static final long serialVersionUID = 1L;
-//
-//        @Override
-//        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
-//        }
-//    }
-   
-    public List<ProjectUserRole> getProjectMembers() {
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        
-        System.out.println("getProjectMembers");
-        
-        Container container = tblMembers.getContainerDataSource();
-        Collection<User> userList = (Collection<User>) container.getItemIds();
-        
-        List<Role> roleList = null;
-        try {
-            roleList = workbenchDataManager.getAllRoles();
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-        
-        for (User user : userList) {
-            Item item = container.getItem(user);
-            
-            for (Role role : roleList) {
-                String propertyId = "role_" + role.getRoleId();
-                Property property = item.getItemProperty(propertyId);
-                Boolean value = (Boolean) property.getValue();
-                
-                if (value != null && value.booleanValue()) {
-                    ProjectUserRole projectUserRole = new ProjectUserRole();
-                    projectUserRole.setUserId(user.getUserid());
-                    projectUserRole.setRole(role);
-                    System.out.println("getProjectMembers name "+ user.getName());
-                    projectUserRoles.add(projectUserRole);
-                }
-            }
-        }
-        return projectUserRoles;
-    }
-    
-    /**
-     * Used to set the inherited roles from the Breeding Workflows tab when edits are made after values are set in this tab.
-     * 
-     */
-    public void setInheritedRoles(){
-       // inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-    	inheritedRoles = getRolesForProjectMembers();
-    	 
-        if (tblMembers != null){
-
-            Container container = tblMembers.getContainerDataSource();
-            Collection<User> userList = (Collection<User>) container.getItemIds();
-
-            for (User user : userList) {
-                Item item = container.getItem(user);
-
-                List<Role> roleList = null;
-                try {
-                    roleList = workbenchDataManager.getAllRoles();
-                } catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while getting workbench roles", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-
-                // Reset old values
-                for (Role role : roleList) {
-                    String propertyId = "role_" + role.getRoleId();
-                    Property property = item.getItemProperty(propertyId);
-                    if (property.getType() == Boolean.class){
-                        property.setValue(Boolean.FALSE);
-                    }
-                }
-
-                // Set checked boxes based on inherited roles
-                for (Role inheritedRole : inheritedRoles) {
-                    String propertyId = "role_" + inheritedRole.getRoleId();
-                    Property property = item.getItemProperty(propertyId);
-                    if (property.getType() == Boolean.class)
-                        property.setValue(Boolean.TRUE);
-
-                }
-            }
-            
-        }
-            requestRepaintAll();
-                
-        }
-        
-        public void setInheritedRoles(Item currentItem, List<Role> myinheritedRoles){
-         //   inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-
-            if (tblMembers != null){
-
-                Container container = tblMembers.getContainerDataSource();
-                Collection<User> userList = (Collection<User>) container.getItemIds();
-
-                
-
-                    List<Role> roleList = null;
-                    try {
-                        roleList = workbenchDataManager.getAllRoles();
-                    } catch (MiddlewareQueryException e) {
-                        LOG.error("Error encountered while getting workbench roles", e);
-                        throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                    }
-
-                    // Reset old values
-                    for (Role role : roleList) {
-                        String propertyId = "role_" + role.getRoleId();
-                        Property property = currentItem.getItemProperty(propertyId);
-                        if (property.getType() == Boolean.class){
-                            property.setValue(Boolean.FALSE);
-                        }
-                    }
-
-                    // Set checked boxes based on inherited roles
-                  
-                    for (Role inheritedRole : myinheritedRoles) {
-                        String propertyId = "role_" + inheritedRole.getRoleId();
-                        System.out.println("inheritedRole " + inheritedRole);
-                        System.out.println("currentItem " + currentItem);
-                        Property property = currentItem.getItemProperty(propertyId);
-                        if (property.getType() == Boolean.class)
-                            property.setValue(Boolean.TRUE);
-
-                    }
-                
-                
-                requestRepaintAll();
-                    
-            }
-
-            
-
-        
-        
-    }
+  
         
        
         
