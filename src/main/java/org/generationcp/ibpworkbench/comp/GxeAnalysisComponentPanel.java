@@ -76,7 +76,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private Button newMemberButton;
     private Button saveButton;
     
-    private Table tblMembers;
+    private Table tblDataSet;
     private Accordion accordion;
     private Tree studiesTree;
     private Object[][] studies;
@@ -169,8 +169,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	Accordion accord = new Accordion();
     	initializeMembersTable();
     	
-    	accord.addTab(tblMembers);
-    	accord.getTab(tblMembers).setCaption("Table");
+    	accord.addTab(tblDataSet);
+    	accord.getTab(tblDataSet).setCaption("Table");
     	tab.addTab(accord);
     	tab.getTab(accord).setCaption(caption);
     	
@@ -235,8 +235,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private void initializeTable()
     {
     	
-        tblMembers = new Table();
-        tblMembers.setImmediate(true);
+    	tblDataSet = new Table();
+    	tblDataSet.setImmediate(true);
         
         final List<Object> columnIds = new ArrayList<Object>();
        
@@ -249,80 +249,185 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         // prepare the container
         IndexedContainer container = new IndexedContainer();
         //container.addContainerProperty("userId", Integer.class, null);
-        //container.addContainerProperty("userName", String.class, null);
+        
         
         for (String role : stringList) {
         	
         	if(role.equalsIgnoreCase("Environment"))
             {
-	            columnIds.add("role_" +role);
+	            columnIds.add(role);
 	            columnHeaders.add(role);
-	            container.addContainerProperty("role_" + role, String.class, role);
+	            container.addContainerProperty(role, String.class, role);
+	            
             }else{
-	            columnIds.add("role_" +role);
+	            columnIds.add(role);
 	            columnHeaders.add(role);
-	            container.addContainerProperty("role_" + role, Boolean.class, Boolean.TRUE);
+	            container.addContainerProperty(role, Boolean.class, Boolean.TRUE);
+	           
             }
         }
         
         
-        tblMembers.setContainerDataSource(container);
+        tblDataSet.setContainerDataSource(container);
         
-        tblMembers.setVisibleColumns(columnIds.toArray(new Object[0]));
-        tblMembers.setColumnHeaders(columnHeaders.toArray(new String[0]));
+        tblDataSet.setVisibleColumns(columnIds.toArray(new Object[0]));
+        tblDataSet.setColumnHeaders(columnHeaders.toArray(new String[0]));
         
-        tblMembers.setEditable(true);
-        tblMembers.setTableFieldFactory(new TableFieldFactory() {
+        tblDataSet.setEditable(true);
+        tblDataSet.setTableFieldFactory(new TableFieldFactory() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
                 int columnIndex = columnIds.indexOf(propertyId);
                
-                if (!propertyId.toString().equalsIgnoreCase("role_environment")) {
-                    return new CheckBox(propertyId.toString());
+                CheckBox cb;
+                //itemId <-- row
+                //propertyId <-- column
+                
+                System.out.println("itemId " + itemId);
+                System.out.println("propertyId " + propertyId);
+                
+                if (!propertyId.toString().equalsIgnoreCase("environment")) {
+                	//String caption = container.getItem(itemId).getItemProperty("caption_" + propertyId.toString()).getValue().toString();
+                	String caption =  propertyId.toString();
+                	if(itemId.toString().equalsIgnoreCase("FirstRow") && propertyId.toString().equalsIgnoreCase(" "))
+                	{
+                		//propertyId
+                		//select the whole column dapat ito
+                		cb = new CheckBox("select all");
+                		cb.addListener(new Property.ValueChangeListener() {            
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                // TODO Auto-generated method stub
+                               System.out.println(event);
+                              
+                            }
+                        });
+                	}
+                	else if(itemId.toString().equalsIgnoreCase("FirstRow"))
+                	{
+                		//propertyId
+                		//select the whole column dapat ito
+                		cb = new CheckBox();
+                		cb.addListener(new Property.ValueChangeListener() {            
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                // TODO Auto-generated method stub
+                               System.out.println(event);
+                              
+                            }
+                        });
+                	}else if(propertyId.toString().equalsIgnoreCase(" "))
+                	{
+                		//itemId
+                		//select the whole row dapat ito
+                		cb = new CheckBox();
+                		cb.addListener(new Property.ValueChangeListener() {            
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                // TODO Auto-generated method stub
+                               System.out.println(event);
+                              
+                            }
+                        });
+                	}else
+                	{
+                		cb = new CheckBox(caption);
+                		cb.addListener(new Property.ValueChangeListener() {            
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                // TODO Auto-generated method stub
+                               System.out.println(event);
+                              
+                            }
+                        });
+                	}
+                     
+                     return cb;
                 }
                 return null;
             }
         });
     }
     
-    protected void initializeContents() 
+    protected void initializeHeader() 
     {
-    	 Container container = tblMembers.getContainerDataSource();
-    	 
-    	
-    	 System.out.println("countme : "+ countme);
-    	 countme++;
-    	 
+    	 Container container = tblDataSet.getContainerDataSource();
+    
          Collection<?> itemIds = container.getItemIds();
-         Object obj = new Object();
+         String obj = "FirstRow";
          
          //Item item = container.addItem(obj);
          
          int cnt = 0;
+         
          Item item = container.addItem(obj);
+    
          for (String role : stringList) {
         	 
         	 if(role.equalsIgnoreCase("environment"))
         	 {
-        		 item.getItemProperty("role_" +role).setValue("Environment");
-        	 }else
+        		 item.getItemProperty(role).setValue(" ");
+        		 
+        		 
+        	 }else if(role.equalsIgnoreCase(" "))
         	 {
-        		 item.getItemProperty("role_" +role).setValue(true);
+        		 item.getItemProperty(role).setValue(true);
+        	 }
+        	 else
+        	 {
+        		 item.getItemProperty(role).setValue(true);
         	 }
         	 
+        	 
          }
+         
+         TableFieldFactory tff = tblDataSet.getTableFieldFactory();
+         
         
     }
 
-	
+	private void addNewDataSetItem(String StudyName, String StudyTab)
+	{
+		Container container = tblDataSet.getContainerDataSource();
+	    
+        Collection<?> itemIds = container.getItemIds();
+        String obj = ""+countme;
+        
+        Item item = container.addItem(obj);
+        
+        for (String role : stringList) {
+       	 
+       	 if(role.equalsIgnoreCase("environment"))
+       	 {
+       		 item.getItemProperty(role).setValue(" ");
+       		 
+       		 
+       	 }else if(role.equalsIgnoreCase(" "))
+       	 {
+       		 item.getItemProperty(role).setValue(true);
+       	 }
+       	 else
+       	 {
+       		 item.getItemProperty(role).setValue(true);
+       	 }
+       	
+       }
+	}
+	private void setDataSetHeaders(String[] list)
+	{
+		stringList = list;
+		
+	}
     private void initializeMembersTable() {
     	
-    	stringList = new String[] {" ","environment","height","maturity","rust","height 1"};
+    	setDataSetHeaders(new String[] {" ","environment","height","maturity","rust","height 1"});
     	initializeTable();
-    	initializeContents(); 
-    	
+    	initializeHeader();
+    	addNewDataSetItem("environment","height");
+    	//addNewDataSetItem("environment","height");
+    	//addNewDataSetItem("environment","height");
     
     
     }
