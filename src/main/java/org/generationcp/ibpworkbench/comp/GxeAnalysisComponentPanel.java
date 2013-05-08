@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +46,8 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -167,7 +170,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     {
     	
     	Accordion accord = new Accordion();
-    	initializeMembersTable();
+    	
     	
     	accord.addTab(tblDataSet);
     	accord.getTab(tblDataSet).setCaption("Table");
@@ -179,6 +182,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     protected TabSheet generateTabSheet()
     {
     	TabSheet tab = new TabSheet();
+    	initializeMembersTable();
     	generateTabComponent(tab, "ANM87AMA");
     	generateTabComponent(tab, "ANM87ABA");
     	generateTabComponent(tab, "ANM87ABK");
@@ -291,60 +295,163 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 if (!propertyId.toString().equalsIgnoreCase("environment")) {
                 	//String caption = container.getItem(itemId).getItemProperty("caption_" + propertyId.toString()).getValue().toString();
                 	String caption =  propertyId.toString();
+                	
                 	if(itemId.toString().equalsIgnoreCase("FirstRow") && propertyId.toString().equalsIgnoreCase(" "))
                 	{
                 		//propertyId
                 		//select the whole column dapat ito
                 		cb = new CheckBox("select all");
+                		
                 		cb.addListener(new Property.ValueChangeListener() {            
-                            @Override
+                            /**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+
+							@Override
                             public void valueChange(ValueChangeEvent event) {
                                 // TODO Auto-generated method stub
-                               System.out.println(event);
-                              
-                            }
-                        });
+                            	try{
+	                               System.out.println(event);
+	                               Container container = tblDataSet.getContainerDataSource();
+	                               Collection<?> items =  container.getItemIds();
+	                               
+	                               
+	                               for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
+	                            	    
+	                               {
+	                            	   String key = (String) myitems.next();
+	                            	   Item item = container.getItem(key);
+	                            	   
+	                            	   for (String role : stringList) 
+	                            	   {
+	                                  	 
+	                                  	 if(role.equalsIgnoreCase("environment"))
+	                                  	 {
+	                                  		 //item.getItemProperty(role).setValue(" ");
+	                                  	 }else if(role.equalsIgnoreCase(" ") && key.equalsIgnoreCase("FirstRow"))
+	                                  	 {
+	                                  		//item.getItemProperty(role).setValue(false);
+	                                  		// item.getItemProperty(role).setValue(event.getProperty().getValue());
+	                                  	 }else
+	                                  		//item.getItemProperty(role).setValue(false);
+	                                  		 item.getItemProperty(role).setValue(event.getProperty().getValue());
+	                            	   }
+	                               }
+	                               
+	                             //  System.out.println("property " + event.getProperty().getValue());
+	                             requestRepaintAll();
+	                            
+                            }catch(Exception e)
+                            { e.printStackTrace();}
+                            }});
+                		return cb;
                 	}
                 	else if(itemId.toString().equalsIgnoreCase("FirstRow"))
                 	{
                 		//propertyId
                 		//select the whole column dapat ito
                 		cb = new CheckBox();
-                		cb.addListener(new Property.ValueChangeListener() {            
+                		
+                		class CheckboxListener implements ValueChangeListener{
+                			/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+							private String propertyId;
+                			public CheckboxListener (String propertyId)
+                			{
+                				this.propertyId = propertyId;
+                			}
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 // TODO Auto-generated method stub
-                               System.out.println(event);
-                              
-                            }
-                        });
+                            	try{
+ 	                               System.out.println(event);
+ 	                               Container container = tblDataSet.getContainerDataSource();
+ 	                               Collection<?> items =  container.getItemIds();
+ 	                               
+ 	                               
+ 	                               for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
+ 	                            	    
+ 	                               {
+ 	                            	   String key = (String) myitems.next();
+ 	                            	   Item item = container.getItem(key);
+ 	                            	   
+ 	                            	   if(!key.equalsIgnoreCase("FirstRow"))
+ 	                                  	item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
+ 	                                  	
+ 	                               }
+ 	                               
+ 	                             //  System.out.println("property " + event.getProperty().getValue());
+ 	                             requestRepaintAll();
+ 	                            
+                             }catch(Exception e)
+                             { e.printStackTrace();}
+                             }
+							
+                		}
+                		
+                		cb.addListener(new CheckboxListener(propertyId.toString()));
+                		
+                		return cb;
                 	}else if(propertyId.toString().equalsIgnoreCase(" "))
                 	{
                 		//itemId
                 		//select the whole row dapat ito
                 		cb = new CheckBox();
-                		cb.addListener(new Property.ValueChangeListener() {            
+                		class CheckboxListener implements ValueChangeListener{
+                			/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+							private String ItemId;
+                			public CheckboxListener (String ItemId)
+                			{
+                				this.ItemId = ItemId;
+                			}
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 // TODO Auto-generated method stub
-                               System.out.println(event);
-                              
-                            }
-                        });
+                            	try{
+ 	                               System.out.println(event);
+ 	                               Container container = tblDataSet.getContainerDataSource();
+ 	                               Collection<?> items =  container.getItemIds();
+ 	                               
+ 	                               
+ 	                              
+ 	                               Item item = container.getItem(this.ItemId);
+ 	                            	   
+ 	                            	  for (String role : stringList) 
+	                            	   {
+	                                  	 
+	                                  	 if(role.equalsIgnoreCase("environment"))
+	                                  	 {
+	                                  		 //item.getItemProperty(role).setValue(" ");
+	                                  	 }else
+	                                  		//item.getItemProperty(role).setValue(false);
+	                                  		 item.getItemProperty(role).setValue(event.getProperty().getValue());
+	                            	   }
+ 	                               
+ 	                               
+ 	                             //  System.out.println("property " + event.getProperty().getValue());
+ 	                             requestRepaintAll();
+ 	                            
+                             }catch(Exception e)
+                             { e.printStackTrace();}
+                             }
+							
+                		}
+                		
+                		cb.addListener(new CheckboxListener(itemId.toString()));
+                		return cb;
                 	}else
                 	{
                 		cb = new CheckBox(caption);
-                		cb.addListener(new Property.ValueChangeListener() {            
-                            @Override
-                            public void valueChange(ValueChangeEvent event) {
-                                // TODO Auto-generated method stub
-                               System.out.println(event);
-                              
-                            }
-                        });
+                		return cb;
                 	}
                      
-                     return cb;
+                     
                 }
                 return null;
             }
@@ -414,6 +521,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        	 }
        	
        }
+        countme++;
 	}
 	private void setDataSetHeaders(String[] list)
 	{
@@ -426,7 +534,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	initializeTable();
     	initializeHeader();
     	addNewDataSetItem("environment","height");
-    	//addNewDataSetItem("environment","height");
+    	addNewDataSetItem("environment","height");
     	//addNewDataSetItem("environment","height");
     
     
