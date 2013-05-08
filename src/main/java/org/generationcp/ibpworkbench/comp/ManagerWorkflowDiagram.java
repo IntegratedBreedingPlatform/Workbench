@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.comp;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -89,6 +90,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
+	private Button manageGermplasmListsButton;
+
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -151,6 +154,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
+        
+        manageGermplasmListsButton = new Button("List Manager");
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setSizeUndefined();
+        manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
         
         breedingViewButton = new Button("Breeding View Standalone (all analysis)");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -221,7 +229,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         backupIBDBLink = new Link(messageSource.getMessage(Message.BACKUP_IBDB_LINK),
                 new ExternalResource(url));
         backupIBDBLink.setTargetName("_blank");
-
+        backupIBDBLink.setDescription(messageSource.getMessage(Message.BACKUP_IBDB_LINK_DESC));
+        
         restoreIBDBButton = new Button(messageSource.getMessage(Message.RESTORE_IBDB_LINK));
         restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
         restoreIBDBButton.setSizeUndefined();
@@ -439,6 +448,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(fieldbookButton, 0);
         
+        layout.addComponent(manageGermplasmListsButton);
+        manageGermplasmListsButton.setHeight("20px");
+        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(manageGermplasmListsButton, 0);
+        
         layout.addComponent(nurseryManagerButton);
         layout.setComponentAlignment(nurseryManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(nurseryManagerButton, 0);
@@ -565,7 +579,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
             projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
         }
@@ -605,6 +621,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
         messageSource.setCaption(fieldbookButton,Message.FIELDBOOK_LINK);
         messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
+        
         
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
         messageSource.setCaption(optimasButton, Message.OPTIMAS_LINK);

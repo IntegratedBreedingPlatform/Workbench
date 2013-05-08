@@ -526,7 +526,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
-            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
             breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));	// TODO
         }
     }
