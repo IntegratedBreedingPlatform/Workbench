@@ -83,6 +83,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button optimasButton;
     
     private Button manageGermplasmListsButton;
+    
+    private Button multiSiteAnalysisButton;
 
     private Embedded downArrow11;
     private Embedded downArrow12;
@@ -217,6 +219,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         manageGermplasmListsButton = new Button();
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         manageGermplasmListsButton.setSizeUndefined();
+        
+        multiSiteAnalysisButton = new Button();
+        multiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        multiSiteAnalysisButton.setSizeUndefined();
         
         // arrows
         downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -447,6 +453,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
+        layout.addComponent(multiSiteAnalysisButton);
+        multiSiteAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(multiSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(multiSiteAnalysisButton, 0);
+        
         layout.addComponent(phenotypicBreedingViewButton);
         layout.setComponentAlignment(phenotypicBreedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(phenotypicBreedingViewButton, 0);
@@ -723,6 +734,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
+        
+        messageSource.setCaption(multiSiteAnalysisButton, Message.MULTI_SITE_ANALYSIS_LINK);
         
         messageSource.setCaption(manageGermplasmListsButton, Message.LIST_MANAGER);
         messageSource.setDescription(manageGermplasmListsButton, Message.CLICK_TO_LAUNCH_LIST_MANAGER);
