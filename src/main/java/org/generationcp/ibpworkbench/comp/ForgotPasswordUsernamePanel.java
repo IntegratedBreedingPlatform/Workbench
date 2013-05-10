@@ -80,7 +80,7 @@ public class ForgotPasswordUsernamePanel extends VerticalLayout implements Initi
         addComponent(unameLabel);
         unameField = new TextField();
         addComponent(unameField);
-        nextBtn = new Button(messageSource.getMessage(Message.BTN_NEXT));
+        nextBtn = new Button(messageSource.getMessage(Message.NEXT));
         addComponent(nextBtn);
     }
 

@@ -12,9 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.*;
+import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -32,14 +30,19 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.themes.BaseTheme;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowConstants, InitializingBean, InternationalizableComponent {
@@ -138,84 +141,83 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton = new Button("Members");
         membersButton.setStyleName(BaseTheme.BUTTON_LINK);
         membersButton.setSizeUndefined();
-        membersButton.setDescription("Manage Members");
+        membersButton.setDescription(messageSource.getMessage(Message.MEMBERS_LINK_DESC));
         
         browseGermplasmButton = new Button("Germplasm Browser");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
+        browseGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER));
 
         browseStudiesButton = new Button("Study Browser");
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseStudiesButton.setSizeUndefined();
-        browseStudiesButton.setDescription("Click to launch Study Browser");
+        browseStudiesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_STUDY_BROWSER));
 
         browseGermplasmListsButton = new Button("Germplasm List Browser");
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
-        browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
+        browseGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER));
         
         manageGermplasmListsButton = new Button("List Manager");
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         manageGermplasmListsButton.setSizeUndefined();
-        manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
+        manageGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_LIST_MANAGER));
         
         breedingViewButton = new Button("Breeding View Standalone (all analysis)");
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
-        breedingViewButton.setDescription("Click to launch Breeding View");
+        breedingViewButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW));
         
         breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
         breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
+        breedingViewSingleSiteAnalysisCentralButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
         
         breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
         breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        breedingViewSingleSiteAnalysisLocalButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
 
         breedingViewMultiSiteAnalysisButton = new Button();
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
-        breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis");
-        
+        breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
         
         gdmsButton = new Button("GDMS");
         gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
         gdmsButton.setSizeUndefined();
-        gdmsButton.setDescription("Click to launch GDMS");
+        gdmsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GDMS));
         
         mbdtButton = new Button("MBDT"); 
         mbdtButton.setStyleName(BaseTheme.BUTTON_LINK);
         mbdtButton.setSizeUndefined();
-        mbdtButton.setDescription("Click to launch MBDT");
+        mbdtButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MBDT));
         
         fieldbookButton = new Button("Fieldbook");
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
         fieldbookButton.setSizeUndefined();
-        fieldbookButton.setDescription("Click to launch Fieldbook");
+        fieldbookButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
         
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
-        optimasButton.setDescription("Click to launch OptiMAS");
+        optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
         
         nurseryManagerButton = new Button("Nursery Manager");
         nurseryManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         nurseryManagerButton.setSizeUndefined();
-        nurseryManagerButton.setDescription("Click to launch Nursery Manager");
+        nurseryManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_NURSERY_MANAGER));
         
         
         projectMethodsButton = new Button("Project Methods");
         projectMethodsButton.setStyleName(BaseTheme.BUTTON_LINK);
         projectMethodsButton.setSizeUndefined();
-        projectMethodsButton.setDescription("Click to configure project methods");
+        projectMethodsButton.setDescription(messageSource.getMessage(Message.PROJECT_METHODS_DESC));
         
         projectLocationButton = new Button("Project Locations");
         projectLocationButton.setStyleName(BaseTheme.BUTTON_LINK);
         projectLocationButton.setSizeUndefined();
-        projectLocationButton.setDescription("Click to configure project locations");
+        projectLocationButton.setDescription(messageSource.getMessage(Message.PROJECT_LOCATIONS_DESC));
 
         backupIBDBButton = new Button(messageSource.getMessage(Message.BACKUP_IBDB_LINK));
         backupIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -604,7 +606,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(projectMethodsButton,Message.PROJECT_METHODS_LINK);
         messageSource.setCaption(projectLocationButton,Message.PROJECT_LOCATIONS_LINK);
         
-        messageSource.setValue(projectPlanningTitle,Message.PROJECT_PLANNING_TITLE);
+        messageSource.setValue(projectPlanningTitle,Message.PROJECT_PLANNING);
         messageSource.setCaption(browseGermplasmButton,Message.GERMPLASM_BROWSER_LINK);
         messageSource.setCaption(browseStudiesButton,Message.STUDY_BROWSER_LINK);
         messageSource.setCaption(browseGermplasmListsButton,Message.GERMPLASM_LIST_BROWSER_LINK);
@@ -615,19 +617,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
         
-        messageSource.setValue(genoTypingTitle,Message.GENOTYPING_TITLE);
+        messageSource.setValue(genoTypingTitle,Message.GENOTYPING);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
         
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
-        messageSource.setCaption(fieldbookButton,Message.FIELDBOOK_LINK);
+        messageSource.setCaption(fieldbookButton,Message.FIELDBOOK);
         messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
         
         
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
-        messageSource.setCaption(optimasButton, Message.OPTIMAS_LINK);
+        messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setCaption(mbdtButton,Message.MBDT_LINK);
-
-        messageSource.setCaption(mbdtButton,Message.ACTION);
     }
 
 	@Override

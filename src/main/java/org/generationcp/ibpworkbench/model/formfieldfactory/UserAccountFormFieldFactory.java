@@ -121,7 +121,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
             field.addValidator(new StringLengthValidator("Email Address must be 5-40 characters.", 5, 40, false));
             field.addValidator(new EmailValidator("Please enter a valid Email Address."));
         } else if ("username".equals(propertyId)) {
-            messageSource.setCaption(field, Message.USER_ACC_USERNAME);
+            messageSource.setCaption(field, Message.USERNAME);
             field.setRequired(true);
             field.setRequiredError("Please enter a Username.");
             field.addValidator(new StringLengthValidator("Username must be 1-30 characters.", 1, 30, false));

@@ -535,8 +535,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
         
+        /*
         messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
+        */
     }
 }

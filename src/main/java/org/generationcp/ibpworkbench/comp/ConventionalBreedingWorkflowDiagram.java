@@ -102,85 +102,85 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        projectPlanningTitle = new Label("Project Planning");
+        projectPlanningTitle = new Label(messageSource.getMessage(Message.PROJECT_PLANNING));
         projectPlanningTitle.setStyleName("gcp-section-title-large");
         projectPlanningTitle.setSizeUndefined();
 
-        populationDevelopmentTitle = new Label("Population Development");
+        populationDevelopmentTitle = new Label(messageSource.getMessage(Message.POPULATION_DEVELOPMENT));
         populationDevelopmentTitle.setStyleName("gcp-section-title-large");
         populationDevelopmentTitle.setSizeUndefined();
 
-        fieldTrialManagementTitle = new Label("Field Trial Management");
+        fieldTrialManagementTitle = new Label(messageSource.getMessage(Message.FIELD_TRIAL_MANAGEMENT));
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
         fieldTrialManagementTitle.setSizeUndefined();
 
-        statisticalAnalysisTitle = new Label("Statistical Analysis");
+        statisticalAnalysisTitle = new Label(messageSource.getMessage(Message.STATISTICAL_ANALYSIS));
         statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
         statisticalAnalysisTitle.setSizeUndefined();
 
-        breedingDecisionTitle = new Label("Breeding Decision");
+        breedingDecisionTitle = new Label(messageSource.getMessage(Message.BREEDING_DECISION));
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
         breedingDecisionTitle.setSizeUndefined();
         
-        browseGermplasmButton = new Button("Browse Germplasm Information");
+        browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
+        browseGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER));
         
-        browseGenotypingDataButton = new Button("Browse Genotyping Data");
+        browseGenotypingDataButton = new Button(messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK));
         browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGenotypingDataButton.setSizeUndefined();
-        browseGenotypingDataButton.setDescription("Click to launch genotyping data");
+        browseGenotypingDataButton.setDescription(messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_DESC));
 
-        browseStudiesButton = new Button("Browse Studies and Datasets");
+        browseStudiesButton = new Button(messageSource.getMessage(Message.BROWSE_STUDIES_AND_DATASETS));
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseStudiesButton.setSizeUndefined();
-        browseStudiesButton.setDescription("Click to launch Study Browser");
+        browseStudiesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_STUDY_BROWSER));
 
-        browseGermplasmListsButton = new Button("Browse Germplasm Lists");
+        browseGermplasmListsButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLAM_LISTS));
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         browseGermplasmListsButton.setSizeUndefined();
-        browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
+        browseGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER));
         
-        breedingManagerButton = new Button("Breeding Manager");
+        breedingManagerButton = new Button(messageSource.getMessage(Message.BREEDING_MANAGER));
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingManagerButton.setSizeUndefined();
-        breedingManagerButton.setDescription("Click to launch Breeding Manager");
+        breedingManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
 
-        breedingViewButton = new Button("Breeding View Standalone (all analysis)");
+        breedingViewButton = new Button(messageSource.getMessage(Message.BREEDING_VIEW));
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewButton.setSizeUndefined();
-        breedingViewButton.setDescription("Click to launch Breeding View");
+        breedingViewButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW));
         
-        breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
+        breedingViewSingleSiteAnalysisCentralButton = new Button(messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK));
         breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
+        breedingViewSingleSiteAnalysisCentralButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
 
-        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
+        breedingViewSingleSiteAnalysisLocalButton = new Button(messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK));
         breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        breedingViewSingleSiteAnalysisLocalButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
         
-        manageGermplasmListsButton = new Button("Manage Germplasm Lists");
+        manageGermplasmListsButton = new Button(messageSource.getMessage(Message.LIST_MANAGER));
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         manageGermplasmListsButton.setSizeUndefined();
-        manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
+        manageGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_LIST_MANAGER));
         
-        breedingViewMultiSiteAnalysisButton = new Button("Multi-Site Analysis");
+        breedingViewMultiSiteAnalysisButton = new Button(messageSource.getMessage(Message.MULTI_SITE_ANALYSIS_LINK));
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
-        breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis");
+        breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
         
-        fieldbookButton = new Button("Fieldbook");
+        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
         fieldbookButton.setSizeUndefined();
-        fieldbookButton.setDescription("Click to launch Fieldbook");
+        fieldbookButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
         
-        optimasButton = new Button("OptiMAS");
+        optimasButton = new Button(messageSource.getMessage(Message.OPTIMAS));
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
-        optimasButton.setDescription("Click to launch OptiMAS");
+        optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
         
         downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -480,8 +480,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
         
+        /*
         messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
+        */
     }
 }

@@ -97,7 +97,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
+	private Button recomBreedingManagerButton;
+
+	
     public MarsProjectDashboard(boolean workflowPreview, Project project) {
     	this.workflowPreview = workflowPreview;
     	
@@ -211,10 +214,15 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
         
-        // qtl selection buttons
+        // recombination cycle selection buttons
         optimasButton = new Button();
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
+        
+        recomBreedingManagerButton = new Button();
+        recomBreedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        recomBreedingManagerButton.setSizeUndefined();
+        
         
         manageGermplasmListsButton = new Button();
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -443,18 +451,24 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(phenotypicAnalysisTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(phenotypicAnalysisTitle, 0);
 
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
+        
         layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
-        breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
+        //breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
-        breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
+        //breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
         layout.addComponent(multiSiteAnalysisButton);
-        multiSiteAnalysisButton.setHeight("20px");
+        //multiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(multiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(multiSiteAnalysisButton, 0);
         
@@ -571,21 +585,20 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(recombinationCycleTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(recombinationCycleTitle, 0);
 
-        
-        layout.addComponent(optimasButton);
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
-        
-        layout.addComponent(breedingManagerButton);
-        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerButton, 0);
-        
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-
+        
+        layout.addComponent(optimasButton);
+        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(optimasButton, 0);
+        
+        layout.addComponent(recomBreedingManagerButton);
+        layout.setComponentAlignment(recomBreedingManagerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(recomBreedingManagerButton, 0);
+        
         return layout;
     }
     
@@ -638,7 +651,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("270px");
-        layout.setHeight("110px");
+        layout.setHeight("120px");
         layout.setStyleName("gcp-mars-workflow-step");
         layout.setMargin(true, true, true, true);
     }
@@ -656,11 +669,14 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-
+            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
+            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            
             phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+            
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             
@@ -719,6 +735,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 	
         messageSource.setCaption(breedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(breedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
+        
+        messageSource.setCaption(recomBreedingManagerButton, Message.BREEDING_MANAGER);
+        messageSource.setDescription(recomBreedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         
         messageSource.setCaption(fieldBookButton, Message.FIELDBOOK);
         messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
