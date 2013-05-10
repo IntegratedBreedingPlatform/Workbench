@@ -407,10 +407,10 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
             Method method = managerFactory.getGermplasmDataManager().getMethodByID(methodsId);
             if (method != null){
                 existingProjectMethods.add(method);
-                if(method.getMid() < 1){
+                //if(method.getMid() < 1){
                     selectMethods.addItem(method);
                     selectMethods.setItemCaption(method, method.getMname());
-                }
+                //}
             }
         }
 
