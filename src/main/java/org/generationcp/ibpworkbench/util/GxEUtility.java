@@ -1,11 +1,26 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
-import com.vaadin.ui.*;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 
 public class GxEUtility {
 	
@@ -84,4 +99,96 @@ public class GxEUtility {
 	  return shifted; 
 	
 	}
+	
+	/**
+	 * Generates the GxE Input CSV and triggers it as a download <br/><br/>
+	 * Sets default csv file to <b>"GxE_input.csv"</b> and does not include the first row and column of the table
+	 * @param mainWindow
+	 * @param tableContainer
+	 * @param gxeHeaders
+	 */
+	public static void generateGxEInputCSV(Window mainWindow, Container tableContainer, String[] gxeHeaders) {
+		generateGxEInputCSV(mainWindow, tableContainer, gxeHeaders,"GxE_input.csv",true,true);
+	}
+	
+	/**
+	 * Generates the GxE Input CSV and triggers it as a download
+	 * @param mainWindow
+	 * @param tableContainer
+	 * @param gxeHeaders
+	 * @param csvfilename
+	 * @param skipFirstRow
+	 * @param skipFirstColumn
+	 */
+	public static void generateGxEInputCSV(Window mainWindow, Container tableContainer, String[] gxeHeaders,String csvfilename, boolean skipFirstRow,boolean skipFirstColumn) {
+		ArrayList<String[]> tableItems = new ArrayList<String[]>();
+			
+		Iterator<?> itemIdsIterator = tableContainer.getItemIds().iterator();
+		itemIdsIterator.next();	// skip first row
+		
+		// add the headers
+		if (skipFirstRow) tableItems.add(gxeHeaders);
+		
+		while(itemIdsIterator.hasNext()) {
+			Object itemId = itemIdsIterator.next();
+			ArrayList<String> cellList = new ArrayList<String>();
+			
+			Iterator<?> propertyIdsIterator = tableContainer.getContainerPropertyIds().iterator();
+			
+			if (skipFirstColumn) propertyIdsIterator.next(); // skip first column
+			
+			while (propertyIdsIterator.hasNext()) {
+				Object propertyId = propertyIdsIterator.next();
+
+				Property cellItemProperty = tableContainer.getContainerProperty(itemId, propertyId);
+				
+				Object cellItemValue = cellItemProperty.getValue();
+				String cellItemString = "";
+				
+				if (cellItemValue instanceof CheckBox ) {
+					if ((Boolean) ((CheckBox) cellItemValue).getValue())
+						cellItemString = ((CheckBox) cellItemValue).getCaption();
+					else
+						cellItemString = "";
+				} else if (cellItemValue instanceof Label)
+					cellItemString = cellItemValue.toString();
+					
+				cellList.add(cellItemString);
+			}
+			
+			String[] row = new String[cellList.size()];
+			cellList.toArray(row);
+			
+			tableItems.add(row);
+		}
+		
+		try {
+			final ByteArrayOutputStream content = new ByteArrayOutputStream();
+			
+			CSVWriter csvWriter = new CSVWriter(new PrintWriter(content),',');
+			
+			csvWriter.writeAll(tableItems);
+			csvWriter.flush();
+		
+			final ByteArrayInputStream bis = new ByteArrayInputStream(content.toByteArray());
+			csvWriter.close();
+		
+			FileResource fr = new FileResource(new File(csvfilename), mainWindow.getApplication()) {
+				private static final long serialVersionUID = 765143030552676513L;
+				@Override
+				public DownloadStream getStream() {
+					final DownloadStream ds = new DownloadStream(bis, getMIMEType(), getFilename());
+					ds.setParameter("Content-Disposition", "attachment; filename="+getFilename());
+					ds.setCacheTime(getCacheTime());
+					return ds;
+				}
+			};
+			
+			mainWindow.open(fr);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
