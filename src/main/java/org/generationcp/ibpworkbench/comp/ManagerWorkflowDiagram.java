@@ -201,7 +201,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
         optimasButton.setSizeUndefined();
-        optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
+        optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
         
         nurseryManagerButton = new Button("Nursery Manager");
         nurseryManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -615,7 +615,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK);
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
-        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW);
         
         messageSource.setValue(genoTypingTitle,Message.GENOTYPING);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);

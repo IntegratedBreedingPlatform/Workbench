@@ -551,8 +551,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
         
-        messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
+        messageSource.setCaption(manageGermplasmListsButton,Message.LIST_MANAGER);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
-        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW);
     }
 }
