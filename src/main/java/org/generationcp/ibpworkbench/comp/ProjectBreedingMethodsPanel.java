@@ -447,7 +447,8 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
                 //save the added  method to the local database if doesn't exist
             	Method m2 = germplasmDataManager.getMethodByID(m.getMid());
                 if (m2==null){
-                	Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,0);
+                	
+                	Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,m.getMdate());
                 	mID = germplasmDataManager.addMethod(newMethod);
                 }else{
                 	mID = m2.getMid();

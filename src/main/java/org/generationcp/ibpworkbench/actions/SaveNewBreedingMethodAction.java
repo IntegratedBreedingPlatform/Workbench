@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -108,9 +109,10 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMattr(0);
             newMethod.setMprgn(0);
             newMethod.setReference(0);
-            Date d = new Date();
             
-            newMethod.setMdate(d.getDate());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            
+            newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newMethod.setMfprg(0);
             
             ManagerFactory managerFactory = projectBreedingMethodsPanel.getManagerFactory();
