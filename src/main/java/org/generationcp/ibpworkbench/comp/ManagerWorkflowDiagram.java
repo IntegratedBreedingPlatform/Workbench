@@ -78,6 +78,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button breedingViewButton;
     private Button breedingViewSingleSiteAnalysisCentralButton;
     private Button breedingViewSingleSiteAnalysisLocalButton;
+    private Button breedingViewGxeAnalysisLocalButton;
     private Button fieldbookButton;
     private Button optimasButton;
     private Button nurseryManagerButton;
@@ -177,7 +178,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
-
+        
+        breedingViewGxeAnalysisLocalButton = new Button("GxE Analysis");
+        breedingViewGxeAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewGxeAnalysisLocalButton.setSizeUndefined();
+        breedingViewGxeAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        
         breedingViewMultiSiteAnalysisButton = new Button();
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
@@ -486,6 +492,13 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
+
+        layout.addComponent(breedingViewGxeAnalysisLocalButton);
+        breedingViewGxeAnalysisLocalButton.setHeight("20px");
+        layout.setComponentAlignment(breedingViewGxeAnalysisLocalButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewGxeAnalysisLocalButton, 0);
+        
+
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
@@ -572,6 +585,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+
+            breedingViewGxeAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE));
+
             breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
             
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
