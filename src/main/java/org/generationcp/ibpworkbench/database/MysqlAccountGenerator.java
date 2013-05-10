@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class which takes care of adding mysql user accounts for members of a workbench project.
- * Patterned after IBDBGenerator.
+ * Patterned after IBDBGeneratorLocalDb.
  * 
  * @author Kevin L. Manansala
  *
@@ -192,7 +192,7 @@ public class MysqlAccountGenerator implements Serializable{
         localDatabaseNameBuilder.append(this.cropType.getCropName().toLowerCase());
         localDatabaseNameBuilder.append("_");
         localDatabaseNameBuilder.append(this.projectId);
-        localDatabaseNameBuilder.append(IBDBGenerator.DB_LOCAL_NAME_SUFFIX);
+        localDatabaseNameBuilder.append(IBDBGeneratorLocalDb.DB_LOCAL_NAME_SUFFIX);
         String localDatabaseName = localDatabaseNameBuilder.toString();
         
         try{

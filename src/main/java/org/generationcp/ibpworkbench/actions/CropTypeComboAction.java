@@ -37,9 +37,6 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     private static final Logger LOG = LoggerFactory.getLogger(CropTypeComboAction.class);
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-
-    @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
     private ProjectBasicDetailsComponent sourceComponent;
@@ -109,39 +106,23 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     @SuppressWarnings("unchecked")
     @Override
     public void addNewItem(String newItemCaption) {
+        // if not yet in the database
+        if (!cropTypeComboBox.containsId(newItemCaption)) {
 
-        try {
-            // if not yet in the database
-            if (!cropTypeComboBox.containsId(workbenchDataManager.getCropTypeByName(newItemCaption))) {
+            // add crop to database
+            CropType cropType = new CropType(newItemCaption);
+            cropType.setCentralDbName("ibdb_" + newItemCaption.toLowerCase() + "_central");
+            cropTypeComboBoxLastAdded = true;
+            ((BeanItemContainer<CropType>) cropTypeComboBox.getContainerDataSource()).addBean(cropType);
 
-                // add crop to database
-                CropType cropType = new CropType(newItemCaption);
-                //workbenchDataManager.addCropType(cropType);
-               // sourceComponent.getWindow().showNotification("Added crop " + newItemCaption);
+            // set the combo box value to the newly added crop
+            cropTypeComboBox.setValue(cropType);
 
-                // add the item to the combo box
-                CropType newCropType = workbenchDataManager.getCropTypeByName(newItemCaption);
-                lastValue = newCropType.toString();
-                cropTypeComboBoxLastAdded = true;
-                ((BeanItemContainer<CropType>) cropTypeComboBox.getContainerDataSource()).addBean(newCropType);
+            sourceComponent.setCropType(cropType);
 
-                // set the combo box value to the newly added crop
-                cropTypeComboBox.setValue(newCropType);
-                
-                sourceComponent.setCropType(newCropType);
-                
-                if (sourceComponent != null){
-                    sourceComponent.refreshVisibleItems();
-                }
+            if (sourceComponent != null){
+                sourceComponent.refreshVisibleItems();
             }
-
-        } catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while trying to add crop type.", e);
-            MessageNotifier.showError(sourceComponent.getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
-                    messageSource.getMessage(Message.ADD_CROP_TYPE_ERROR_DESC));
-            return;
         }
-
     }
-
 }

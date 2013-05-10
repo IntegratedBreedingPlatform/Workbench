@@ -15,6 +15,8 @@ package org.generationcp.ibpworkbench.comp.project.create;
 import java.util.Date;
 import java.util.List;
 
+import com.vaadin.data.Property;
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -32,16 +34,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
@@ -173,18 +165,19 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
         ComboBox comboBox = new ComboBox();
         comboBox.setContainerDataSource(beanItemContainer);
-        comboBox.setNewItemsAllowed(false);
+        comboBox.setNewItemsAllowed(true);
+        //comboBox.addListener(new ComboBoxNewItemsListener());
         cropTypeComboAction = new CropTypeComboAction();
         cropTypeComboAction.setSourceComponent(this);
         cropTypeComboAction.setCropTypeComboBox(comboBox);
        
-        //comboBox.setNewItemHandler(cropTypeComboAction);
+        comboBox.setNewItemHandler(cropTypeComboAction);
         
         comboBox.setItemCaptionPropertyId("cropName");
         comboBox.setRequired(true);
         comboBox.setRequiredError("Please select a Crop.");
         comboBox.setImmediate(true);
-        
+
         if (cropTypes.size() == 1){     //If there is only one crop, set this by default
             comboBox.setValue(cropTypes.get(0));
         }
@@ -264,5 +257,4 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             }
         }
     }
-
 }

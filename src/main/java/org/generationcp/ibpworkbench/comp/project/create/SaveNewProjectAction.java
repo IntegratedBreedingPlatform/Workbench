@@ -29,6 +29,8 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.database.IBDBGenerator;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -40,12 +42,7 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
-import org.generationcp.middleware.pojos.workbench.ProjectMethod;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +104,10 @@ public class SaveNewProjectAction implements ClickListener{
 
             try {
                 //TODO: REMOVE Once template is no longer required in Project
+                CropType cropType = workbenchDataManager.getCropTypeByName(project.getCropType().getCropName());
+                if(cropType == null) {
+                    workbenchDataManager.addCropType(project.getCropType());
+                }
                 project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 
                 project.setLastOpenDate(null);
@@ -120,7 +121,6 @@ public class SaveNewProjectAction implements ClickListener{
                 project.setCentralDbName(centralDatabaseName);
                 
                 workbenchDataManager.saveOrUpdateProject(project);
-                
                 // create the project's workspace directories
                 toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
             } catch (MiddlewareQueryException e) {
@@ -130,10 +130,21 @@ public class SaveNewProjectAction implements ClickListener{
                 return;
             }
 
-            IBDBGenerator generator;
-
+            //create central database
+            IBDBGeneratorCentralDb centralDbGenerator;
             try {
-                generator = new IBDBGenerator(project.getCropType(), project.getProjectId());
+                centralDbGenerator = new IBDBGeneratorCentralDb(project.getCropType(), project.getProjectId());
+                isGenerationSuccess = centralDbGenerator.generateDatabase();
+            } catch (InternationalizableException e) {
+                LOG.error(e.toString(), e);
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+                //TODO cleanup of records already saved for the project needed
+                return;
+            }
+
+            IBDBGeneratorLocalDb generator;
+            try {
+                generator = new IBDBGeneratorLocalDb(project.getCropType(), project.getProjectId());
                 isGenerationSuccess = generator.generateDatabase();
             } catch (InternationalizableException e) {
                 LOG.error(e.toString(), e);

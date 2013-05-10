@@ -48,18 +48,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Jeffrey Morales
  */
-public class IBDBGenerator{
+public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
-    public static final String WORKBENCH_PROP = "workbench.properties";
-    
-    private static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
-    private static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
+    private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
+
     private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
     private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
     private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
-
-    
     private static final String GDMS_INSERT_CASSAVA_SQL = "icass_ibdb_local_with_gdms_insert_only.sql";
     private static final String GDMS_INSERT_CHICKPEA_SQL = "ichis_ibdb_local_with_gdms_insert_only.sql";
     private static final String GDMS_INSERT_COWPEA_SQL = "ibdbv1_ivis_local_with_gdms_datainserts.sql";
@@ -72,51 +67,17 @@ public class IBDBGenerator{
     
     private static final String LOCAL_INSERT_LENTIL_SQL = "ilis_ibdb_local_insert_only.sql";
     private static final String LOCAL_INSERT_SOYBEAN_SQL = "isbis_ibdb_local_insert_only.sql";
-
-    public static final String WORKBENCH_PROP_HOST = "workbench.host";
-    public static final String WORKBENCH_PROP_PORT = "workbench.port";
-    public static final String WORKBENCH_PROP_USER = "workbench.username";
-    public static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
     
     public static final String DB_LOCAL_NAME_SUFFIX = "_local";
-    
-    private static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
-    private static final String SQL_CHAR_SET = " CHARACTER SET ";
-    private static final String SQL_COLLATE = " COLLATE ";
-    public static final String SQL_GRANT_ALL = "GRANT ALL ON ";
-    public static final String SQL_TO = " TO ";
-    public static final String SQL_IDENTIFIED_BY = " IDENTIFIED BY ";
-    public static final String SQL_FLUSH_PRIVILEGES = "FLUSH PRIVILEGES ";
-    public static final String SQL_SINGLE_QUOTE = "'";
-    public static final String SQL_AT_SIGN = "@";
-    public static final String SQL_PERIOD = ".";
-    public static final String SQL_END = ";";
-    
-    private static final String DEFAULT_LOCAL_USER = "local";
-    public static final String DEFAULT_LOCAL_HOST = "localhost";
-    private static final String DEFAULT_LOCAL_PASSWORD = "local";
-    public static final String DEFAULT_ALL = "*";
-    private static final String DEFAULT_CHAR_SET = "utf8";
-    private static final String DEFAULT_COLLATE = "utf8_general_ci";
     
     private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    private String workbenchHost;
-    private String workbenchPort;
-    private String workbenchUsername;
-    private String workbenchPassword;
-    private String workbenchURL;
-    
-    private String generatedDatabaseName;
-
     private CropType cropType;
     private Long projectId;
 
-    private Connection connection = null;
-
-    public IBDBGenerator(CropType cropType, Long projectId) {
+    public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
         this.cropType = cropType;
         this.projectId = projectId;
 
@@ -127,7 +88,7 @@ public class IBDBGenerator{
         boolean isGenerationSuccess = false;
         
         try {
-            createLocalConnection();
+            createConnection();
             createLocalDatabase();
             createManagementSystems();
             
@@ -141,56 +102,6 @@ public class IBDBGenerator{
         }
 
         return isGenerationSuccess;
-    }
-
-    private void createLocalConnection() throws InternationalizableException {
-
-        if (this.connection == null) {
-
-            Properties prop = new Properties();
-
-            InputStream in = null;
-            try {
-                try {
-                    in = new FileInputStream(new File(ResourceFinder.locateFile(WORKBENCH_PROP).toURI()));
-                    prop.load(in);
-                } catch (IllegalArgumentException ex) {
-                    in = Thread.currentThread().getContextClassLoader().getResourceAsStream(WORKBENCH_PROP);
-                }
-                finally {
-                    if (in != null) {
-                        in.close();
-                    }
-                }
-
-                workbenchHost = prop.getProperty(WORKBENCH_PROP_HOST);
-                workbenchPort = prop.getProperty(WORKBENCH_PROP_PORT);
-                workbenchUsername = prop.getProperty(WORKBENCH_PROP_USER);
-                workbenchPassword = prop.getProperty(WORKBENCH_PROP_PASSWORD);
-                workbenchURL = "jdbc:mysql://" + workbenchHost + ":" + workbenchPort;
-            } catch (URISyntaxException e) {
-                handleConfigurationError(e);
-            } catch (IOException e) {
-                handleConfigurationError(e);
-            }
-            finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    }
-                    catch (IOException e) {
-                    }
-                }
-            }
-
-            try {
-                connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-            } catch (SQLException e) {
-                handleDatabaseError(e);
-            }
-
-        }
-
     }
 
     private void createLocalDatabase() throws InternationalizableException {
@@ -281,46 +192,6 @@ public class IBDBGenerator{
             handleConfigurationError(e);
         } catch (URISyntaxException e) {
             handleConfigurationError(e);
-        }
-
-    }
-
-    private void executeSQLFile(File sqlFile) throws InternationalizableException {
-        ScriptRunner scriptRunner = new ScriptRunner(connection);
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
-            scriptRunner.runScript(br);
-        }
-        catch (FileNotFoundException e) {
-            handleConfigurationError(e);
-        }
-        finally {
-            if (br != null) {
-                try {
-                    br.close();
-                }
-                catch (IOException e) {
-                    // intentionally empty
-                }
-            }
-        }
-    }
-
-    private void closeConnection() throws InternationalizableException {
-
-        if (this.connection != null) {
-
-            try {
-
-                connection.close();
-
-                connection = null;
-
-            } catch (SQLException e) {
-                handleDatabaseError(e);
-            }
-
         }
 
     }
