@@ -13,22 +13,12 @@ package org.generationcp.ibpworkbench.comp;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.SaveUsersInProjectAction;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +31,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -170,7 +156,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     {
     	
     	Accordion accord = new Accordion();
-    	
+    	tblDataSet.setWidth("800px");
+    	tblDataSet.setHeight("700px");
     	
     	accord.addTab(tblDataSet);
     	accord.getTab(tblDataSet).setCaption("Table");
@@ -243,9 +230,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	tblDataSet.setImmediate(true);
         
         final List<Object> columnIds = new ArrayList<Object>();
-       
-        
-        List<String> columnHeaders = new ArrayList<String>();
+        final List<String> columnHeaders = new ArrayList<String>();
        
         
         
@@ -257,17 +242,17 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         for (String role : stringList) {
         	
-        	if(role.equalsIgnoreCase("Environment"))
+        	if(role.equalsIgnoreCase("Environment") || role.equalsIgnoreCase("genotype"))
             {
 	            columnIds.add(role);
 	            columnHeaders.add(role);
-	            container.addContainerProperty(role, String.class, role);
+	            container.addContainerProperty(role, Label.class, null);
 	            
             }else{
 	            columnIds.add(role);
 	            columnHeaders.add(role);
-	            container.addContainerProperty(role, Boolean.class, Boolean.TRUE);
-	           
+	           // container.addContainerProperty(role, Boolean.class, Boolean.TRUE);
+	            container.addContainerProperty(role, CheckBox.class, new CheckBox());
             }
         }
         
@@ -278,7 +263,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         tblDataSet.setColumnHeaders(columnHeaders.toArray(new String[0]));
         
         tblDataSet.setEditable(true);
-        tblDataSet.setTableFieldFactory(new TableFieldFactory() {
+        
+       /* tblDataSet.setTableFieldFactory(new TableFieldFactory() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -301,11 +287,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 		//propertyId
                 		//select the whole column dapat ito
                 		cb = new CheckBox("select all");
-                		
+                		cb.setImmediate(true);
                 		cb.addListener(new Property.ValueChangeListener() {            
-                            /**
-							 * 
-							 */
+                            
 							private static final long serialVersionUID = 1L;
 
 							@Override
@@ -352,11 +336,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 		//propertyId
                 		//select the whole column dapat ito
                 		cb = new CheckBox();
+                		cb.setImmediate(true);
                 		
                 		class CheckboxListener implements ValueChangeListener{
-                			/**
-							 * 
-							 */
+                			
 							private static final long serialVersionUID = 1L;
 							private String propertyId;
                 			public CheckboxListener (String propertyId)
@@ -400,10 +383,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 		//itemId
                 		//select the whole row dapat ito
                 		cb = new CheckBox();
+                		cb.setImmediate(true);
                 		class CheckboxListener implements ValueChangeListener{
-                			/**
-							 * 
-							 */
+                			
 							private static final long serialVersionUID = 1L;
 							private String ItemId;
                 			public CheckboxListener (String ItemId)
@@ -455,7 +437,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                 }
                 return null;
             }
-        });
+        }); */
     }
     
     protected void initializeHeader() 
@@ -469,58 +451,80 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
          
          int cnt = 0;
          
-         Item item = container.addItem(obj);
-    
-         for (String role : stringList) {
-        	 
-        	 if(role.equalsIgnoreCase("environment"))
+         TableItems[] headers = new TableItems[stringList.length];
+         
+        
+         
+         //Initialize the table items 
+         for (String role : stringList) 
+         {
+        	 headers[cnt] = new TableItems(); 
+        	 headers[cnt].setColumnId(role);
+        	 if(role.equalsIgnoreCase(" "))
         	 {
-        		 item.getItemProperty(role).setValue(" ");
+        		 headers[cnt].setType("CheckBox");
+        		 headers[cnt].setLabel("SELECT ALL");
+        		 headers[cnt].setRowId(obj);
+        		 headers[cnt].setValue(true);
         		 
-        		 
-        	 }else if(role.equalsIgnoreCase(" "))
+        	 }else if(cnt < 3)
         	 {
-        		 item.getItemProperty(role).setValue(true);
-        	 }
-        	 else
+        		 headers[cnt].setType("String");
+        		 headers[cnt].setLabel(role);
+        		 headers[cnt].setRowId(obj);
+        		 headers[cnt].setValue(true);
+        	 }else
         	 {
-        		 item.getItemProperty(role).setValue(true);
+        		 headers[cnt].setType("CheckBox");
+        		 headers[cnt].setLabel(role);
+        		 headers[cnt].setRowId(obj);
+        		 headers[cnt].setValue(true);
         	 }
-        	 
-        	 
+        	 cnt++;		 
          }
+         // set the table columns
+         
+         createRow("FirstRow",headers);
          
          TableFieldFactory tff = tblDataSet.getTableFieldFactory();
          
         
     }
-
-	private void addNewDataSetItem(String StudyName, String StudyTab)
+    private void createRow(String RowId,TableItems[] tableItems)
+    {
+    	Container container = tblDataSet.getContainerDataSource();
+    	
+    	Item item = container.addItem(RowId);
+    	
+    	for(TableItems tblItem: tableItems)
+        {
+       	 	Property p = item.getItemProperty(tblItem.getColumnId());
+       	 	
+       	 	System.out.println("column "+tblItem);
+       	 	if(tblItem.getType().equalsIgnoreCase("checkbox"))
+       	 	{
+       	 		CheckBox cb = (CheckBox) p.getValue();
+	       	 	cb.setCaption(tblItem.getLabel());
+	       	 	cb.setValue(tblItem.getValue());
+       	 	}else if(tblItem.getType().equalsIgnoreCase("string"))
+       	 	{
+	       	 	p.setValue(tblItem.getLabel());
+	       	}
+       	 	
+        }
+    	
+    }
+	private void addNewDataSetItem(String StudyName, String StudyTab, TableItems[] tableItems)
 	{
 		Container container = tblDataSet.getContainerDataSource();
+		
 	    
-        Collection<?> itemIds = container.getItemIds();
+        
+	    Collection<?> itemIds = container.getItemIds();
         String obj = ""+countme;
         
-        Item item = container.addItem(obj);
+        createRow(obj,tableItems);
         
-        for (String role : stringList) {
-       	 
-       	 if(role.equalsIgnoreCase("environment"))
-       	 {
-       		 item.getItemProperty(role).setValue(" ");
-       		 
-       		 
-       	 }else if(role.equalsIgnoreCase(" "))
-       	 {
-       		 item.getItemProperty(role).setValue(true);
-       	 }
-       	 else
-       	 {
-       		 item.getItemProperty(role).setValue(true);
-       	 }
-       	
-       }
         countme++;
 	}
 	private void setDataSetHeaders(String[] list)
@@ -530,11 +534,66 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	}
     private void initializeMembersTable() {
     	
-    	setDataSetHeaders(new String[] {" ","environment","height","maturity","rust","height 1"});
+    	setDataSetHeaders(new String[] {" ","environment","genotype","height","maturity","rust","height 1"});
+    	
     	initializeTable();
+    	
     	initializeHeader();
-    	addNewDataSetItem("environment","height");
-    	addNewDataSetItem("environment","height");
+    	TableItems[] myRow = new TableItems[stringList.length];
+    	
+    	int cnt = 0;
+    	
+    	for(String cols: stringList)
+    	{
+    		myRow[cnt] = new TableItems();
+    		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
+    		{
+    			myRow[cnt].setColumnId(cols);
+    			myRow[cnt].setRowId("0");
+    			myRow[cnt].setType("String");
+    			myRow[cnt].setLabel("String ito "+ cnt);
+    			
+    		}else
+    		{
+    			myRow[cnt].setColumnId(cols);
+    			myRow[cnt].setRowId("0");
+    			myRow[cnt].setType("CheckBox");
+    			myRow[cnt].setLabel("Checkbox ito "+ cnt);
+    			myRow[cnt].setValue(true);
+    		}
+    		//myRow[cnt]
+    		cnt++;
+    	}
+    	
+    	
+TableItems[] myRow2 = new TableItems[stringList.length];
+    	
+    	cnt = 0;
+    	
+    	for(String cols: stringList)
+    	{
+    		myRow2[cnt] = new TableItems();
+    		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
+    		{
+    			myRow2[cnt].setColumnId(cols);
+    			myRow2[cnt].setRowId("0");
+    			myRow2[cnt].setType("String");
+    			myRow2[cnt].setLabel("String ito "+ cnt);
+    			
+    		}else
+    		{
+    			myRow2[cnt].setColumnId(cols);
+    			myRow2[cnt].setRowId("0");
+    			myRow2[cnt].setType("CheckBox");
+    			myRow2[cnt].setLabel("Checkbox ito "+ cnt);
+    			myRow2[cnt].setValue(true);
+    		}
+    		//myRow[cnt]
+    		cnt++;
+    	}
+    	
+    	addNewDataSetItem("environment","height",myRow);
+    	addNewDataSetItem("environment","height",myRow2);
     	//addNewDataSetItem("environment","height");
     
     
@@ -572,7 +631,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		}
     	
     }
-
+    
+  
 
 
     
