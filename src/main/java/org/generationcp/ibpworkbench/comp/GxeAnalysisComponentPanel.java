@@ -492,26 +492,29 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     }
     private void createRow(String RowId,TableItems[] tableItems)
     {
-    	Container container = tblDataSet.getContainerDataSource();
     	
-    	Item item = container.addItem(RowId);
+    	Object[] obj = new Object[tableItems.length];
     	
-    	for(TableItems tblItem: tableItems)
-        {
-       	 	Property p = item.getItemProperty(tblItem.getColumnId());
-       	 	
-       	 	System.out.println("column "+tblItem);
-       	 	if(tblItem.getType().equalsIgnoreCase("checkbox"))
-       	 	{
-       	 		CheckBox cb = (CheckBox) p.getValue();
-	       	 	cb.setCaption(tblItem.getLabel());
-	       	 	cb.setValue(tblItem.getValue());
-       	 	}else if(tblItem.getType().equalsIgnoreCase("string"))
-       	 	{
-	       	 	p.setValue(tblItem.getLabel());
-	       	}
-       	 	
-        }
+    	for(Integer i = 0; i < tableItems.length; i++){
+    	
+    		
+    			if(tableItems[i].getType().equalsIgnoreCase("checkbox"))
+       	 		{
+       	 			CheckBox cb = new CheckBox();
+		       	 	cb.setCaption(tableItems[i].getLabel());
+		       	 	cb.setValue(tableItems[i].getValue());
+		       	 	obj[i] = cb;
+       	 		}else if(tableItems[i].getType().equalsIgnoreCase("string"))
+       	 		{
+       	 			obj[i] = tableItems[i].getLabel();
+       	 		}
+    	}
+    	
+    	
+    	tblDataSet.addItem(obj, countme);
+    	
+    	
+
     	
     }
 	private void addNewDataSetItem(String StudyName, String StudyTab, TableItems[] tableItems)
@@ -576,14 +579,14 @@ TableItems[] myRow2 = new TableItems[stringList.length];
     		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
     		{
     			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId("0");
+    			myRow2[cnt].setRowId("1");
     			myRow2[cnt].setType("String");
     			myRow2[cnt].setLabel("String ito "+ cnt);
     			
     		}else
     		{
     			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId("0");
+    			myRow2[cnt].setRowId("1");
     			myRow2[cnt].setType("CheckBox");
     			myRow2[cnt].setLabel("Checkbox ito "+ cnt);
     			myRow2[cnt].setValue(true);
