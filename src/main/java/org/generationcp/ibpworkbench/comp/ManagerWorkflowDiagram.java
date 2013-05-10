@@ -182,7 +182,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingViewGxeAnalysisLocalButton = new Button("GxE Analysis");
         breedingViewGxeAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewGxeAnalysisLocalButton.setSizeUndefined();
-        breedingViewGxeAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        breedingViewGxeAnalysisLocalButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
         
         breedingViewMultiSiteAnalysisButton = new Button();
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
