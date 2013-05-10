@@ -3,21 +3,21 @@ package org.generationcp.ibpworkbench.util;
 public class TableItems {
 
 	private String columnId;
-	private String rowId;
+	private Object rowId;
 	private String type;
 	private String Label;
 	private Object value;
-	
+	 
 	public String getColumnId() {
 		return columnId;
 	}
 	public void setColumnId(String columnId) {
 		this.columnId = columnId;
 	}
-	public String getRowId() {
+	public Object getRowId() {
 		return rowId;
 	}
-	public void setRowId(String rowId) {
+	public void setRowId(Object rowId) {
 		this.rowId = rowId;
 	}
 	public String getType() {

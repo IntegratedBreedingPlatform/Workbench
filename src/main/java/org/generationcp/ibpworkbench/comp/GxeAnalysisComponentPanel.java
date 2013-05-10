@@ -170,9 +170,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     {
     	TabSheet tab = new TabSheet();
     	initializeMembersTable();
-    	generateTabComponent(tab, "ANM87AMA");
-    	generateTabComponent(tab, "ANM87ABA");
-    	generateTabComponent(tab, "ANM87ABK");
+    	//generateTabComponent(tab, "ANM87AMA");
+    	//generateTabComponent(tab, "ANM87ABA");
+    	//generateTabComponent(tab, "ANM87ABK");
     	generateTabComponent(tab, "AAAAAA");
     	
     	tab.setWidth("800px");
@@ -462,7 +462,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         	 headers[cnt].setColumnId(role);
         	 if(role.equalsIgnoreCase(" "))
         	 {
-        		 headers[cnt].setType("CheckBox");
+        		 headers[cnt].setType("checkboxall");
         		 headers[cnt].setLabel("SELECT ALL");
         		 headers[cnt].setRowId(obj);
         		 headers[cnt].setValue(true);
@@ -475,7 +475,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         		 headers[cnt].setValue(true);
         	 }else
         	 {
-        		 headers[cnt].setType("CheckBox");
+        		 headers[cnt].setType("checkbox_column");
         		 headers[cnt].setLabel(role);
         		 headers[cnt].setRowId(obj);
         		 headers[cnt].setValue(true);
@@ -507,8 +507,202 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        	 		}else if(tableItems[i].getType().equalsIgnoreCase("string"))
        	 		{
        	 			obj[i] = tableItems[i].getLabel();
+       	 		}else if(tableItems[i].getType().equalsIgnoreCase("checkboxall"))
+       	 		{
+	       	 		CheckBox cb = new CheckBox();
+		       	 	cb.setCaption(tableItems[i].getLabel());
+		       	 	cb.setValue(tableItems[i].getValue());
+		       	 	
+		       		cb.setImmediate(true);
+         		
+		       		class CheckboxListener implements ValueChangeListener{
+         			
+					private static final long serialVersionUID = 1L;
+					private String propertyId;
+         			public CheckboxListener (String propertyId)
+         			{
+         				this.propertyId = propertyId;
+         			}
+                     @Override
+                     public void valueChange(ValueChangeEvent event) {
+                         // TODO Auto-generated method stub
+                     	try{
+                             System.out.println(event);
+                             Container container = tblDataSet.getContainerDataSource();
+                             Collection<?> items =  container.getItemIds();
+                             
+                             
+                             for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
+                          	 {
+                            	
+                            	 
+                          	   Integer key = (Integer) myitems.next();
+                          	   Item item = container.getItem(key);
+                          	   
+                          	   for(String column: stringList)
+	  	                   	   {
+	  	                   		   if(column.equalsIgnoreCase(" ") && key.intValue() == 0)
+	  	                   			   continue;
+	  	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
+	  	                   			   continue;
+	  	                   		   	//item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
+	  	                         	//if()
+	  	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(stringList).getValue();
+	  	                         	//CheckBox aa = (CheckBox) event.getProperty().getValue();
+	  	                         	System.out.println("Class " + item.getItemProperty(stringList).getClass());
+	  	                         	System.out.println("CheckBox "+ ba);
+	  	                         	System.out.println("value " + event.getProperty().getValue());
+	  	                         	
+	  	                         	ba.setValue(event.getProperty().getValue());
+	  	                         	
+	  	                         	
+	  	                   	   }
+                             }
+                             
+                           //  System.out.println("property " + event.getProperty().getValue());
+                           requestRepaintAll();
+                          
+                      }catch(Exception e)
+                      { e.printStackTrace();}
+                      }
+						
+         		}
+         		
+         		cb.addListener(new CheckboxListener(stringList[4]));
+		       	 	
+		       	 	obj[i] = cb;
        	 		}
-    	}
+    			
+    		// column checkbox
+       	 	else if(tableItems[i].getType().equalsIgnoreCase("checkbox_column"))
+   	 		{
+       	 		CheckBox cb = new CheckBox();
+	       	 	cb.setCaption(tableItems[i].getLabel());
+	       	 	cb.setValue(tableItems[i].getValue());
+	       	 	
+	       		cb.setImmediate(true);
+     		
+	       		class CheckboxListener implements ValueChangeListener{
+     			
+				private static final long serialVersionUID = 1L;
+				private String propertyId;
+     			public CheckboxListener (String propertyId)
+     			{
+     				this.propertyId = propertyId;
+     			}
+                 @Override
+                 public void valueChange(ValueChangeEvent event) {
+                     // TODO Auto-generated method stub
+                 	try{
+                         System.out.println(event);
+                         Container container = tblDataSet.getContainerDataSource();
+                         Collection<?> items =  container.getItemIds();
+                         
+                         
+                         for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
+                      	 {
+                        	
+                        	 
+                      	   Integer key = (Integer) myitems.next();
+                      	   Item item = container.getItem(key);
+                      	   
+                      	   if(key.intValue() != 0){
+                      		   System.out.println("propertyId"+ this.propertyId); 
+                      		   System.out.println("key"+ key); 
+                       	   
+                      		   //item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
+                            	//if()
+                      		   CheckBox ba = (CheckBox) item.getItemProperty(this.propertyId).getValue();
+                            	//CheckBox aa = (CheckBox) event.getProperty().getValue();
+                            	System.out.println("Class " + item.getItemProperty(this.propertyId).getClass());
+                            	System.out.println("CheckBox "+ ba);
+                            	System.out.println("value " + event.getProperty().getValue());
+                            	
+                            	ba.setValue(event.getProperty().getValue());
+                            	
+                            	
+                      	   }
+                         }
+                         
+                       //  System.out.println("property " + event.getProperty().getValue());
+                       requestRepaintAll();
+                      
+                  }catch(Exception e)
+                  { e.printStackTrace();}
+                  }
+					
+     		}
+     		
+     		cb.addListener(new CheckboxListener(tableItems[i].getLabel()));
+	       	 	
+	       	 	obj[i] = cb;
+   	 		}
+    			
+    		// row checkbox
+       	 	else if(tableItems[i].getType().equalsIgnoreCase("checkbox_row"))
+	 		{
+    	 		CheckBox cb = new CheckBox();
+	       	 	cb.setCaption(tableItems[i].getLabel());
+	       	 	cb.setValue(tableItems[i].getValue());
+	       	 	
+	       		cb.setImmediate(true);
+  		
+	       		class CheckboxListener implements ValueChangeListener{
+  			
+				private static final long serialVersionUID = 1L;
+				private Integer propertyId;
+	  			public CheckboxListener (Integer propertyId)
+	  			{
+	  				this.propertyId = propertyId;
+	  			}
+	              @Override
+	              public void valueChange(ValueChangeEvent event) {
+	                  // TODO Auto-generated method stub
+	              	try{
+	                      System.out.println(event);
+	                      Container container = tblDataSet.getContainerDataSource();
+	                      Collection<?> items =  container.getItemIds();
+	                      
+	                      
+	                   	   Item item = container.getItem(this.propertyId);
+	                   	   
+	                   	   for(String column: stringList)
+	                   	   {
+	                   		   
+	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
+	                   			   continue;
+	                   		if(column.equalsIgnoreCase(" "))
+	                   			   continue;
+	                   		   	//item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
+	                         	//if()
+	                   		System.out.println("column " + column);
+                         	System.out.println("propertyId " + this.propertyId);
+	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
+	                         	//CheckBox aa = (CheckBox) event.getProperty().getValue();
+	                         	
+	                         	System.out.println("CheckBox "+ ba);
+	                         	System.out.println("value " + event.getProperty().getValue());
+	                         	
+	                         	ba.setValue(event.getProperty().getValue());
+	                         	
+	                         	
+	                   	   }
+	                      
+	                      
+	                    //  System.out.println("property " + event.getProperty().getValue());
+	                    requestRepaintAll();
+	                   
+	               }catch(Exception e)
+	               { e.printStackTrace();}
+	               }
+						
+	  		}
+  		
+	  		cb.addListener(new CheckboxListener(countme));
+		       	 	
+		       	 	obj[i] = cb;
+		 		}
+	    	}
     	
     	
     	tblDataSet.addItem(obj, countme);
@@ -521,20 +715,22 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	{
 		Container container = tblDataSet.getContainerDataSource();
 		
-	    
+		countme++;
         
 	    Collection<?> itemIds = container.getItemIds();
         String obj = ""+countme;
         
         createRow(obj,tableItems);
         
-        countme++;
+        
 	}
 	private void setDataSetHeaders(String[] list)
 	{
 		stringList = list;
 		
 	}
+	
+	
     private void initializeMembersTable() {
     	
     	setDataSetHeaders(new String[] {" ","environment","genotype","height","maturity","rust","height 1"});
@@ -552,14 +748,21 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
     		{
     			myRow[cnt].setColumnId(cols);
-    			myRow[cnt].setRowId("0");
+    			myRow[cnt].setRowId(1);
     			myRow[cnt].setType("String");
     			myRow[cnt].setLabel("String ito "+ cnt);
     			
+    		}else if(cols.equalsIgnoreCase(" "))
+    		{
+    			myRow[cnt].setColumnId(cols);
+    			myRow[cnt].setRowId(1);
+    			myRow[cnt].setType("checkbox_row");
+    			myRow[cnt].setLabel(" ");
+    			myRow[cnt].setValue(true);
     		}else
     		{
     			myRow[cnt].setColumnId(cols);
-    			myRow[cnt].setRowId("0");
+    			myRow[cnt].setRowId(1);
     			myRow[cnt].setType("CheckBox");
     			myRow[cnt].setLabel("Checkbox ito "+ cnt);
     			myRow[cnt].setValue(true);
@@ -569,7 +772,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	}
     	
     	
-TableItems[] myRow2 = new TableItems[stringList.length];
+    	TableItems[] myRow2 = new TableItems[stringList.length];
     	
     	cnt = 0;
     	
@@ -579,14 +782,21 @@ TableItems[] myRow2 = new TableItems[stringList.length];
     		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
     		{
     			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId("1");
+    			myRow2[cnt].setRowId(2);
     			myRow2[cnt].setType("String");
     			myRow2[cnt].setLabel("String ito "+ cnt);
     			
+    		}else if(cols.equalsIgnoreCase(" "))
+    		{
+    			myRow2[cnt].setColumnId(cols);
+    			myRow2[cnt].setRowId(2);
+    			myRow2[cnt].setType("checkbox_row");
+    			myRow2[cnt].setLabel(" ");
+    			myRow2[cnt].setValue(true);
     		}else
     		{
     			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId("1");
+    			myRow2[cnt].setRowId(2);
     			myRow2[cnt].setType("CheckBox");
     			myRow2[cnt].setLabel("Checkbox ito "+ cnt);
     			myRow2[cnt].setValue(true);
