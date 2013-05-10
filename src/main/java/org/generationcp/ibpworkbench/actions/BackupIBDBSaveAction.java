@@ -1,13 +1,12 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
@@ -16,6 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Window;
 
 @Configurable
@@ -49,6 +52,14 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Initializin
 	@Override
 	public void onClose(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
+			ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletRequest request = requestAttributes.getRequest();
+            String contextPath = request.getContextPath();
+            String url = contextPath + "/controller/backupIBDB?projectId=" + selectedProject.getProjectId() + "&localDbName=" + selectedProject.getLocalDbName();
+
+            sourceWindow.getApplication().getMainWindow().open(new ExternalResource(url));
+            
+			/*
 			LOG.debug("onClick > do save backup");
 			LOG.debug("Current ProjectID: " + selectedProject.getProjectId());
 			
@@ -77,6 +88,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Initializin
 				
 				MessageNotifier.showError(sourceWindow, "Error saving to database",e.getMessage());
 			}
+			*/
 		}
 	}
 

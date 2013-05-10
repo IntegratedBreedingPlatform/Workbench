@@ -12,8 +12,6 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -25,15 +23,13 @@ import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -89,12 +85,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private SimpleResourceBundleMessageSource messageSource;
 
 	private Button backupIBDBButton;
-    private Link backupIBDBLink;
+	private Link backupIBDBLink;
 	private Button restoreIBDBButton;
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
 	private Button manageGermplasmListsButton;
+	
+	@Autowired
+    private WorkbenchDataManager workbenchDataManager;
+    
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -230,15 +230,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         backupIBDBButton.setSizeUndefined();
         backupIBDBButton.setDescription(messageSource.getMessage(Message.BACKUP_IBDB_LINK_DESC));
 
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = requestAttributes.getRequest();
-        String contextPath = request.getContextPath();
-        String url = contextPath + "/controller/backupIBDB?projectId=" + this.project.getProjectId() + "&localDbName=" + this.project.getLocalDbName();
-        backupIBDBLink = new Link(messageSource.getMessage(Message.BACKUP_IBDB_LINK),
-                new ExternalResource(url));
-        backupIBDBLink.setTargetName("_blank");
-        backupIBDBLink.setDescription(messageSource.getMessage(Message.BACKUP_IBDB_LINK_DESC));
-        
         restoreIBDBButton = new Button(messageSource.getMessage(Message.RESTORE_IBDB_LINK));
         restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK);
         restoreIBDBButton.setSizeUndefined();
@@ -370,16 +361,18 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(membersButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(membersButton, 0);
 
-        /*layout.addComponent(backupIBDBButton);
+        layout.addComponent(backupIBDBButton);
         backupIBDBButton.setHeight("20px");
         layout.setComponentAlignment(backupIBDBButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(backupIBDBButton, 0);*/
+        layout.setExpandRatio(backupIBDBButton, 0);
 
+        /*
         layout.addComponent(backupIBDBLink);
         backupIBDBLink.setHeight("20px");
         layout.setComponentAlignment(backupIBDBLink, Alignment.TOP_CENTER);
         layout.setExpandRatio(backupIBDBLink, 0);
-
+		*/
+        
         /*layout.addComponent(backupIBDBCustomLayout);
         backupIBDBCustomLayout.setHeight("20px");
         layout.setComponentAlignment(backupIBDBCustomLayout, Alignment.TOP_CENTER);
@@ -593,7 +586,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             
             membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
+            
             backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
+            
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
