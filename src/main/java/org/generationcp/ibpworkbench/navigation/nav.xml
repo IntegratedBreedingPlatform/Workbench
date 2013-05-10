@@ -69,6 +69,11 @@
           label="Project Members"
           level="2"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
+          
+    <view path="/BreedingGxE"
+          label="Gxe Analysis"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />      
     
     <view path="/CreateProject"
           label="Create Project"

@@ -32,6 +32,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -41,6 +43,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.Tree;
@@ -103,7 +107,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        
     }
 
-    protected void createStudies()
+    protected Object[][] createStudies()
     {
     	studies = new Object[][]{
                 new Object[]{"Mercury"}, 
@@ -118,30 +122,32 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                                         "Titania", "Oberon"},
                 new Object[]{"Neptune", "Triton", "Proteus", "Nereid",
                                         "Larissa"}};
+    	
+    	return studies;
     }
     protected void refreshStudies()
     {
     	 /* Add planets as root items in the tree. */
         for (int i=0; i<studies.length; i++) {
-            String planet = (String) (studies[i][0]);
-            studiesTree.addItem(planet);
+            String study = (String) (studies[i][0]);
+            studiesTree.addItem(study);
             
             if (studies[i].length == 1) {
                 // The planet has no moons so make it a leaf.
-            	studiesTree.setChildrenAllowed(planet, false);
+            	studiesTree.setChildrenAllowed(study, false);
             } else {
                 // Add children (moons) under the planets.
                 for (int j=1; j<studies[i].length; j++) {
-                    String moon = (String) studies[i][j];
+                    String childStudy = (String) studies[i][j];
                     
                     // Add the item as a regular item.
-                    studiesTree.addItem(moon);
+                    studiesTree.addItem(childStudy);
                     
                     // Set it to be a child.
-                    studiesTree.setParent(moon, planet);
+                    studiesTree.setParent(childStudy, study);
                     
                     // Make the moons look like leaves.
-                    studiesTree.setChildrenAllowed(moon, false);
+                    studiesTree.setChildrenAllowed(childStudy, false);
                 }
 
                 // Expand the subtree.
@@ -166,29 +172,16 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	return accord;
     }
-    protected TabSheet generateTabSheet()
-    {
-    	TabSheet tab = new TabSheet();
-    	initializeMembersTable();
-    	//generateTabComponent(tab, "ANM87AMA");
-    	//generateTabComponent(tab, "ANM87ABA");
-    	//generateTabComponent(tab, "ANM87ABK");
-    	generateTabComponent(tab, "AAAAAA");
-    	
-    	tab.setWidth("800px");
-        tab.setHeight("700px");
-        
-    	return tab;
-    }
+    
     protected void initializeComponents(){
 
        setSpacing(true);
        setMargin(true);
        createStudies();
        
-       initializeMembersTable();
        
        HorizontalLayout horizontal = new HorizontalLayout();
+       
        
        
        studiesTree = new Tree("Studies");
@@ -196,15 +189,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        studiesPanel = new Panel();
        refreshStudies();
        
-        
-        
-       
-        
-        
-        studiesTabsheet = generateTabSheet();
-        
-        
-        
         studiesPanel.addComponent(studiesTree);
         
         studiesPanel.setWidth("200px");
@@ -263,183 +247,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         tblDataSet.setColumnHeaders(columnHeaders.toArray(new String[0]));
         
         tblDataSet.setEditable(true);
-        
-       /* tblDataSet.setTableFieldFactory(new TableFieldFactory() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-                int columnIndex = columnIds.indexOf(propertyId);
-               
-                CheckBox cb;
-                //itemId <-- row
-                //propertyId <-- column
-                
-                System.out.println("itemId " + itemId);
-                System.out.println("propertyId " + propertyId);
-                
-                if (!propertyId.toString().equalsIgnoreCase("environment")) {
-                	//String caption = container.getItem(itemId).getItemProperty("caption_" + propertyId.toString()).getValue().toString();
-                	String caption =  propertyId.toString();
-                	
-                	if(itemId.toString().equalsIgnoreCase("FirstRow") && propertyId.toString().equalsIgnoreCase(" "))
-                	{
-                		//propertyId
-                		//select the whole column dapat ito
-                		cb = new CheckBox("select all");
-                		cb.setImmediate(true);
-                		cb.addListener(new Property.ValueChangeListener() {            
-                            
-							private static final long serialVersionUID = 1L;
-
-							@Override
-                            public void valueChange(ValueChangeEvent event) {
-                                // TODO Auto-generated method stub
-                            	try{
-	                               System.out.println(event);
-	                               Container container = tblDataSet.getContainerDataSource();
-	                               Collection<?> items =  container.getItemIds();
-	                               
-	                               
-	                               for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
-	                            	    
-	                               {
-	                            	   String key = (String) myitems.next();
-	                            	   Item item = container.getItem(key);
-	                            	   
-	                            	   for (String role : stringList) 
-	                            	   {
-	                                  	 
-	                                  	 if(role.equalsIgnoreCase("environment"))
-	                                  	 {
-	                                  		 //item.getItemProperty(role).setValue(" ");
-	                                  	 }else if(role.equalsIgnoreCase(" ") && key.equalsIgnoreCase("FirstRow"))
-	                                  	 {
-	                                  		//item.getItemProperty(role).setValue(false);
-	                                  		// item.getItemProperty(role).setValue(event.getProperty().getValue());
-	                                  	 }else
-	                                  		//item.getItemProperty(role).setValue(false);
-	                                  		 item.getItemProperty(role).setValue(event.getProperty().getValue());
-	                            	   }
-	                               }
-	                               
-	                             //  System.out.println("property " + event.getProperty().getValue());
-	                             requestRepaintAll();
-	                            
-                            }catch(Exception e)
-                            { e.printStackTrace();}
-                            }});
-                		return cb;
-                	}
-                	else if(itemId.toString().equalsIgnoreCase("FirstRow"))
-                	{
-                		//propertyId
-                		//select the whole column dapat ito
-                		cb = new CheckBox();
-                		cb.setImmediate(true);
-                		
-                		class CheckboxListener implements ValueChangeListener{
-                			
-							private static final long serialVersionUID = 1L;
-							private String propertyId;
-                			public CheckboxListener (String propertyId)
-                			{
-                				this.propertyId = propertyId;
-                			}
-                            @Override
-                            public void valueChange(ValueChangeEvent event) {
-                                // TODO Auto-generated method stub
-                            	try{
- 	                               System.out.println(event);
- 	                               Container container = tblDataSet.getContainerDataSource();
- 	                               Collection<?> items =  container.getItemIds();
- 	                               
- 	                               
- 	                               for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
- 	                            	    
- 	                               {
- 	                            	   String key = (String) myitems.next();
- 	                            	   Item item = container.getItem(key);
- 	                            	   
- 	                            	   if(!key.equalsIgnoreCase("FirstRow"))
- 	                                  	item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
- 	                                  	
- 	                               }
- 	                               
- 	                             //  System.out.println("property " + event.getProperty().getValue());
- 	                             requestRepaintAll();
- 	                            
-                             }catch(Exception e)
-                             { e.printStackTrace();}
-                             }
-							
-                		}
-                		
-                		cb.addListener(new CheckboxListener(propertyId.toString()));
-                		
-                		return cb;
-                	}else if(propertyId.toString().equalsIgnoreCase(" "))
-                	{
-                		//itemId
-                		//select the whole row dapat ito
-                		cb = new CheckBox();
-                		cb.setImmediate(true);
-                		class CheckboxListener implements ValueChangeListener{
-                			
-							private static final long serialVersionUID = 1L;
-							private String ItemId;
-                			public CheckboxListener (String ItemId)
-                			{
-                				this.ItemId = ItemId;
-                			}
-                            @Override
-                            public void valueChange(ValueChangeEvent event) {
-                                // TODO Auto-generated method stub
-                            	try{
- 	                               System.out.println(event);
- 	                               Container container = tblDataSet.getContainerDataSource();
- 	                               Collection<?> items =  container.getItemIds();
- 	                               
- 	                               
- 	                              
- 	                               Item item = container.getItem(this.ItemId);
- 	                            	   
- 	                            	  for (String role : stringList) 
-	                            	   {
-	                                  	 
-	                                  	 if(role.equalsIgnoreCase("environment"))
-	                                  	 {
-	                                  		 //item.getItemProperty(role).setValue(" ");
-	                                  	 }else
-	                                  		//item.getItemProperty(role).setValue(false);
-	                                  		 item.getItemProperty(role).setValue(event.getProperty().getValue());
-	                            	   }
- 	                               
- 	                               
- 	                             //  System.out.println("property " + event.getProperty().getValue());
- 	                             requestRepaintAll();
- 	                            
-                             }catch(Exception e)
-                             { e.printStackTrace();}
-                             }
-							
-                		}
-                		
-                		cb.addListener(new CheckboxListener(itemId.toString()));
-                		return cb;
-                	}else
-                	{
-                		cb = new CheckBox(caption);
-                		return cb;
-                	}
-                     
-                     
-                }
-                return null;
-            }
-        }); */
+       
     }
     
+    /*
+     * CHANGE THIS FUNCTION IF YOU WANT A SEPARATE LIST OF HEADERS
+     * */
     protected void initializeHeader() 
     {
     	 Container container = tblDataSet.getContainerDataSource();
@@ -490,6 +303,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
          
         
     }
+    
+    /*
+     * @RowId = Id of the row to be inserted
+     * @TableItems[] = list of table items object. One array of TableItems would be equal to one row
+     */
     private void createRow(String RowId,TableItems[] tableItems)
     {
     	
@@ -518,10 +336,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		       		class CheckboxListener implements ValueChangeListener{
          			
 					private static final long serialVersionUID = 1L;
-					private String propertyId;
-         			public CheckboxListener (String propertyId)
+					
+         			public CheckboxListener ()
          			{
-         				this.propertyId = propertyId;
+         				
          			}
                      @Override
                      public void valueChange(ValueChangeEvent event) {
@@ -545,21 +363,13 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	  	                   			   continue;
 	  	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
 	  	                   			   continue;
-	  	                   		   	//item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
-	  	                         	//if()
-	  	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(stringList).getValue();
-	  	                         	//CheckBox aa = (CheckBox) event.getProperty().getValue();
-	  	                         	System.out.println("Class " + item.getItemProperty(stringList).getClass());
-	  	                         	System.out.println("CheckBox "+ ba);
-	  	                         	System.out.println("value " + event.getProperty().getValue());
-	  	                         	
+	  	                   		   
+	  	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
 	  	                         	ba.setValue(event.getProperty().getValue());
 	  	                         	
 	  	                         	
 	  	                   	   }
                              }
-                             
-                           //  System.out.println("property " + event.getProperty().getValue());
                            requestRepaintAll();
                           
                       }catch(Exception e)
@@ -568,7 +378,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 						
          		}
          		
-         		cb.addListener(new CheckboxListener(stringList[4]));
+         		cb.addListener(new CheckboxListener());
 		       	 	
 		       	 	obj[i] = cb;
        	 		}
@@ -607,21 +417,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                       	   Item item = container.getItem(key);
                       	   
                       	   if(key.intValue() != 0){
-                      		   System.out.println("propertyId"+ this.propertyId); 
-                      		   System.out.println("key"+ key); 
-                       	   
-                      		   //item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
-                            	//if()
                       		   CheckBox ba = (CheckBox) item.getItemProperty(this.propertyId).getValue();
-                            	//CheckBox aa = (CheckBox) event.getProperty().getValue();
-                            	System.out.println("Class " + item.getItemProperty(this.propertyId).getClass());
-                            	System.out.println("CheckBox "+ ba);
-                            	System.out.println("value " + event.getProperty().getValue());
-                            	
-                            	ba.setValue(event.getProperty().getValue());
-                            	
-                            	
-                      	   }
+                      		   ba.setValue(event.getProperty().getValue());
+                           }
                          }
                          
                        //  System.out.println("property " + event.getProperty().getValue());
@@ -731,12 +529,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	}
 	
 	
-    private void initializeMembersTable() {
+    private void createTableContents() {
     	
     	setDataSetHeaders(new String[] {" ","environment","genotype","height","maturity","rust","height 1"});
-    	
     	initializeTable();
-    	
     	initializeHeader();
     	TableItems[] myRow = new TableItems[stringList.length];
     	
@@ -807,9 +603,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	addNewDataSetItem("environment","height",myRow);
     	addNewDataSetItem("environment","height",myRow2);
-    	//addNewDataSetItem("environment","height");
-    
-    
+    	
     }
 
    
@@ -824,10 +618,21 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     protected void initializeActions() {
       //  newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
        studiesTree.addListener(new StudiesTreeAction());
-        
+      // studiesTabsheet.addListener(new StudiesTabFocusListener()); 
+       
         
     }
     
+    private class StudiesTabFocusListener implements SelectedTabChangeListener
+    {
+
+		@Override
+		public void selectedTabChange(SelectedTabChangeEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println(event.getTabSheet().getSelectedTab().getCaption());
+		}
+    	
+    }
     private class StudiesTreeAction implements ValueChangeListener
     {
 
@@ -845,6 +650,21 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     }
     
+    protected TabSheet generateTabSheet()
+    {
+    	TabSheet tab = new TabSheet();
+    	
+    	createTableContents();
+    	generateTabComponent(tab, "AKMSHSSA");
+    	generateTabComponent(tab, "AKMSSSSA");
+    	
+    	tab.setWidth("800px");
+        tab.setHeight("700px");
+        
+        tab.addListener(new StudiesTabFocusListener()); 
+        
+    	return tab;
+    }
   
 
 

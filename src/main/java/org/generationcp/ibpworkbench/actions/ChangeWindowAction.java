@@ -18,6 +18,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
 import org.generationcp.ibpworkbench.comp.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
@@ -60,6 +61,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,MEMBER("member")
         ,BACKUP_IBDB("backup_ibdb")
         ,RESTORE_IBDB("restore_ibdb")
+        ,BREEDING_GXE("breeding_gxe")
         ;
         
         String windowName;
@@ -187,7 +189,30 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
      		 w.showContent(projectLocationPanel);
      		 NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
      		
-    	} 
+    	} else if(WindowEnums.BREEDING_GXE.getwindowName().equals(windowName) )
+        	{
+        		
+        		
+        		 try {
+                     IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                     User user = app.getSessionData().getUserData();
+                     Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                     ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+
+                     workbenchDataManager.addProjectActivity(projAct);
+
+                 } catch (MiddlewareQueryException e1) {
+                     MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                               "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                     return;
+                 }
+        		 
+        		 GxeAnalysisComponentPanel gxeAnalysisPanel = new GxeAnalysisComponentPanel(this.project);
+         		 w.showContent(gxeAnalysisPanel);
+         		 NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
+         		
+        	} 
     	else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
