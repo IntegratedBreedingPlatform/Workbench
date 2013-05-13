@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.generationcp.ibpworkbench.util.GxEUtility;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -536,73 +537,30 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	initializeHeader();
     	TableItems[] myRow = new TableItems[stringList.length];
     	
-    	int cnt = 0;
-    	
-    	for(String cols: stringList)
-    	{
-    		myRow[cnt] = new TableItems();
-    		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
-    		{
-    			myRow[cnt].setColumnId(cols);
-    			myRow[cnt].setRowId(1);
-    			myRow[cnt].setType("String");
-    			myRow[cnt].setLabel("String ito "+ cnt);
+    	for (Integer x = 0; x <= 1000; x++){
+    		Integer y = 0;
+    		TableItems[] row = new TableItems[stringList.length];
+    		for (String col : stringList){
     			
-    		}else if(cols.equalsIgnoreCase(" "))
-    		{
-    			myRow[cnt].setColumnId(cols);
-    			myRow[cnt].setRowId(1);
-    			myRow[cnt].setType("checkbox_row");
-    			myRow[cnt].setLabel(" ");
-    			myRow[cnt].setValue(true);
-    		}else
-    		{
-    			myRow[cnt].setColumnId(cols);
-    			myRow[cnt].setRowId(1);
-    			myRow[cnt].setType("CheckBox");
-    			myRow[cnt].setLabel("Checkbox ito "+ cnt);
-    			myRow[cnt].setValue(true);
+    			TableItems item = new TableItems();
+    			item.setColumnId(col);
+    			item.setRowId(x);
+    			if (col.equalsIgnoreCase("environment") || col.equalsIgnoreCase("genotype")){
+    				item.setType("String");
+    				item.setLabel("Data" + x);
+    			}else if (col.equalsIgnoreCase(" ")){
+    				item.setType("checkbox_row");
+    				item.setLabel(" ");
+    				item.setValue(true);
+    			}else{
+    				item.setType("CheckBox");
+    				item.setLabel(GxEUtility.randomInRange(0, 100).toString());
+    				item.setValue(true);
+    			}
+    			row[y] = item ; y++;
     		}
-    		//myRow[cnt]
-    		cnt++;
+    		addNewDataSetItem("environment","height", row);
     	}
-    	
-    	
-    	TableItems[] myRow2 = new TableItems[stringList.length];
-    	
-    	cnt = 0;
-    	
-    	for(String cols: stringList)
-    	{
-    		myRow2[cnt] = new TableItems();
-    		if(cols.equalsIgnoreCase("environment") || cols.equalsIgnoreCase("genotype"))
-    		{
-    			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId(2);
-    			myRow2[cnt].setType("String");
-    			myRow2[cnt].setLabel("String ito "+ cnt);
-    			
-    		}else if(cols.equalsIgnoreCase(" "))
-    		{
-    			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId(2);
-    			myRow2[cnt].setType("checkbox_row");
-    			myRow2[cnt].setLabel(" ");
-    			myRow2[cnt].setValue(true);
-    		}else
-    		{
-    			myRow2[cnt].setColumnId(cols);
-    			myRow2[cnt].setRowId(2);
-    			myRow2[cnt].setType("CheckBox");
-    			myRow2[cnt].setLabel("Checkbox ito "+ cnt);
-    			myRow2[cnt].setValue(true);
-    		}
-    		//myRow[cnt]
-    		cnt++;
-    	}
-    	
-    	addNewDataSetItem("environment","height",myRow);
-    	addNewDataSetItem("environment","height",myRow2);
     	
     }
 
