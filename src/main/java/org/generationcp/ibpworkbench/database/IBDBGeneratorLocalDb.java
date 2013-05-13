@@ -52,6 +52,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
+    protected static final String WORKBENCH_DMS_LOCAL_SQL = "IBDBV2-LOCAL-DMS-20130403b.sql";
     private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
     private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
     private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
@@ -155,7 +156,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
         try {
 
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_SQL).toURI()));
+            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_LOCAL_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_TMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
             executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
