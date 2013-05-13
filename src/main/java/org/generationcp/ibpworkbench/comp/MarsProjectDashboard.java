@@ -446,6 +446,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected Component layoutPhenotypicAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
+        layout.setHeight("145px");
 
         layout.addComponent(phenotypicAnalysisTitle);
         layout.setComponentAlignment(phenotypicAnalysisTitle, Alignment.TOP_CENTER);
