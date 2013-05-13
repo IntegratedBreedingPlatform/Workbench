@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.comp;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.util.GxEUtility;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -29,17 +31,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -90,6 +89,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     private  List<Role> inheritedRoles;
 
     public GxeAnalysisComponentPanel(Project project) {
+    	LOG.debug("Project is " + project.getProjectName());
     	//System.out.println("Project is " + project.getProjectName());
         this.project = project;
     }
@@ -203,6 +203,24 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
       
         addComponent(horizontal);
         
+        Button button = new Button("Test GXE to CSV");
+        
+        button.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				File csvFile =GxEUtility.generateGxEInputCSV(event.getComponent().getApplication().getMainWindow(),
+						tblDataSet.getContainerDataSource(),
+						project,
+						new String[] {"environment","genotype","height","maturity","rust","height 1"});	// NOTE: the string array are the table headers
+						
+				LOG.debug(csvFile.getAbsolutePath());
+				
+				MessageNotifier.showMessage(event.getComponent().getWindow(),"GxE file saved (NOTE: ADD I18N)","Successfully created GxE CSV input file for the breeding_view (NOTE: ADD I18N)");
+			}
+		});
+        
+        addComponent(button);
     }
     
   
@@ -249,6 +267,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         tblDataSet.setEditable(true);
        
+        try {
+			GxEUtility.generateTestData(tblDataSet,5);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     /*

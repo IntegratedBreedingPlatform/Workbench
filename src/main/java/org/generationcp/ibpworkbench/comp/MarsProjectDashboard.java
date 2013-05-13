@@ -15,6 +15,8 @@ package org.generationcp.ibpworkbench.comp;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -84,7 +86,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     
     private Button manageGermplasmListsButton;
     
-    private Button multiSiteAnalysisButton;
+    private Button breedingViewMultiSiteAnalysisButton;
 
     private Embedded downArrow11;
     private Embedded downArrow12;
@@ -228,9 +230,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
         manageGermplasmListsButton.setSizeUndefined();
         
-        multiSiteAnalysisButton = new Button();
-        multiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
-        multiSiteAnalysisButton.setSizeUndefined();
+        breedingViewMultiSiteAnalysisButton = new Button();
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         
         // arrows
         downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -468,10 +470,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 
-        layout.addComponent(multiSiteAnalysisButton);
+        layout.addComponent(breedingViewMultiSiteAnalysisButton);
         //multiSiteAnalysisButton.setHeight("20px");
-        layout.setComponentAlignment(multiSiteAnalysisButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(multiSiteAnalysisButton, 0);
+        layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
         
         layout.addComponent(phenotypicBreedingViewButton);
         layout.setComponentAlignment(phenotypicBreedingViewButton, Alignment.TOP_CENTER);
@@ -682,6 +684,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
+            
+            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
+            
         }
     }
 
@@ -755,7 +760,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
         
-        messageSource.setCaption(multiSiteAnalysisButton, Message.MULTI_SITE_ANALYSIS_LINK);
+        messageSource.setCaption(breedingViewMultiSiteAnalysisButton, Message.MULTI_SITE_ANALYSIS_LINK);
         
         messageSource.setCaption(manageGermplasmListsButton, Message.LIST_MANAGER);
         messageSource.setDescription(manageGermplasmListsButton, Message.CLICK_TO_LAUNCH_LIST_MANAGER);
