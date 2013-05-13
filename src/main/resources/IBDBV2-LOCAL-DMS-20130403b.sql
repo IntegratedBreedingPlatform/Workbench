@@ -229,6 +229,58 @@ CREATE TABLE `nd_geolocationprop` (
 
 /*Data for the table `nd_geolocationprop` */
 
+-- table structure for table 'persons'
+--
+DROP TABLE IF EXISTS persons;
+CREATE TABLE persons (
+  personid INT NOT NULL DEFAULT 0,
+  fname VARCHAR(20) NOT NULL DEFAULT '-',
+  lname VARCHAR(50) NOT NULL DEFAULT '-',
+  ioname VARCHAR(15) NOT NULL DEFAULT '-',
+  institid INT NOT NULL DEFAULT 0,
+  ptitle VARCHAR(25) NOT NULL DEFAULT '-',
+  poname VARCHAR(50) NOT NULL DEFAULT '-',
+  plangu INT NOT NULL DEFAULT 0,
+  pphone VARCHAR(20) NOT NULL DEFAULT '-',
+  pextent VARCHAR(20) NOT NULL DEFAULT '-',
+  pfax VARCHAR(20) NOT NULL DEFAULT '-',
+  pemail VARCHAR(40) NOT NULL DEFAULT '-',
+  prole INT NOT NULL DEFAULT 0,
+  sperson INT NOT NULL DEFAULT 0,
+  eperson INT NOT NULL DEFAULT 0,
+  pstatus INT NOT NULL DEFAULT 0,
+  pnotes VARCHAR(255) NOT NULL DEFAULT '-',
+  contact VARCHAR(255) NOT NULL DEFAULT '-',
+  PRIMARY KEY (personid)
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+--
+CREATE INDEX persons_idx01 ON persons (institid);
+CREATE INDEX persons_idx02 ON persons (personid);
+--
+
+--
+-- NEW:
+-- Table structure for table 'personlist'
+--
+DROP TABLE IF EXISTS personlist;
+
+CREATE TABLE personlist (
+ personlistid INT NOT NULL DEFAULT 0,
+ ownertab VARCHAR(40),
+ ownerrec INT,
+ sortorder INT,
+ personid INT,
+ personname VARCHAR(64),
+ pliststatus INT DEFAULT 1
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+--
+CREATE INDEX personlist_idx01 ON personlist(personlistid);
+CREATE INDEX personlist_idx02 ON personlist(sortorder);
+CREATE INDEX personlist_idx03 ON personlist(personid);
+CREATE INDEX personlist_idx04 ON personlist(personname);
+CREATE INDEX personlist_idx05 ON personlist(pliststatus);
+--
+
 /*Table structure for table `phenotype` */
 
 DROP TABLE IF EXISTS `phenotype`;
