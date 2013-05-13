@@ -1,20 +1,19 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -23,7 +22,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
 public class GxEUtility {
-	
+    private static final Logger LOG = LoggerFactory.getLogger(GxEUtility.class);
+
 	public static Table generateTestData(Table table, Integer numRows) throws Exception{
 		
 		ArrayList<Class<?>> arr =  new ArrayList<Class<?>>();
@@ -101,18 +101,18 @@ public class GxEUtility {
 	}
 	
 	/**
-	 * Generates the GxE Input CSV and triggers it as a download <br/><br/>
+	 * Generates the GxE Input CSV<br/><br/>
 	 * Sets default csv file to <b>"GxE_input.csv"</b> and does not include the first row and column of the table
 	 * @param mainWindow
 	 * @param tableContainer
 	 * @param gxeHeaders
 	 */
-	public static void generateGxEInputCSV(Window mainWindow, Container tableContainer, String[] gxeHeaders) {
-		generateGxEInputCSV(mainWindow, tableContainer, gxeHeaders,"GxE_input.csv",true,true);
+	public static File generateGxEInputCSV(Window mainWindow, Container tableContainer,Project currentProject, String[] gxeHeaders) {
+		return generateGxEInputCSV(mainWindow, tableContainer,currentProject, gxeHeaders,"GxE_input.csv",true,true);
 	}
 	
 	/**
-	 * Generates the GxE Input CSV and triggers it as a download
+	 * Generates the GxE Input CSV
 	 * @param mainWindow
 	 * @param tableContainer
 	 * @param gxeHeaders
@@ -120,7 +120,7 @@ public class GxEUtility {
 	 * @param skipFirstRow
 	 * @param skipFirstColumn
 	 */
-	public static void generateGxEInputCSV(Window mainWindow, Container tableContainer, String[] gxeHeaders,String csvfilename, boolean skipFirstRow,boolean skipFirstColumn) {
+	public static File generateGxEInputCSV(Window mainWindow, Container tableContainer,Project currentProject,  String[] gxeHeaders,String csvfilename, boolean skipFirstRow,boolean skipFirstColumn) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 			
 		Iterator<?> itemIdsIterator = tableContainer.getItemIds().iterator();
@@ -135,7 +135,16 @@ public class GxEUtility {
 			
 			Iterator<?> propertyIdsIterator = tableContainer.getContainerPropertyIds().iterator();
 			
-			if (skipFirstColumn) propertyIdsIterator.next(); // skip first column
+			// skip first column
+			if (skipFirstColumn) {
+				Object propertyId = propertyIdsIterator.next();
+				Property cellItemProperty = tableContainer.getContainerProperty(itemId, propertyId);
+				Object cellItemValue = cellItemProperty.getValue();
+				
+				if (!(Boolean) ((CheckBox) cellItemValue).getValue()) {
+					continue;	// skip entire row
+				}
+			}
 			
 			while (propertyIdsIterator.hasNext()) {
 				Object propertyId = propertyIdsIterator.next();
@@ -163,6 +172,10 @@ public class GxEUtility {
 		}
 		
 		try {
+			if (currentProject == null)
+				throw new Exception("currentProject is null");
+			
+			/*
 			final ByteArrayOutputStream content = new ByteArrayOutputStream();
 			
 			CSVWriter csvWriter = new CSVWriter(new PrintWriter(content),',');
@@ -185,9 +198,36 @@ public class GxEUtility {
 			};
 			
 			mainWindow.open(fr);
+			*/
 			
-		} catch (IOException e) {
+			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			
+			//LOG.debug("save to" + dir);
+			
+			new File(dir).mkdirs();
+			
+			File csvFile = new File(dir + File.separator + csvfilename);
+			
+			for (int i = 1; !csvFile.createNewFile(); i++) {
+				String newFile = csvfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + csvfilename.split("\\.(?=[^\\.]+$)")[1];
+				
+				csvFile = new File(dir + File.separator + newFile);
+			}
+			
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
+			csvWriter.writeAll(tableItems);
+			csvWriter.flush();
+			
+			csvWriter.close();
+			
+			return csvFile;
+			
+			
+		} catch (Exception e) {
 			e.printStackTrace();
+			
+			return null;
 		}
 	}
 
