@@ -12,17 +12,21 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +112,17 @@ public class SaveNewProjectAddUserAction implements ClickListener {
                     messageSource.getMessage(Message.SAVE_USER_ACCOUT_ERROR_DESC));
             return;
         }
+        
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        User user = app.getSessionData().getUserData();
+        Project currentProject = app.getSessionData().getLastOpenedProject();
+        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new workbench user ("+ userAccount.getUsername()  + ")", user, new Date());
+        try {
+			workbenchDataManager.addProjectActivity(projAct);
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         CloseWindowAction action = new CloseWindowAction();
         action.buttonClick(event);

@@ -11,15 +11,23 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Date;
+
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
@@ -44,6 +52,9 @@ public class SaveNewLocationAction implements ClickListener{
 
     private ProjectLocationsComponent projectLocationsComponent;
     private ProjectLocationPanel projectLocationPanel;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
 
     public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
             ProjectLocationsComponent projectLocationsComponent) {
@@ -113,6 +124,16 @@ public class SaveNewLocationAction implements ClickListener{
                 projectLocationPanel.getSelect().select(newLoc);
                 projectLocationPanel.getSelect().setValue(newLoc);
             }
+            
+            User user = app.getSessionData().getUserData();
+            Project currentProject = app.getSessionData().getLastOpenedProject();
+            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
+            try {
+				workbenchDataManager.addProjectActivity(projAct);
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
             newLocation = null;
             window.getParent().removeWindow(window);

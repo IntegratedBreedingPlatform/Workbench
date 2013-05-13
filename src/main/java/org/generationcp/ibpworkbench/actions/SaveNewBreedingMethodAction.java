@@ -22,7 +22,11 @@ import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +53,9 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     private AddBreedingMethodsWindow window;
     
     private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -129,6 +136,19 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             projectBreedingMethodsPanel.getSelect().setItemCaption(newMethod, newMethod.getMname());
             projectBreedingMethodsPanel.getSelect().select(newMethod);
             projectBreedingMethodsPanel.getSelect().setValue(newMethod);
+            
+            
+         
+            User user = app.getSessionData().getUserData();
+            Project currentProject = app.getSessionData().getLastOpenedProject();
+            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
+            try {
+				workbenchDataManager.addProjectActivity(projAct);
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
             
             newBreedingMethod = null;
             window.getParent().removeWindow(window);
