@@ -76,6 +76,14 @@ public class ChangePasswordAction implements ClickListener{
                 return;
         	}
         	
+        	if(this.password.getValue().toString().equalsIgnoreCase("") || this.password.getValue().toString().equalsIgnoreCase(" "))
+        	{
+        		MessageNotifier.showError(event.getComponent().getWindow(), 
+                        "" +
+                        "Password Cannot Be Blank", 
+                        "<br />" + "Password cannot be blank");
+                return;
+        	}
         	if(workbenchDataManager.changeUserPassword(username, password.getValue().toString()))
         	{
         		MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully changed password");
