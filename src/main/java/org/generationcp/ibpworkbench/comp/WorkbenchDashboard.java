@@ -229,9 +229,23 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     private Component layoutProjectTableArea() {
-        tblProject.setWidth("100%");
+     
+    	HorizontalLayout hl = new HorizontalLayout();
+    	hl.setWidth("100%");
+    	hl.setMargin(false);
+    	hl.setSpacing(false);
+        
+    	
+    	tblProject.setWidth("100%");
         tblProject.setHeight("100%");
-        return tblProject;
+
+    	hl.addComponent(tblProject);
+    	hl.setExpandRatio(tblProject,1.0f);
+    	
+    	tblRoles.setWidth("300px");
+    	hl.addComponent(tblRoles);
+    	
+    	return hl;
     }
     
     private Component layoutProjectDetailArea() {
@@ -245,8 +259,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         horizontalLayout.addComponent(tblActivity);
         horizontalLayout.setExpandRatio(tblActivity, 1.0f);
         
-        tblRoles.setWidth("300px");
-        horizontalLayout.addComponent(tblRoles);
+        //tblRoles.setWidth("300px");
+        //horizontalLayout.addComponent(tblRoles);
         
         // layout the project detail area
         VerticalLayout verticalLayout = new VerticalLayout();
