@@ -15,8 +15,12 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.HorizontalLayout;
 
@@ -31,7 +35,8 @@ import com.vaadin.ui.HorizontalLayout;
  * <b>File Created</b>: May 25, 2012.
  */
 public class CrumbTrail extends HorizontalLayout {
-
+    private static final Logger LOG = LoggerFactory.getLogger(CrumbTrail.class);
+    
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8565016223061317505L;
 
@@ -83,14 +88,26 @@ public class CrumbTrail extends HorizontalLayout {
         int currentLevel = crumbTrail.isEmpty() ? -1 : crumbTrail.peekLast().getLevel();
         navXmlParser.setUriFragment(viewId);
         
-        Map<String, String> map = navXmlParser.getXpathDetails();
-        
-        String breadCrumbLabel = map.get("label");
-        if(!StringUtils.isEmpty(labelToAppend)) {
-            breadCrumbLabel += labelToAppend;
+        try {
+            Map<String, String> map = navXmlParser.getXpathDetails();
+
+            String breadCrumbLabel = map.get("label");
+            if(!StringUtils.isEmpty(labelToAppend)) {
+                breadCrumbLabel += labelToAppend;
+            }
+            addBreadCrumb(viewId, breadCrumbLabel, currentLevel, 
+                          Integer.parseInt(map.get("level")), map.get("className"));
         }
-        addBreadCrumb(viewId, breadCrumbLabel, currentLevel, 
-                Integer.parseInt(map.get("level")), map.get("className"));
+        catch (XPathExpressionException e) {
+            // we will just log the exception for debug purposes
+            // we do not need to handle this exception
+            LOG.error("XPathExpressionException: Please check the XPathExpression/viewId used.", e);
+        }
+        catch (NullPointerException e) {
+            // we will just log the exception for debug purposes
+            // we do not need to handle this exception
+            LOG.error(viewId + " cannot be found in nav.xml.");
+        }
     }
     
     /**

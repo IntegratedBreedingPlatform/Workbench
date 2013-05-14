@@ -128,7 +128,7 @@ public class NavXmlParser {
      *
      * @return the xpath details
      */
-    public Map<String, String> getXpathDetails() throws InternationalizableException {
+    public Map<String, String> getXpathDetails() throws XPathExpressionException, NullPointerException{
         Map<String, String> xPathDetails  = new HashMap<String, String>();
         Node view;
         try {
@@ -139,13 +139,9 @@ public class NavXmlParser {
             xPathDetails.put("className", map.getNamedItem("class").getNodeValue());
             xPathDetails.put("label", map.getNamedItem("label").getNodeValue());
         } catch (XPathExpressionException e) {
-            LOG.error("XPathExpressionException: Please check the XPathExpression/viewId used.", e);
-            throw new InternationalizableException(e, 
-                    Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
+            throw e;
         } catch (NullPointerException e) {
-            LOG.error("NullPointerException: " + xPathUriFragment + " cannot be found in nav.xml.", e);
-            throw new InternationalizableException(e, 
-                    Message.INVALID_URI_ERROR, Message.INVALID_URI_ERROR_DESC);
+            throw e;
         }
         return xPathDetails;
     }

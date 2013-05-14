@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.navigation;
 
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -84,11 +86,20 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
                     ActionListener listener = (ActionListener) 
                         Class.forName(map.get("className")).getConstructor().newInstance();
                     listener.doAction(u.getWindow(), u.getFragment(), false);
-                } catch (InternationalizableException e) {
-                    LOG.error(e.toString(), e);
-                    MessageNotifier.showError(u.getWindow(), e.getCaption(), e.getDescription());
+                }
+                catch (XPathExpressionException e) {
+                    // we will just log the exception for debug purposes
+                    // we do not need to handle this exception
+                    LOG.error("XPathExpressionException: Please check the XPathExpression/viewId used.", e);
                     return;
-                } catch (Exception e) {
+                }
+                catch (NullPointerException e) {
+                    // we will just log the exception for debug purposes
+                    // we do not need to handle this exception
+                    LOG.error(u.getFragment() + " cannot be found in nav.xml.");
+                    return;
+                }
+                catch (Exception e) {
                     LOG.error(e.toString(), e);
                     MessageNotifier.showError(u.getWindow(), 
                             messageSource.getMessage(Message.CONFIG_ERROR), 
@@ -96,12 +107,6 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
                     return;
                 }
             
-            } else {
-                Exception e = new Exception("Error with URI fragment syntax.");
-                LOG.error(e.toString(), e);
-                MessageNotifier.showError(u.getWindow(), 
-                        messageSource.getMessage(Message.INVALID_URI_ERROR), 
-                        messageSource.getMessage(Message.INVALID_URI_SYNTAX_ERROR_DESC));
             }
         }
     }
