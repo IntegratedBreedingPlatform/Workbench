@@ -20,9 +20,16 @@ import java.util.List;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.util.GxEUtility;
 import org.generationcp.ibpworkbench.util.TableItems;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.v2.domain.FolderReference;
+import org.generationcp.middleware.v2.domain.Reference;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -84,6 +91,13 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
+    @Autowired 
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    @Autowired
+    private StudyDataManager studyDataManagerV2;
+    
+    
     private Project project;
     
     private  List<Role> inheritedRoles;
@@ -126,33 +140,37 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	return studies;
     }
-    protected void refreshStudies()
+    protected void refreshStudies() throws MiddlewareQueryException
     {
+    	ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+    	StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
+        
+    	List<FolderReference> listFolder = studyDataManager.getRootFolders(Database.CENTRAL);
+		
     	 /* Add planets as root items in the tree. */
-        for (int i=0; i<studies.length; i++) {
-            String study = (String) (studies[i][0]);
-            studiesTree.addItem(study);
-            
-            if (studies[i].length == 1) {
+    	for(FolderReference folderParent : listFolder)
+		{
+        	studiesTree.addItem(folderParent.getName());
+        	List<Reference> children  = studyDataManager.getChildrenOfFolder(folderParent.getId());
+			if (children.size() == 0) {
                 // The planet has no moons so make it a leaf.
-            	studiesTree.setChildrenAllowed(study, false);
+            	studiesTree.setChildrenAllowed(folderParent.getName(), false);
             } else {
                 // Add children (moons) under the planets.
-                for (int j=1; j<studies[i].length; j++) {
-                    String childStudy = (String) studies[i][j];
-                    
+                for (Reference childStudy: children) {
+                	 
                     // Add the item as a regular item.
-                    studiesTree.addItem(childStudy);
+                    studiesTree.addItem(childStudy.getName());
                     
                     // Set it to be a child.
-                    studiesTree.setParent(childStudy, study);
+                    studiesTree.setParent(childStudy.getName(), folderParent.getName());
                     
                     // Make the moons look like leaves.
-                    studiesTree.setChildrenAllowed(childStudy, false);
+                    studiesTree.setChildrenAllowed(childStudy.getName(), false);
                 }
 
                 // Expand the subtree.
-                studiesTree.expandItemsRecursively(studies);
+               // studiesTree.expandItemsRecursively(studies);
             }
         }
         
@@ -188,7 +206,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        studiesTree = new Tree("Studies");
        studiesTree.setImmediate(true);
        studiesPanel = new Panel();
-       refreshStudies();
+       try {
+		refreshStudies();
+	} catch (MiddlewareQueryException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
        
         studiesPanel.addComponent(studiesTree);
         
