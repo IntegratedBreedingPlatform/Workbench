@@ -267,12 +267,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         tblDataSet.setEditable(true);
        
-        try {
-			GxEUtility.generateTestData(tblDataSet,5);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
     
     /*
