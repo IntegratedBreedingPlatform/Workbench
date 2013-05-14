@@ -107,7 +107,7 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
         project.setPhenotypic(phenotypic);
         
         BreedingViewProjectType t = new BreedingViewProjectType();
-        t.setDesign("GxE Analysis");
+        t.setType("GxE Analysis");
         project.setType(t);
         
         
