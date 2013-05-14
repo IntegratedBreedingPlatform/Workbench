@@ -15,7 +15,6 @@ package org.generationcp.ibpworkbench.comp.project.create;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.database.IBDBGenerator;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
@@ -42,7 +40,13 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.*;
+import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
+import org.generationcp.middleware.pojos.workbench.ProjectMethod;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +137,7 @@ public class SaveNewProjectAction implements ClickListener{
             //create central database
             IBDBGeneratorCentralDb centralDbGenerator;
             try {
-                centralDbGenerator = new IBDBGeneratorCentralDb(project.getCropType(), project.getProjectId());
+                centralDbGenerator = new IBDBGeneratorCentralDb(project.getCropType());
                 isGenerationSuccess = centralDbGenerator.generateDatabase();
             } catch (InternationalizableException e) {
                 LOG.error(e.toString(), e);

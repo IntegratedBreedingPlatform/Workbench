@@ -35,13 +35,12 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     private static final String DB_CENTRAL_NAME_SUFFIX = "central";
 
     private CropType cropType;
-    private Long projectId;
+    
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
-    public IBDBGeneratorCentralDb(CropType cropType, Long projectId) {
+    public IBDBGeneratorCentralDb(CropType cropType) {
         this.cropType = cropType;
-        this.projectId = projectId;
     }
 
     public boolean generateDatabase() throws InternationalizableException {
@@ -50,6 +49,9 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
         try {
             createConnection();
+            if (databaseExists()) {
+                return true;
+            }
             createDatabase();
             createManagementSystems();
             isGenerationSuccess = true;
@@ -61,14 +63,37 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         }
         return isGenerationSuccess;
     }
+    
+    protected String getDatabaseName() {
+        StringBuffer databaseName = new StringBuffer();
+        databaseName.append(DB_CENTRAL_NAME_PREFIX).append("_").append(cropType.getCropName().toLowerCase()).append("_").append(DB_CENTRAL_NAME_SUFFIX);
+        return databaseName.toString().toLowerCase();
+    }
+    
+    private boolean databaseExists() {
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            statement.execute("USE " + getDatabaseName());
+            return true;
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+    }
 
     private void createDatabase() throws InternationalizableException {
-        StringBuffer databaseName = new StringBuffer();
         StringBuffer createDatabaseSyntax = new StringBuffer();
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
 
-        databaseName.append(DB_CENTRAL_NAME_PREFIX).append("_").append(cropType.getCropName().toLowerCase()).append("_").append(DB_CENTRAL_NAME_SUFFIX);
+        String databaseName = getDatabaseName();
 
         Statement statement = null;
         try {
