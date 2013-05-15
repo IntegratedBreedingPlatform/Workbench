@@ -27,8 +27,10 @@ import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.v2.domain.DatasetReference;
 import org.generationcp.middleware.v2.domain.FolderReference;
 import org.generationcp.middleware.v2.domain.Reference;
+import org.generationcp.middleware.v2.domain.StudyReference;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +40,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -52,6 +56,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.Tree;
@@ -87,6 +92,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 //    private Button nextButton;
     private Component buttonArea;
     private int countme = 0;
+    
+    private StudyDataManager studyDataManager;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -94,8 +101,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
     
-    @Autowired
-    private StudyDataManager studyDataManagerV2;
+
     
     
     private Project project;
@@ -115,6 +121,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     }
 
     protected void assemble() {
+    	
+    	
+    	
         initializeComponents();
       
         initializeLayout();
@@ -140,33 +149,71 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	return studies;
     }
+    /**
+     * Helper to add an item with specified caption and (optional) parent.
+     * 
+     * @param caption
+     *            The item caption
+     * @param parent
+     *            The (optional) parent item id
+     * @return the created item's id
+     */
+    private Object addCaptionedItem(String caption, Integer objid, Object parent) {
+        // add item, let tree decide id
+        final Object id = studiesTree.addItem();
+        // get the created item
+        final Item item = studiesTree.getItem(id);
+        // set our "caption" property
+        final Property p = item.getItemProperty("caption");
+        p.setValue(caption);
+        
+        final Property idp = item.getItemProperty("id");
+        idp.setValue(objid);
+        
+        if (parent != null) {
+        	studiesTree.setChildrenAllowed(parent, true);
+        	studiesTree.setParent(id, parent);
+        	studiesTree.setChildrenAllowed(id, false);
+        }
+        return id;
+    }
     protected void refreshStudies() throws MiddlewareQueryException
     {
-    	ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-    	StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
+    	
         
     	List<FolderReference> listFolder = studyDataManager.getRootFolders(Database.CENTRAL);
 		
+    	studiesTree.addContainerProperty("caption", String.class, "");
+    	studiesTree.addContainerProperty("id", String.class, "");
+    	
+    	studiesTree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+    	studiesTree.setItemCaptionPropertyId("caption");
+    	
+        
     	 /* Add planets as root items in the tree. */
     	for(FolderReference folderParent : listFolder)
 		{
-        	studiesTree.addItem(folderParent.getName());
+    		Object folderParentItem = addCaptionedItem(folderParent.getName(), folderParent.getId(), folderParent);
+        	
         	List<Reference> children  = studyDataManager.getChildrenOfFolder(folderParent.getId());
+        	
 			if (children.size() == 0) {
                 // The planet has no moons so make it a leaf.
-            	studiesTree.setChildrenAllowed(folderParent.getName(), false);
+            	//studiesTree.setChildrenAllowed(folderParent.getName(), false);
             } else {
                 // Add children (moons) under the planets.
                 for (Reference childStudy: children) {
-                	 
+                	 if(childStudy instanceof StudyReference)
+                		 addCaptionedItem(childStudy.getName(), childStudy.getId(), folderParentItem);
                     // Add the item as a regular item.
-                    studiesTree.addItem(childStudy.getName());
+                    //studiesTree.addItem(childStudy.getName());
+                    
                     
                     // Set it to be a child.
-                    studiesTree.setParent(childStudy.getName(), folderParent.getName());
+                   // studiesTree.setParent(childStudy.getName(), folderParent.getId(), folderParent.getName());
                     
                     // Make the moons look like leaves.
-                    studiesTree.setChildrenAllowed(childStudy.getName(), false);
+                    //studiesTree.setChildrenAllowed(childStudy.getName(), false);
                 }
 
                 // Expand the subtree.
@@ -176,7 +223,18 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         
     }
-    
+    protected void repaintTab(Component comp)
+    {
+    	Accordion accord = (Accordion)comp;
+    	
+    	tblDataSet.setWidth("800px");
+    	tblDataSet.setHeight("700px");
+    	
+    	accord.removeAllComponents();
+    	accord.addTab(tblDataSet);
+    	accord.setImmediate(true);
+    	
+    }
     protected Accordion generateTabComponent(TabSheet tab, String caption)
     {
     	
@@ -186,8 +244,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	accord.addTab(tblDataSet);
     	accord.getTab(tblDataSet).setCaption("Table");
-    	tab.addTab(accord);
+    	accord.setCaption(caption);
+    	
+    	Tab myTab = tab.addTab(accord);
+    
     	tab.getTab(accord).setCaption(caption);
+    	tab.addListener(new StudiesTabFocusListener(tab));
     	
     	return accord;
     }
@@ -201,6 +263,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        
        HorizontalLayout horizontal = new HorizontalLayout();
        
+       
+       ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+   	   studyDataManager = managerFactory.getNewStudyDataManager();
        
        
        studiesTree = new Tree("Studies");
@@ -218,10 +283,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         studiesPanel.setWidth("200px");
         studiesPanel.setHeight("700px");
         
-        
+        studiesTabsheet = generateTabSheet();
         
         horizontal.addComponent(studiesPanel);
-        horizontal.addComponent(generateTabSheet());
+        horizontal.addComponent(studiesTabsheet);
         
       
         addComponent(horizontal);
@@ -624,11 +689,22 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     
     private class StudiesTabFocusListener implements SelectedTabChangeListener
     {
-
+    	TabSheet tab;
+    	public StudiesTabFocusListener(TabSheet tab)
+    	{
+    		this.tab = tab;
+    		
+    	}
 		@Override
 		public void selectedTabChange(SelectedTabChangeEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println(event.getTabSheet().getSelectedTab().getCaption());
+			//System.out.println(event.getTabSheet().getSelectedTab().getCaption());
+		//	System.out.println(event.getComponent().getCaption());
+			
+			System.out.println("selectedtab caption "+studiesTabsheet.getSelectedTab().getCaption());
+			repaintTab(studiesTabsheet.getSelectedTab());
+			
+			
 		}
     	
     }
@@ -644,6 +720,42 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		public void valueChange(ValueChangeEvent event) {
 			// TODO Auto-generated method stub
 			System.out.println(event);
+			System.out.println(event.getProperty().getValue());
+			studiesTree.getItemIds();
+			Property p = event.getProperty();
+			Container container = studiesTree.getContainerDataSource();
+			
+			Property p1 = container.getContainerProperty(new Integer(p.toString()), "caption");
+            Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
+            System.out.println(new Integer(p.toString()) +  " key");
+            System.out.println(p1 +  " p1");
+            System.out.println(p2 +  " p2");
+                 
+            try {
+            	List<DatasetReference> datasets = studyDataManager.getDatasetReferences(new Integer(p2.toString()));
+				String value = p2.toString();
+            	if(value.equals("1000"))
+            	{
+            		datasets = studyDataManager.getDatasetReferences(10080);
+            	}else if(value.equals("2000"))
+            		datasets = studyDataManager.getDatasetReferences(10010);
+            	
+            	studiesTabsheet.removeAllComponents();
+				studiesTabsheet.setImmediate(true);
+			    
+				for(DatasetReference data: datasets)
+				{
+					System.out.println(data.getName() +  " data.getName()");
+					generateTabComponent(studiesTabsheet, data.getName());
+				    	
+				}
+            } catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+            } catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			}
 			
 		}
     	
@@ -652,6 +764,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     protected TabSheet generateTabSheet()
     {
     	TabSheet tab = new TabSheet();
+    	tab.setImmediate(true);
     	
     	createTableContents();
     	generateTabComponent(tab, "AKMSHSSA");
@@ -660,7 +773,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	tab.setWidth("800px");
         tab.setHeight("700px");
         
-        tab.addListener(new StudiesTabFocusListener()); 
+        tab.addListener(new StudiesTabFocusListener(tab)); 
         
     	return tab;
     }
