@@ -6,37 +6,111 @@
     background-color: transparent;
 }
 
+.v-splitpanel-first-container-gcp-workbench-vsplit-panel {
+	background-color: rgb(204,213,173)
+}
+
+.v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked {
+	height: 0px !important;
+}
+
+.v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked {
+	width: 0px !important;
+}
+
+.v-splitpanel-first-container-gcp-workbench-content-split-panel {
+	background-color: rgb(233,233,233)
+}
+
+.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout {
+	margin-top: 20px;
+}
+
+.v-splitpanel-second-container-gcp-workbench-content-split-panel {
+	background-color: white;
+}
+
+.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption {
+	text-transform: uppercase;
+	text-decoration: none;
+	margin-right: 5px;
+	color: black;
+}
+
+.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout
+div div div div.v-horizontallayout div div div div.v-label-undef-w {
+	position: relative;
+	bottom: 3px;
+}
+
+.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption:hover {
+	text-decoration: underline;
+}
+
+.v-splitpanel-second-container-gcp-workbench-content-split-panel
+div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizontallayout
+div div div div.v-button span.v-button-wrap span.v-button-caption {
+	text-decoration: none;
+	color: black;
+	text-transform: uppercase;
+	padding-right: 5px;
+}
+
+.v-splitpanel-second-container-gcp-workbench-content-split-panel
+div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizontallayout
+div div div div.v-button span.v-button-wrap span.v-button-caption:hover {
+	text-decoration: underline;
+}
+
+.v-splitpanel-second-container-gcp-workbench-content-split-panel
+div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizontallayout div div div div.v-label-undef-w {
+	position: relative;
+	bottom: 2px;
+}
+
+
 .gcp-window-title {
-    font-weight: bold;
+    font-size: 20px;
+	color: rgb(68,72,55);
+}
+
+.gcp-window-title H1:first-child {
+	text-transform: uppercase;
+	font-weight: normal;
     font-size: 24px;
+	margin-left: 20px;	
+	color: rgb(68,72,55);
 }
 
 .gcp-window-title H1 {
-    font-weight: bold;
-    font-size: 24px;
-    display: inline; 
+	text-transform: uppercase;
+    font-size: 20px;
+    font-weight: normal;
+    display: inline-block; 
+	color: rgb(68,72,55);
 }
 
 .gcp-window-title H2 {
-    font-weight: bold;
-    font-size: 18px;
-    display: inline; 
+    font-size: 14px;
+    font-weight: normal;
+    display: inline-block; 
+	color: rgb(128,134,106);
 }
 
 
 .gcp-content-title {
-    font-weight: bold;
     font-size: 16px;
+    text-transform: uppercase;
 }
 
 .gcp-section-title {
-    font-weight: bold;
     font-size: 12px;
+    text-transform: uppercase;
 }
 
 .gcp-section-title-large {
-    font-weight: bold;
     font-size: 16px;
+
 }
 
 .gcp-form-title {

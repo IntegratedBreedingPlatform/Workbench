@@ -14,9 +14,7 @@ package org.generationcp.ibpworkbench.comp.window;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -28,7 +26,6 @@ import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.UserDetails;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,8 +187,11 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // add the vertical split panel
         verticalSplitPanel.setSplitPosition(50, Sizeable.UNITS_PIXELS);
         verticalSplitPanel.setLocked(true);
+        verticalSplitPanel.setStyleName("gcp-workbench-vsplit-panel");
         verticalSplitPanel.setSizeFull();
 
+        
+        
         layout.addComponent(verticalSplitPanel);
 
         // add the workbench header
@@ -200,7 +200,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         // add the content area split panel
         contentAreaSplitPanel.setSplitPosition(200, Sizeable.UNITS_PIXELS);
-        contentAreaSplitPanel.setLocked(false);
+        contentAreaSplitPanel.setStyleName("gcp-workbench-content-split-panel");
+        contentAreaSplitPanel.setLocked(true);
 
         // layout the left area of the content area split panel
         Component leftArea = layoutLeftArea();
