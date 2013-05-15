@@ -277,7 +277,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                 break;
             case THIRD_TAB_PROJECT_MEMBERS:
             	//TODO: internationalize this
-            	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can them give each member specific breeder access.");
+            	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
                 projectMembersEnabled = true;
                 if (membersTab != null){
                   //  membersTab.setInheritedRoles();
