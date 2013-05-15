@@ -219,6 +219,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         lblSiteEnvironment = new Label();
         lblSpecifyEnvFactor = new Label();
         lblSelectEnvironmentForAnalysis = new Label();
+        lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
         lblSpecifyNameForAnalysisEnv = new Label();
         lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
         lblDesign = new Label();
@@ -431,7 +432,10 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     public void populateChoicesForEnvForAnalysis(){
-        this.selEnvForAnalysis.removeAllItems();
+        try{
+        	this.selEnvForAnalysis.removeAllItems();
+        }catch(Exception e){}
+    	
         String envFactorName = (String) this.selEnvFactor.getValue();
         
         if(envFactorName != null){
@@ -682,7 +686,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     protected void initializeLayout() {
-        mainLayout.setWidth("570");
+        mainLayout.setWidth("575");
         mainLayout.setHeight("500");
         
         mainLayout.addComponent(lblVersion, "left: 35px; top: 30px;");

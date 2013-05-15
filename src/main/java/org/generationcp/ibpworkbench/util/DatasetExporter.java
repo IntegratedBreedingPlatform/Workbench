@@ -484,6 +484,7 @@ public class DatasetExporter {
         
         try {
             //write the excel file
+        	new File(filename.substring(0, filename.lastIndexOf(File.separatorChar))).mkdirs();
         	new File(filename).createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             workbook.write(fileOutputStream);
