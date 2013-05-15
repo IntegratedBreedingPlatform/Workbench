@@ -178,6 +178,8 @@ public enum Message {
     ,CLICK_TO_LAUNCH_OPTIMAS
     ,LIST_MANAGER
     ,CLICK_TO_LAUNCH_LIST_MANAGER
+    ,MAKE_CROSSES
+    ,CLICK_TO_LAUNCH_CROSSING_MANAGER
     
     //Breeding View Window
     ,STUDY_EFFECT

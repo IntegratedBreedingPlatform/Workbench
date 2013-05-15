@@ -45,6 +45,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
+    <view path="/crossing_manager"
+          label="Crossing Manager"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          
     <view path="/germplasm_list_browser"
           label="Browse Germplasm Lists"
           level="2"

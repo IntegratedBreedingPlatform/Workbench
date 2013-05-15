@@ -87,6 +87,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button manageGermplasmListsButton;
     
     private Button breedingViewMultiSiteAnalysisButton;
+    
+    private Button makeCrossesButton;
 
     private Embedded downArrow11;
     private Embedded downArrow12;
@@ -234,6 +236,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         
+        makeCrossesButton = new Button();
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        makeCrossesButton.setSizeUndefined();
+        
         // arrows
         downArrow11 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow12 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -372,6 +378,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
+        
+        layout.addComponent(makeCrossesButton);
+        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(makeCrossesButton, 0);
 
         return layout;
     }
@@ -687,6 +697,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
             
+            makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            
         }
     }
 
@@ -764,5 +776,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         messageSource.setCaption(manageGermplasmListsButton, Message.LIST_MANAGER);
         messageSource.setDescription(manageGermplasmListsButton, Message.CLICK_TO_LAUNCH_LIST_MANAGER);
+        
+        messageSource.setCaption(makeCrossesButton, Message.MAKE_CROSSES);
+        messageSource.setDescription(makeCrossesButton, Message.CLICK_TO_LAUNCH_CROSSING_MANAGER);
+        
     }
 }
