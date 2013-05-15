@@ -682,8 +682,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
             recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
