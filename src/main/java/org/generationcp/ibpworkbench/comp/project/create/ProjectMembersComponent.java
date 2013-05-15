@@ -28,7 +28,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -110,7 +109,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Project Members");
         select.setRows(10);
-        select.setWidth("400px");
+        select.setWidth("500px");
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);
@@ -209,7 +208,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        
+        setComponentAlignment(select,Alignment.TOP_CENTER);
+        setComponentAlignment(tblMembers,Alignment.TOP_CENTER);
+        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
     }
 
     protected void initializeActions() {

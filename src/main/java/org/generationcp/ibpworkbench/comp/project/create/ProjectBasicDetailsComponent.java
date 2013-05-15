@@ -15,8 +15,6 @@ package org.generationcp.ibpworkbench.comp.project.create;
 import java.util.Date;
 import java.util.List;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -34,7 +32,17 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
@@ -120,7 +128,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        setComponentAlignment(gridLayout,Alignment.TOP_CENTER);
     }
 
     protected void initializeActions() {

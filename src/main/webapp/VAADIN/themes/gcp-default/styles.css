@@ -33,6 +33,7 @@
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption {
 	text-transform: uppercase;
 	text-decoration: none;
+	margin-left: 5px;
 	margin-right: 5px;
 	color: black;
 }
@@ -53,7 +54,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	text-decoration: none;
 	color: black;
 	text-transform: uppercase;
-	padding-right: 5px;
+	padding-right: 4px;
 }
 
 .v-splitpanel-second-container-gcp-workbench-content-split-panel
@@ -101,6 +102,29 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 .gcp-content-title {
     font-size: 16px;
     text-transform: uppercase;
+}
+
+.gcp-btn-link-brown span span  {
+	color: rgb(153,143,107) !important;
+	position: relative;
+	top: 1px;
+	text-decoration: none !important;
+}
+
+.gcp-popup-view {
+	background-color: rgb(240,248,113);
+	font-size: 12px;
+	box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+	padding: 1px 3px;
+	text-decoration: none;
+	border-radius: 1px;
+	color: black;
+	
+	margin-right: 20px;
+}
+
+.v-popupview-popup-gcp-popup-view {
+	background-color: rgb(240,248,113);
 }
 
 .gcp-section-title {

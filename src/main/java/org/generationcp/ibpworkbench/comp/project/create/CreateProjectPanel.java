@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp.project.create;
 
 import java.util.List;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -22,6 +23,7 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
@@ -29,6 +31,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -44,6 +47,8 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     
     private CreateProjectAccordion createProjectAccordion;
 
+    
+    private HorizontalLayout newProjectTitleArea;
     private Label newProjectTitle;
     private Button cancelButton;
     private Button saveProjectButton;
@@ -54,6 +59,11 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     private List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
     private List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
 
+	private HorizontalLayout newProjSubtitleArea;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+	
     public CreateProjectPanel() {
         super();
     }
@@ -119,9 +129,13 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeComponents() {
-        newProjectTitle = new Label("Create New Project");
-        newProjectTitle.setStyleName("gcp-content-title");
-        addComponent(newProjectTitle);
+        newProjectTitleArea = new HorizontalLayout();
+        newProjectTitleArea.setSpacing(true);
+        
+        newProjectTitleArea.setHeight("40px");
+        //newProjectTitleArea.setStyleName("gcp-content-title");
+    	
+        addComponent(newProjectTitleArea);
         
         project = new Project();
 
@@ -130,7 +144,7 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
 
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
-        
+           
     }
 
     protected void initializeValues() {
@@ -171,5 +185,28 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     public boolean validate(){
         return createProjectAccordion.validate();
     }
+    
+    public void setTitle(String label, String description) {
+    	newProjectTitleArea.removeAllComponents();
+    	
+    	Label title = new Label("Create A Project: " + label);
+    	
+    	newProjectTitleArea.setStyleName("gcp-content-title");
+    	newProjectTitleArea.addComponent(title);
+    	
+    	Label descLbl = new Label(description);
+    	descLbl.setWidth("300px");
+    	
+    	PopupView popup = new PopupView("?",descLbl);
+    	popup.setStyleName("gcp-popup-view");
+    	
+    	newProjectTitleArea.addComponent(popup);
+    	
+    	newProjectTitleArea.setComponentAlignment(title,Alignment.MIDDLE_LEFT);
+    	newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
+    	
+    	
+    }
+    
 
 }

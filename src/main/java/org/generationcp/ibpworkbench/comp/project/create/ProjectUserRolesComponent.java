@@ -61,6 +61,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+	private VerticalLayout rolesLayout;
 
     public ProjectUserRolesComponent(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
@@ -83,11 +84,12 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         setMargin(true);
 
         userRoleCheckBoxList = createUserRolesCheckBoxList();
-        VerticalLayout rolesLayout = new VerticalLayout();
+        rolesLayout = new VerticalLayout();
         
         Label instruction = new Label();
         instruction.setCaption("Identify the workflow(s) you want to use for this project:");
         rolesLayout.addComponent(instruction);
+        rolesLayout.setWidth("350px");
         
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
@@ -125,8 +127,8 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
             HorizontalLayout checkboxButtonLayout = new HorizontalLayout();
             checkboxButtonLayout.setSpacing(true);
             
-            Button showButton = new Button("Show");
-            showButton.setStyleName(Reindeer.BUTTON_SMALL);
+            Button showButton = new Button("[View]");
+            showButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-btn-link-brown");
             showButton.addListener(new OpenWorkflowPreviewAction());
             showButton.setData(checkBox.getData());
             
@@ -135,6 +137,8 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
             rolesLayout.addComponent(checkboxButtonLayout);
         }
 
+        
+        
         addComponent(rolesLayout);
 
         buttonArea = layoutButtonArea();
@@ -148,7 +152,9 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        
+        setComponentAlignment(rolesLayout,Alignment.TOP_CENTER);
+        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
     }
 
     protected void initializeActions() {

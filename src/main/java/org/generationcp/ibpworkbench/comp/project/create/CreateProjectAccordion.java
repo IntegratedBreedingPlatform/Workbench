@@ -257,17 +257,27 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
      * @param tab
      */
     public void setFocusToTab(int tab) {
+    	
         switch (tab) {
             case FIRST_TAB_BASIC_DETAILS:
-                this.setSelectedTab(layoutBasicDetails);
+            	//TODO: internationalize this
+            	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
+            	
+            	this.setSelectedTab(layoutBasicDetails);
                 previousTabOnFocus = FIRST_TAB_BASIC_DETAILS;
                 break;
             case SECOND_TAB_USER_ROLES:
+            	//TODO: internationalize this
+            	createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+            	
+            	
                 userRolesEnabled = true;
                 previousTabOnFocus = SECOND_TAB_USER_ROLES;
                 this.setSelectedTab(layoutUserRoles);
                 break;
             case THIRD_TAB_PROJECT_MEMBERS:
+            	//TODO: internationalize this
+            	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can them give each member specific breeder access.");
                 projectMembersEnabled = true;
                 if (membersTab != null){
                   //  membersTab.setInheritedRoles();
@@ -336,7 +346,12 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         layoutBasicDetails = new VerticalLayout();
         layoutBasicDetails.setData(FIRST_TAB_BASIC_DETAILS);
         basicDetailsTab = new ProjectBasicDetailsComponent(createProjectPanel);
+        
+        
         layoutBasicDetails.addComponent(basicDetailsTab);
+        
+        layoutBasicDetails.setComponentAlignment(basicDetailsTab,VerticalLayout.ALIGNMENT_HORIZONTAL_CENTER,VerticalLayout.ALIGNMENT_VERTICAL_CENTER);
+        
         layoutBasicDetails.setSpacing(true);
         layoutBasicDetails.setMargin(true);
 
@@ -359,6 +374,11 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         //        this.addTab(layoutLocations, messageSource.getMessage(Message.LOCATIONS_LABEL));
 
         this.addListener(new WorkbenchSelectedTabChangeListener(this));
+        
+        //Initial value of the title area
+        
+        //TODO: internationalize this
+        createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");       
     }
 
     public List<ProjectUserRole> getProjectUserRoles() {
