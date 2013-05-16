@@ -135,14 +135,44 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 .gcp-section-title-large {
 	font-weight: bold;
 	font-size: 16px;
+	
+}
 
+.gcp-workflow-link span span {
+	color: rgb(68,72,55) !important;
+}
+
+.gcp-workflow-link span span:hover {
+	color: rgb(162,176,140) !important;
+}
+
+.gcp-workflow-step .gcp-section-title {
+	font-size: 12px;
+	text-align: center;
+		
+	background-color: rgb(162,176,140);
+	color: white;
+	padding-top: 3px; padding-bottom: 3px;
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+.gcp-workflow-step .gcp-section-title-large {
+		font-size: 13px;
+		text-align: center;
+		
+		background-color: rgb(162,176,140);
+		color: white;
+		padding-top: 5px; padding-bottom: 5px;
+		text-transform: uppercase;
+		font-weight: normal;
 }
 
 .gcp-form-title {
     font-weight: bold;
 }
 
-.gcp-mars-workflow-step {
+.gcp-mars-workflow-step, .gcp-workflow-step {
     background-position: top;
     background-repeat: no-repeat;
     background-size: 100%;
@@ -152,7 +182,8 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     -webkit-border-radius: 10px;
     -khtml-border-radius: 10px;
     border-radius: 10px;
-    border: 2px solid;
+    border: 2px solid rgb(162,176,140);
+s
 }
 
 .v-verticallayout-gcp-mars-workflow-step

@@ -34,6 +34,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class MarsProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -126,118 +127,118 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         // project planning
         projectPlanningTitle = new Label();
         projectPlanningTitle.setStyleName("gcp-section-title");
-        projectPlanningTitle.setSizeUndefined();
+        //projectPlanningTitle.setSizeUndefined();
 
         populationDevelopmentTitle = new Label();
         populationDevelopmentTitle.setStyleName("gcp-section-title");
-        populationDevelopmentTitle.setSizeUndefined();
+        //populationDevelopmentTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label();
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
-        fieldTrialManagementTitle.setSizeUndefined();
+        //fieldTrialManagementTitle.setSizeUndefined();
 
         genotypingTitle = new Label();
         genotypingTitle.setStyleName("gcp-section-title");
-        genotypingTitle.setSizeUndefined();
+        //genotypingTitle.setSizeUndefined();
 
         phenotypicAnalysisTitle = new Label();
         phenotypicAnalysisTitle.setStyleName("gcp-section-title");
-        phenotypicAnalysisTitle.setSizeUndefined();
+        //phenotypicAnalysisTitle.setSizeUndefined();
         
         qtlAnalysisTitle = new Label();
         qtlAnalysisTitle.setStyleName("gcp-section-title");
-        qtlAnalysisTitle.setSizeUndefined();
+        //qtlAnalysisTitle.setSizeUndefined();
         
         singleSiteAnalysisTitle = new Label();
         singleSiteAnalysisTitle.setStyleName("gcp-section-title");
-        singleSiteAnalysisTitle.setSizeUndefined();
+        //singleSiteAnalysisTitle.setSizeUndefined();
         
         qtlSelectionTitle = new Label();
         qtlSelectionTitle.setStyleName("gcp-section-title");
-        qtlSelectionTitle.setSizeUndefined();
+        //qtlSelectionTitle.setSizeUndefined();
         
         recombinationCycleTitle = new Label();
         recombinationCycleTitle.setStyleName("gcp-section-title");
-        recombinationCycleTitle.setSizeUndefined();
+        //recombinationCycleTitle.setSizeUndefined();
         
         finalBreedingDecisionTitle = new Label();
         finalBreedingDecisionTitle.setStyleName("gcp-section-title");
-        finalBreedingDecisionTitle.setSizeUndefined();
+        //finalBreedingDecisionTitle.setSizeUndefined();
 
         // project planning buttons
         browseGermplasmButton = new Button();
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGermplasmButton.setSizeUndefined();
 
         browseStudiesButton = new Button();
-        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseStudiesButton.setSizeUndefined();
         
         browseGermplasmListsButton = new Button();
-        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGermplasmListsButton.setSizeUndefined();
         
         browseGenotypingDataButton = new Button("Browse Genotyping Data");
-        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGenotypingDataButton.setSizeUndefined();
         browseGenotypingDataButton.setDescription("Click to launch genotyping data");
         
         
         // population development buttons
         breedingManagerButton = new Button();
-        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
         
         // field trial management buttons
         fieldBookButton = new Button();
-        fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK);
+        fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldBookButton.setSizeUndefined();
 
         // genotyping buttons
         gdmsButton = new Button();
-        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         gdmsButton.setSizeUndefined();
 
         // phenotypic analysis buttons
         phenotypicBreedingViewButton = new Button();
-        phenotypicBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        phenotypicBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         phenotypicBreedingViewButton.setSizeUndefined();
 
         // qtl analysis buttons
         qtlBreedingViewButton = new Button();
-        qtlBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        qtlBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         qtlBreedingViewButton.setSizeUndefined();
         
         breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
-        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
         
         breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
-        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
         
         // recombination cycle selection buttons
         optimasButton = new Button();
-        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         optimasButton.setSizeUndefined();
         
         recomBreedingManagerButton = new Button();
-        recomBreedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        recomBreedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         recomBreedingManagerButton.setSizeUndefined();
         
         
         manageGermplasmListsButton = new Button();
-        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         manageGermplasmListsButton.setSizeUndefined();
         
         breedingViewMultiSiteAnalysisButton = new Button();
-        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         
         makeCrossesButton = new Button();
-        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         makeCrossesButton.setSizeUndefined();
         
         // arrows
@@ -267,7 +268,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected Component layoutWorkflowArea() {
         Panel panel = new Panel();
-
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -291,7 +292,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected Component layoutBreedingManagementArea() {
         Panel panel = new Panel();
-
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("630px");
         layout.setMargin(true);
@@ -430,6 +431,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected Component layoutMarkerTraitAnalysisArea() {
         Panel panel = new Panel();
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
 
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("630px");
@@ -540,7 +542,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected Component layoutMarkerImplementationArea() {
         Panel panel = new Panel();
-
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("630px");
         layout.setMargin(true);
@@ -652,7 +654,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         for (String buttonCaption : buttonCaptions) {
             Button button = new Button(buttonCaption);
-            button.setStyleName(BaseTheme.BUTTON_LINK);
+            button.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
 
             layout.addComponent(button);
             layout.setComponentAlignment(button, Alignment.TOP_CENTER);
@@ -665,8 +667,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("270px");
         layout.setHeight("120px");
-        layout.setStyleName("gcp-mars-workflow-step");
-        layout.setMargin(true, true, true, true);
+        layout.setStyleName("gcp-workflow-step");
+        layout.setMargin(false, false, true, false);
     }
 
     protected void initializeActions() {

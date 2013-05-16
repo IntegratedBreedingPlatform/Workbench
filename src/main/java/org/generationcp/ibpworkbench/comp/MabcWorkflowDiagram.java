@@ -34,6 +34,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConstants, InitializingBean, InternationalizableComponent {
@@ -112,95 +113,95 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
         projectPlanningTitle = new Label("Project Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
-        projectPlanningTitle.setSizeUndefined();
+        //projectPlanningTitle.setSizeUndefined();
 
         backcrossingTitle = new Label("Backcrossing");
         backcrossingTitle.setStyleName("gcp-section-title-large");
-        backcrossingTitle.setSizeUndefined();
+        //backcrossingTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label("Field Trial Management");
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
-        fieldTrialManagementTitle.setSizeUndefined();
+        //fieldTrialManagementTitle.setSizeUndefined();
 
         genotypingTitle = new Label("Genotyping");
         genotypingTitle.setStyleName("gcp-section-title-large");
-        genotypingTitle.setSizeUndefined();
+        //genotypingTitle.setSizeUndefined();
 
         statisticalAnalysisTitle = new Label("Statistical Analysis");
         statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
-        statisticalAnalysisTitle.setSizeUndefined();
+        //statisticalAnalysisTitle.setSizeUndefined();
 
         breedingDecisionTitle = new Label("Breeding Decision");
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
-        breedingDecisionTitle.setSizeUndefined();
+        //breedingDecisionTitle.setSizeUndefined();
         
         browseGermplasmButton = new Button("Browse Germplasm Information");
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGermplasmButton.setSizeUndefined();
         browseGermplasmButton.setDescription("Click to launch Germplasm Browser");
         
         manageGermplasmListsButton = new Button("Manage Germplasm Lists");
-        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         manageGermplasmListsButton.setSizeUndefined();
         manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
         
         browseGenotypingDataButton = new Button("Browse Genotyping Data");
-        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGenotypingDataButton.setSizeUndefined();
         browseGenotypingDataButton.setDescription("Click to launch genotyping data");
         
         breedingManagerButton = new Button("Breeding Manager");
-        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Breeding Manager");
 
         browseStudiesButton = new Button("Browse Studies and Datasets");
-        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
 
         browseGermplasmListsButton = new Button("Browse Germplasm Lists");
-        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");
         
         breedingViewButton = new Button("Breeding View Standalone (all analyses)");
-        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
         
         breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
-        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
         
         breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
-        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
 
         breedingViewMultiSiteAnalysisButton = new Button("Multi-site Analysis");
-        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK);
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis on Study Datasets");
         
         gdmsButton = new Button("Manage Genotyping Data");
-        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");
         
         mbdtButton = new Button("MBDT");
-        mbdtButton.setStyleName(BaseTheme.BUTTON_LINK);
+        mbdtButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mbdtButton.setSizeUndefined();
         mbdtButton.setDescription("Click to launch MBDT");
         
         fieldbookButton = new Button("Fieldbook");
-        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK);
+        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription("Click to launch Fieldbook");
         
         optimasButton = new Button("OptiMAS");
-        optimasButton.setStyleName(BaseTheme.BUTTON_LINK);
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         optimasButton.setSizeUndefined();
         optimasButton.setDescription("Click to launch OptiMAS");
         
@@ -227,7 +228,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     protected Component layoutWorkflowArea() {
         Panel panel = new Panel();
-
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("620px");
@@ -496,7 +497,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
         for (String buttonCaption : buttonCaptions) {
             Button button = new Button(buttonCaption);
-            button.setStyleName(BaseTheme.BUTTON_LINK);
+            button.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
 
             layout.addComponent(button);
             layout.setComponentAlignment(button, Alignment.TOP_CENTER);
@@ -509,8 +510,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth(WORKFLOW_STEP_WIDTH + "px");
         layout.setHeight(WORKFLOW_STEP_HEIGHT + "px");
-        layout.setStyleName("gcp-mars-workflow-step");
-        layout.setMargin(true, true, true, true);
+        layout.setStyleName("gcp-workflow-step");
+        layout.setMargin(false, false, true,false);
     }
     
     protected void initializeActions() {
