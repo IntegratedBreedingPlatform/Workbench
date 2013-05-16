@@ -177,6 +177,31 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         }
         return id;
     }
+    protected void generateChildren(FolderReference folderParent, Object folderParentItem) throws MiddlewareQueryException
+    {
+    	
+    	List<Reference> children  = studyDataManager.getChildrenOfFolder(folderParent.getId());
+    	
+		if (children.size() == 0) {
+            // The planet has no moons so make it a leaf.
+        	//studiesTree.setChildrenAllowed(folderParent.getName(), false);
+        } else {
+            // Add children (moons) under the planets.
+            for (Reference childStudy: children) {
+            	 if(childStudy instanceof StudyReference)
+            		 addCaptionedItem(childStudy.getName(), childStudy.getId(), folderParentItem);
+            	 else if(childStudy instanceof FolderReference)
+            	 {
+            		 Object myfolderParentItem = addCaptionedItem(childStudy.getName(), childStudy.getId(), folderParentItem);
+                 	 generateChildren((FolderReference)childStudy,myfolderParentItem);
+            	 } 
+               
+            }
+
+            // Expand the subtree.
+           // studiesTree.expandItemsRecursively(studies);
+        }
+    }
     protected void refreshStudies() throws MiddlewareQueryException
     {
     	
@@ -193,32 +218,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	 /* Add planets as root items in the tree. */
     	for(FolderReference folderParent : listFolder)
 		{
-    		Object folderParentItem = addCaptionedItem(folderParent.getName(), folderParent.getId(), folderParent);
+    		Object folderParentItem = addCaptionedItem(folderParent.getName(), folderParent.getId(), null);
+        	generateChildren(folderParent,folderParentItem);
         	
-        	List<Reference> children  = studyDataManager.getChildrenOfFolder(folderParent.getId());
-        	
-			if (children.size() == 0) {
-                // The planet has no moons so make it a leaf.
-            	//studiesTree.setChildrenAllowed(folderParent.getName(), false);
-            } else {
-                // Add children (moons) under the planets.
-                for (Reference childStudy: children) {
-                	 if(childStudy instanceof StudyReference)
-                		 addCaptionedItem(childStudy.getName(), childStudy.getId(), folderParentItem);
-                    // Add the item as a regular item.
-                    //studiesTree.addItem(childStudy.getName());
-                    
-                    
-                    // Set it to be a child.
-                   // studiesTree.setParent(childStudy.getName(), folderParent.getId(), folderParent.getName());
-                    
-                    // Make the moons look like leaves.
-                    //studiesTree.setChildrenAllowed(childStudy.getName(), false);
-                }
-
-                // Expand the subtree.
-               // studiesTree.expandItemsRecursively(studies);
-            }
         }
         
         
@@ -701,7 +703,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 			//System.out.println(event.getTabSheet().getSelectedTab().getCaption());
 		//	System.out.println(event.getComponent().getCaption());
 			
-			System.out.println("selectedtab caption "+studiesTabsheet.getSelectedTab().getCaption());
+			//System.out.println("selectedtab caption "+studiesTabsheet.getSelectedTab().getCaption());
 			repaintTab(studiesTabsheet.getSelectedTab());
 			
 			
@@ -727,28 +729,22 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 			
 			Property p1 = container.getContainerProperty(new Integer(p.toString()), "caption");
             Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
-            System.out.println(new Integer(p.toString()) +  " key");
-            System.out.println(p1 +  " p1");
-            System.out.println(p2 +  " p2");
+            
                  
             try {
             	List<DatasetReference> datasets = studyDataManager.getDatasetReferences(new Integer(p2.toString()));
 				String value = p2.toString();
-            	if(value.equals("1000"))
-            	{
-            		datasets = studyDataManager.getDatasetReferences(10080);
-            	}else if(value.equals("2000"))
-            		datasets = studyDataManager.getDatasetReferences(10010);
-            	
             	studiesTabsheet.removeAllComponents();
 				studiesTabsheet.setImmediate(true);
 			    
 				for(DatasetReference data: datasets)
 				{
-					System.out.println(data.getName() +  " data.getName()");
 					generateTabComponent(studiesTabsheet, data.getName());
 				    	
 				}
+				
+				repaintTab(studiesTabsheet.getSelectedTab());
+				
             } catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
