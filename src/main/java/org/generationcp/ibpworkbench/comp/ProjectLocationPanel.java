@@ -12,12 +12,9 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -50,16 +47,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -381,7 +369,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     private Container createLocationsContainer(CropType cropType, Set<Location> selectedLocation) throws MiddlewareQueryException {
 
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        //ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
         beanItemContainer = new BeanItemContainer<Location>(Location.class);
         if (managerFactory == null) {
             return beanItemContainer;
@@ -436,25 +425,21 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     public boolean validateAndSave() {
 
         if (validate()) { // save if valid
-            Set<Location> locations = (Set<Location>) selectLocation.getValue();
-            
-            //LOG.debug(locations.toString());
-            
-            //Save project
-            if ((locations != null) && (!locations.isEmpty())) {
-                try {
-                    saveProjectLocation(locations, project);
-                } catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while saving project locations", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-            }
+            Set<Location> selectedLocations = (Set<Location>) selectLocation.getValue();
+            ListSelect leftSelect = selectLocation.getLeftSelect();
+            Collection<Location> availableLocations = (Collection<Location>)leftSelect.getItemIds();
 
+            try {
+                saveProjectLocation(availableLocations, selectedLocations, project);
+            } catch (MiddlewareQueryException e) {
+                LOG.error("Error encountered while saving project locations", e);
+                throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+            }
         }
         return true; // locations not required, so even if there are no values, this returns true
     }
 
-    private void saveProjectLocation(Set<Location> locations, Project projectSaved) throws MiddlewareQueryException {
+    private void saveProjectLocation(Collection<Location> availableLocations, Set<Location> selectedLocations, Project projectSaved) throws MiddlewareQueryException {
         GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 
         // Delete existing project locations in the database
@@ -463,30 +448,28 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         for (ProjectLocationMap projectLocationMap : projectLocations){
             workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
         }
-
+        List<Location> allLocations = germplasmDataManager.getAllLocations(0, (int)germplasmDataManager.countAllLocations());
+        for (Location l : allLocations) {
+            germplasmDataManager.deleteLocation(l);
+        }
+        //add available location to local db location table if it does not yet exist
+        for (Location l : availableLocations) {
+            if (l.getLocid() < 1) {
+                Location location = initiliazeLocation(l);
+                germplasmDataManager.addLocation(location);
+            }
+        }
         List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();
         long locID = 0;
-        for (Location l : locations) {
+        /*
+         * add selected location to local db location table if it does not yet exist
+         * add location in workbench_project_loc_map in workbench db
+         */
+        for (Location l : selectedLocations) {
             ProjectLocationMap projectLocationMap = new ProjectLocationMap();
             if (l.getLocid() < 1) {
                 //save the added new location to the local database created
-                Location location = new Location();
-                location.setLocid(l.getLocid());
-                location.setLabbr(l.getLabbr());
-                location.setLname(l.getLname());
-                location.setLrplce(0);
-                
-                Integer ltype = (l.getLtype() != null) ? l.getLtype() : 0;
-                Integer cntryid = (l.getCntryid() != null) ? l.getCntryid() : 0; 
-                
-                location.setLtype(ltype);
-                location.setCntryid(cntryid);
-                
-                location.setNllp(0);
-                location.setSnl1id(0);
-                location.setSnl2id(0);
-                location.setSnl3id(0);
-
+                Location location = initiliazeLocation(l);
                 locID = germplasmDataManager.addLocation(location);
             } else {
                 locID = l.getLocid();
@@ -517,6 +500,26 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     	ManagerFactory managerFactory=managerFactoryProvider.getManagerFactoryForCropType(project.getCropType());
     	
     	return managerFactory.getGermplasmDataManager();
+    }
+
+    private Location initiliazeLocation(Location l) {
+        Location location = new Location();
+        location.setLocid(l.getLocid());
+        location.setLabbr(l.getLabbr());
+        location.setLname(l.getLname());
+        location.setLrplce(0);
+
+        Integer ltype = (l.getLtype() != null) ? l.getLtype() : 0;
+        Integer cntryid = (l.getCntryid() != null) ? l.getCntryid() : 0;
+
+        location.setLtype(ltype);
+        location.setCntryid(cntryid);
+
+        location.setNllp(0);
+        location.setSnl1id(0);
+        location.setSnl2id(0);
+        location.setSnl3id(0);
+        return location;
     }
 
 }
