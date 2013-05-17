@@ -74,10 +74,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     public void buttonClick(ClickEvent event) {
         Project project = selectDatasetForBreedingViewWindow.getCurrentProject();
         
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+        //ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
         
-        StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
-        TraitDataManager traitDataManager = managerFactory.getTraitDataManager();
+        //StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
+        //TraitDataManager traitDataManager = managerFactory.getTraitDataManager();
 
         Integer studyId = selectDatasetForBreedingViewWindow.getCurrentStudy().getId();
         String studyName = selectDatasetForBreedingViewWindow.getCurrentStudy().getName();
@@ -94,7 +94,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         // data set is required
         if (studyId == null 
             || studyName == null
-            || representationId == null 
             || datasetName == null) {
             event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
             return;
@@ -102,16 +101,17 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         
         try {
             List<Factor> factorsInDataset = new ArrayList<Factor>();
-            factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
+            //TODO
+            //factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
 
             String breedingViewProjectName;
             String defaultFilePath = "";
             String inputDir = "";
 
-
-            DatasetExporter datasetExporter = new DatasetExporter(studyDataManager, traitDataManager, 
-                                                                  studyId, 
-                                                                  representationId);
+            //TODO
+            //DatasetExporter datasetExporter = new DatasetExporter(studyDataManager, traitDataManager, 
+            //                                                      studyId, 
+            //                                                      representationId);
 
             Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
             LOG.info(breedingViewTool + "");
@@ -130,7 +130,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
             LOG.info("Source XLS File Path: " + sourceXLSFilePath);
 
-            datasetExporter.exportToFieldBookExcel(sourceXLSFilePath);
+            //TODO
+            //datasetExporter.exportToFieldBookExcel(sourceXLSFilePath);
 
             String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 
 
@@ -149,9 +150,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
 
         }
-        catch (DatasetExporterException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }
+        //catch (DatasetExporterException e) {
+        //    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+        //}
         catch (MiddlewareQueryException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }

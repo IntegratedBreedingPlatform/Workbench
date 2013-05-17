@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +14,11 @@ import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.FactorType;
+import org.generationcp.middleware.v2.domain.VariableType;
+import org.generationcp.middleware.v2.domain.VariableTypeList;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.TraitDataManager;
 import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.Variate;
@@ -41,6 +46,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
+    @Autowired
+    private StudyDataManager studyDataManagerV2;
+    
     private Table tblDataset;
     
     private Table tblVariates;
@@ -59,33 +67,100 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     @Override
     public void itemClick(ItemClickEvent event) {
 
-        Integer represno = (Integer) event.getItemId();
+        Integer dataSetId = (Integer) event.getItemId();
 
-        if (represno == null) {
+        if (dataSetId == null) {
             return;
         }
 
         try {
             
-            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(selectDatasetForBreedingViewWindow.getCurrentProject());
+           
             
+            /**
+            
+            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(selectDatasetForBreedingViewWindow.getCurrentProject());
             TraitDataManager traitDataManager = managerFactory.getTraitDataManager();
             StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
+            
             List<Factor> factorList = studyDataManager.getFactorsByRepresentationId(represno);
             List<Variate> variateList = studyDataManager.getVariatesByRepresentationId(represno);
             String datasetName = (String)tblDataset.getItem(represno).getItemProperty("name").getValue();
+            **/
             
-            selectDatasetForBreedingViewWindow.setCurrentRepresentationId(represno);
-            selectDatasetForBreedingViewWindow.setCurrentDatasetName(datasetName);
+            DataSet ds = studyDataManagerV2.getDataSet(dataSetId);
             
-            updateFactorsTable(factorList, traitDataManager);
-            updateVariatesTable(variateList, traitDataManager);
+            List<FactorModel> factorList = new ArrayList<FactorModel>();
+            List<VariateModel> variateList = new ArrayList<VariateModel>();
+            
+            for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
+            	
+            	
+            	FactorModel fm = new FactorModel();
+            	fm.setId(factor.getId());
+            	fm.setName(factor.getLocalName());
+            	fm.setScname(factor.getStandardVariable().getScale().getName());
+            	fm.setScaleid(factor.getStandardVariable().getScale().getId());
+            	fm.setTmname(factor.getStandardVariable().getMethod().getName());
+            	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
+            	fm.setTrname(factor.getStandardVariable().getProperty().getName());
+            	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
+            	
+            	System.out.println(factor.toString());
+            	factor.getStandardVariable().getProperty().getName();
+            	
+            	
+            	factorList.add(fm);
+            }
+            System.out.println("----------------------------------------------------------VARIATES");
+            for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
+            	
+            	VariateModel vm = new VariateModel();
+            	vm.setId(variate.getId());
+            	vm.setName(variate.getLocalName());
+            	vm.setScname(variate.getStandardVariable().getScale().getName());
+            	vm.setScaleid(variate.getStandardVariable().getScale().getId());
+            	vm.setTmname(variate.getStandardVariable().getMethod().getName());
+            	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
+            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
+            	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
+            	
+            	System.out.println(variate.toString());
+            	
+            	variateList.add(vm);
+            }
+            
+           
+           
+            //selectDatasetForBreedingViewWindow.setCurrentRepresentationId(represno);
+            selectDatasetForBreedingViewWindow.setCurrentDatasetName(ds.getName());
+            
+            updateFactorsTable(factorList);
+            updateVariatesTable(variateList);
 
         }
         catch (MiddlewareQueryException e) {
             showDatabaseError(event.getComponent().getWindow());
         }
     }
+    
+    private void updateFactorsTable(List<FactorModel> factorList){
+    	   Object[] oldColumns = tblFactors.getVisibleColumns();
+           String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+           
+           BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+           container.setBeanIdProperty("id");
+           tblFactors.setContainerDataSource(container);
+           
+           for (FactorModel f : factorList ){
+        	   container.addBean(f);
+           }
+           
+           tblFactors.setContainerDataSource(container);
+           
+           tblFactors.setVisibleColumns(columns);
+    }
+    
     
     private void updateFactorsTable(List<Factor> factorList, TraitDataManager traitDataManager) {
         Object[] oldColumns = tblFactors.getVisibleColumns();
@@ -176,6 +251,23 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         tblFactors.setVisibleColumns(columns);
 
     }
+    
+    private void updateVariatesTable(List<VariateModel> variateList){
+ 	    Object[] oldColumns = tblFactors.getVisibleColumns();
+        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+        
+        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+        container.setBeanIdProperty("id");
+        tblVariates.setContainerDataSource(container);
+        
+        for (VariateModel v : variateList ){
+     	   container.addBean(v);
+        }
+        
+        tblVariates.setContainerDataSource(container);
+        
+        tblVariates.setVisibleColumns(columns);
+ }
     
     private void updateVariatesTable(List<Variate> variateList, TraitDataManager traitDataManager) {
         Object[] oldColumns = tblVariates.getVisibleColumns();

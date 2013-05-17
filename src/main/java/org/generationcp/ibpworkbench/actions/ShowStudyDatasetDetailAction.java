@@ -12,10 +12,14 @@ import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectData
 import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.Representation;
-import org.generationcp.middleware.pojos.Study;
+import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.DatasetReference;
+import org.generationcp.middleware.v2.domain.FolderReference;
+import org.generationcp.middleware.v2.domain.Study;
+import org.generationcp.middleware.v2.domain.StudyReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -40,6 +44,9 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
+    @Autowired
+    private StudyDataManager studyDataManagerV2;
+    
     private Table tblDataset;
     
     private Table tblFactors;
@@ -47,6 +54,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     private Table tblVariates;
     
     private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
+    
 
     public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
  
@@ -59,7 +67,20 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     @Override
     public void itemClick(ItemClickEvent event) {
 
-        Study study = (Study) event.getItemId();
+        Study study = null;
+		try {
+			if (event.getItemId() instanceof StudyReference){
+				System.out.println("Item is Study");
+				study = studyDataManagerV2.getStudy(((StudyReference)event.getItemId()).getId());
+			}else if (event.getItemId() instanceof FolderReference){
+				System.out.println("Item is FolderReference");
+				study = studyDataManagerV2.getStudy(((FolderReference)event.getItemId()).getId());
+			}
+			
+		} catch (MiddlewareQueryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
         if (study == null) {
             return;
@@ -73,86 +94,26 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         }
         
         try {
-            StudyDataManager studyDataManager = managerFactoryProvider.getManagerFactoryForProject(selectDatasetForBreedingViewWindow.getCurrentProject()).getStudyDataManager();
-            List<Representation> datasetList = studyDataManager.getRepresentationByStudyID(study.getId());
-            
-            Iterator<Representation> datasetIterator = datasetList.iterator();
-            
-            List<RepresentationModel> refinedDatasetList = new ArrayList<RepresentationModel>();
-            
-            Representation representation;
-            
-            RepresentationModel representationModel;
-            
-            String userFriendlyName;
-            
-            while (datasetIterator.hasNext()) {
-                
-                representation = datasetIterator.next();
-                
-                userFriendlyName = messageSource.getMessage(Message.DATASET_OF_TEXT) + "_" + representation.getId();
-                
-                if (representation.getName() != null && !representation.getName().equals("")) {
-                    
-                    if (!representation.getName().equals(messageSource.getMessage(Message.STUDY_EFFECT))) {
-                        
-                        List<Factor> factors = studyDataManager.getFactorsByRepresentationId(representation.getId());
-                        
-                        int count = factors.size();
-                        
-                        userFriendlyName = userFriendlyName + "_" + representation.getName();
-
-                        representationModel = new RepresentationModel(representation.getId()
-                                , representation.getEffectId()
-                                , representation.getName()
-                                , userFriendlyName); 
-                        
-                        if (count>1) {
-
-                            refinedDatasetList.add(representationModel);
-                            
-                        } else if (count == 1) {
-                            
-                            Factor factor = factors.get(0);
-                            
-                            if (!factor.getName().toUpperCase().equals(messageSource.getMessage(Message.STUDY_NAME).toUpperCase())) {
-                                
-                                refinedDatasetList.add(representationModel);
-                                
-                            }
-                        }  
-                    }      
-                } else {
-
-                    representationModel = new RepresentationModel(representation.getId()
-                            , representation.getEffectId()
-                            , representation.getName()
-                            , userFriendlyName); 
-                    
-                    refinedDatasetList.add(representationModel);
-                
-                }
-                
-            }
-            
-            updateDatasetTable(refinedDatasetList, tblFactors, tblVariates);
-
-        }
-        catch (MiddlewareQueryException e) {
-            showDatabaseError(event.getComponent().getWindow());
-        }
+			List<DatasetReference> datasetRefs = studyDataManagerV2.getDatasetReferences(study.getId());
+			  updateDatasetTable(datasetRefs, tblFactors, tblVariates);
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
     }
     
-    private void updateDatasetTable(List<RepresentationModel> datasetList, Table tblFactors, Table tblVariates) {
+    private void updateDatasetTable(List<DatasetReference> datasetList, Table tblFactors, Table tblVariates) {
         Object[] oldColumns = tblDataset.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
         
-        BeanContainer<Integer, RepresentationModel> container = new BeanContainer<Integer, RepresentationModel>(RepresentationModel.class);
+        BeanContainer<Integer, DatasetReference> container = new BeanContainer<Integer, DatasetReference>(DatasetReference.class);
         container.setBeanIdProperty("id");
         tblDataset.setContainerDataSource(container);
         
-        for (RepresentationModel representationModel : datasetList) {
-            container.addBean(representationModel);
+        for (DatasetReference datasetRef : datasetList) {
+				container.addBean(datasetRef);
         }
         
         tblDataset.setContainerDataSource(container);

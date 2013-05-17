@@ -43,5 +43,27 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.SecurityQuestion"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectBackup"/>  
+    
+      	 <!-- Mapping classes for new DMS schema --> 
+		  <mapping class="org.generationcp.middleware.v2.pojos.Geolocation"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.GeolocationProperty"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.CV"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.CVTerm"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.CVTermRelationship"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ExperimentProperty"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.CVTermSynonym"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.DmsProject"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ProjectProperty"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ExperimentModel"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.Stock"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.StockProperty"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.Phenotype"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ExperimentPhenotype"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ExperimentProject"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ExperimentStock"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.ProjectRelationship"/>
+		  <mapping class="org.generationcp.middleware.v2.pojos.CVTermProperty"/>
+		  
+         
     </session-factory>
 </hibernate-configuration>

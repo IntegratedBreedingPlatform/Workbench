@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.comp.ibtools.breedingview.select;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,8 +32,13 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.pojos.Study;
+import org.generationcp.middleware.v2.domain.DatasetReference;
+import org.generationcp.middleware.v2.domain.Reference;
+import org.generationcp.middleware.v2.domain.Study;
+import org.generationcp.middleware.v2.domain.StudyReference;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.v2.domain.FolderReference;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -92,6 +98,9 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    @Autowired
+    private StudyDataManager studyDataManagerV2;
     
     private ManagerFactory managerFactory;
 
@@ -232,11 +241,11 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         tblDataset.setHeight("100%");
         tblDataset.setSelectable(true);
         
-        BeanContainer<Integer, RepresentationModel> container = new BeanContainer<Integer, RepresentationModel>(RepresentationModel.class);
+        BeanContainer<Integer, DatasetReference> container = new BeanContainer<Integer, DatasetReference>(DatasetReference.class);
         container.setBeanIdProperty("id");
         tblDataset.setContainerDataSource(container);
         
-        String[] columns = new String[] {"userFriendlyName"};
+        String[] columns = new String[] {"name"};
         String[] columnHeaders = new String[] {"Name"};
         tblDataset.setVisibleColumns(columns);
         tblDataset.setColumnHeaders(columnHeaders);
@@ -353,30 +362,30 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         tr.addContainerProperty("Title", String.class, "title");
         tr.addContainerProperty("Description", String.class, "description");
 
-        List<Study> studyParent = new ArrayList<Study>();
 
+        List<FolderReference> folderRef = null;
+        
         try {
-            studyParent = managerFactory.getStudyDataManager().getAllTopLevelStudies(0, 
-                    (int) managerFactory.getStudyDataManager().countAllTopLevelStudies(this.database), 
-                    this.database);
-        } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
-            if (getWindow() != null){
-                MessageNotifier.showWarning(getWindow(), 
-                        messageSource.getMessage(Message.ERROR_DATABASE),
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
-            }
-            studyParent = new ArrayList<Study>();
-        }
+			folderRef = getStudyDataManager().getRootFolders(database);
+        } catch (MiddlewareQueryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+	            if (getWindow() != null){
+	                MessageNotifier.showWarning(getWindow(), 
+	                        messageSource.getMessage(Message.ERROR_DATABASE),
+	                    messageSource.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
+	            }
+		}
+        
 
-        for (Study ps : studyParent) {
+        for (FolderReference fr : folderRef) {
             
             Object[] cells = new Object[3];
-            cells[0] = ps.getName();
-            cells[1] = ps.getTitle();
-            cells[2] = ps.getObjective();
+            cells[0] = fr.getName();
+            cells[1] = fr.getName();
+            cells[2] = fr.getId();
             
-            tr.addItem(cells, ps);
+            tr.addItem(cells, fr);
             
         }
         
@@ -401,53 +410,80 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         this.studyTreeLayout.addComponent(tr);
     }
     
-    public void queryChildrenStudies(Study parentStudy, TreeTable tr) throws InternationalizableException{
-        List<Study> studyChildren = new ArrayList<Study>();
-        try {
-            studyChildren = managerFactory.getStudyDataManager().getStudiesByParentFolderID(parentStudy.getId(), 0, 
-                    (int) managerFactory.getStudyDataManager().countAllStudyByParentFolderID(parentStudy.getId(), this.database));
-        } catch (MiddlewareQueryException e) {
-            //LOG.error(e.toString() + "\n" + e.getStackTrace());
-            e.printStackTrace();
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-            studyChildren = new ArrayList<Study>();
-        }
-
-        for (Study sc : studyChildren) {
-            
-            Object[] cells = new Object[3];
-            cells[0] = sc.getName();
-            cells[1] = sc.getTitle();
-            cells[2] = sc.getObjective();
-            
-            tr.addItem(cells, sc);
-
-            tr.setParent(sc, parentStudy);
- 
-            if (hasChildStudy(sc.getId())) {
-                tr.setChildrenAllowed(sc, true);
-            } else {
-                tr.setChildrenAllowed(sc, false);
-            }
-        }
-    }
     
-    private boolean hasChildStudy(int studyId) {
+    public void queryChildrenStudies(Reference parentFolderReference, TreeTable tr) throws InternationalizableException{
+    	 List<Reference> childrenReference = new ArrayList<Reference>();
+    	 
+    	 
+         try {
+         
+         	childrenReference = getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId());
+         	
+         } catch (MiddlewareQueryException e) {
+             //LOG.error(e.toString() + "\n" + e.getStackTrace());
+             e.printStackTrace();
+             MessageNotifier.showWarning(getWindow(), 
+                     messageSource.getMessage(Message.ERROR_DATABASE), 
+                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+         }
+         
+         for (java.util.Iterator<Reference> i = childrenReference.iterator(); i.hasNext(); ){
 
-        List<Study> studyChildren = new ArrayList<Study>();
+        	 Reference r = i.next();
+        	 
+        	 Object[] cells = new Object[3];
+             cells[0] = r.getName();
+             cells[1] = r.getId();
+             cells[2] = r.getDescription();
+             
+             if (r instanceof FolderReference) System.out.println("r is FolderReference");
+             if (r instanceof StudyReference) System.out.println("r is StudyReference");
+
+				
+        	 tr.addItem(cells, r);
+        	 tr.setParent(r, parentFolderReference);
+        	 if (hasChildStudy(r.getId())) {
+                 tr.setChildrenAllowed(r, true);
+             } else {
+                 tr.setChildrenAllowed(r, false);
+             }
+         }
+
+         /**
+         for (Study sc : studyChildren) {
+             
+             Object[] cells = new Object[3];
+             cells[0] = sc.getName();
+             cells[1] = sc.getTitle();
+             cells[2] = sc.getObjective();
+             
+             tr.addItem(cells, sc);
+
+             tr.setParent(sc, parentStudy);
+  
+             if (hasChildStudy(sc.getId())) {
+                 tr.setChildrenAllowed(sc, true);
+             } else {
+                 tr.setChildrenAllowed(sc, false);
+             }
+         }
+         **/
+    	
+    }
+    private boolean hasChildStudy(int folderId) {
+
+        List<Reference> children = new ArrayList<Reference>();
 
         try {
-            studyChildren = managerFactory.getStudyDataManager().getStudiesByParentFolderID(studyId, 0, 1);
+            children = getStudyDataManager().getChildrenOfFolder(folderId);
         } catch (MiddlewareQueryException e) {
             //LOG.error(e.toString() + "\n" + e.getStackTrace());
             MessageNotifier.showWarning(getWindow(), 
                     messageSource.getMessage(Message.ERROR_DATABASE), 
                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-            studyChildren = new ArrayList<Study>();
+            children = new ArrayList<Reference>();
         }
-        if (!studyChildren.isEmpty()) {
+        if (!children.isEmpty()) {
             return true;
         }
         return false;
@@ -472,5 +508,10 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         messageSource.setCaption(btnCancel, Message.CANCEL);
         messageSource.setCaption(btnNext, Message.NEXT);
     }
+
+    public StudyDataManager getStudyDataManager() {
+		return studyDataManagerV2;
+	}
+
 
 }

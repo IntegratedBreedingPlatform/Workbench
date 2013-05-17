@@ -3,7 +3,9 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
-import org.generationcp.middleware.pojos.Study;
+import org.generationcp.middleware.v2.domain.FolderReference;
+import org.generationcp.middleware.v2.domain.Reference;
+import org.generationcp.middleware.v2.domain.Study;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ public class StudyTreeExpandAction implements Tree.ExpandListener{
 
     private Window source;
     private TreeTable tr;
+    
 
     public StudyTreeExpandAction(Window source, TreeTable tr) {
         this.source = source;
@@ -29,7 +32,10 @@ public class StudyTreeExpandAction implements Tree.ExpandListener{
     public void nodeExpand(ExpandEvent event) {
         if (source instanceof SelectDatasetForBreedingViewWindow) {
             try {
-                ((SelectDatasetForBreedingViewWindow) source).queryChildrenStudies((Study)event.getItemId(), tr);
+            	
+            	((SelectDatasetForBreedingViewWindow) source).queryChildrenStudies((Reference)event.getItemId(), tr);
+    
+               
             } catch (InternationalizableException e) {
                 LOG.error(e.toString() + "\n" + e.getStackTrace());
                 e.printStackTrace();
