@@ -45,7 +45,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     private SimpleResourceBundleMessageSource messageSource;
     
     @Autowired
-    private StudyDataManager studyDataManagerV2;
+    private StudyDataManager studyDataManager;
     
     private Table tblDataset;
     
@@ -62,6 +62,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
+        this.studyDataManager = selectDatasetForBreedingViewWindow.getStudyDataManager();
     }
 
     @Override
@@ -71,10 +72,10 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
 		try {
 			if (event.getItemId() instanceof StudyReference){
 				System.out.println("Item is Study");
-				study = studyDataManagerV2.getStudy(((StudyReference)event.getItemId()).getId());
+				study = studyDataManager.getStudy(((StudyReference)event.getItemId()).getId());
 			}else if (event.getItemId() instanceof FolderReference){
 				System.out.println("Item is FolderReference");
-				study = studyDataManagerV2.getStudy(((FolderReference)event.getItemId()).getId());
+				study = studyDataManager.getStudy(((FolderReference)event.getItemId()).getId());
 			}
 			
 		} catch (MiddlewareQueryException e1) {
@@ -94,7 +95,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         }
         
         try {
-			List<DatasetReference> datasetRefs = studyDataManagerV2.getDatasetReferences(study.getId());
+			List<DatasetReference> datasetRefs = studyDataManager.getDatasetReferences(study.getId());
 			  updateDatasetTable(datasetRefs, tblFactors, tblVariates);
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block

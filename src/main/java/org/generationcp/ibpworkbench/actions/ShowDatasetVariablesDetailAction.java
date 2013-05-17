@@ -47,7 +47,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     private SimpleResourceBundleMessageSource messageSource;
     
     @Autowired
-    private StudyDataManager studyDataManagerV2;
+    private StudyDataManager studyDataManager;
     
     private Table tblDataset;
     
@@ -62,6 +62,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
+        this.studyDataManager = selectDatasetForBreedingViewWindow.getStudyDataManager();
     }
     
     @Override
@@ -88,7 +89,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             String datasetName = (String)tblDataset.getItem(represno).getItemProperty("name").getValue();
             **/
             
-            DataSet ds = studyDataManagerV2.getDataSet(dataSetId);
+            DataSet ds = studyDataManager.getDataSet(dataSetId);
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();

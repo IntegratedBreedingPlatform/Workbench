@@ -99,8 +99,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    @Autowired
-    private StudyDataManager studyDataManagerV2;
+    
+	private StudyDataManager studyDataManager;
     
     private ManagerFactory managerFactory;
 
@@ -510,7 +510,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     }
 
     public StudyDataManager getStudyDataManager() {
-		return studyDataManagerV2;
+    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+		return this.studyDataManager;
 	}
 
 
