@@ -92,6 +92,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 //    private Button nextButton;
     private Component buttonArea;
     private int countme = 0;
+    protected Boolean setAll = true;
+    protected Boolean fromOthers = true;
     
     private StudyDataManager studyDataManager;
 
@@ -476,7 +478,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                      public void valueChange(ValueChangeEvent event) {
                          // TODO Auto-generated method stub
                      	try{
-                             System.out.println(event);
+                           
                              Container container = tblDataSet.getContainerDataSource();
                              Collection<?> items =  container.getItemIds();
                              
@@ -487,19 +489,30 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                             	 
                           	   Integer key = (Integer) myitems.next();
                           	   Item item = container.getItem(key);
+                          	  
+                          	   if(!fromOthers)
+	                   		   {
+	                          	   for(String column: stringList)
+		  	                   	   {
+		  	                   		   if(column.equalsIgnoreCase(" ") && key.intValue() == 0)
+		  	                   			   continue;
+		  	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
+		  	                   			   continue;
+		  	                   		   //added this since we dont have any checkboxes inside anymore
+		  	                   		   if(!column.equalsIgnoreCase(" ") && key.intValue() > 0)
+		  	                   			   continue;
+		  	                   		   setAll = true;
+		  	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
+		  	                         	ba.setValue(event.getProperty().getValue());
+		  	                   		    
+		  	                   	   }
+	                          	 
+	                   		   }
+                          	   else if(fromOthers)
+                          	   {
+                          		 setAll = false;
+	                   		   }   
                           	   
-                          	   for(String column: stringList)
-	  	                   	   {
-	  	                   		   if(column.equalsIgnoreCase(" ") && key.intValue() == 0)
-	  	                   			   continue;
-	  	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
-	  	                   			   continue;
-	  	                   		   
-	  	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
-	  	                         	ba.setValue(event.getProperty().getValue());
-	  	                         	
-	  	                         	
-	  	                   	   }
                              }
                            requestRepaintAll();
                           
@@ -535,11 +548,25 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                  public void valueChange(ValueChangeEvent event) {
                      // TODO Auto-generated method stub
                  	try{
-                         System.out.println(event);
+                         
                          Container container = tblDataSet.getContainerDataSource();
                          Collection<?> items =  container.getItemIds();
                          
+                         //set the select all to false
+                         Item item = container.getItem(0);
                          
+                         if(!setAll)
+                         {
+                        	 fromOthers = false;
+                        	 CheckBox ba = (CheckBox) item.getItemProperty(" ").getValue();
+                        	 ba.setValue(false);
+                        	 
+                         }else
+                         {
+                        	 fromOthers = true;
+                         }
+                         //added this since we dont have any checkboxes inside anymore
+                         /*
                          for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
                       	 {
                         	
@@ -548,11 +575,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                       	   Item item = container.getItem(key);
                       	   
                       	   if(key.intValue() != 0){
+                      		   
                       		   CheckBox ba = (CheckBox) item.getItemProperty(this.propertyId).getValue();
                       		   ba.setValue(event.getProperty().getValue());
                            }
                          }
-                         
+                         */
                        //  System.out.println("property " + event.getProperty().getValue());
                        requestRepaintAll();
                       
@@ -593,30 +621,39 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	                      Collection<?> items =  container.getItemIds();
 	                      
 	                      
-	                   	   Item item = container.getItem(this.propertyId);
+	                   	   Item item = container.getItem(0);
 	                   	   
+	                   	   	 //set the select all to false
+	                      	if(!setAll)
+	                         {
+	                        	 fromOthers = false;
+	                        	 CheckBox ba = (CheckBox) item.getItemProperty(" ").getValue();
+	                        	 ba.setValue(false);
+	                        	 
+	                         }else
+	                         {
+	                        	 fromOthers = true;
+	                         }
+	                       //added this since we dont have any checkboxes inside anymore
+		                        /*
 	                   	   for(String column: stringList)
 	                   	   {
 	                   		   
 	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
 	                   			   continue;
-	                   		if(column.equalsIgnoreCase(" "))
+	                   		   if(column.equalsIgnoreCase(" "))
 	                   			   continue;
-	                   		   	//item.getItemProperty(this.propertyId).setValue(event.getProperty().getValue());
-	                         	//if()
-	                   		System.out.println("column " + column);
-                         	System.out.println("propertyId " + this.propertyId);
+	                   			
+		                   		
+	                   		   	/
 	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
 	                         	//CheckBox aa = (CheckBox) event.getProperty().getValue();
-	                         	
-	                         	System.out.println("CheckBox "+ ba);
-	                         	System.out.println("value " + event.getProperty().getValue());
 	                         	
 	                         	ba.setValue(event.getProperty().getValue());
 	                         	
 	                         	
 	                   	   }
-	                      
+	                      */
 	                      
 	                    //  System.out.println("property " + event.getProperty().getValue());
 	                    requestRepaintAll();
