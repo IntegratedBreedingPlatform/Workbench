@@ -1,5 +1,10 @@
 @import url(../reindeer/styles.css);
 
+span.v-checkbox-hidecheckbox input {
+    display: none!important;
+}
+
+
 .v-panel-content-gcp-login > div {
     background-image: url(images/login.png);
     background-repeat: no-repeat;

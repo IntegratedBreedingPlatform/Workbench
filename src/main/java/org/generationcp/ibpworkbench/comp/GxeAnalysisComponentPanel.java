@@ -335,11 +335,13 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         
         for (String role : stringList) {
         	
-        	if(role.equalsIgnoreCase("Environment") || role.equalsIgnoreCase("genotype"))
+        	if(role.equalsIgnoreCase("environment") || role.equalsIgnoreCase("genotype"))
             {
 	            columnIds.add(role);
+	           // columnIds.add(role+"_value");
 	            columnHeaders.add(role);
 	            container.addContainerProperty(role, Label.class, null);
+	           // container.addContainerProperty(role+"_value", CheckBox.class, null);
 	            
             }else{
 	            columnIds.add(role);
@@ -367,6 +369,19 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	 Container container = tblDataSet.getContainerDataSource();
     
          Collection<?> itemIds = container.getItemIds();
+         
+         
+         for (String role : stringList) {
+         	
+         	if(role.equalsIgnoreCase("environment") || role.equalsIgnoreCase("genotype"))
+             {
+ 	            container.addContainerProperty(role, Label.class, null);
+ 	           // container.addContainerProperty(role+"_value", CheckBox.class, null);
+ 	            
+             }else{
+ 	           container.addContainerProperty(role, CheckBox.class, new CheckBox());
+             }
+         }
          String obj = "FirstRow";
          
          //Item item = container.addItem(obj);
@@ -406,7 +421,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
          }
          // set the table columns
          
-         createRow("FirstRow",headers);
+         createRow("FirstRow",headers,container);
          
          TableFieldFactory tff = tblDataSet.getTableFieldFactory();
          
@@ -417,7 +432,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
      * @RowId = Id of the row to be inserted
      * @TableItems[] = list of table items object. One array of TableItems would be equal to one row
      */
-    private void createRow(String RowId,TableItems[] tableItems)
+    private void createRow(String RowId,TableItems[] tableItems, Container container)
     {
     	
     	Object[] obj = new Object[tableItems.length];
@@ -427,9 +442,16 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     		
     			if(tableItems[i].getType().equalsIgnoreCase("checkbox"))
        	 		{
+    				
        	 			CheckBox cb = new CheckBox();
+       	 			if(!RowId.equalsIgnoreCase("firstrow"))
+       	 			{
+       	 				cb.addStyleName("hidecheckbox");
+       	 			}
 		       	 	cb.setCaption(tableItems[i].getLabel());
 		       	 	cb.setValue(tableItems[i].getValue());
+		       	 	//cb.setEnabled(false);
+		       	 	
 		       	 	obj[i] = cb;
        	 		}else if(tableItems[i].getType().equalsIgnoreCase("string"))
        	 		{
@@ -613,6 +635,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	
     	tblDataSet.addItem(obj, countme);
+    
     	
     	
 
@@ -625,9 +648,22 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		countme++;
         
 	    Collection<?> itemIds = container.getItemIds();
+	    
+	    for (String role : stringList) {
+         	
+         	if(!role.equalsIgnoreCase(" "))
+             {
+         		
+ 	           // container.addContainerProperty(role, Label.class, null);
+ 	           // container.addContainerProperty(role+"_value", CheckBox.class, null);
+ 	            
+             }else{
+ 	         //  container.addContainerProperty(role, CheckBox.class, new CheckBox());
+             }
+         }
         String obj = ""+countme;
         
-        createRow(obj,tableItems);
+        createRow(obj,tableItems, container);
         
         
 	}
@@ -651,7 +687,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     		for (String col : stringList){
     			
     			TableItems item = new TableItems();
-    			item.setColumnId(col);
+    			item.setColumnId(col+"_value");
     			item.setRowId(x);
     			if (col.equalsIgnoreCase("environment") || col.equalsIgnoreCase("genotype")){
     				item.setType("String");
