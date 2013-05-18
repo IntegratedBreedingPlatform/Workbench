@@ -175,8 +175,7 @@ public class ToolUtil {
 	 */
 	public void updateToolConfigurationForProject(Tool tool, Project project)
 			throws IOException {
-		String centralDbName = String.format("ibdb_%s_central", project
-				.getCropType().getCropName().toLowerCase());
+		String centralDbName = project.getCropType().getCentralDbName();
 		String localDbName = String.format("%s_%d_local", project.getCropType()
 				.getCropName().toLowerCase(), project.getProjectId());
 
