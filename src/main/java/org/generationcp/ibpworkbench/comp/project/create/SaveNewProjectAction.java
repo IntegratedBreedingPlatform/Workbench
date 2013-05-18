@@ -120,7 +120,7 @@ public class SaveNewProjectAction implements ClickListener{
                 // set the project's local database name
                 String cropName = project.getCropType().getCropName().toLowerCase();
                 String localDatabaseName = String.format("%s_%d_local", cropName, project.getProjectId());
-                String centralDatabaseName = String.format("ibdb_%s_central", cropName);
+                String centralDatabaseName = project.getCropType().getCentralDbName();
                 project.setLocalDbName(localDatabaseName);
                 project.setCentralDbName(centralDatabaseName);
                 
