@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,6 @@ import org.generationcp.ibpworkbench.comp.ManagerWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.MarsProjectDashboard;
 import org.generationcp.ibpworkbench.comp.MasWorkflowDiagram;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -38,8 +35,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +146,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     }
     
     private void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {
-        updateTools((Window) contentWindow, project);
+        toolUtil.updateTools((Window) contentWindow, messageSource, project, true);
         updateProjectLastOpenedDate((Window) contentWindow, project);
         
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
@@ -182,85 +177,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         }
     }
     
-    protected void updateTools(Window window, Project project) {
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
-        // don't do anything if the project is the last project opened
-        if (app.getSessionData().isLastOpenedProject(project)) {
-            return;
-        }
-        
-        // show a progress window
-        ProgressWindow progressWindow = new ProgressWindow(messageSource.getMessage(Message.UPDATING_TOOLS_CONFIGURATION), 10 * 1000);
-        progressWindow.setCaption(messageSource.getMessage(Message.UPDATING));
-        progressWindow.setModal(true);
-        progressWindow.setClosable(false);
-        progressWindow.setResizable(false);
-        progressWindow.center();
-        
-        window.addWindow(progressWindow);
-        progressWindow.startProgress();
-        
-        // get all native tools
-        List<Tool> nativeTools = null;
-        try {
-            nativeTools = workbenchDataManager.getToolsWithType(ToolType.NATIVE);
-        }
-        catch (MiddlewareQueryException e1) {
-            LOG.error("QueryException", e1);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-            return;
-        }
-        
-        for (Tool tool : nativeTools) {
-            // close the native tools
-            try {
-                toolUtil.closeNativeTool(tool);
-            }
-            catch (IOException e) {
-                LOG.error("Exception", e);
-            }
-            
-            // rewrite the configuration file
-            try {
-                toolUtil.updateToolConfigurationForProject(tool, project);
-            }
-            catch (IOException e) {
-                LOG.error("Exception", e);
-            }
-        }
-        
-        // get web tools
-        List<Tool> webTools = new ArrayList<Tool>();
-        try {
-            List<Tool> webTools1 = workbenchDataManager.getToolsWithType(ToolType.WEB);
-            List<Tool> webTools2 = workbenchDataManager.getToolsWithType(ToolType.WEB_WITH_LOGIN);
-            
-            if (webTools1 != null) {
-                webTools.addAll(webTools1);
-            }
-            if (webTools2 != null) {
-                webTools.addAll(webTools2);
-            }
-        }
-        catch (MiddlewareQueryException e2) {
-            LOG.error("QueryException", e2);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-            return;
-        }
-        
-        for (Tool tool : webTools) {
-            // rewrite the configuration file
-            try {
-                toolUtil.updateToolConfigurationForProject(tool, project);
-            }
-            catch (IOException e) {
-                LOG.error("Exception", e);
-            }
-        }
-    }
+    
     
     private void updateProjectLastOpenedDate(Window window, Project project) {
         try {

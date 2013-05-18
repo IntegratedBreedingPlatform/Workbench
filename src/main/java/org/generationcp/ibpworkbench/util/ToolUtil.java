@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -25,7 +26,11 @@ import java.util.Properties;
 import org.apache.poi.util.IOUtils;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.comp.window.ProgressWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -35,11 +40,17 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.Window;
+
 @Configurable
 public class ToolUtil {
+    private Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
+    
 	private String jdbcHost;
 	private Long jdbcPort;
 	private String centralUser;
@@ -164,6 +175,86 @@ public class ToolUtil {
 
 		pb.start();
 	}
+	
+	public void updateTools(Window window, SimpleResourceBundleMessageSource messageSource, Project project, boolean ignoreLastOpenedProject) {
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
+        // don't do anything if the project is the last project opened
+        if (app.getSessionData().isLastOpenedProject(project) && ignoreLastOpenedProject) {
+            return;
+        }
+        
+        // show a progress window
+        ProgressWindow progressWindow = new ProgressWindow(messageSource.getMessage(Message.UPDATING_TOOLS_CONFIGURATION), 10 * 1000);
+        progressWindow.setCaption(messageSource.getMessage(Message.UPDATING));
+        progressWindow.setModal(true);
+        progressWindow.setClosable(false);
+        progressWindow.setResizable(false);
+        progressWindow.center();
+        
+        window.addWindow(progressWindow);
+        progressWindow.startProgress();
+        
+        // get all native tools
+        List<Tool> nativeTools = null;
+        try {
+            nativeTools = workbenchDataManager.getToolsWithType(ToolType.NATIVE);
+        }
+        catch (MiddlewareQueryException e1) {
+            LOG.error("QueryException", e1);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
+        }
+        
+        for (Tool tool : nativeTools) {
+            // close the native tools
+            try {
+                closeNativeTool(tool);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+            
+            // rewrite the configuration file
+            try {
+                updateToolConfigurationForProject(tool, project);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+        }
+        
+        // get web tools
+        List<Tool> webTools = new ArrayList<Tool>();
+        try {
+            List<Tool> webTools1 = workbenchDataManager.getToolsWithType(ToolType.WEB);
+            List<Tool> webTools2 = workbenchDataManager.getToolsWithType(ToolType.WEB_WITH_LOGIN);
+            
+            if (webTools1 != null) {
+                webTools.addAll(webTools1);
+            }
+            if (webTools2 != null) {
+                webTools.addAll(webTools2);
+            }
+        }
+        catch (MiddlewareQueryException e2) {
+            LOG.error("QueryException", e2);
+            MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
+        }
+        
+        for (Tool tool : webTools) {
+            // rewrite the configuration file
+            try {
+                updateToolConfigurationForProject(tool, project);
+            }
+            catch (IOException e) {
+                LOG.error("Exception", e);
+            }
+        }
+    }
 
 	/**
 	 * Update the configuration of the specified {@link Tool} to the

@@ -17,14 +17,15 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,9 @@ public class LoginAction implements ClickListener{
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    @Autowired
+    private ToolUtil toolUtil;
 
     public LoginAction(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
@@ -80,7 +84,7 @@ public class LoginAction implements ClickListener{
         }
         
         if (!valid) {
-        	
+            
             // loginForm.getMessageLabel().setVisible(true);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.LOGIN_ERROR), 
@@ -90,9 +94,10 @@ public class LoginAction implements ClickListener{
         
         IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
         
+        User user = null;
         try {
             // set the session's current user
-            User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+            user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
             application.getSessionData().setUserData(user);
 
             // save the currently logged user
@@ -109,14 +114,18 @@ public class LoginAction implements ClickListener{
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return;
         }
         
         WorkbenchDashboardWindow window = null;
         try {
-        	System.out.println("WorkbenchDashboardWindow(username)");
+            LOG.info("WorkbenchDashboardWindow(username)");
             window = new WorkbenchDashboardWindow(username);
             application.removeWindow(application.getMainWindow());
             application.setMainWindow(window);
+            
+            Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
+            toolUtil.updateTools(window, messageSource, project, false);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
