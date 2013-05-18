@@ -83,6 +83,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     
     private Integer currentRepresentationId;
     
+    private Integer currentDataSetId;
+    
     private String currentDatasetName;
 
     private Button btnCancel;
@@ -146,6 +148,14 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
     public void setCurrentRepresentationId(Integer currentRepresentationId) {
         this.currentRepresentationId = currentRepresentationId;
+    }
+    
+    public Integer getCurrentDataSetId() {
+        return currentDataSetId;
+    }
+
+    public void setCurrentDataSetId(Integer currentDataSetId) {
+        this.currentDataSetId = currentDataSetId;
     }
 
     public String getCurrentDatasetName() {
@@ -307,30 +317,6 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         return toreturn;
     }
     
-/*    private Component layoutStudyTreeDetailArea() {
-        // layout the tables
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setWidth("100%");
-        horizontalLayout.setMargin(false);
-        horizontalLayout.setSpacing(true);
-        
-        horizontalLayout.addComponent(tblDataset);
-        horizontalLayout.setExpandRatio(tblDataset, 1.0f);
-        
-        //tblVariables.setWidth("300px");
-        //horizontalLayout.addComponent(tblVariables);
-        
-        // layout the project detail area
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setWidth("100%");
-        verticalLayout.setMargin(false);
-        verticalLayout.setSpacing(true);
-        
-        verticalLayout.addComponent(lblStudyTreeDetailTitle);
-        verticalLayout.addComponent(horizontalLayout);
-        
-        return verticalLayout;
-    }*/
 
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
@@ -382,8 +368,8 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
             
             Object[] cells = new Object[3];
             cells[0] = fr.getName();
-            cells[1] = fr.getName();
-            cells[2] = fr.getId();
+            cells[1] = "";
+            cells[2] = fr.getDescription();
             
             tr.addItem(cells, fr);
             
@@ -432,8 +418,14 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         	 Reference r = i.next();
         	 
         	 Object[] cells = new Object[3];
+        	 
+        	Study s = null;
+			try {
+				s = this.getStudyDataManager().getStudy(r.getId());
+			} catch (MiddlewareQueryException e) {}
+        	
              cells[0] = r.getName();
-             cells[1] = r.getId();
+             cells[1] = (s != null) ? s.getTitle() : "" ;
              cells[2] = r.getDescription();
              
              if (r instanceof FolderReference) System.out.println("r is FolderReference");
@@ -448,26 +440,6 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
                  tr.setChildrenAllowed(r, false);
              }
          }
-
-         /**
-         for (Study sc : studyChildren) {
-             
-             Object[] cells = new Object[3];
-             cells[0] = sc.getName();
-             cells[1] = sc.getTitle();
-             cells[2] = sc.getObjective();
-             
-             tr.addItem(cells, sc);
-
-             tr.setParent(sc, parentStudy);
-  
-             if (hasChildStudy(sc.getId())) {
-                 tr.setChildrenAllowed(sc, true);
-             } else {
-                 tr.setChildrenAllowed(sc, false);
-             }
-         }
-         **/
     	
     }
     private boolean hasChildStudy(int folderId) {

@@ -46,7 +46,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    @Autowired
     private StudyDataManager studyDataManager;
     
     private Table tblDataset;
@@ -78,17 +77,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             
            
             
-            /**
-            
-            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(selectDatasetForBreedingViewWindow.getCurrentProject());
-            TraitDataManager traitDataManager = managerFactory.getTraitDataManager();
-            StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
-            
-            List<Factor> factorList = studyDataManager.getFactorsByRepresentationId(represno);
-            List<Variate> variateList = studyDataManager.getVariatesByRepresentationId(represno);
-            String datasetName = (String)tblDataset.getItem(represno).getItemProperty("name").getValue();
-            **/
-            
             DataSet ds = studyDataManager.getDataSet(dataSetId);
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
@@ -104,16 +92,12 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	fm.setScaleid(factor.getStandardVariable().getScale().getId());
             	fm.setTmname(factor.getStandardVariable().getMethod().getName());
             	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
-            	fm.setTrname(factor.getStandardVariable().getProperty().getName());
+            	fm.setTrname(factor.getStandardVariable().getName());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
-            	
-            	System.out.println(factor.toString());
-            	factor.getStandardVariable().getProperty().getName();
-            	
-            	
+
             	factorList.add(fm);
             }
-            System.out.println("----------------------------------------------------------VARIATES");
+            
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
             	
             	VariateModel vm = new VariateModel();
@@ -123,18 +107,15 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
             	vm.setTmname(variate.getStandardVariable().getMethod().getName());
             	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
+            	vm.setTrname(variate.getStandardVariable().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
-            	
-            	System.out.println(variate.toString());
             	
             	variateList.add(vm);
             }
             
            
-           
-            //selectDatasetForBreedingViewWindow.setCurrentRepresentationId(represno);
             selectDatasetForBreedingViewWindow.setCurrentDatasetName(ds.getName());
+            selectDatasetForBreedingViewWindow.setCurrentDataSetId(ds.getId());
             
             updateFactorsTable(factorList);
             updateVariatesTable(variateList);
@@ -163,96 +144,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     }
     
     
-    private void updateFactorsTable(List<Factor> factorList, TraitDataManager traitDataManager) {
-        Object[] oldColumns = tblFactors.getVisibleColumns();
-        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-        
-        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
-        container.setBeanIdProperty("id");
-        tblFactors.setContainerDataSource(container);
-        
-        try {
-            
-            //TODO
-            // Curation errors must be handled here correctly
-        
-            for (Factor factor : factorList) {
-                
-                FactorModel factorModel = new FactorModel();
-                
-                factorModel.setId(factor.getId());
-                factorModel.setName(factor.getName());
-                factorModel.setTraitid(factor.getTraitId());
-                
-                if (traitDataManager.getTraitById(factor.getTraitId()) != null) {
-                
-                    if (traitDataManager.getTraitById(factor.getTraitId()).getName() != null) {
-        
-                        factorModel.setTrname(traitDataManager.getTraitById(factor.getTraitId()).getName());
-                    
-                    } else {
-                        
-                        factorModel.setTrname(factor.getTraitId().toString());
-                        
-                    }
-                
-                } else {
-                    
-                    factorModel.setTrname(factor.getTraitId().toString());
-                }
-                
-                factorModel.setScaleid(factor.getScaleId());
-                
-                if (traitDataManager.getScaleByID(factor.getScaleId()) != null) {
-                
-                    if (traitDataManager.getScaleByID(factor.getScaleId()).getName() != null) {
-                    
-                        factorModel.setScname(traitDataManager.getScaleByID(factor.getScaleId()).getName());
-                    
-                    } else {
-                        
-                        factorModel.setScname(factor.getScaleId().toString());
-                        
-                    }
-                    
-                } else {
-                    
-                    factorModel.setScname(factor.getScaleId().toString());
-                }
-                
-                factorModel.setTmethid(factor.getMethodId());
-                
-                if (traitDataManager.getTraitMethodById(factor.getMethodId()) != null) {
-                
-                    if (traitDataManager.getTraitMethodById(factor.getMethodId()).getName() != null) {
-                    
-                        factorModel.setTmname(traitDataManager.getTraitMethodById(factor.getMethodId()).getName());
-                    
-                    } else {
-                        
-                        factorModel.setTmname(factor.getMethodId().toString());
-                        
-                    }
-                
-                } else {
-                    
-                    factorModel.setTmname(factor.getMethodId().toString());
-                }
-                
-                container.addBean(factorModel);
-                
-            }
-        
-        } catch (MiddlewareQueryException e) {
-            throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_GETTING_DATASET_FACTOR);
-        }
-        
-        tblFactors.setContainerDataSource(container);
-        
-        tblFactors.setVisibleColumns(columns);
-
-    }
-    
     private void updateVariatesTable(List<VariateModel> variateList){
  	    Object[] oldColumns = tblFactors.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
@@ -269,98 +160,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
         tblVariates.setVisibleColumns(columns);
  }
-    
-    private void updateVariatesTable(List<Variate> variateList, TraitDataManager traitDataManager) {
-        Object[] oldColumns = tblVariates.getVisibleColumns();
-        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-        
-        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
-        container.setBeanIdProperty("id");
-        tblVariates.setContainerDataSource(container);
-        
-        try {
-        
-            //TODO
-            // Curation errors must be handled here correctly
-            
-            for (Variate variate : variateList) {
-                
-                VariateModel variateModel = new VariateModel();
-                
-                variateModel.setId(variate.getId());
-                variateModel.setName(variate.getName());
-                variateModel.setTraitid(variate.getTraitId());
-                
-                if (traitDataManager.getTraitById(variate.getTraitId()) != null) {
-
-                    if (traitDataManager.getTraitById(variate.getTraitId()).getName() != null) {
-                    
-                        variateModel.setTrname(traitDataManager.getTraitById(variate.getTraitId()).getName());
-                        
-                    } else {
-                        
-                        variateModel.setTrname(variate.getTraitId().toString());
-                        
-                    }
-                
-                } else {
-                    
-                    variateModel.setTrname(variate.getTraitId().toString());
-                }
-                
-                variateModel.setScaleid(variate.getScaleId());
-                
-                if (traitDataManager.getScaleByID(variate.getScaleId()) != null) {
-                
-                    if (traitDataManager.getScaleByID(variate.getScaleId()).getName() != null) {
-                    
-                        variateModel.setScname(traitDataManager.getScaleByID(variate.getScaleId()).getName());
-                    
-                    } else {
-                        
-                        variateModel.setScname(variate.getScaleId().toString());
-                        
-                    }
-                
-                } else {
-                    
-                    variateModel.setScname(variate.getScaleId().toString());
-                }
-                    
-                variateModel.setTmethid(variate.getMethodId());
-                
-                if (traitDataManager.getTraitMethodById(variate.getMethodId()) != null) {
-                
-                    if (traitDataManager.getTraitMethodById(variate.getMethodId()).getName() != null) {
-                    
-                        variateModel.setTmname(traitDataManager.getTraitMethodById(variate.getMethodId()).getName());
-                        
-                    } else {
-                        
-                        variateModel.setTmname(variate.getMethodId().toString());
-                        
-                    }
-                
-                } else {
-                    
-                    variateModel.setTmname(variate.getMethodId().toString());
-                }
-                
-                container.addBean(variateModel);
-                
-            }
-        
-        } catch (MiddlewareQueryException e) {
-            throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_GETTING_DATASET_VARIATE);
-        }
-        
-        tblVariates.setContainerDataSource(container);
-        
-        tblVariates.setVisibleColumns(columns);
-
-    }
-    
-    
+  
+   
     private void showDatabaseError(Window window) {
         MessageNotifier.showError(window, 
                 messageSource.getMessage(Message.DATABASE_ERROR), 

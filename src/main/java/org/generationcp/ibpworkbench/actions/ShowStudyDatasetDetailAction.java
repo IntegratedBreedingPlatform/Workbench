@@ -44,7 +44,6 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    @Autowired
     private StudyDataManager studyDataManager;
     
     private Table tblDataset;
@@ -92,6 +91,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
             selectDatasetForBreedingViewWindow.setCurrentStudy(study);
             selectDatasetForBreedingViewWindow.setCurrentRepresentationId(null);
             selectDatasetForBreedingViewWindow.setCurrentDatasetName(null);
+            selectDatasetForBreedingViewWindow.setCurrentDataSetId(null);
         }
         
         try {
