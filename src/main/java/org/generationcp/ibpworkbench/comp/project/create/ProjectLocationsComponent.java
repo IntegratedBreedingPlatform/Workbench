@@ -46,7 +46,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
-import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -246,7 +245,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
     	 
     	 for(Country c: countryList){
     	       selectLocationCountry.addItem(String.valueOf(c.getCntryid()));
-    	       selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsoabbr());
+    	       selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsofull());
     	}
 		
 	}

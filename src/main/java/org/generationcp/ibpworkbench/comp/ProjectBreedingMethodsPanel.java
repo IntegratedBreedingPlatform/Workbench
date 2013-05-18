@@ -202,8 +202,8 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         }
 
         bmPopupWindow = new ProjectBreedingMethodsPopup(selectedMethods);
-        bmPopupWindow.setPositionX(223);
-        bmPopupWindow.setPositionY(381);
+        bmPopupWindow.setPositionX(140);
+        bmPopupWindow.setPositionY(371);
 
         parentWindow.addWindow(bmPopupWindow);
     }
@@ -496,7 +496,7 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     		this.setScrollable(true);
     		this.setDraggable(true);
     		this.setWidth("400px");
-    		this.setHeight("250px");
+    		this.setHeight("180px");
 
     		
     		setContent(main);

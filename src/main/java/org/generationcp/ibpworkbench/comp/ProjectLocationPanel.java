@@ -12,9 +12,13 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -47,7 +51,17 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -328,7 +342,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
         for (Country c : countryList) {
             selectLocationCountry.addItem(String.valueOf(c.getCntryid()));
-            selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsoabbr());
+            selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsofull());
         }
 
     }

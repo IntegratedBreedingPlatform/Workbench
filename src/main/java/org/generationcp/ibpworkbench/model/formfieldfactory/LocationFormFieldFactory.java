@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Country;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -95,11 +93,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 
 		        
         lType = new NativeSelect();     
+        lType.setWidth("230px");
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
 
         country = new NativeSelect();
+        country.setWidth("230px");
         country.setContainerDataSource(countryBeanContainer);
         country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         country.setItemCaptionPropertyId("isofull");
