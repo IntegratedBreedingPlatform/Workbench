@@ -36,6 +36,7 @@ public class BreedingViewInput implements Serializable {
     
     private Project project;
     private String BreedingViewProjectName;
+    private Integer studyId;
     private Integer datasetId;
     private String environmentName;
     private String version;
@@ -50,13 +51,14 @@ public class BreedingViewInput implements Serializable {
     private Columns columns;
     private Environment environment;
     
-    public BreedingViewInput(Project project, String breedingViewProjectName,
+    public BreedingViewInput(Project project, String breedingViewProjectName, Integer studyId,
             Integer datasetId, String version,
             String sourceXLSFilePath, String destXMLFilePath,
             String projectType) {
         super();
         this.project = project;
         BreedingViewProjectName = breedingViewProjectName;
+        this.studyId = studyId;
         this.datasetId = datasetId;
         this.version = version;
         this.sourceXLSFilePath = sourceXLSFilePath;
@@ -81,6 +83,14 @@ public class BreedingViewInput implements Serializable {
 
     public void setBreedingViewProjectName(String breedingViewProjectName) {
         BreedingViewProjectName = breedingViewProjectName;
+    }
+
+    public Integer getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Integer studyId) {
+        this.studyId = studyId;
     }
 
     public Integer getDatasetId() {

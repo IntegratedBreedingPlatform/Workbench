@@ -132,6 +132,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
             BreedingViewInput breedingViewInput = new BreedingViewInput(project
                                                                         , breedingViewProjectName
+                                                                        , studyId
                                                                         , dataSetId
                                                                         , breedingViewTool.getVersion()
                                                                         , sourceXLSFilePath

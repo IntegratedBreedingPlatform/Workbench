@@ -24,7 +24,7 @@ import javax.xml.bind.Marshaller;
 
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
-import org.generationcp.commons.breedingview.xml.Fieldbook;
+import org.generationcp.commons.breedingview.xml.Data;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -95,8 +95,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
         
         //create Fieldbook element
-        Fieldbook fieldbook = new Fieldbook();
-        fieldbook.setFile(breedingViewInput.getSourceXLSFilePath());
+        Data data = new Data();
+        data.setFieldBookFile(breedingViewInput.getSourceXLSFilePath());
         
         //create the Phenotypic element
         Phenotypic phenotypic = new Phenotypic();
@@ -107,10 +107,13 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         phenotypic.setRows(breedingViewInput.getRows());
         phenotypic.setColumns(breedingViewInput.getColumns());
         phenotypic.setGenotypes(breedingViewInput.getGenotypes());
-        phenotypic.setFieldbook(fieldbook);
+        phenotypic.setFieldbook(data);
         
         SSAParameters ssaParameters = new SSAParameters();
         ssaParameters.setWebApiUrl(webApiUrl);
+        ssaParameters.setStudyId(breedingViewInput.getStudyId());
+        ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
+        ssaParameters.setOutputDataSetId(0);
 
         Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
         if(workbenchProject != null) {
