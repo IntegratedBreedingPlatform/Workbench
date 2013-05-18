@@ -199,7 +199,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(200, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.setSplitPosition(130, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.setStyleName("gcp-workbench-content-split-panel");
         contentAreaSplitPanel.setLocked(true);
 

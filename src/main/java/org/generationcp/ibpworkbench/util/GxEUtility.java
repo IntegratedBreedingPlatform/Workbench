@@ -1,16 +1,18 @@
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -19,7 +21,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
 
 public class GxEUtility {
     private static final Logger LOG = LoggerFactory.getLogger(GxEUtility.class);
@@ -100,105 +101,71 @@ public class GxEUtility {
 	
 	}
 	
-	/**
-	 * Generates the GxE Input CSV<br/><br/>
-	 * Sets default csv file to <b>"GxE_input.csv"</b> and does not include the first row and column of the table
-	 * @param mainWindow
-	 * @param tableContainer
-	 * @param gxeHeaders
-	 */
-	public static File generateGxEInputCSV(Window mainWindow, Container tableContainer,Project currentProject, String[] gxeHeaders) {
-		return generateGxEInputCSV(mainWindow, tableContainer,currentProject, gxeHeaders,"GxE_input.csv",true,true);
-	}
 	
 	/**
-	 * Generates the GxE Input CSV
-	 * @param mainWindow
+	 * Generates GxE Multi-site analysis output to excel, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
+	 * TODO: modify logic based on tableContainer data structure
 	 * @param tableContainer
-	 * @param gxeHeaders
-	 * @param csvfilename
-	 * @param skipFirstRow
-	 * @param skipFirstColumn
+	 * @param currentProject
+	 * @param xlsfilename
+	 * @return generated file
 	 */
-	public static File generateGxEInputCSV(Window mainWindow, Container tableContainer,Project currentProject,  String[] gxeHeaders,String csvfilename, boolean skipFirstRow,boolean skipFirstColumn) {
-		ArrayList<String[]> tableItems = new ArrayList<String[]>();
-			
-		Iterator<?> itemIdsIterator = tableContainer.getItemIds().iterator();
-		itemIdsIterator.next();	// skip first row
+	public static File exportGeneratedXlsFieldbook(Container tableContainer,Project currentProject,String xlsfilename) {
+		Workbook workbook = new HSSFWorkbook();
+		Sheet defaultSheet = workbook.createSheet();
 		
-		// add the headers
-		if (skipFirstRow) tableItems.add(gxeHeaders);
+		Object[] itemIds = tableContainer.getItemIds().toArray();
+		Object[] propertyIds = tableContainer.getContainerPropertyIds().toArray(); 
 		
-		while(itemIdsIterator.hasNext()) {
-			Object itemId = itemIdsIterator.next();
-			ArrayList<String> cellList = new ArrayList<String>();
-			
-			Iterator<?> propertyIdsIterator = tableContainer.getContainerPropertyIds().iterator();
-			
-			// skip first column
-			if (skipFirstColumn) {
-				Object propertyId = propertyIdsIterator.next();
-				Property cellItemProperty = tableContainer.getContainerProperty(itemId, propertyId);
-				Object cellItemValue = cellItemProperty.getValue();
+		// First row is headers checkbox, first column is selection checkbox
+		
+		int k=0, l=0; // write pointer cell index to the excel workbook
+		
+		for (int i = 0;i < itemIds.length;i++) {
+
+			Row row = defaultSheet.createRow(k);
+			boolean nextRow = false;
+			for (int j = 0;j < propertyIds.length; j++) {
+				Property currentHeaderP = tableContainer.getContainerProperty(itemIds[0],propertyIds[j]);
+				Property currentCellP = tableContainer.getContainerProperty(itemIds[i],propertyIds[j]);
 				
-				if (!(Boolean) ((CheckBox) cellItemValue).getValue()) {
-					continue;	// skip entire row
+				Object currentHeader = currentHeaderP.getValue();
+				Object currentCell = currentCellP.getValue();
+				
+				// skip row if first column has no check
+				if (j == 0 && i > 0 && !(Boolean)((CheckBox)currentCell).getValue())
+					break;
+				else
+					nextRow = true;
+				
+				// always skip first column
+				if (j == 0)
+					continue;
+				
+				if (currentHeader instanceof CheckBox && (Boolean)((CheckBox)currentHeader).getValue()
+						|| currentHeader instanceof Label)
+				{
+					if (currentCell instanceof Label) {
+						String currentCellString = ((Label)currentCell).toString();
+						
+						row.createCell(l).setCellValue(currentCellString);
+						
+					} else if (currentCell instanceof CheckBox) {
+						String currentCellString = ((CheckBox)currentCell).getCaption();
+						row.createCell(l).setCellValue(currentCellString);
+					}
+					defaultSheet.autoSizeColumn(l);
+					l++;
 				}
 			}
+			l=0;
 			
-			while (propertyIdsIterator.hasNext()) {
-				Object propertyId = propertyIdsIterator.next();
-
-				Property cellItemProperty = tableContainer.getContainerProperty(itemId, propertyId);
-				
-				Object cellItemValue = cellItemProperty.getValue();
-				String cellItemString = "";
-				
-				if (cellItemValue instanceof CheckBox ) {
-					if ((Boolean) ((CheckBox) cellItemValue).getValue())
-						cellItemString = ((CheckBox) cellItemValue).getCaption();
-					else
-						cellItemString = "";
-				} else if (cellItemValue instanceof Label)
-					cellItemString = cellItemValue.toString();
-					
-				cellList.add(cellItemString);
-			}
-			
-			String[] row = new String[cellList.size()];
-			cellList.toArray(row);
-			
-			tableItems.add(row);
+			if (nextRow) k++;
 		}
 		
 		try {
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
-			
-			/*
-			final ByteArrayOutputStream content = new ByteArrayOutputStream();
-			
-			CSVWriter csvWriter = new CSVWriter(new PrintWriter(content),',');
-			
-			csvWriter.writeAll(tableItems);
-			csvWriter.flush();
-		
-			final ByteArrayInputStream bis = new ByteArrayInputStream(content.toByteArray());
-			csvWriter.close();
-		
-			FileResource fr = new FileResource(new File(csvfilename), mainWindow.getApplication()) {
-				private static final long serialVersionUID = 765143030552676513L;
-				@Override
-				public DownloadStream getStream() {
-					final DownloadStream ds = new DownloadStream(bis, getMIMEType(), getFilename());
-					ds.setParameter("Content-Disposition", "attachment; filename="+getFilename());
-					ds.setCacheTime(getCacheTime());
-					return ds;
-				}
-			};
-			
-			mainWindow.open(fr);
-			*/
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
 			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
@@ -207,28 +174,27 @@ public class GxEUtility {
 			
 			new File(dir).mkdirs();
 			
-			File csvFile = new File(dir + File.separator + csvfilename);
+			File xlsFile = new File(dir + File.separator + xlsfilename);
 			
-			for (int i = 1; !csvFile.createNewFile(); i++) {
-				String newFile = csvfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + csvfilename.split("\\.(?=[^\\.]+$)")[1];
+			for (int i = 1; !xlsFile.createNewFile(); i++) {
+				String newFile = xlsfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + xlsfilename.split("\\.(?=[^\\.]+$)")[1];
 				
-				csvFile = new File(dir + File.separator + newFile);
+				xlsFile = new File(dir + File.separator + newFile);
 			}
 			
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
-			csvWriter.writeAll(tableItems);
-			csvWriter.flush();
+			FileOutputStream fos = new FileOutputStream(xlsFile);
+			workbook.write(fos);
 			
-			csvWriter.close();
+			fos.close();
 			
-			return csvFile;
 			
+			return xlsFile;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			
 			return null;
 		}
+		
 	}
-
 }

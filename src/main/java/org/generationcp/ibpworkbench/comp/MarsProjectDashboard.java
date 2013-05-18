@@ -255,7 +255,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setWidth("1100px");
+        setWidth("870px");
 
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
@@ -270,9 +270,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setWidth("1000px");
+        layout.setMargin(false);
+        layout.setSpacing(false);
 
         Component breedingManagementArea = layoutBreedingManagementArea();
         breedingManagementArea.setHeight("100%");
@@ -294,9 +293,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("630px");
+        layout.setHeight("670px");
         layout.setMargin(true);
-        layout.setSpacing(false);
+        layout.setSpacing(true);
 
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea);
@@ -434,7 +433,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("630px");
+        layout.setHeight("670px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -460,7 +459,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected Component layoutPhenotypicAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-        layout.setHeight("145px");
+        //layout.setHeight("145px");
 
         layout.addComponent(phenotypicAnalysisTitle);
         layout.setComponentAlignment(phenotypicAnalysisTitle, Alignment.TOP_CENTER);
@@ -544,7 +543,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("630px");
+        layout.setHeight("680px");
+        //layout.setWidth("274px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -665,7 +665,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
-        layout.setWidth("270px");
+        layout.setWidth("240px");
         layout.setHeight("120px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);

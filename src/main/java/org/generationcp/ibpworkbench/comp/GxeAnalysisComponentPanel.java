@@ -301,14 +301,20 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				File csvFile =GxEUtility.generateGxEInputCSV(event.getComponent().getApplication().getMainWindow(),
+				/*File csvFile =GxEUtility.generateGxEInputCSV(event.getComponent().getApplication().getMainWindow(),
 						tblDataSet.getContainerDataSource(),
 						project,
 						new String[] {"environment","genotype","height","maturity","rust","height 1"});	// NOTE: the string array are the table headers
-						
-				LOG.debug(csvFile.getAbsolutePath());
+					*/
 				
-				MessageNotifier.showMessage(event.getComponent().getWindow(),"GxE file saved (NOTE: ADD I18N)","Successfully created GxE CSV input file for the breeding_view (NOTE: ADD I18N)");
+				File xlsFile = GxEUtility.exportGeneratedXlsFieldbook(
+						tblDataSet.getContainerDataSource(),
+						project,
+						"xlsInput.xls");
+				
+				LOG.debug(xlsFile.getAbsolutePath());
+				
+				MessageNotifier.showMessage(event.getComponent().getWindow(),"GxE file saved","Successfully created GxE CSV input file for the breeding_view");
 			}
 		});
         
