@@ -12,9 +12,13 @@
 
 package org.generationcp.ibpworkbench.comp;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +38,7 @@ import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.LocationDetails;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -55,6 +60,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -62,6 +68,7 @@ import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -94,6 +101,10 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     private Button btnFilterLocation;
     private TwoColumnSelect selectLocation;
     private CropType cropType;
+    
+    private Window blPopupWindow;
+    
+    private ProjectLocationPanel thisInstance;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -106,6 +117,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     public ProjectLocationPanel(Project project, Role role) {
         this.project = project;
         this.role = role;
+        this.thisInstance = this;
     }
 
     public List<Location> getNewLocations() {
@@ -163,7 +175,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     
     protected void repaintTable()
     {
-    	
+    	//better change this
          
     	List<String> columnHeaders = new ArrayList<String>();
         columnHeaders.add("Location Type");
@@ -200,10 +212,15 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     
     
     private class ChangeValueAction implements ValueChangeListener {
+    	
+    	//ProjectLocationPanel.LOG.debug("ValueChangeEvent triggered");
+    	
         private static final long serialVersionUID = 1L;
-
+        
+        /*
         @Override
         public void valueChange(ValueChangeEvent event) {
+        	
             Container indexContainer = dataTable.getContainerDataSource();
 
             indexContainer.removeAllItems();
@@ -217,6 +234,34 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
                 item.getItemProperty("Location Name").setValue(location.getLname());
                 item.getItemProperty("Location Abbreviation").setValue(location.getLabbr());
             }
+        }
+        */
+        
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+        	final Window parentWindow = thisInstance.getWindow();
+        	
+        	Object selectedItem = selectLocation.getLeftSelect().getValue();
+			if (selectedItem instanceof Set) {
+				//ProjectBreedingMethodsPanel.LOG.debug("Set returned, either items moved to right or left column is multi selected");
+				
+				
+			        
+				@SuppressWarnings("unchecked")
+                Set<Location> locationSet = (Set<Location>) selectedItem;
+				
+				if (locationSet.size() == 0) {
+					
+					if (blPopupWindow != null) {
+						parentWindow.removeWindow(blPopupWindow);
+					}
+				} else if (locationSet.size() > 0) {
+					List<Location> selectedLocations = new ArrayList<Location>(locationSet);
+					openWindow(parentWindow,selectedLocations);
+				}
+				
+			}
+        	
         }
     }
 
@@ -330,7 +375,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
  
         repaintTable();
         locationLayout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-        locationLayout.addComponent(dataTable);
+        //locationLayout.addComponent(dataTable);
         return locationLayout;
 
     }
@@ -342,7 +387,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
         for (Country c : countryList) {
             selectLocationCountry.addItem(String.valueOf(c.getCntryid()));
-            selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsofull());
+            selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsoabbr());
         }
 
     }
@@ -352,7 +397,9 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         List<UserDefinedField> userDefineField = managerFactory.getGermplasmDataManager().getUserDefinedFieldByFieldTableNameAndType(
                 "LOCATION", "LTYPE");
-
+        
+       
+        
         for (UserDefinedField u : userDefineField) {
             selectLocationType.addItem(String.valueOf(u.getFldno()));
             selectLocationType.setItemCaption(String.valueOf(u.getFldno()), u.getFname());
@@ -536,4 +583,116 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         return location;
     }
 
+    
+    private void openWindow(Window parentWindow,List<Location> selectedLocation) {
+        if (blPopupWindow != null) {
+            parentWindow.removeWindow(blPopupWindow);
+        }
+
+        blPopupWindow = new ProjectBreedingLocationsPopup(selectedLocation);
+        blPopupWindow.setPositionX(223);
+        blPopupWindow.setPositionY(381);
+
+        parentWindow.addWindow(blPopupWindow);
+    }
+    
+    class ProjectBreedingLocationsPopup extends Window {
+        private static final long serialVersionUID = 1L;
+        
+        private VerticalLayout main = new VerticalLayout();
+    	
+    	private ProjectBreedingLocationsPopup() {
+    		main.setSpacing(true);
+    		main.setMargin(false);
+    		
+    		this.setCaption("Breeding Location Details");
+    		
+    		this.setResizable(false);
+    		this.setScrollable(true);
+    		this.setDraggable(true);
+    		this.setWidth("400px");
+    		this.setHeight("250px");
+
+    		
+    		setContent(main);
+    	}
+    	
+    	
+    	public ProjectBreedingLocationsPopup(List<Location> selectLocation) {
+    		this();
+    		
+    		
+    		Collections.sort(selectLocation,new Comparator<Location>() {
+				@Override
+				public int compare(Location o1, Location o2) {
+					return o1.getLname().compareTo(o2.getLname());
+				}
+			});
+    		
+    		for (int i = 0; i < selectLocation.size(); i++) {
+    			if (i % 2 == 0)
+    				init(selectLocation.get(i),false);
+    			else {
+    				init(selectLocation.get(i),true);
+    			}
+    		}
+    		
+    		
+    	}
+    	
+    	public ProjectBreedingLocationsPopup(Location m) {
+    		this();
+    		
+    		init(m,false);
+    	}
+    
+    	private void init(Location l,boolean isOdd) {
+    		
+    		
+			try {
+				
+				
+				try {
+					 List<LocationDetails> locdet = managerFactory.getGermplasmDataManager().getLocationDetailsByLocId(l.getLocid(), 0, 1);
+					 LocationDetails details = locdet.get(0);
+					 //public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
+					   
+					setBreedingMethodDetailsValues(l.getLname(),details.getLocation_description(),details.getLocation_name(),details.getCountry_full_name(),details.getLocation_abbreviation(),details.getLocation_type(),isOdd);
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//setBreedingMethodDetailsValues(l.getLname(),l.getLname(),l.getLabbr(),l.getLabbr(),l.getLabbr(),formattedDate,isOdd);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
+	   		 Label mtitleLbl = new Label(mtitle);
+	   		 Label ldescLbl = new Label(ldesc);
+	   		 Label lnameLbl = new Label(lname);
+	   		 Label lcntryLbl = new Label(lcntry);
+	   		 Label labbrvLbl = new Label(labbrv);
+	   		 Label ltypeLbl = new Label(ltype);
+	   		
+			CustomLayout c = new CustomLayout("breedingLocationsPopupLayout");
+   			c.addStyleName("bmPopupLayout");
+   			
+   			if (isOdd)
+   				c.addStyleName("odd");
+   			
+			c.addComponent(mtitleLbl,"mtitle");
+	   		c.addComponent(ldescLbl,"ldesc");
+	   		c.addComponent(lnameLbl,"lname");
+	   		c.addComponent(lcntryLbl,"lcountry");
+	   		c.addComponent(labbrvLbl,"labbrv");
+	   		c.addComponent(ltypeLbl,"ltype");
+	   		
+	   	
+	   		main.addComponent(c);
+    	}    	
+    }
 }

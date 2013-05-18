@@ -296,6 +296,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         addComponent(horizontal);
         
         Button button = new Button("Test GXE to CSV");
+        Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
         
         button.addListener(new Button.ClickListener() {
 			
@@ -319,6 +320,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		});
         
         addComponent(button);
+        addComponent(gxebutton);
     }
     
   
@@ -496,9 +498,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                           	   Integer key = (Integer) myitems.next();
                           	   Item item = container.getItem(key);
                           	  
-                          	   if(!fromOthers)
-	                   		   {
-	                          	   for(String column: stringList)
+                          	   for(String column: stringList)
 		  	                   	   {
 		  	                   		   if(column.equalsIgnoreCase(" ") && key.intValue() == 0)
 		  	                   			   continue;
@@ -513,11 +513,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		  	                   		    
 		  	                   	   }
 	                          	 
-	                   		   }
-                          	   else if(fromOthers)
-                          	   {
-                          		 setAll = false;
-	                   		   }   
+	                   		   
                           	   
                              }
                            requestRepaintAll();
@@ -561,33 +557,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                          //set the select all to false
                          Item item = container.getItem(0);
                          
-                         if(!setAll)
-                         {
-                        	 fromOthers = false;
-                        	 CheckBox ba = (CheckBox) item.getItemProperty(" ").getValue();
-                        	 ba.setValue(false);
-                        	 
-                         }else
-                         {
-                        	 fromOthers = true;
-                         }
-                         //added this since we dont have any checkboxes inside anymore
-                         /*
-                         for ( Iterator<?> myitems = items.iterator(); myitems.hasNext(); ) 
-                      	 {
-                        	
-                        	 
-                      	   Integer key = (Integer) myitems.next();
-                      	   Item item = container.getItem(key);
-                      	   
-                      	   if(key.intValue() != 0){
-                      		   
-                      		   CheckBox ba = (CheckBox) item.getItemProperty(this.propertyId).getValue();
-                      		   ba.setValue(event.getProperty().getValue());
-                           }
-                         }
-                         */
-                       //  System.out.println("property " + event.getProperty().getValue());
                        requestRepaintAll();
                       
                   }catch(Exception e)
@@ -630,38 +599,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	                   	   Item item = container.getItem(0);
 	                   	   
 	                   	   	 //set the select all to false
-	                      	if(!setAll)
-	                         {
-	                        	 fromOthers = false;
-	                        	 CheckBox ba = (CheckBox) item.getItemProperty(" ").getValue();
-	                        	 ba.setValue(false);
-	                        	 
-	                         }else
-	                         {
-	                        	 fromOthers = true;
-	                         }
-	                       //added this since we dont have any checkboxes inside anymore
-		                        /*
-	                   	   for(String column: stringList)
-	                   	   {
-	                   		   
-	                   		   if(column.equalsIgnoreCase("environment") || column.equalsIgnoreCase("genotype"))
-	                   			   continue;
-	                   		   if(column.equalsIgnoreCase(" "))
-	                   			   continue;
-	                   			
-		                   		
-	                   		   	/
-	                   		   	CheckBox ba = (CheckBox) item.getItemProperty(column).getValue();
-	                         	//CheckBox aa = (CheckBox) event.getProperty().getValue();
-	                         	
-	                         	ba.setValue(event.getProperty().getValue());
-	                         	
-	                         	
-	                   	   }
-	                      */
 	                      
-	                    //  System.out.println("property " + event.getProperty().getValue());
+	                       
 	                    requestRepaintAll();
 	                   
 	               }catch(Exception e)
