@@ -13,26 +13,24 @@
 package org.generationcp.ibpworkbench.comp.window;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
+import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class ChangePasswordWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
+public class ChangePasswordWindow extends Window implements InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
-    
-    private static final String VERSION = "1.1.3.10";
     
     private Label workbenchTitle;
     private Label passwordLabel;
@@ -46,9 +44,7 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
     private PasswordField password;
     private PasswordField confirm_password;
 
-    
     public ChangePasswordWindow() {
-    	
     }
 
     /**
@@ -76,17 +72,15 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
         passwordLabel.setStyleName("v-label");
         confirmLabel.setStyleName("v-label");
         
-      
-        
         password = new PasswordField();
+        password.focus();
+        
         confirm_password = new PasswordField();
         
         saveButton = new Button("Save");
-      //  saveButton.setStyleName(BaseTheme.BUTTON_LINK);
         saveButton.setSizeUndefined();
         
         cancelButton = new Button("Cancel");
-       // cancelButton.setStyleName(BaseTheme.BUTTON_LINK);
         cancelButton.setSizeUndefined();
 
     }
@@ -126,32 +120,25 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
         layout.addComponent(fieldslayout);
         layout.addComponent(buttonlayout);
        // layout.setComponentAlignment(saveButton, Alignment.CENTER);
-
-       
         
-     
-        // layout the right area of the content area split panel
-        // contentAreaSplitPanel.addComponent(workbenchDashboard);
-       
         setContent(layout);
     }
 
     protected void initializeActions() {
-    	String username = "aabro";
-    	saveButton.addListener(new ChangePasswordAction(username,password, confirm_password));
-        cancelButton.addListener(new myListener());
+        User user = IBPWorkbenchApplication.get().getSessionData().getUserData();
+        
+        saveButton.addListener(new ChangePasswordAction(user.getName(),password, confirm_password));
+        cancelButton.addListener(new RemoveWindowListener());
     }
     
-    public class myListener implements ClickListener
-    {
+    public class RemoveWindowListener implements ClickListener {
+        private static final long serialVersionUID = 1L;
 
-		@Override
-		public void buttonClick(ClickEvent event) {
-			// TODO Auto-generated method stub
-			event.getComponent().getWindow().getParent().removeWindow(getWindow());
-			
-		}
-    	
+        @Override
+        public void buttonClick(ClickEvent event) {
+            event.getComponent().getWindow().getParent().removeWindow(getWindow());
+        }
+
     }
 
     protected void assemble() throws Exception {
@@ -160,17 +147,8 @@ public class ChangePasswordWindow extends Window implements IContentWindow, Init
         initializeActions();
     }
 
-	@Override
-	public void updateLabels() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void updateLabels() {
+    }
 
-	@Override
-	public void showContent(Component content) {
-		// TODO Auto-generated method stub
-		
-	}
- 
-   
 }

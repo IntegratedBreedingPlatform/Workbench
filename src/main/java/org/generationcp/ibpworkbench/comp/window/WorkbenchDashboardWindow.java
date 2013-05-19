@@ -12,8 +12,10 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
@@ -25,8 +27,10 @@ import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.UserDetails;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -70,7 +74,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private Label recentTitle;
     private Label usersGuideTitle;
     private Label hint1;
-    private String username;
     private VerticalSplitPanel verticalSplitPanel;
 
     private HorizontalSplitPanel contentAreaSplitPanel;
@@ -92,13 +95,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 	private Button userToolsButton;
 
     public WorkbenchDashboardWindow() {
-    	this.username = null;
-    	System.out.println("WorkbenchDashboardWindow is null");
-    }
-    
-    public WorkbenchDashboardWindow(String username) {
-    	this.username = username;
-    	System.out.println("WorkbenchDashboardWindow is username " + username);
     }
 
     /**
@@ -244,59 +240,50 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
             private static final long serialVersionUID = 1L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
-				thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
-			}
-		});
+            public void buttonClick(ClickEvent event) {
+                thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
+            }
+        });
         
         createContactButton.addListener(new CreateContactAction());
-        
-        
-        
     }
 
     protected void assemble() throws Exception {
-    	thisInstance = this;
-    	
+        thisInstance = this;
+
         initializeComponents();
         initializeLayout();
         initializeActions();
         onLoadOperations();
-        
     }
 
-    protected void onLoadOperations()
-    {
-    	try {
-			//System.out.println("Login Counter" + workbenchDataManager.getUserLogInCounter(username));
-			//User user = (User) event.getComponent().getApplication().getUser();
-    		if(username == null)
-    		{
-    			//System.out.println("Login Counter : username is null");
-    			return;
-    		}
-    		System.out.println("workbenchDataManager.getUserLogInCounter(username) "+username+" "+ workbenchDataManager.getUserLogInCounter(username));
-			//if(workbenchDataManager.)
-    		if(workbenchDataManager.getUserLogInCounter(username) < 1)
-			{
-				System.out.println("Open Window");
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				ow.launchWindow(this, "change_password");
-				
-				UserDetails userDetails = new UserDetails();
-				userDetails.setName(username);
-				userDetails.setUlogincnt(1);
-				workbenchDataManager.addUserDetailsRecord(userDetails);
-				
-			}
-			workbenchDataManager.incrementUserLogInCounter(username);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	//MessageNotifier.showMessage(event.getComponent().getWindow(), "Valid Login", "Valid Login");
-	
+    protected void onLoadOperations() {
+        User user = IBPWorkbenchApplication.get().getSessionData().getUserData();
+        String username = user.getName();
+
+        if (username == null) {
+            return;
+        }
+
+        try {
+            UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
+            if (userInfo == null || userInfo.getLoginCount() < 1) {
+                OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+                ow.launchWindow(this, "change_password");
+
+                if (userInfo == null) {
+                    userInfo = new UserInfo();
+                }
+                userInfo.setUserId(user.getUserid());
+                userInfo.setLoginCount(1);
+                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+
+            }
+            workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
+        }
+        catch (MiddlewareQueryException e) {
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
     }
     	
     private Component layoutWorkbenchHeader() {
