@@ -51,7 +51,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
-    private static final String VERSION = "1.1.4.3";
+    private static final String VERSION = "1.1.4.4";
     
     private Label workbenchTitle;
     private Button homeButton;
@@ -228,8 +228,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         signOutButton.addListener(new SignoutAction());
         
         Button.ClickListener userToolsClickListener = new Button.ClickListener() {
-			
-			@Override
+            private static final long serialVersionUID = 1L;
+
+            @Override
 			public void buttonClick(ClickEvent event) {
 				thisWindow.addWindow(new UserToolsManagerWindow());
 			}
@@ -240,8 +241,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         toolVersionsButton.addListener(new OpenToolVersionsAction());
         createProjectButton.addListener(new OpenNewProjectAction());
         createProjectButton.addListener(new Button.ClickListener() {
-			
-			@Override
+            private static final long serialVersionUID = 1L;
+
+            @Override
 			public void buttonClick(ClickEvent event) {
 				thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
 			}
