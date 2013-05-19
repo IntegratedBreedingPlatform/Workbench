@@ -125,7 +125,9 @@ public class LoginAction implements ClickListener{
             application.setMainWindow(window);
             
             Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
-            toolUtil.updateTools(window, messageSource, project, false);
+            if (project != null) {
+                toolUtil.updateTools(window, messageSource, project, false);
+            }
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
