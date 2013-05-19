@@ -51,8 +51,10 @@ public class IBDBGenerator {
     protected static final String SQL_PERIOD = ".";
     protected static final String SQL_END = ";";
     protected static final String DEFAULT_LOCAL_USER = "local";
+    protected static final String DEFAULT_CENTRAL_USER = "central";
     protected static final String DEFAULT_LOCAL_HOST = "localhost";
     protected static final String DEFAULT_LOCAL_PASSWORD = "local";
+    protected static final String DEFAULT_CENTRAL_PASSWORD = "central";
     protected static final String DEFAULT_ALL = "*";
     protected static final String DEFAULT_CHAR_SET = "utf8";
     protected static final String DEFAULT_COLLATE = "utf8_general_ci";

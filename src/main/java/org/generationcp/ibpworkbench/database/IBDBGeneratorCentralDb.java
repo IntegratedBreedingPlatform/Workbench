@@ -102,8 +102,8 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             statement.addBatch(createDatabaseSyntax.toString());
 
             createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD).append(DEFAULT_ALL).append(SQL_TO)
-                    .append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
-                    .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
+                    .append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
+                    .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_PASSWORD).append(SQL_SINGLE_QUOTE);
 
             statement.addBatch(createGrantSyntax.toString());
             createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
