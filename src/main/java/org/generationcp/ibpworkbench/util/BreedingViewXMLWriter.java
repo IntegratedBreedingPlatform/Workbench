@@ -32,7 +32,10 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.v2.domain.TermId;
+import org.generationcp.middleware.v2.domain.VariableType;
+import org.generationcp.middleware.v2.domain.VariableTypeList;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Variate;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -59,10 +62,28 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     private String webApiUrl;
 
     private BreedingViewInput breedingViewInput;
+    
+    private List<Integer> numericTypes;
+    private List<Integer> characterTypes;
+    
 
     public BreedingViewXMLWriter(BreedingViewInput breedingViewInput) {
         
         this.breedingViewInput = breedingViewInput;
+        
+        numericTypes = new ArrayList<Integer>();
+        characterTypes =  new ArrayList<Integer>();
+        
+        numericTypes.add(TermId.NUMERIC_VARIABLE.getId());
+        numericTypes.add(TermId.MIN_VALUE.getId());
+        numericTypes.add(TermId.MAX_VALUE.getId());
+        numericTypes.add(TermId.DATE_VARIABLE.getId());
+        numericTypes.add(TermId.NUMERIC_DBID_VARIABLE.getId());
+        
+        characterTypes.add(TermId.CHARACTER_VARIABLE.getId());
+        characterTypes.add(TermId.CHARACTER_DBID_VARIABLE.getId());
+        characterTypes.add(1128);
+        characterTypes.add(1130);
         
     }
     
@@ -71,12 +92,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
         
-        StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
+        StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
         
         //get the variates of the dataset, the names of the numeric ones will be included in the xml
-        List<Variate> variates = null;
+       VariableTypeList variates = null;
         try{
-            variates = studyDataManager.getVariatesByRepresentationId(breedingViewInput.getDatasetId());
+            variates = studyDataManager.getDataSet(breedingViewInput.getDatasetId()).getVariableTypes().getVariates();
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting variates of dataset with id: " + breedingViewInput.getDatasetId()
                                                      + ": " + ex.getMessage(), ex);
@@ -84,11 +105,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
         //create List of Trait XML elements from List of Variate objects
         List<Trait> traits = new ArrayList<Trait>();
-        for(Variate variate : variates){
+        for(VariableType variate : variates.getVariableTypes()){
             //only numeric variates are used
-            if(variate.getDataType().equals("N")){
+            if(numericTypes.contains(variate.getStandardVariable().getDataType().getId())){
                 Trait trait = new Trait();
-                trait.setName(variate.getName().trim());
+                trait.setName(variate.getLocalName().trim());
                 trait.setActive(true);
                 traits.add(trait);
             }

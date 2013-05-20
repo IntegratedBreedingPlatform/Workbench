@@ -397,6 +397,10 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         		}
         		
         	}
+        	
+        	//for testing
+        	selEnvForAnalysis.addItem("AAA");
+        	selEnvForAnalysis.setValue("AAA");
             
             if (this.selEnvForAnalysis.getItemIds().size() < 1) {
             	this.selEnvForAnalysis.setEnabled(false);
