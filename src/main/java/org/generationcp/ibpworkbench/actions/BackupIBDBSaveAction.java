@@ -3,12 +3,16 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Date;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.service.BackupIBDBService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +62,15 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Initializin
 			File backupFile;
 			try {
 				backupFile = backupIBDBService.backupIBDB(selectedProject.getProjectId().toString(),selectedProject.getLocalDbName());
+				
+				 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+	                User user = app.getSessionData().getUserData();
+
+	                //TODO: internationalize this
+	                ProjectActivity projAct = new ProjectActivity(new Integer(selectedProject.getProjectId().intValue()), selectedProject, "backup action", "backup performed on " + selectedProject.getProjectName(), user, new Date());
+
+	                workbenchDataManager.addProjectActivity(projAct);
+				
 				
 				FileResource fr = new FileResource(backupFile, sourceWindow.getApplication()) {
 					private static final long serialVersionUID = 765143030552676513L;

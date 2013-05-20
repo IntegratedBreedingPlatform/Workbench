@@ -116,10 +116,14 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         User user = app.getSessionData().getUserData();
         Project currentProject = app.getSessionData().getLastOpenedProject();
-        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new workbench user ("+ userAccount.getUsername()  + ")", user, new Date());
+        
         try {
-			workbenchDataManager.addProjectActivity(projAct);
-		} catch (MiddlewareQueryException e) {
+        	if (currentProject != null) {
+        		ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new workbench user ("+ userAccount.getUsername()  + ")", user, new Date());	
+            	workbenchDataManager.addProjectActivity(projAct);
+    			
+        	}
+            } catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

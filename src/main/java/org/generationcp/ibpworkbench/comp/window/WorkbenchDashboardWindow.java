@@ -50,6 +50,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -140,8 +141,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         actionsTitle.setSizeUndefined();
 
         createProjectButton = new Button("Create Project");
-        createProjectButton.setWidth("120px");
-
+        createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
+        createProjectButton.setWidth("100%");
         createContactButton = new Button("Create Contact");
         createContactButton.setWidth("120px");
 
@@ -350,15 +351,14 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     private Component layoutLeftArea() {
         VerticalLayout leftLayout = new VerticalLayout();
-        leftLayout.setWidth("100%");
-        leftLayout.setHeight(null);
-        leftLayout.setSpacing(true);
+        //leftLayout.setSpacing(true);
 
-        leftLayout.addComponent(actionsTitle);
-        leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
-
+        //leftLayout.addComponent(actionsTitle);
+        //leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
+        //leftLayout.setSize;
         leftLayout.addComponent(createProjectButton);
-        leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
+        leftLayout.setExpandRatio(createProjectButton,1.0F);
+        //leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
 
         // TODO: These are commented out to remove non-working elements for June
         // milestone
@@ -369,8 +369,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // leftLayout.addComponent(recentTitle);
         // leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
 
-        leftLayout.addComponent(usersGuideTitle);
-        leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
+        //leftLayout.addComponent(usersGuideTitle);
+        //leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
         
         //TODO update the contents of the hint to apply to the new workflow dashboard screen
         //leftLayout.addComponent(hint1);

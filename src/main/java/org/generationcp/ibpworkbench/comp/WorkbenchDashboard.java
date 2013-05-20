@@ -60,7 +60,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     private Project currentProject;
     
-    private Label lblProjectDetailTitle;
+    private Label lblActivitiesTitle;
     
     private Button selectDatasetForBreedingViewButton;
     
@@ -89,8 +89,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName("gcp-content-title");
         
-        lblProjectDetailTitle = new Label();
-        lblProjectDetailTitle.setStyleName("gcp-content-title");
+        lblActivitiesTitle = new Label();
+        lblActivitiesTitle.setStyleName("gcp-content-title");
         
         selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
         selectDatasetForBreedingViewButton.setWidth("200px");
@@ -217,7 +217,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblProjectDetailTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction));
+        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction));
 
     }
 
@@ -268,7 +268,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         verticalLayout.setMargin(false);
         verticalLayout.setSpacing(true);
         
-        verticalLayout.addComponent(lblProjectDetailTitle);
+        verticalLayout.addComponent(lblActivitiesTitle);
         verticalLayout.addComponent(horizontalLayout);
         
         //verticalLayout.addComponent(selectDatasetForBreedingViewButton);
@@ -289,7 +289,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setValue(lblDashboardTitle, Message.DASHBOARD);
         messageSource.setCaption(tblProject, Message.PROJECT_TABLE_CAPTION);
         
-        messageSource.setValue(lblProjectDetailTitle, Message.PROJECT_DETAIL);
+        messageSource.setValue(lblActivitiesTitle, Message.ACTIVITIES);
         
         messageSource.setColumnHeader(tblProject, "startDate", Message.START_DATE);
         messageSource.setColumnHeader(tblProject, "projectName", Message.PROJECT);
@@ -298,7 +298,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setColumnHeader(tblProject, "owner", Message.OWNER);
         //messageSource.setCaption(selectDatasetForBreedingViewButton, Message.BREEDING_VIEW_DATASET_SELECT);
         
-        messageSource.setCaption(tblActivity, Message.ACTIVITIES);
+        //messageSource.setCaption(tblActivity, Message.ACTIVITIES);
         messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
         messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
         messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);

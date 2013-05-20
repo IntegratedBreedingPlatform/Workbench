@@ -12,11 +12,14 @@ import org.apache.commons.io.FileUtils;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +117,15 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 			pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
 		
 			mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));			
+		
+			 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+             User user = app.getSessionData().getUserData();
+
+             //TODO: internationalize this
+             ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "restore action", "Restore performed on " + project.getProjectName(), user, new Date());
+
+             workbenchDataManager.addProjectActivity(projAct);
+		
 		} catch (MiddlewareQueryException e) {
 			LOG.error(e.getMessage());
 			

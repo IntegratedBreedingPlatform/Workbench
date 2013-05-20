@@ -48,7 +48,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private Label projectDetailLabel;
+    private Label lblActivity;
     
     private Table tblProject;
     private WorkbenchDashboardWindow workbenchDashboardwindow;
@@ -63,9 +63,9 @@ public class ShowProjectDetailAction implements ItemClickListener {
     
     private Button selectDatasetForBreedingViewButton;
 
-    public ShowProjectDetailAction(Label projectDetailLabel, Table tblProject, Table tblActivity, Table tblRoles, 
+    public ShowProjectDetailAction(Label lblActivity, Table tblProject, Table tblActivity, Table tblRoles, 
             Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction) {
-        this.projectDetailLabel = projectDetailLabel;
+        this.lblActivity = lblActivity;
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
@@ -136,6 +136,8 @@ public class ShowProjectDetailAction implements ItemClickListener {
         for (ProjectActivity activity : activityList) {
             container.addBean(activity);
         }
+        
+        lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
         
         tblActivity.setContainerDataSource(container);
         

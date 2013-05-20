@@ -200,6 +200,36 @@ s
     cursor: pointer;
 }
 
+/* Create new project btn */
+.gcp-createproject-btn {
+	height: 34px !important;
+}
+
+.gcp-createproject-btn:hover {
+	background-color: rgb(213,215,217);
+}
+
+
+.gcp-createproject-btn .v-button-wrap {
+	display: block;
+	width: 100%;
+}
+
+.gcp-createproject-btn .v-button-wrap .v-button-caption {
+	display: block;
+	width: 100%;
+	color: rgb(68, 72, 55) !important;
+	text-decoration: none !important;
+	text-transform: uppercase;
+	text-align: center;
+
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+}
+.gcp-createproject-btn .v-button-wrap .v-button-caption:hover {
+	background-color: rgb(213,215,217);
+}
+
 /* add support for multi-line buttons */
 .v-button-multiline,.v-button-caption {
     white-space: pre;

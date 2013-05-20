@@ -115,15 +115,21 @@ public class SaveUserAccountAction implements ClickListener {
             return;
         }
         
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        User user = app.getSessionData().getUserData();
-        Project currentProject = app.getSessionData().getLastOpenedProject();
-        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new Workbench user ("+ userAccount.getUsername()  + ")", user, new Date());
+        // Just attempt to log... user will be null if session has just started,
+        // and currentProject will be null when theres no last opened project
         try {
-			workbenchDataManager.addProjectActivity(projAct);
+        	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+	        User user = app.getSessionData().getUserData();
+	        Project currentProject = app.getSessionData().getLastOpenedProject();
+	        
+			ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new Workbench user ("+ userAccount.getUsername()  + ")", user, new Date());
+        	workbenchDataManager.addProjectActivity(projAct);
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+		} catch  (NullPointerException e) {
+			// Do nothing
 		}
         
         OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();

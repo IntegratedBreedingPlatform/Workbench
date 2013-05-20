@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -117,46 +118,50 @@ public class GxEUtility {
 		Object[] itemIds = tableContainer.getItemIds().toArray();
 		Object[] propertyIds = tableContainer.getContainerPropertyIds().toArray(); 
 		
+		
+		// grab only the indexes of the header column where there is a check
+		List<Integer> colIndexes = new ArrayList<Integer>();
+		for (int i = 1; i < propertyIds.length; i++) {
+			Property headerP = tableContainer.getContainerProperty(itemIds[0],propertyIds[i]);
+			Object headerCol = headerP.getValue();
+			
+			if (headerCol instanceof CheckBox && (Boolean)((CheckBox)headerCol).getValue()
+					|| headerCol instanceof Label)
+			{
+				colIndexes.add(i);
+			}
+		}
+		
+		
 		// First row is headers checkbox, first column is selection checkbox
 		
-		int k=0, l=0; // write pointer cell index to the excel workbook
-		
-		for (int i = 0;i < itemIds.length;i++) {
+		int k=0,l=0; // write pointer cell index to the excel workbook
+		for (int i = 1;i < itemIds.length;i++) {
 
 			Row row = defaultSheet.createRow(k);
 			boolean nextRow = false;
-			for (int j = 0;j < propertyIds.length; j++) {
-				Property currentHeaderP = tableContainer.getContainerProperty(itemIds[0],propertyIds[j]);
+			
+			for (Integer j : colIndexes) {
 				Property currentCellP = tableContainer.getContainerProperty(itemIds[i],propertyIds[j]);
-				
-				Object currentHeader = currentHeaderP.getValue();
 				Object currentCell = currentCellP.getValue();
 				
-				// skip row if first column has no check
-				if (j == 0 && i > 0 && !(Boolean)((CheckBox)currentCell).getValue())
+				Property firstColCellP = tableContainer.getContainerProperty(itemIds[i], propertyIds[0]);
+				if (!(Boolean)((CheckBox)firstColCellP.getValue()).getValue())
 					break;
 				else
 					nextRow = true;
 				
-				// always skip first column
-				if (j == 0)
-					continue;
-				
-				if (currentHeader instanceof CheckBox && (Boolean)((CheckBox)currentHeader).getValue()
-						|| currentHeader instanceof Label)
-				{
-					if (currentCell instanceof Label) {
-						String currentCellString = ((Label)currentCell).toString();
-						
-						row.createCell(l).setCellValue(currentCellString);
-						
-					} else if (currentCell instanceof CheckBox) {
-						String currentCellString = ((CheckBox)currentCell).getCaption();
-						row.createCell(l).setCellValue(currentCellString);
-					}
-					defaultSheet.autoSizeColumn(l);
-					l++;
+				if (currentCell instanceof Label) {
+					String currentCellString = ((Label)currentCell).toString();
+					
+					row.createCell(l).setCellValue(currentCellString);
+					
+				} else if (currentCell instanceof CheckBox) {
+					String currentCellString = ((CheckBox)currentCell).getCaption();
+					row.createCell(l).setCellValue(currentCellString);
 				}
+				defaultSheet.autoSizeColumn(l);
+				l++;
 			}
 			l=0;
 			
