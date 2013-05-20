@@ -89,9 +89,25 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     }
 
     public void selectedTabChangeAction() throws InternationalizableException {
+    	
+    	
         Component selected = this.getSelectedTab();
         Tab tab = this.getTab(selected);
        
+        Integer selectedTab = (Integer) ((VerticalLayout) tab.getComponent()).getData();
+        
+        switch(selectedTab) {
+	        case FIRST_TAB_BASIC_DETAILS:
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
+	        	break;
+	        case SECOND_TAB_USER_ROLES:
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+	        	break;
+	        case THIRD_TAB_PROJECT_MEMBERS:
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
+	        	 break;
+        }
+        
         if (tab.getComponent() instanceof VerticalLayout) {
              if (((VerticalLayout) tab.getComponent()).getData().equals(SECOND_TAB_USER_ROLES)) {
                 if (userRolesEnabled) {
@@ -122,8 +138,8 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                             }
                         }
                     } else {
-                        MessageNotifier.showError(getWindow(), "Error",
-                                "Please supply the necessary details in the previous tab before continuing.");
+                        //MessageNotifier.showError(getWindow(), "Error",
+                        //        "Please supply the necessary details in the previous tab before continuing.");
                         
                         setFocusToTab(previousTabOnFocus);
                     }
@@ -257,18 +273,17 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
      * @param tab
      */
     public void setFocusToTab(int tab) {
-    	
-        switch (tab) {
+    	switch (tab) {
             case FIRST_TAB_BASIC_DETAILS:
             	//TODO: internationalize this
-            	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
+            	//createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
             	
             	this.setSelectedTab(layoutBasicDetails);
                 previousTabOnFocus = FIRST_TAB_BASIC_DETAILS;
                 break;
             case SECOND_TAB_USER_ROLES:
             	//TODO: internationalize this
-            	createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+            	//createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
             	
             	
                 userRolesEnabled = true;
@@ -277,7 +292,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                 break;
             case THIRD_TAB_PROJECT_MEMBERS:
             	//TODO: internationalize this
-            	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
+            	//createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
                 projectMembersEnabled = true;
                 if (membersTab != null){
                   //  membersTab.setInheritedRoles();

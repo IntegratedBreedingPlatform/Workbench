@@ -32,10 +32,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class LoginAction implements ClickListener{
@@ -117,15 +119,19 @@ public class LoginAction implements ClickListener{
             return;
         }
         
-        WorkbenchDashboardWindow window = null;
+        WorkbenchDashboardWindow newWindow = null;
         try {
-            window = new WorkbenchDashboardWindow();
-            application.removeWindow(application.getMainWindow());
-            application.setMainWindow(window);
+            newWindow = new WorkbenchDashboardWindow();
+            //application.removeWindow(application.getMainWindow());
+            
+            
+            application.getMainWindow().open(new ExternalResource(application.getURL()));
+            
+            application.setMainWindow(newWindow);
             
             Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
             if (project != null) {
-                toolUtil.updateTools(window, messageSource, project, false);
+                toolUtil.updateTools(newWindow, messageSource, project, false);
             }
         } catch (Exception e) {
             LOG.error("Exception", e);
