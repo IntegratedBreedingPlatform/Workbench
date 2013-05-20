@@ -225,7 +225,7 @@ public class DatasetExporter {
                     Double thevalue = Double.valueOf(conditionVariable.getValue());
                     conditionRow.createCell(6).setCellValue(thevalue);
                 } else {
-                    conditionRow.createCell(6).setCellValue(conditionVariable.getDisplayValue());
+                    conditionRow.createCell(6).setCellValue((conditionVariable.getValue()!=null) ? conditionVariable.getDisplayValue() : null);
                 }
                 
                 //add entry to columns mapping

@@ -33,6 +33,7 @@ import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.v2.domain.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +97,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         }
         
         try {
-            List<Factor> factorsInDataset = new ArrayList<Factor>();
-            //TODO
-            //factorsInDataset.addAll(studyDataManager.getFactorsByRepresentationId(representationId));
+           
 
+            //List of factors from the new schema
+            List<VariableType> factorsInDataset = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSet(dataSetId).getVariableTypes().getFactors().getVariableTypes();
+            
             String breedingViewProjectName;
             String defaultFilePath = "";
             String inputDir = "";
@@ -139,8 +141,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
 
-            event.getComponent().getWindow().getParent().addWindow(new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
-                                                                                                          , project));
+           
+          
+            event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
+                    , project) );
             event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
 
         }

@@ -36,6 +36,10 @@ import org.generationcp.middleware.pojos.NumericLevel;
 import org.generationcp.middleware.pojos.Trait;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.v2.domain.Enumeration;
+import org.generationcp.middleware.v2.domain.FactorType;
+import org.generationcp.middleware.v2.domain.VariableType;
+import org.generationcp.middleware.v2.util.Debug;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -74,6 +78,12 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     private static final String EXPERIMENTAL_DESIGN = "experimental design";
     private static final String STUDY_TRAIT_NAME = "study";
     
+    
+    private static final String REPLICATION_FACTOR = "replication factor";
+    private static final String BLOCKING_FACTOR = "blocking factor";
+    private static final String ROW_FACTOR = "row in layout";
+    private static final String COLUMN_FACTOR = "column in layout";
+    
     private Label lblVersion;
     private Label lblProjectType;
     private Label lblAnalysisName;
@@ -105,7 +115,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     private BreedingViewInput breedingViewInput;
     private Tool tool;
-    private List<Factor> factorsInDataset;
+    private List<VariableType> factorsInDataset;
     //for mapping factor ids with the key being the trait name of the factors identified by the ids
     private Map<String, Integer> factorIdsMap;
     //for mapping label ids with the key being the trait name of the factors identified by the ids
@@ -123,7 +133,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public SelectDetailsForBreedingViewWindow(Tool tool, BreedingViewInput breedingViewInput, List<Factor> factorsInDataset
+    public SelectDetailsForBreedingViewWindow(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
             ,Project project) {
 
         this.tool = tool;
@@ -147,6 +157,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         setCaption("Breeding View Analysis Specifications: ");
         
     }
+    
+    
     
 
     public Tool getTool() {
@@ -266,7 +278,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         
         factorIdsMap = new HashMap<String, Integer>();
         labelIdsMap = new HashMap<String, Integer>();
-        populateFactorAndLabelIdsMap();
+        
         
         selEnvFactor = new Select();
         selEnvFactor.setImmediate(true); 
@@ -331,93 +343,18 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         btnCancel = new Button();
     }
 
-    private void populateFactorAndLabelIdsMap(){
-        for(Factor factor : this.factorsInDataset){
-            try{
-                Trait trait = managerFactory.getTraitDataManager().getTraitById(factor.getTraitId());
-                if(trait != null){
-                    String traitName = trait.getName().trim().toLowerCase();
-                    
-                    if(traitName.equals(TRIAL_INSTANCE)){
-                        this.factorIdsMap.put(TRIAL_INSTANCE, factor.getFactorId());
-                        this.labelIdsMap.put(TRIAL_INSTANCE, factor.getId());
-                    } else if(traitName.equals(REPLICATION)){
-                        this.factorIdsMap.put(REPLICATION, factor.getFactorId());
-                        this.labelIdsMap.put(REPLICATION, factor.getId());
-                    } else if(traitName.equals(BLOCK)){
-                        this.factorIdsMap.put(BLOCK, factor.getFactorId());
-                        this.labelIdsMap.put(BLOCK, factor.getId());
-                    } else if(traitName.equals(ROW_IN_LAYOUT)){
-                        this.factorIdsMap.put(ROW_IN_LAYOUT, factor.getFactorId());
-                        this.labelIdsMap.put(ROW_IN_LAYOUT, factor.getId());
-                    } else if(traitName.equals(COLUMN_IN_LAYOUT)){
-                        this.factorIdsMap.put(COLUMN_IN_LAYOUT, factor.getFactorId());
-                        this.labelIdsMap.put(COLUMN_IN_LAYOUT, factor.getId());
-                    } else if(traitName.equals(GERMPLASM_ENTRY)){
-                        if(factor.getDataType().equals("N")){
-                            this.factorIdsMap.put(GERMPLASM_ENTRY, factor.getFactorId());
-                            this.labelIdsMap.put(GERMPLASM_ENTRY, factor.getId());
-                        }
-                    } else if(traitName.equals(GERMPLASM_IDENTIFICATION)){
-                        if(factor.getDataType().equals("N")){
-                            this.factorIdsMap.put(GERMPLASM_IDENTIFICATION, factor.getFactorId());
-                            this.labelIdsMap.put(GERMPLASM_IDENTIFICATION, factor.getId());
-                        }
-                    } else if(traitName.equals(GERMPLASM_ID)){
-                        if(factor.getDataType().equals("N")){
-                            this.factorIdsMap.put(GERMPLASM_ID, factor.getFactorId());
-                            this.labelIdsMap.put(GERMPLASM_ID, factor.getId());
-                        }
-                    } else if(traitName.equals(STUDY_TRAIT_NAME)){
-                        this.factorIdsMap.put(STUDY_TRAIT_NAME, factor.getFactorId());
-                        this.labelIdsMap.put(STUDY_TRAIT_NAME, factor.getId());
-                    } else if(traitName.equals(FIELD_PLOT)){
-                        this.factorIdsMap.put(FIELD_PLOT, factor.getFactorId());
-                        this.labelIdsMap.put(FIELD_PLOT, factor.getId());
-                    } else if(traitName.equals(EXPERIMENTAL_DESIGN)){
-                        this.factorIdsMap.put(EXPERIMENTAL_DESIGN, factor.getFactorId());
-                        this.labelIdsMap.put(EXPERIMENTAL_DESIGN, factor.getId());
-                    } 
-                }
-                
-            }catch(MiddlewareQueryException ex){
-                continue;
-            }        
-        }
-    }
-    
-    private Factor getFactorByLabelId(Integer labelId){
-        for(Factor factor : this.factorsInDataset){
-            if(factor.getId().equals(labelId)){
-                return factor;
-            }
-        }
-        return null;
-    }
     
     private void populateChoicesForEnvironmentFactor(){
-        //try finding a factor with trait trial instance
-        if(this.labelIdsMap.get(TRIAL_INSTANCE) != null){
-            Factor trialInstanceFactor = getFactorByLabelId(this.labelIdsMap.get(TRIAL_INSTANCE));
-            this.selEnvFactor.addItem(trialInstanceFactor.getName());
-            this.selEnvFactor.setValue(trialInstanceFactor.getName());
-        }
-        
-        //add other factors that can be selected for this
-        for(Factor factor : this.factorsInDataset){
-            if(!factor.getFactorId().equals(this.factorIdsMap.get(BLOCK))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(REPLICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(ROW_IN_LAYOUT))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(COLUMN_IN_LAYOUT))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_IDENTIFICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ID))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(FIELD_PLOT))){
-                this.selEnvFactor.addItem(factor.getName());
-            }
-        } 
+    	
+    	if (this.factorsInDataset == null) return;
+    	
+    	for (VariableType factor : factorsInDataset){
+    		if (factor.getStandardVariable().getFactorType() == FactorType.TRIAL_ENVIRONMENT){
+    			 this.selEnvFactor.addItem(factor.getLocalName());
+    			 this.selEnvFactor.setValue(factor.getLocalName());
+    		}
+    	}
+    	
         
         if (this.selEnvFactor.getItemIds().size() < 1) {
         	this.selEnvFactor.setEnabled(false);
@@ -429,43 +366,37 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         	this.selEnvForAnalysis.removeAllItems();
         	this.selEnvForAnalysis.setEnabled(false);
         }
+        
+    }
+    
+    public VariableType getFactorByLocalName(String name){
+    	for (VariableType factor : factorsInDataset){
+    		if (factor.getLocalName().equals(name)) {
+    			return factor;
+    		}
+    	}
+    	return null;
     }
     
     public void populateChoicesForEnvForAnalysis(){
-        try{
+        
+    	try{
         	this.selEnvForAnalysis.removeAllItems();
         }catch(Exception e){}
     	
         String envFactorName = (String) this.selEnvFactor.getValue();
         
-        if(envFactorName != null){
-            Factor envFactor = null;
-            for(Factor factor : this.factorsInDataset){
-                if(factor.getName().equals(envFactorName)){
-                    envFactor = factor;
-                    break;
-                }
-            }
-            
-            if(envFactor != null){
-                try{
-                    if(envFactor.getDataType().equals("C")){
-                        List<CharacterLevel> levelsOfEnvFactor = managerFactory.getStudyDataManager().getCharacterLevelsByFactorAndDatasetId(envFactor
-                                , this.breedingViewInput.getDatasetId());
-                        for(CharacterLevel level : levelsOfEnvFactor){
-                            this.selEnvForAnalysis.addItem(level.getValue());
-                        }
-                    } else if(envFactor.getDataType().equals("N")){
-                        List<NumericLevel> levelsOfEnvFactor = managerFactory.getStudyDataManager().getNumericLevelsByFactorAndDatasetId(envFactor
-                                , this.breedingViewInput.getDatasetId());
-                        for(NumericLevel level : levelsOfEnvFactor){
-                            this.selEnvForAnalysis.addItem("" + level.getValue().intValue());
-                        }
-                    }
-                } catch(MiddlewareQueryException ex){
-                    //do nothing for now
-                }
-            }
+        VariableType factor = getFactorByLocalName(envFactorName);
+        
+        if (factor != null){
+        	
+        	if (factor.getStandardVariable().hasEnumerations()){
+        		for (Enumeration e: factor.getStandardVariable().getEnumerations()){
+        			selEnvForAnalysis.addItem(e.getName());
+        			selEnvForAnalysis.setValue(e.getName());
+        		}
+        		
+        	}
             
             if (this.selEnvForAnalysis.getItemIds().size() < 1) {
             	this.selEnvForAnalysis.setEnabled(false);
@@ -480,7 +411,18 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     private void populateChoicesForGenotypes(){
-        Integer germplasmEntryFactorId = null;
+        
+    	
+    	for (VariableType factor : factorsInDataset){
+    		if (factor.getStandardVariable().getFactorType() == FactorType.GERMPLASM){
+    			 this.selGenotypes.addItem(factor.getLocalName());
+    			 this.selGenotypes.setValue(factor.getLocalName());
+    		}
+    	}
+    	
+    	
+    	/**
+    	Integer germplasmEntryFactorId = null;
         //try getting factor with trait germplasm entry
         if(this.labelIdsMap.get(GERMPLASM_ENTRY) != null){
             Factor germplasmEntryFactor = getFactorByLabelId(this.labelIdsMap.get(GERMPLASM_ENTRY));
@@ -522,28 +464,16 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
                     this.selGenotypes.addItem(factor.getName());
                 }
             }
-        }
+        }**/
     }
     
     private void populateChoicesForReplicates(){
-        //try getting a factor with trait = replication
-        if(this.labelIdsMap.get(REPLICATION) != null){
-            Factor replicatesFactor = getFactorByLabelId(this.labelIdsMap.get(REPLICATION));
-            this.selReplicates.addItem(replicatesFactor.getName());
-            this.selReplicates.setValue(replicatesFactor.getName());
+        for (VariableType factor : this.factorsInDataset){
+        	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(REPLICATION_FACTOR)){
+        		this.selReplicates.addItem(factor.getLocalName());
+        		this.selReplicates.setValue(factor.getLocalName());
+        	}
         }
-        
-        //add other factors that can be selected for this
-        for(Factor factor : this.factorsInDataset){
-            if(!factor.getFactorId().equals(this.factorIdsMap.get(TRIAL_INSTANCE))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_IDENTIFICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ID))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
-                this.selReplicates.addItem(factor.getName());
-            }
-        } 
         
         if (this.selReplicates.getItemIds().size() < 1) {
         	this.selReplicates.setEnabled(false);
@@ -553,51 +483,24 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     private void populateChoicesForBlocks(){
-        //try getting a factor with trait = block
-        if(this.labelIdsMap.get(BLOCK) != null){
-            Factor blocksFactor = getFactorByLabelId(this.labelIdsMap.get(BLOCK));
-            this.selBlocks.addItem(blocksFactor.getName());
-            this.selBlocks.setValue(blocksFactor.getName());
+        
+    	 for (VariableType factor : this.factorsInDataset){
+         	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(BLOCKING_FACTOR)){
+         		this.selBlocks.addItem(factor.getLocalName());
+         		this.selBlocks.setValue(factor.getLocalName());
+         	}
         }
         
-        //add other factors that can be selected for this
-        for(Factor factor : this.factorsInDataset){
-            if(!factor.getFactorId().equals(this.factorIdsMap.get(TRIAL_INSTANCE))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_IDENTIFICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ID))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
-                this.selBlocks.addItem(factor.getName());
-            }
-        }
-        
-        if (this.selBlocks.getItemIds().size() < 1) {
-        	this.selBlocks.setEnabled(false);
-        }else{
-        	this.selBlocks.setEnabled(true);
-        }
     }
     
     private void populateChoicesForRowFactor(){
-        //try getting a factor with trait = row in layout
-        if(this.labelIdsMap.get(ROW_IN_LAYOUT) != null){
-            Factor rowFactor = getFactorByLabelId(this.labelIdsMap.get(ROW_IN_LAYOUT));
-            this.selRowFactor.addItem(rowFactor.getName());
-            this.selRowFactor.setValue(rowFactor.getName());
-        }
         
-        //add other factors that can be selected for this
-        for(Factor factor : this.factorsInDataset){
-            if(!factor.getFactorId().equals(this.factorIdsMap.get(TRIAL_INSTANCE))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_IDENTIFICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ID))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
-                this.selRowFactor.addItem(factor.getName());
-            }
-        }
+    	 for (VariableType factor : this.factorsInDataset){
+          	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(ROW_FACTOR)){
+          		this.selRowFactor.addItem(factor.getLocalName());
+          		this.selRowFactor.setValue(factor.getLocalName());
+          	}
+         }
         
         if (this.selRowFactor.getItemIds().size() < 1) {
         	this.selRowFactor.setEnabled(false);
@@ -607,24 +510,13 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     private void populateChoicesForColumnFactor(){
-      //try getting a factor with trait = column in layout
-        if(this.labelIdsMap.get(COLUMN_IN_LAYOUT) != null){
-            Factor columnFactor = getFactorByLabelId(this.labelIdsMap.get(COLUMN_IN_LAYOUT));
-            this.selColumnFactor.addItem(columnFactor.getName());
-            this.selColumnFactor.setValue(columnFactor.getName());
-        }
-        
-        //add other factors that can be selected for this
-        for(Factor factor : this.factorsInDataset){
-            if(!factor.getFactorId().equals(this.factorIdsMap.get(TRIAL_INSTANCE))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_IDENTIFICATION))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ID))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                && !factor.getFactorId().equals(this.factorIdsMap.get(GERMPLASM_ENTRY))){
-                this.selColumnFactor.addItem(factor.getName());
-            }
-        }
+      
+    	 for (VariableType factor : this.factorsInDataset){
+           	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(COLUMN_FACTOR)){
+           		this.selColumnFactor.addItem(factor.getLocalName());
+           		this.selColumnFactor.setValue(factor.getLocalName());
+           	}
+          }
         
         if (this.selColumnFactor.getItemIds().size() < 1) {
         	this.selColumnFactor.setEnabled(false);
@@ -660,7 +552,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     }
     
     private void checkDesignFactor(){
-        //try getting a factor with trait = experimental design
+        /**
+    	//try getting a factor with trait = experimental design
         try{
             if(this.labelIdsMap.get(EXPERIMENTAL_DESIGN) != null){
                 Factor designFactor = getFactorByLabelId(this.labelIdsMap.get(EXPERIMENTAL_DESIGN));
@@ -682,7 +575,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
             }
         } catch(MiddlewareQueryException ex){
             //do nothing for now
-        }
+        }**/
     }
     
     protected void initializeLayout() {

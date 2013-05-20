@@ -75,15 +75,12 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 
         try {
             
-           
-            
             DataSet ds = studyDataManager.getDataSet(dataSetId);
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();
             
             for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
-            	
             	
             	FactorModel fm = new FactorModel();
             	fm.setId(factor.getId());
@@ -93,6 +90,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	fm.setTmname(factor.getStandardVariable().getMethod().getName());
             	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
             	fm.setTrname(factor.getStandardVariable().getName());
+            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 
             	factorList.add(fm);
