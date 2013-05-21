@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,27 @@ public class GxEUtility {
 	  return shifted; 
 	
 	}
+	/**
+	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
+	 * @param tableContainer
+	 * @param currentProject
+	 * @param breedingViewInput
+	 * @return void
+	 */
+	
+	public static void generateXmlFieldBook(Container tableContainer, Project currentProject, BreedingViewInput breedingViewInput){
+		
+		List<Trait> selectedTraits = new ArrayList<Trait>();
+		
+		tableContainer.getContainerPropertyIds();
+		
+		try {
+			new GxEXMLWriter(breedingViewInput).writeProjectXML(selectedTraits);
+		} catch (GxEXMLWriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**
@@ -173,7 +195,7 @@ public class GxEUtility {
 				throw new Exception("currentProject is null");
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "c:\\workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 			
 			//LOG.debug("save to" + dir);
 			

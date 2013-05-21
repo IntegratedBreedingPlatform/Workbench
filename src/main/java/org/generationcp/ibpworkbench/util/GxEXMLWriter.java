@@ -25,6 +25,7 @@ import javax.xml.bind.Marshaller;
 
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
+import org.generationcp.commons.breedingview.xml.Data;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
@@ -33,7 +34,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -56,55 +57,41 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
     private ManagerFactoryProvider managerFactoryProvider;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    private BreedingViewInput breedingViewInput;
 
-    public GxEXMLWriter() {
-   
+    public GxEXMLWriter(BreedingViewInput breedingViewInput) {
+    	this.breedingViewInput = breedingViewInput;
     }
     
-    public void writeProjectXML(final Table table) throws GxEXMLWriterException{
+    public void writeProjectXML(List<Trait> selectedTraits) throws GxEXMLWriterException{
        
-    	final Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+    	//final Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
   
-        final ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(workbenchProject);
+        //final ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(workbenchProject);
         
-        final StudyDataManager studyDataManager = managerFactory.getStudyDataManager();
-        
-        
-        String installationDirectory = "";
-		try {
-			installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-		} catch (final MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        final String outputDirectory = String.format("%s\\workspace\\%s-%s\\gxe\\output", installationDirectory, workbenchProject.getProjectId(), workbenchProject.getProjectName());
-        final String outputFileName = String.format("%s\\samplegxe.xml", outputDirectory);
+        //final StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
         
         //Create object to be serialized
         Phenotypic phenotypic = new Phenotypic();
         
-        ArrayList<Trait> traits =  new ArrayList<Trait>();
-        for (Integer x = 1; x < 6; x++) {
-        Trait t = new Trait();	
-        t.setName("Trait" + x);
-        t.setActive(true);
-        traits.add(t);
-        }
-       
-        phenotypic.setTraits(traits);
+        Data data = new Data();
+        data.setFieldBookFile(breedingViewInput.getSourceXLSFilePath());
         
-        Environment e = new Environment();
-        e.setName("E");
-        phenotypic.setEnvironments(e);
+        phenotypic.setFieldbook(data);
+        
+        phenotypic.setTraits(selectedTraits);
+   
+        phenotypic.setEnvironments(breedingViewInput.getEnvironment());
         
         Genotypes g = new Genotypes();
-        g.setName("G");
-        phenotypic.setGenotypes(g);
+        phenotypic.setGenotypes(breedingViewInput.getGenotypes());
         
         BreedingViewProject project = new BreedingViewProject();
-        project.setName("F2Maize");
+        project.setName(breedingViewInput.getBreedingViewProjectName());
         project.setVersion("1.01");
         project.setPhenotypic(phenotypic);
+
         
         BreedingViewProjectType t = new BreedingViewProjectType();
         t.setType("GxE Analysis");
@@ -126,8 +113,8 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
         //write the xml
         try{
         	
-        	new File(outputDirectory).mkdirs();
-            final FileWriter fileWriter = new FileWriter(outputFileName);
+        	//new File(outputDirectory).mkdirs();
+            final FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
             marshaller.marshal(project, fileWriter);
             fileWriter.flush();
             fileWriter.close();
