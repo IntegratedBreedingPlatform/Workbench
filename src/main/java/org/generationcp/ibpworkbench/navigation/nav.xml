@@ -75,10 +75,14 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
           
+    <view path="/breeding_view"
+		  label="Single Site Analysis"
+		  level="1"
+		  class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />          
     <view path="/BreedingGxE"
           label="Gxe Analysis"
           level="2"
-          class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />      
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
     
     <view path="/CreateProject"
           label="Create Project"

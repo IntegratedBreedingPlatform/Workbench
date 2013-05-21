@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +28,7 @@ import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -35,10 +38,9 @@ import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,20 +88,21 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         }
         
         public static boolean isCorrectTool(String toolName) {
-            if(ToolEnum.GERMPLASM_BROWSER.getToolName().equals(toolName) 
-                    || ToolEnum.STUDY_BROWSER.getToolName().equals(toolName) 
-                    || ToolEnum.GERMPLASM_LIST_BROWSER.getToolName().equals(toolName) 
-                    || ToolEnum.GDMS.getToolName().equals(toolName) 
-                    || ToolEnum.FIELDBOOK.getToolName().equals(toolName) 
-                    || ToolEnum.OPTIMAS.getToolName().equals(toolName) 
-                    || ToolEnum.BREEDING_MANAGER.getToolName().equals(toolName) 
-                    || ToolEnum.BREEDING_VIEW.getToolName().equals(toolName)
-                    || ToolEnum.LIST_MANAGER.getToolName().equals(toolName) 
-                    || ToolEnum.CROSSING_MANAGER.getToolName().equals(toolName) 
-                    ) {
-                return true;
-            }   return false;
-            
+        	for (ToolEnum tool : ToolEnum.values()) {
+        		if (tool.getToolName().equals(toolName))
+        			return true;
+        	}
+        	
+        	return false;
+        }
+        
+        public static ToolEnum equivalentToolEnum(String toolName) {
+        	for (ToolEnum tool : ToolEnum.values()) {
+        		if (tool.getToolName().equals(toolName))
+        			return tool;
+        	}
+        	
+        	return null;
         }
     }
 
@@ -161,21 +164,51 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     public void doAction(Event event) {
         NavManager.breadCrumbClick(this, event);
     }
-
+    
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-
-        String toolName = uriFragment.split("/")[1];
-        
-        if(ToolEnum.isCorrectTool(toolName)) {
-                
-            launchTool(toolName, window, isLinkAccessed);
-            
+    	
+    	String a = uriFragment.split("/")[1];
+    	
+    	String toolName = (a).split("\\?")[0];
+    	
+    	
+    	
+    	Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
+    	
+    	
+    	this.toolEnum = ToolEnum.equivalentToolEnum(toolName);
+    	
+        if(this.toolEnum != null) {
+        	
+        	Long projectId = Long.parseLong(params.get("projectId").get(0));
+        	String dataset = params.get("dataset").get(0);
+        	
+        	try {
+        		if (ToolEnum.BREEDING_VIEW == this.toolEnum && (dataset != null && !dataset.isEmpty())) {
+        			if (dataset.equals("local")) {
+    	        		this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL;
+    	        	} else if (dataset.equals("central")) {
+    					this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL;
+    				}	
+        		
+        			this.project = workbenchDataManager.getProjectById(projectId);
+        		}
+        		
+        		launchTool(toolEnum.getToolName(),window,isLinkAccessed);
+        		
+        	} catch (MiddlewareQueryException e) {
+                LOG.error("QueryException", e);
+                MessageNotifier.showError(window, 
+                        messageSource.getMessage(Message.DATABASE_ERROR), 
+                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+			}
         } else {
-            LOG.debug("Cannot launch tool due to invalid tool: {}", toolName);
+            LOG.debug("Cannot launch tool due to invalid tool: {}", uriFragment.split("/")[1]);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
-                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(toolName).toArray()));
+                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(uriFragment.split("/")[1]).toArray()));
         }
+    	
     }
     
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
