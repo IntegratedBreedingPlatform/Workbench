@@ -26,7 +26,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.v2.domain.DatasetReference;
 import org.generationcp.middleware.v2.domain.FolderReference;
 import org.generationcp.middleware.v2.domain.Reference;
@@ -45,7 +44,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -56,15 +54,13 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * The third tab (Project Members) in Create Project Accordion Component.
+ * Multisite analysis component
  * 
  * @author Aldrich Abrogena
  */
@@ -78,19 +74,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
    
  //   private TwinColSelect select;
     
-    private Button newMemberButton;
-    private Button saveButton;
-    
     private Table tblDataSet;
-    private Accordion accordion;
     private Tree studiesTree;
     private Object[][] studies;
     private String[] stringList;
-    private Panel studiesPanel;
     private TabSheet studiesTabsheet;
-    private Button previousButton;
-//    private Button nextButton;
-    private Component buttonArea;
     private int countme = 0;
     protected Boolean setAll = true;
     protected Boolean fromOthers = true;
@@ -108,8 +96,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     
     private Project project;
     
-    private  List<Role> inheritedRoles;
-
     public GxeAnalysisComponentPanel(Project project) {
     	LOG.debug("Project is " + project.getProjectName());
     	//System.out.println("Project is " + project.getProjectName());
@@ -229,19 +215,29 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     }
     protected void repaintTab(Component comp)
     {
-    	Accordion accord = (Accordion)comp;
     	
-    	tblDataSet.setWidth("800px");
-    	tblDataSet.setHeight("700px");
-    	
-    	accord.removeAllComponents();
-    	accord.addTab(tblDataSet);
-    	accord.setImmediate(true);
-    	
+    	if (comp != null) {
+    		VerticalLayout container = (VerticalLayout)comp;
+        	container.setSpacing(true);
+        	container.setMargin(true,false,false,false);
+        	container.removeAllComponents();
+        	
+        	Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means datasets",Label.CONTENT_XHTML);
+        	tabTitle.setStyleName("gcp-content-title");
+        	
+        	container.addComponent(tabTitle);
+        	container.addComponent(tblDataSet);
+        	
+        	
+        	container.setExpandRatio(tblDataSet,1.0F);
+        	
+        	container.setSizeFull();
+    	}
     }
-    protected Accordion generateTabComponent(TabSheet tab, String caption)
+    protected VerticalLayout generateTabContent(TabSheet tab, String caption)
     {
     	
+    	/*
     	Accordion accord = new Accordion();
     	tblDataSet.setWidth("800px");
     	tblDataSet.setHeight("700px");
@@ -250,12 +246,35 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	accord.getTab(tblDataSet).setCaption("Table");
     	accord.setCaption(caption);
     	
-    	Tab myTab = tab.addTab(accord);
+    	tab.addTab(accord);
     
     	tab.getTab(accord).setCaption(caption);
     	tab.addListener(new StudiesTabFocusListener(tab));
     	
     	return accord;
+    	
+    	*/
+    	
+    	VerticalLayout tabContainer = new VerticalLayout();
+    	tabContainer.setStyleName("gcp-light-grey");
+    	tabContainer.setSpacing(true);
+    	tabContainer.setMargin(true,false,false,false);
+    	
+    	//TODO: unhardcode this!
+    	Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means datasets",Label.CONTENT_XHTML);
+    	tabTitle.setStyleName("gcp-content-title");
+    	tabContainer.addComponent(tabTitle);
+    	tabContainer.addComponent(tblDataSet);
+    	
+    	tabContainer.setExpandRatio(tblDataSet,1.0F);
+    	tabContainer.setSizeFull();
+    	
+    	tab.addComponent(tabContainer);
+    	
+    	tab.getTab(tabContainer).setCaption(caption);
+    	tab.addListener(new StudiesTabFocusListener(tab));
+    	
+    	return tabContainer;
     }
     
     protected void initializeComponents(){
@@ -273,29 +292,37 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
        
        
        studiesTree = new Tree("Studies");
+       studiesTree.setSizeFull();
        studiesTree.setImmediate(true);
-       studiesPanel = new Panel();
-       try {
-		refreshStudies();
-	} catch (MiddlewareQueryException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
        
+       try {
+			refreshStudies();
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+        Panel studiesPanel = new Panel();
+        studiesPanel.setWidth("200px");
+        studiesPanel.setHeight("100%");
         studiesPanel.addComponent(studiesTree);
         
-        studiesPanel.setWidth("200px");
-        studiesPanel.setHeight("700px");
+        horizontal.addComponent(studiesPanel);
+        
         
         studiesTabsheet = generateTabSheet();
         
-        horizontal.addComponent(studiesPanel);
         horizontal.addComponent(studiesTabsheet);
         
-      
+        horizontal.setWidth("100%");
+        horizontal.setHeight("530px");
+        horizontal.setExpandRatio(studiesTabsheet,1.0F);
+        
+        
+        
         addComponent(horizontal);
         
-        Button button = new Button("Test GXE to CSV");
+        Button button = new Button("Export study dataset to Breeding View Excel input");
         Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
         
         button.addListener(new Button.ClickListener() {
@@ -315,12 +342,20 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 				
 				LOG.debug(xlsFile.getAbsolutePath());
 				
-				MessageNotifier.showMessage(event.getComponent().getWindow(),"GxE file saved","Successfully created GxE CSV input file for the breeding_view");
+				MessageNotifier.showMessage(event.getComponent().getWindow(),"GxE file saved","Successfully created GxE Excel input file for the breeding_view");
 			}
 		});
         
-        addComponent(button);
-        addComponent(gxebutton);
+        this.setExpandRatio(horizontal,1.0F);
+        
+        HorizontalLayout btnLayout = new HorizontalLayout();
+        btnLayout.setSizeUndefined();
+        btnLayout.setSpacing(true);
+        btnLayout.addComponent(button);
+        btnLayout.addComponent(gxebutton);
+        
+        this.addComponent(btnLayout);
+        
     }
     
   
@@ -331,13 +366,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	
     	tblDataSet = new Table();
     	tblDataSet.setImmediate(true);
-        
+        tblDataSet.setSizeFull();
+    	
+    	
         final List<Object> columnIds = new ArrayList<Object>();
         final List<String> columnHeaders = new ArrayList<String>();
        
-        
-        
-        
         // prepare the container
         IndexedContainer container = new IndexedContainer();
         //container.addContainerProperty("userId", Integer.class, null);
@@ -378,7 +412,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     {
     	 Container container = tblDataSet.getContainerDataSource();
     
-         Collection<?> itemIds = container.getItemIds();
+         container.getItemIds();
          
          
          for (String role : stringList) {
@@ -433,7 +467,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
          
          createRow("FirstRow",headers,container);
          
-         TableFieldFactory tff = tblDataSet.getTableFieldFactory();
+         tblDataSet.getTableFieldFactory();
          
         
     }
@@ -541,10 +575,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	       		class CheckboxListener implements ValueChangeListener{
      			
 				private static final long serialVersionUID = 1L;
-				private String propertyId;
-     			public CheckboxListener (String propertyId)
+				public CheckboxListener (String propertyId)
      			{
-     				this.propertyId = propertyId;
      			}
                  @Override
                  public void valueChange(ValueChangeEvent event) {
@@ -552,10 +584,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
                  	try{
                          
                          Container container = tblDataSet.getContainerDataSource();
-                         Collection<?> items =  container.getItemIds();
+                         container.getItemIds();
                          
-                         //set the select all to false
-                         Item item = container.getItem(0);
+                         container.getItem(0);
                          
                        requestRepaintAll();
                       
@@ -582,10 +613,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	       		class CheckboxListener implements ValueChangeListener{
   			
 				private static final long serialVersionUID = 1L;
-				private Integer propertyId;
-	  			public CheckboxListener (Integer propertyId)
+				public CheckboxListener (Integer propertyId)
 	  			{
-	  				this.propertyId = propertyId;
 	  			}
 	              @Override
 	              public void valueChange(ValueChangeEvent event) {
@@ -593,10 +622,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 	              	try{
 	                      System.out.println(event);
 	                      Container container = tblDataSet.getContainerDataSource();
-	                      Collection<?> items =  container.getItemIds();
+	                      container.getItemIds();
 	                      
 	                      
-	                   	   Item item = container.getItem(0);
+	                   	   container.getItem(0);
 	                   	   
 	                   	   	 //set the select all to false
 	                      
@@ -629,7 +658,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 		
 		countme++;
         
-	    Collection<?> itemIds = container.getItemIds();
+	    container.getItemIds();
 	    
 	    for (String role : stringList) {
          	
@@ -661,8 +690,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     	setDataSetHeaders(new String[] {" ","environment","genotype","height","maturity","rust","height 1"});
     	initializeTable();
     	initializeHeader();
-    	TableItems[] myRow = new TableItems[stringList.length];
-    	
     	for (Integer x = 0; x <= 1000; x++){
     		Integer y = 0;
     		TableItems[] row = new TableItems[stringList.length];
@@ -696,6 +723,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
         setSpacing(true);
         setMargin(true);
       
+        setSizeFull();
     }
     	
     
@@ -709,10 +737,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     
     private class StudiesTabFocusListener implements SelectedTabChangeListener
     {
-    	TabSheet tab;
     	public StudiesTabFocusListener(TabSheet tab)
     	{
-    		this.tab = tab;
     		
     	}
 		@Override
@@ -745,19 +771,19 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
 			Property p = event.getProperty();
 			Container container = studiesTree.getContainerDataSource();
 			
-			Property p1 = container.getContainerProperty(new Integer(p.toString()), "caption");
+			container.getContainerProperty(new Integer(p.toString()), "caption");
             Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
             
                  
             try {
             	List<DatasetReference> datasets = studyDataManager.getDatasetReferences(new Integer(p2.toString()));
-				String value = p2.toString();
+				p2.toString();
             	studiesTabsheet.removeAllComponents();
 				studiesTabsheet.setImmediate(true);
 			    
 				for(DatasetReference data: datasets)
 				{
-					generateTabComponent(studiesTabsheet, data.getName());
+					generateTabContent(studiesTabsheet, data.getName());
 				    	
 				}
 				
@@ -778,16 +804,20 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements Initial
     protected TabSheet generateTabSheet()
     {
     	TabSheet tab = new TabSheet();
+    	
     	tab.setImmediate(true);
     	
     	createTableContents();
-    	generateTabComponent(tab, "AKMSHSSA");
-    	generateTabComponent(tab, "AKMSSSSA");
+    	generateTabContent(tab, "AKMSHSSA");
+    	generateTabContent(tab, "AKMSSSSA");
     	
-    	tab.setWidth("800px");
-        tab.setHeight("700px");
+        repaintTab(tab.getSelectedTab());
         
+    	tab.setSizeFull();
+    	
         tab.addListener(new StudiesTabFocusListener(tab)); 
+        
+
         
     	return tab;
     }

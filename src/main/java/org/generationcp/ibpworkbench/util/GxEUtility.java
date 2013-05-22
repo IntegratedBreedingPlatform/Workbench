@@ -143,6 +143,8 @@ public class GxEUtility {
 		
 		// grab only the indexes of the header column where there is a check
 		List<Integer> colIndexes = new ArrayList<Integer>();
+		Row hRow = defaultSheet.createRow(0);
+		int z = 0;
 		for (int i = 1; i < propertyIds.length; i++) {
 			Property headerP = tableContainer.getContainerProperty(itemIds[0],propertyIds[i]);
 			Object headerCol = headerP.getValue();
@@ -151,13 +153,22 @@ public class GxEUtility {
 					|| headerCol instanceof Label)
 			{
 				colIndexes.add(i);
+			
+				if(headerCol instanceof Label) {
+					hRow.createCell(z).setCellValue(((Label)headerCol).getValue().toString());
+					
+				} else if (headerCol instanceof CheckBox) {
+					hRow.createCell(z).setCellValue(((CheckBox)headerCol).getCaption());
+				}
+				z++;
 			}
+			
 		}
 		
 		
 		// First row is headers checkbox, first column is selection checkbox
 		
-		int k=0,l=0; // write pointer cell index to the excel workbook
+		int k=1,l=0; // write pointer cell index to the excel workbook
 		for (int i = 1;i < itemIds.length;i++) {
 
 			Row row = defaultSheet.createRow(k);
@@ -182,7 +193,7 @@ public class GxEUtility {
 					String currentCellString = ((CheckBox)currentCell).getCaption();
 					row.createCell(l).setCellValue(currentCellString);
 				}
-				defaultSheet.autoSizeColumn(l);
+				
 				l++;
 			}
 			l=0;
@@ -195,9 +206,9 @@ public class GxEUtility {
 				throw new Exception("currentProject is null");
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "c:\\workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 			
-			//LOG.debug("save to" + dir);
+			LOG.debug("save to " + dir);
 			
 			new File(dir).mkdirs();
 			
