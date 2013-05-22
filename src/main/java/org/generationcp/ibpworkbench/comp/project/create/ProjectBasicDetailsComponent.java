@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
@@ -99,7 +100,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         projectNameField.setRequired(true);
         projectNameField.setRequiredError("Please enter a Project Name.");
         projectNameField.addValidator(new StringLengthValidator("Project Name must be 3-255 characters", 3, 255, false));
-
+        projectNameField.addShortcutListener(new Button.ClickShortcut(nextButton,KeyCode.ENTER));
+        
         startDateField = new DateField();
         startDateField.setRequired(true);
         startDateField.setRequiredError("Please enter a Start Date.");
