@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenAddBreedingMethodWindowAction;
@@ -36,8 +37,10 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
@@ -450,12 +453,26 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
                 	
                 	Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,m.getMdate());
                 	mID = germplasmDataManager.addMethod(newMethod);
+                	
                 }else{
                 	mID = m2.getMid();
                 }
             }else{
                 mID=m.getMid();
             }
+            
+            if (m.getIsnew()){
+            	 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            	 User user = app.getSessionData().getUserData();
+                 ProjectActivity projAct = new ProjectActivity(new Integer(projectSaved.getProjectId().intValue()), projectSaved, "Project Methods", "Added new Breeding Method ("+ m.getMname() + ")", user, new Date());
+                 try {
+     				workbenchDataManager.addProjectActivity(projAct);
+     				} catch (MiddlewareQueryException e) {
+     				// TODO Auto-generated catch block
+     				e.printStackTrace();
+     				}
+            }
+            
             projectMethod.setMethodId(mID);
             projectMethod.setProject(projectSaved);
             projectMethodList.add(projectMethod);

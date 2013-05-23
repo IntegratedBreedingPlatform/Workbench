@@ -132,13 +132,14 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 				e.printStackTrace();
 			}
             
+            newMethod.setIsnew(true);
             projectBreedingMethodsPanel.getSelect().addItem(newMethod);
             projectBreedingMethodsPanel.getSelect().setItemCaption(newMethod, newMethod.getMname());
             projectBreedingMethodsPanel.getSelect().select(newMethod);
             projectBreedingMethodsPanel.getSelect().setValue(newMethod);
             
             
-         
+            /**
             User user = app.getSessionData().getUserData();
             Project currentProject = app.getSessionData().getLastOpenedProject();
             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
@@ -148,7 +149,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			**/
             
             newBreedingMethod = null;
             window.getParent().removeWindow(window);
