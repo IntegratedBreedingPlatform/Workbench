@@ -78,6 +78,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button fieldbookButton;
     private Button optimasButton;
     private Button browseGenotypingDataButton;
+    private Button makeCrossesButton;
+
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -199,6 +201,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         optimasButton.setSizeUndefined();
         optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
         
+        makeCrossesButton = new Button(messageSource.getMessage(Message.MAKE_CROSSES));
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        makeCrossesButton.setSizeUndefined();
+        makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
+        
         downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -245,7 +252,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Component populationDevelopmentArea = layoutPopulationDevelopment();
         layout.addComponent(populationDevelopmentArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage2, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
         
@@ -336,6 +343,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     protected Component layoutPopulationDevelopment() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
 
         layout.addComponent(populationDevelopmentTitle);
         layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
@@ -351,6 +359,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(manageGermplasmListsButton, 0);
+        
+        layout.addComponent(makeCrossesButton);
+        makeCrossesButton.setHeight("20px");
+        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(makeCrossesButton, 0);
         
         layout.addComponent(breedingManagerButton);
         breedingManagerButton.setHeight("20px");
