@@ -87,6 +87,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
+	private Button makeCrossesButton;
+
     public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project) {
         this.workflowPreview = workflowPreview;
         
@@ -145,11 +147,16 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER));
         
-        breedingManagerButton = new Button(messageSource.getMessage(Message.BREEDING_MANAGER));
+        breedingManagerButton = new Button(messageSource.getMessage(Message.MANAGE_NURSERIES));
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
 
+        makeCrossesButton = new Button(messageSource.getMessage(Message.MAKE_CROSSES));
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        makeCrossesButton.setSizeUndefined();
+        makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
+                
         breedingViewButton = new Button(messageSource.getMessage(Message.BREEDING_VIEW));
         breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewButton.setSizeUndefined();
@@ -318,6 +325,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(manageGermplasmListsButton, 0);
         
+        layout.addComponent(makeCrossesButton);
+        makeCrossesButton.setHeight("20px");
+        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(makeCrossesButton, 0);
+
         layout.addComponent(breedingManagerButton);
         breedingManagerButton.setHeight("20px");
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
@@ -458,7 +470,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-            
+            makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
             //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));

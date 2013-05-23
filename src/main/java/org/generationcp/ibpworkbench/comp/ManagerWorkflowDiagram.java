@@ -95,6 +95,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+	private Button breedingManagerButton;
+
+	private Button makeCrossesButton;
     
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
@@ -235,6 +239,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         restoreIBDBButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         restoreIBDBButton.setSizeUndefined();
         restoreIBDBButton.setDescription(messageSource.getMessage(Message.RESTORE_IBDB_LINK_DESC));
+        
+        
+        breedingManagerButton = new Button(messageSource.getMessage(Message.MANAGE_NURSERIES));
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerButton.setSizeUndefined();
+        breedingManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
+
+        makeCrossesButton = new Button(messageSource.getMessage(Message.MAKE_CROSSES));
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        makeCrossesButton.setSizeUndefined();
+        makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
     }
 
     protected void initializeLayout() {
@@ -458,8 +473,18 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(manageGermplasmListsButton, 0);
         
         layout.addComponent(nurseryManagerButton);
+        nurseryManagerButton.setHeight("20px");
         layout.setComponentAlignment(nurseryManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(nurseryManagerButton, 0);
+        
+        layout.addComponent(makeCrossesButton);
+        makeCrossesButton.setHeight("20px");
+        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(makeCrossesButton, 0);
+
+        layout.addComponent(breedingManagerButton);
+        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerButton, 0);
         
         return layout;
     }
@@ -601,6 +626,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
             projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
+            
+            makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            
         }
     }
 
