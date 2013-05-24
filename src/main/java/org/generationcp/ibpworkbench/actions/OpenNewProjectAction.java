@@ -15,6 +15,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     
     @Override
     public void buttonClick(ClickEvent event) {
-        doAction(event.getComponent().getWindow(), null, true);
+    	doAction(event.getComponent().getWindow(), null, true);
     }
 
     @Override
@@ -41,10 +42,29 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
 
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        IContentWindow w = (IContentWindow) window;
+        final IContentWindow w = (IContentWindow) window;
+        
+        if (w instanceof WorkbenchDashboardWindow) {
+        	WorkbenchDashboardWindow wdw = (WorkbenchDashboardWindow)w;
+        	wdw.toggleCreateButtonStyle();
+        }
+        
         
         try {
-            CreateProjectPanel newProjectPanel = new CreateProjectPanel();
+            CreateProjectPanel newProjectPanel = new CreateProjectPanel() {
+				private static final long serialVersionUID = 1640109693569711793L;
+
+				@Override
+                public void detach() {
+                    super.detach();
+        
+                    if (w instanceof WorkbenchDashboardWindow) {
+                    	WorkbenchDashboardWindow wdw = (WorkbenchDashboardWindow)w;
+                    	wdw.toggleCreateButtonStyle();
+                    }
+                    
+                }
+            };
             newProjectPanel.setWidth("800px");
             
             w.showContent(newProjectPanel);

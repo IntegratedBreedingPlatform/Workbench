@@ -299,3 +299,7 @@ s
 .gcp-light-grey {
 	background-color: rgb(223,223,223) !important;
 }
+.v-button-gcp-enabled,
+.gcp-enabled {
+	background-color: rgb(213,215,217) !important;
+}

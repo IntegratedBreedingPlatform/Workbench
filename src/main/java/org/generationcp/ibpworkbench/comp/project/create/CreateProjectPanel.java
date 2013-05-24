@@ -49,7 +49,6 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
 
     
     private HorizontalLayout newProjectTitleArea;
-    private Label newProjectTitle;
     private Button cancelButton;
     private Button saveProjectButton;
     private Component buttonArea;
@@ -59,9 +58,7 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     private List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
     private List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
 
-	private HorizontalLayout newProjSubtitleArea;
-
-    @Autowired
+	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
 	
     public CreateProjectPanel() {
@@ -207,6 +204,4 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     	
     	
     }
-    
-
 }

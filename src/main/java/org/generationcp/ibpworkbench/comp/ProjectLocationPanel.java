@@ -12,13 +12,10 @@
 
 package org.generationcp.ibpworkbench.comp;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
@@ -171,6 +167,14 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
 
+    }
+    
+    @Override
+    public void detach() {
+        super.detach();
+        
+        final Window parentWindow = thisInstance.getApplication().getMainWindow();
+        parentWindow.removeWindow(blPopupWindow);
     }
     
     protected void repaintTable()
@@ -590,8 +594,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
 
         blPopupWindow = new ProjectBreedingLocationsPopup(selectedLocation);
-        blPopupWindow.setPositionX(223);
-        blPopupWindow.setPositionY(381);
+        blPopupWindow.setPositionX(140);
+        blPopupWindow.setPositionY(371);
 
         parentWindow.addWindow(blPopupWindow);
     }
@@ -611,7 +615,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     		this.setScrollable(true);
     		this.setDraggable(true);
     		this.setWidth("400px");
-    		this.setHeight("250px");
+    		this.setHeight("180px");
+
 
     		
     		setContent(main);
@@ -649,34 +654,28 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     	private void init(Location l,boolean isOdd) {
     		
     		
-			try {
-				
-				
-				try {
-					 List<LocationDetails> locdet = managerFactory.getGermplasmDataManager().getLocationDetailsByLocId(l.getLocid(), 0, 1);
-					 LocationDetails details = locdet.get(0);
-					 //public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
-					   
-					setBreedingMethodDetailsValues(l.getLname(),details.getLocation_description(),details.getLocation_name(),details.getCountry_full_name(),details.getLocation_abbreviation(),details.getLocation_type(),isOdd);
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//setBreedingMethodDetailsValues(l.getLname(),l.getLname(),l.getLabbr(),l.getLabbr(),l.getLabbr(),formattedDate,isOdd);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
+    		try {
+				List<LocationDetails> locdet = managerFactory.getGermplasmDataManager().getLocationDetailsByLocId(l.getLocid(), 0, 1);
+				LocationDetails details = locdet.get(0);
+				//public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
+				   
+				setBreedingMethodDetailsValues(l.getLname(),details.getLocation_description(),details.getLocation_name(),details.getCountry_full_name(),details.getLocation_abbreviation(),details.getLocation_type(),isOdd);
+			} catch (MiddlewareQueryException e) {
 				e.printStackTrace();
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: Note, I dont know why but I'm getting IndexOutOfBoundsException for newly added locations. Abro, can you confirm if this is a bug or something expected
+				//Do nothing for the moment
 			}
+				//setBreedingMethodDetailsValues(l.getLname(),l.getLname(),l.getLabbr(),l.getLabbr(),l.getLabbr(),formattedDate,isOdd);
     	}
     	
     	public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
-	   		 Label mtitleLbl = new Label(mtitle);
-	   		 Label ldescLbl = new Label(ldesc);
-	   		 Label lnameLbl = new Label(lname);
-	   		 Label lcntryLbl = new Label(lcntry);
-	   		 Label labbrvLbl = new Label(labbrv);
-	   		 Label ltypeLbl = new Label(ltype);
+	   		 Label mtitleLbl = new Label(mtitle,Label.CONTENT_TEXT);
+	   		 Label ldescLbl = new Label(ldesc,Label.CONTENT_TEXT);
+	   		 Label lnameLbl = new Label(lname,Label.CONTENT_TEXT);
+	   		 Label lcntryLbl = new Label(lcntry,Label.CONTENT_TEXT);
+	   		 Label labbrvLbl = new Label(labbrv,Label.CONTENT_TEXT);
+	   		 Label ltypeLbl = new Label(ltype,Label.CONTENT_TEXT);
 	   		
 			CustomLayout c = new CustomLayout("breedingLocationsPopupLayout");
    			c.addStyleName("bmPopupLayout");
