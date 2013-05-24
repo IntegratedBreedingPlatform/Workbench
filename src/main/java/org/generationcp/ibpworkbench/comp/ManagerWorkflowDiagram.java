@@ -621,14 +621,14 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
             projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
         }
     }
