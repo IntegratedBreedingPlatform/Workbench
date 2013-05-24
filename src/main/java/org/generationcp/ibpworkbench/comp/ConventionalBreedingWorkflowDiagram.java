@@ -218,7 +218,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("300px");
-        layout.setHeight("870px");
+        layout.setHeight("910px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -237,7 +237,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         Component populationDevelopmentArea = layoutPopulationDevelopment();
         layout.addComponent(populationDevelopmentArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage2, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
         
@@ -309,14 +309,15 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     protected Component layoutPopulationDevelopment() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+        
         layout.addComponent(populationDevelopmentTitle);
         layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(populationDevelopmentTitle, 0);
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
@@ -371,7 +372,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
@@ -463,7 +464,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
@@ -471,7 +472,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
-            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
             
