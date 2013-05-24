@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class ChangePasswordAction implements ClickListener{
@@ -61,7 +62,11 @@ public class ChangePasswordAction implements ClickListener{
                 return;
             }
             if (workbenchDataManager.changeUserPassword(username, password.getValue().toString())) {
-                MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully changed password", 3000);
+                Window popupWindow = event.getComponent().getWindow();
+                Window parentWindow = popupWindow.getParent();
+                parentWindow.removeWindow(popupWindow);
+                
+                MessageNotifier.showMessage(parentWindow, "Success", "Successfully changed password", 3000);
             }
             else {
                 MessageNotifier.showError(event.getComponent().getWindow(), "Invalid Password", "<br />" + "Password must be the same as confirm password");
