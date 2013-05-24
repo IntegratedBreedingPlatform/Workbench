@@ -695,8 +695,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
 
             recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
@@ -706,7 +705,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             
-            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.LIST_MANAGER));
+            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
             
