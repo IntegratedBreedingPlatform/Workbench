@@ -303,7 +303,7 @@ public class ToolUtil {
 		
 		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name())) {
 			
-			// save the location of R_PATH to "infrastracture/R" in the core.properties file
+			// save the location of R_HOME_FOLDER to "infrastracture/R" in the core.properties file
 			File configFile = new File( APPDATA_ENV +  "/.ibfb/dev/config/Preferences/ibfb/settings/core.properties").getAbsoluteFile();
 			File rDir = new File(WORKBENCH_R_DIR).getAbsoluteFile();
 			
@@ -311,7 +311,7 @@ public class ToolUtil {
 			FileInputStream fs = new FileInputStream(configFile);				
 			p.load(fs);
 			fs.close();
-			p.setProperty("R_PATH",rDir.getCanonicalPath());
+			p.setProperty("R_HOME_FOLDER",rDir.getCanonicalPath());
 			this.savePropertyFile(p, configFile.getAbsolutePath());
 			
 			
