@@ -79,6 +79,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     private Button mbdtButton;
     private Button browseGenotypingDataButton;
     private Button breedingManagerButton;
+    private Button makeCrossesButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -150,10 +151,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         browseGenotypingDataButton.setSizeUndefined();
         browseGenotypingDataButton.setDescription("Click to launch genotyping data");
         
-        breedingManagerButton = new Button("Breeding Manager");
+        breedingManagerButton = new Button("Manage Nurseries");
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
-        breedingManagerButton.setDescription("Click to launch Breeding Manager");
+        breedingManagerButton.setDescription("Click to launch Manage Nurseries");
 
         browseStudiesButton = new Button("Browse Studies and Datasets");
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -204,6 +205,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         optimasButton.setSizeUndefined();
         optimasButton.setDescription("Click to launch OptiMAS");
+        
+        makeCrossesButton = new Button("Make Crosses");
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        makeCrossesButton.setSizeUndefined();
+        makeCrossesButton.setDescription("Click to launch Crossing Manager");
         
         downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -358,12 +364,15 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        /*
+     
         layout.addComponent(mbdtButton);
         layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mbdtButton, 0);
-         */
         
+        layout.addComponent(makeCrossesButton);
+        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(makeCrossesButton, 0);
+       
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
