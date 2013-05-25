@@ -311,6 +311,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         configureWorkflowStepLayout(layout);
         layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
         
+        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+        
         layout.addComponent(populationDevelopmentTitle);
         layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(populationDevelopmentTitle, 0);
