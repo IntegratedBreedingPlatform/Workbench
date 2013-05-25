@@ -117,7 +117,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             }
         };
         tblProject.setImmediate(true); // react at once when something is selected
-
+        tblProject.setStyleName("gcp-tblproject");
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectId");
         tblProject.setContainerDataSource(projectContainer);

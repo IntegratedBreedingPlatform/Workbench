@@ -95,10 +95,11 @@ public class ShowProjectDetailAction implements ItemClickListener {
         // update the project activity table's listener
         if (openWorkflowForRoleAction != null) {
             tblRoles.removeListener(openWorkflowForRoleAction);
+            tblRoles.setStyleName("gcp-tblroles");
         }
         openWorkflowForRoleAction = new OpenWorkflowForRoleAction(project);
         tblRoles.addListener(openWorkflowForRoleAction);
-        
+        tblRoles.setStyleName("gcp-tblroles gcp-selected");
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
         
         try {

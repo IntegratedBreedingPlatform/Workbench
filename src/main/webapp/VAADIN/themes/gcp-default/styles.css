@@ -1,7 +1,7 @@
 @import url(../reindeer/styles.css);
 
 .v-table-body {
-	background: rgba(255,255,255,0.7) !important;
+	background: rgba(255,255,255,0.7);
 }
 
 .v-splitpanel-second-container-gcp-workbench-content-split-panel {
@@ -26,13 +26,30 @@
 	
 }
 
-.gcp-tblroles .v-table-cell-wrapper {
-	background: url(images/workflow_icn.png) no-repeat left center !important;
-	padding-left: 15px;
+.gcp-tblroles .v-table-cell-content {
+	background: url(images/workflow_icn.png) no-repeat 3px center;
+	padding-left: 18px;
+	cursor: pointer; 
+}
+
+.gcp-tblroles .v-table-cell-content:hover {
+	background: #ffffaa url(images/workflow_icn.png) no-repeat 3px center !important;
+}
+
+.gcp-tblroles.gcp-selected .v-table-body {
+	background: rgba(230,239,199,0.7);
+}
+
+.gcp-tblroles.gcp-selected .v-table-row {
+	background: transparent;
+}
+
+.gcp-tblroles.gcp-selected .v-table-row-odd {
+	background: transparent;
 }
 
 span.v-checkbox-hidecheckbox input {
-    display: none!important;
+    display: none !important;
 }
 
 
@@ -295,9 +312,15 @@ s
     background: #dfffcf;
 }
 
-.v-table-row-gcp-selected-project, .v-table-cell-content-gcp-selected-project {
+.v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project {
     cursor: pointer;
-    background: #ffffaa
+    background: rgba(230,239,199,0.7);
+}
+
+.gcp-tblproject .v-table-row:hover .v-table-cell-content,
+.gcp-tblproject .v-table-row-odd:hover .v-table-cell-content {
+    cursor: pointer;
+    background: #ffffaa;
 }
 
 .gcp-highlight {
