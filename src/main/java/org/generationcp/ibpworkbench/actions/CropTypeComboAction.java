@@ -12,23 +12,25 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Iterator;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
+import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectBasicDetailsComponent;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.ComboBox;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.AbstractSelect.NewItemHandler;
+import com.vaadin.ui.ComboBox;
 
 @Configurable
 public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
@@ -108,10 +110,24 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     public void addNewItem(String newItemCaption) {
         // if not yet in the database
         if (!cropTypeComboBox.containsId(newItemCaption)) {
+            Iterator<Validator> validatorIterator = cropTypeComboBox.getValidators().iterator();
+            while (validatorIterator.hasNext()) {
+                Validator validator = validatorIterator.next();
+                try {
+                    validator.validate(newItemCaption);
+                }
+                catch (InvalidValueException e) {
+                    LOG.error("Invalid value for Crop: " + newItemCaption , e);
 
+                    MessageNotifier.showError(cropTypeComboBox.getWindow(), "Error", ValidationUtil.getMessageFor(e));
+                    cropTypeComboBox.focus();
+                    return;
+                }
+            }
+    
             // add crop to database
             CropType cropType = new CropType(newItemCaption);
-            cropType.setCentralDbName("ibdb_" + newItemCaption.toLowerCase() + "_central");
+            cropType.setCentralDbName("ibdb_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_central");
             cropTypeComboBoxLastAdded = true;
             ((BeanItemContainer<CropType>) cropTypeComboBox.getContainerDataSource()).addBean(cropType);
 

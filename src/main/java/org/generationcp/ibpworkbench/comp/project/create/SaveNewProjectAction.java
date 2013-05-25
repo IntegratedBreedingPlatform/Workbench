@@ -118,8 +118,7 @@ public class SaveNewProjectAction implements ClickListener{
                 projectSaved = workbenchDataManager.addProject(project);
 
                 // set the project's local database name
-                String cropName = project.getCropType().getCropName().toLowerCase();
-                String localDatabaseName = String.format("%s_%d_local", cropName, project.getProjectId());
+                String localDatabaseName = project.getCropType().getLocalDatabaseNameWithProject(project);
                 String centralDatabaseName = project.getCropType().getCentralDbName();
                 project.setLocalDbName(localDatabaseName);
                 project.setCentralDbName(centralDatabaseName);

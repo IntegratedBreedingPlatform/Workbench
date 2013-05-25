@@ -12,15 +12,9 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,12 +25,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
-import org.generationcp.commons.util.ScriptRunner;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
@@ -68,8 +60,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     
     private static final String LOCAL_INSERT_LENTIL_SQL = "ilis_ibdb_local_insert_only.sql";
     private static final String LOCAL_INSERT_SOYBEAN_SQL = "isbis_ibdb_local_insert_only.sql";
-    
-    public static final String DB_LOCAL_NAME_SUFFIX = "_local";
     
     private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -112,7 +102,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
 
-        databaseName.append(cropType.getCropName().toLowerCase()).append("_").append(projectId).append(DB_LOCAL_NAME_SUFFIX);
+        databaseName.append(cropType.getLocalDatabaseNameWithProjectId(projectId));
 
         Statement statement = null;
 

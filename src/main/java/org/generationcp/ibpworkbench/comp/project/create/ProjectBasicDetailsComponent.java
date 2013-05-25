@@ -14,9 +14,12 @@ package org.generationcp.ibpworkbench.comp.project.create;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.validator.RegexValidator;
+import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -95,11 +98,16 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         gridLayout.setRows(4);
         gridLayout.setColumns(3);
         gridLayout.setSpacing(true);
+        
+        Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
+        Pattern cropNameInvalidCharPattern = Pattern.compile("^[^'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
 
         projectNameField = new TextField();
+        projectNameField.setImmediate(true);
         projectNameField.setRequired(true);
         projectNameField.setRequiredError("Please enter a Project Name.");
-        projectNameField.addValidator(new StringLengthValidator("Project Name must be 3-255 characters", 3, 255, false));
+        projectNameField.addValidator(new StringLengthValidator("Project Name must be 3-255 characters.", 3, 255, false));
+        projectNameField.addValidator(new RegexValidator("Project Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
         projectNameField.addShortcutListener(new Button.ClickShortcut(nextButton,KeyCode.ENTER));
         
         startDateField = new DateField();
@@ -107,6 +115,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         startDateField.setRequiredError("Please enter a Start Date.");
 
         cropTypeCombo = createCropTypeComboBox();
+        cropTypeCombo.addValidator(new RegexValidator("Crop name must not contain any of the following: ' \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
         
         gridLayout.addComponent(new Label("Crop"), 1, 1);
         gridLayout.addComponent(cropTypeCombo, 2, 1);
@@ -223,12 +232,20 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             }
             // Run assigned validators
             try {
-            	projectNameField.validate();
-            } catch (InvalidValueException e) {
-            	errorDescription.append(e.getMessage() + ". ");
-            	success = false;
+                projectNameField.validate();
             }
-
+            catch (InvalidValueException e) {
+                errorDescription.append(ValidationUtil.getMessageFor(e));
+                success = false;
+            }
+            
+            try {
+                cropTypeCombo.validate();
+            }
+            catch (InvalidValueException e) {
+                errorDescription.append(ValidationUtil.getMessageFor(e));
+                success = false;
+            }
         }
         if (startDate == null){
             errorDescription.append("No start date given. ");

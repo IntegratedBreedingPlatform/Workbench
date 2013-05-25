@@ -267,8 +267,7 @@ public class ToolUtil {
 	public void updateToolConfigurationForProject(Tool tool, Project project)
 			throws IOException {
 		String centralDbName = project.getCropType().getCentralDbName();
-		String localDbName = String.format("%s_%d_local", project.getCropType()
-				.getCropName().toLowerCase(), project.getProjectId());
+		String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
 
 		// get mysql user name and password to use
 		String username = null;

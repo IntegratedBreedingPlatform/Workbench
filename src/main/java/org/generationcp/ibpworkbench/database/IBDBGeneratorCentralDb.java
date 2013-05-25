@@ -31,8 +31,6 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
     //local constant
     protected static final String WORKBENCH_GDMS_CENTRAL_SQL = "IBDBv1_GMS-CENTRAL.sql";
-    private static final String DB_CENTRAL_NAME_PREFIX = "ibdb";
-    private static final String DB_CENTRAL_NAME_SUFFIX = "central";
 
     private CropType cropType;
     
@@ -64,17 +62,11 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         return isGenerationSuccess;
     }
     
-    protected String getDatabaseName() {
-        StringBuffer databaseName = new StringBuffer();
-        databaseName.append(DB_CENTRAL_NAME_PREFIX).append("_").append(cropType.getCropName().toLowerCase()).append("_").append(DB_CENTRAL_NAME_SUFFIX);
-        return databaseName.toString().toLowerCase();
-    }
-    
     private boolean databaseExists() {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("USE " + getDatabaseName());
+            statement.execute("USE " + cropType.getCentralDbName());
             return true;
         } catch (SQLException e) {
             return false;
@@ -93,7 +85,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
 
-        String databaseName = getDatabaseName();
+        String databaseName = cropType.getCentralDbName();
 
         Statement statement = null;
         try {

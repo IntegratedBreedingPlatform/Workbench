@@ -102,9 +102,8 @@ public class MysqlAccountGenerator implements Serializable{
 
             Properties prop = new Properties();
 
+            InputStream in = null;
             try {
-                InputStream in = null;
-
                 try {
                     in = new FileInputStream(new File(ResourceFinder.locateFile(IBDBGenerator.WORKBENCH_PROP).toURI()));
                 } catch (IllegalArgumentException ex) {
@@ -117,13 +116,20 @@ public class MysqlAccountGenerator implements Serializable{
                 workbenchUsername = prop.getProperty(IBDBGenerator.WORKBENCH_PROP_USER);
                 workbenchPassword = prop.getProperty(IBDBGenerator.WORKBENCH_PROP_PASSWORD);
                 workbenchURL = "jdbc:mysql://" + workbenchHost + ":" + workbenchPort;
-
-                in.close();
-
             } catch (URISyntaxException e) {
                 IBDBGenerator.handleConfigurationError(e);
             } catch (IOException e) {
                 IBDBGenerator.handleConfigurationError(e);
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    }
+                    catch (IOException e) {
+                        // intentionally empty
+                    }
+                }
             }
 
             try {
@@ -187,13 +193,8 @@ public class MysqlAccountGenerator implements Serializable{
     private void executeGrantStatements() throws InternationalizableException {
         //execute grant statements
         Statement statement = null;
-        String centralDatabaseName = this.cropType.getCentralDbName();
-        StringBuilder localDatabaseNameBuilder = new StringBuilder();
-        localDatabaseNameBuilder.append(this.cropType.getCropName().toLowerCase());
-        localDatabaseNameBuilder.append("_");
-        localDatabaseNameBuilder.append(this.projectId);
-        localDatabaseNameBuilder.append(IBDBGeneratorLocalDb.DB_LOCAL_NAME_SUFFIX);
-        String localDatabaseName = localDatabaseNameBuilder.toString();
+        String centralDatabaseName = cropType.getCentralDbName();
+        String localDatabaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
         
         try{
             statement = this.connection.createStatement();
