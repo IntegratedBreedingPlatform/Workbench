@@ -1,5 +1,36 @@
 @import url(../reindeer/styles.css);
 
+.v-table-body {
+	background: rgba(255,255,255,0.7) !important;
+}
+
+.v-splitpanel-second-container-gcp-workbench-content-split-panel {
+	background: white url(images/workbench_bg.jpg) no-repeat right bottom !important;
+}
+
+.v-table-row {
+	background: rgba(255,255,255,0.5);
+}
+
+.v-table-row-odd {
+	background: rgba(239,240,241,0.5);
+}
+
+.gcp-light-grey .v-table-row {
+	background: rgba(255,255,255,1);
+	
+}
+
+.gcp-light-grey .v-table-row-odd {
+	background: rgba(239,240,241,1);
+	
+}
+
+.gcp-tblroles .v-table-cell-wrapper {
+	background: url(images/workflow_icn.png) no-repeat left center !important;
+	padding-left: 15px;
+}
+
 span.v-checkbox-hidecheckbox input {
     display: none!important;
 }

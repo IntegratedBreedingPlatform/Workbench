@@ -157,6 +157,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         BeanContainer<Integer, Role> container = new BeanContainer<Integer, Role>(Role.class);
         container.setBeanIdProperty("label");
         tblRoles.setContainerDataSource(container);
+        tblRoles.setStyleName("gcp-tblroles");
         
         String[] columns = new String[] {"label"};
         tblRoles.setVisibleColumns(columns);

@@ -164,6 +164,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         contentAreaSplitPanel = new HorizontalSplitPanel();
 
         mainContent = new VerticalLayout();
+        mainContent.setStyleName("gcp-maincontentarea");
         crumbTrail = new CrumbTrail();
         crumbTrail.setMargin(true, true, false, true);
         crumbTrail.setSpacing(false);
@@ -294,7 +295,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         headerLayout.setMargin(false, false, false, false);
         headerLayout.setSpacing(false);
         
-        Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo.jpg"));
+        Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
         ibpLogo.setWidth("50px");
         ibpLogo.setHeight("50px");
         headerLayout.addComponent(ibpLogo);
