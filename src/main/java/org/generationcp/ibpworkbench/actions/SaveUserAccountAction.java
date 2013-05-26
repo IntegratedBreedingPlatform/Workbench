@@ -111,7 +111,7 @@ public class SaveUserAccountAction implements ClickListener {
             LOG.error("Error encountered while trying to save user account details.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
-                    messageSource.getMessage(Message.SAVE_USER_ACCOUT_ERROR_DESC));
+                    messageSource.getMessage(Message.SAVE_USER_ACCOUNT_ERROR_DESC));
             return;
         }
         
