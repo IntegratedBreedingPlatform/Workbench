@@ -18,6 +18,7 @@ import java.util.HashSet;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -74,32 +76,19 @@ public class SaveNewProjectAddUserAction implements ClickListener {
     
     @Override
     public void buttonClick(ClickEvent event) {
-        
         @SuppressWarnings("unchecked")
         BeanItem<UserAccountModel> bean =  (BeanItem<UserAccountModel>) userAccountForm.getItemDataSource();
         UserAccountModel userAccount = bean.getBean();
         
         try {
             userAccountForm.commit();
-        } catch (Exception e) {
-            //TODO: investigate. Exception still not properly handled.
-            //vaadin shows an "Internal Error" message 
-            if (e instanceof InternationalizableException) {
-            
-                InternationalizableException i = (InternationalizableException) e;
-                MessageNotifier.showError(event.getComponent().getWindow(), 
-                        i.getCaption(), 
-                        i.getDescription());
-                
-            } else {
-                
-                MessageNotifier.showError(event.getComponent().getWindow(), 
-                        e.getMessage(), 
-                        "");
-                
-            }
-            
-            
+        }
+        catch (InternationalizableException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+            return;
+        }
+        catch (InvalidValueException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.ERROR), ValidationUtil.getMessageFor(e));
             return;
         }
         
@@ -109,7 +98,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
             LOG.error("Error encountered while trying to save user account details.", e);
             MessageNotifier.showError(event.getComponent().getWindow(), 
                     messageSource.getMessage(Message.DATABASE_ERROR), 
-                    messageSource.getMessage(Message.SAVE_USER_ACCOUT_ERROR_DESC));
+                    messageSource.getMessage(Message.SAVE_USER_ACCOUNT_ERROR_DESC));
             return;
         }
         
@@ -118,15 +107,16 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         Project currentProject = app.getSessionData().getLastOpenedProject();
         
         try {
-        	if (currentProject != null) {
-        		ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new workbench user ("+ userAccount.getUsername()  + ")", user, new Date());	
-            	workbenchDataManager.addProjectActivity(projAct);
-    			
-        	}
-            } catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            if (currentProject != null) {
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new workbench user (" + userAccount.getUsername()
+                                                                                                                                               + ")", user, new Date());
+                workbenchDataManager.addProjectActivity(projAct);
+
+            }
+        }
+        catch (MiddlewareQueryException e) {
+            LOG.error("Cannot log project activity", e);
+        }
         
         CloseWindowAction action = new CloseWindowAction();
         action.buttonClick(event);
@@ -175,6 +165,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         // add new user to the TwinColumnSelect
         membersSelect.addItem(user);
         membersSelect.setItemCaption(user, person.getDisplayName());
+        
         // get currently selected users and add the new user
         @SuppressWarnings("unchecked")
         HashSet<User> selectedMembers = new HashSet<User>((Collection<User>) membersSelect.getValue());
