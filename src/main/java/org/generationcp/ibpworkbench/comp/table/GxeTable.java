@@ -6,10 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.generationcp.commons.breedingview.xml.EnvironmentLabel;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
@@ -50,6 +47,12 @@ public class GxeTable extends Table {
 	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
 	private String location_property = "";
 	private String trial_instance_property = "";
+
+	private int meansDataSetId;
+
+	private DataSet meansDataSet;
+
+	private List<Experiment> exps;
 
 	public GxeTable(StudyDataManager studyDataManager, Integer studyId) {
 		this.studyDataManager = studyDataManager;
@@ -189,9 +192,12 @@ public class GxeTable extends Table {
 			if (meansDataSets != null) {
 				if (meansDataSets.size() > 0) {
 					
-					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSets.get(0).getId());
+					meansDataSet = meansDataSets.get(0);
+					meansDataSetId = meansDataSet.getId();
+					
+					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					VariableTypeList factors = meansDataSets.get(0).getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
+					VariableTypeList factors = meansDataSet.getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
 					for(VariableType f : factors.getVariableTypes()){
 						//SITE_NAME
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("location")){
@@ -207,7 +213,7 @@ public class GxeTable extends Table {
 						}
 					}
 					//get the Variates
-					VariableTypeList variates = meansDataSets.get(0).getVariableTypes().getVariates();
+					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
 						container.addContainerProperty(v.getLocalName(), CheckBox.class, new CheckBox());
 						variateLocalNames.put(v.getId(), v.getLocalName());
@@ -217,7 +223,7 @@ public class GxeTable extends Table {
 					initializeHeader(factorLocalNames, variateLocalNames, container);
 					
 					//generate the rows
-					List<Experiment> exps = studyDataManager.getExperiments(meansDataSets.get(0).getId(), 0, Integer.MAX_VALUE);
+					exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
 					
 					Integer rowCounter = 2;
 					
@@ -321,4 +327,15 @@ public class GxeTable extends Table {
 		return traits;
 	}
 
+	public int getMeansDataSetId() {
+		return meansDataSetId;
+	}
+	
+	public DataSet getMeansDataSet() {
+		return meansDataSet;
+	}
+	
+	public List<Experiment> getExperiments() {
+		return exps;
+	}
 }

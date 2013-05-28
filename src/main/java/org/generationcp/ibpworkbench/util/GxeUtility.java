@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -11,12 +12,15 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.Experiment;
+import org.generationcp.middleware.v2.domain.Variable;
+import org.generationcp.middleware.v2.domain.VariableType;
+import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
@@ -119,16 +123,117 @@ public class GxeUtility {
 		}
 	}
 	
-	
 	/**
 	 * Generates GxE Multi-site analysis output to excel, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
-	 * TODO: modify logic based on tableContainer data structure
-	 * @param tableContainer
+	 * @param gxeDataSet
+	 * @param experiments
 	 * @param currentProject
 	 * @param xlsfilename
-	 * @return generated file
+	 * @return File
 	 */
-	public static File exportGeneratedXlsFieldbook(Container tableContainer,Project currentProject,String xlsfilename) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments, Project currentProject,String xlsfilename) {
+		Workbook workbook = new HSSFWorkbook();
+		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
+		
+		// get the headers first
+		VariableTypeList vtList = gxeDataset.getVariableTypes();
+		
+		Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
+		
+		int i = 0, j = 0;
+		Integer datasetTypeFactorId = null;
+		// create header row
+		Row headerRow = defaultSheet.createRow(i);
+		
+		for (VariableType factors : vtList.getFactors().getVariableTypes()) {
+			LOG.debug(factors.getId() + ": " + factors.getLocalName());
+			
+			if (factors.getLocalName().trim().equalsIgnoreCase("DATASET_TYPE")) {
+				datasetTypeFactorId = factors.getId();
+			}
+			
+			variableTypeIdToColNoMap.put(factors.getId(),j);
+			
+			headerRow.createCell(j).setCellValue(factors.getLocalName());
+			
+			j++;
+			
+
+		}
+		for (VariableType variates : vtList.getVariates().getVariableTypes()) {
+			variableTypeIdToColNoMap.put(variates.getId(),j);
+			
+			headerRow.createCell(j).setCellValue(variates.getLocalName());
+			
+			j++;
+		}
+		i++;
+		
+		// create table content
+		for (Experiment experiment : experiments) {
+			Row row = defaultSheet.createRow(i);
+			
+			// special case for datasettype factor
+			if (datasetTypeFactorId != null) {
+				j = variableTypeIdToColNoMap.get(datasetTypeFactorId);
+				row.createCell(j).setCellValue(gxeDataset.getDataSetType().getId());
+			}
+			
+			for (Variable variable : experiment.getFactors().getVariables()) {
+				
+				// get the colNo where the variable.value will be placed
+				j = variableTypeIdToColNoMap.get(variable.getVariableType().getId());
+				
+				row.createCell(j).setCellValue(variable.getValue());
+			}
+			
+			for (Variable variable : experiment.getVariates().getVariables()) {
+				
+				// get the colNo where the variable.value will be placed
+				j = variableTypeIdToColNoMap.get(variable.getVariableType().getId());
+				
+				row.createCell(j).setCellValue(variable.getValue());
+			}
+			i++;
+		}
+		
+		// done creating the worksheet! time to create the excel file
+		try {
+			if (currentProject == null)
+				throw new Exception("currentProject is null");
+			
+			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			
+			LOG.debug("save to " + dir);
+			
+			new File(dir).mkdirs();
+			
+			File xlsFile = new File(dir + File.separator + xlsfilename);
+			
+			for (i = 1; !xlsFile.createNewFile(); i++) {
+				String newFile = xlsfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + xlsfilename.split("\\.(?=[^\\.]+$)")[1];
+				
+				xlsFile = new File(dir + File.separator + newFile);
+			}
+			
+			FileOutputStream fos = new FileOutputStream(xlsFile);
+			workbook.write(fos);
+			
+			fos.close();
+			
+			
+			return xlsFile.getAbsoluteFile();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+	/*
+	public static File exportGeneratedXlsFieldbook(Container tableContainer,Project currentProject,String xlsfilename,boolean unfiltered) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet();
 		
@@ -145,7 +250,7 @@ public class GxeUtility {
 			Object headerCol = headerP.getValue();
 			
 			if (headerCol instanceof CheckBox && (Boolean)((CheckBox)headerCol).getValue()
-					|| headerCol instanceof Label)
+					|| headerCol instanceof Label || unfiltered)
 			{
 				colIndexes.add(i);
 			
@@ -201,7 +306,7 @@ public class GxeUtility {
 				throw new Exception("currentProject is null");
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "C:\\workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 			
 			LOG.debug("save to " + dir);
 			
@@ -221,7 +326,7 @@ public class GxeUtility {
 			fos.close();
 			
 			
-			return xlsFile;
+			return xlsFile.getAbsoluteFile();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,4 +335,5 @@ public class GxeUtility {
 		}
 		
 	}
+	*/
 }

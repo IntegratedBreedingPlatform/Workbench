@@ -57,8 +57,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
@@ -218,7 +216,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	protected VerticalLayout generateTabContent(TabSheet tab, Study study) {
+	protected void generateTabContent(TabSheet tab, Study study) {
 	
 
 		VerticalLayout tabContainer = new VerticalLayout();
@@ -260,10 +258,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tab.getTab(tabContainer).setClosable(true);
 		tab.setCloseHandler(new StudiesTabCloseListener(studyTables));
 
-		return tabContainer;
 	}
-
-	
 
 	protected void initializeComponents() {
 
@@ -327,22 +322,20 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				
 				
 				Study study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
-				Table table = studyTables.get(study.getId());
 				
-				if (table != null){
+				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
+					GxeTable table = (GxeTable) studyTables.get(study.getId());
 					
-					File xlsFile = GxeUtility.exportGeneratedXlsFieldbook(
-							table.getContainerDataSource(), project,
-							"xlsInput.xls");
-
+					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(), project, "xlsInput.xls");
+				
 					LOG.debug(xlsFile.getAbsolutePath());
 					
 					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
 					
 					gxeInput.setSourceXLSFilePath(xlsFile.getAbsolutePath());
 					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-					gxeInput.setTraits(((GxeTable)table).getSelectedTraits());
-					gxeInput.setEnvironment(((GxeTable)table).getGxeEnvironment());
+					gxeInput.setTraits(table.getSelectedTraits());
+					gxeInput.setEnvironment(table.getGxeEnvironment());
 					Genotypes genotypes = new Genotypes();
 					genotypes.setName("G!");
 					gxeInput.setGenotypes(genotypes);
@@ -372,14 +365,64 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					}
 		       
 					
-					
-					
-				}
-				
-				
-								
+				}				
 			}
 			
+		});
+		
+					
+					
+		Button testBtn = new Button("test");
+		testBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				
+				try {
+					int studyId = 10010;
+					DataSetType dataSetType = DataSetType.MEANS_DATA;
+					System.out.println("testGetDataSetsByType(studyId = " + studyId + ", dataSetType = " + dataSetType + ")");
+					List<DataSet> datasets = studyDataManager.getDataSetsByType(studyId, dataSetType);
+					for (DataSet dataset : datasets) {
+						System.out.println("Dataset" + dataset.getId() + "-" + dataset.getName() + "-" + dataset.getDescription());
+					}
+					
+					studyId = 10080;
+					dataSetType = DataSetType.MEANS_DATA;
+					System.out.println("testGetDataSetsByType(studyId = " + studyId + ", dataSetType = " + dataSetType + ")");
+					datasets = studyDataManager.getDataSetsByType(studyId, dataSetType);
+					for (DataSet dataset : datasets) {
+						System.out.println("Dataset" + dataset.getId() + "-" + dataset.getName() + "-" + dataset.getDescription());
+					}
+					
+					System.out.println("Display data set type in getDataSet");
+					DataSet dataSet = studyDataManager.getDataSet(10087);
+					System.out.println("DataSet = " + dataSet.getId() + ", name = " + dataSet.getName() + ", description = " + dataSet.getDescription() + ", type = " + dataSet.getDataSetType()	);
+						
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		
+		Button testGenerateTable = new Button("Test Generate Table, studyId=10080");
+		testGenerateTable.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Study study;
+				try {
+					study = studyDataManager.getStudy(10080);
+				
+					generateTabContent(studiesTabsheet,study);
+					
+					studiesTabsheet.setImmediate(true);	
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		});
 
 		this.setExpandRatio(horizontal, 1.0F);
@@ -389,7 +432,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.setSpacing(true);
 		btnLayout.addComponent(button);
 		//btnLayout.addComponent(gxebutton);
-
+		btnLayout.addComponent(testGenerateTable);
+		
 		this.addComponent(btnLayout);
 
 	}
