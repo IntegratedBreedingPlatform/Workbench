@@ -24,8 +24,8 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
-public class GxEUtility {
-    private static final Logger LOG = LoggerFactory.getLogger(GxEUtility.class);
+public class GxeUtility {
+    private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
 
 	public static Table generateTestData(Table table, Integer numRows) throws Exception{
 		
@@ -110,15 +110,10 @@ public class GxEUtility {
 	 * @return void
 	 */
 	
-	public static void generateXmlFieldBook(Container tableContainer, Project currentProject, BreedingViewInput breedingViewInput){
-		
-		List<Trait> selectedTraits = new ArrayList<Trait>();
-		
-		tableContainer.getContainerPropertyIds();
-		
+	public static void generateXmlFieldBook(GxeInput gxeInput){
 		try {
-			new GxEXMLWriter(breedingViewInput).writeProjectXML(selectedTraits);
-		} catch (GxEXMLWriterException e) {
+			new GxeXMLWriter(gxeInput).writeProjectXML();
+		} catch (GxeXMLWriterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -206,7 +201,7 @@ public class GxEUtility {
 				throw new Exception("currentProject is null");
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "C:\\workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 			
 			LOG.debug("save to " + dir);
 			

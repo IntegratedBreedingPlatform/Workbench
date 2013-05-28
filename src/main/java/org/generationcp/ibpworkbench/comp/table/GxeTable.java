@@ -2,10 +2,17 @@ package org.generationcp.ibpworkbench.comp.table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.generationcp.commons.breedingview.xml.EnvironmentLabel;
+import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.v2.domain.DataSet;
@@ -18,6 +25,7 @@ import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
@@ -37,7 +45,10 @@ public class GxeTable extends Table {
 	public static final int CELL_LABEL = 6;
 	
 	private StudyDataManager studyDataManager;
-	List<String> columnNames = new ArrayList<String>();
+	private List<String> columnNames = new ArrayList<String>(); 
+	private GxeEnvironment gxeEnvironment = new GxeEnvironment();
+	private Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
+	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
 
 	public GxeTable(StudyDataManager studyDataManager, Integer studyId) {
 		this.studyDataManager = studyDataManager;
@@ -168,8 +179,10 @@ public class GxeTable extends Table {
 		
 		container.addContainerProperty(" ", CheckBox.class, new CheckBox());
 		
-		Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
-		Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
+		HashSet<String> envNames = new HashSet<String>();
+		
+		String location_property = "";
+		String trial_instance_property = "";
 		
 		
 		try {
@@ -186,11 +199,13 @@ public class GxeTable extends Table {
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("location")){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getId(), f.getLocalName());
+							location_property = f.getLocalName();
 						}
 						//SITE_NO
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("trial instance")){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getId(), f.getLocalName());
+							trial_instance_property = f.getLocalName();
 						}
 					}
 					//get the Variates
@@ -209,7 +224,13 @@ public class GxeTable extends Table {
 					Integer rowCounter = 2;
 					
 					for (Experiment exp : exps){
+						
+						String locationVal = exp.getFactors().findByLocalName(location_property).getValue();
+						if (envNames.contains(locationVal)) continue;
+						
+						
 						TableItems[] row = new TableItems[factorLocalNames.size()+variateLocalNames.size()+1];
+						
 						
 						row[0] = new TableItems();
 						row[0].setType(GxeTable.CELL_CHECKBOX_ROW);
@@ -220,11 +241,14 @@ public class GxeTable extends Table {
 						
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
+							String fValue = exp.getFactors().findById(f.getKey()).getValue();
+							if (f.getValue().equalsIgnoreCase(location_property)) envNames.add(fValue);
 							row[cellCounter] = new TableItems();
-							row[cellCounter].setLabel(exp.getFactors().findById(f.getKey()).getValue());
+							row[cellCounter].setLabel(fValue);
 							row[cellCounter].setType(GxeTable.CELL_LABEL);
 							cellCounter++;
 						}
+						
 						
 						for (Map.Entry<Integer, String> v : variateLocalNames.entrySet()){
 							row[cellCounter] = new TableItems();
@@ -232,7 +256,7 @@ public class GxeTable extends Table {
 							String meansData = "";
 							try{
 								meansData = String.valueOf(studyDataManager.countExperimentsByTrialEnvironmentAndVariate(
-										envs.findOnlyOneByLocalName("SITENO", row[2].getLabel()).getId(), 
+										envs.findOnlyOneByLocalName(trial_instance_property, row[2].getLabel()).getId(), 
 										v.getKey()));
 							}catch(Exception e){
 								System.out.println("Error in getting the means data.");
@@ -249,6 +273,18 @@ public class GxeTable extends Table {
 						createRow(rowCounter, row, container);
 					}
 					
+					List<GxeEnvironmentLabel> environmentLabels = new ArrayList<GxeEnvironmentLabel>();
+					
+					for (String s : envNames){
+						GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
+						environmentLabel.setName(s);
+						environmentLabel.setActive(true);
+						environmentLabels.add(environmentLabel);
+					}
+					
+					gxeEnvironment.setLabel(environmentLabels);
+					
+					
 				}
 			}
 
@@ -257,6 +293,32 @@ public class GxeTable extends Table {
 			e.printStackTrace();
 		}
 		
+	}
+
+
+	public GxeEnvironment getGxeEnvironment() {
+		return gxeEnvironment;
+	}
+
+
+	public void setGxeEnvironment(GxeEnvironment gxeEnvironment) {
+		this.gxeEnvironment = gxeEnvironment;
+	}
+	
+	public List<Trait> getSelectedTraits(){
+		List<Trait> traits = new ArrayList<Trait>();
+		Object obj = this.getContainerDataSource().getItemIds().toArray()[0];
+		for (Map.Entry<Integer, String> v : variateLocalNames.entrySet()){
+			Property p = this.getContainerProperty(obj, v.getValue());
+			if((Boolean) ((CheckBox) p.getValue()).getValue()){
+				Trait t = new Trait();
+				t.setName(v.getValue());
+				t.setActive(true);
+				traits.add(t);
+			}
+		}
+		 
+		return traits;
 	}
 
 }

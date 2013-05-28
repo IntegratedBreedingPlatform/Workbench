@@ -13,58 +13,48 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.generationcp.commons.breedingview.xml.BreedingViewProject;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.gxe.xml.GxeProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.Data;
-import org.generationcp.commons.breedingview.xml.Environment;
-import org.generationcp.commons.breedingview.xml.Genotypes;
-import org.generationcp.commons.breedingview.xml.Phenotypic;
+import org.generationcp.commons.gxe.xml.GxePhenotypic;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
-import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Table;
-
 
 @Configurable
-public class GxEXMLWriter implements InitializingBean, Serializable{
+public class GxeXMLWriter implements InitializingBean, Serializable{
 
     private static final long serialVersionUID = 8866276834893749854L;
 
-    private final static Logger LOG = LoggerFactory.getLogger(GxEXMLWriter.class);
+    private final static Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
-    private BreedingViewInput breedingViewInput;
+    private GxeInput gxeInput;
 
-    public GxEXMLWriter(BreedingViewInput breedingViewInput) {
-    	this.breedingViewInput = breedingViewInput;
+    public GxeXMLWriter(GxeInput gxeInput) {
+    	this.gxeInput = gxeInput;
     }
     
-    public void writeProjectXML(List<Trait> selectedTraits) throws GxEXMLWriterException{
+    public void writeProjectXML() throws GxeXMLWriterException{
        
     	//final Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
   
@@ -73,22 +63,23 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
         //final StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
         
         //Create object to be serialized
-        Phenotypic phenotypic = new Phenotypic();
+        GxePhenotypic phenotypic = new GxePhenotypic();
         
         Data data = new Data();
-        data.setFieldBookFile(breedingViewInput.getSourceXLSFilePath());
+        data.setFieldBookFile(gxeInput.getSourceXLSFilePath());
         
         phenotypic.setFieldbook(data);
         
-        phenotypic.setTraits(selectedTraits);
+        phenotypic.setTraits(gxeInput.getTraits());
    
-        phenotypic.setEnvironments(breedingViewInput.getEnvironment());
+        GxeEnvironment gxeEnv = gxeInput.getEnvironment();
+        gxeEnv.setName(gxeInput.getEnvironmentName());
+        phenotypic.setEnvironments(gxeEnv);
         
-        Genotypes g = new Genotypes();
-        phenotypic.setGenotypes(breedingViewInput.getGenotypes());
+        phenotypic.setGenotypes(gxeInput.getGenotypes());
         
-        BreedingViewProject project = new BreedingViewProject();
-        project.setName(breedingViewInput.getBreedingViewProjectName());
+        GxeProject project = new GxeProject();
+        project.setName(gxeInput.getBreedingViewProjectName());
         project.setVersion("1.01");
         project.setPhenotypic(phenotypic);
 
@@ -102,11 +93,11 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
         JAXBContext context = null;
         Marshaller marshaller = null;
         try{
-            context = JAXBContext.newInstance(BreedingViewProject.class);
+            context = JAXBContext.newInstance(GxeProject.class);
             marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         } catch(final JAXBException ex){
-            throw new GxEXMLWriterException("Error with opening JAXB context and marshaller: "
+            throw new GxeXMLWriterException("Error with opening JAXB context and marshaller: "
                     + ex.getMessage(), ex);
         }
         
@@ -114,12 +105,12 @@ public class GxEXMLWriter implements InitializingBean, Serializable{
         try{
         	
         	//new File(outputDirectory).mkdirs();
-            final FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
+            final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath());
             marshaller.marshal(project, fileWriter);
             fileWriter.flush();
             fileWriter.close();
         } catch(final Exception ex){
-            throw new GxEXMLWriterException(String.format("Error with writing xml to: %s : %s" , "" ,ex.getMessage()), ex);
+            throw new GxeXMLWriterException(String.format("Error with writing xml to: %s : %s" , "" ,ex.getMessage()), ex);
         }
     }
 

@@ -14,10 +14,10 @@
 package org.generationcp.ibpworkbench.util;
 
 
-public class GxEXMLWriterException extends Exception{
+public class GxeXMLWriterException extends Exception{
     private static final long serialVersionUID = -15100578234826562L;
 
-    public GxEXMLWriterException(String message, Throwable cause){
+    public GxeXMLWriterException(String message, Throwable cause){
         super(message, cause);
     }
 }

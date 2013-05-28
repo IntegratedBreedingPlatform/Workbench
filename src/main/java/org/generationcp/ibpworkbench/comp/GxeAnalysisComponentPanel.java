@@ -16,9 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
-import org.generationcp.ibpworkbench.util.GxEUtility;
+import org.generationcp.ibpworkbench.util.GxeInput;
+import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -318,16 +320,32 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				Table table = studyTables.get(study.getId());
 				
 				if (table != null){
-					File xlsFile = GxEUtility.exportGeneratedXlsFieldbook(
+					
+					File xlsFile = GxeUtility.exportGeneratedXlsFieldbook(
 							table.getContainerDataSource(), project,
 							"xlsInput.xls");
 
 					LOG.debug(xlsFile.getAbsolutePath());
-
+					
+					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
+					
+					gxeInput.setSourceXLSFilePath(xlsFile.getAbsolutePath());
+					gxeInput.setDestXMLFilePath(xlsFile.getParent() + "\\xmlInput.xml");
+					gxeInput.setTraits(((GxeTable)table).getSelectedTraits());
+					gxeInput.setEnvironment(((GxeTable)table).getGxeEnvironment());
+					Genotypes genotypes = new Genotypes();
+					genotypes.setName("G!");
+					gxeInput.setGenotypes(genotypes);
+					gxeInput.setEnvironmentName("E!");
+					gxeInput.setBreedingViewProjectName(project.getProjectName());
+					
+					GxeUtility.generateXmlFieldBook(gxeInput);
+					
+					
 					MessageNotifier
 							.showMessage(event.getComponent().getWindow(),
 									"GxE file saved",
-									"Successfully created GxE Excel input file for the breeding_view");
+									"Successfully created GxE Excel and XML input file for the breeding_view");
 					
 				}
 				
