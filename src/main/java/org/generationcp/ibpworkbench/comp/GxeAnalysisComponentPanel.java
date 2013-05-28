@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.comp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,15 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.DataSetType;
 import org.generationcp.middleware.v2.domain.FolderReference;
@@ -88,6 +92,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+	
+	@Autowired
+	private ToolUtil toolUtil;
 
 	private Project project;
 
@@ -306,15 +313,18 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				/*
-				 * File csvFile
-				 * =GxEUtility.generateGxEInputCSV(event.getComponent
-				 * ().getApplication().getMainWindow(),
-				 * tblDataSet.getContainerDataSource(), project, new String[]
-				 * {"environment"
-				 * ,"genotype","height","maturity","rust","height 1"}); // NOTE:
-				 * the string array are the table headers
-				 */
+				
+				String inputDir = "";
+				Tool breedingViewTool = null;
+				try{
+					breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+					inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
+				}catch(MiddlewareQueryException ex){
+					
+				}
+				//TODO NOTE: change the filename of xml/xls using unique identifiers
+				String inputFileName = project.getProjectName().trim() + "test";
+				
 				
 				Study study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
 				Table table = studyTables.get(study.getId());
@@ -330,7 +340,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
 					
 					gxeInput.setSourceXLSFilePath(xlsFile.getAbsolutePath());
-					gxeInput.setDestXMLFilePath(xlsFile.getParent() + "\\xmlInput.xml");
+					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
 					gxeInput.setTraits(((GxeTable)table).getSelectedTraits());
 					gxeInput.setEnvironment(((GxeTable)table).getGxeEnvironment());
 					Genotypes genotypes = new Genotypes();
@@ -341,11 +351,28 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					
 					GxeUtility.generateXmlFieldBook(gxeInput);
 					
+					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
+		            Runtime runtime = Runtime.getRuntime();
+		            LOG.info(gxeInput.toString());
+		            LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
+		            try {
+						runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
 					
-					MessageNotifier
-							.showMessage(event.getComponent().getWindow(),
-									"GxE file saved",
-									"Successfully created GxE Excel and XML input file for the breeding_view");
+						MessageNotifier
+						.showMessage(event.getComponent().getWindow(),
+								"GxE files saved",
+								"Successfully created GxE Excel and XML input file for the breeding_view");
+		            } catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						MessageNotifier
+						.showMessage(event.getComponent().getWindow(),
+								"Cannot launch " + absoluteToolFile.getName(),
+								"Successfully created GxE Excel and XML input file for the breeding_view");
+					}
+		       
+					
+					
 					
 				}
 				
