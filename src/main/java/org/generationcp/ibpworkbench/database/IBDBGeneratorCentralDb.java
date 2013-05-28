@@ -13,25 +13,19 @@
 package org.generationcp.ibpworkbench.database;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.ResourceFinder;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorCentralDb.class);
-
-    //local constant
-    protected static final String WORKBENCH_GDMS_CENTRAL_SQL = "IBDBv1_GMS-CENTRAL.sql";
-
     private CropType cropType;
     
     @Autowired
@@ -119,18 +113,21 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
     private void createManagementSystems() throws InternationalizableException {
         try {
-
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_TMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_CENTRAL_SQL).toURI()));
-
-            LOG.info("IB Central Database Generation Successful");
-
-        } catch (FileNotFoundException e) {
-            handleConfigurationError(e);
-        } catch (URISyntaxException e) {
-            handleConfigurationError(e);
+            WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
+            if (setting == null) {
+                throw new IllegalStateException("Workbench setting record not found");
+            }
+            
+            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/central");
+            
+            // run the common scripts
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
+            
+            // run crop specific script
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
+        }
+        catch (MiddlewareQueryException e) {
+            handleDatabaseError(e);
         }
     }
 

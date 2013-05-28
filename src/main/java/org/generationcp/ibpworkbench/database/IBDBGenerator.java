@@ -12,19 +12,29 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.commons.util.ScriptRunner;
 import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 public class IBDBGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
@@ -35,9 +45,6 @@ public class IBDBGenerator {
     public static final String WORKBENCH_PROP_USER = "workbench.username";
     public static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
 
-    protected static final String WORKBENCH_DMS_SQL = "IBDBv1_DMS.sql";
-    protected static final String WORKBENCH_GDMS_SQL = "IBDBv1_GDMS.sql";
-    protected static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
     protected static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
     protected static final String SQL_CREATE_DATABASE_IF_NOT_EXISTS = "CREATE DATABASE IF NOT EXISTS ";
     protected static final String SQL_CHAR_SET = " CHARACTER SET ";
@@ -132,6 +139,45 @@ public class IBDBGenerator {
                 }
                 catch (IOException e) {
                     // intentionally empty
+                }
+            }
+        }
+    }
+    
+    protected void runScriptsInDirectory(Connection conn, File directory) {
+        ScriptRunner scriptRunner = new ScriptRunner(connection);
+        
+        // get the sql files
+        File[] sqlFilesArray = directory.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".sql");
+            }
+        });
+        if (sqlFilesArray == null || sqlFilesArray.length == 0) {
+            return;
+        }
+        
+        List<File> sqlFiles = Arrays.asList(sqlFilesArray);
+        Collections.sort(sqlFiles);
+        
+        for (File sqlFile : sqlFiles) {
+            BufferedReader br = null;
+            
+            try {
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
+                scriptRunner.runScript(br);
+            }
+            catch (IOException e) {
+                handleDatabaseError(e);
+            }
+            finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

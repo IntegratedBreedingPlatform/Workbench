@@ -13,8 +13,6 @@
 package org.generationcp.ibpworkbench.database;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,45 +26,36 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * 
  * @author Jeffrey Morales
  */
+@Configurable
 public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
-    protected static final String WORKBENCH_DMS_LOCAL_SQL = "IBDBV2-LOCAL-DMS-20130403b.sql";
-    private static final String WORKBENCH_GMS_LOCAL_SQL = "IBDBv1_GMS-LOCAL.sql";
-    private static final String WORKBENCH_IMS_SQL = "IBDBv1_IMS.sql";
-    private static final String WORKBENCH_TMS_SQL = "IBDBv1_TMS.sql";
-    private static final String GDMS_INSERT_CASSAVA_SQL = "icass_ibdb_local_with_gdms_insert_only.sql";
-    private static final String GDMS_INSERT_CHICKPEA_SQL = "ichis_ibdb_local_with_gdms_insert_only.sql";
-    private static final String GDMS_INSERT_COWPEA_SQL = "ibdbv1_ivis_local_with_gdms_datainserts.sql";
-    private static final String GDMS_INSERT_GROUNDNUT_SQL = "ignis_ibdb_local_with_gdms_insert_only.sql";
-    private static final String GDMS_INSERT_MAIZE_SQL = "ibdbv1_imis_local_with_gdms_datainserts.sql";
-    private static final String GDMS_INSERT_PHASEOLUS_SQL = "ibdbv1_iphis_local_with_gdms_datainserts.sql";
-    private static final String GDMS_INSERT_RICE_SQL = "iris_ibdb_local_with_gdms_insert_only.sql";
-    private static final String GDMS_INSERT_SORGHUM_SQL = "ibdbv1_isgis_local_with_gdms_datainserts.sql";
-    private static final String GDMS_INSERT_WHEAT_SQL = "iwis_ibdb_local_with_gdms_insert_only.sql";
-    
-    private static final String LOCAL_INSERT_LENTIL_SQL = "ilis_ibdb_local_insert_only.sql";
-    private static final String LOCAL_INSERT_SOYBEAN_SQL = "isbis_ibdb_local_insert_only.sql";
-    
     private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private CropType cropType;
     private Long projectId;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
 
     public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
         this.cropType = cropType;
@@ -97,12 +86,10 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private void createLocalDatabase() throws InternationalizableException {
 
-        StringBuffer databaseName = new StringBuffer();
+        String databaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
         StringBuffer createDatabaseSyntax = new StringBuffer();
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
-
-        databaseName.append(cropType.getLocalDatabaseNameWithProjectId(projectId));
 
         Statement statement = null;
 
@@ -126,9 +113,9 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             
             statement.executeBatch();
             
-            generatedDatabaseName = databaseName.toString();
+            generatedDatabaseName = databaseName;
             
-            connection.setCatalog(databaseName.toString());
+            connection.setCatalog(databaseName);
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -143,48 +130,23 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     }
 
     private void createManagementSystems() throws InternationalizableException {
-
         try {
-
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_DMS_LOCAL_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_TMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GDMS_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_GMS_LOCAL_SQL).toURI()));
-            executeSQLFile(new File(ResourceFinder.locateFile(WORKBENCH_IMS_SQL).toURI()));
-            
-            if (cropType.getCropName().equalsIgnoreCase(CropType.CASSAVA)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CASSAVA_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.COWPEA)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_COWPEA_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.CHICKPEA)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_CHICKPEA_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.GROUNDNUT)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_GROUNDNUT_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.PHASEOLUS)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_PHASEOLUS_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.MAIZE)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_MAIZE_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.RICE)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_RICE_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.SORGHUM)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_SORGHUM_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase(CropType.WHEAT)){
-                executeSQLFile(new File(ResourceFinder.locateFile(GDMS_INSERT_WHEAT_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase("lentil")){
-            	//TODO add lentil and soybean to CropType
-                executeSQLFile(new File(ResourceFinder.locateFile(LOCAL_INSERT_LENTIL_SQL).toURI()));
-            } else if (cropType.getCropName().equalsIgnoreCase("soybean")){
-                executeSQLFile(new File(ResourceFinder.locateFile(LOCAL_INSERT_SOYBEAN_SQL).toURI()));
+            WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
+            if (setting == null) {
+                throw new IllegalStateException("Workbench setting record not found");
             }
-
-            LOG.info("IB Local Database Generation Successful");
-
-        } catch (FileNotFoundException e) {
-            handleConfigurationError(e);
-        } catch (URISyntaxException e) {
-            handleConfigurationError(e);
+            
+            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/local");
+            
+            // run the common scripts
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
+            
+            // run crop specific script
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
         }
-
+        catch (MiddlewareQueryException e) {
+            handleDatabaseError(e);
+        }
     }
     
     public boolean addCachedLocations(Map<Integer, LocationModel> cachedLocations) {
