@@ -46,9 +46,10 @@ public class GxeTable extends Table {
 	
 	private StudyDataManager studyDataManager;
 	private List<String> columnNames = new ArrayList<String>(); 
-	private GxeEnvironment gxeEnvironment = new GxeEnvironment();
 	private Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
 	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
+	private String location_property = "";
+	private String trial_instance_property = "";
 
 	public GxeTable(StudyDataManager studyDataManager, Integer studyId) {
 		this.studyDataManager = studyDataManager;
@@ -180,10 +181,7 @@ public class GxeTable extends Table {
 		container.addContainerProperty(" ", CheckBox.class, new CheckBox());
 		
 		HashSet<String> envNames = new HashSet<String>();
-		
-		String location_property = "";
-		String trial_instance_property = "";
-		
+	
 		
 		try {
 			List<DataSet> meansDataSets = studyDataManager.getDataSetsByType(
@@ -271,19 +269,7 @@ public class GxeTable extends Table {
 						
 						rowCounter=rowCounter+1;
 						createRow(rowCounter, row, container);
-					}
-					
-					List<GxeEnvironmentLabel> environmentLabels = new ArrayList<GxeEnvironmentLabel>();
-					
-					for (String s : envNames){
-						GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
-						environmentLabel.setName(s);
-						environmentLabel.setActive(true);
-						environmentLabels.add(environmentLabel);
-					}
-					
-					gxeEnvironment.setLabel(environmentLabels);
-					
+					}					
 					
 				}
 			}
@@ -297,12 +283,26 @@ public class GxeTable extends Table {
 
 
 	public GxeEnvironment getGxeEnvironment() {
+		GxeEnvironment gxeEnvironment = new GxeEnvironment();
+		List<GxeEnvironmentLabel> environmentLabels = new ArrayList<GxeEnvironmentLabel>();
+		
+		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
+		
+		for (Integer i = 1; i < obj.length; i++){
+			Property cb_column = this.getContainerProperty(obj[i], " ");
+			Property location_column = this.getContainerProperty(obj[i], location_property);
+			if((Boolean) ((CheckBox) cb_column.getValue()).getValue()){
+				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
+				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
+				environmentLabel.setActive(true);
+				environmentLabels.add(environmentLabel);
+			}
+		}
+		
+		gxeEnvironment.setLabel(environmentLabels);
+		
 		return gxeEnvironment;
-	}
-
-
-	public void setGxeEnvironment(GxeEnvironment gxeEnvironment) {
-		this.gxeEnvironment = gxeEnvironment;
+		
 	}
 	
 	public List<Trait> getSelectedTraits(){

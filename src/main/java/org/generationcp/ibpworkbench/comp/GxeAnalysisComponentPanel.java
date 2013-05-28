@@ -297,7 +297,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		addComponent(horizontal);
 
 		Button button = new Button(
-				"Export study dataset to Breeding View Excel input");
+				"Export study dataset to Breeding View Excel and XML input");
 		Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
 
 		button.addListener(new Button.ClickListener() {
