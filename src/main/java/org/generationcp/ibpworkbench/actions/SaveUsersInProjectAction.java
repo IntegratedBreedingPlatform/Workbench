@@ -33,6 +33,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -93,7 +94,41 @@ public class SaveUsersInProjectAction implements ClickListener{
             return;
         }
         
+        Container container = tblMembers.getContainerDataSource();
+        Collection<User> userList = (Collection<User>) container.getItemIds();
+        
         try {
+        	
+        	//get the members/user_roles who are not yet added in the database
+        	for (User u : userList){
+        		List<ProjectUserRole> list = workbenchDataManager.getProjectUserRolesByProject(project);
+        		Boolean urole_exists = false;
+        		for (ProjectUserRole urole : list){
+        			if (urole.getUserId().equals(u.getUserid())) urole_exists = true;	
+        		}
+        		 
+        		if (!urole_exists
+        				&& ((Boolean) container.getItem(u).getItemProperty("role_1").getValue()
+        				|| (Boolean) container.getItem(u).getItemProperty("role_2").getValue()
+        				|| (Boolean) container.getItem(u).getItemProperty("role_3").getValue()
+        				|| (Boolean) container.getItem(u).getItemProperty("role_4").getValue()
+        				|| (Boolean) container.getItem(u).getItemProperty("role_5").getValue())
+        				
+        				){
+	        		try {
+	        			 	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+	        			 	User user = app.getSessionData().getUserData();
+	        			 	ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "member", "Added a workbench member (" + u.getName() + ") to the project", user, new Date());
+	                        workbenchDataManager.addProjectActivity(projAct);
+	 
+	                 }
+	                 catch (MiddlewareQueryException e) {
+	                     LOG.error("Cannot log project activity", e);
+	                 }
+        		}
+        	}
+        			
+        	
             List<ProjectUserRole> projectUserRoles = getProjectMembers();
             
             // update the project user roles
@@ -111,12 +146,12 @@ public class SaveUsersInProjectAction implements ClickListener{
         }
         
         try{
-     	   Container container = tblMembers.getContainerDataSource();
-           Collection<User> userList = (Collection<User>) container.getItemIds();
+     	  
             for (User u : userList){
          	  if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(), u.getUserid()) == null) {
          		  ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),u.getUserid());
          		  workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo); 
+                 
          	  }
             }
      

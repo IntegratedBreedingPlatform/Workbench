@@ -432,7 +432,27 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 
         List<ProjectMethod> projectMethods = workbenchDataManager.getProjectMethodByProject(project, 0, (int) workbenchDataManager.countMethodIdsByProjectId(project.getProjectId()));
-               
+        
+        for(Method m: methods){
+        	Boolean method_exists = false;
+        	for (ProjectMethod pmethod : projectMethods){
+        		if (pmethod.getMethodId().equals(m.getMid())) method_exists = true;
+        	}
+        	if (!method_exists){
+        		 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            	 User user = app.getSessionData().getUserData();
+                 ProjectActivity projAct = new ProjectActivity(new Integer(projectSaved.getProjectId().intValue()), projectSaved, "Project Methods", "Added a Breeding Method ("+ m.getMname() + ") to the project", user, new Date());
+                 try {
+     				workbenchDataManager.addProjectActivity(projAct);
+     				} catch (MiddlewareQueryException e) {
+     				// TODO Auto-generated catch block
+     				e.printStackTrace();
+     				}
+        	}
+        }
+        
+        
+        
         for (ProjectMethod projectMethod : projectMethods){
             workbenchDataManager.deleteProjectMethod(projectMethod);
         }
@@ -459,18 +479,6 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
                 }
             }else{
                 mID=m.getMid();
-            }
-            
-            if (m.getIsnew()){
-            	 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-            	 User user = app.getSessionData().getUserData();
-                 ProjectActivity projAct = new ProjectActivity(new Integer(projectSaved.getProjectId().intValue()), projectSaved, "Project Methods", "Added new Breeding Method ("+ m.getMname() + ")", user, new Date());
-                 try {
-     				workbenchDataManager.addProjectActivity(projAct);
-     				} catch (MiddlewareQueryException e) {
-     				// TODO Auto-generated catch block
-     				e.printStackTrace();
-     				}
             }
             
             projectMethod.setMethodId(mID);
