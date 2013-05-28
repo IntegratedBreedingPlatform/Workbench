@@ -304,8 +304,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		addComponent(horizontal);
 
 		Button button = new Button(
-				"Export study dataset to Breeding View Excel and XML input");
-		Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
+				"Export study dataset to Breeding View Excel and XML input and launch Breeding View");
+		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
 
 		button.addListener(new Button.ClickListener() {
 
@@ -368,7 +368,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 						MessageNotifier
 						.showMessage(event.getComponent().getWindow(),
 								"Cannot launch " + absoluteToolFile.getName(),
-								"Successfully created GxE Excel and XML input file for the breeding_view");
+								"But it successfully created GxE Excel and XML input file for the breeding_view!");
 					}
 		       
 					
@@ -388,7 +388,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.setSizeUndefined();
 		btnLayout.setSpacing(true);
 		btnLayout.addComponent(button);
-		btnLayout.addComponent(gxebutton);
+		//btnLayout.addComponent(gxebutton);
 
 		this.addComponent(btnLayout);
 
