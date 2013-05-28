@@ -204,7 +204,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			container.removeAllComponents();
 
 			Label tabTitle = new Label("&nbsp;&nbsp;"
-					+ "Adjusted means datasets", Label.CONTENT_XHTML);
+					+ "Adjusted means dataset", Label.CONTENT_XHTML);
 			tabTitle.setStyleName("gcp-content-title");
 
 			container.addComponent(tabTitle);
@@ -230,6 +230,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tabContainer.addComponent(tabTitle);
 		
 		List<DataSet> ds = null;
+		
+		DataSet meansDataSet = null;
 		try {
 			ds = studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
 		} catch (MiddlewareQueryException e) {
@@ -238,10 +240,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		}
 		
 		
-		if (ds.size() > 0){
+		if (ds != null && ds.size() > 0){
 			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId()));
 			tabContainer.addComponent(studyTables.get(study.getId()));
 			tabContainer.setExpandRatio(studyTables.get(study.getId()), 1.0F);
+			
+			meansDataSet = ds.get(0);
 		}else{
 			Label temp = new Label("&nbsp;&nbsp;No means dataset available for this study (" + study.getName().toString() + ")" );
 			temp.setContentMode(Label.CONTENT_XHTML);
@@ -255,9 +259,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tabContainer.setData(study);
 		
 		tab.addComponent(tabContainer);
+		
+		if (meansDataSet != null)
+			tab.getTab(tabContainer).setCaption(meansDataSet.getName());
+		
 		tab.getTab(tabContainer).setClosable(true);
 		tab.setCloseHandler(new StudiesTabCloseListener(studyTables));
-
 	}
 
 	protected void initializeComponents() {
@@ -321,7 +328,18 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				String inputFileName = project.getProjectName().trim() + "test";
 				
 				
-				Study study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
+				Study study = null;
+				try {
+					study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
+						
+				} catch (NullPointerException e) {
+					MessageNotifier
+					.showError(event.getComponent().getWindow(),
+							"Cannot export dataset",
+							"No dataset is selected. Please open a study that has a dataset.");
+					
+					return;
+				}
 				
 				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
 					GxeTable table = (GxeTable) studyTables.get(study.getId());
@@ -426,13 +444,13 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		});
 
 		this.setExpandRatio(horizontal, 1.0F);
-
+ 
 		HorizontalLayout btnLayout = new HorizontalLayout();
 		btnLayout.setSizeUndefined();
 		btnLayout.setSpacing(true);
 		btnLayout.addComponent(button);
 		//btnLayout.addComponent(gxebutton);
-		btnLayout.addComponent(testGenerateTable);
+		//btnLayout.addComponent(testGenerateTable);
 		
 		this.addComponent(btnLayout);
 
