@@ -357,3 +357,7 @@ s
 .gcp-enabled {
 	background-color: rgb(213,215,217) !important;
 }
+
+.gcp-crumb-active .v-button-caption {
+	font-weight: bold;
+}

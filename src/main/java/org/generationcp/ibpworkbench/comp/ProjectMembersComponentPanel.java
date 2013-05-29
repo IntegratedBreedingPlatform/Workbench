@@ -126,14 +126,17 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         
         addComponent(select);
         
-        
-        
+        VerticalLayout container = new VerticalLayout();
+        container.setSpacing(true);
+
         initializeMembersTable();
-        addComponent(tblMembers);
-        
         buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
         
+        container.setSizeUndefined();
+        container.addComponent(tblMembers);
+        container.addComponent(buttonArea);
+        container.setComponentAlignment(buttonArea,Alignment.MIDDLE_RIGHT);
+        addComponent(container);
     }
     
     private List<CheckBox> createUserRolesCheckBoxList() {
@@ -295,7 +298,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        //setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
     	
     protected void initializeUsers() throws MiddlewareQueryException 

@@ -15,7 +15,6 @@ package org.generationcp.ibpworkbench.comp.ibtools.breedingview.select;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -26,18 +25,17 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.ShowStudyDatasetDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
-import org.generationcp.ibpworkbench.model.RepresentationModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DatasetReference;
+import org.generationcp.middleware.v2.domain.FolderReference;
 import org.generationcp.middleware.v2.domain.Reference;
 import org.generationcp.middleware.v2.domain.Study;
 import org.generationcp.middleware.v2.domain.StudyReference;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.v2.domain.FolderReference;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -320,12 +318,20 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
+        
+        
+        buttonLayout.setSizeFull();
         buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
+        buttonLayout.setMargin(true);
 
         btnCancel = new Button();
         btnNext = new Button();
 
+        Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
+        spacer.setSizeFull();
+        
+        buttonLayout.addComponent(spacer);
+        buttonLayout.setExpandRatio(spacer,1.0F);
         buttonLayout.addComponent(btnCancel);
         buttonLayout.addComponent(btnNext);
 

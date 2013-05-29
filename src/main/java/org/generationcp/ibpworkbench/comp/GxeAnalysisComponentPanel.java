@@ -446,8 +446,14 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		this.setExpandRatio(horizontal, 1.0F);
  
 		HorizontalLayout btnLayout = new HorizontalLayout();
-		btnLayout.setSizeUndefined();
+		btnLayout.setSizeFull();
 		btnLayout.setSpacing(true);
+		btnLayout.setMargin(true);
+		
+		Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
+		btnLayout.addComponent(spacer);
+		btnLayout.setExpandRatio(spacer,1.0F);
+		
 		btnLayout.addComponent(button);
 		//btnLayout.addComponent(gxebutton);
 		//btnLayout.addComponent(testGenerateTable);

@@ -326,24 +326,24 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         headerRightLayout.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(accountButton);
-        headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
+        //headerRightLayout.addComponent(accountButton);
+        //headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
 
-        headerRightLayout.addComponent(new Label("|"));
+        //headerRightLayout.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(userToolsButton);
-        headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
+        //headerRightLayout.addComponent(userToolsButton);
+        //headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
 
         
-        headerRightLayout.addComponent(new Label("|"));
+        //headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(toolVersionsButton);
         headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
         
-        headerRightLayout.addComponent(new Label("|"));
+        //headerRightLayout.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(helpButton);
-        headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
+        //headerRightLayout.addComponent(helpButton);
+        //headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
 
         headerLayout.addComponent(headerRightLayout);
         headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);

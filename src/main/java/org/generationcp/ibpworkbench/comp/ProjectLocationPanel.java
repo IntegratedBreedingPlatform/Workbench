@@ -659,7 +659,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 				LocationDetails details = locdet.get(0);
 				//public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
 				   
-				setBreedingMethodDetailsValues(l.getLname(),details.getLocation_description(),details.getLocation_name(),details.getCountry_full_name(),details.getLocation_abbreviation(),details.getLocation_type(),isOdd);
+				setBreedingMethodDetailsValues(l.getLname(),details.getLocation_description().trim().equals("-") ? "" : details.getLocation_description(),details.getLocation_name(),details.getCountry_full_name(),details.getLocation_abbreviation(),details.getLocation_type(),isOdd);
 			} catch (MiddlewareQueryException e) {
 				e.printStackTrace();
 			} catch (IndexOutOfBoundsException e) {
