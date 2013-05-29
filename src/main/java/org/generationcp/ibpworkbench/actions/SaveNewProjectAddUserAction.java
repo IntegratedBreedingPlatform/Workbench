@@ -29,6 +29,7 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,11 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         question.setSecurityQuestion(userAccount.getSecurityQuestion());
         question.setSecurityAnswer(userAccount.getSecurityAnswer());
         workbenchDataManager.addSecurityQuestion(question);
+        
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(user.getUserid());
+        userInfo.setLoginCount(0);
+        workbenchDataManager.insertOrUpdateUserInfo(userInfo);
         
         // add new user to the TwinColumnSelect
         membersSelect.addItem(user);

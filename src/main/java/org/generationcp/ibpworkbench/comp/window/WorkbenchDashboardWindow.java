@@ -270,15 +270,17 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         try {
             UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
             if (userInfo == null || userInfo.getLoginCount() < 1) {
-                OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-                ow.launchWindow(this, "change_password");
-
-                if (userInfo == null) {
-                    userInfo = new UserInfo();
-                }
-                userInfo.setUserId(user.getUserid());
-                userInfo.setLoginCount(1);
-                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+	            	if (user.getName().equals((user.getPassword())) && userInfo != null){
+		            	OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+		                ow.launchWindow(this, "change_password");
+	            	}
+	            	
+	            	if (userInfo == null) {
+	                    userInfo = new UserInfo();
+	                }
+	                userInfo.setUserId(user.getUserid());
+	                userInfo.setLoginCount(1);
+	                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
             }
             workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
