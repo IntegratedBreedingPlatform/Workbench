@@ -330,7 +330,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					
 				}
 				//TODO NOTE: change the filename of xml/xls using unique identifiers
-				String inputFileName = project.getProjectName().trim() + "test";
+				String inputFileName = "";
 				
 				
 				Study study = null;
@@ -348,6 +348,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				
 				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
 					GxeTable table = (GxeTable) studyTables.get(study.getId());
+					
+					inputFileName = String.format("%s_%s_%s", project.getProjectName().trim(), table.getMeansDataSetId(), table.getMeansDataSet().getName());
 					
 					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(), project);
 				
