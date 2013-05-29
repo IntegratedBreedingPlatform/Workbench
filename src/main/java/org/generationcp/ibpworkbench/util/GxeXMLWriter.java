@@ -21,6 +21,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.generationcp.commons.gxe.xml.GxeData;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
@@ -65,7 +66,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         //Create object to be serialized
         GxePhenotypic phenotypic = new GxePhenotypic();
         
-        Data data = new Data();
+        GxeData data = new GxeData();
         data.setFieldBookFile(gxeInput.getSourceXLSFilePath());
         
         phenotypic.setFieldbook(data);

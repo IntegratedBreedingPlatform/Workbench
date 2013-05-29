@@ -357,7 +357,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					Genotypes genotypes = new Genotypes();
 					genotypes.setName("G!");
 					gxeInput.setGenotypes(genotypes);
-					gxeInput.setEnvironmentName("E!");
+					gxeInput.setEnvironmentName(table.getEnvironmentName());
 					gxeInput.setBreedingViewProjectName(project.getProjectName());
 					
 					GxeUtility.generateXmlFieldBook(gxeInput);

@@ -335,7 +335,12 @@ public class GxeTable extends Table {
 		return meansDataSet;
 	}
 	
+	
 	public List<Experiment> getExperiments() {
 		return exps;
+	}
+	
+	public String getEnvironmentName(){
+		return location_property;
 	}
 }
