@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -304,24 +306,31 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     return;
                 }
                 finally {
-                    String url = tool.getPath();
-                    if (localIbdbUser != null) {
-                        url = getWebLoginForwardUrl(loginUrl, localIbdbUser.getName(), localIbdbUser.getPassword());
+                    try {
+                        String url = tool.getPath();
+                        if (localIbdbUser != null) {
+                            url = getWebLoginForwardUrl(loginUrl, localIbdbUser.getName(), localIbdbUser.getPassword());
+                        }
+                        else if (user != null) {
+                            url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
+                        }
+                        
+                        Embedded browser = new Embedded("", new ExternalResource(url));
+                        browser.setType(Embedded.TYPE_BROWSER);
+                        browser.setSizeFull();
+                        browser.setHeight("800px");
+                        browser.setWidth("100%");
+                        
+                        NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
+                        
+                        IContentWindow contentWindow = (IContentWindow) window;
+                        contentWindow.showContent(browser);
                     }
-                    else if (user != null) {
-                        url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
+                    catch (UnsupportedEncodingException e) {
+                        // intentionally empty
                     }
-                    
-                    Embedded browser = new Embedded("", new ExternalResource(url));
-                    browser.setType(Embedded.TYPE_BROWSER);
-                    browser.setSizeFull();
-                    browser.setHeight("800px");
-                    browser.setWidth("100%");
-                    
-                    NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
-                    
-                    IContentWindow contentWindow = (IContentWindow) window;
-                    contentWindow.showContent(browser);
+                    finally {
+                    }
                 }
             }
             else {
@@ -345,7 +354,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 "<br />" + messageSource.getMessage(Message.LAUNCH_TOOL_ERROR_DESC, tool));
     }
     
-    private String getWebLoginForwardUrl(String url, String username, String password) {
+    private String getWebLoginForwardUrl(String url, String username, String password) throws UnsupportedEncodingException {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         
@@ -356,6 +365,6 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         String contextPath = request.getContextPath();
         int port = request.getServerPort();
         
-        return String.format(urlFormat, scheme, serverName, port, contextPath, url, username, password);
+        return String.format(urlFormat, scheme, serverName, port, contextPath, URLEncoder.encode(url, "UTF-8"), username, password);
     }
 }
