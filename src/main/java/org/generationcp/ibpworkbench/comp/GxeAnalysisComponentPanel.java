@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
@@ -29,6 +31,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.v2.domain.DataSet;
@@ -95,10 +98,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	private ToolUtil toolUtil;
 
 	private Project project;
+	private Role role;
 
-	public GxeAnalysisComponentPanel(Project project) {
+	public GxeAnalysisComponentPanel(Project project,Role role) {
 		LOG.debug("Project is " + project.getProjectName());
 		this.project = project;
+		this.role = role;
 	}
 
 	@Override
@@ -306,7 +311,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		addComponent(horizontal);
 
 		Button button = new Button(
-				"Export study dataset to Breeding View Excel and XML input and launch Breeding View");
+				"Lauch Breeding View");
 		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
 
 		button.addListener(new Button.ClickListener() {
@@ -344,7 +349,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
 					GxeTable table = (GxeTable) studyTables.get(study.getId());
 					
-					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(), project, "xlsInput.xls");
+					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(), project);
 				
 					LOG.debug(xlsFile.getAbsolutePath());
 					
@@ -442,7 +447,31 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				}
 			}
 		});
-
+		
+		Button cancelBtn = new Button("Cancel");
+		cancelBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+			        
+				Project project = GxeAnalysisComponentPanel.this.project;
+				Role role = GxeAnalysisComponentPanel.this.role;
+				
+	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
+	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
+				} catch (Exception e) {
+					LOG.error("Exception", e);
+		            if(e.getCause() instanceof InternationalizableException) {
+		                InternationalizableException i = (InternationalizableException) e.getCause();
+		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+		            }
+		            return;
+				}
+			}
+		});
+		
+		
 		this.setExpandRatio(horizontal, 1.0F);
  
 		HorizontalLayout btnLayout = new HorizontalLayout();
@@ -455,6 +484,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.setExpandRatio(spacer,1.0F);
 		
 		btnLayout.addComponent(button);
+		btnLayout.addComponent(cancelBtn);
 		//btnLayout.addComponent(gxebutton);
 		//btnLayout.addComponent(testGenerateTable);
 		

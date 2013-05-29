@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -87,6 +88,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Embedded downArrowImage4;
     private Embedded twoHeadedArrowImage;
     
+    private Role role;
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
@@ -94,12 +97,14 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
-    public MasWorkflowDiagram(boolean workflowPreview, Project project) {
+    public MasWorkflowDiagram(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
         
         if (!workflowPreview) {
             this.project = project;
         }
+        
+        this.role = role;
     }
     
     @Override
@@ -526,7 +531,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
             
-            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
+            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));

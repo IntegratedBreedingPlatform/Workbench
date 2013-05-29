@@ -15,12 +15,9 @@ package org.generationcp.ibpworkbench.comp.window;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
-import org.generationcp.ibpworkbench.comp.ProjectMembersComponentPanel;
-import org.generationcp.ibpworkbench.navigation.CrumbTrail;
-import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -32,10 +29,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class GxeAnalysisWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -63,8 +58,11 @@ public class GxeAnalysisWindow extends Window implements IContentWindow, Initial
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public GxeAnalysisWindow(Project project) {
+	private Role role;
+
+    public GxeAnalysisWindow(Project project,Role role) {
     	this.project = project;
+    	this.role = role;
     }
 
     /**
@@ -81,7 +79,7 @@ public class GxeAnalysisWindow extends Window implements IContentWindow, Initial
         workbenchTitle.setStyleName("gcp-window-title");
 
        
-        mainContent = new GxeAnalysisComponentPanel(this.project);
+        mainContent = new GxeAnalysisComponentPanel(this.project,this.role);
         
     }
 

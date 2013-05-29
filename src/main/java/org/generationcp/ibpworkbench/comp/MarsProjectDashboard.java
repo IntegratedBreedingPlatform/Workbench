@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -106,16 +107,20 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
 	private Button recomBreedingManagerButton;
 
+	private Role role;
+
 	
-    public MarsProjectDashboard(boolean workflowPreview, Project project) {
-    	this.workflowPreview = workflowPreview;
-    	
+    public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
+        this.workflowPreview = workflowPreview;
+        
         if (!workflowPreview) {
             this.project = project;
         }
+        
+        this.role = role;
     }
-    
-    @Override
+
+	@Override
     public void afterPropertiesSet() {
         assemble();
     }
@@ -707,7 +712,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             
-            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project));
+            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             recomMakeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));

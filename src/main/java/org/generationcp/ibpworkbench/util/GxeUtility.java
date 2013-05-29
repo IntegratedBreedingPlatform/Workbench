@@ -131,7 +131,7 @@ public class GxeUtility {
 	 * @param xlsfilename
 	 * @return File
 	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments, Project currentProject,String xlsfilename) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments, Project currentProject) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
 		
@@ -209,13 +209,14 @@ public class GxeUtility {
 			
 			new File(dir).mkdirs();
 			
-			File xlsFile = new File(dir + File.separator + xlsfilename);
+			File xlsFile = new File(dir + File.separator + gxeDataset.getName().trim());
 			
+			/*
 			for (i = 1; !xlsFile.createNewFile(); i++) {
-				String newFile = xlsfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + xlsfilename.split("\\.(?=[^\\.]+$)")[1];
+				String newFile = gxeDataset.getName().trim().split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + gxeDataset.getName().trim().split("\\.(?=[^\\.]+$)")[1];
 				
 				xlsFile = new File(dir + File.separator + newFile);
-			}
+			}*/
 			
 			FileOutputStream fos = new FileOutputStream(xlsFile);
 			workbook.write(fos);

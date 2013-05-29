@@ -155,11 +155,11 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName != null){
             if (workflowName.equals("MARS")) {
-                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(false, project);
+                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(false, project,role);
                 contentWindow.showContent(projectDashboard);
             }
             else if (workflowName.equals("MAS")) {
-                MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(false, project);
+                MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(false, project,role);
                 contentWindow.showContent(masWorkflowDiagram);
             }
             else if (workflowName.equals("Manager")) {
@@ -167,11 +167,11 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
                 contentWindow.showContent(projectDashboard);
             }
             else if (workflowName.equals("MABC")) {
-                MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(false, project);
+                MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(false, project,role);
                 contentWindow.showContent(mabcWorkflowDiagram);
             }
             else if (workflowName.equals("CB")) {
-                ConventionalBreedingWorkflowDiagram cbDiagram = new ConventionalBreedingWorkflowDiagram(false, project);
+                ConventionalBreedingWorkflowDiagram cbDiagram = new ConventionalBreedingWorkflowDiagram(false, project,role);
                 contentWindow.showContent(cbDiagram);
             }
         }

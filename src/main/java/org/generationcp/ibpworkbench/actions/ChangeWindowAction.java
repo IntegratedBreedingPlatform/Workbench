@@ -30,6 +30,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,8 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     
     @Autowired
     private ToolUtil toolUtil;
+
+	private Role role;
     
     public ChangeWindowAction() {
     }
@@ -134,6 +137,13 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     public ChangeWindowAction(WindowEnums windowEnum, Project project, String toolConfiguration) {
         this.windowEnums = windowEnum;
         this.project = project;
+        this.toolConfiguration = toolConfiguration;
+    }
+    
+    public ChangeWindowAction(WindowEnums windowEnum, Project project,Role role, String toolConfiguration) {
+        this.windowEnums = windowEnum;
+        this.project = project;
+        this.role = role;
         this.toolConfiguration = toolConfiguration;
     }
     
@@ -208,7 +218,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                      return;
                  }
         		 
-        		 GxeAnalysisComponentPanel gxeAnalysisPanel = new GxeAnalysisComponentPanel(this.project);
+        		 GxeAnalysisComponentPanel gxeAnalysisPanel = new GxeAnalysisComponentPanel(this.project,this.role);
          		 w.showContent(gxeAnalysisPanel);
          		 NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
          		

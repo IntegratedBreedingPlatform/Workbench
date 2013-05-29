@@ -32,6 +32,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     
     @Autowired
     private ToolUtil toolUtil;
+
+	private Role role;
     
     public OpenWindowAction() {
     }
@@ -126,7 +129,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         this.project = project;
         this.toolConfiguration = toolConfiguration;
     }
-    
+    public OpenWindowAction(WindowEnum windowEnum, Project project,Role role, String toolConfiguration) {
+        this.windowEnum = windowEnum;
+        this.project = project;
+        this.toolConfiguration = toolConfiguration;
+        this.role = role;
+    }
     
 
 	@Override
@@ -166,7 +174,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	
     	if(WindowEnum.BREEDING_GXE.getwindowName().equals(windowName) )
     	{
-    		mywindow = new GxeAnalysisWindow(this.project);
+    		mywindow = new GxeAnalysisWindow(this.project,this.role);
     		mywindow.setWidth("1000");
     		
     		window.addWindow(mywindow);

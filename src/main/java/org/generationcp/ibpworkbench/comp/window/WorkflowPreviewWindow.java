@@ -77,13 +77,13 @@ public class WorkflowPreviewWindow extends Window implements InitializingBean {
         
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName.equals("MARS")) {
-            MarsProjectDashboard marsWorkflowDiagram = new MarsProjectDashboard(true, null);
+            MarsProjectDashboard marsWorkflowDiagram = new MarsProjectDashboard(true, null,null);
             setHeight(marsWorkflowDiagram.getHeight(), marsWorkflowDiagram.getHeightUnits());
             setWidth(marsWorkflowDiagram.getWidth(), marsWorkflowDiagram.getWidthUnits());
             setContent(marsWorkflowDiagram);
         }
         else if (workflowName.equals("MAS")) {
-            MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(true, null);
+            MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(true, null,null);
             setHeight(masWorkflowDiagram.getHeight(), masWorkflowDiagram.getHeightUnits());
             setWidth(masWorkflowDiagram.getWidth(), masWorkflowDiagram.getWidthUnits());
             setContent(masWorkflowDiagram);
@@ -95,13 +95,13 @@ public class WorkflowPreviewWindow extends Window implements InitializingBean {
             setContent(managerWorkflowDiagram);
         }
         else if (workflowName.equals("MABC")) {
-            MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(true, null);
+            MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(true, null,null);
             setHeight(mabcWorkflowDiagram.getHeight(), mabcWorkflowDiagram.getHeightUnits());
             setWidth(mabcWorkflowDiagram.getWidth(), mabcWorkflowDiagram.getWidthUnits());
             setContent(mabcWorkflowDiagram);
         }
         else if (workflowName.equals("CB")) {
-            ConventionalBreedingWorkflowDiagram cbWorkflowDiagram = new ConventionalBreedingWorkflowDiagram(true, null);
+            ConventionalBreedingWorkflowDiagram cbWorkflowDiagram = new ConventionalBreedingWorkflowDiagram(true, null,null);
             setHeight(cbWorkflowDiagram.getHeight(), cbWorkflowDiagram.getHeightUnits());
             setWidth(cbWorkflowDiagram.getWidth(), cbWorkflowDiagram.getWidthUnits());
             setContent(cbWorkflowDiagram);
