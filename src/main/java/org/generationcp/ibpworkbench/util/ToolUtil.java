@@ -178,7 +178,7 @@ public class ToolUtil {
         }
         
         // show a progress window
-        ProgressWindow progressWindow = new ProgressWindow(messageSource.getMessage(Message.UPDATING_TOOLS_CONFIGURATION), 10 * 1000);
+        ProgressWindow progressWindow = new ProgressWindow(messageSource.getMessage(Message.UPDATING_TOOLS_CONFIGURATION), 25 * 1000);
         progressWindow.setCaption(messageSource.getMessage(Message.UPDATING));
         progressWindow.setModal(true);
         progressWindow.setClosable(false);
