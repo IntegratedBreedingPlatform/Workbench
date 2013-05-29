@@ -61,6 +61,10 @@ public class RunBreedingViewAction implements ClickListener {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
         
+        String newVal = source.getSelEnvFactor().getValue() + "-" + source.getSelEnvForAnalysis().getValue();
+        source.getTxtNameForAnalysisEnv().setValue(newVal);
+        //txtNameForAnalysisEnv
+        
         String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
         if(StringUtils.isNullOrEmpty(analysisProjectName)){
             event.getComponent().getWindow().showNotification("Please enter an Analysis Name.", Notification.TYPE_ERROR_MESSAGE);
