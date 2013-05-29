@@ -24,6 +24,12 @@ public class WebLoginForwardServlet extends HttpServlet {
         String loadHtml = "<html>\r\n"
                         + "<head><title></title></head>\r\n"
                         + "<script type=\"text/javascript\" src=\"/ibpworkbench/VAADIN/themes/gcp-default/jquery-1.7.2.js\"></script>\r\n"
+                        + "<script type=\"text/javascript\">\r\n"
+                        + "$(function() {\r\n"
+                        + "jQuery(\"#loginForm\").submit();\r\n"
+                        + "});\r\n"
+                        + "</script>\r\n"
+                        + "<body>\r\n"
                         + "<div style=\"display: none\">\r\n"
                         + "<form id=\"loginForm\" name=\"LoginForm\" method=\"post\" action=\"%s\">\r\n"
                         + "<input type=\"text\" name=\"uname\" value=\"%s\">\r\n"
@@ -31,9 +37,7 @@ public class WebLoginForwardServlet extends HttpServlet {
                         + "<input type=\"submit\" value=\"Submit\" name=\"login\">\r\n"
                         + "</form>\r\n"
                         + "</div>\r\n"
-                        + "<script type=\"text/javascript\">\r\n"
-                        + "jQuery(\"#loginForm\").submit();\r\n"
-                        + "</script>\r\n"
+                        + "</body>\r\n"
                         + "</html>\r\n";
         
         String html = String.format(loadHtml, loginUrl, username, password);
