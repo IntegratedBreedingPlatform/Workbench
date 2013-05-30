@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -23,6 +24,8 @@ import org.generationcp.middleware.v2.domain.Variable;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
@@ -262,108 +265,130 @@ public class GxeUtility {
 		}
 	}
 	
-	/*
-	public static File exportGeneratedXlsFieldbook(Container tableContainer,Project currentProject,String xlsfilename,boolean unfiltered) {
-		Workbook workbook = new HSSFWorkbook();
-		Sheet defaultSheet = workbook.createSheet();
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String locationProperty,String trialInstanceProperty,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+		ArrayList<String[]> tableItems = new ArrayList<String[]>();
+
+		// get the headers first
+		VariableTypeList vtList = gxeDataset.getVariableTypes();
 		
-		Object[] itemIds = tableContainer.getItemIds().toArray();
-		Object[] propertyIds = tableContainer.getContainerPropertyIds().toArray(); 
+		//Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
+		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
 		
+		int i = 0, j = 0;
+		//Integer datasetTypeFactorId = null;
+		// create header row
+		List<String> headerRow = new ArrayList<String>();
+		// site no && site code insert to columnMap
+		if (locationProperty != null && !locationProperty.isEmpty()) {
+			traitToColNoMap.put(locationProperty,j);
 		
-		// grab only the indexes of the header column where there is a check
-		List<Integer> colIndexes = new ArrayList<Integer>();
-		Row hRow = defaultSheet.createRow(0);
-		int z = 0;
-		for (int i = 1; i < propertyIds.length; i++) {
-			Property headerP = tableContainer.getContainerProperty(itemIds[0],propertyIds[i]);
-			Object headerCol = headerP.getValue();
-			
-			if (headerCol instanceof CheckBox && (Boolean)((CheckBox)headerCol).getValue()
-					|| headerCol instanceof Label || unfiltered)
-			{
-				colIndexes.add(i);
-			
-				if(headerCol instanceof Label) {
-					hRow.createCell(z).setCellValue(((Label)headerCol).getValue().toString());
-					
-				} else if (headerCol instanceof CheckBox) {
-					hRow.createCell(z).setCellValue(((CheckBox)headerCol).getCaption());
-				}
-				z++;
-			}
-			
+			headerRow.add(j,locationProperty);
+			j++;
 		}
 		
-		
-		// First row is headers checkbox, first column is selection checkbox
-		
-		int k=1,l=0; // write pointer cell index to the excel workbook
-		for (int i = 1;i < itemIds.length;i++) {
-
-			Row row = defaultSheet.createRow(k);
-			boolean nextRow = false;
+		if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
+			traitToColNoMap.put(trialInstanceProperty,j);
 			
-			for (Integer j : colIndexes) {
-				Property currentCellP = tableContainer.getContainerProperty(itemIds[i],propertyIds[j]);
-				Object currentCell = currentCellP.getValue();
+			headerRow.add(j,trialInstanceProperty);
+			j++;
+		}
+		
+		for (Trait trait : selectedTraits) {
+			LOG.debug(trait.getName());
+			
+			//if (trait.getName().trim().)
+			traitToColNoMap.put(trait.getName(),j);
+			
+			headerRow.add(j,trait.getName());
+			
+			j++;
+		}
+		
+		String[] headerRowArr = new String[headerRow.size()];
+		tableItems.add(i,headerRow.toArray(headerRowArr));
+		
+		i++;
+		
+		List<String> gxeEnvLabels = new ArrayList<String>();
+		for (GxeEnvironmentLabel env : gxeEnv.getLabels()) {
+			gxeEnvLabels.add(env.getName());
+		}
+		
+		// create table content
+		for (Experiment experiment : experiments) {
+			List<String> row = new ArrayList<String>();
+			
+			// site no && site code insert to columnMap
+			if (locationProperty != null && !locationProperty.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(locationProperty);
 				
-				Property firstColCellP = tableContainer.getContainerProperty(itemIds[i], propertyIds[0]);
-				if (!(Boolean)((CheckBox)firstColCellP.getValue()).getValue())
-					break;
-				else
-					nextRow = true;
-				
-				if (currentCell instanceof Label) {
-					String currentCellString = ((Label)currentCell).toString();
-					
-					row.createCell(l).setCellValue(currentCellString);
-					
-				} else if (currentCell instanceof CheckBox) {
-					String currentCellString = ((CheckBox)currentCell).getCaption();
-					row.createCell(l).setCellValue(currentCellString);
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(locationProperty);
 				}
 				
-				l++;
+				if (var != null && var.getValue() != null) {
+					if (!gxeEnvLabels.contains(var.getValue())) {
+						continue;						
+					}					
+					row.add(traitToColNoMap.get(locationProperty),var.getValue());
+				}
 			}
-			l=0;
 			
-			if (nextRow) k++;
+			if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(trialInstanceProperty);
+				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
+				
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(trialInstanceProperty);
+				}
+				
+				if (var != null && var.getValue() != null)
+					row.add(traitToColNoMap.get(trialInstanceProperty),var.getValue());
+				
+			}
+			
+			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
+				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
+				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
+				
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
+				}
+				
+				if (var != null && var.getValue() != null)
+					row.add(traitMapEntry.getValue(),var.getValue());
+				
+			}
+			
+			String[] rowArr = new String[row.size()];
+			tableItems.add(i,row.toArray(rowArr));
+			
+			i++;
 		}
 		
 		try {
+
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
-			
-			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
+
 			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
-			
-			LOG.debug("save to " + dir);
-			
+
+			LOG.debug("save to" + dir);
+
 			new File(dir).mkdirs();
-			
-			File xlsFile = new File(dir + File.separator + xlsfilename);
-			
-			for (int i = 1; !xlsFile.createNewFile(); i++) {
-				String newFile = xlsfilename.split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + xlsfilename.split("\\.(?=[^\\.]+$)")[1];
-				
-				xlsFile = new File(dir + File.separator + newFile);
-			}
-			
-			FileOutputStream fos = new FileOutputStream(xlsFile);
-			workbook.write(fos);
-			
-			fos.close();
-			
-			
-			return xlsFile.getAbsoluteFile();
-			
+
+			File csvFile = new File(dir + File.separator + gxeDataset.getName()+ ".csv");
+
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
+			csvWriter.writeAll(tableItems);
+			csvWriter.flush();
+			csvWriter.close();
+
+			return csvFile;
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 			return null;
 		}
-		
 	}
-	*/
+	
 }

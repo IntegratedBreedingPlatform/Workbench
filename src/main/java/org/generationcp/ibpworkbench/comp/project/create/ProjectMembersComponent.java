@@ -209,6 +209,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         setSpacing(true);
         setMargin(true);
         
+        select.setHeight("100px");
+        tblMembers.setHeight("140px");
+        
         setComponentAlignment(select,Alignment.TOP_CENTER);
         setComponentAlignment(tblMembers,Alignment.TOP_CENTER);
         setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
