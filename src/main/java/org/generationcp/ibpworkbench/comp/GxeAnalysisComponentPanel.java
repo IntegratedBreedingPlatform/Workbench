@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -221,7 +222,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	protected void generateTabContent(TabSheet tab, Study study) {
+	protected void generateTabContent(TabSheet tabSheet, Study study) {
 	
 
 		VerticalLayout tabContainer = new VerticalLayout();
@@ -263,13 +264,14 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tabContainer.setCaption(study.getName());
 		tabContainer.setData(study);
 		
-		tab.addComponent(tabContainer);
+		tabSheet.addComponent(tabContainer);
 		
 		if (meansDataSet != null)
-			tab.getTab(tabContainer).setCaption(meansDataSet.getName());
+			tabSheet.getTab(tabContainer).setCaption(meansDataSet.getName());
 		
-		tab.getTab(tabContainer).setClosable(true);
-		tab.setCloseHandler(new StudiesTabCloseListener(studyTables));
+		tabSheet.getTab(tabContainer).setClosable(true);
+		tabSheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
+		tabSheet.setSelectedTab(tabContainer);
 	}
 
 	protected void initializeComponents() {
@@ -524,15 +526,29 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			System.out.println(event.getProperty().getValue());
 
 			Property p = event.getProperty();
+			if (p.getValue() == null) return;
 			Container container = studiesTree.getContainerDataSource();
 			Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
-	
+			
+				for ( Iterator<Component> tabs = studiesTabsheet.getComponentIterator(); tabs.hasNext();){
+					Component tab = tabs.next();
+					Study tabStudyData = (Study)((VerticalLayout) tab).getData();
+					if (p2.getValue() != null && tabStudyData != null){
+						if (tabStudyData.getId() == Integer.parseInt(p2.getValue().toString())){
+							studiesTabsheet.setSelectedTab(tab);
+							return;
+						}
+					}
+					
+				}
+			
+			
 			try {
 				Study study = studyDataManager.getStudy(Integer.parseInt(p2.toString()));
 				
 				if (study==null) return;
 				System.out.println("selected from folder tree:" + study.toString());
-				
+			
 				if (study.getName() != null){
 					generateTabContent(studiesTabsheet, study);
 					//repaintTab(studiesTabsheet.getSelectedTab(), study);
