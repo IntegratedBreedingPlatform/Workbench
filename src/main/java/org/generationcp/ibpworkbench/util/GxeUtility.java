@@ -282,14 +282,14 @@ public class GxeUtility {
 		if (locationProperty != null && !locationProperty.isEmpty()) {
 			traitToColNoMap.put(locationProperty,j);
 		
-			headerRow.add(j,locationProperty);
+			headerRow.add(locationProperty);
 			j++;
 		}
 		
 		if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
 			traitToColNoMap.put(trialInstanceProperty,j);
 			
-			headerRow.add(j,trialInstanceProperty);
+			headerRow.add(trialInstanceProperty);
 			j++;
 		}
 		
@@ -316,7 +316,9 @@ public class GxeUtility {
 		
 		// create table content
 		for (Experiment experiment : experiments) {
-			List<String> row = new ArrayList<String>();
+			//List<String> row = new ArrayList<String>(2 + traitToColNoMap.size());
+			String[] row = new String[2 + traitToColNoMap.size()];
+			
 			
 			// site no && site code insert to columnMap
 			if (locationProperty != null && !locationProperty.isEmpty()) {
@@ -330,7 +332,7 @@ public class GxeUtility {
 					if (!gxeEnvLabels.contains(var.getValue())) {
 						continue;						
 					}					
-					row.add(traitToColNoMap.get(locationProperty),var.getValue());
+					row[traitToColNoMap.get(locationProperty)] = var.getValue();
 				}
 			}
 			
@@ -343,7 +345,7 @@ public class GxeUtility {
 				}
 				
 				if (var != null && var.getValue() != null)
-					row.add(traitToColNoMap.get(trialInstanceProperty),var.getValue());
+					row[traitToColNoMap.get(trialInstanceProperty)] = var.getValue();
 				
 			}
 			
@@ -356,12 +358,11 @@ public class GxeUtility {
 				}
 				
 				if (var != null && var.getValue() != null)
-					row.add(traitMapEntry.getValue(),var.getValue());
+					row[traitMapEntry.getValue()] = var.getValue();
 				
 			}
 			
-			String[] rowArr = new String[row.size()];
-			tableItems.add(i,row.toArray(rowArr));
+			tableItems.add(i,row);
 			
 			i++;
 		}
