@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.Experiment;
@@ -173,6 +174,11 @@ public class GxeUtility {
 		
 		i++;
 		
+		List<String> gxeEnvLabels = new ArrayList<String>();
+		for (GxeEnvironmentLabel env : gxeEnv.getLabels()) {
+			gxeEnvLabels.add(env.getName());
+		}
+		
 		// create table content
 		for (Experiment experiment : experiments) {
 			Row row = defaultSheet.createRow(i);
@@ -185,8 +191,12 @@ public class GxeUtility {
 					var = experiment.getVariates().findByLocalName(locationProperty);
 				}
 				
-				if (var != null && var.getValue() != null)
+				if (var != null && var.getValue() != null) {
+					if (!gxeEnvLabels.contains(var.getValue())) {
+						continue;						
+					}					
 					row.createCell(traitToColNoMap.get(locationProperty)).setCellValue(var.getValue());
+				}
 			}
 			
 			if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
