@@ -132,16 +132,14 @@ public class GxeTable extends Table {
 			} else if (tableItems[i].getType() == (GxeTable.CELL_LABEL)) {
 				obj[i] = tableItems[i].getLabel();
 			} else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_ALL)) {
-				CheckBox cb = new CheckBox();
-				cb.setCaption(tableItems[i].getLabel());
-				cb.setValue(tableItems[i].getValue());
+				GxeCheckBoxGroup og = new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, rowIndex, this);
+				
+				og.setImmediate(true);
 
-				cb.setImmediate(true);
+				//og.addListener(new GxeAllCheckboxListener(columnNames.toArray(new String[0]), this
+				//		.getContainerDataSource()));
 
-				cb.addListener(new GxeAllCheckboxListener(columnNames.toArray(new String[0]), this
-						.getContainerDataSource()));
-
-				obj[i] = cb;
+				obj[i] = og;
 			}
 
 			// column checkbox
@@ -181,7 +179,7 @@ public class GxeTable extends Table {
 		Container container = this.getContainerDataSource();
 		container.removeAllItems();
 		
-		container.addContainerProperty(" ", CheckBox.class, new CheckBox());
+		container.addContainerProperty(" ", GxeCheckBoxGroup.class, new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, 0, null));
 		
 		HashSet<String> envNames = new HashSet<String>();
 	
@@ -237,7 +235,7 @@ public class GxeTable extends Table {
 						
 						
 						row[0] = new TableItems();
-						row[0].setType(GxeTable.CELL_CHECKBOX_ROW);
+						row[0].setType(GxeTable.CELL_CHECKBOX_ALL);
 						row[0].setLabel(" ");
 						row[0].setValue(true);
 						
@@ -297,7 +295,7 @@ public class GxeTable extends Table {
 		for (Integer i = 1; i < obj.length; i++){
 			Property cb_column = this.getContainerProperty(obj[i], " ");
 			Property location_column = this.getContainerProperty(obj[i], location_property);
-			if((Boolean) ((CheckBox) cb_column.getValue()).getValue()){
+			if(((GxeCheckBoxGroup) cb_column.getValue()).getValue()){
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
 				environmentLabel.setActive(true);
