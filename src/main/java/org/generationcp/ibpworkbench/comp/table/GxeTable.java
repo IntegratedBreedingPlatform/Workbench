@@ -1,11 +1,11 @@
 package org.generationcp.ibpworkbench.comp.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -76,12 +76,22 @@ public class GxeTable extends Table {
 		this.setSizeFull();
 		this.setContainerDataSource(new IndexedContainer());
 		this.setEditable(true);
+		this.setColumnReorderingAllowed(true);
 
 	}
 
 
 	private void initializeHeader(Map<Integer, String> factors, Map<Integer, String> variates, Container container) {
 
+
+		
+		List<String> factorsList = new ArrayList<String>(factors.values());
+		List<String> variatesList = new ArrayList<String>(variates.values());
+		
+		Collections.sort(factorsList);
+		Collections.sort(variatesList);
+		
+		
 		int cnt = 0;
 		TableItems[] rowHeaders = new TableItems[factors.size()+variates.size()+1];
 		rowHeaders[cnt] = new TableItems();
@@ -92,28 +102,27 @@ public class GxeTable extends Table {
 		
 		cnt++;
 		
-		for( Entry<Integer, String> f : factors.entrySet() ){
+		for( String f : factorsList ){
 			rowHeaders[cnt] = new TableItems();
 			rowHeaders[cnt].setType(GxeTable.CELL_LABEL);
-			rowHeaders[cnt].setLabel(f.getValue());
+			rowHeaders[cnt].setLabel(f);
 			rowHeaders[cnt].setRowId(1);
 			rowHeaders[cnt].setValue(true);
 			cnt++;
 		}
 		
-		for( Entry<Integer, String> v : variates.entrySet() ){
+		for( String v : variatesList ){
 			rowHeaders[cnt] = new TableItems();
 			rowHeaders[cnt].setType(GxeTable.CELL_CHECKBOX_COLUMN);
-			rowHeaders[cnt].setLabel(v.getValue());
+			rowHeaders[cnt].setLabel(v);
 			rowHeaders[cnt].setRowId(1);
 			rowHeaders[cnt].setValue(true);
 			cnt++;
 		}
 		
-		
 		columnNames.add(" ");
-		columnNames.addAll(factors.values());
-		columnNames.addAll(variates.values());
+		columnNames.addAll(factorsList);
+		columnNames.addAll(variatesList);
 
 		this.setVisibleColumns(columnNames.toArray(new Object[0]));
 		this.setColumnHeaders(columnNames.toArray(new String[0]));
