@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
@@ -352,17 +354,18 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					GxeTable table = (GxeTable) studyTables.get(study.getId());
 					
 					inputFileName = String.format("%s_%s_%s", project.getProjectName().trim(), table.getMeansDataSetId(), table.getMeansDataSet().getName());
+					GxeEnvironment gxeEnv = table.getGxeEnvironment();
 					
-					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(), project);
-				
+					List<Trait> selectedTraits = table.getSelectedTraits();
+					File xlsFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getLocation_property(),table.getTrial_instance_property(),gxeEnv,selectedTraits, project);
 					LOG.debug(xlsFile.getAbsolutePath());
 					
 					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
 					
 					gxeInput.setSourceXLSFilePath(xlsFile.getAbsolutePath());
 					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-					gxeInput.setTraits(table.getSelectedTraits());
-					gxeInput.setEnvironment(table.getGxeEnvironment());
+					gxeInput.setTraits(selectedTraits);
+					gxeInput.setEnvironment(gxeEnv);
 					Genotypes genotypes = new Genotypes();
 					genotypes.setName("G!");
 					gxeInput.setGenotypes(genotypes);

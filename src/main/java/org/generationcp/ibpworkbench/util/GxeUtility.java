@@ -6,17 +6,19 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.Variable;
-import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,68 +133,85 @@ public class GxeUtility {
 	 * @param xlsfilename
 	 * @return File
 	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String locationProperty,String trialInstanceProperty,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
 		
 		// get the headers first
 		VariableTypeList vtList = gxeDataset.getVariableTypes();
 		
-		Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
+		//Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
+		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
 		
 		int i = 0, j = 0;
-		Integer datasetTypeFactorId = null;
+		//Integer datasetTypeFactorId = null;
 		// create header row
 		Row headerRow = defaultSheet.createRow(i);
 		
-		for (VariableType factors : vtList.getFactors().getVariableTypes()) {
-			LOG.debug(factors.getId() + ": " + factors.getLocalName());
-			
-			if (factors.getLocalName().trim().equalsIgnoreCase("DATASET_TYPE")) {
-				datasetTypeFactorId = factors.getId();
-			}
-			
-			variableTypeIdToColNoMap.put(factors.getId(),j);
-			
-			headerRow.createCell(j).setCellValue(factors.getLocalName());
-			
-			j++;
-			
-
-		}
-		for (VariableType variates : vtList.getVariates().getVariableTypes()) {
-			variableTypeIdToColNoMap.put(variates.getId(),j);
-			
-			headerRow.createCell(j).setCellValue(variates.getLocalName());
-			
+		// site no && site code insert to columnMap
+		if (locationProperty != null && !locationProperty.isEmpty()) {
+			traitToColNoMap.put(locationProperty,j);
+			headerRow.createCell(j).setCellValue(locationProperty);
 			j++;
 		}
+		
+		if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
+			traitToColNoMap.put(trialInstanceProperty,j);
+			headerRow.createCell(j).setCellValue(trialInstanceProperty);
+			j++;
+		}
+		
+		for (Trait trait : selectedTraits) {
+			LOG.debug(trait.getName());
+			
+			//if (trait.getName().trim().)
+			traitToColNoMap.put(trait.getName(),j);
+			headerRow.createCell(j).setCellValue(trait.getName());
+			
+			j++;
+		}
+		
 		i++;
 		
 		// create table content
 		for (Experiment experiment : experiments) {
 			Row row = defaultSheet.createRow(i);
 			
-			// special case for datasettype factor
-			if (datasetTypeFactorId != null) {
-				j = variableTypeIdToColNoMap.get(datasetTypeFactorId);
-				row.createCell(j).setCellValue(gxeDataset.getDataSetType().getId());
+			// site no && site code insert to columnMap
+			if (locationProperty != null && !locationProperty.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(locationProperty);
+				
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(locationProperty);
+				}
+				
+				if (var != null && var.getValue() != null)
+					row.createCell(traitToColNoMap.get(locationProperty)).setCellValue(var.getValue());
 			}
 			
-			for (Variable variable : experiment.getFactors().getVariables()) {
+			if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(trialInstanceProperty);
+				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
 				
-				// get the colNo where the variable.value will be placed
-				j = variableTypeIdToColNoMap.get(variable.getVariableType().getId());
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(trialInstanceProperty);
+				}
 				
-				row.createCell(j).setCellValue(variable.getValue());
+				if (var != null && var.getValue() != null)
+					row.createCell(traitToColNoMap.get(trialInstanceProperty)).setCellValue(var.getValue());
 			}
 			
-			for (Variable variable : experiment.getVariates().getVariables()) {
+			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
+				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
+				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
 				
-				// get the colNo where the variable.value will be placed
-				j = variableTypeIdToColNoMap.get(variable.getVariableType().getId());
+				if (var == null) {
+					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
+				}
 				
-				row.createCell(j).setCellValue(variable.getValue());
+				if (var != null && var.getValue() != null)
+					row.createCell(traitMapEntry.getValue()).setCellValue(var.getValue());
+				
 			}
 			i++;
 		}

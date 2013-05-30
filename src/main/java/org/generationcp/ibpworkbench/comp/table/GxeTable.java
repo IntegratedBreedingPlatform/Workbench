@@ -46,7 +46,16 @@ public class GxeTable extends Table {
 	private Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
 	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
 	private String location_property = "";
+	
+	public String getLocation_property() {
+		return location_property;
+	}
+
 	private String trial_instance_property = "";
+
+	public String getTrial_instance_property() {
+		return trial_instance_property;
+	}
 
 	private int meansDataSetId;
 
