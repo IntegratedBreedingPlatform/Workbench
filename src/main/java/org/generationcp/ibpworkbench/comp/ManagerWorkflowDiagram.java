@@ -47,7 +47,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 190;
+    private static final int WORKFLOW_STEP_HEIGHT = 180;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -100,6 +100,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	private Button breedingManagerButton;
 
 	private Button makeCrossesButton;
+
+	private Button breedingPlannerButton;
+
+	private Button germplasmImportButton;
     
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
@@ -149,6 +153,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         membersButton.setSizeUndefined();
         membersButton.setDescription(messageSource.getMessage(Message.MEMBERS_LINK_DESC));
+        
+        breedingPlannerButton = new Button("Breeding Planner");
+        breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingPlannerButton.setSizeUndefined();
+        breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
         browseGermplasmButton = new Button("Germplasm Browser");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -220,6 +229,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         nurseryManagerButton.setSizeUndefined();
         nurseryManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_NURSERY_MANAGER));
         
+        germplasmImportButton = new Button("Germplasm Import");
+        germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton.setSizeUndefined();
+        germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
         
         projectMethodsButton = new Button("Project Methods");
         projectMethodsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -292,7 +305,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component fieldTrialArea = layoutConfiguration();
+        Component fieldTrialArea = layoutProjectPlanning();
         layout.addComponent(fieldTrialArea, "top:" + topInPixels  + "; left:" + extraSpace);
         
         //the steps on the second column   
@@ -301,12 +314,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
         String leftInPixels = left + "px";
         
-        Component projectPlanningArea = layoutProjectPlanning();
+        Component projectPlanningArea = layoutBreedingManagement();
         layout.addComponent(projectPlanningArea, "top:" + topInPixels + "; left:" + leftInPixels);
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
-        Component genotypingArea = layoutBreedingManagement();
+        Component genotypingArea = layoutDataManagement();
         layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
         
         //the steps on the third column
@@ -341,6 +354,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(breedingPlannerButton);
+        breedingPlannerButton.setHeight("20px");
+        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingPlannerButton, 0);
+        
         
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
@@ -419,14 +438,13 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(projectLocationButton, 0);
         
         layout.addComponent(createTemplatesButton);
-        createTemplatesButton.setHeight("20px");
         layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(createTemplatesButton, 0);
         
         return layout;
     }
 
-    protected Component layoutConfiguration() {
+    protected Component layoutDataManagement() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -439,6 +457,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(fieldbookButton);
+        fieldbookButton.setHeight("20px");
+        layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(fieldbookButton, 0);
         
         layout.addComponent(gdmsButton);
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
@@ -473,11 +496,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(fieldbookButton);
-        fieldbookButton.setHeight("20px");
-        layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(fieldbookButton, 0);
-        
         layout.addComponent(manageGermplasmListsButton);
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -612,6 +630,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            
+            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER)); //TODO: change this to run breeding planner tool
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
@@ -631,6 +651,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
+            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK,this.project,WorkflowConstants.GERMPLASM_IMPORT)); //TODO: update to launch appropriate action
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
@@ -668,12 +689,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(browseGermplasmListsButton,Message.GERMPLASM_LIST_BROWSER_LINK);
         
         messageSource.setValue(analysisPipelineTitle,Message.ANALYSIS_PIPELINE_TITLE);
-        messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK);
+        messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW);
         
-        messageSource.setValue(genoTypingTitle,Message.GENOTYPING);
+        messageSource.setValue(genoTypingTitle,Message.DATA_MANAGEMENT_TITLE);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
         
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);

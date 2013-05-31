@@ -109,6 +109,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
 	private Role role;
 
+	private Button breedingPlannerButton;
+
+	private Button germplasmImportButton;
+
 	
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
@@ -194,6 +198,16 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagerButton = new Button();
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
+        
+        breedingPlannerButton = new Button("Breeding Planner");
+        breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingPlannerButton.setSizeUndefined();
+        breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
+        
+        germplasmImportButton = new Button("Import Germplasm Lists");
+        germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton.setSizeUndefined();
+        germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
         
         // field trial management buttons
         fieldBookButton = new Button();
@@ -303,7 +317,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("670px");
+        layout.setHeight("700px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -327,6 +341,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         Component genotypingArea = layoutGenotyping();
         layout.addComponent(genotypingArea);
+        
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setWidth("100%");
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
 
         panel.setContent(layout);
         return panel;
@@ -346,6 +366,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        layout.addComponent(breedingPlannerButton);
+        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingPlannerButton, 0);
+        
         layout.addComponent(browseGermplasmButton);
        // browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
@@ -380,6 +404,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(germplasmImportButton);
+        layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton, 0);
         
         layout.addComponent(manageGermplasmListsButton);
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -443,7 +471,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("670px");
+        layout.setHeight("700px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -486,12 +514,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
-        /*
+        
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         //breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		*/
+		
+        
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         //multiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
@@ -543,11 +572,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
-        /*
+        
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		*/
+		
         return layout;
     }
 
@@ -555,7 +584,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("680px");
+        layout.setHeight("700px");
         //layout.setWidth("274px");
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -682,13 +711,17 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("120px");
+        layout.setHeight("125px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
 
     protected void initializeActions() {
         if (!workflowPreview) {
+        	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK,project,WorkflowConstants.GERMPLASM_IMPORT)); //TODO
+        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER)); //TODO
+        	
+        	
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
