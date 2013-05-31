@@ -1,5 +1,9 @@
 @import url(../reindeer/styles.css);
 
+.v-app-IBPWorkbenchApplication {
+	background: rgb(204,213,173);
+}
+
 .v-table-body {
 	background: rgba(255,255,255,0.7);
 }
@@ -360,4 +364,29 @@ s
 
 .gcp-crumb-active .v-button-caption {
 	font-weight: bold;
+}
+
+.gcp-login-title {
+	line-height: 24px;
+	font-size: 24px;
+	color: white;
+	font-weight: normal;
+	margin-left: 80px;
+	text-transform: uppercase;
+}
+
+.gcp-login-subtitle {
+	line-height: 16px;
+	font-size: 16px;
+	color: white;
+	font-weight: normal;
+	margin-left: 80px;
+	text-transform: uppercase;
+}
+
+.gcp-loginform-lbl {
+	text-transform: uppercase;
+	position: relative;
+	top: 4px;
+	color: rgb(68, 72, 55);
 }

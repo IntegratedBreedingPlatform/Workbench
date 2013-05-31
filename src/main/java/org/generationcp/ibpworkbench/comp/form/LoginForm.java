@@ -15,7 +15,6 @@ package org.generationcp.ibpworkbench.comp.form;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,12 +27,14 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class LoginForm extends CustomComponent implements InitializingBean, InternationalizableComponent {
@@ -54,6 +55,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+	private Label lblSubTitle;
 
     public LoginForm() {
         super();
@@ -124,9 +127,9 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         // common part: create layout
         Panel loginPanel = new Panel();
         loginPanel.setImmediate(false);
-        loginPanel.setWidth("360px");
-        loginPanel.setHeight("230px");
-        loginPanel.setStyleName("gcp-login");
+        loginPanel.setWidth("366px");
+        loginPanel.setHeight("240px");
+        loginPanel.setStyleName(Reindeer.PANEL_LIGHT + " gcp-login");
 
         // login panel layout
         VerticalLayout loginPanelLayout = new VerticalLayout();
@@ -137,33 +140,55 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
 
         // title label
         lblTitle = new Label();
-        lblTitle.setWidth(null);
-        lblTitle.setStyleName("gcp-section-title-large");
+        lblTitle.setWidth("100%");
+        lblTitle.setStyleName("gcp-login-title");
+        
+        lblSubTitle = new Label();
+        lblSubTitle.setWidth("100%");
+        lblSubTitle.setStyleName("gcp-login-subtitle");
+        
         loginPanelLayout.addComponent(lblTitle);
-        loginPanelLayout.setComponentAlignment(lblTitle, Alignment.TOP_CENTER);
-        loginPanelLayout.setExpandRatio(lblTitle, 0);
-
+        loginPanelLayout.addComponent(lblSubTitle);
+        
         GridLayout usernamePasswordArea = buildUsernamePasswordArea();
+        usernamePasswordArea.setSpacing(true);
+        
         loginPanelLayout.addComponent(usernamePasswordArea);
         loginPanelLayout.setComponentAlignment(usernamePasswordArea, Alignment.TOP_CENTER);
         loginPanelLayout.setExpandRatio(usernamePasswordArea, 0);
+        
 
         btnLogin = new Button();
         btnLogin.setClickShortcut(KeyCode.ENTER);
         
+        HorizontalLayout dummy = new HorizontalLayout();
+        dummy.setMargin(true);
+        dummy.setSizeUndefined();
+        
+        dummy.addComponent(btnLogin);
+        
         //btnLogin.addStyleName("primary");
-        loginPanelLayout.addComponent(btnLogin);
-        loginPanelLayout.setComponentAlignment(btnLogin, Alignment.TOP_CENTER);
+        loginPanelLayout.addComponent(dummy);
+        loginPanelLayout.setComponentAlignment(dummy, Alignment.TOP_CENTER);
+        
+        HorizontalLayout subLinksLayout = new HorizontalLayout();
+        subLinksLayout.setSizeUndefined();
+        //subLinksLayout.setMargin(true,false,true,false);
+        subLinksLayout.setSpacing(true);
+        
         
         forgotPasswordButton = new Button();
-        forgotPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
-        loginPanelLayout.addComponent(forgotPasswordButton);
-        loginPanelLayout.setComponentAlignment(forgotPasswordButton, Alignment.BOTTOM_CENTER);
+        forgotPasswordButton.setStyleName(BaseTheme.BUTTON_LINK  + " gcp-workflow-link");
+        subLinksLayout.addComponent(forgotPasswordButton);
         
         registerUserAccountButton = new Button();
-        registerUserAccountButton.setStyleName(BaseTheme.BUTTON_LINK);
-        loginPanelLayout.addComponent(registerUserAccountButton);
-        loginPanelLayout.setComponentAlignment(registerUserAccountButton, Alignment.BOTTOM_CENTER);
+        registerUserAccountButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        subLinksLayout.addComponent(registerUserAccountButton);
+
+        
+        
+        loginPanelLayout.addComponent(subLinksLayout);
+        loginPanelLayout.setComponentAlignment(subLinksLayout, Alignment.TOP_CENTER);
 
         loginPanelLayout.requestRepaint();
         loginPanel.requestRepaint();
@@ -175,26 +200,26 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         // email address
         lblUsername = new Label();
         lblUsername.setWidth(null);
-
+        lblUsername.setStyleName("gcp-loginform-lbl");
         txtUsername = new TextField();
         txtUsername.focus();
 
         // password
         lblPassword = new Label();
         lblPassword.setWidth(null);
-
+        lblPassword.setStyleName("gcp-loginform-lbl");
         pfPassword = new PasswordField();
         
         messageArea = buildMessageArea();
         
-        GridLayout gridLayout = new GridLayout(2, 3);
+        GridLayout gridLayout = new GridLayout(2, 2);
         gridLayout.setMargin(true, false, false, false);
         gridLayout.setWidth("250px");
         gridLayout.addComponent(lblUsername);
         gridLayout.addComponent(txtUsername);
         gridLayout.addComponent(lblPassword);
         gridLayout.addComponent(pfPassword);
-        gridLayout.addComponent(messageArea, 0, 2, 1, 2);
+        //gridLayout.addComponent(messageArea, 0, 2, 1, 2);
 
         lblMessage.setVisible(false);
         
@@ -228,6 +253,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     @Override
     public void updateLabels() {
         messageSource.setValue(lblTitle, Message.LOGIN_TITLE);
+        messageSource.setValue(lblSubTitle, Message.LOGIN_SUBTITLE);
+        
         messageSource.setCaption(btnLogin, Message.LOGIN);
         messageSource.setValue(lblUsername, Message.USERNAME);
         messageSource.setValue(lblPassword, Message.PASSWORD);
