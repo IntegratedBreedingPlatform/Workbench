@@ -631,7 +631,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER)); //TODO: change this to run breeding planner tool
+            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO: change this to run breeding planner tool
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
@@ -651,7 +651,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
-            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK,this.project,WorkflowConstants.GERMPLASM_IMPORT)); //TODO: update to launch appropriate action
+            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT)); //TODO: update to launch appropriate action
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));

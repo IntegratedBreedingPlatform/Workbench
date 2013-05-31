@@ -489,8 +489,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     
     protected void initializeActions() {
         if (!workflowPreview) {
-        	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK,project,WorkflowConstants.GERMPLASM_IMPORT)); //TODO
-        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER)); //TODO
+        	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT)); //TODO: update to launch appropriate action
+            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
         	
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));

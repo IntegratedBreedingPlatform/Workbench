@@ -54,6 +54,16 @@
           label="Nursery Template Wizard"
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/germplasm_import"
+          label="Germplasm Import"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/breeding_planner"
+          label="Breeding Planner"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
     <view path="/germplasm_list_browser"
           label="Browse Germplasm Lists"
