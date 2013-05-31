@@ -137,7 +137,7 @@ public class GxeUtility {
 	 * @param xlsfilename
 	 * @return File
 	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String locationProperty,String trialInstanceProperty,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
 		
@@ -153,17 +153,12 @@ public class GxeUtility {
 		Row headerRow = defaultSheet.createRow(i);
 		
 		// site no && site code insert to columnMap
-		if (locationProperty != null && !locationProperty.isEmpty()) {
-			traitToColNoMap.put(locationProperty,j);
-			headerRow.createCell(j).setCellValue(locationProperty);
+		if (environmentName != null && !environmentName.isEmpty()) {
+			traitToColNoMap.put(environmentName,j);
+			headerRow.createCell(j).setCellValue(environmentName);
 			j++;
 		}
 		
-		if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
-			traitToColNoMap.put(trialInstanceProperty,j);
-			headerRow.createCell(j).setCellValue(trialInstanceProperty);
-			j++;
-		}
 		
 		for (Trait trait : selectedTraits) {
 			LOG.debug(trait.getName());
@@ -187,32 +182,21 @@ public class GxeUtility {
 			Row row = defaultSheet.createRow(i);
 			
 			// site no && site code insert to columnMap
-			if (locationProperty != null && !locationProperty.isEmpty()) {
-				Variable var = experiment.getFactors().findByLocalName(locationProperty);
+			if (environmentName != null && !environmentName.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(environmentName);
 				
 				if (var == null) {
-					var = experiment.getVariates().findByLocalName(locationProperty);
+					var = experiment.getVariates().findByLocalName(environmentName);
 				}
 				
 				if (var != null && var.getValue() != null) {
 					if (!gxeEnvLabels.contains(var.getValue())) {
 						continue;						
 					}					
-					row.createCell(traitToColNoMap.get(locationProperty)).setCellValue(var.getValue());
+					row.createCell(traitToColNoMap.get(environmentName)).setCellValue(var.getValue());
 				}
 			}
 			
-			if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
-				Variable var = experiment.getFactors().findByLocalName(trialInstanceProperty);
-				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
-				
-				if (var == null) {
-					var = experiment.getVariates().findByLocalName(trialInstanceProperty);
-				}
-				
-				if (var != null && var.getValue() != null)
-					row.createCell(traitToColNoMap.get(trialInstanceProperty)).setCellValue(var.getValue());
-			}
 			
 			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
@@ -235,7 +219,7 @@ public class GxeUtility {
 				throw new Exception("currentProject is null");
 			
 			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "C:\\workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 			
 			LOG.debug("save to " + dir);
 			
@@ -265,7 +249,7 @@ public class GxeUtility {
 		}
 	}
 	
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String locationProperty,String trialInstanceProperty,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 
 		// get the headers first
@@ -279,19 +263,13 @@ public class GxeUtility {
 		// create header row
 		List<String> headerRow = new ArrayList<String>();
 		// site no && site code insert to columnMap
-		if (locationProperty != null && !locationProperty.isEmpty()) {
-			traitToColNoMap.put(locationProperty,j);
+		if (environmentName != null && !environmentName.isEmpty()) {
+			traitToColNoMap.put(environmentName,j);
 		
-			headerRow.add(locationProperty);
+			headerRow.add(environmentName);
 			j++;
 		}
 		
-		if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
-			traitToColNoMap.put(trialInstanceProperty,j);
-			
-			headerRow.add(trialInstanceProperty);
-			j++;
-		}
 		
 		for (Trait trait : selectedTraits) {
 			LOG.debug(trait.getName());
@@ -321,33 +299,21 @@ public class GxeUtility {
 			
 			
 			// site no && site code insert to columnMap
-			if (locationProperty != null && !locationProperty.isEmpty()) {
-				Variable var = experiment.getFactors().findByLocalName(locationProperty);
+			if (environmentName != null && !environmentName.isEmpty()) {
+				Variable var = experiment.getFactors().findByLocalName(environmentName);
 				
 				if (var == null) {
-					var = experiment.getVariates().findByLocalName(locationProperty);
+					var = experiment.getVariates().findByLocalName(environmentName);
 				}
 				
 				if (var != null && var.getValue() != null) {
 					if (!gxeEnvLabels.contains(var.getValue())) {
 						continue;						
 					}					
-					row[traitToColNoMap.get(locationProperty)] = var.getValue();
+					row[traitToColNoMap.get(environmentName)] = var.getValue();
 				}
 			}
 			
-			if (trialInstanceProperty != null && !trialInstanceProperty.isEmpty()) {
-				Variable var = experiment.getFactors().findByLocalName(trialInstanceProperty);
-				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
-				
-				if (var == null) {
-					var = experiment.getVariates().findByLocalName(trialInstanceProperty);
-				}
-				
-				if (var != null && var.getValue() != null)
-					row[traitToColNoMap.get(trialInstanceProperty)] = var.getValue();
-				
-			}
 			
 			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());

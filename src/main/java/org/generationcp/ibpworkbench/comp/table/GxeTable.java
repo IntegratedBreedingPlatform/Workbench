@@ -45,17 +45,8 @@ public class GxeTable extends Table {
 	private List<String> columnNames = new ArrayList<String>(); 
 	private Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
 	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
-	private String location_property = "";
-	
-	public String getLocation_property() {
-		return location_property;
-	}
 
-	private String trial_instance_property = "";
-
-	public String getTrial_instance_property() {
-		return trial_instance_property;
-	}
+	private String selectedEnvFactorName = "";
 
 	private int meansDataSetId;
 
@@ -63,7 +54,8 @@ public class GxeTable extends Table {
 
 	private List<Experiment> exps;
 
-	public GxeTable(StudyDataManager studyDataManager, Integer studyId) {
+	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName) {
+		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.studyDataManager = studyDataManager;
 		initializeTable();
 		fillTableWithDataset(studyId);
@@ -216,23 +208,24 @@ public class GxeTable extends Table {
 					VariableTypeList factors = meansDataSet.getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
 					for(VariableType f : factors.getVariableTypes()){
 						//SITE_NAME
-						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("location")){
+						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getId(), f.getLocalName());
-							location_property = f.getLocalName();
+							
 						}
-						//SITE_NO
+						/**SITE_NO
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("trial instance")){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getId(), f.getLocalName());
-							trial_instance_property = f.getLocalName();
-						}
+							
+						}**/
 					}
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
 						container.addContainerProperty(v.getLocalName(), CheckBox.class, new CheckBox());
-						variateLocalNames.put(v.getId(), v.getLocalName());
+						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
+							variateLocalNames.put(v.getId(), v.getLocalName());
 					}
 					
 					
@@ -245,7 +238,7 @@ public class GxeTable extends Table {
 					
 					for (Experiment exp : exps){
 						
-						String locationVal = exp.getFactors().findByLocalName(location_property).getValue();
+						String locationVal = exp.getFactors().findByLocalName(selectedEnvFactorName).getValue();
 						if (envNames.contains(locationVal)) continue;
 						
 						
@@ -262,7 +255,7 @@ public class GxeTable extends Table {
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
 							String fValue = exp.getFactors().findById(f.getKey()).getValue();
-							if (f.getValue().equalsIgnoreCase(location_property)) envNames.add(fValue);
+							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) envNames.add(fValue);
 							row[cellCounter] = new TableItems();
 							row[cellCounter].setLabel(fValue);
 							row[cellCounter].setType(GxeTable.CELL_LABEL);
@@ -276,7 +269,7 @@ public class GxeTable extends Table {
 							String meansData = "";
 							try{
 								meansData = String.valueOf(studyDataManager.countExperimentsByTrialEnvironmentAndVariate(
-										envs.findOnlyOneByLocalName(trial_instance_property, row[2].getLabel()).getId(), 
+										envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId(), 
 										v.getKey()));
 							}catch(Exception e){
 								System.out.println("Error in getting the means data.");
@@ -312,7 +305,7 @@ public class GxeTable extends Table {
 		
 		for (Integer i = 1; i < obj.length; i++){
 			Property cb_column = this.getContainerProperty(obj[i], " ");
-			Property location_column = this.getContainerProperty(obj[i], location_property);
+			Property location_column = this.getContainerProperty(obj[i], selectedEnvFactorName);
 			if(((GxeCheckBoxGroup) cb_column.getValue()).getValue()){
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
@@ -357,6 +350,6 @@ public class GxeTable extends Table {
 	}
 	
 	public String getEnvironmentName(){
-		return location_property;
+		return selectedEnvFactorName;
 	}
 }

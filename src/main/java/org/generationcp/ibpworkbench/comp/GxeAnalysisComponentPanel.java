@@ -24,6 +24,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectEnvironmentForGxeWindow;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
@@ -225,8 +226,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	protected void generateTabContent(TabSheet tabSheet, Study study) {
+	public void generateTabContent(Study study, String selectedEnvFactorName) {
 	
+		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
 
 		VerticalLayout tabContainer = new VerticalLayout();
 		tabContainer.setStyleName("gcp-light-grey");
@@ -250,7 +252,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		
 		
 		if (ds != null && ds.size() > 0){
-			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId()));
+			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId(), selectedEnvFactorName));
 			tabContainer.addComponent(studyTables.get(study.getId()));
 			tabContainer.setExpandRatio(studyTables.get(study.getId()), 1.0F);
 			
@@ -267,14 +269,14 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tabContainer.setCaption(study.getName());
 		tabContainer.setData(study);
 		
-		tabSheet.addComponent(tabContainer);
+		studiesTabsheet.addComponent(tabContainer);
 		
 		if (meansDataSet != null)
-			tabSheet.getTab(tabContainer).setCaption(meansDataSet.getName());
+			studiesTabsheet.getTab(tabContainer).setCaption(meansDataSet.getName());
 		
-		tabSheet.getTab(tabContainer).setClosable(true);
-		tabSheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
-		tabSheet.setSelectedTab(tabContainer);
+		studiesTabsheet.getTab(tabContainer).setClosable(true);
+		studiesTabsheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
+		studiesTabsheet.setSelectedTab(tabContainer);
 	}
 
 	protected void initializeComponents() {
@@ -372,9 +374,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 									File datasetExportFile = null;
 									
 									if (dialog.isConfirmed())
-										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getLocation_property(),table.getTrial_instance_property(),gxeEnv,selectedTraits, project);
+										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
 									else
-										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getLocation_property(),table.getTrial_instance_property(),gxeEnv,selectedTraits, project);
+										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
 									
 									
 									LOG.debug(datasetExportFile.getAbsolutePath());
@@ -417,8 +419,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 							
 							
 						});
-						
-									
+				
 									
 						Button testBtn = new Button("test");
 						testBtn.addListener(new Button.ClickListener() {
@@ -467,7 +468,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				try {
 					study = studyDataManager.getStudy(10080);
 				
-					generateTabContent(studiesTabsheet,study);
+					generateTabContent(study,"");
 					
 					studiesTabsheet.setImmediate(true);	
 				} catch (MiddlewareQueryException e) {
@@ -531,7 +532,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	protected void initializeActions() {
 		// newMemberButton.addListener(new
 		// OpenNewProjectAddUserWindowAction(select));
-		studiesTree.addListener(new StudiesTreeAction());
+		studiesTree.addListener(new StudiesTreeAction(this));
 		// studiesTabsheet.addListener(new StudiesTabFocusListener());
 
 	}
@@ -542,14 +543,22 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		/**
 		 * 
 		 */
+		private GxeAnalysisComponentPanel gxeAnalysisComponentPanel;
+		
 		private static final long serialVersionUID = 1L;
+
+		public StudiesTreeAction(
+				GxeAnalysisComponentPanel gxeAnalysisComponentPanel) {
+			// TODO Auto-generated constructor stub
+			this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
+		}
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			
 			System.out.println(event);
 			System.out.println(event.getProperty().getValue());
-
+			
 			Property p = event.getProperty();
 			if (p.getValue() == null) return;
 			Container container = studiesTree.getContainerDataSource();
@@ -574,10 +583,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				if (study==null) return;
 				System.out.println("selected from folder tree:" + study.toString());
 			
-				if (study.getName() != null){
-					generateTabContent(studiesTabsheet, study);
-					//repaintTab(studiesTabsheet.getSelectedTab(), study);
-					studiesTabsheet.setImmediate(true);	
+				if (study.getName() != null && studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).size() > 0){
+					
+					SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, study, gxeAnalysisComponentPanel);
+					gxeAnalysisComponentPanel.getWindow().addWindow(win);
+					//studiesTabsheet.setImmediate(true);	
 				}
 				
 				
