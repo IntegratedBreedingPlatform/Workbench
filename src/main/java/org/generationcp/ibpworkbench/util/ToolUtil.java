@@ -363,6 +363,7 @@ public class ToolUtil {
 		} else if (Util.isOneOf(tool.getToolName(),
 				ToolName.list_manager.name())) {
 		    // crossing manager uses the same property file
+			// nursery_template_wizard uses the same property file
 		    // so no need to update 
 			updateToolMiddlewareDatabaseConfiguration(
 					"infrastructure/tomcat/webapps/BreedingManager/WEB-INF/classes/IBPDatasource.properties",

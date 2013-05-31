@@ -50,6 +50,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
+    <view path="/nursery_template_wizard"
+          label="Nursery Template Wizard"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+          
     <view path="/germplasm_list_browser"
           label="Browse Germplasm Lists"
           level="2"

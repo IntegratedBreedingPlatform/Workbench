@@ -47,7 +47,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 160;
+    private static final int WORKFLOW_STEP_HEIGHT = 190;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -81,6 +81,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button nurseryManagerButton;
     private Button projectLocationButton;
     private Button projectMethodsButton;
+    private Button createTemplatesButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -250,6 +251,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         makeCrossesButton.setSizeUndefined();
         makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
+        
+        createTemplatesButton = new Button(messageSource.getMessage(Message.NURSERY_TEMPLATE));
+        createTemplatesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        createTemplatesButton.setSizeUndefined();
+        createTemplatesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_NURSERY_TEMPLATE));
     }
 
     protected void initializeLayout() {
@@ -274,7 +280,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("360px");
+        layout.setHeight("420px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -411,6 +417,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         projectLocationButton.setHeight("20px");
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
+        
+        layout.addComponent(createTemplatesButton);
+        createTemplatesButton.setHeight("20px");
+        layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(createTemplatesButton, 0);
         
         return layout;
     }
@@ -629,6 +640,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            createTemplatesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_TEMPLATE_WIZARD));
             
         }
     }

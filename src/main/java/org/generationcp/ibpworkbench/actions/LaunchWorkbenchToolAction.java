@@ -77,6 +77,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,MBDT("mbdt")
         ,LIST_MANAGER("list_manager")
         ,CROSSING_MANAGER("crossing_manager")
+        ,NURSERY_TEMPLATE_WIZARD("nursery_template_wizard")
         ;
         
         String toolName;
