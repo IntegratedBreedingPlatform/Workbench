@@ -40,6 +40,8 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.v2.domain.Enumeration;
 import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.FactorType;
+import org.generationcp.middleware.v2.domain.TrialEnvironment;
+import org.generationcp.middleware.v2.domain.TrialEnvironments;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.util.Debug;
 import org.springframework.beans.factory.InitializingBean;
@@ -139,7 +141,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
             ,Project project) {
 
         this.tool = tool;
-        this.breedingViewInput = breedingViewInput;
+        this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
         
@@ -251,9 +253,9 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         txtVersion = new TextField();
         txtVersion.setNullRepresentation("");
         
-        if (!StringUtils.isNullOrEmpty(breedingViewInput.getVersion())) {
+        if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getVersion())) {
             
-            txtVersion.setValue(breedingViewInput.getVersion());
+            txtVersion.setValue(getBreedingViewInput().getVersion());
             txtVersion.setReadOnly(true);
             txtVersion.setRequired(false);
             
@@ -272,8 +274,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         
         txtAnalysisName = new TextField();
         txtAnalysisName.setNullRepresentation("");
-        if (!StringUtils.isNullOrEmpty(breedingViewInput.getBreedingViewProjectName())) {
-            txtAnalysisName.setValue(breedingViewInput.getBreedingViewProjectName());
+        if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewProjectName())) {
+            txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewProjectName());
         }
         txtAnalysisName.setRequired(false);
         txtAnalysisName.setWidth("95%");
@@ -291,7 +293,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         selEnvForAnalysis = new Select();
         selEnvForAnalysis.setImmediate(true); 
         populateChoicesForEnvForAnalysis();
-        selEnvForAnalysis.setNullSelectionAllowed(false);
+        selEnvForAnalysis.setNullSelectionAllowed(true);
         selEnvForAnalysis.setNewItemsAllowed(false);
         
         txtNameForAnalysisEnv = new TextField();
@@ -386,8 +388,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         	this.selEnvForAnalysis.removeAllItems();
         }catch(Exception e){}
     	
-        String envFactorName = (String) this.selEnvFactor.getValue();
-        
+        String envFactorName = (String) this.selEnvFactor.getValue();   
 		
         
         VariableType factor = getFactorByLocalName(envFactorName);
@@ -396,7 +397,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         	
         	List<Experiment> exps;
 			try {
-				exps = managerFactory.getNewStudyDataManager().getExperiments(breedingViewInput.getDatasetId(), 0, Integer.MAX_VALUE);
+				exps = getManagerFactory().getNewStudyDataManager().getExperiments(getBreedingViewInput().getDatasetId(), 0, Integer.MAX_VALUE);
 				for (Experiment exp : exps){
 	    			String locationVal = exp.getFactors().findByLocalName(envFactorName).getValue();
 	    			if (selEnvForAnalysis.containsId(locationVal)) continue;
@@ -420,9 +421,10 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         	}
         	
         	//for testing
-        	selEnvForAnalysis.addItem("AAA");
-        	selEnvForAnalysis.setValue("AAA");
+        	
+        	
             **/
+			selEnvForAnalysis.addItem("TEST-INVALID");
             if (this.selEnvForAnalysis.getItemIds().size() < 1) {
             	this.selEnvForAnalysis.setEnabled(false);
             }else{
@@ -665,7 +667,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     @Override
     public void afterPropertiesSet() {
-        managerFactory = managerFactoryProvider.getManagerFactoryForProject(this.project);
+        setManagerFactory(managerFactoryProvider.getManagerFactoryForProject(this.project));
         
         assemble();
     }
@@ -696,6 +698,27 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
         messageSource.setCaption(btnCancel, Message.CANCEL);
     }
+
+
+
+
+	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
+		this.breedingViewInput = breedingViewInput;
+	}
+
+
+
+
+	public ManagerFactory getManagerFactory() {
+		return managerFactory;
+	}
+
+
+
+
+	public void setManagerFactory(ManagerFactory managerFactory) {
+		this.managerFactory = managerFactory;
+	}
     
   
 
