@@ -67,7 +67,12 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         GxePhenotypic phenotypic = new GxePhenotypic();
         
         GxeData data = new GxeData();
-        data.setFieldBookFile(gxeInput.getSourceXLSFilePath());
+        if (gxeInput.getSourceXLSFilePath() != "" && gxeInput.getSourceXLSFilePath() != null){
+        	data.setFieldBookFile(gxeInput.getSourceXLSFilePath());
+        }else{
+        	data.setCsvFile(gxeInput.getSourceCSVFilePath());
+        }
+        
         
         phenotypic.setFieldbook(data);
         

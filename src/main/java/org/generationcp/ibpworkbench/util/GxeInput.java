@@ -44,6 +44,7 @@ public class GxeInput implements Serializable {
     private String environmentName;
     private String version;
     private String sourceXLSFilePath;
+    private String sourceCSVFilePath;
     private String destXMLFilePath;
     private String projectType;
     private String designType;
@@ -309,15 +310,26 @@ public class GxeInput implements Serializable {
 
     @Override
     public String toString() {
-        return "BreedingViewInput [project=" + project
+        return "GxeInput [project=" + project
                 + ", BreedingViewProjectName=" + BreedingViewProjectName
                 + ", datasetId=" + datasetId + ", environmentName="
                 + environmentName + ", version=" + version
                 + ", sourceXLSFilePath=" + sourceXLSFilePath
+                + ", sourceCSVFilePath=" + sourceCSVFilePath
                 + ", destXMLFilePath=" + destXMLFilePath + ", projectType="
                 + projectType + ", designType=" + designType + ", blocks="
                 + blocks + ", replicates=" + replicates + "]";
     }
+
+	public String getSourceCSVFilePath() {
+		// TODO Auto-generated method stub
+		return sourceCSVFilePath;
+	}
+	
+	public void setSourceCSVFilePath(String sourceCSVFilePath) {
+		// TODO Auto-generated method stub
+		this.sourceCSVFilePath = sourceCSVFilePath;
+	}
 
     
 

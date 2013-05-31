@@ -383,7 +383,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 									
 									GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
 									
-									gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
+									if (dialog.isConfirmed())
+										gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
+									else
+										gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
+								
 									gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
 									gxeInput.setTraits(selectedTraits);
 									gxeInput.setEnvironment(gxeEnv);
