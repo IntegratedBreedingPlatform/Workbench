@@ -27,6 +27,7 @@ import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeLi
 import org.generationcp.ibpworkbench.actions.CancelDetailsAsInputForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
@@ -37,6 +38,7 @@ import org.generationcp.middleware.pojos.Trait;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.v2.domain.Enumeration;
+import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.FactorType;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.util.Debug;
@@ -386,11 +388,30 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     	
         String envFactorName = (String) this.selEnvFactor.getValue();
         
+		
+        
         VariableType factor = getFactorByLocalName(envFactorName);
         
         if (factor != null){
         	
-        	if (factor.getStandardVariable().hasEnumerations()){
+        	List<Experiment> exps;
+			try {
+				exps = managerFactory.getNewStudyDataManager().getExperiments(breedingViewInput.getDatasetId(), 0, Integer.MAX_VALUE);
+				for (Experiment exp : exps){
+	    			String locationVal = exp.getFactors().findByLocalName(envFactorName).getValue();
+	    			if (selEnvForAnalysis.containsId(locationVal)) continue;
+	    			selEnvForAnalysis.addItem(locationVal);
+	    		}
+			} catch (ConfigException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+        	
+        	/**if (factor.getStandardVariable().hasEnumerations()){
         		for (Enumeration e: factor.getStandardVariable().getEnumerations()){
         			selEnvForAnalysis.addItem(e.getName());
         			selEnvForAnalysis.setValue(e.getName());
@@ -401,7 +422,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         	//for testing
         	selEnvForAnalysis.addItem("AAA");
         	selEnvForAnalysis.setValue("AAA");
-            
+            **/
             if (this.selEnvForAnalysis.getItemIds().size() < 1) {
             	this.selEnvForAnalysis.setEnabled(false);
             }else{
@@ -675,5 +696,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
         messageSource.setCaption(btnCancel, Message.CANCEL);
     }
+    
+  
 
 }
