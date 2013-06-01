@@ -91,7 +91,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
 
         
         BreedingViewProjectType t = new BreedingViewProjectType();
-        t.setType("GxE Analysis");
+        t.setType("GxE analysis");
         project.setType(t);
         
         
