@@ -1,5 +1,9 @@
 @import url(../reindeer/styles.css);
 
+.v-app-IBPWorkbenchApplication * {
+    outline:none !important; /*removes the dotted border*/
+}
+
 .v-app-IBPWorkbenchApplication {
 	background: rgb(233,233,233);
 }
