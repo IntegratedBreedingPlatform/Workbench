@@ -42,6 +42,7 @@ import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.FactorType;
 import org.generationcp.middleware.v2.domain.TrialEnvironment;
 import org.generationcp.middleware.v2.domain.TrialEnvironments;
+import org.generationcp.middleware.v2.domain.Variable;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.util.Debug;
 import org.springframework.beans.factory.InitializingBean;
@@ -390,19 +391,18 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
 		
-        
         VariableType factor = getFactorByLocalName(envFactorName);
         
         if (factor != null){
         	
-        	List<Experiment> exps;
 			try {
-				exps = getManagerFactory().getNewStudyDataManager().getExperiments(getBreedingViewInput().getDatasetId(), 0, Integer.MAX_VALUE);
-				for (Experiment exp : exps){
-	    			String locationVal = exp.getFactors().findByLocalName(envFactorName).getValue();
-	    			if (selEnvForAnalysis.containsId(locationVal)) continue;
-	    			selEnvForAnalysis.addItem(locationVal);
-	    		}
+				
+				TrialEnvironments trialEnvironments;	
+				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+				for (Variable var : trialEnvironments.getVariablesByLocalName(envFactorName)){
+					selEnvForAnalysis.addItem(var.getValue());
+				}
+				
 			} catch (ConfigException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -411,20 +411,6 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
 				e.printStackTrace();
 			}
     		
-        	
-        	/**if (factor.getStandardVariable().hasEnumerations()){
-        		for (Enumeration e: factor.getStandardVariable().getEnumerations()){
-        			selEnvForAnalysis.addItem(e.getName());
-        			selEnvForAnalysis.setValue(e.getName());
-        		}
-        		
-        	}
-        	
-        	//for testing
-        	
-        	
-            **/
-			selEnvForAnalysis.addItem("TEST-INVALID");
             if (this.selEnvForAnalysis.getItemIds().size() < 1) {
             	this.selEnvForAnalysis.setEnabled(false);
             }else{
