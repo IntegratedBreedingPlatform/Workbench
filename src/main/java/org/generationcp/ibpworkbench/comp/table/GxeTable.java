@@ -69,7 +69,7 @@ public class GxeTable extends Table {
 		this.setContainerDataSource(new IndexedContainer());
 		this.setEditable(true);
 		this.setColumnReorderingAllowed(true);
-
+		this.setSortDisabled(true);
 	}
 
 
