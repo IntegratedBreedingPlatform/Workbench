@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.util.StringTokenizer;
 
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
 import org.generationcp.middleware.exceptions.ConfigException;
@@ -35,7 +37,7 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 			TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(source.getSelEnvFactor().getValue().toString(), value);
 			
 			if (trialEnv == null){
-				ConfirmDialog.show(source.getParent(), "Environment Factor Validation",  "The selected environment factor and its value is not a valid selection for breeding view.", "Okay", null, new ConfirmDialog.Listener() {
+				/**ConfirmDialog.show(source.getParent(), "Environment Factor Validation",  "The selected environment factor and its value is not a valid selection for breeding view.", "Okay", null, new ConfirmDialog.Listener() {
 					
 					@Override
 					public void onClose(ConfirmDialog dialog) {
@@ -43,7 +45,9 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 						source.getSelEnvForAnalysis().select(null);
 					}
 				});			
-				
+				**/
+				 MessageNotifier.showError(source.getParent().getWindow(),"", "The selected environment factor and its value is not a valid selection for breeding view.");
+				 source.getSelEnvForAnalysis().select(null);
 			}
 		} catch (ConfigException e) {
 			// TODO Auto-generated catch block
