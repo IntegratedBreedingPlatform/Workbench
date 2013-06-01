@@ -271,6 +271,12 @@ public class GxeTable extends Table {
 								meansData = String.valueOf(studyDataManager.countExperimentsByTrialEnvironmentAndVariate(
 										envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId(), 
 										v.getKey()));
+								meansData = String.valueOf(studyDataManager.countStocks(
+										meansDataSetId
+										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId()
+										,v.getKey() 
+											)
+										);
 							}catch(Exception e){
 								System.out.println("Error in getting the means data.");
 								e.printStackTrace();
