@@ -267,7 +267,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL))
                  {
                 
-                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
+                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.LOCAL));
                 
                 }else {
                 
