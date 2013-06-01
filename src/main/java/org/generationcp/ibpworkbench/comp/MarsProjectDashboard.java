@@ -757,6 +757,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         initializeComponents();
         initializeLayout();
         initializeActions();
+        
+        if (workflowPreview)
+        	this.setStyleName("gcp-removelink");
     }
     
     @Override

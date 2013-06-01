@@ -572,6 +572,9 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         initializeLayout();
         initializeActions();
         
+        if (workflowPreview)
+        	this.setStyleName("gcp-removelink");
+        
     }
     
 	@Override

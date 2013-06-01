@@ -56,7 +56,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
-    private static final String VERSION = "1.1.4.8";
+    public static final String VERSION = "1.1.4.8";
     
     private Label workbenchTitle;
     private Button homeButton;

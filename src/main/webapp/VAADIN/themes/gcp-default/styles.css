@@ -1,7 +1,7 @@
 @import url(../reindeer/styles.css);
 
 .v-app-IBPWorkbenchApplication {
-	background: rgb(204,213,173);
+	background: rgb(233,233,233);
 }
 
 .v-table-body {
@@ -58,7 +58,7 @@ span.v-checkbox-hidecheckbox input {
 
 
 .v-panel-content-gcp-login > div {
-    background-image: url(images/login.png);
+    background-image: url(images/login2.png);
     background-repeat: no-repeat;
     background-color: transparent;
 }
@@ -163,6 +163,13 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 
 .gcp-btn-link-brown span span  {
 	color: rgb(153,143,107) !important;
+	position: relative;
+	top: 1px;
+	text-decoration: none !important;
+}
+
+.gcp-btn-link-brown span span:hover  {
+	color: rgb(162,176,140) !important;
 	position: relative;
 	top: 1px;
 	text-decoration: none !important;
@@ -368,19 +375,21 @@ s
 
 .gcp-login-title {
 	line-height: 24px;
-	font-size: 24px;
-	color: white;
+	font-size: 20PX;
+	color: rgb(68,72,55);
 	font-weight: normal;
-	margin-left: 80px;
+	margin-left: 104px;
+	margin-top: 17px;
 	text-transform: uppercase;
 }
 
 .gcp-login-subtitle {
 	line-height: 16px;
 	font-size: 16px;
-	color: white;
+	color: #222;
+	margin-top: 100px;
 	font-weight: normal;
-	margin-left: 80px;
+	text-align: center;
 	text-transform: uppercase;
 }
 
@@ -389,4 +398,26 @@ s
 	position: relative;
 	top: 4px;
 	color: rgb(68, 72, 55);
+}
+
+.v-button.v-button-link.link.v-button-gcp-workflow-link-disabled.gcp-workflow-link-disabled {
+	cursor: default !important;
+}
+
+.gcp-removelink .gcp-workflow-link {
+	cursor: default !important;
+}
+
+.gcp-removelink .gcp-workflow-link * {
+	cursor: default !important;
+}
+
+.gcp-removelink .gcp-workflow-link span span {
+	color: rgb(68,72,55) !important;
+	text-decoration: none !important;
+}
+
+.gcp-removelink .gcp-workflow-link span span:hover {
+	color: rgb(68,72,55) !important;
+	text-decoration: none !important;
 }

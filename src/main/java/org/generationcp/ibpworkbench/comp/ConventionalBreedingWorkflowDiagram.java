@@ -515,6 +515,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         initializeComponents();
         initializeLayout();
         initializeActions();
+        
+        if (workflowPreview)
+        	this.setStyleName("gcp-removelink");
+        
     }
     
     @Override

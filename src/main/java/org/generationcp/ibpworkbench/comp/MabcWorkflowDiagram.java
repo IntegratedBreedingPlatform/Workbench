@@ -588,6 +588,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         initializeComponents();
         initializeLayout();
         initializeActions();
+        
+        if (workflowPreview)
+        	this.setStyleName("gcp-removelink");
     }
     
     @Override

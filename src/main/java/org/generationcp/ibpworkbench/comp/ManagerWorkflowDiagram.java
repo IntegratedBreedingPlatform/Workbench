@@ -673,6 +673,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         initializeLabels();
         
+        if (workflowPreview)
+        	this.setStyleName("gcp-removelink");
+        
     }
     
     private void initializeLabels() {
