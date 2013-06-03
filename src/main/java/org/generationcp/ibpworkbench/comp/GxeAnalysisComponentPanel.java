@@ -323,7 +323,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 		button.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -7090745965019240566L;
-			private Window window;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final ClickEvent buttonClickEvent = event;
