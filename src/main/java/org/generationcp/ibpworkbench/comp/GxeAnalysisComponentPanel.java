@@ -25,7 +25,6 @@ import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectEnvironmentForGxeWindow;
-import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
@@ -68,6 +67,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * Multisite analysis component
@@ -323,144 +323,112 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 		button.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -7090745965019240566L;
-
+			private Window window;
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final ClickEvent buttonClickEvent = event;
-				
+
+				/*
 				ConfirmDialog.show(event.getComponent().getWindow(),"Select Dataset Export Type",
 						"Please select an export type for the dataset",
 						"MS Excel File","CSV File",new ConfirmDialog.Listener() {
 							
 							@Override
 							public void onClose(ConfirmDialog dialog) {
-								//TODO: marker
-								
-								String inputDir = "";
-								Tool breedingViewTool = null;
-								try{
-									breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-									inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
-								}catch(MiddlewareQueryException ex){
-									
-								}
-								//TODO NOTE: change the filename of xml/xls using unique identifiers
-								String inputFileName = "";
-								
-								
-								Study study = null;
-								try {
-									study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
-										
-								} catch (NullPointerException e) {
-									MessageNotifier
-									.showError(buttonClickEvent.getComponent().getWindow(),
-											"Cannot export dataset",
-											"No dataset is selected. Please open a study that has a dataset.");
-									
-									return;
-								}
-								
-								if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
-									GxeTable table = (GxeTable) studyTables.get(study.getId());
-									
-									inputFileName = String.format("%s_%s_%s", project.getProjectName().trim(), table.getMeansDataSetId(), table.getMeansDataSet().getName());
-									GxeEnvironment gxeEnv = table.getGxeEnvironment();
-									
-									List<Trait> selectedTraits = table.getSelectedTraits();
-									
-									//TODO: switch xls file or csv file depending on user input
-									
-									File datasetExportFile = null;
-									
-									if (dialog.isConfirmed())
-										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
-									else
-										datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
-									
-									
-									LOG.debug(datasetExportFile.getAbsolutePath());
-									
-									GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
-									
-									if (dialog.isConfirmed())
-										gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
-									else
-										gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
-								
-									gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-									gxeInput.setTraits(selectedTraits);
-									gxeInput.setEnvironment(gxeEnv);
-									Genotypes genotypes = new Genotypes();
-									genotypes.setName("G!");
-									gxeInput.setGenotypes(genotypes);
-									gxeInput.setEnvironmentName(table.getEnvironmentName());
-									gxeInput.setBreedingViewProjectName(project.getProjectName());
-									
-									GxeUtility.generateXmlFieldBook(gxeInput);
-									
-									File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
-						            Runtime runtime = Runtime.getRuntime();
-						            LOG.info(gxeInput.toString());
-						            LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
-						            try {
-										runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
-									
-										MessageNotifier
-										.showMessage(buttonClickEvent.getComponent().getWindow(),
-												"GxE files saved",
-												"Successfully created GxE Excel and XML input file for the breeding_view");
-						            } catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-										MessageNotifier
-										.showMessage(buttonClickEvent.getComponent().getWindow(),
-												"Cannot launch " + absoluteToolFile.getName(),
-												"But it successfully created GxE Excel and XML input file for the breeding_view!");
-									}
-								}	
+								launchBV(dialog.isConfirmed(),buttonClickEvent.getComponent().getWindow());
 							}
-							
-							
 						});
+				*/
 				
-									
-						Button testBtn = new Button("test");
-						testBtn.addListener(new Button.ClickListener() {
-							
-							@Override
-							public void buttonClick(ClickEvent event) {
-								
-								try {
-									int studyId = 10010;
-									DataSetType dataSetType = DataSetType.MEANS_DATA;
-									System.out.println("testGetDataSetsByType(studyId = " + studyId + ", dataSetType = " + dataSetType + ")");
-									List<DataSet> datasets = studyDataManager.getDataSetsByType(studyId, dataSetType);
-									for (DataSet dataset : datasets) {
-										System.out.println("Dataset" + dataset.getId() + "-" + dataset.getName() + "-" + dataset.getDescription());
-									}
-									
-									studyId = 10080;
-									dataSetType = DataSetType.MEANS_DATA;
-									System.out.println("testGetDataSetsByType(studyId = " + studyId + ", dataSetType = " + dataSetType + ")");
-									datasets = studyDataManager.getDataSetsByType(studyId, dataSetType);
-									for (DataSet dataset : datasets) {
-										System.out.println("Dataset" + dataset.getId() + "-" + dataset.getName() + "-" + dataset.getDescription());
-									}
-									
-									System.out.println("Display data set type in getDataSet");
-									DataSet dataSet = studyDataManager.getDataSet(10087);
-									System.out.println("DataSet = " + dataSet.getId() + ", name = " + dataSet.getName() + ", description = " + dataSet.getDescription() + ", type = " + dataSet.getDataSetType()	);
-										
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-								
-								//TODO: marker
-							}
-						});
+				launchBV(false,buttonClickEvent.getComponent().getWindow());
+						
 			}
 			
+			private void launchBV(boolean isXLS,final Window windowSource) {
+				String inputDir = "";
+				Tool breedingViewTool = null;
+				try{
+					breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+					inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
+				}catch(MiddlewareQueryException ex){
+					
+				}
+				//TODO NOTE: change the filename of xml/xls using unique identifiers
+				String inputFileName = "";
+				
+				
+				Study study = null;
+				try {
+					study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
+						
+				} catch (NullPointerException e) {
+					MessageNotifier
+					.showError(windowSource,
+							"Cannot export dataset",
+							"No dataset is selected. Please open a study that has a dataset.");
+					
+					return;
+				}
+				
+				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
+					GxeTable table = (GxeTable) studyTables.get(study.getId());
+					
+					inputFileName = String.format("%s_%s_%s", project.getProjectName().trim(), table.getMeansDataSetId(), table.getMeansDataSet().getName());
+					GxeEnvironment gxeEnv = table.getGxeEnvironment();
+					
+					List<Trait> selectedTraits = table.getSelectedTraits();
+					
+					//TODO: switch xls file or csv file depending on user input
+					
+					File datasetExportFile = null;
+					
+					if (isXLS)
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
+					else
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
+					
+					
+					LOG.debug(datasetExportFile.getAbsolutePath());
+					
+					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
+					
+					if (isXLS)
+						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
+					else
+						gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
+				
+					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
+					gxeInput.setTraits(selectedTraits);
+					gxeInput.setEnvironment(gxeEnv);
+					Genotypes genotypes = new Genotypes();
+					genotypes.setName("G!");
+					gxeInput.setGenotypes(genotypes);
+					gxeInput.setEnvironmentName(table.getEnvironmentName());
+					gxeInput.setBreedingViewProjectName(project.getProjectName());
+					
+					GxeUtility.generateXmlFieldBook(gxeInput);
+					
+					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
+		            Runtime runtime = Runtime.getRuntime();
+		            LOG.info(gxeInput.toString());
+		            LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
+		            try {
+						runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
+					
+						MessageNotifier
+						.showMessage(windowSource,
+								"GxE files saved",
+								"Successfully created GxE Excel and XML input file for the breeding_view");
+		            } catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						MessageNotifier
+						.showMessage(windowSource,
+								"Cannot launch " + absoluteToolFile.getName(),
+								"But it successfully created GxE Excel and XML input file for the breeding_view!");
+					}
+				}
+			}
 		});
 		
 		Button testGenerateTable = new Button("Test Generate Table, studyId=10080");
@@ -472,9 +440,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 				try {
 					study = studyDataManager.getStudy(10080);
 				
-					generateTabContent(study,"");
+					SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, study, GxeAnalysisComponentPanel.this);
+					GxeAnalysisComponentPanel.this.getWindow().addWindow(win);
 					
-					studiesTabsheet.setImmediate(true);	
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -520,7 +488,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.addComponent(button);
 		btnLayout.addComponent(cancelBtn);
 		//btnLayout.addComponent(gxebutton);
-		//btnLayout.addComponent(testGenerateTable);
+		btnLayout.addComponent(testGenerateTable);
 		
 		this.addComponent(btnLayout);
 
