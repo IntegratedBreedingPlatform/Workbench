@@ -566,13 +566,13 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     private void checkDesignFactor(){
     	 
-    	for (VariableType factor : this.factorsInDataset){
+    	/**for (VariableType factor : this.factorsInDataset){
             	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(EXPERIMENTAL_DESIGN)){
             		this.selDesignType.addItem(factor.getLocalName());
             		this.selDesignType.setValue(factor.getLocalName());
             	}
            }
-    	
+    	**/
         /**
     	//try getting a factor with trait = experimental design
         try{
