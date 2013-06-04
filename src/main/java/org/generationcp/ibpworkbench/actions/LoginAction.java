@@ -129,10 +129,13 @@ public class LoginAction implements ClickListener{
             
             application.setMainWindow(newWindow);
             
+            /*
             Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
             if (project != null) {
                 toolUtil.updateTools(newWindow, messageSource, project, false);
             }
+            
+            */
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
