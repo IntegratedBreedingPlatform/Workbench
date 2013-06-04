@@ -97,6 +97,7 @@ public enum Message {
     //Error Notification
     ,UPLOAD_ERROR
     ,UPLOAD_ERROR_DESC
+    ,LAUNCH_BREEDING_VIEW
     ,LAUNCH_TOOL_ERROR
     ,LAUNCH_TOOL_ERROR_DESC
     ,INVALID_TOOL_ERROR_DESC

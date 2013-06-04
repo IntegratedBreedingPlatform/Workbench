@@ -22,7 +22,9 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectEnvironmentForGxeWindow;
 import org.generationcp.ibpworkbench.comp.table.GxeTable;
@@ -98,6 +100,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+	
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 	
 	@Autowired
 	private ToolUtil toolUtil;
@@ -317,8 +322,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 		addComponent(horizontal);
 
-		Button button = new Button(
-				"Lauch Breeding View");
+		Button button = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
 		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
 
 		button.addListener(new Button.ClickListener() {
