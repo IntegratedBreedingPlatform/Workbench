@@ -32,6 +32,7 @@ import org.generationcp.middleware.pojos.TraitMethod;
 import org.generationcp.middleware.pojos.Variate;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.Experiment;
+import org.generationcp.middleware.v2.domain.FactorType;
 import org.generationcp.middleware.v2.domain.Variable;
 import org.generationcp.middleware.v2.domain.VariableList;
 import org.generationcp.middleware.v2.domain.VariableType;
@@ -276,6 +277,9 @@ public class DatasetExporter {
             
             int factorRowIndex = factorRowHeaderIndex + 1;
             for(VariableType factor : factorVariableTypes) {
+            	
+            	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET) continue;
+            	
                 String dataType = factor.getStandardVariable().getDataType().getName();
                 String factorName = factor.getLocalName();
                 if(factorName != null) {
@@ -332,6 +336,7 @@ public class DatasetExporter {
             
             int variateRowIndex = variateHeaderRowIndex + 1;
             for(VariableType variate : variateVariableTypes) {
+            	
                 String dataType = variate.getStandardVariable().getDataType().getName();
                 String variateName = variate.getLocalName();
                 if(variateName != null) {
