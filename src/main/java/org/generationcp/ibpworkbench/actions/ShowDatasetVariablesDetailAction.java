@@ -16,6 +16,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.FactorType;
+import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
@@ -81,6 +82,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             List<VariateModel> variateList = new ArrayList<VariateModel>();
             
             for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
+            	
+            	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET
+            			) continue;
             	
             	FactorModel fm = new FactorModel();
             	fm.setId(factor.getId());
