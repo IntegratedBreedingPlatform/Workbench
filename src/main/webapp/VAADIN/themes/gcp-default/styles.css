@@ -62,13 +62,13 @@ span.v-checkbox-hidecheckbox input {
 
 
 .v-panel-content-gcp-login > div {
-    background-image: url(images/login2.png);
+    background-image: url(images/login.png);
     background-repeat: no-repeat;
     background-color: transparent;
 }
 
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel {
-	background-color: rgb(204,213,173)
+	background-color: #045d91;
 }
 
 .v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked {
@@ -96,13 +96,14 @@ span.v-checkbox-hidecheckbox input {
 	text-decoration: none;
 	margin-left: 5px;
 	margin-right: 5px;
-	color: black;
+	color: #dde5ec;
 }
 
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout
 div div div div.v-horizontallayout div div div div.v-label-undef-w {
 	position: relative;
 	bottom: 3px;
+	color: #dde5ec !important;
 }
 
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption:hover {
@@ -133,7 +134,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 
 .gcp-window-title {
     font-size: 20px;
-	color: rgb(68,72,55);
+	color: #dde5ec;
 }
 
 .gcp-window-title H1:first-child {
@@ -141,7 +142,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 	font-weight: normal;
     font-size: 24px;
 	margin-left: 20px;	
-	color: rgb(68,72,55);
+	color: #dde5ec;
 }
 
 .gcp-window-title H1 {
@@ -149,14 +150,14 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-size: 20px;
     font-weight: normal;
     display: inline-block; 
-	color: rgb(68,72,55);
+	color: #dde5ec;
 }
 
 .gcp-window-title H2 {
     font-size: 14px;
     font-weight: normal;
     display: inline-block; 
-	color: rgb(128,134,106);
+	color: #02385a;
 }
 
 
@@ -207,11 +208,11 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 }
 
 .gcp-workflow-link span span {
-	color: rgb(68,72,55) !important;
+	color: #045d91 !important;
 }
 
 .gcp-workflow-link span span:hover {
-	color: rgb(162,176,140) !important;
+	color: #4185d8 !important;
 }
 
 .gcp-workflow-step .gcp-section-title {
@@ -229,7 +230,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 		font-size: 13px;
 		text-align: center;
 		
-		background-color: rgb(162,176,140);
+		background-color: #045d91;
 		color: white;
 		padding-top: 5px; padding-bottom: 5px;
 		text-transform: uppercase;
@@ -250,7 +251,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     -webkit-border-radius: 10px;
     -khtml-border-radius: 10px;
     border-radius: 10px;
-    border: 2px solid rgb(162,176,140);
+    border: 2px solid #045d91;
 s
 }
 
@@ -380,7 +381,7 @@ s
 .gcp-login-title {
 	line-height: 24px;
 	font-size: 20PX;
-	color: rgb(68,72,55);
+	color: #dde5ec;
 	font-weight: normal;
 	margin-left: 104px;
 	margin-top: 17px;
@@ -390,7 +391,7 @@ s
 .gcp-login-subtitle {
 	line-height: 16px;
 	font-size: 16px;
-	color: #222;
+	color: #02385a;
 	margin-top: 100px;
 	font-weight: normal;
 	text-align: center;
@@ -401,7 +402,7 @@ s
 	text-transform: uppercase;
 	position: relative;
 	top: 4px;
-	color: rgb(68, 72, 55);
+	color: #02385a;
 }
 
 .v-button.v-button-link.link.v-button-gcp-workflow-link-disabled.gcp-workflow-link-disabled {
@@ -417,11 +418,11 @@ s
 }
 
 .gcp-removelink .gcp-workflow-link span span {
-	color: rgb(68,72,55) !important;
+	color: #02385a !important;
 	text-decoration: none !important;
 }
 
 .gcp-removelink .gcp-workflow-link span span:hover {
-	color: rgb(68,72,55) !important;
+	color: #02385a !important;
 	text-decoration: none !important;
 }

@@ -127,8 +127,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         // common part: create layout
         Panel loginPanel = new Panel();
         loginPanel.setImmediate(false);
-        loginPanel.setWidth("646px");
-        loginPanel.setHeight("486px");
+        loginPanel.setWidth("640px");
+        loginPanel.setHeight("480px");
         loginPanel.setStyleName(Reindeer.PANEL_LIGHT + " gcp-login");
 
         // login panel layout
