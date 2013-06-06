@@ -205,8 +205,8 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         }
 
         bmPopupWindow = new ProjectBreedingMethodsPopup(selectedMethods);
-        bmPopupWindow.setPositionX(140);
-        bmPopupWindow.setPositionY(371);
+        bmPopupWindow.setPositionX(97);
+        bmPopupWindow.setPositionY(408);
 
         parentWindow.addWindow(bmPopupWindow);
     }

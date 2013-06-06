@@ -183,7 +183,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         layout.setSizeFull();
 
         // add the vertical split panel
-        verticalSplitPanel.setSplitPosition(50, Sizeable.UNITS_PIXELS);
+        verticalSplitPanel.setSplitPosition(87, Sizeable.UNITS_PIXELS);
         verticalSplitPanel.setLocked(true);
         verticalSplitPanel.setStyleName("gcp-workbench-vsplit-panel");
         verticalSplitPanel.setSizeFull();
@@ -197,7 +197,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(130, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.setSplitPosition(87, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.setStyleName("gcp-workbench-content-split-panel");
         contentAreaSplitPanel.setLocked(true);
 
@@ -298,8 +298,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         headerLayout.setSpacing(false);
         
         Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
-        ibpLogo.setWidth("50px");
-        ibpLogo.setHeight("50px");
+        ibpLogo.setWidth("87px");
+        ibpLogo.setHeight("87px");
         headerLayout.addComponent(ibpLogo);
         headerLayout.setExpandRatio(ibpLogo, 0.0f);
 

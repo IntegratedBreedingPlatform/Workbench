@@ -594,8 +594,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
 
         blPopupWindow = new ProjectBreedingLocationsPopup(selectedLocation);
-        blPopupWindow.setPositionX(140);
-        blPopupWindow.setPositionY(371);
+        blPopupWindow.setPositionX(97);
+        blPopupWindow.setPositionY(408);
 
         parentWindow.addWindow(blPopupWindow);
     }

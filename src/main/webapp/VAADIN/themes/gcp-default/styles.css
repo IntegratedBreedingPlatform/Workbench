@@ -135,22 +135,28 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 .gcp-window-title {
     font-size: 20px;
 	color: #dde5ec;
+	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+    
 }
 
 .gcp-window-title H1:first-child {
 	text-transform: uppercase;
 	font-weight: normal;
     font-size: 24px;
+    font-weight: 100;
 	margin-left: 20px;	
 	color: #dde5ec;
+	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+    
 }
 
 .gcp-window-title H1 {
 	text-transform: uppercase;
     font-size: 20px;
-    font-weight: normal;
     display: inline-block; 
 	color: #dde5ec;
+	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+	font-weight: 100;
 }
 
 .gcp-window-title H2 {
@@ -158,6 +164,8 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-weight: normal;
     display: inline-block; 
 	color: #02385a;
+	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+    
 }
 
 
@@ -167,33 +175,38 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 }
 
 .gcp-btn-link-brown span span  {
-	color: rgb(153,143,107) !important;
+	color: #045d91 !important;
 	position: relative;
 	top: 1px;
 	text-decoration: none !important;
 }
 
 .gcp-btn-link-brown span span:hover  {
-	color: rgb(162,176,140) !important;
+	color: #4185d8 !important;
 	position: relative;
 	top: 1px;
 	text-decoration: none !important;
 }
 
 .gcp-popup-view {
-	background-color: rgb(240,248,113);
+	background-color: #ff8109;
 	font-size: 12px;
 	box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
 	padding: 1px 3px;
 	text-decoration: none;
 	border-radius: 1px;
-	color: black;
+	color: white;
 	
 	margin-right: 20px;
 }
 
+.gcp-popup-view:hover {
+	color: white;
+}
+
 .v-popupview-popup-gcp-popup-view {
-	background-color: rgb(240,248,113);
+	background-color: #ff8109;
+	color: white;
 }
 
 .gcp-section-title {
@@ -266,7 +279,7 @@ s
 
 /* Create new project btn */
 .gcp-createproject-btn {
-	height: 34px !important;
+	height: 48px !important;
 }
 
 .gcp-createproject-btn:hover {
@@ -281,12 +294,14 @@ s
 
 .gcp-createproject-btn .v-button-wrap .v-button-caption {
 	display: block;
-	width: 100%;
 	color: rgb(68, 72, 55) !important;
 	text-decoration: none !important;
 	text-transform: uppercase;
-	text-align: center;
-
+	text-align: right;
+	font-size: 12px;
+	white-space:normal;
+	line-height: 15px;
+	padding-right: 15px !important;
 	padding-top: 10px !important;
 	padding-bottom: 10px !important;
 }
@@ -380,12 +395,13 @@ s
 
 .gcp-login-title {
 	line-height: 24px;
-	font-size: 20PX;
+	font-size: 22px;
 	color: #dde5ec;
-	font-weight: normal;
 	margin-left: 104px;
 	margin-top: 17px;
 	text-transform: uppercase;
+	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+	font-weight: 100;
 }
 
 .gcp-login-subtitle {
