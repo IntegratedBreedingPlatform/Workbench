@@ -375,21 +375,24 @@ public class DatasetExporter {
             long totalNumberOfRows = 0;
             int sheetRowIndex = 1;
             
-            try {
+            /* try {
                 totalNumberOfRows = this.studyDataManagerV2.countExperiments(this.datasetId);
             } catch(Exception ex) {
                 throw new DatasetExporterException("Error with getting count of experiments for study - " + name 
                         + ", dataset - " + this.datasetId, ex); 
+            } */
+            
+            List<Experiment> experiments = new ArrayList<Experiment>();
+            
+            try {
+                experiments = this.studyDataManagerV2.getExperiments(this.datasetId,0,Integer.MAX_VALUE);
+            } catch(Exception ex) {
+                throw new DatasetExporterException("Error with getting ounit ids of study - " + name 
+                        + ", representation - " + this.datasetId, ex); 
             }
             
-            for(int start = 0; start < totalNumberOfRows; start = start + pageSize) {
-                List<Experiment> experiments = new ArrayList<Experiment>();
-                try {
-                    experiments = this.studyDataManagerV2.getExperiments(this.datasetId, start, pageSize);
-                } catch(Exception ex) {
-                    throw new DatasetExporterException("Error with getting ounit ids of study - " + name 
-                            + ", representation - " + this.datasetId, ex); 
-                }
+            // for(int start = 0; start < totalNumberOfRows; start = start + pageSize) {
+                
                 
                 //map each experiment into a row in the observation sheet
                 for(Experiment experiment : experiments) {
@@ -476,7 +479,7 @@ public class DatasetExporter {
                         }
                     }
                 }
-            }
+            // }
         }
         
         //adjust column widths of description sheet to fit contents

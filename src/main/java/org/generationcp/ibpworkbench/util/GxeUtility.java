@@ -21,6 +21,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.Variable;
+import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +138,7 @@ public class GxeUtility {
 	 * @param xlsfilename
 	 * @return File
 	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<VariableType> germplasmFactors, List<Trait> selectedTraits, Project currentProject) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
 		
@@ -159,6 +160,11 @@ public class GxeUtility {
 			j++;
 		}
 		
+		for (VariableType f : germplasmFactors) {
+			traitToColNoMap.put(f.getLocalName(),j);
+			headerRow.createCell(j).setCellValue(f.getLocalName());
+			j++;	
+		}
 		
 		for (Trait trait : selectedTraits) {
 			LOG.debug(trait.getName());
@@ -249,7 +255,7 @@ public class GxeUtility {
 		}
 	}
 	
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<VariableType> germplasmFactors,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 
 		// get the headers first
@@ -270,6 +276,11 @@ public class GxeUtility {
 			j++;
 		}
 		
+		for (VariableType f : germplasmFactors) {
+			traitToColNoMap.put(f.getLocalName(),j);
+			headerRow.add(f.getLocalName());
+			j++;	
+		}
 		
 		for (Trait trait : selectedTraits) {
 			LOG.debug(trait.getName());

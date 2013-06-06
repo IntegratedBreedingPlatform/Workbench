@@ -54,6 +54,8 @@ public class GxeTable extends Table {
 
 	private List<Experiment> exps;
 
+	private VariableTypeList germplasmFactors = new VariableTypeList();
+
 	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.studyDataManager = studyDataManager;
@@ -205,13 +207,13 @@ public class GxeTable extends Table {
 					
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					VariableTypeList factors = meansDataSet.getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
-					for(VariableType f : factors.getVariableTypes()){
+					VariableTypeList trialEnvFactors = meansDataSet.getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
+					
+					for(VariableType f : trialEnvFactors.getVariableTypes()){
 						//SITE_NAME
 						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getId(), f.getLocalName());
-							
 						}
 						/**SITE_NO
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("trial instance")){
@@ -220,6 +222,9 @@ public class GxeTable extends Table {
 							
 						}**/
 					}
+					
+					germplasmFactors.addAll(meansDataSet.getFactorsByFactorType(FactorType.GERMPLASM));
+					
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
@@ -357,5 +362,9 @@ public class GxeTable extends Table {
 	
 	public String getEnvironmentName(){
 		return selectedEnvFactorName;
+	}
+	
+	public List<VariableType> getGermplasmFactors() {
+		return germplasmFactors.getVariableTypes();
 	}
 }
