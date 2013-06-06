@@ -13,6 +13,7 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     }
     
     public void writeProjectXML() throws BreedingViewXMLWriterException{
-        LOG.info("This Ran!: " + breedingViewInput.toString());
+        //LOG.info("This Ran!: " + breedingViewInput.toString());
         
         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
         
@@ -134,7 +135,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         ssaParameters.setWebApiUrl(webApiUrl);
         ssaParameters.setStudyId(breedingViewInput.getStudyId());
         ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
-        ssaParameters.setOutputDataSetId(0);
+        ssaParameters.setOutputDataSetId(breedingViewInput.getOutputDatasetId());
 
         Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
         if(workbenchProject != null) {
@@ -177,7 +178,10 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
         //write the xml
         try{
+        	
+        	new File(new File(breedingViewInput.getDestXMLFilePath()).getParent()).mkdirs();
             FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
+            System.out.println(breedingViewInput.getDestXMLFilePath());
             marshaller.marshal(project, fileWriter);
             fileWriter.flush();
             fileWriter.close();

@@ -33,6 +33,8 @@ import org.generationcp.middleware.pojos.Factor;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.DataSetType;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,9 +142,14 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , sourceXLSFilePath
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
-
+            
+            List<DataSet> meansDs = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+            if (meansDs.get(0) != null){
+            	 breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
+            }else{
+            	 breedingViewInput.setOutputDatasetId(0);
+            }
            
-          
             event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
                     , project) );
             event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);

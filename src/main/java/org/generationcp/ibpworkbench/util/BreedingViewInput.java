@@ -37,7 +37,8 @@ public class BreedingViewInput implements Serializable {
     private Project project;
     private String BreedingViewProjectName;
     private Integer studyId;
-    private Integer datasetId;
+    private Integer inputDatasetId;
+    private Integer outputDatasetId;
     private String environmentName;
     private String version;
     private String sourceXLSFilePath;
@@ -59,7 +60,7 @@ public class BreedingViewInput implements Serializable {
         this.project = project;
         BreedingViewProjectName = breedingViewProjectName;
         this.studyId = studyId;
-        this.datasetId = datasetId;
+        this.inputDatasetId = datasetId;
         this.version = version;
         this.sourceXLSFilePath = sourceXLSFilePath;
         this.destXMLFilePath = destXMLFilePath;
@@ -94,11 +95,11 @@ public class BreedingViewInput implements Serializable {
     }
 
     public Integer getDatasetId() {
-        return datasetId;
+        return inputDatasetId;
     }
 
     public void setDatasetId(Integer datasetId) {
-        this.datasetId = datasetId;
+        this.inputDatasetId = datasetId;
     }
 
     public String getEnvironmentName() {
@@ -207,7 +208,7 @@ public class BreedingViewInput implements Serializable {
                         : BreedingViewProjectName.hashCode());
         result = prime * result + ((blocks == null) ? 0 : blocks.hashCode());
         result = prime * result
-                + ((datasetId == null) ? 0 : datasetId.hashCode());
+                + ((inputDatasetId == null) ? 0 : inputDatasetId.hashCode());
         result = prime * result
                 + ((designType == null) ? 0 : designType.hashCode());
         result = prime * result
@@ -247,10 +248,10 @@ public class BreedingViewInput implements Serializable {
                 return false;
         } else if (!blocks.equals(other.blocks))
             return false;
-        if (datasetId == null) {
-            if (other.datasetId != null)
+        if (inputDatasetId == null) {
+            if (other.inputDatasetId != null)
                 return false;
-        } else if (!datasetId.equals(other.datasetId))
+        } else if (!inputDatasetId.equals(other.inputDatasetId))
             return false;
         if (designType == null) {
             if (other.designType != null)
@@ -299,13 +300,21 @@ public class BreedingViewInput implements Serializable {
     public String toString() {
         return "BreedingViewInput [project=" + project
                 + ", BreedingViewProjectName=" + BreedingViewProjectName
-                + ", datasetId=" + datasetId + ", environmentName="
+                + ", datasetId=" + inputDatasetId + ", environmentName="
                 + environmentName + ", version=" + version
                 + ", sourceXLSFilePath=" + sourceXLSFilePath
                 + ", destXMLFilePath=" + destXMLFilePath + ", projectType="
                 + projectType + ", designType=" + designType + ", blocks="
                 + blocks + ", replicates=" + replicates + "]";
     }
+
+	public Integer getOutputDatasetId() {
+		return outputDatasetId;
+	}
+
+	public void setOutputDatasetId(Integer outputDatasetId) {
+		this.outputDatasetId = outputDatasetId;
+	}
 
     
 
