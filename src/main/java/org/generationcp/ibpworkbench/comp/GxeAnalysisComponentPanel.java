@@ -545,7 +545,13 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					Study tabStudyData = (Study)((VerticalLayout) tab).getData();
 					if (p2.getValue() != null && tabStudyData != null){
 						if (tabStudyData.getId() == Integer.parseInt(p2.getValue().toString())){
-							studiesTabsheet.setSelectedTab(tab);
+							
+							SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
+							gxeAnalysisComponentPanel.getWindow().addWindow(win);
+							//studiesTabsheet.setSelectedTab(tab);
+							studyTables.remove(tabStudyData.getId());
+							studiesTabsheet.removeComponent(tab);
+							
 							return;
 						}
 					}
