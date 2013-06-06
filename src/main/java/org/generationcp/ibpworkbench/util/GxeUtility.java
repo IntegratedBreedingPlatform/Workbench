@@ -206,7 +206,7 @@ public class GxeUtility {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 				
-				if (var != null && var.getValue() != null)
+				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)"))
 					row.createCell(traitMapEntry.getValue()).setCellValue(var.getValue());
 				
 			}
@@ -323,7 +323,7 @@ public class GxeUtility {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 				
-				if (var != null && var.getValue() != null)
+				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)"))
 					row[traitMapEntry.getValue()] = var.getValue();
 				
 			}

@@ -422,7 +422,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 						MessageNotifier
 						.showMessage(windowSource,
 								"GxE files saved",
-								"Successfully created GxE Excel and XML input file for the breeding_view");
+								"Successfully generated the means dataset and xml input files for breeding view.");
 		            } catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
