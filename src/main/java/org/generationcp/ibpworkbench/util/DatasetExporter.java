@@ -413,6 +413,7 @@ public class DatasetExporter {
                                         try{
                                             elemValue = Double.valueOf(factorVariable.getValue());
                                             cell.setCellValue(elemValue);
+                                            if (elemValue == Double.valueOf("-1E+36")) cell.setCellValue("");
                                         }catch(NumberFormatException ex){
                                             String value = factorVariable.getValue();
                                             if(value != null) {
@@ -452,6 +453,7 @@ public class DatasetExporter {
                                         try{
                                             elemValue = Double.valueOf(variateVariable.getValue());
                                             cell.setCellValue(elemValue);
+                                            if (elemValue == Double.valueOf("-1E+36")) cell.setCellValue("");
                                         }catch(NumberFormatException ex){
                                             String value = variateVariable.getValue();
                                             if(value != null) {
