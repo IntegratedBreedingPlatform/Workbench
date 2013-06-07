@@ -337,8 +337,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 }
             }
             else {
+                Embedded browser = new Embedded("", new ExternalResource(tool.getPath() + "?restartApplication"));
                 
-                Embedded browser = new Embedded("", new ExternalResource(tool.getPath()));
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
                 browser.setHeight("800px");
