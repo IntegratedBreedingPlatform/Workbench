@@ -65,6 +65,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
@@ -109,6 +110,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 	private Project project;
 	private Role role;
+	
+	private Select selectDatabase = new Select();
 
 	public GxeAnalysisComponentPanel(Project project,Role role) {
 		LOG.debug("Project is " + project.getProjectName());
@@ -191,8 +194,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	protected void refreshStudies() throws MiddlewareQueryException {
 
 		List<FolderReference> listFolder = studyDataManager
-				.getRootFolders(Database.CENTRAL);
+				.getRootFolders((Database)selectDatabase.getValue());
 
+		studiesTree.removeAllItems();
+		
 		studiesTree.addContainerProperty("caption", String.class, "");
 		studiesTree.addContainerProperty("id", String.class, "");
 
@@ -301,6 +306,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 		try {
 			refreshStudies();
+			requestRepaintAll();
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
@@ -308,6 +314,28 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		Panel studiesPanel = new Panel();
 		studiesPanel.setWidth("200px");
 		studiesPanel.setHeight("100%");
+		
+		selectDatabase.setImmediate(true);
+		selectDatabase.addItem(Database.CENTRAL);
+		selectDatabase.addItem(Database.LOCAL);
+		selectDatabase.setCaption("Select Database");
+		selectDatabase.select(Database.CENTRAL);
+		selectDatabase.addListener(new Property.ValueChangeListener(){
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				// TODO Auto-generated method stub
+				try {
+					refreshStudies();
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		
+		studiesPanel.addComponent(selectDatabase);
 		studiesPanel.addComponent(studiesTree);
 
 		horizontal.addComponent(studiesPanel);
