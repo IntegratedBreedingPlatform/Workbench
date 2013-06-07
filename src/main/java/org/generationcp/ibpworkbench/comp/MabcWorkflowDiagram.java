@@ -44,7 +44,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 155;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 200;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
