@@ -366,15 +366,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
         
-        layout.addComponent(browseStudiesButton);
-        browseStudiesButton.setHeight("20px");
-        layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseStudiesButton, 0);
-        
         layout.addComponent(browseGermplasmListsButton);
+        browseGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
 
+        layout.addComponent(browseStudiesButton);
+        //browseStudiesButton.setHeight("20px");
+        layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseStudiesButton, 0);
+        
+        
         /*
         layout.addComponent(gdmsButton);
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
@@ -496,6 +498,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
+        
+        layout.addComponent(germplasmImportButton);
+        germplasmImportButton.setHeight("20px");
+        layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton, 0);
+        
         layout.addComponent(manageGermplasmListsButton);
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -575,16 +583,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(optimasButton);
-        optimasButton.setHeight("20px");
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
-  
         layout.addComponent(mbdtButton);
         mbdtButton.setHeight("20px");
         layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mbdtButton, 0);
         
+        layout.addComponent(optimasButton);
+        //optimasButton.setHeight("20px");
+        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(optimasButton, 0);
+          
         return layout;
     }
 
