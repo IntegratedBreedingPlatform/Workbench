@@ -433,7 +433,15 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					gxeInput.setTraits(selectedTraits);
 					gxeInput.setEnvironment(gxeEnv);
 					Genotypes genotypes = new Genotypes();
-					genotypes.setName("G!");
+					
+					try {
+						String strGenoType;
+						strGenoType = studyDataManager.getLocalNameByStandardVariableId(table.getMeansDataSetId(), 8230);
+						if (strGenoType != null && strGenoType != "") genotypes.setName(strGenoType);
+					} catch (MiddlewareQueryException e1) {
+						genotypes.setName("G!");
+					}
+	
 					gxeInput.setGenotypes(genotypes);
 					gxeInput.setEnvironmentName(table.getEnvironmentName());
 					gxeInput.setBreedingViewProjectName(project.getProjectName());
