@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.poi.util.IOUtils;
 import org.generationcp.commons.util.StringUtil;
@@ -53,6 +54,9 @@ public class ToolUtil {
     private String centralPassword;
     private String localUser;
     private String localPassword;
+    private String workbenchDbName = "workbench";
+    private String workbenchUser = "root";
+    private String workbenchPassword = "";
 
     private String workspaceDirectory = "workspace";
 
@@ -105,6 +109,30 @@ public class ToolUtil {
 
     public void setLocalPassword(String localPassword) {
         this.localPassword = localPassword;
+    }
+
+    public String getWorkbenchDbName() {
+        return workbenchDbName;
+    }
+
+    public void setWorkbenchDbName(String workbenchDbName) {
+        this.workbenchDbName = workbenchDbName;
+    }
+
+    public String getWorkbenchUser() {
+        return workbenchUser;
+    }
+
+    public void setWorkbenchUser(String workbenchUser) {
+        this.workbenchUser = workbenchUser;
+    }
+
+    public String getWorkbenchPassword() {
+        return workbenchPassword;
+    }
+
+    public void setWorkbenchPassword(String workbenchPassword) {
+        this.workbenchPassword = workbenchPassword;
     }
 
     public String getWorkspaceDirectory() {
@@ -304,7 +332,8 @@ public class ToolUtil {
                 + "dmscentral.driverclassname=com.mysql.jdbc.Driver\r\n"
                 + "dmscentral.username=%s\r\n"
                 + "dmscentral.password=%s\r\n"
-                + "dmscentral.accessType=central\r\n" + ""
+                + "dmscentral.accessType=central\r\n"
+                + "dmscentral2.defaultSchema=%s\r\n"
                 + "gmscentral.hibernateDialect=\r\n"
                 + "gmscentral.url=%s\r\n"
                 + "gmscentral.driverclassname=com.mysql.jdbc.Driver\r\n"
@@ -334,13 +363,13 @@ public class ToolUtil {
             if (!StringUtil.isEmptyOrWhitespaceOnly(username)
                 && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
                 configuration = String.format(format, centralJdbcString,
-                                              username, password, centralJdbcString, username,
+                                              username, password, centralDbName, centralJdbcString, username,
                                               password, localJdbcString, username, password,
                                               localJdbcString, username, password,
                                               workbenchLoggedinUserId);
             } else {
                 configuration = String.format(format, centralJdbcString,
-                                              centralUser, centralPassword, centralJdbcString,
+                                              centralUser, centralPassword, centralDbName, centralJdbcString,
                                               centralUser, centralPassword, localJdbcString,
                                               localUser, localPassword, localJdbcString, localUser,
                                               localPassword, workbenchLoggedinUserId);
@@ -371,7 +400,7 @@ public class ToolUtil {
         } else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
             updateToolMiddlewareDatabaseConfiguration(
                                                       "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties",
-                                                      centralDbName, localDbName, username, password);
+                                                      centralDbName, localDbName, username, password, true);
 
             // update hibernate configuration
             String[] configurationFiles = new String[] { "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml" };
@@ -418,49 +447,67 @@ public class ToolUtil {
         }
     }
 
-    public void updateToolMiddlewareDatabaseConfiguration(
-                                                          String ibpDatasourcePropertyFile, String centralDbName,
-                                                          String localDbName, String username, String password)
-                                                              throws IOException {
-        File configurationFile = new File(ibpDatasourcePropertyFile)
-        .getAbsoluteFile();
-
-        String format = "central.driver=com.mysql.jdbc.Driver\r\n"
-            + "central.url=%s\r\n" + "central.dbname=%s\r\n"
-            + "central.host=%s\r\n" + "central.port=%s\r\n"
-            + "central.username=%s\r\n" + "central.password=%s\r\n"
-            + "local.driver=com.mysql.jdbc.Driver\r\n" + "local.url=%s\r\n"
-            + "local.dbname=%s\r\n" + "local.host=%s\r\n"
-            + "local.port=%s\r\n" + "local.username=%s\r\n"
-            + "local.password=%s\r\n";
+    public void updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName,
+                                                          String localDbName, String username, String password) throws IOException {
+        updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false);
+    }
+    
+    public void updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName,
+                                                                      String localDbName, String username, String password, boolean includeWorkbenchConfig)
+                                                                          throws IOException {
+        File configurationFile = new File(ibpDatasourcePropertyFile).getAbsoluteFile();
 
         String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost,
                                           jdbcPort, centralDbName);
         String localUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost,
                                         jdbcPort, localDbName);
-
+        
+        Properties prop = new Properties();
+        prop.setProperty("central.driver", "com.mysql.jdbc.Driver");
+        prop.setProperty("central.url", centralUrl);
+        prop.setProperty("central.dbname", centralDbName);
+        prop.setProperty("central.host", jdbcHost);
+        prop.setProperty("central.port", String.valueOf(jdbcPort));
+        prop.setProperty("central.username", username);
+        prop.setProperty("central.password", password);
+        prop.setProperty("local.driver", "com.mysql.jdbc.Driver");
+        prop.setProperty("local.url", localUrl);
+        prop.setProperty("local.dbname", localDbName);
+        prop.setProperty("local.host", jdbcHost);
+        prop.setProperty("local.port", String.valueOf(jdbcPort));
+        prop.setProperty("local.username", username);
+        prop.setProperty("local.password", password);
+        
         // if the specified MySQL username and password
         // use the configured central user and password
-        String configuration = "";
-        if (!StringUtil.isEmptyOrWhitespaceOnly(username)
-            && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
-            configuration = String.format(format, centralUrl, centralDbName,
-                                          jdbcHost, jdbcPort, username, password, localUrl,
-                                          localDbName, jdbcHost, jdbcPort, username, password);
-        } else {
-            configuration = String.format(format, centralUrl, centralDbName,
-                                          jdbcHost, jdbcPort, centralUser, centralPassword, localUrl,
-                                          localDbName, jdbcHost, jdbcPort, localUser, localPassword);
+        if (StringUtil.isEmptyOrWhitespaceOnly(username) || StringUtil.isEmptyOrWhitespaceOnly(password)) {
+            prop.setProperty("central.username", centralUser);
+            prop.setProperty("central.password", centralPassword);
+            prop.setProperty("local.username", localUser);
+            prop.setProperty("local.password", localPassword);
         }
-
-        FileOutputStream fos = new FileOutputStream(configurationFile);
+        
+        // if we are instructed to include workbench configuration
+        // add it
+        if (includeWorkbenchConfig) {
+            prop.setProperty("workbench.host", jdbcHost);
+            prop.setProperty("workbench.port", String.valueOf(jdbcPort));
+            prop.setProperty("workbench.dbname", workbenchDbName);
+            prop.setProperty("workbench.username", workbenchUser);
+            prop.setProperty("workbench.password", workbenchPassword);
+        }
+        
+        FileOutputStream fos = null;
         try {
-            fos.write(configuration.getBytes());
+            fos = new FileOutputStream(configurationFile);
+            prop.store(fos, null);
             fos.flush();
         } catch (IOException e) {
             throw new IOException(e);
         } finally {
-            fos.close();
+            if (fos != null) {
+                fos.close();
+            }
         }
     }
 

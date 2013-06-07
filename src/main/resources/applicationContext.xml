@@ -146,6 +146,9 @@
         <property name="centralPassword"    value="${central.password}"/>
         <property name="localUser"          value="${local.user}"/>
         <property name="localPassword"      value="${local.password}"/>
+        <property name="workbenchDbName"    value="workbench"/>
+        <property name="workbenchUser"      value="${workbench.username}"/>
+        <property name="workbenchPassword"  value="${workbench.password}"/>
     </bean>
 
     <bean id="traitsAndMeansCVSUtil" class="org.generationcp.ibpworkbench.util.TraitsAndMeansCSVUtil">
