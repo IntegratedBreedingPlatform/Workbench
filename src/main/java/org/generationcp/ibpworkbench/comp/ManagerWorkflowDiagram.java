@@ -508,17 +508,17 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(manageGermplasmListsButton, 0);
-        
-        layout.addComponent(nurseryManagerButton);
-        nurseryManagerButton.setHeight("20px");
-        layout.setComponentAlignment(nurseryManagerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(nurseryManagerButton, 0);
-        
+                
         layout.addComponent(makeCrossesButton);
         makeCrossesButton.setHeight("20px");
         layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(makeCrossesButton, 0);
 
+        layout.addComponent(nurseryManagerButton);
+        //nurseryManagerButton.setHeight("20px");
+        layout.setComponentAlignment(nurseryManagerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(nurseryManagerButton, 0);
+        
         /*
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
@@ -559,14 +559,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         */
 
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
-        breedingViewMultiSiteAnalysisButton.setHeight("20px");
+        //breedingViewMultiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
-        
+
+        /*
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
-        
+        */
         return layout;
     }
 
