@@ -194,7 +194,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	protected void refreshStudies() throws MiddlewareQueryException {
 
 		List<FolderReference> listFolder = studyDataManager
-				.getRootFolders(Database.CENTRAL);
+				.getRootFolders((Database)selectDatabase.getValue());
 
 		studiesTree.removeAllItems();
 		
@@ -304,18 +304,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		studiesTree.setSizeFull();
 		studiesTree.setImmediate(true);
 
-		try {
-			refreshStudies();
-			requestRepaintAll();
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
-
 		Panel studiesPanel = new Panel();
 		studiesPanel.setWidth("200px");
 		studiesPanel.setHeight("100%");
 		
-		/**
 		selectDatabase.setImmediate(true);
 		selectDatabase.addItem(Database.CENTRAL);
 		selectDatabase.addItem(Database.LOCAL);
@@ -336,10 +328,15 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			
 		});
 		
-		studiesPanel.addComponent(selectDatabase);
-		**/
-		
+		//studiesPanel.addComponent(selectDatabase);
 		studiesPanel.addComponent(studiesTree);
+		
+		try {
+			refreshStudies();
+			requestRepaintAll();
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
 
 		horizontal.addComponent(studiesPanel);
 
