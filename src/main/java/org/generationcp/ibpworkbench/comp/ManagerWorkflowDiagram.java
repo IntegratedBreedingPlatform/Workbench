@@ -260,7 +260,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
 
-        makeCrossesButton = new Button(messageSource.getMessage(Message.MAKE_CROSSES));
+        makeCrossesButton = new Button(messageSource.getMessage(Message.CROSS_MANAGER_LINK));
         makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         makeCrossesButton.setSizeUndefined();
         makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
@@ -519,10 +519,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(makeCrossesButton, 0);
 
+        /*
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
-        
+        */
         return layout;
     }
 
