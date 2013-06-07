@@ -144,10 +144,12 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
             List<DataSet> meansDs = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
-            if (meansDs.get(0) != null){
-            	 breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
-            }else{
+            if (meansDs != null){
+            	if (meansDs.size() > 0){
+            		if (meansDs.get(0) != null) breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
+            	}else{
             	 breedingViewInput.setOutputDatasetId(0);
+            	}
             }
            
             event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
