@@ -124,7 +124,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
             
             // run crop specific script
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
+            // runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
         }
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
