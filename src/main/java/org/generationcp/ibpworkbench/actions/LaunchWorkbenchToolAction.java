@@ -299,7 +299,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
                         UserDataManager userDataManager = managerFactory.getUserDataManager();
 
-                        localIbdbUser = userDataManager.getUserById(localIbdbUserId);
+                        if (localIbdbUserId != null) {
+                            localIbdbUser = userDataManager.getUserById(localIbdbUserId);
+                        }
                     }
                 }
                 catch (MiddlewareQueryException e) {
