@@ -16,10 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -28,16 +28,19 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +98,8 @@ public class SaveUsersInProjectAction implements ClickListener{
         }
         
         Container container = tblMembers.getContainerDataSource();
+        
+        @SuppressWarnings("unchecked")
         Collection<User> userList = (Collection<User>) container.getItemIds();
         
         try {
@@ -134,6 +139,10 @@ public class SaveUsersInProjectAction implements ClickListener{
             // update the project user roles
             this.workbenchDataManager.updateProjectsRolesForProject(this.project, projectUserRoles);
             
+            // create local database users for each workbench user
+            ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+            createLocalDatabaseUsers(managerFactory, projectUserRoles, project);
+            
             // create the MySQL users for each project member
             // TODO: why do we need to create a MySQL for each project member?
             // why not create a MySQL user for the Workbench user when the account is created?
@@ -159,6 +168,87 @@ public class SaveUsersInProjectAction implements ClickListener{
 	     	System.out.println(e.getMessage());
 	     	
 	     }
+    }
+    
+    /**
+     * Create a local database user for each workbench user.
+     * 
+     * @param managerFactory
+     * @param projectUserRoles
+     * @param projectSaved
+     * @throws MiddlewareQueryException
+     */
+    private void createLocalDatabaseUsers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+        Map<Integer, String> idAndNameOfProjectMembers = new HashMap<Integer, String>();
+        
+        UserDataManager userDataManager = managerFactory.getUserDataManager();
+        Map<Integer,String> usersAccountedFor = new HashMap<Integer, String>();
+        
+        for (ProjectUserRole projectUserRole : projectUserRoles){
+            Integer workbenchUserId = projectUserRole.getUserId();
+            
+            // a user may have multiple roles
+            // and we only need to create 1 local user per workbench user
+            if(usersAccountedFor.containsKey(workbenchUserId)){
+                continue;
+            }
+            
+            User workbenchUser = workbenchDataManager.getUserById(workbenchUserId);
+            User localUser =  workbenchUser.copy();
+
+            Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+            Person localPerson = currentPerson.copy();
+
+            // Check if the Person record already exists
+            if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())){
+                userDataManager.addPerson(localPerson);
+            } else {
+                // set localPerson to the existing person
+                List<Person> persons = userDataManager.getAllPersons();
+                for (Person person : persons){
+                    if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) && 
+                        person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
+                        localPerson = person;
+                        break;
+                    }
+                }
+            }
+
+            //append a timestamp to the username and password
+            //and change the start of the username of be the initials of the user
+            String newUserName = localPerson.getInitialsWithTimestamp();
+            //password must be 11 chars long
+            String newPassword = newUserName.substring(0, 11);
+
+            localUser.setName(newUserName);
+            localUser.setPassword(newPassword);
+
+            // If the selected member does not exist yet in the local database, then add
+            User localDatabaseUser = userDataManager.getUserByUserName(localUser.getName());
+            Integer userId = localDatabaseUser == null ? null : localDatabaseUser.getUserid();
+            
+            if (userId == null){
+                localUser.setPersonid(localPerson.getId());
+                localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+                localUser.setType(PROJECT_USER_TYPE);
+                localUser.setInstalid(Integer.valueOf(projectUserInstalId));
+                localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+                localUser.setAdate(getCurrentDate());
+                userId = userDataManager.addUser(localUser);      
+                idAndNameOfProjectMembers.put(workbenchUser.getUserid(), newUserName);
+            }
+            else {
+                // add a workbench user to ibdb user mapping
+                User ibdbUser = userDataManager.getUserById(userId);
+                IbdbUserMap ibdbUserMap = new IbdbUserMap();
+                ibdbUserMap.setWorkbenchUserId(workbenchUser.getUserid());
+                ibdbUserMap.setProjectId(project.getProjectId());
+                ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
+                workbenchDataManager.addIbdbUserMap(ibdbUserMap);
+            }
+            
+            usersAccountedFor.put(projectUserRole.getUserId(), newUserName);
+        }
     }
     
     protected void createMySQLUsers(List<ProjectUserRole> projectUserRoles) {

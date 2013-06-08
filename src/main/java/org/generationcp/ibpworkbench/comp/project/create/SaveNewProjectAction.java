@@ -377,7 +377,15 @@ public class SaveNewProjectAction implements ClickListener{
         }
 
     }
-
+    
+    /**
+     * Create necessary database entries for each project member.
+     * 
+     * @param managerFactory
+     * @param projectUserRoles
+     * @param projectSaved
+     * @throws MiddlewareQueryException
+     */
     private void saveProjectMembers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
         
         UserDataManager userDataManager = managerFactory.getUserDataManager();
