@@ -312,7 +312,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		selectDatabase.addItem(Database.CENTRAL);
 		selectDatabase.addItem(Database.LOCAL);
 		selectDatabase.setCaption("Select Database");
-		selectDatabase.select(Database.CENTRAL);
+		selectDatabase.select(Database.LOCAL);
 		selectDatabase.addListener(new Property.ValueChangeListener(){
 
 			@Override
