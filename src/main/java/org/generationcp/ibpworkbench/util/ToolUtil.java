@@ -227,7 +227,7 @@ public class ToolUtil {
                                       "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return;
         }
-
+        
         for (Tool tool : nativeTools) {
             // close the native tools
             try {
@@ -275,8 +275,16 @@ public class ToolUtil {
                 LOG.error("Exception", e);
             }
         }
+        
+        // update web service configuration
+        try {
+            updateWebServiceConfigurationForProject(project);
+        }
+        catch (IOException e) {
+            LOG.error("Exception", e);
+        }
     }
-
+    
     /**
      * Update the configuration of the specified {@link Tool} to the
      * configuration needed by the specified {@link Project}.
@@ -487,8 +495,7 @@ public class ToolUtil {
             prop.setProperty("local.password", localPassword);
         }
         
-        // if we are instructed to include workbench configuration
-        // add it
+        // if we are instructed to include workbench configuration, add it
         if (includeWorkbenchConfig) {
             prop.setProperty("workbench.host", jdbcHost);
             prop.setProperty("workbench.port", String.valueOf(jdbcPort));
@@ -509,6 +516,35 @@ public class ToolUtil {
                 fos.close();
             }
         }
+    }
+    
+    public void updateWebServiceConfigurationForProject(Project project) throws IOException {
+        String centralDbName = project.getCropType().getCentralDbName();
+        String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
+        
+        // get mysql user name and password to use
+        String username = null;
+        String password = null;
+
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        if (app != null) {
+            User currentUser = app.getSessionData().getUserData();
+
+            if (currentUser != null) {
+                try {
+                    ProjectUserMysqlAccount account = workbenchDataManager.getProjectUserMysqlAccountByProjectIdAndUserId(Integer.valueOf(project.getProjectId().intValue()), currentUser.getUserid());
+                    username = account.getMysqlUsername();
+                    password = account.getMysqlPassword();
+                }
+                catch (MiddlewareQueryException ex) {
+                    // do nothing, use the default central and local mysql user
+                    // accounts
+                }
+            }
+        }
+        
+        updateToolMiddlewareDatabaseConfiguration("infrastructure/tomcat/webapps/IBPWebService/WEB-INF/classes/workbench.properties",
+                                                  centralDbName, localDbName, username, password, true);
     }
 
     public void createWorkspaceDirectoriesForProject(Project project)
