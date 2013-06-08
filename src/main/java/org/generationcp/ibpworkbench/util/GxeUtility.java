@@ -20,6 +20,7 @@ import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.Experiment;
+import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.Variable;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
@@ -138,7 +139,7 @@ public class GxeUtility {
 	 * @param xlsfilename
 	 * @return File
 	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<VariableType> germplasmFactors, List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
 		
@@ -160,15 +161,33 @@ public class GxeUtility {
 			j++;
 		}
 		
+		// find entry number storage factor and explicitly aadd it as a column
+		for (VariableType factor : vtList.getFactors().getVariableTypes()) {
+			if (factor.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
+				traitToColNoMap.put(factor.getLocalName(),j);
+				headerRow.createCell(j).setCellValue(factor.getLocalName());
+				j++;
+				
+				break;
+			}
+		}
+
+		
+		// site no or site code
+		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_STORAGE.getId());
+		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId());
+		/*
 		for (VariableType f : germplasmFactors) {
+			// do not add entryNoFactor as it has bean added explicitly
+			if (entryNoFactor != null && entryNoFactor.getId() == f.getId())
+				continue;
+			
 			traitToColNoMap.put(f.getLocalName(),j);
 			headerRow.createCell(j).setCellValue(f.getLocalName());
 			j++;	
-		}
+		}*/
 		
 		for (Trait trait : selectedTraits) {
-			LOG.debug(trait.getName());
-			
 			//if (trait.getName().trim().)
 			traitToColNoMap.put(trait.getName(),j);
 			headerRow.createCell(j).setCellValue(trait.getName());
@@ -202,7 +221,6 @@ public class GxeUtility {
 					row.createCell(traitToColNoMap.get(environmentName)).setCellValue(var.getValue());
 				}
 			}
-			
 			
 			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
@@ -255,7 +273,7 @@ public class GxeUtility {
 		}
 	}
 	
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<VariableType> germplasmFactors,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 
 		// get the headers first
@@ -276,14 +294,34 @@ public class GxeUtility {
 			j++;
 		}
 		
+		LOG.debug(vtList.toString());
+		
+		// find entry number storage factor and explicitly aadd it as a column
+		for (VariableType factor : vtList.getFactors().getVariableTypes()) {
+			if (factor.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
+				traitToColNoMap.put(factor.getLocalName(),j);
+				headerRow.add(factor.getLocalName());
+				j++;
+				
+				break;
+			}
+		}
+		
+		// site no or site code
+		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_STORAGE.getId());
+		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId());
+		/*
 		for (VariableType f : germplasmFactors) {
+			// do not add entryNoFactor as it has bean added explicitly
+			if (entryNoFactor != null && entryNoFactor.getId() == f.getId())
+				continue;
+			
 			traitToColNoMap.put(f.getLocalName(),j);
 			headerRow.add(f.getLocalName());
 			j++;	
-		}
-		
+		}*/
+				
 		for (Trait trait : selectedTraits) {
-			LOG.debug(trait.getName());
 			
 			//if (trait.getName().trim().)
 			traitToColNoMap.put(trait.getName(),j);

@@ -17,10 +17,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
@@ -33,12 +31,9 @@ import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.DataSetType;
-import org.generationcp.middleware.v2.domain.DatasetReference;
 import org.generationcp.middleware.v2.domain.FactorType;
-import org.generationcp.middleware.v2.domain.FolderReference;
-import org.generationcp.middleware.v2.domain.Reference;
 import org.generationcp.middleware.v2.domain.Study;
-import org.generationcp.middleware.v2.domain.StudyReference;
+import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
@@ -46,19 +41,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * 
@@ -360,10 +353,13 @@ public class SelectEnvironmentForGxeWindow extends Window implements Initializin
             		factorList.add(fm);
             	}
             	
-            	if (factor.getStandardVariable().getFactorType() == FactorType.TRIAL_ENVIRONMENT){
-            		selectEnv.addItem(factor.getLocalName());
-            	}
             	
+            	if (factor.getStandardVariable().getFactorType() == FactorType.TRIAL_ENVIRONMENT){
+            		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
+            		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
+	            		selectEnv.addItem(factor.getLocalName());
+            	}
             }
             
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){

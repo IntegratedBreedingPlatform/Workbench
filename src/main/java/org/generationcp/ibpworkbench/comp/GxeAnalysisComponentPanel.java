@@ -415,9 +415,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					File datasetExportFile = null;
 					
 					if (isXLS)
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,table.getGermplasmFactors(), selectedTraits, project);
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
 					else
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,table.getGermplasmFactors(), selectedTraits, project);
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
 					
 					
 					LOG.debug(datasetExportFile.getAbsolutePath());

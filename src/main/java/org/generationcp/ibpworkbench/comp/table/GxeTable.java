@@ -16,6 +16,7 @@ import org.generationcp.middleware.v2.domain.DataSet;
 import org.generationcp.middleware.v2.domain.DataSetType;
 import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.FactorType;
+import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.TrialEnvironments;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
@@ -224,7 +225,6 @@ public class GxeTable extends Table {
 					}
 					
 					germplasmFactors.addAll(meansDataSet.getFactorsByFactorType(FactorType.GERMPLASM));
-					
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
@@ -366,5 +366,9 @@ public class GxeTable extends Table {
 	
 	public List<VariableType> getGermplasmFactors() {
 		return germplasmFactors.getVariableTypes();
+	}
+	
+	public VariableTypeList getEntryCodeFactor() {
+		return meansDataSet.getFactorsByProperty(TermId.ENTRY_NUMBER_STORAGE.getId());
 	}
 }
