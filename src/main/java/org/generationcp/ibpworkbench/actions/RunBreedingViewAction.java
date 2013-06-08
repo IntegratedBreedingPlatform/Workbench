@@ -28,6 +28,8 @@ import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDeta
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
+import org.generationcp.middleware.exceptions.ConfigException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,8 +187,21 @@ public class RunBreedingViewAction implements ClickListener {
             event.getComponent().getWindow().showNotification("Please specify Genotypes factor.", Notification.TYPE_ERROR_MESSAGE);
             return;
         } else{
-            Genotypes genotypes = new Genotypes();
-            genotypes.setName(genotypesName.trim());
+           
+            String entry  = "";
+			try {
+				entry = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), 8230);
+			} catch (ConfigException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			
+			Genotypes genotypes = new Genotypes();
+	        genotypes.setName(genotypesName.trim());
+            genotypes.setEntry(entry);
             breedingViewInput.setGenotypes(genotypes);
         }
         
