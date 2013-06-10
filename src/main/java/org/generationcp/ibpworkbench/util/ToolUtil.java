@@ -497,6 +497,8 @@ public class ToolUtil {
         
         // if we are instructed to include workbench configuration, add it
         if (includeWorkbenchConfig) {
+            prop.setProperty("workbench.driver", "com.mysql.jdbc.Driver");
+            prop.setProperty("workbench.url", "jdbc:mysql://localhost:13306/workbench");
             prop.setProperty("workbench.host", jdbcHost);
             prop.setProperty("workbench.port", String.valueOf(jdbcPort));
             prop.setProperty("workbench.dbname", workbenchDbName);
