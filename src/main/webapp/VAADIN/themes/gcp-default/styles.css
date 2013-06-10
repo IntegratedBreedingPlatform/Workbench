@@ -1,5 +1,12 @@
 @import url(../reindeer/styles.css);
 
+@font-face {
+    font-family: 'Helvetica Neue Light Embedded';
+    src: url('helveticaneue-light-webfont.eot');
+    src: url('helveticaneue-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('helveticaneue-light-webfont.woff') format('woff');
+}
+
 .v-app-IBPWorkbenchApplication * {
     outline:none !important; /*removes the dotted border*/
 }
@@ -135,8 +142,8 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 .gcp-window-title {
     font-size: 20px;
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
-    
+	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
+	
 }
 
 .gcp-window-title H1:first-child {
@@ -146,8 +153,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-weight: 100;
 	margin-left: 20px;	
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
-    
+	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
 }
 
 .gcp-window-title H1 {
@@ -155,7 +161,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-size: 20px;
     display: inline-block; 
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
 	font-weight: 100;
 }
 
@@ -164,8 +170,7 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-weight: normal;
     display: inline-block; 
 	color: #02385a;
-	font-family: "Helvetica Neue", "Segoe UI", sans-serif; !important;
-    
+	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
 }
 
 
@@ -395,12 +400,12 @@ s
 
 .gcp-login-title {
 	line-height: 24px;
-	font-size: 22px;
+	font-size: 21px;
 	color: #dde5ec;
 	margin-left: 104px;
 	margin-top: 17px;
 	text-transform: uppercase;
-	font-family: "Helvetica Neue", "Segoe UI Light", sans-serif; !important;
+	font-family: "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
 	font-weight: 100;
 }
 
