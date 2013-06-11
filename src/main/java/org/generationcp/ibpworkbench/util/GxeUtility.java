@@ -344,7 +344,7 @@ public class GxeUtility {
 		// create table content
 		for (Experiment experiment : experiments) {
 			//List<String> row = new ArrayList<String>(2 + traitToColNoMap.size());
-			String[] row = new String[2 + traitToColNoMap.size()];
+			String[] row = new String[headerRow.size()];
 			
 			
 			// site no && site code insert to columnMap
