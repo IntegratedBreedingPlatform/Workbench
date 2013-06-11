@@ -395,7 +395,7 @@ public class GxeUtility {
 
 			File csvFile = new File(dir + File.separator + gxeDataset.getName()+ ".csv");
 
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER);
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
