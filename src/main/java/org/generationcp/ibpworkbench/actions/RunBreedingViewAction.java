@@ -13,6 +13,10 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
@@ -24,12 +28,15 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +66,7 @@ public class RunBreedingViewAction implements ClickListener {
     private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
     
     @Override
-    public void buttonClick(ClickEvent event) {
+    public void buttonClick(final ClickEvent event) {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
         
@@ -205,28 +212,113 @@ public class RunBreedingViewAction implements ClickListener {
             breedingViewInput.setGenotypes(genotypes);
         }
         
-        BreedingViewXMLWriter breedingViewXMLWriter;
-            
         try {
-            breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-            breedingViewXMLWriter.writeProjectXML();
-            
-            File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
-            Runtime runtime = Runtime.getRuntime();
-            LOG.info(breedingViewInput.toString());
-            LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
-            runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
-            
-        } catch (BreedingViewXMLWriterException e) {
-            log.debug("Cannot write Breeding View input XML", e);
-            
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        } catch (IOException e) {
-            log.debug("Cannot write Breeding View input XML", e);
-            
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }
-            
-        event.getComponent().getWindow().getParent().removeWindow(this.source);
+			final DataSet sourceDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getDatasetId());
+			final DataSet meansDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getOutputDatasetId());
+			
+			if (sourceDataSet != null && meansDataSet != null){
+				
+				if (checkColumnsChanged(sourceDataSet, meansDataSet)){
+					  ConfirmDialog.show(source.getParent(), "Delete Means Dataset",  
+				        		"Do you want to delete the existing means dataset?", 
+				        		"Delete", 
+				        		"No", 
+				        		new ConfirmDialog.Listener() {
+										@Override
+										public void onClose(ConfirmDialog dialog) {
+											if (dialog.isConfirmed()){
+												try {
+													source.getManagerFactory().getNewStudyDataManager().deleteDataSet(meansDataSet.getId());
+													source.getBreedingViewInput().setOutputDatasetId(0);
+												} catch (ConfigException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												} catch (MiddlewareQueryException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+												
+											}
+												
+											launchBV(event);
+										}
+					        		}
+				        );		
+				}else{
+					launchBV(event);
+				}
+				
+				
+			}else{
+				launchBV(event);
+			}
+			
+			
+			
+			
+			
+		} catch (ConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+        
+      	
+        
+       
+	
+        
+       
     }   
+    
+    private void launchBV(ClickEvent event){
+    	
+    	 BreedingViewXMLWriter breedingViewXMLWriter;
+         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+    	 
+         try {
+             breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
+             breedingViewXMLWriter.writeProjectXML();
+             
+             File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
+             Runtime runtime = Runtime.getRuntime();
+             LOG.info(breedingViewInput.toString());
+             LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
+             runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
+             
+         } catch (BreedingViewXMLWriterException e) {
+             log.debug("Cannot write Breeding View input XML", e);
+             
+             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+         } catch (IOException e) {
+             log.debug("Cannot write Breeding View input XML", e);
+             
+             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+         }
+             
+         event.getComponent().getWindow().getParent().removeWindow(this.source);
+    	
+    	
+    }
+    
+    private boolean checkColumnsChanged(DataSet sourceDataSet,DataSet meansDataSet){
+       
+    	List<String> header1 = new ArrayList<String>();
+    	List<String> header2 = new ArrayList<String>();
+    	for (VariableType var : sourceDataSet.getVariableTypes().getVariates().getVariableTypes()){
+    		header1.add((var.getLocalName().trim() + "_Means").toLowerCase());
+    	}
+    	for (VariableType var : meansDataSet.getVariableTypes().getVariates().getVariableTypes()){
+    		if (!var.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
+    		header2.add(var.getLocalName().trim().toLowerCase());
+    	}
+    	Collections.sort(header1);
+    	Collections.sort(header2);
+    	
+    	return !header2.equals(header1);
+    	
+    }
 }
