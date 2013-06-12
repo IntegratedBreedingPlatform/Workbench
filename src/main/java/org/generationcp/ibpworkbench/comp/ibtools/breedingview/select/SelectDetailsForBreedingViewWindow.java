@@ -305,9 +305,9 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         selDesignType.setImmediate(true); 
         selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-        selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+        //selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-        selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+        //selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
         checkDesignFactor();
         selDesignType.setNullSelectionAllowed(false);
         selDesignType.setNewItemsAllowed(false);
