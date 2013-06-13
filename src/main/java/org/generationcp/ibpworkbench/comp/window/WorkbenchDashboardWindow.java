@@ -230,7 +230,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				WorkbenchDashboardWindow.this.open(new ExternalResource(HELP_LINK));
+				WorkbenchDashboardWindow.this.open(new ExternalResource(HELP_LINK),"_blank");
 			}
 		});
         
