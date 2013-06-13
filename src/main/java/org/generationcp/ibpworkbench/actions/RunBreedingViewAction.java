@@ -36,6 +36,7 @@ import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.v2.domain.DataSet;
+import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,12 +305,28 @@ public class RunBreedingViewAction implements ClickListener {
     	
     }
     
+    
+    
     private boolean checkColumnsChanged(DataSet sourceDataSet,DataSet meansDataSet){
-       
+    	
+    	List<Integer> numericTypes = new ArrayList<Integer>();
+ 
+         
+         numericTypes.add(TermId.NUMERIC_VARIABLE.getId());
+         numericTypes.add(TermId.MIN_VALUE.getId());
+         numericTypes.add(TermId.MAX_VALUE.getId());
+         numericTypes.add(TermId.DATE_VARIABLE.getId());
+         numericTypes.add(TermId.NUMERIC_DBID_VARIABLE.getId());
+    	
+    	
+    	
     	List<String> header1 = new ArrayList<String>();
     	List<String> header2 = new ArrayList<String>();
     	for (VariableType var : sourceDataSet.getVariableTypes().getVariates().getVariableTypes()){
-    		header1.add((var.getLocalName().trim() + "_Means").toLowerCase());
+    		if (numericTypes.contains(var.getStandardVariable().getDataType().getId())){
+    			header1.add((var.getLocalName().trim() + "_Means").toLowerCase());
+    		}
+    		
     	}
     	for (VariableType var : meansDataSet.getVariableTypes().getVariates().getVariableTypes()){
     		if (!var.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
