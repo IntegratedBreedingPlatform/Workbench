@@ -159,14 +159,15 @@ public class ToolUtil {
         }
 
         File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-
-        Runtime runtime = Runtime.getRuntime();
-
+        
         String parameter = "";
         if (!StringUtil.isEmpty(tool.getParameter())) {
             parameter = tool.getParameter();
         }
-        return runtime.exec(new String[] { absoluteToolFile.getAbsolutePath(), parameter });
+        
+        ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), parameter);
+        pb.directory(absoluteToolFile.getParentFile());
+        return pb.start();
     }
 
     /**
