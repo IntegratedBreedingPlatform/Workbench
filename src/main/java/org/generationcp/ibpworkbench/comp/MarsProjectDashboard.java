@@ -199,7 +199,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerButton.setSizeUndefined();
         
-        breedingPlannerButton = new Button("Breeding Planner");
+        breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_MARS));
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
@@ -317,7 +317,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("700px");
+        layout.setHeight("750px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -471,7 +471,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("700px");
+        layout.setHeight("750px");
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -515,10 +515,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
         
-        layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
+        //layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         //breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
+        //layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
 		
         
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
@@ -584,7 +584,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         Panel panel = new Panel();
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
-        layout.setHeight("700px");
+        layout.setHeight("750px");
         //layout.setWidth("274px");
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -711,7 +711,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("125px");
+        layout.setHeight("135px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
@@ -811,7 +811,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(recomBreedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(recomBreedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         
-        messageSource.setCaption(fieldBookButton, Message.FIELDBOOK);
+        messageSource.setCaption(fieldBookButton, Message.FIELDBOOK_CREATE);
         messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
         
         messageSource.setCaption(gdmsButton, Message.MANAGE_GENOTYPING_DATA);

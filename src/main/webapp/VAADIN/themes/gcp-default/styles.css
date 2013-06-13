@@ -225,8 +225,14 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 	
 }
 
+.gcp-workflow-link {
+	max-width: 250px;
+	text-align: center;
+}
+
 .gcp-workflow-link span span {
 	color: #045d91 !important;
+	white-space: normal;
 }
 
 .gcp-workflow-link span span:hover {
@@ -405,7 +411,7 @@ s
 	margin-left: 104px;
 	margin-top: 17px;
 	text-transform: uppercase;
-	font-family: "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
+	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light Embedded","Arial", sans-serif; !important;
 	font-weight: 100;
 }
 
@@ -436,11 +442,14 @@ s
 
 .gcp-removelink .gcp-workflow-link * {
 	cursor: default !important;
+	max-width: 250px;
+	text-align: center;
 }
 
 .gcp-removelink .gcp-workflow-link span span {
 	color: #02385a !important;
 	text-decoration: none !important;
+	white-space: normal;
 }
 
 .gcp-removelink .gcp-workflow-link span span:hover {

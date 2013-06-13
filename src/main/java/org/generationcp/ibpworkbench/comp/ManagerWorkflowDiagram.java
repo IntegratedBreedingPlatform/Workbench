@@ -559,15 +559,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         */
 
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
-        //breedingViewMultiSiteAnalysisButton.setHeight("20px");
+        breedingViewMultiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
 
-        /*
+        
         layout.addComponent(breedingViewButton);
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
-        */
+        
         return layout;
     }
 
@@ -705,7 +705,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
-        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW);
+        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_QTL);
         
         messageSource.setValue(genoTypingTitle,Message.DATA_MANAGEMENT_TITLE);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);

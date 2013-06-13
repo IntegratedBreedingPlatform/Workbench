@@ -35,6 +35,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -57,7 +58,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     private static final long serialVersionUID = 1L;
     
     public static final String VERSION = "1.1.4.12";
-    
+    public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
     private Button signOutButton;
@@ -225,6 +226,14 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     	homeButton.addListener(new HomeAction());
         signOutButton.addListener(new SignoutAction());
         
+        helpButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WorkbenchDashboardWindow.this.open(new ExternalResource(HELP_LINK));
+			}
+		});
+        
         Button.ClickListener userToolsClickListener = new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 
@@ -342,8 +351,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         
         //headerRightLayout.addComponent(new Label("|"));
 
-        //headerRightLayout.addComponent(helpButton);
-        //headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
+        headerRightLayout.addComponent(helpButton);
+        headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
 
         headerLayout.addComponent(headerRightLayout);
         headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);

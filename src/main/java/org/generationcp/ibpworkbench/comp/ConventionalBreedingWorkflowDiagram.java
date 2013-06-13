@@ -201,7 +201,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
         
-        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK));
+        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK_CREATE));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
@@ -302,11 +302,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        /*
         layout.addComponent(breedingPlannerButton);
         breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
-        
+        */
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
@@ -410,12 +411,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
-
+        /*
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-        
+        */
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);

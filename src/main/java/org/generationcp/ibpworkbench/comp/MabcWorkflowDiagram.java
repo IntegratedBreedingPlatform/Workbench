@@ -145,7 +145,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
         //breedingDecisionTitle.setSizeUndefined();
         
-        breedingPlannerButton = new Button("Breeding Planner");
+        breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_MABC));
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
@@ -211,12 +211,12 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");
         
-        mbdtButton = new Button("MBDT");
+        mbdtButton = new Button(messageSource.getMessage(Message.MBDT_MABC));
         mbdtButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mbdtButton.setSizeUndefined();
         mbdtButton.setDescription("Click to launch MBDT");
         
-        fieldbookButton = new Button("Fieldbook");
+        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK_CREATE));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription("Click to launch Fieldbook");
@@ -459,7 +459,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+        layout.setHeight(WORKFLOW_STEP_HEIGHT + "px");
         
         layout.addComponent(statisticalAnalysisTitle);
         layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
@@ -476,12 +476,13 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
-
+        /*
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-
+		*/
+        
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);

@@ -336,10 +336,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
+        /*
         layout.addComponent(breedingPlannerButton);
         breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
+        */
         
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
@@ -464,11 +466,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
         
-
+        /*
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
+        */
         
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
