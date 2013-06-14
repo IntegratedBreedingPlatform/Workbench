@@ -823,7 +823,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(qtlBreedingViewButton, Message.BREEDING_VIEW);
         messageSource.setDescription(qtlBreedingViewButton, Message.CLICK_TO_LAUNCH_BREEDING_VIEW);
         
-        messageSource.setCaption(optimasButton, Message.OPTIMAS);
+        messageSource.setCaption(optimasButton, Message.OPTIMAS_MARS);
         messageSource.setDescription(optimasButton, Message.CLICK_TO_LAUNCH_OPTIMAS);
         
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton, Message.MULTI_SITE_ANALYSIS_LINK);

@@ -225,14 +225,10 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 	
 }
 
-.gcp-workflow-link {
-	max-width: 250px;
-	text-align: center;
-}
-
 .gcp-workflow-link span span {
 	color: #045d91 !important;
-	white-space: normal;
+	display: block;
+	text-align: center;
 }
 
 .gcp-workflow-link span span:hover {
@@ -442,17 +438,24 @@ s
 
 .gcp-removelink .gcp-workflow-link * {
 	cursor: default !important;
-	max-width: 250px;
 	text-align: center;
 }
 
 .gcp-removelink .gcp-workflow-link span span {
 	color: #02385a !important;
 	text-decoration: none !important;
-	white-space: normal;
 }
 
 .gcp-removelink .gcp-workflow-link span span:hover {
 	color: #02385a !important;
 	text-decoration: none !important;
+}
+
+.gcp-linkwrap {
+	max-width: 250px;
+}
+
+.gcp-linkwrap span span {
+	text-align: center !important;
+	white-space: normal;
 }

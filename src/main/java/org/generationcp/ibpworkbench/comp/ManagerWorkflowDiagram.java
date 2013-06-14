@@ -154,7 +154,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton.setSizeUndefined();
         membersButton.setDescription(messageSource.getMessage(Message.MEMBERS_LINK_DESC));
         
-        breedingPlannerButton = new Button("Breeding Planner");
+        breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_LINK));
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
@@ -180,7 +180,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         manageGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_LIST_MANAGER));
         
         breedingViewButton = new Button("Breeding View Standalone (all analysis)");
-        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link" + " gcp-linkwrap");
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW));
         
@@ -537,7 +537,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("70px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
@@ -565,6 +565,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
         
         layout.addComponent(breedingViewButton);
+        //breedingViewMultiSiteAnalysisButton.setHeight("28px");
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
         
@@ -706,7 +707,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_QTL);
-        
         messageSource.setValue(genoTypingTitle,Message.DATA_MANAGEMENT_TITLE);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
         
