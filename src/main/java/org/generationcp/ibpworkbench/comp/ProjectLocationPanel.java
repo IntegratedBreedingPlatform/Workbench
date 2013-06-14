@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -296,7 +297,16 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         selectLocationCountry = new Select();
         selectLocationCountry.addItem("");
         populateCountryList();
-        selectLocationCountry.select("");
+        
+        Iterator<?> iterator = selectLocationCountry.getItemIds().iterator();
+        if (iterator.hasNext()){
+        	iterator.next();
+        	selectLocationCountry.select(iterator.next());
+        }else{
+        	selectLocationCountry.select("");
+        }
+        
+        
         selectLocationCountry.setNullSelectionAllowed(false);
 
         selectLocationType = new Select();
