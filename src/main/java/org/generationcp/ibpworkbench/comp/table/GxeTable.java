@@ -2,10 +2,16 @@ package org.generationcp.ibpworkbench.comp.table;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -31,7 +37,18 @@ import com.vaadin.ui.Table;
 
 public class GxeTable extends Table {
 	
-	
+	static <K,V extends Comparable<? super V>>
+	SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+	        new Comparator<Map.Entry<K,V>>() {
+	            @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+	                return e1.getValue().compareTo(e2.getValue());
+	            }
+	        }
+	    );
+	    sortedEntries.addAll(map.entrySet());
+	    return sortedEntries;
+	}
 	
 	private static final long serialVersionUID = 1274131837702381485L;
 	
@@ -44,8 +61,8 @@ public class GxeTable extends Table {
 	
 	private StudyDataManager studyDataManager;
 	private List<String> columnNames = new ArrayList<String>(); 
-	private Map<Integer, String> factorLocalNames = new HashMap<Integer, String>();
-	private Map<Integer, String> variateLocalNames = new HashMap<Integer, String>();
+	private Map<Integer, String> factorLocalNames = new TreeMap<Integer, String>();
+	private Map<Integer, String> variateLocalNames = new TreeMap<Integer, String>();
 
 	private String selectedEnvFactorName = "";
 
@@ -123,14 +140,14 @@ public class GxeTable extends Table {
 		this.setColumnHeaders(columnNames.toArray(new String[0]));
 
 		createRow(1, rowHeaders, this.getContainerDataSource());
-
+	
 	}
 
-	private void createRow(Integer rowIndex, TableItems[] tableItems, Container container) {
+	private void createRow(int rowIndex, TableItems[] tableItems, Container container) {
 
 		Object[] obj = new Object[tableItems.length];
 
-		for (Integer i = 0; i < tableItems.length; i++) {
+		for (int i = 0; i < tableItems.length; i++) {
 
 			if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX)) {
 
@@ -195,7 +212,6 @@ public class GxeTable extends Table {
 		container.addContainerProperty(" ", GxeCheckBoxGroup.class, new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, 0, null));
 		
 		HashSet<String> envNames = new HashSet<String>();
-	
 		
 		try {
 			List<DataSet> meansDataSets = studyDataManager.getDataSetsByType(
@@ -239,7 +255,7 @@ public class GxeTable extends Table {
 					//generate the rows
 					exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
 					
-					Integer rowCounter = 2;
+					int rowCounter = 2;
 					
 					for (Experiment exp : exps){
 						
@@ -255,7 +271,7 @@ public class GxeTable extends Table {
 						row[0].setLabel(" ");
 						row[0].setValue(true);
 						
-						Integer cellCounter = 1;
+						int cellCounter = 1;
 						
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
@@ -268,7 +284,10 @@ public class GxeTable extends Table {
 						}
 						
 						
-						for (Map.Entry<Integer, String> v : variateLocalNames.entrySet()){
+						for (Iterator<Entry<Integer, String>> v  = entriesSortedByValues(variateLocalNames).iterator() ; v.hasNext();){
+							
+							Entry<Integer, String> x = v.next();
+							
 							row[cellCounter] = new TableItems();
 							
 							String meansData = "";
@@ -279,7 +298,7 @@ public class GxeTable extends Table {
 								meansData = String.valueOf(studyDataManager.countStocks(
 										meansDataSetId
 										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId()
-										,v.getKey() 
+										,x.getKey()
 											)
 										);
 							}catch(Exception e){
@@ -293,7 +312,7 @@ public class GxeTable extends Table {
 							cellCounter++;
 						}
 						
-						rowCounter=rowCounter+1;
+						rowCounter++;
 						createRow(rowCounter, row, container);
 					}					
 					
@@ -372,3 +391,5 @@ public class GxeTable extends Table {
 		return meansDataSet.getFactorsByProperty(TermId.ENTRY_NUMBER_STORAGE.getId());
 	}
 }
+
+
