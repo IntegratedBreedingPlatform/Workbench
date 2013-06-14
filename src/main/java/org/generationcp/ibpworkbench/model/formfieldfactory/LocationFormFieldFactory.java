@@ -102,7 +102,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         country.setWidth("230px");
         country.setContainerDataSource(countryBeanContainer);
         country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
-        country.setItemCaptionPropertyId("isofull");
+        country.setItemCaptionPropertyId("isoabbr");
     }
 
     @Override
