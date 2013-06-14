@@ -213,6 +213,7 @@ public class RunBreedingViewAction implements ClickListener {
             breedingViewInput.setGenotypes(genotypes);
         }
         
+        /**
         try {
 			final DataSet sourceDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getDatasetId());
 			final DataSet meansDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getOutputDatasetId());
@@ -264,9 +265,9 @@ public class RunBreedingViewAction implements ClickListener {
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}**/
        
-        
+		launchBV(event);
       	
         
        
