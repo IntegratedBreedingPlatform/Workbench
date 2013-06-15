@@ -210,7 +210,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GDMS));
         
-        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK));
+        fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK_CREATE));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));

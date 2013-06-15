@@ -703,9 +703,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(browseGermplasmListsButton,Message.GERMPLASM_LIST_BROWSER_LINK);
         
         messageSource.setValue(analysisPipelineTitle,Message.ANALYSIS_PIPELINE_TITLE);
-        messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LINK);
+        messageSource.setCaption(breedingViewSingleSiteAnalysisLocalButton,Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK);
         messageSource.setCaption(breedingViewSingleSiteAnalysisCentralButton,Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK);
-        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
+        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_MANAGER);
         messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_QTL);
         messageSource.setValue(genoTypingTitle,Message.DATA_MANAGEMENT_TITLE);
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
