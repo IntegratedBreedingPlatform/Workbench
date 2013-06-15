@@ -339,7 +339,7 @@ public class SelectEnvironmentForGxeWindow extends Window implements Initializin
             for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
             	
             	FactorModel fm = new FactorModel();
-            	fm.setId(factor.getId());
+            	fm.setId(factor.getRank());
             	fm.setName(factor.getLocalName());
             	fm.setScname(factor.getStandardVariable().getScale().getName());
             	fm.setScaleid(factor.getStandardVariable().getScale().getId());
@@ -365,7 +365,7 @@ public class SelectEnvironmentForGxeWindow extends Window implements Initializin
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
             	
             	VariateModel vm = new VariateModel();
-            	vm.setId(variate.getId());
+            	vm.setId(variate.getRank());
             	vm.setName(variate.getLocalName());
             	vm.setScname(variate.getStandardVariable().getScale().getName());
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());

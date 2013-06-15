@@ -87,7 +87,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             			) continue;
             	
             	FactorModel fm = new FactorModel();
-            	fm.setId(factor.getId());
+            	fm.setId(factor.getRank());
             	fm.setName(factor.getLocalName());
             	fm.setScname(factor.getStandardVariable().getScale().getName());
             	fm.setScaleid(factor.getStandardVariable().getScale().getId());
@@ -103,7 +103,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
             	
             	VariateModel vm = new VariateModel();
-            	vm.setId(variate.getId());
+            	vm.setId(variate.getRank());
             	vm.setName(variate.getLocalName());
             	vm.setScname(variate.getStandardVariable().getScale().getName());
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
@@ -112,7 +112,10 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	vm.setTrname(variate.getStandardVariable().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	
+            	System.out.println(variate.toString());
             	variateList.add(vm);
+            	
+            	
             }
             
            

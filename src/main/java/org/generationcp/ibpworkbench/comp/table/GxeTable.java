@@ -24,6 +24,7 @@ import org.generationcp.middleware.v2.domain.Experiment;
 import org.generationcp.middleware.v2.domain.FactorType;
 import org.generationcp.middleware.v2.domain.TermId;
 import org.generationcp.middleware.v2.domain.TrialEnvironments;
+import org.generationcp.middleware.v2.domain.Variable;
 import org.generationcp.middleware.v2.domain.VariableType;
 import org.generationcp.middleware.v2.domain.VariableTypeList;
 import org.generationcp.middleware.v2.manager.api.StudyDataManager;
@@ -230,7 +231,7 @@ public class GxeTable extends Table {
 						//SITE_NAME
 						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
-							factorLocalNames.put(f.getId(), f.getLocalName());
+							factorLocalNames.put(f.getRank(), f.getLocalName());
 						}
 						/**SITE_NO
 						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("trial instance")){
@@ -246,7 +247,7 @@ public class GxeTable extends Table {
 					for(VariableType v : variates.getVariableTypes()){
 						container.addContainerProperty(v.getLocalName(), CheckBox.class, new CheckBox());
 						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
-							variateLocalNames.put(v.getId(), v.getLocalName());
+							variateLocalNames.put(v.getRank(), v.getLocalName());
 					}
 					
 					
@@ -275,7 +276,7 @@ public class GxeTable extends Table {
 						
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
-							String fValue = exp.getFactors().findById(f.getKey()).getValue();
+							String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
 							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) envNames.add(fValue);
 							row[cellCounter] = new TableItems();
 							row[cellCounter].setLabel(fValue);
@@ -289,7 +290,11 @@ public class GxeTable extends Table {
 							Entry<Integer, String> x = v.next();
 							
 							row[cellCounter] = new TableItems();
-							
+							Variable var = exp.getVariates().findByLocalName(x.getValue());
+							int varKey = 0;
+							if (var != null){
+								varKey = var.getVariableType().getId();
+							}
 							String meansData = "";
 							try{
 								//meansData = String.valueOf(studyDataManager.countExperimentsByTrialEnvironmentAndVariate(
@@ -298,7 +303,7 @@ public class GxeTable extends Table {
 								meansData = String.valueOf(studyDataManager.countStocks(
 										meansDataSetId
 										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId()
-										,x.getKey()
+										,varKey
 											)
 										);
 							}catch(Exception e){
