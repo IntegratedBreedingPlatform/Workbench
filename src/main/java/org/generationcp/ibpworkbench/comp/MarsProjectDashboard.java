@@ -366,9 +366,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(breedingPlannerButton);
-        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingPlannerButton, 0);
+//        layout.addComponent(breedingPlannerButton);
+//        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(breedingPlannerButton, 0);
         
         layout.addComponent(browseGermplasmButton);
        // browseGermplasmButton.setHeight("20px");

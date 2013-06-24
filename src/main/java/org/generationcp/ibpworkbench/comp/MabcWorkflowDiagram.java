@@ -342,10 +342,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        layout.addComponent(breedingPlannerButton);
-        breedingPlannerButton.setHeight("20px");
-        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingPlannerButton, 0);
+//        layout.addComponent(breedingPlannerButton);
+//        breedingPlannerButton.setHeight("20px");
+//        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(breedingPlannerButton, 0);
 
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
