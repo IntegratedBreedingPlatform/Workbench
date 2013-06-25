@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -71,6 +72,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     }
     
     private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
+    	Collections.sort(countryList);
     	
         locationName = new TextField();
         locationName.setRequired(true);
