@@ -127,7 +127,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
     
             // add crop to database
             CropType cropType = new CropType(newItemCaption);
-            cropType.setCentralDbName("ibdb_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_central");
+            cropType.setCentralDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_central");
             cropTypeComboBoxLastAdded = true;
             ((BeanItemContainer<CropType>) cropTypeComboBox.getContainerDataSource()).addBean(cropType);
 
