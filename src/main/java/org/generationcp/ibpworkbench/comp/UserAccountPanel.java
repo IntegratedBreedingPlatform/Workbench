@@ -26,6 +26,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
@@ -53,10 +54,10 @@ public class UserAccountPanel extends Panel {
     private Button cancelButton;
     
     private HorizontalLayout buttonLayout;
-    
+    private HorizontalLayout spaceLayout;
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+    private Label lblTitle;
     public UserAccountPanel() {
         assemble();
     }
@@ -72,17 +73,29 @@ public class UserAccountPanel extends Panel {
 
     protected void initializeComponents() {
         vl = new VerticalLayout();
+        
+        lblTitle = new Label();
+        lblTitle.setWidth("100%");
+        lblTitle.setStyleName("gcp-login-title");
+        
         setContent(vl);
         
         form = new UserAccountForm(new UserAccountModel());
-        vl.addComponent(form);
+        spaceLayout = new HorizontalLayout();
+        spaceLayout.setHeight(100);
+        spaceLayout.addComponent(lblTitle);
         
+        
+        vl.addComponent(spaceLayout);
+        vl.addComponent(form);
+       
         saveButton = new Button();
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
         buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
         vl.addComponent(buttonLayout);
+        vl.setStyleName("v-panel-content-gcp-createuser");
     }
     
     protected void initializeValues() {
@@ -98,7 +111,7 @@ public class UserAccountPanel extends Panel {
         
         form.setHeight("400px");
         
-        vl.setMargin(true);
+        vl.setMargin(false);
         vl.setComponentAlignment(form, Alignment.MIDDLE_CENTER);
         vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
         

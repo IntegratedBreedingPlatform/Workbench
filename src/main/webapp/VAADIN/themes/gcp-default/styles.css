@@ -74,6 +74,14 @@ span.v-checkbox-hidecheckbox input {
     background-color: transparent;
 }
 
+.v-panel-content-gcp-createuser > div {
+    background-image: url(images/createuser.jpg);
+    background-repeat: no-repeat;
+    background-color: transparent;
+   
+}
+
+
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel {
 	background-color: #045d91;
 }
