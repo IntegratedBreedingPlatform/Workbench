@@ -529,7 +529,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
         //add available location to local db location table if it does not yet exist
         for (Location l : availableLocations) {
-            if (l.getLocid() < 1) {
+            if (l.getLocid() < 0) {
                 Location location = initiliazeLocation(l);
                 germplasmDataManager.addLocation(location);
             }
