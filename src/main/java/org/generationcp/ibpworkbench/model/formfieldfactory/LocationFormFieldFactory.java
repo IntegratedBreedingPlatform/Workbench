@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -72,7 +73,12 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     }
     
     private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
-    	Collections.sort(countryList);
+    	Collections.sort(countryList,new Comparator<Country>() {
+			@Override
+			public int compare(Country o1, Country o2) {
+				return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
+			}
+		});
     	
         locationName = new TextField();
         locationName.setRequired(true);

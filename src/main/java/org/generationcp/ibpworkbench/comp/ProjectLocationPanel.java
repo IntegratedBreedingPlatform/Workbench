@@ -24,11 +24,13 @@ import java.util.Set;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveProjectLocationAction;
 import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
+import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -124,6 +126,10 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     public void setNewLocations(List<Location> newLocations) {
         this.newLocations = newLocations;
     }
+    
+    public void addNewLocations(Location newLocation) {
+    	newLocations.add(newLocation);
+    }
 
     public Project getProject() {
         return project;
@@ -198,7 +204,33 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     }
 
     protected void initializeValues() throws MiddlewareQueryException {
+    	newLocations = new ArrayList<Location>();
+  
+    	GermplasmDataManager gdm = this.getGermplasmDataManager();
+    	
+    	//Get all Local locations
+    	List<Location> allLocalLocations = gdm.getAllLocalLocations(0,Integer.MAX_VALUE);
+    	
+    	// Initialize IBPWorkbench.app session
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        
+        for (Location loc : allLocalLocations) {
+        	if (loc.getLocid()<0 && !app.getSessionData().getUniqueLocations().contains(loc.getLname())) {
+        		LocationModel locModel = new LocationModel();
+            	locModel.setCntryid(loc.getCntryid());
+            	locModel.setLocationAbbreviation(loc.getLabbr());
+            	locModel.setLocationId(loc.getLocid());
+            	locModel.setLocationName(loc.getLname());
+            	locModel.setLtype(loc.getLtype());
+            	
+                app.getSessionData().getUniqueLocations().add(locModel.getLocationName());
 
+                //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+                //nextKey = nextKey * -1;
+                //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
+                app.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
+            }
+        }
     }
 
     protected void initializeLayout() {
@@ -396,7 +428,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     private void populateCountryList() throws MiddlewareQueryException {
         cropType = project.getCropType();
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
+        
         List<Country> countryList = managerFactory.getGermplasmDataManager().getAllCountry();
 
         for (Country c : countryList) {
@@ -408,7 +440,6 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     private void populateLocationTypeList() throws MiddlewareQueryException {
 
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
         List<UserDefinedField> userDefineField = managerFactory.getGermplasmDataManager().getUserDefinedFieldByFieldTableNameAndType(
                 "LOCATION", "LTYPE");
         
@@ -422,7 +453,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     private void populateExistingProjectLocations() throws MiddlewareQueryException {
         Long projectId = project.getProjectId();
-        List<Long> projectLocationIds = workbenchDataManager.getLocationIdsByProjectId(projectId, 0, (int) workbenchDataManager.countLocationIdsByProjectId(projectId));
+        List<Long> projectLocationIds = workbenchDataManager.getLocationIdsByProjectId(projectId, 0,Integer.MAX_VALUE);
 
         Set<Location> existingProjectLocations = new HashSet<Location>(); 
         for (Long locationId : projectLocationIds){
@@ -445,7 +476,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     private Container createLocationsContainer(CropType cropType, Set<Location> selectedLocation) throws MiddlewareQueryException {
 
         //ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForCropType(cropType);
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
+        //ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
         beanItemContainer = new BeanItemContainer<Location>(Location.class);
         if (managerFactory == null) {
             return beanItemContainer;
@@ -461,22 +492,21 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
         Country country;
 
-        long locCount = managerFactory.getGermplasmDataManager().countAllLocations();
         List<Location> locationList = null;
         if (!locationCountryID.equals("") && locationType.equals("")) {
             country = managerFactory.getGermplasmDataManager().getCountryById(Integer.valueOf(locationCountryID));
-            locCount = (int) managerFactory.getGermplasmDataManager().countLocationsByCountry(country);
-            locationList = managerFactory.getGermplasmDataManager().getLocationsByCountry(country, 0, (int) locCount);
+            locationList = managerFactory.getGermplasmDataManager().getLocationsByCountry(country, 0,Integer.MAX_VALUE);
         } else if (locationCountryID.equals("") && !locationType.equals("")) {
             locationList = managerFactory.getGermplasmDataManager().getLocationsByType(Integer.valueOf(locationType));
         } else if (!locationCountryID.equals("") && !locationType.equals("")) {
             country = managerFactory.getGermplasmDataManager().getCountryById(Integer.valueOf(locationCountryID));
             locationList = managerFactory.getGermplasmDataManager().getLocationsByCountryAndType(country, Integer.valueOf(locationType));
         } else {
-            locationList = managerFactory.getGermplasmDataManager().getAllLocations(0, (int) locCount);
+            locationList = managerFactory.getGermplasmDataManager().getAllLocations(0,Integer.MAX_VALUE);
         }
         
 
+        
         //Sort locations
         Collections.sort(locationList, Location.LocationNameComparator);
 
@@ -487,8 +517,10 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         if (selectedLocation.size() > 0) {
             for (Location location : selectedLocation) {
                 beanItemContainer.addBean(location);
+                
             }
         }
+        
         return beanItemContainer;
     }
     
@@ -515,6 +547,51 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     }
 
     private void saveProjectLocation(Collection<Location> availableLocations, Set<Location> selectedLocations, Project projectSaved) throws MiddlewareQueryException {
+    	//DEBUG LOGS
+    	// check newLocations property
+    	LOG.debug("newLocations count: " + newLocations.size());
+    	
+    	GermplasmDataManager germplasmDataManager = this.getGermplasmDataManager();
+  
+        // Delete existing project locations in the database
+        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
+                project.getProjectId(), 0,Integer.MAX_VALUE);
+        
+        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
+            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
+        }
+        
+        
+        //add available location to local db location table if it does not yet exist
+        for (Location l : this.newLocations) {
+            Location location = initiliazeLocation(l);
+            germplasmDataManager.addLocation(location);
+        }
+        
+        projectLocationMapList = new ArrayList<ProjectLocationMap>();
+        
+        /*
+         * add selected location to local db location table if it does not yet exist
+         * add location in workbench_project_loc_map in workbench db
+         */
+        for (Location l : selectedLocations) {
+            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
+        
+            projectLocationMap.setLocationId(l.getLocid().longValue());
+            projectLocationMap.setProject(projectSaved);
+            projectLocationMapList.add(projectLocationMap);
+        }
+
+
+        // Add the new set of project locations
+        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+        
+        MessageNotifier.showMessage(getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
+                    //"Success", "Project location(s) successfully configured");
+
+    }
+    
+    private void _saveProjectLocation(Collection<Location> availableLocations, Set<Location> selectedLocations, Project projectSaved) throws MiddlewareQueryException {
         GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 
         // Delete existing project locations in the database
@@ -529,7 +606,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         }
         //add available location to local db location table if it does not yet exist
         for (Location l : availableLocations) {
-            if (l.getLocid() < 0) {
+            if (l.getLocid() < 1) {
                 Location location = initiliazeLocation(l);
                 germplasmDataManager.addLocation(location);
             }
@@ -562,6 +639,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
     }
 
+
     public TwoColumnSelect getSelect() {
         return selectLocation;
     }
@@ -572,7 +650,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     }
     
     public GermplasmDataManager getGermplasmDataManager() {
-    	ManagerFactory managerFactory=managerFactoryProvider.getManagerFactoryForCropType(project.getCropType());
+    	if (managerFactory == null)    	
+    		managerFactory=managerFactoryProvider.getManagerFactoryForProject(project);
     	
     	return managerFactory.getGermplasmDataManager();
     }
@@ -665,7 +744,9 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
     		
     		
     		try {
-				List<LocationDetails> locdet = managerFactory.getGermplasmDataManager().getLocationDetailsByLocId(l.getLocid(), 0, 1);
+    			LOG.debug(l.toString());
+    			
+				List<LocationDetails> locdet = ProjectLocationPanel.this.getGermplasmDataManager().getLocationDetailsByLocId(l.getLocid(), 0, 1);
 				LocationDetails details = locdet.get(0);
 				//public void setBreedingMethodDetailsValues(String mtitle, String ldesc,String lname, String lcntry,String labbrv, String ltype,boolean isOdd) {
 				   

@@ -81,6 +81,8 @@ public class SaveNewLocationAction implements ClickListener{
 
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
+        // TODO: (BUG) there's a problem getting the nextKey of the locations when there's already existing locations
+        // in the local database. Always starts at -1 for new sessions
         if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
 
             app.getSessionData().getUniqueLocations().add(location.getLocationName());
@@ -120,7 +122,8 @@ public class SaveNewLocationAction implements ClickListener{
             } else if (projectLocationPanel != null) {
                 projectLocationPanel.getSelect().addItem(newLoc);
                 projectLocationPanel.getSelect().setItemCaption(newLoc, newLoc.getLname());
-
+                projectLocationPanel.addNewLocations(newLoc);
+                
                 projectLocationPanel.getSelect().select(newLoc);
                 projectLocationPanel.getSelect().setValue(newLoc);
             }
