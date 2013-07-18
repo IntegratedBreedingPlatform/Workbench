@@ -37,7 +37,7 @@ import com.vaadin.data.validator.AbstractValidator;
 public class UsernameValidator extends AbstractValidator{
     
     private static final long serialVersionUID = -1537885028422014862L;
-
+    private static int username_counter;
     private static final Logger LOG = LoggerFactory.getLogger(UsernameValidator.class);
     
     @Autowired
@@ -49,13 +49,27 @@ public class UsernameValidator extends AbstractValidator{
 
     @Override
     public boolean isValid(Object value) {
+    	
+    	
+    	username_counter++;
+    	
+    	if(username_counter > 2)
+    	{
+    		username_counter = 0;
+    		return true;
+    	}
         try {
-            return !workbenchDataManager.isUsernameExists(value.toString());
+        	if(workbenchDataManager.isUsernameExists(value.toString()))
+        	{
+        		return false;
+        	}
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage());
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 //            return false;
         }
+        
+    	return true;
     }
 
 }
