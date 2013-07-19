@@ -56,6 +56,7 @@ public class UserAccountForm extends Form{
 
     protected void initializeComponents() { 
         
+    	setImmediate(false);
         grid = new GridLayout(4, 7);
         grid.setSpacing(true);
         grid.setMargin(true);

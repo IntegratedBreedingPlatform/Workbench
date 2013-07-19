@@ -55,6 +55,7 @@ public class UserAccountPanel extends Panel {
     
     private HorizontalLayout buttonLayout;
     private HorizontalLayout spaceLayout;
+    private HorizontalLayout smallSpaceLayout;
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     private Label lblTitle;
@@ -86,6 +87,9 @@ public class UserAccountPanel extends Panel {
         spaceLayout.addComponent(lblTitle);
         
         
+        smallSpaceLayout = new HorizontalLayout();
+        smallSpaceLayout.setHeight(10);
+        
         vl.addComponent(spaceLayout);
         vl.addComponent(form);
        
@@ -95,6 +99,7 @@ public class UserAccountPanel extends Panel {
         buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
         vl.addComponent(buttonLayout);
+        vl.addComponent(smallSpaceLayout);
         vl.setStyleName("v-panel-content-gcp-createuser");
     }
     
@@ -131,6 +136,7 @@ public class UserAccountPanel extends Panel {
     }
 
     public void updateLabels() {
+    	messageSource.setValue(lblTitle,Message.LOGIN_TITLE);
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
         messageSource.setCaption(form, Message.REGISTER_USER_ACCOUNT_FORM);

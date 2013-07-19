@@ -54,6 +54,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
+
 public class WorkbenchDashboardWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
@@ -97,6 +98,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 	private Button userToolsButton;
 
     public WorkbenchDashboardWindow() {
+    	super("Integrated Breeding Platform | Workbench");
     }
 
     /**
@@ -109,6 +111,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
     protected void initializeComponents() throws Exception {
         // workbench header components
+    	 
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
 

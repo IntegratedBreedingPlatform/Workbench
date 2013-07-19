@@ -12,7 +12,10 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.VerticalLayout;
@@ -21,11 +24,12 @@ import com.vaadin.ui.Window;
 public class LoginWindow extends Window{
 
     private static final long serialVersionUID = 1L;
-
+    
+   
     private LoginForm loginForm;
 
     public LoginWindow() {
-        super();
+    	super("Integrated Breeding Platform | Workbench");
         loginForm = new LoginForm();
         loginForm.setSizeUndefined();
 

@@ -76,7 +76,7 @@ public class SaveUserAccountAction implements ClickListener {
         UserAccountModel userAccount = bean.getBean();
         
         try {
-            userAccountForm.commit();
+        	userAccountForm.commit();
         } catch (Exception e) {
             //TODO: investigate. Exception still not properly handled.
             //vaadin shows an "Internal Error" message

@@ -21,7 +21,7 @@ public class SecurityQuestionWindow extends Window {
     private static final long serialVersionUID = 3983198771242295731L;
 
     public SecurityQuestionWindow() {
-        
+    	super("Integrated Breeding Platform | Workbench");
         // set as modal window, other components are disabled while window is open
         setModal(true);
 
