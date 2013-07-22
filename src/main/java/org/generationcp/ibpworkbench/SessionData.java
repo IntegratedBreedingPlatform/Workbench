@@ -17,7 +17,25 @@ import org.generationcp.middleware.pojos.workbench.Project;
 public class SessionData {
     private Project lastOpenedProject;
     private User userData;
-    private HashMap<Integer, LocationModel> locationMaps = new HashMap<Integer, LocationModel>();
+    private Integer username_counter = 0;
+    private Integer namevalidation_counter = 0;
+    public Integer getUsername_counter() {
+		return username_counter;
+	}
+
+	public void setUsername_counter(Integer username_counter) {
+		this.username_counter = username_counter;
+	}
+
+	public Integer getNamevalidation_counter() {
+		return namevalidation_counter;
+	}
+
+	public void setNamevalidation_counter(Integer namevalidation_counter) {
+		this.namevalidation_counter = namevalidation_counter;
+	}
+
+	private HashMap<Integer, LocationModel> locationMaps = new HashMap<Integer, LocationModel>();
     private Set<String> uniqueLocations = new HashSet<String>();
     private HashMap<Integer, BreedingMethodModel> breedingMethodMaps = new HashMap<Integer, BreedingMethodModel>();
     private Set<String> uniqueBreedingMethods = new HashSet<String>();
