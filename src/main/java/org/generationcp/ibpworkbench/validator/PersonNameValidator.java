@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class PersonNameValidator extends AbstractValidator{
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
-    private static int person_counter;
+   
     private Field firstName;
     private Field lastName;
     
@@ -65,11 +66,16 @@ public class PersonNameValidator extends AbstractValidator{
 
     @Override
     public boolean isValid(Object value) {
-    	
+    	int person_counter;
+    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+    	person_counter = app.getSessionData().getNamevalidation_counter();
     	person_counter++;
+    	app.getSessionData().setNamevalidation_counter(person_counter);
     	
-    	if(person_counter > 2)
+    	
+    	if(person_counter > 2) 
     	{
+    		app.getSessionData().setNamevalidation_counter(0);
     		person_counter = 0;
     		return true;
     	}

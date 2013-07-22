@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -37,7 +38,7 @@ import com.vaadin.data.validator.AbstractValidator;
 public class UsernameValidator extends AbstractValidator{
     
     private static final long serialVersionUID = -1537885028422014862L;
-    private static int username_counter;
+ 
     private static final Logger LOG = LoggerFactory.getLogger(UsernameValidator.class);
     
     @Autowired
@@ -50,12 +51,16 @@ public class UsernameValidator extends AbstractValidator{
     @Override
     public boolean isValid(Object value) {
     	
-    	
+    	int username_counter;
+    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+    	username_counter = app.getSessionData().getUsername_counter();
     	username_counter++;
+    	app.getSessionData().setUsername_counter(username_counter);
     	
     	if(username_counter > 2)
     	{
     		username_counter = 0;
+    		app.getSessionData().setUsername_counter(0);
     		return true;
     	}
         try {
