@@ -123,6 +123,12 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             // run the common scripts
             runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
             
+            // run the scripts for custom crops
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "custom"));
+            
+            // NOTE: IBDBGeneratorCentralDb is intended to be run for custom crops only,
+            // hence, we should not be running scripts for specific crops here
+            
             // run crop specific script
             // runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
         }
