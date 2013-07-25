@@ -125,7 +125,7 @@
     
    
     
-    <bean id="studyDataManagerV2" class="org.generationcp.middleware.v2.manager.StudyDataManagerImpl">
+    <bean id="studyDataManager" class="org.generationcp.middleware.manager.StudyDataManagerImpl">
         <property name="sessionProviderForLocal" ref="localHibernateSessionProvider"/>
         <property name="sessionProviderForCentral" ref="centralHibernateSessionProvider"/>
     </bean>

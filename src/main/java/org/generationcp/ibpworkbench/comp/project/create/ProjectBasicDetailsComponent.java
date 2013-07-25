@@ -267,7 +267,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         boolean valid = validate();
         if (valid){
             Project project = createProjectPanel.getProject();
-            project.setProjectName((String) projectNameField.getValue());
+            
+            String projectName = (String) projectNameField.getValue();
+            if (projectName != null) {
+                projectName = projectName.trim();
+            }
+            
+            project.setProjectName(projectName);
             project.setStartDate((Date) startDateField.getValue());
             project.setCropType((CropType) cropTypeCombo.getValue());
         }
