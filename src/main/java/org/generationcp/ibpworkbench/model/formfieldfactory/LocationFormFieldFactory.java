@@ -33,6 +33,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 
 
@@ -76,7 +77,14 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     	Collections.sort(countryList,new Comparator<Country>() {
 			@Override
 			public int compare(Country o1, Country o2) {
-				return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
+				
+				if (o1.getIsofull().matches("[a-zA-Z]+") && o2.getIsofull().matches("[a-zA-Z]+")){
+					return o1.getIsofull().compareTo(o2.getIsofull());
+				}else{
+					return 0;
+				}
+				
+				//return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
 			}
 		});
     	

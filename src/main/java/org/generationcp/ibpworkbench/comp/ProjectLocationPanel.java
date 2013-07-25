@@ -430,7 +430,19 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         cropType = project.getCropType();
         
         List<Country> countryList = managerFactory.getGermplasmDataManager().getAllCountry();
-
+        Collections.sort(countryList,new Comparator<Country>() {
+			@Override
+			public int compare(Country o1, Country o2) {
+				
+				if (o1.getIsofull().matches("[a-zA-Z]+") && o2.getIsofull().matches("[a-zA-Z]+")){
+					return o1.getIsofull().compareTo(o2.getIsofull());
+				}else{
+					return 0;
+				}
+				
+				//return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
+			}
+		});
         for (Country c : countryList) {
             selectLocationCountry.addItem(String.valueOf(c.getCntryid()));
             selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsoabbr());
