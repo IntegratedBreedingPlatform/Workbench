@@ -362,10 +362,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
 
-        layout.addComponent(manageGermplasmListsButton);
+        /**layout.addComponent(manageGermplasmListsButton);
 		manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-		layout.setExpandRatio(manageGermplasmListsButton, 0);
+		layout.setExpandRatio(manageGermplasmListsButton, 0);**/
           
         layout.addComponent(browseGermplasmListsButton);
         browseGermplasmListsButton.setHeight("20px");
