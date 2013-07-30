@@ -78,11 +78,9 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 			@Override
 			public int compare(Country o1, Country o2) {
 				
-				if (o1.getIsofull().matches("[a-zA-Z]+") && o2.getIsofull().matches("[a-zA-Z]+")){
+				
 					return o1.getIsofull().compareTo(o2.getIsofull());
-				}else{
-					return 0;
-				}
+			
 				
 				//return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
 			}
