@@ -343,11 +343,11 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         //headerRightLayout.addComponent(new Label("|"));
 
-        //headerRightLayout.addComponent(userToolsButton);
-        //headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
+        headerRightLayout.addComponent(userToolsButton);
+        headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
 
         
-        //headerRightLayout.addComponent(new Label("|"));
+        headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(toolVersionsButton);
         headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);

@@ -20,13 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.MessageSourceResolvable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilesystemContainer;
@@ -409,9 +408,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					return true;
 				}
 			});
-			
-			filePicker.getPathField().setRequired(true);
-			filePicker.getPathField().setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
 		}
 		
 		@Override
@@ -491,6 +487,9 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					parentWin.getParent().addWindow(pickerWindow);
 				}
 			});
+			
+			pathFld.setRequired(true);
+			pathFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
 		}
 		
 		@Override
