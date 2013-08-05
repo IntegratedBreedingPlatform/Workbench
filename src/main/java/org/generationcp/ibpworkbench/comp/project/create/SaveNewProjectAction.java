@@ -202,6 +202,13 @@ public class SaveNewProjectAction implements ClickListener{
                     }
 
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
+                    
+                    //adding the current user to the list
+                    ProjectUserRole currentLoggedUser = new ProjectUserRole();
+                    currentLoggedUser.setUserId(currentUser.getUserid());
+                    currentLoggedUser.setProject(projectSaved);
+                    projectMembers.add(currentLoggedUser);
+                   
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, projectSaved);
                     }
