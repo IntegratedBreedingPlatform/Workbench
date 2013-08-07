@@ -185,7 +185,9 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
 					@SuppressWarnings("unchecked")
                     Set<Method> methodSet = (Set<Method>) selectedItem;
 					
-					if (methodSet.size() == 0) {
+					
+					
+					if (methodSet.size() == 0 || methodSet.iterator().next() == null ) {
 						if (bmPopupWindow != null) {
 							parentWindow.removeWindow(bmPopupWindow);
 						}
@@ -273,8 +275,8 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
                  if (cropType != null) {
                      try {
                          Container container = createMethodsContainer(cropType,selectedMethod);
-                         selectMethods.setContainerDataSource(container);
-
+                         selectMethods.setContainerDataSource(container, new BeanItemContainer<Method>(Method.class), "mname");
+                       
                          for (Object itemId : container.getItemIds()) {
                              Method method = (Method) itemId;
                              selectMethods.setItemCaption(itemId, method.getMname());
@@ -305,17 +307,16 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
          selectMethods = new TwoColumnSelect("");
          selectMethods.setLeftColumnCaption("Available Methods");
          selectMethods.setRightColumnCaption("Selected Methods");
-         selectMethods.setRows(10);
          selectMethods.setWidth("690px");
          selectMethods.setMultiSelect(true);
-         selectMethods.setNullSelectionAllowed(true);
+         selectMethods.setNullSelectionAllowed(false);
 
          CropType cropType = project.getCropType();
          if (cropType != null) {
              try {
              	Set<Method> selectedMethod = (Set<Method>)selectMethods.getValue(); 
                  Container container = createMethodsContainer(cropType,selectedMethod);
-                 selectMethods.setContainerDataSource(container);
+                 selectMethods.setContainerDataSource(container, new BeanItemContainer<Method>(Method.class),  "mname");
 
                  for (Object itemId : container.getItemIds()) {
                      Method method = (Method) itemId;

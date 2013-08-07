@@ -330,15 +330,6 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         selectLocationCountry.addItem("");
         populateCountryList();
         
-        Iterator<?> iterator = selectLocationCountry.getItemIds().iterator();
-        if (iterator.hasNext()){
-        	iterator.next();
-        	selectLocationCountry.select(iterator.next());
-        }else{
-        	selectLocationCountry.select("");
-        }
-        
-        
         selectLocationCountry.setNullSelectionAllowed(false);
 
         selectLocationType = new Select();
@@ -360,8 +351,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
                 if (cropType != null) {
                     try {
                         Container container = createLocationsContainer(cropType, selectedLocation);
-                        selectLocation.setContainerDataSource(container);
-
+                        selectLocation.setContainerDataSource(container, new BeanItemContainer<Location>(Location.class) ,"lname");
+                        
                         for (Object itemId : container.getItemIds()) {
                             Location loc = (Location) itemId;
                             selectLocation.setItemCaption(itemId, loc.getLname());
@@ -391,16 +382,15 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         selectLocation = new TwoColumnSelect();
         selectLocation.setLeftColumnCaption(messageSource.getMessage(Message.LOCATION_AVAILABLE_LOCATIONS)); //"Available Locations"
         selectLocation.setRightColumnCaption(messageSource.getMessage(Message.LOCATION_SELECTED_LOCATIONS)); //"Selected Locations"
-        selectLocation.setRows(10);
         selectLocation.setWidth("690px");
         selectLocation.setMultiSelect(true);
-        selectLocation.setNullSelectionAllowed(true);
+        selectLocation.setNullSelectionAllowed(false);
 
         if (cropType != null) {
             try {
                 Set<Location> selectedLocation = (Set<Location>) selectLocation.getValue();
                 Container container = createLocationsContainer(cropType, selectedLocation);
-                selectLocation.setContainerDataSource(container);
+                selectLocation.setContainerDataSource(container, new BeanItemContainer<Location>(Location.class),"lname");
 
                 for (Object itemId : container.getItemIds()) {
                     Location location = (Location) itemId;
@@ -462,6 +452,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         Long projectId = project.getProjectId();
         List<Long> projectLocationIds = workbenchDataManager.getLocationIdsByProjectId(projectId, 0,Integer.MAX_VALUE);
 
+        
         Set<Location> existingProjectLocations = new HashSet<Location>(); 
         for (Long locationId : projectLocationIds){
             Location location = managerFactory.getGermplasmDataManager().getLocationByID(locationId.intValue());
@@ -540,7 +531,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 
         if (validate()) { // save if valid
             Set<Location> selectedLocations = (Set<Location>) selectLocation.getValue();
-            ListSelect leftSelect = selectLocation.getLeftSelect();
+            Table leftSelect = selectLocation.getLeftSelect();
             Collection<Location> availableLocations = (Collection<Location>)leftSelect.getItemIds();
 
             try {

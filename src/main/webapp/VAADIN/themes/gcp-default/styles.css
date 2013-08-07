@@ -467,3 +467,7 @@ s
 	text-align: center !important;
 	white-space: normal;
 }
+
+.no-stripes  .v-table-row,  .no-stripes  .v-table-row-odd {
+      background-color: white;
+ }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.dom4j.datatype.DatatypeAttribute;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -25,6 +29,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 
@@ -38,8 +43,8 @@ public class TwoColumnSelect extends HorizontalLayout {
 	private static final Logger LOG = LoggerFactory.getLogger(TwoColumnSelect.class);
     private static final long serialVersionUID = 1L;
     
-    private ListSelect leftSelect;
-    private ListSelect rightSelect;
+    private Table leftSelect;
+    private Table rightSelect;
     private Button btnRight;
     private Button btnLeft;
     
@@ -53,20 +58,20 @@ public class TwoColumnSelect extends HorizontalLayout {
     }
     
     /**
-     * Get the Left Select component. 
+     * Get the Left Table component. 
      * 
      * @return
      */
-    public ListSelect getLeftSelect() {
+    public Table getLeftSelect() {
         return leftSelect;
     }
     
     /**
-     * Get the Right Select component.
+     * Get the Right Table component.
      * 
      * @return
      */
-    public ListSelect getRightSelect() {
+    public Table getRightSelect() {
         return rightSelect;
     }
     
@@ -77,10 +82,15 @@ public class TwoColumnSelect extends HorizontalLayout {
     }
     
     protected void initializeComponents() {
-        leftSelect = new ListSelect();
+        leftSelect = new Table();
         leftSelect.setImmediate(true);
-        rightSelect = new ListSelect();
+        leftSelect.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+        rightSelect = new Table();
         rightSelect.setImmediate(true);
+        rightSelect.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+        
+        leftSelect.addStyleName("no-stripes");
+        rightSelect.addStyleName("no-stripes");
         
         btnRight = new Button(">>");
         btnLeft = new Button("<<");
@@ -101,10 +111,16 @@ public class TwoColumnSelect extends HorizontalLayout {
         setExpandRatio(rightSelect, 1.0f);
         
         // set the sizes
-        leftSelect.setSizeFull();
+        
         buttonArea.setWidth("40px");
         buttonArea.setHeight("100%");
-        rightSelect.setSizeFull();
+        
+        //leftSelect.setSizeFull();
+        leftSelect.setWidth("100%");
+        leftSelect.setHeight("150px");
+        //rightSelect.setSizeFull();
+        rightSelect.setWidth("100%");
+        rightSelect.setHeight("150px");
     }
     
     protected Component createButtonArea() {
@@ -139,8 +155,14 @@ public class TwoColumnSelect extends HorizontalLayout {
         rightSelect.removeAllItems();
     }
 
-    public void setContainerDataSource(Container container) {
-        leftSelect.setContainerDataSource(container);
+    public void setContainerDataSource(Container container, Container container2, String fieldToShowForCaption) {
+    	leftSelect.setSelectable(true);
+    	leftSelect.setContainerDataSource(container);
+    	rightSelect.setSelectable(true);
+    	rightSelect.setContainerDataSource(container2);
+    	
+    	leftSelect.setVisibleColumns(new Object[] {fieldToShowForCaption});
+    	rightSelect.setVisibleColumns(new Object[] {fieldToShowForCaption});
     }
 
     public void select(Object itemId) {
@@ -159,6 +181,10 @@ public class TwoColumnSelect extends HorizontalLayout {
         leftSelect.setItemCaption(itemId, caption);
         rightSelect.setItemCaption(itemId, caption);
     }
+    
+    public void setFieldForCaption(String columnName){
+    		leftSelect.setVisibleColumns(new Object[] {columnName});
+    }
 
     public Object getValue() {
         // select all items in the right pane
@@ -173,11 +199,6 @@ public class TwoColumnSelect extends HorizontalLayout {
 
     public void setRightColumnCaption(String string) {
         rightSelect.setCaption(string);
-    }
-
-    public void setRows(int rows) {
-        leftSelect.setRows(rows);
-        rightSelect.setRows(rows);
     }
 
     public void setMultiSelect(boolean multiSelect) {
@@ -201,10 +222,10 @@ public class TwoColumnSelect extends HorizontalLayout {
     private class ItemMoveClickListener implements ClickListener, LayoutClickListener {
         private static final long serialVersionUID = 1L;
         
-        private ListSelect sourceSelect;
-        private ListSelect destSelect;
+        private Table sourceSelect;
+        private Table destSelect;
         
-        public ItemMoveClickListener(ListSelect sourceSelect, ListSelect destSelect) {
+        public ItemMoveClickListener(Table sourceSelect, Table destSelect) {
             this.sourceSelect = sourceSelect;
             this.destSelect = destSelect;
         }
@@ -268,11 +289,12 @@ public class TwoColumnSelect extends HorizontalLayout {
             else if (firstSelectedItemIndex >= 0) {
                 selectItemIndex = container.getItemIds().size() - 1;
             }
-            
-            if (selectItemIndex >= 0) {
+
+            if (selectItemIndex >= 0) {   	
                 Object itemId = indexedContaner.getIdByIndex(selectItemIndex);
                 sourceSelect.select(itemId);
             }
+            
         }
     }
 }

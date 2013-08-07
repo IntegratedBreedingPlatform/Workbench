@@ -179,7 +179,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
                 if (cropType != null) {
                     try {
                         Container container = createLocationsContainer(cropType,selectedLocation);
-                        selectLocation.setContainerDataSource(container);
+                        selectLocation.setContainerDataSource(container, new BeanItemContainer<Location>(Location.class) , "lname");
 
                         for (Object itemId : container.getItemIds()) {
                             Location loc = (Location) itemId;
@@ -210,7 +210,6 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         selectLocation = new TwoColumnSelect();
         selectLocation.setLeftColumnCaption("Available Locations");
         selectLocation.setRightColumnCaption("Selected Locations");
-        selectLocation.setRows(10);
         selectLocation.setWidth("690px");
         selectLocation.setMultiSelect(true);
         selectLocation.setNullSelectionAllowed(true);
@@ -219,7 +218,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
             try {
             	Set<Location> selectedLocation = (Set<Location>)selectLocation.getValue(); 
                 Container container = createLocationsContainer(cropType,selectedLocation);
-                selectLocation.setContainerDataSource(container);
+                selectLocation.setContainerDataSource(container, new BeanItemContainer<Location>(Location.class) ,"lname");
 
                 for (Object itemId : container.getItemIds()) {
                     Location location = (Location) itemId;
