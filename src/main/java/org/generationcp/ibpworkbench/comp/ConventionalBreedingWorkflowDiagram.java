@@ -75,6 +75,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private Button fieldbookButton;
     private Button browseGenotypingDataButton;
     private Button optimasButton;
+    private Button headToHeadButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -200,6 +201,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
+        
+        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
+        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        headToHeadButton.setSizeUndefined();
+        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
         
         fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK_CREATE));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -435,12 +441,18 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.addComponent(breedingDecisionTitle);
         layout.setComponentAlignment(breedingDecisionTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingDecisionTitle, 0);
-
+        
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
+        
+       
         
         /*
         layout.addComponent(optimasButton);
@@ -492,7 +504,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
-        	
+            headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));

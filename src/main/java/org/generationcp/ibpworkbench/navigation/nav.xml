@@ -65,6 +65,11 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
+    <view path="/head_to_head"
+          label="Head to Head"
+          level="2"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
+          
     <view path="/germplasm_list_browser"
           label="Browse Germplasm Lists"
           level="2"
