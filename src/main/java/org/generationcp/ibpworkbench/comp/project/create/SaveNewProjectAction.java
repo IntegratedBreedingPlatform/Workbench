@@ -47,6 +47,8 @@ import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,19 +201,33 @@ public class SaveNewProjectAction implements ClickListener{
                     // Set the instalId of the local user
                     user.setInstalid(Integer.valueOf(projectUserInstalId));
                     managerFactory.getUserDataManager().updateUser(user);
+                    
+                  
 
                     List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
+                    ProjectUserRole currentLoggedUser = new ProjectUserRole();
+                    
+                    
+                   
                     if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
                         saveProjectUserRoles(projectUserRoles, projectSaved);
                     }
-
+                    
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
                     
-                    //adding the current user to the list
-                    ProjectUserRole currentLoggedUser = new ProjectUserRole();
-                    currentLoggedUser.setUserId(currentUser.getUserid());
-                    currentLoggedUser.setProject(projectSaved);
-                    projectMembers.add(currentLoggedUser);
+                    try{
+                    	WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
+                    	Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
+                    	
+                        currentLoggedUser.setUserId(currentUser.getUserid());
+                    
+                        currentLoggedUser.setRole(managerRole);
+                       
+                    }catch(Exception e)
+                    {
+                    	e.printStackTrace();
+                    }
+                    //projectMembers.add(currentLoggedUser);
                    
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, projectSaved);
