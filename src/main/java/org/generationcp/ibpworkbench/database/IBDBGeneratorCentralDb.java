@@ -27,12 +27,17 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
     private CropType cropType;
+    private boolean alreadyExistsFlag = false;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     public IBDBGeneratorCentralDb(CropType cropType) {
         this.cropType = cropType;
+    }
+    
+    public boolean isAlreadyExists(){
+    	return alreadyExistsFlag;
     }
 
     public boolean generateDatabase() throws InternationalizableException {
@@ -41,7 +46,8 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
         try {
             createConnection();
-            if (databaseExists()) {
+            alreadyExistsFlag = databaseExists();
+            if (alreadyExistsFlag) {
                 return true;
             }
             createDatabase();

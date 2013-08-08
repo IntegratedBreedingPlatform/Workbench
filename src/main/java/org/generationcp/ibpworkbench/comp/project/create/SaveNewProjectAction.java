@@ -172,6 +172,10 @@ public class SaveNewProjectAction implements ClickListener{
 
                     // add the person to the project's local database
                     managerFactory.getUserDataManager().addPerson(person);
+                    if (!centralDbGenerator.isAlreadyExists()){
+	                    managerFactory.getUserDataManager().addPersonToCentral(currentPerson);
+	                    managerFactory.getUserDataManager().addUserToCentral(currentUser);
+                    }
 
                     // add a user to project's local database
                     String newUserName = person.getInitialsWithTimestamp();
