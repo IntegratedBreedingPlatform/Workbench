@@ -227,7 +227,7 @@ public class SaveNewProjectAction implements ClickListener{
                     {
                     	e.printStackTrace();
                     }
-                    //projectMembers.add(currentLoggedUser);
+                   // projectMembers.add(currentLoggedUser);
                    
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, projectSaved);
@@ -422,7 +422,10 @@ public class SaveNewProjectAction implements ClickListener{
             
             // Save role
             projectUserRole.setProject(projectSaved);
-            workbenchDataManager.addProjectUserRole(projectUserRole);
+            
+            //do not insert manager role, for some reason.. nageerror ng unique constraints
+          //  if(!projectUserRole.getRole().getName().equalsIgnoreCase(Role.MANAGER_ROLE_NAME))
+            	workbenchDataManager.addProjectUserRole(projectUserRole);
 
             // Save User to local db
             //check if this user has already been accounted for, because each user may have many roles so this check is needed
