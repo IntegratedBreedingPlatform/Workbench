@@ -104,6 +104,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	private Button breedingPlannerButton;
 
 	private Button germplasmImportButton;
+
+	private Button userToolsButton;
     
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
@@ -269,6 +271,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         createTemplatesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         createTemplatesButton.setSizeUndefined();
         createTemplatesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_NURSERY_TEMPLATE));
+        
+        userToolsButton = new Button(messageSource.getMessage(Message.TOOL_USERS));
+        userToolsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        userToolsButton.setSizeUndefined();
+        userToolsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_USER_TOOLS));
     }
 
     protected void initializeLayout() {
@@ -396,10 +403,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
+        emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-        
         
         layout.addComponent(membersButton);
         membersButton.setHeight("20px");
@@ -410,18 +416,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         backupIBDBButton.setHeight("20px");
         layout.setComponentAlignment(backupIBDBButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(backupIBDBButton, 0);
-
-        /*
-        layout.addComponent(backupIBDBLink);
-        backupIBDBLink.setHeight("20px");
-        layout.setComponentAlignment(backupIBDBLink, Alignment.TOP_CENTER);
-        layout.setExpandRatio(backupIBDBLink, 0);
-		*/
-        
-        /*layout.addComponent(backupIBDBCustomLayout);
-        backupIBDBCustomLayout.setHeight("20px");
-        layout.setComponentAlignment(backupIBDBCustomLayout, Alignment.TOP_CENTER);
-        layout.setExpandRatio(backupIBDBCustomLayout, 0);*/
 
         layout.addComponent(restoreIBDBButton);
         restoreIBDBButton.setHeight("20px");
@@ -440,8 +434,14 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(projectLocationButton, 0);
         
         layout.addComponent(createTemplatesButton);
+        createTemplatesButton.setHeight("20px");
         layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(createTemplatesButton, 0);
+
+        layout.addComponent(userToolsButton);
+        layout.setComponentAlignment(userToolsButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(userToolsButton, 0);
+
         
         return layout;
     }
@@ -673,6 +673,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             createTemplatesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_TEMPLATE_WIZARD));
+            
+            userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
+            
             
         }
     }

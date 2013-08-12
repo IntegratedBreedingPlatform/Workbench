@@ -95,7 +95,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     private WorkbenchDashboardWindow thisInstance;
 
-	private Button userToolsButton;
+	//private Button userToolsButton;
 
     public WorkbenchDashboardWindow() {
     	super("Integrated Breeding Platform | Workbench");
@@ -127,9 +127,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         accountButton.setStyleName(BaseTheme.BUTTON_LINK);
         accountButton.setSizeUndefined();
 
-        userToolsButton = new Button();
-        userToolsButton.setStyleName(BaseTheme.BUTTON_LINK);
-        userToolsButton.setSizeUndefined();
+        //userToolsButton = new Button();
+        //userToolsButton.setStyleName(BaseTheme.BUTTON_LINK);
+        //userToolsButton.setSizeUndefined();
         
         toolVersionsButton = new Button();
         toolVersionsButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -246,7 +246,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 			}
 		};
         
-        userToolsButton.addListener (userToolsClickListener);
+        //userToolsButton.addListener (userToolsClickListener);
         
         toolVersionsButton.addListener(new OpenToolVersionsAction());
         createProjectButton.addListener(new OpenNewProjectAction());
@@ -343,16 +343,16 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
 
         //headerRightLayout.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(userToolsButton);
-        headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
+        //headerRightLayout.addComponent(userToolsButton);
+        //headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
 
         
-        headerRightLayout.addComponent(new Label("|"));
+        //headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(toolVersionsButton);
         headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
         
-        //headerRightLayout.addComponent(new Label("|"));
+        headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(helpButton);
         headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
@@ -461,7 +461,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
-        messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
+       //messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
         messageSource.setCaption(helpButton, Message.HELP);
         
         messageSource.setCaption(actionsTitle, Message.ACTIONS);

@@ -6,10 +6,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
+import org.generationcp.ibpworkbench.comp.common.ServerFilePicker;
 import org.generationcp.ibpworkbench.comp.common.customfield.CustomField;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -29,6 +32,8 @@ import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilesystemContainer;
+import com.vaadin.terminal.UserError;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,7 +59,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	private Button cancelBtn;
 	private ListSelect userToolsListSelect;
 	
-	private Tool userToolFormData = new Tool();
+	//private Tool userToolFormData = new Tool();
 	
 	private Window thisWindow;
 	
@@ -63,7 +68,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final String WIDTH = "780px";
-	private static final String HEIGHT = "350px";
+	private static final String HEIGHT = "400px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -84,12 +89,17 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		initializeLayout();
 		initializeActions();
 	}
-
+	
 	private void initializeActions() {
-		addBtn.addListener(new Button.ClickListener() {
-
+		
+		// ADD ACTION
+		final ConfirmDialog.Listener onAddAction = new ConfirmDialog.Listener() {
+			
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void onClose(ConfirmDialog dialog) {
+				// USER did not continue
+				if (!dialog.isConfirmed())
+					return;
 				
 				try {
 					userToolsForm.commit();
@@ -98,29 +108,24 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
+
+				BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
+				Tool userToolFormData = userToolBeanItem.getBean();
 				
 				LOG.debug(userToolFormData.toString());
 				
-				Tool clone = new Tool();
-				clone.setToolId(null);
-				
+				userToolFormData.setToolId(null);
+
 				if (userToolFormData.getParameter() == null)
-					clone.setParameter("");
-				else
-					clone.setParameter(userToolFormData.getParameter());
-				clone.setPath(userToolFormData.getPath());
-				clone.setTitle(userToolFormData.getTitle());
-				clone.setToolName(userToolFormData.getToolName());
-				clone.setToolType(userToolFormData.getToolType());
-				clone.setUserTool(true);
+					userToolFormData.setParameter("");
+			
+				userToolFormData.setUserTool(true);
 				
-				if (userToolFormData != null)
-					clone.setVersion(userToolFormData.getVersion());
-				else 
-					clone.setVersion("");
+				if (userToolFormData.getVersion() == null)
+					userToolFormData.setVersion("");
 
 				try {
-					workbenchDataManager.getToolDao().save(clone);
+					workbenchDataManager.getToolDao().save(userToolFormData);
 					
 					Tool newTool = workbenchDataManager.getToolDao().getByToolName(userToolFormData.getToolName());
 					
@@ -132,29 +137,28 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				} catch (MiddlewareQueryException e) {
 					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FAIL),messageSource.getMessage(Message.USER_TOOLS_ADD_EXISTS_ERROR));
 				}
+					
 			}
-		});
-
-		editBtn.addListener(new Button.ClickListener() {
+		};
+		
+		// EDIT ACTION
+		final ConfirmDialog.Listener onEditAction = new ConfirmDialog.Listener() {
 			
 			@Override
-			public void buttonClick(ClickEvent event) {
-
-				try {
-					userToolsForm.commit();
-				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
-							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
-					return;
-				}
+			public void onClose(ConfirmDialog dialog) {
 				
-				userToolsForm.commit();
+				// USER did not continue
+				if (!dialog.isConfirmed())
+					return;
+				
+				final Tool selected = (Tool) userToolsListSelect.getValue();
 
 				try {
-					Tool selected = (Tool) userToolsListSelect.getValue();
-					//userToolsListContainer.removeItem(selected);
-
 					Collection<Tool> toolList = userToolsListContainer.getItemIds();
+					
+					BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
+					Tool userToolFormData = userToolBeanItem.getBean();
+					
 					
 					for (Tool t : toolList) {
 						if (t.getToolName().equals(userToolFormData.getToolName()) && t.getToolId() != userToolFormData.getToolId()) {
@@ -163,30 +167,83 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 						}
 					}
 					
-					
 					selected.setToolId(userToolFormData.getToolId());
 					
 					if (userToolFormData.getParameter() == null)
 						selected.setParameter("");
 					else
 						selected.setParameter(userToolFormData.getParameter());
-					selected.setPath(userToolFormData.getPath());
-					selected.setTitle(userToolFormData.getTitle());
-					selected.setToolName(userToolFormData.getToolName());
-					selected.setToolType(userToolFormData.getToolType());
-					selected.setUserTool(true);
-					selected.setVersion(userToolFormData.getVersion());
+						selected.setPath(userToolFormData.getPath());
+						selected.setTitle(userToolFormData.getTitle());
+						selected.setToolName(userToolFormData.getToolName());
+						selected.setToolType(userToolFormData.getToolType());
+						selected.setUserTool(true);
+						selected.setVersion(userToolFormData.getVersion());
 					
+						
+					workbenchDataManager.getToolDao().update(selected);
+						
 					userToolsListContainer.addItem(selected);
 					userToolsListSelect.setItemCaption(selected,userToolFormData.getTitle());
-					
-					workbenchDataManager.getToolDao().update(selected);
 					
 					MessageNotifier.showMessage(thisWindow,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.USER_TOOLS_UPDATED));
 										
 				} catch (MiddlewareQueryException e) {
 					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FAIL),messageSource.getMessage(Message.USER_TOOLS_EDIT_EXISTS_ERROR));
 				}
+			}
+		};
+		
+		// LISTENERS REGISTRATION
+		
+		addBtn.addListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				userToolsForm.setComponentError(null);
+				userToolsForm.setValidationVisible(false);
+				
+				try {
+					userToolsForm.commit();
+				} catch (InvalidValueException e) {
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
+							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
+					return;
+				}
+				
+				// TODO FIXME Internationalize the messages
+				ConfirmDialog.show(UserToolsManagerWindow.this.getParent(),
+						messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION),
+						"Click OK to proceed",
+						messageSource.getMessage(Message.OK),
+						messageSource.getMessage(Message.CANCEL),
+						onAddAction
+				);
+			}
+		});
+
+		editBtn.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				userToolsForm.setComponentError(null);
+				userToolsForm.setValidationVisible(false);
+				
+				try {
+					userToolsForm.commit();
+				} catch (InvalidValueException e) {
+					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
+							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
+					return;
+				}
+				
+				// TODO FIXME Internationalize the messages
+				ConfirmDialog.show(UserToolsManagerWindow.this.getParent(),
+						messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION),
+						"Click OK to proceed",
+						messageSource.getMessage(Message.OK),
+						messageSource.getMessage(Message.CANCEL),
+						onEditAction);
 			}
 		});
 		
@@ -210,6 +267,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 						
 				
 				// clone selectedTool to userToolFormData
+				Tool userToolFormData = new Tool();
 				userToolFormData.setParameter(selectedTool.getParameter());
 				userToolFormData.setPath(selectedTool.getPath());
 				userToolFormData.setTitle(selectedTool.getTitle());
@@ -219,13 +277,10 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 				userToolFormData.setVersion(selectedTool.getVersion());
 				userToolFormData.setUserTool(selectedTool.getUserTool());
 				
-				// hack: access the customField path directly to set the value since it is not updated even if the formBean is changed
-				userToolsForm.getField("path").setValue(selectedTool.getPath());
+				LOG.debug(selectedTool.toString());
 				
-				userToolsForm.commit();
+				userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData),Arrays.asList(new String[] {"toolName","title","toolType","version","path","parameter"}));
 				
-				
-				//userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData));
 				
 				editBtn.setEnabled(true);
 			}
@@ -237,8 +292,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		this.setWidth(WIDTH);
 		this.setHeight(HEIGHT);
 		this.setCaption(messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION));
-		
-		ComponentContainer rootLayout = this.getContent();
 		
 		HorizontalLayout mainPanel = new HorizontalLayout();
 		Label spacer2 = new Label("&nbsp;",Label.CONTENT_XHTML);
@@ -285,7 +338,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			userToolsListContainer = new BeanItemContainer<Tool>(Tool.class,userTools);
 			userToolsListSelect.setContainerDataSource(userToolsListContainer);
-			userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData));
+			userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),Arrays.asList(new String[] {"toolName","title","toolType","version","path","parameter"}));
 			userToolsForm.setWriteThrough(false);
 			/*
 			if (userTools.size() > 0) {
@@ -312,8 +365,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		
 		
 		userToolsForm = new Form();
+			
 		userToolsForm.setWidth("380px");
+		userToolsForm.setHeight("250px");
 		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory(thisWindow));
+		//userToolsForm.setValidationVisibleOnCommit(false);
+		//userToolsForm.setImmediate(true);
 		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
 		
 		addBtn = new Button(messageSource.getMessage(Message.ADD),userToolsForm,"commit");
@@ -332,7 +389,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	class UserToolsFormFieldFactory implements FormFieldFactory {
-		private Field toolTypeFld;
+		private NativeSelect toolTypeFld;
 		private TextField nameFld;
 		private TextField titleFld;
 		private TextField versionFld;
@@ -389,21 +446,46 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			filePicker = new ServerFilePicker(parentWindow);
 			filePicker.setCaption(messageSource.getMessage(Message.TOOL_PATH));
 			filePicker.setWidth("190px");
+			filePicker.setRequired(true);
+			filePicker.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
+			//filePicker.setImmediate(true);
+			
+			
 			filePicker.addValidator(new Validator() {
 				
 				@Override
 				public void validate(Object value) throws InvalidValueException {
-					if (!this.isValid(value))
+					if (!this.isValid(value)) {
+					
+						//MessageNotifier.showError(UserToolsManagerWindow.this,messageSource.getMessage(Message.ERROR),messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
+						
 						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
+					} else {
+						filePicker.setComponentError(null);
+						
+					}
+				
+					
 				}
 				
 				@Override
 				public boolean isValid(Object value) {
 					
-					if (!value.toString().matches("^(?:[a-zA-Z]\\:(\\\\|\\/)|file\\:\\/\\/|\\\\\\\\|\\.(\\/|\\\\))([^\\\\\\/\\:\\*\\?\\<\\>\\\"\\|]+(\\\\|\\/){0,1})+$")) {
+					try {
+						LOG.debug("value: " + value.toString());
+						
+					if (toolTypeFld.getValue().toString().toLowerCase().contains("web")) {
+						// this is a web tool, validate to URL
 						if (!value.toString().matches("^(https?|ftp|file)://.+$")) {
 							return false;
 						}
+					} else {
+						if (!value.toString().matches("^(?:[a-zA-Z]\\:(\\\\|\\/)|file\\:\\/\\/|\\\\\\\\|\\.(\\/|\\\\))([^\\\\\\/\\:\\*\\?\\<\\>\\\"\\|]+(\\\\|\\/){0,1})+$")) {
+							return false;
+						}	
+					}
+					} catch (Exception e) {
+						return false;
 					}
 					return true;
 				}
@@ -414,8 +496,6 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		public Field createField(Item item, Object propertyId, Component uiContext) {
 			if ( "toolType".equals((String)propertyId) ) {
 				return toolTypeFld;
-				
-				
 			}
 			else if ("toolName".equals((String)propertyId)) {
 				return nameFld;
@@ -435,235 +515,5 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			
 			return null;
 		}		
-	}
-	
-	
-	// TODO: Refactor this later into a reusable component
-	class ServerFilePicker extends CustomField {
-		private HorizontalLayout root;
-		private TextField pathFld;
-		private Button browseBtn;
-		private Window pickerWindow;
-		private Label pathLbl;
-		private FilesystemContainer fsContainer;
-		private TreeTable treetable;
-		private Window parentWin;
-		
-		private ServerFilePicker thisInstance;
-		
-		public ServerFilePicker(Window parentWindow) {
-			thisInstance = this;
-			
-			this.parentWin = parentWindow;
-			
-			root = new HorizontalLayout();
-			root.setSpacing(true);
-			
-			this.setCompositionRoot(root);
-			
-			pathFld = new TextField();
-			pathLbl = new Label();
-			browseBtn = new Button("Browse");
-			pathFld.setNullRepresentation("");
-		
-			root.addComponent(pathFld);
-			root.addComponent(browseBtn);
-			
-			
-			
-			initPicker();
-			
-			this.setPropertyDataSource(pathFld.getPropertyDataSource());
-				
-			browseBtn.addListener(new Button.ClickListener() {
-				
-				@Override
-				public void buttonClick(ClickEvent event) {
-					
-					LOG.debug("pause here");
-					
-					
-					//parentWin.addWindow(pickerWindow);
-					parentWin.getParent().addWindow(pickerWindow);
-				}
-			});
-			
-			pathFld.setRequired(true);
-			pathFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
-		}
-		
-		@Override
-		public void addValidator(Validator validator) {
-			//super.addValidator(validator);
-			this.getPathField().addValidator(validator);
-		}
-		
-		
-
-		@Override
-		public boolean isValid() {
-			return this.getPathField().isValid();
-		}
-
-		@Override
-		public void validate() throws InvalidValueException {
-			this.getPathField().validate();
-		}
-
-		private void initPicker() {
-			pickerWindow = new Window("Select an executable file");
-			pickerWindow.center();
-			pickerWindow.setModal(true);
-			
-			pickerWindow.setWidth("500px");
-			pickerWindow.setHeight("400px");
-			pickerWindow.setResizable(false);
-			//pickerWindow.setModal(true);
-			
-			final HorizontalLayout hl = new HorizontalLayout();
-			
-			hl.addComponent(new Label("Selected file: "));
-			hl.addComponent(pathLbl);
-			
-			treetable = new TreeTable();
-			
-			//TODO: refactor this to make this more generic / reusable
-			fsContainer = new FilesystemContainer(new File("tools"),new FilenameFilter() {
-				
-				@Override
-				public boolean accept(File dir, String name) {
-					File pathName = new File(dir.getAbsolutePath() + File.separator + name);
-
-					if (pathName.isDirectory()) {
-						
-						for (File children : pathName.listFiles()) {
-							 if (this.accept(pathName,children.getName()))
-								 return true;
-						}
-						
-					} else if (pathName.getName().endsWith(".exe") || pathName.getName().endsWith(".bat") || pathName.getName().endsWith(".com") || pathName.getName().endsWith(".sh") )
-						return true;
-					
-					return false;
-				}
-			},true);
-	        
-	        treetable.setContainerDataSource(fsContainer);
-	        
-	        // Set the row header icon by the file type
-	        treetable.setItemIconPropertyId("Icon");
-
-	        // Do not show the Icon column
-	        treetable.setVisibleColumns(new Object[]{"Name", "Size",
-	                                                 "Last Modified"});
-	        // END-EXAMPLE: datamodel.container.filesystemcontainer.basic
-	        
-	        treetable.setImmediate(true);
-	        treetable.setWidth("100%");
-	        treetable.setHeight("240px");
-	        //treetable.setSizeFull();
-	        treetable.setSelectable(true);
-	        treetable.addListener(new Property.ValueChangeListener() {
-
-				@Override
-				public void valueChange(
-						com.vaadin.data.Property.ValueChangeEvent event) {
-					System.out.println(event.getProperty().getValue().toString());
-					
-					String filePath = event.getProperty().getValue().toString();
-					
-					if (!(new File(filePath)).isDirectory()) {
-						pathLbl.setValue((new File(filePath)).getAbsolutePath());
-					} else
-						pathLbl.setValue("");
-				}
-				
-			});
-	        
-	        
-	        pickerWindow.addComponent(treetable);
-		
-	        pickerWindow.addComponent(hl);
-	        
-	        
-	        
-	        final HorizontalLayout btnPanel = new HorizontalLayout();
-			final Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
-
-			final Button selectBtn = new Button(messageSource.getMessage(Message.SELECT));
-			final Button cancelSelectBtn = new Button(messageSource.getMessage(Message.CANCEL));
-			
-			
-	        btnPanel.setWidth("100%");
-			btnPanel.setSpacing(true);
-			btnPanel.setMargin(true);
-			
-			btnPanel.addComponentAsFirst(spacer);
-			btnPanel.addComponent(selectBtn);
-			btnPanel.addComponent(cancelSelectBtn);
-			
-			btnPanel.setComponentAlignment(selectBtn, Alignment.MIDDLE_RIGHT);
-			btnPanel.setComponentAlignment(cancelSelectBtn, Alignment.MIDDLE_RIGHT);
-			btnPanel.setExpandRatio(spacer,1.0f);
-			
-			pickerWindow.getContent().addComponent(btnPanel);
-
-			// Listeners:
-			cancelSelectBtn.addListener(new Button.ClickListener() {
-				
-				@Override
-				public void buttonClick(ClickEvent event) {
-					parentWin.getApplication().getMainWindow().removeWindow(pickerWindow);
-				}
-			});
-			
-			selectBtn.addListener(new Button.ClickListener() {
-				
-				@Override
-				public void buttonClick(ClickEvent event) {
-					// TODO Auto-generated method stub
-					thisInstance.setValue((new File(treetable.getValue().toString())).getAbsolutePath());
-					parentWin.getApplication().getMainWindow().removeWindow(pickerWindow);				}
-			});
-		}
-		
-		public TextField getPathField() {
-			return pathFld;
-		}
-
-		@Override
-		public Class<?> getType() {
-			return pathFld.getType();
-		}
-
-		@Override
-		public Object getValue() {
-			return pathFld.getValue();
-		}
-		
-		@Override
-		public Object getData() {
-			return pathFld.getData();
-		}
-		
-		
-		@Override
-		public void setValue(Object newValue) throws ReadOnlyException,
-				ConversionException {
-			super.setValue(newValue);
-			pathFld.setValue(newValue);
-		}
-		
-		@Override
-		protected void setInternalValue(Object newValue) {
-			super.setInternalValue(newValue);
-			pathFld.setValue(newValue);
-		}
-
-		@Override
-		public void setWidth(String width) {
-			//super.setWidth(width);
-			pathFld.setWidth(width);
-		}
 	}
 }

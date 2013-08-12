@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.comp.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.comp.window.GxeAnalysisWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
+import org.generationcp.ibpworkbench.comp.window.UserToolsManagerWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -66,6 +67,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,BACKUP_IBDB("backup_ibdb")
         ,RESTORE_IBDB("restore_ibdb")
         ,CHANGE_PASSWORD("change_password")
+        ,USER_TOOLS("user_tools")
         ;
         
         String windowName;
@@ -225,6 +227,15 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	{
     		//LOG.debug("Add Restore IBDB Window");
     		mywindow = new RestoreIBDBWindow(this.project);
+    		window.addWindow(mywindow);
+
+    		windowCaption = mywindow.getCaption();
+    		
+    		windowLaunched = true;
+    		
+    	}
+    	else if (WindowEnum.USER_TOOLS.getwindowName().equals(windowName)) {
+    		mywindow = new UserToolsManagerWindow();
     		window.addWindow(mywindow);
 
     		windowCaption = mywindow.getCaption();
