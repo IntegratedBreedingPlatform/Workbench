@@ -472,6 +472,12 @@ s
       background-color: white;
  }
  
- .no-stripes td {
+.no-stripes td {
  	height: 20px;
  }
+
+.create_project_member_current_user_msg {
+    color: red;
+    font-weight: bold;
+    margin-left: 300px;
+}

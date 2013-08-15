@@ -154,42 +154,6 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         membersTab = new ProjectMembersComponent(createProjectPanel);
                         
                         // label component to notify logged in user that it has been already added as a member of the project
-                        
-                        
-                        
-                        int personUID = IBPWorkbenchApplication.get().getSessionData().getUserData().getPersonid();
-                        try {
-						
-							String loggedinUserStr = ""; 
-							Person loggedinUser;
-							    
-							loggedinUser = workbenchDataManager.getPersonById(personUID);
-						
-
-	                        if (loggedinUser.getFirstName() != null) {
-	                        	loggedinUserStr = loggedinUser.getFirstName();
-	                        }
-	                        if (loggedinUser.getMiddleName() != null) {
-	                        	loggedinUserStr += " " + loggedinUser.getMiddleName(); 
-	                        }
-	                        if (loggedinUser.getLastName() != null) {
-	                        	loggedinUserStr += " " + loggedinUser.getLastName();
-	                        }
-	                       
-	                        String currentUserMsg = "<b>"+ loggedinUserStr +"</b> is automatically a member of this project.";	//TODO FIXME: add correct internationalization message for this.
-	                        
-	                        
-	                        Label currentUserLbl = new Label(currentUserMsg,Label.CONTENT_XHTML);
-	                        currentUserLbl.addStyleName("create_project_member_current_user_msg");
-	                        
-	                        
-	                        layoutProjectMembers.addComponent(currentUserLbl);
-	                        
-							
-						} catch (MiddlewareQueryException e) {
-							MessageNotifier.showError(getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),messageSource.getMessage(Message.CONTACT_DEV_ERROR_DESC));
-						}
-                        
                         layoutProjectMembers.addComponent(membersTab);
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);

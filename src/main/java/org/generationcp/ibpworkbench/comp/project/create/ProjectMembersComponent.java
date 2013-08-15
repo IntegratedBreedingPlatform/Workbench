@@ -48,6 +48,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TwinColSelect;
@@ -117,7 +118,40 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         addComponent(select);
         
         initializeMembersTable();
+        
+        
+        /*        
+        int personUID = IBPWorkbenchApplication.get().getSessionData().getUserData().getPersonid();
+
+		
+			String loggedinUserStr = ""; 
+			Person loggedinUser;
+			    
+			loggedinUser = workbenchDataManager.getPersonById(personUID);
+		
+
+            if (loggedinUser.getFirstName() != null) {
+            	loggedinUserStr = loggedinUser.getFirstName();
+            }
+            if (loggedinUser.getMiddleName() != null) {
+            	loggedinUserStr += " " + loggedinUser.getMiddleName(); 
+            }
+            if (loggedinUser.getLastName() != null) {
+            	loggedinUserStr += " " + loggedinUser.getLastName();
+            }
+       */
+        
+        String currentUserMsg = "* Note: By default, you are a member of this project.";	//TODO FIXME: add correct internationalization message for this.
+        
+        Label currentUserLbl = new Label(currentUserMsg,Label.CONTENT_XHTML);
+        currentUserLbl.addStyleName("create_project_member_current_user_msg");
+        
+        
+        addComponent(currentUserLbl);
+        
+
         addComponent(tblMembers);
+        
         
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
