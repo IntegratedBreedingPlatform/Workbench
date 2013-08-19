@@ -47,7 +47,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 180;
+    private static final int WORKFLOW_STEP_HEIGHT = 200;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -300,7 +300,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("420px");
+        layout.setHeight("440px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -537,7 +537,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("68px");
+        emptyLabel.setHeight("90px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
