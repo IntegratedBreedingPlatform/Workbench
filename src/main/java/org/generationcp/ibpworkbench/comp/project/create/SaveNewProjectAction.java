@@ -177,7 +177,14 @@ public class SaveNewProjectAction implements ClickListener{
                     
                     // add the user ,person and instln to the central database if creating a new custom crop
                     if (!centralDbGenerator.isAlreadyExists()){
+                    	currentPerson.setInstituteId(1);
 	                    managerFactory.getUserDataManager().addPersonToCentral(currentPerson);
+	                    
+	                    currentUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+	                    currentUser.setType(PROJECT_USER_TYPE);
+	                    currentUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+	                    currentUser.setAdate(getCurrentDate());
+	                    currentUser.setInstalid(1);
 	                    managerFactory.getUserDataManager().addUserToCentral(currentUser);
 	                    centralDbGenerator.addCentralInstallationRecord(project.getProjectName(), currentUser.getUserid());
                     }

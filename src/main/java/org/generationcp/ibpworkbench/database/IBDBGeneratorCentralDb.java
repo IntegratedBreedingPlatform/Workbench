@@ -168,12 +168,14 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             connection.setCatalog(generatedDatabaseName);
             
             stmt = connection.createStatement();
+            
             resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
             
             if (resultSet.next()) {
                 installId = resultSet.getInt(1);
                 installId++;
             }
+            
             
             preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
             
@@ -185,15 +187,15 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             preparedStatement.setInt(2, localUserId);        // admin
             preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date))); // udate
             preparedStatement.setInt(4, 0);         // ugid
-            preparedStatement.setInt(5, 0);         // ulocn
+            preparedStatement.setInt(5, 1717);         // ulocn
             preparedStatement.setInt(6, 0);         // ucid
             preparedStatement.setInt(7, 0);         // unid
             preparedStatement.setInt(8, 0);         // uaid
             preparedStatement.setInt(9, 0);         // uldid
-            preparedStatement.setInt(10, 0);        // umethn
-            preparedStatement.setInt(11, 0);        // ufldno
+            preparedStatement.setInt(10, 923);        // umethn
+            preparedStatement.setInt(11, 9999);        // ufldno
             preparedStatement.setInt(12, 0);        // urefno
-            preparedStatement.setInt(13, 0);        // upid
+            preparedStatement.setInt(13, 1);        // upid
             preparedStatement.setString(14, projectName);   // idesc
             preparedStatement.setInt(15, 0);        // ulistid
             preparedStatement.setInt(16, 0);        // dms_status
