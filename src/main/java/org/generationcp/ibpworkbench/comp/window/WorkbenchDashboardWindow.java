@@ -72,6 +72,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     private Label actionsTitle;
     private Button createProjectButton;
+    private Button deleteProjectButton;
 
     private Button createContactButton;
     private Label recentTitle;
@@ -143,6 +144,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         actionsTitle = new Label();
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
+        
+        
+      
 
         createProjectButton = new Button("Create Project");
         createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
@@ -249,6 +253,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         //userToolsButton.addListener (userToolsClickListener);
         
         toolVersionsButton.addListener(new OpenToolVersionsAction());
+       
+        
+        
         createProjectButton.addListener(new OpenNewProjectAction());
         createProjectButton.addListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -371,7 +378,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         //leftLayout.addComponent(actionsTitle);
         //leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
         //leftLayout.setSize;
+        
         leftLayout.addComponent(createProjectButton);
+        
         leftLayout.setExpandRatio(createProjectButton,1.0F);
         //leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
 
@@ -465,6 +474,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         messageSource.setCaption(helpButton, Message.HELP);
         
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
+        
         messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
         messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
         

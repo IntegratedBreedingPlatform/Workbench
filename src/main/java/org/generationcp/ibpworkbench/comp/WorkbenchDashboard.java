@@ -21,6 +21,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
@@ -41,6 +42,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -63,11 +65,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private Label lblActivitiesTitle;
     
     private Button selectDatasetForBreedingViewButton;
+    private Button deleteProjectButton;
     
     private Table tblActivity;
     
     private Table tblRoles;
-
+    private HorizontalLayout buttonPanel;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -86,6 +89,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeComponents() {
+    	buttonPanel = new HorizontalLayout();
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName("gcp-content-title");
         
@@ -124,6 +128,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         tblProject.setColumnCollapsingAllowed(true);
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
+    
+        deleteProjectButton = new Button("Delete Project");
+        deleteProjectButton.setStyleName("prj-delete-button");
+        deleteProjectButton.setWidth("100%");
+        deleteProjectButton.setImmediate(true);
+        //deleteProjectButton.setEnabled(false);
     }
     
     private void initializeActivityTable() {
@@ -167,10 +177,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         setWidth("100%");
         setMargin(true);
         setSpacing(true);
-
+        
         lblDashboardTitle.setSizeUndefined();
-        addComponent(lblDashboardTitle);
+        
+        buttonPanel.addComponent(lblDashboardTitle);
+        buttonPanel.addComponent(deleteProjectButton);
 
+        addComponent(buttonPanel);
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
         setExpandRatio(projectTableArea, 1.0f);
@@ -199,27 +212,29 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         }
 
         app.getSessionData().setLastOpenedProject(lastOpenedProject);
+        app.getSessionData().setSelectedProject(currentProject);
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
+        
         for (Project project : projects) {
             projectContainer.addBean(project);
         }
         tblProject.setContainerDataSource(projectContainer);
 
         // set the visible columns on the Project Table
-        String[] columns = new String[] { "startDate", "projectName" };
+        String[] columns = new String[] { "startDate", "projectName"};
         tblProject.setVisibleColumns(columns);
     }
 
     protected void initializeActions() {
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
-        
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction));
-
+        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject));
+        deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
+        
     }
 
     protected void assemble() {
@@ -339,7 +354,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        
+        deleteProjectButton.setEnabled(true);
+        deleteProjectButton.setImmediate(true);
         //messageSource.setValue(lblDashboardTitle, Message.DASHBOARD+ " " + currentProject.getProjectName());
     }
 }

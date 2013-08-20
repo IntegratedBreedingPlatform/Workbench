@@ -62,15 +62,18 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private OpenWorkflowForRoleAction openWorkflowForRoleAction;
     
     private Button selectDatasetForBreedingViewButton;
-
+    private Project currentProj;
+    
     public ShowProjectDetailAction(Label lblActivity, Table tblProject, Table tblActivity, Table tblRoles, 
-            Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction) {
+            Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,
+            Project currentProject) {
         this.lblActivity = lblActivity;
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
         this.tblRoles = tblRoles;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
+        this.currentProj = currentProject;
     }
     
    
@@ -81,8 +84,14 @@ public class ShowProjectDetailAction implements ItemClickListener {
         BeanItem<Project> item = (BeanItem<Project>) event.getItem();
         
         Project project = item.getBean();
+        
         if (project == null) {
             return;
+        }else
+        {
+        	currentProj = project;
+        	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        	app.getSessionData().setSelectedProject(currentProj);
         }
         
         // update the project activity table's listener

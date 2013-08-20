@@ -16,7 +16,17 @@ import org.generationcp.middleware.pojos.workbench.Project;
  */
 public class SessionData {
     private Project lastOpenedProject;
-    private User userData;
+    private Project selectedProject;
+    
+    public Project getSelectedProject() {
+		return selectedProject;
+	}
+
+	public void setSelectedProject(Project selectedProject) {
+		this.selectedProject = selectedProject;
+	}
+
+	private User userData;
     private Integer username_counter = 0;
     private Integer namevalidation_counter = 0;
     public Integer getUsername_counter() {
