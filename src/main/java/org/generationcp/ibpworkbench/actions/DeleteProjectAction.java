@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -20,7 +21,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -32,17 +32,19 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
     private Project currentProject;
-    
+    private ClickEvent event = null;
     private WorkbenchDataManager workbenchDataManager;
-    
-    public DeleteProjectAction(WorkbenchDataManager workbenchDataManager)
+    private WorkbenchDashboard dashboard;
+    public DeleteProjectAction(WorkbenchDataManager workbenchDataManager, WorkbenchDashboard dashboard)
     {
     	this.workbenchDataManager = workbenchDataManager;
+    	this.dashboard = dashboard;
     }
     
     @Override
-    public void buttonClick(ClickEvent event) {
+    public void buttonClick(final ClickEvent event) {
     	
+    	this.event = event;
     	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
     	 if(app.getMainWindow()!= null)
     	 {
@@ -64,7 +66,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 		System.out.println(currentProject.getProjectName());
 				 		try {
 				 			workbenchDataManager.deleteProjectDependencies(currentProject);
-							
+				 			// go back to dashboard
+				            HomeAction home = new HomeAction();
+				            home.buttonClick(event);
 						} catch (MiddlewareQueryException e) {
 							// TODO Auto-generated catch block
 							MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());

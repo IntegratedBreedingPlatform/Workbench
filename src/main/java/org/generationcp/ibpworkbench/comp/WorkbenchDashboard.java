@@ -88,7 +88,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         assemble();
     }
 
-    protected void initializeComponents() {
+    public void initializeComponents() {
     	buttonPanel = new HorizontalLayout();
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName("gcp-content-title");
@@ -233,7 +233,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject));
-        deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
+        deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager, this));
         
     }
 
