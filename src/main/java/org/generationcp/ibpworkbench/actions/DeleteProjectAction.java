@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
+import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -32,7 +34,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
     private Project currentProject;
-    private ClickEvent event = null;
+    private ClickEvent evt;
     private WorkbenchDataManager workbenchDataManager;
     private WorkbenchDashboard dashboard;
     public DeleteProjectAction(WorkbenchDataManager workbenchDataManager, WorkbenchDashboard dashboard)
@@ -44,7 +46,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     @Override
     public void buttonClick(final ClickEvent event) {
     	
-    	this.event = event;
+    	this.evt = event;
+    	
     	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
     	 if(app.getMainWindow()!= null)
     	 {
@@ -67,8 +70,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 		try {
 				 			workbenchDataManager.deleteProjectDependencies(currentProject);
 				 			// go back to dashboard
-				            HomeAction home = new HomeAction();
-				            home.buttonClick(event);
+				 			
+				 			
+				           
+				            
 						} catch (MiddlewareQueryException e) {
 							// TODO Auto-generated catch block
 							MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
@@ -79,6 +84,21 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 	{
 				 		System.out.println("Hindi daw Ok!");
 				 	}
+				 	 
+				 	System.out.println("Tried Home");
+		            HomeAction home = new HomeAction();
+		            home.buttonClick(evt);
+		            
+		            System.out.println("Trying workbench dashboard");
+		            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
+		            WorkbenchDashboard workbenchDashboard = null;
+		            
+		            workbenchDashboard = new WorkbenchDashboard();
+		            
+		            w.setWorkbenchDashboard(workbenchDashboard);
+		            
+		            w.addTitle("");
+		            w.showContent(w.getWorkbenchDashboard());
 			 }
     		 });
     	 }
