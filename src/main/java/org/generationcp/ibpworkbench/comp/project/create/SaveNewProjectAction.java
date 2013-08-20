@@ -235,6 +235,8 @@ public class SaveNewProjectAction implements ClickListener{
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, projectSaved);
                     }
+                    
+                    managerFactory.close();
 
                 } catch (MiddlewareQueryException e) {
                     LOG.error(e.getMessage(), e);
@@ -331,6 +333,7 @@ public class SaveNewProjectAction implements ClickListener{
                     + project.getTemplate().getTemplateId());
             LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
             LOG.info("Mysql Accounts Generation Successful?: " + isMysqlAccountGenerationSuccess);
+            
             
             // go back to dashboard
             HomeAction home = new HomeAction();
