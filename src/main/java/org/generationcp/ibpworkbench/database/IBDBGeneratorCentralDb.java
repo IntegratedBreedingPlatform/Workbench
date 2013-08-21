@@ -156,7 +156,11 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
      */
     public int addCentralInstallationRecord(String projectName, int localUserId) {
 
-        int installId = 0;
+   
+        int installId=0;
+        int locid=0;
+        int methodid=0;
+        int fldno=0;
 
         PreparedStatement preparedStatement = null;
         Statement stmt = null;
@@ -168,15 +172,28 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             connection.setCatalog(generatedDatabaseName);
             
             stmt = connection.createStatement();
-            
-            resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
-            
-            if (resultSet.next()) {
-                installId = resultSet.getInt(1);
-                installId++;
-            }
-            
-            
+    		
+    		stmt.execute("SELECT MIN(instalid) FROM instln");
+    		resultSet = stmt.getResultSet();
+    		if (resultSet.next()){
+    			installId = stmt.getResultSet().getInt(1) + 1;
+    		}
+    		stmt.execute("SELECT CASE WHEN max(locid) IS NULL THEN 0 ELSE max(locid) END as locid FROM location");
+    		resultSet = stmt.getResultSet();
+    		if (resultSet.next()){
+    			locid = stmt.getResultSet().getInt(1);
+    		}
+    		stmt.execute("SELECT CASE WHEN max(mid) IS NULL THEN 0 ELSE max(mid) END as mid FROM methods");
+    		resultSet = stmt.getResultSet();
+    		if (resultSet.next()){
+    			methodid = stmt.getResultSet().getInt(1);
+    		}
+    		stmt.execute("SELECT CASE WHEN max(fldno) IS NULL THEN 0 ELSE max(fldno) END as fldno FROM udflds");
+    		resultSet = stmt.getResultSet();
+    		if (resultSet.next()){
+    			fldno = stmt.getResultSet().getInt(1);
+    		}
+      
             preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
             
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -187,13 +204,13 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             preparedStatement.setInt(2, localUserId);        // admin
             preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date))); // udate
             preparedStatement.setInt(4, 0);         // ugid
-            preparedStatement.setInt(5, 1717);         // ulocn
+            preparedStatement.setInt(5, locid);         // ulocn
             preparedStatement.setInt(6, 0);         // ucid
             preparedStatement.setInt(7, 0);         // unid
             preparedStatement.setInt(8, 0);         // uaid
             preparedStatement.setInt(9, 0);         // uldid
-            preparedStatement.setInt(10, 923);        // umethn
-            preparedStatement.setInt(11, 9999);        // ufldno
+            preparedStatement.setInt(10, methodid);        // umethn
+            preparedStatement.setInt(11, fldno);        // ufldno
             preparedStatement.setInt(12, 0);        // urefno
             preparedStatement.setInt(13, 1);        // upid
             preparedStatement.setString(14, projectName);   // idesc

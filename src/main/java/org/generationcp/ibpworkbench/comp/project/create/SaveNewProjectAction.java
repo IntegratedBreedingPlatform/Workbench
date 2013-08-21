@@ -65,6 +65,8 @@ public class SaveNewProjectAction implements ClickListener{
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
+    private static final int PROJECT_USER_ACCESS_NUMBER_CENTRAL = 150;
+    private static final int PROJECT_USER_TYPE_CENTRAL = 420;
     
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
@@ -180,8 +182,8 @@ public class SaveNewProjectAction implements ClickListener{
                     	currentPerson.setInstituteId(1);
 	                    managerFactory.getUserDataManager().addPersonToCentral(currentPerson);
 	                    
-	                    currentUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-	                    currentUser.setType(PROJECT_USER_TYPE);
+	                    currentUser.setAccess(PROJECT_USER_ACCESS_NUMBER_CENTRAL);
+	                    currentUser.setType(PROJECT_USER_TYPE_CENTRAL);
 	                    currentUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
 	                    currentUser.setAdate(getCurrentDate());
 	                    currentUser.setInstalid(1);
