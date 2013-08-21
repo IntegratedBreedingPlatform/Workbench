@@ -69,15 +69,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 		try {
 				 			workbenchDataManager.deleteProjectDependencies(currentProject);
 				 			// go back to dashboard
-				 			
-				 			
-				           
-				            
-						} catch (MiddlewareQueryException e) {
+				 		} catch (MiddlewareQueryException e) {
 							// TODO Auto-generated catch block
 							//MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
-			    	         
-							e.printStackTrace();
+			    	    	e.printStackTrace();
 						}
 				 	}else 
 				 	{
