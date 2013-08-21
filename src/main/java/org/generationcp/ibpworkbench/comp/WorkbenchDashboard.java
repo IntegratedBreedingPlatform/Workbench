@@ -182,7 +182,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblDashboardTitle.setSizeUndefined();
         
         buttonPanel.addComponent(lblDashboardTitle);
-        buttonPanel.addComponent(deleteProjectButton);
+        //buttonPanel.addComponent(deleteProjectButton);
 
         addComponent(buttonPanel);
         Component projectTableArea = layoutProjectTableArea();
