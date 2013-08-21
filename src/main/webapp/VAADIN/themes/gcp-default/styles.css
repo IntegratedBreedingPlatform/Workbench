@@ -473,34 +473,44 @@ s
  }
 
 
+/* Delete project btn */
+.prj-delete-button {
+	height: 30px !important;
+	background-color: rgb(255,0,50) !important;
+	border: 1px solid;
+    border-radius: 10px 10px 10px 10px;
+    
+}
+
+.prj-delete-button .v-button-wrap {
+	display: block;
+	width: 100%;
+}
+
+.prj-delete-button .v-button-wrap .v-button-caption {
+	display: block;
+	color: rgb(255, 255, 255) !important;
+	text-decoration: none !important;
+	
+	text-transform: uppercase;
+	text-align: center
+	font-size: 12px;
+	white-space:normal;
+	line-height: 15px;
+	padding-right: 5px !important;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+	padding-left: 5px !important;
+}
+.prj-delete-button .v-button-wrap .v-button-caption:hover {
+	background-color: rgb(213,215,217);
+}
 .prj-delete-button {
 	position: absolute;
 	right:320px;
 }
 
-.prj-delete-button .v-button {
-    -moz-box-sizing: border-box;
-    -moz-font-feature-settings: inherit;
-    -moz-font-language-override: inherit;
-    -moz-user-select: none;
-    background: none repeat scroll 0 0 #FF0000;
-    border: 2px outset #DDDDDD;
-    color: inherit;
-    cursor: pointer;
-    display: inline-block;
-    font-family: inherit;
-    font-size: inherit;
-    font-size-adjust: inherit;
-    font-stretch: inherit;
-    font-style: inherit;
-    font-variant: inherit;
-    font-weight: inherit;
-    line-height: normal;
-    margin: 0;
-    padding: 0.2em 1em;
-    text-align: center;
-    text-decoration: none;
-    white-space: nowrap;
+
 
  
 .no-stripes td {
