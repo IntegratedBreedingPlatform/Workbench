@@ -65,8 +65,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 
 					// TODO Auto-generated method stub
 				 	if (dialog.isConfirmed()) {
-				 		System.out.println("Ok daw!");
-				 		System.out.println(currentProject.getProjectName());
+				 		
 				 		try {
 				 			workbenchDataManager.deleteProjectDependencies(currentProject);
 				 			// go back to dashboard
@@ -76,20 +75,18 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				            
 						} catch (MiddlewareQueryException e) {
 							// TODO Auto-generated catch block
-							MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
+							//MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
 			    	         
 							e.printStackTrace();
 						}
 				 	}else 
 				 	{
-				 		System.out.println("Hindi daw Ok!");
+				 		
 				 	}
 				 	 
-				 	System.out.println("Tried Home");
-		            HomeAction home = new HomeAction();
+				 	HomeAction home = new HomeAction();
 		            home.buttonClick(evt);
 		            
-		            System.out.println("Trying workbench dashboard");
 		            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
 		            WorkbenchDashboard workbenchDashboard = null;
 		            
