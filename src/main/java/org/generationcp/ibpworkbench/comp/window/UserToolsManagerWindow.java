@@ -129,8 +129,12 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 					
 					Tool newTool = workbenchDataManager.getToolDao().getByToolName(userToolFormData.getToolName());
 					
-					userToolsListContainer.addItem(newTool);
-					userToolsListSelect.select(newTool);
+					userToolsListContainer.addItemAt(0,newTool);
+					
+					//userToolsListSelect.select(newTool);
+					// clear the form data for new entry
+					userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),Arrays.asList(new String[] {"toolName","title","toolType","version","path","parameter"}));
+					
 					
 					MessageNotifier.showMessage(thisWindow,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.USER_TOOLS_ADDED));
 					
