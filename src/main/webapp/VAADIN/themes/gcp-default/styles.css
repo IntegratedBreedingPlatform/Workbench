@@ -475,8 +475,16 @@ s
 
 /* Delete project btn */
 .prj-delete-button {
-	height: 30px !important;
-	background-color: rgb(255,0,50) !important;
+	height: 25px !important;
+	background-color: rgb(255,0,0) !important;
+	border: 1px solid;
+    border-radius: 10px 10px 10px 10px;
+    
+}
+
+.prj-delete-button:hover {
+	height: 25px !important;
+	background-color: rgb(223,223,223) !important;
 	border: 1px solid;
     border-radius: 10px 10px 10px 10px;
     
@@ -503,7 +511,7 @@ s
 	padding-left: 5px !important;
 }
 .prj-delete-button .v-button-wrap .v-button-caption:hover {
-	background-color: rgb(213,215,217);
+	color: rgb(0, 0, 0) !important;
 }
 .prj-delete-button {
 	position: absolute;
