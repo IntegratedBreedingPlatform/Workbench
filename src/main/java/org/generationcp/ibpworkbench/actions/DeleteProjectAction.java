@@ -89,11 +89,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 		            
 		            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
 		            WorkbenchDashboard workbenchDashboard = null;
-		            
 		            workbenchDashboard = new WorkbenchDashboard();
-		            
 		            w.setWorkbenchDashboard(workbenchDashboard);
-		            
 		            w.addTitle("");
 		            w.showContent(w.getWorkbenchDashboard());
 			 }
