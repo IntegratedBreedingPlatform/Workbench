@@ -130,7 +130,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     
         deleteProjectButton = new Button("Delete Project");
-        deleteProjectButton.setStyleName("prj-delete-button");
+        deleteProjectButton.setStyleName(Reindeer.BUTTON_LINK + " prj-delete-button");
+        //setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
         deleteProjectButton.setWidth("100%");
         deleteProjectButton.setImmediate(true);
         //deleteProjectButton.setEnabled(false);
