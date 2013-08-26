@@ -130,8 +130,12 @@ public class SaveUserAccountAction implements ClickListener {
             LOG.error("Cannot register project ectivity", e);
         }
         
-        OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();
-        action.buttonClick(event);
+        //OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();
+        //GCP:5025
+        LoginAction loginAction = LoginAction.getLoginActionInstance();
+        loginAction.doLogin(userAccount.getUsername(),userAccount.getPassword(),event);	// Attempt to auto login
+        
+        //action.buttonClick(event);
         
     }
 

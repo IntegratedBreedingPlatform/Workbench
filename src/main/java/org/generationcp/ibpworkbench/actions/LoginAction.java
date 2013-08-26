@@ -54,25 +54,25 @@ public class LoginAction implements ClickListener{
     
     @Autowired
     private ToolUtil toolUtil;
+    
+    private static LoginAction self = null;
 
     public LoginAction(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
 
         loginWindow.getLoginForm().getBtnLogin().addListener(this);
+    
+        if (self == null)
+        	this.self = this;
     }
- 
-    @Override
-    public void buttonClick(ClickEvent event) {
-        LoginForm loginForm = loginWindow.getLoginForm();
+    
+    public static LoginAction getLoginActionInstance() {
+    	return self;
+    }
+    
+    public void doLogin(String username,String password,ClickEvent event) {
+        LOG.debug("Login with " + username + "/" + password);
 
-        TextField txtUsername = loginForm.getTxtUsername();
-        PasswordField pfPassword = loginForm.getPfPassword();
-        
-        String username = ((String) txtUsername.getValue()).trim();
-        String password = ((String) pfPassword.getValue()).trim();
-        
-        LOG.trace("Login with " + txtUsername.getValue() + "/" + pfPassword.getValue());
-        
         boolean valid = false;
         try {
             valid = workbenchDataManager.isValidUserLogin(username, password);
@@ -128,11 +128,11 @@ public class LoginAction implements ClickListener{
             
             application.setMainWindow(newWindow);
             
-            
+            /*
             Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
             if (project != null) {
                 toolUtil.updateTools(newWindow, messageSource, project, false);
-            }
+            }*/
             
             
         } catch (Exception e) {
@@ -144,5 +144,20 @@ public class LoginAction implements ClickListener{
             }
             return;
         }
+        
+    }
+    
+    @Override
+    public void buttonClick(ClickEvent event) {
+        LoginForm loginForm = loginWindow.getLoginForm();
+
+        TextField txtUsername = loginForm.getTxtUsername();
+        PasswordField pfPassword = loginForm.getPfPassword();
+        
+        String username = ((String) txtUsername.getValue()).trim();
+        String password = ((String) pfPassword.getValue()).trim();
+        
+        this.doLogin(username, password, event);
+
     }
 }
