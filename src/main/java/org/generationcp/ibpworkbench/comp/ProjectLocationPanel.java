@@ -335,7 +335,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         selectLocationType = new Select();
         selectLocationType.addItem("");
         populateLocationTypeList();
-        selectLocationType.select("");
+        selectLocationType.select(String.valueOf(410));
         selectLocationType.setNullSelectionAllowed(false);
 
         btnFilterLocation = new Button(messageSource.getMessage(Message.FILTER)); //"Filter"
