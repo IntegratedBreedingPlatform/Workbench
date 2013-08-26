@@ -85,11 +85,14 @@ public class GxeTable extends Table {
 	private void initializeTable() {
 
 		this.setImmediate(true);
-		this.setSizeFull();
+		this.setWidth("100%");
+		this.setHeight("453px");
 		this.setContainerDataSource(new IndexedContainer());
 		this.setEditable(true);
 		this.setColumnReorderingAllowed(true);
 		this.setSortDisabled(true);
+
+
 	}
 
 
