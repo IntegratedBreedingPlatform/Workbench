@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -33,7 +34,6 @@ import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
@@ -71,7 +71,7 @@ public class SaveNewProjectAction implements ClickListener{
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
     private CreateProjectPanel createProjectPanel;
-    private Project project;
+//    private Project project;
     
     private Map<Integer, String> idAndNameOfProjectMembers;
 
@@ -86,7 +86,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    private Project projectSaved;
+//    private Project projectSaved;
     
     public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
@@ -101,7 +101,7 @@ public class SaveNewProjectAction implements ClickListener{
             
             this.idAndNameOfProjectMembers = new HashMap<Integer, String>();
 
-            project = createProjectPanel.getProject();
+            Project project = createProjectPanel.getProject();
 
             boolean isGenerationSuccess = false;
             boolean isMysqlAccountGenerationSuccess = false;
@@ -119,7 +119,7 @@ public class SaveNewProjectAction implements ClickListener{
                 project.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 
                 project.setLastOpenDate(null);
-                projectSaved = workbenchDataManager.addProject(project);
+                workbenchDataManager.addProject(project);
 
                 // set the project's local database name
                 String localDatabaseName = project.getCropType().getLocalDatabaseNameWithProject(project);
@@ -129,7 +129,7 @@ public class SaveNewProjectAction implements ClickListener{
                 
                 workbenchDataManager.saveOrUpdateProject(project);
                 // create the project's workspace directories
-                toolUtil.createWorkspaceDirectoriesForProject(projectSaved);
+                toolUtil.createWorkspaceDirectoriesForProject(project);
             } catch (MiddlewareQueryException e) {
                 LOG.error(e.getMessage());
                 MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
@@ -180,7 +180,10 @@ public class SaveNewProjectAction implements ClickListener{
                     // add the user ,person and instln to the central database if creating a new custom crop
                     if (!centralDbGenerator.isAlreadyExists()){
                     	currentPerson.setInstituteId(1);
-	                    managerFactory.getUserDataManager().addPersonToCentral(currentPerson);
+                    	
+                    	Person centralPerson = currentPerson.copy();
+                    	centralPerson.setId(currentPerson.getId());
+	                    managerFactory.getUserDataManager().addPersonToCentral(centralPerson);
 	                    
 	                    currentUser.setAccess(PROJECT_USER_ACCESS_NUMBER_CENTRAL);
 	                    currentUser.setType(PROJECT_USER_TYPE_CENTRAL);
@@ -222,7 +225,7 @@ public class SaveNewProjectAction implements ClickListener{
                     
                    
                     if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
-                        saveProjectUserRoles(projectUserRoles, projectSaved);
+                        saveProjectUserRoles(projectUserRoles, project);
                     }
                     
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
@@ -242,7 +245,7 @@ public class SaveNewProjectAction implements ClickListener{
                    // projectMembers.add(currentLoggedUser);
                    
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-                        saveProjectMembers(managerFactory, projectMembers, projectSaved);
+                        saveProjectMembers(managerFactory, projectMembers, project);
                     }
                     
                     managerFactory.close();
@@ -270,7 +273,7 @@ public class SaveNewProjectAction implements ClickListener{
                         }
                     }
                     
-                    MysqlAccountGenerator mysqlAccountGenerator = new MysqlAccountGenerator(this.project.getCropType(), this.project.getProjectId(), 
+                    MysqlAccountGenerator mysqlAccountGenerator = new MysqlAccountGenerator(project.getCropType(), project.getProjectId(), 
                             this.idAndNameOfProjectMembers, this.workbenchDataManager);
                     
                     try {
@@ -428,7 +431,7 @@ public class SaveNewProjectAction implements ClickListener{
      * @param projectSaved
      * @throws MiddlewareQueryException
      */
-    private void saveProjectMembers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
+    private void saveProjectMembers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project project) throws MiddlewareQueryException {
         
         UserDataManager userDataManager = managerFactory.getUserDataManager();
         Map<Integer,String> usersAccountedFor = new HashMap<Integer, String>();
@@ -436,7 +439,7 @@ public class SaveNewProjectAction implements ClickListener{
         for (ProjectUserRole projectUserRole : projectUserRoles){
             
             // Save role
-            projectUserRole.setProject(projectSaved);
+            projectUserRole.setProject(project);
             
             //do not insert manager role, for some reason.. nageerror ng unique constraints
           //  if(!projectUserRole.getRole().getName().equalsIgnoreCase(Role.MANAGER_ROLE_NAME))

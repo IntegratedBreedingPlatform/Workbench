@@ -15,20 +15,17 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.FileWriter;
 import java.io.Serializable;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.gxe.xml.GxeData;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
-import org.generationcp.commons.gxe.xml.GxeProject;
-import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
-import org.generationcp.commons.breedingview.xml.Data;
 import org.generationcp.commons.gxe.xml.GxePhenotypic;
-import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.middleware.manager.api.ManagerFactoryProvider;
+import org.generationcp.commons.gxe.xml.GxeProject;
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
