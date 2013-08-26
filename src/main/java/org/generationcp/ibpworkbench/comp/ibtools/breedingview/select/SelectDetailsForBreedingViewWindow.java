@@ -596,7 +596,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         mainLayout.setHeight("500");
         
         mainLayout.addComponent(lblVersion, "left: 35px; top: 30px;");
-        mainLayout.addComponent(txtVersion, "left: 135px; top: 30px;");
+        mainLayout.addComponent(txtVersion, "left: 165px; top: 30px;");
         mainLayout.addComponent(lblProjectType, "left: 35px; top: 60px;");
         mainLayout.addComponent(txtProjectType, "left: 135px; top: 60px;");
         mainLayout.addComponent(lblAnalysisName, "left: 35px; top: 90px;");
