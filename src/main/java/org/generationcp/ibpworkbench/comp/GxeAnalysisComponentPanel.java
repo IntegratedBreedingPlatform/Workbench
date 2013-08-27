@@ -471,22 +471,25 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			}
 		});
 		
-		Button testGenerateTable = new Button("Test Generate Table, studyId=10080");
+		Button testGenerateTable = new Button("Add Rows");
 		testGenerateTable.addListener(new Button.ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Study study;
-				try {
-					study = studyDataManager.getStudy(10080);
 				
-					SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, study, GxeAnalysisComponentPanel.this);
-					GxeAnalysisComponentPanel.this.getWindow().addWindow(win);
+				try{
+
+					Study study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
+					GxeTable gxeTable = (GxeTable) studyTables.get(study.getId());
 					
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					for (int x = 99; x < 199; x++ ){
+						gxeTable.addItem(x);
+					}
+				}catch(Exception e){
+					
 				}
+				
+			
 			}
 		});
 		
@@ -528,7 +531,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.addComponent(button);
 		btnLayout.addComponent(cancelBtn);
 		//btnLayout.addComponent(gxebutton);
-		//btnLayout.addComponent(testGenerateTable);
+		btnLayout.addComponent(testGenerateTable);
 		
 		this.addComponent(btnLayout);
 
