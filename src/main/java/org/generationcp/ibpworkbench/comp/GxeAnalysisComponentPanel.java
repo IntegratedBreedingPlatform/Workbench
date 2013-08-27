@@ -531,7 +531,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.addComponent(button);
 		btnLayout.addComponent(cancelBtn);
 		//btnLayout.addComponent(gxebutton);
-		btnLayout.addComponent(testGenerateTable);
+		//btnLayout.addComponent(testGenerateTable);
 		
 		this.addComponent(btnLayout);
 
