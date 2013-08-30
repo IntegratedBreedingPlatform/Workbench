@@ -18,9 +18,6 @@ public class CookieUtils {
     private static final Logger LOG = LoggerFactory.getLogger(CookieUtils.class);
 	
     public static void setupCookies(Cookie... cookies) {
-    	
-    	
-    	
     	for(Cookie cookie : cookies) {
     		LOG.debug("Setting up cookie [" + cookie.getName() + "] = [" + cookie.getValue() + "]" );
         	
@@ -47,13 +44,16 @@ public class CookieUtils {
     }
     
     public static String getCookieValue(String property) {
-    	Cookie[] cookies = IBPWorkbenchApplication.getRequest().getCookies();
-    	for (Cookie cookie : cookies) {
-    		if (cookie.getName().equals(property)) {
-    			return cookie.getValue();
-    		}
+    	try {
+    		Cookie[] cookies = IBPWorkbenchApplication.getRequest().getCookies();
+        	for (Cookie cookie : cookies) {
+        		if (cookie.getName().equals(property)) {
+        			return cookie.getValue();
+        		}
+        	}	
+    	} catch (Exception e) {
+    		// do nothing;
     	}
-    	
-    	return "";
+		return "";
     }
 }
