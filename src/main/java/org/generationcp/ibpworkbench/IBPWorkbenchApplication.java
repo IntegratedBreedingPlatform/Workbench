@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,6 +46,18 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     private SessionData sessionData = new SessionData();
 
     private ApplicationContext applicationContext;
+
+    private static HttpServletResponse response;
+
+	public static HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public static HttpServletRequest getRequest() {
+		return request;
+	}
+
+	private static HttpServletRequest request;
     
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -122,6 +135,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         synchronized (this) {
             HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
         }
+        
+        IBPWorkbenchApplication.response = response;	// get a reference of the response
+        IBPWorkbenchApplication.request = request;
     }
     
     @Override
@@ -134,4 +150,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
             HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
         }
     }
+    
+    
 }

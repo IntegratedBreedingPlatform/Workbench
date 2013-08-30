@@ -17,6 +17,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
+import org.generationcp.ibpworkbench.util.CookieUtils;
+import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
@@ -57,6 +60,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private SimpleResourceBundleMessageSource messageSource;
 
 	private Label lblSubTitle;
+
+	private CheckBox rememberChk;
 
     public LoginForm() {
         super();
@@ -105,6 +110,13 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
         this.loginPanel = buildLoginPanel();
         setCompositionRoot(loginPanel);
+        
+        // initialize values based on remember me option
+        if (CookieUtils.getCookieValue(LoginCookieProperties.REMEMBER_OPT).equalsIgnoreCase("true")) {
+        	this.txtUsername.setValue(CookieUtils.getCookieValue(LoginCookieProperties.USERNAME));
+        	this.pfPassword.setValue(CookieUtils.getCookieValue(LoginCookieProperties.PASSWORD));
+        	this.rememberChk.setValue(Boolean.TRUE);
+        }
     }
 
     protected void initializeLayout() {
@@ -150,6 +162,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         loginPanelLayout.addComponent(lblTitle);
         loginPanelLayout.addComponent(lblSubTitle);
         
+        rememberChk = new CheckBox(messageSource.getMessage(Message.REMEMBER_ME));
+        
         GridLayout usernamePasswordArea = buildUsernamePasswordArea();
         usernamePasswordArea.setSpacing(true);
         
@@ -161,7 +175,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         btnLogin = new Button();
         btnLogin.setClickShortcut(KeyCode.ENTER);
         
-        HorizontalLayout dummy = new HorizontalLayout();
+        
+        VerticalLayout dummy = new VerticalLayout();
         dummy.setMargin(true);
         dummy.setSizeUndefined();
         
@@ -170,6 +185,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         //btnLogin.addStyleName("primary");
         loginPanelLayout.addComponent(dummy);
         loginPanelLayout.setComponentAlignment(dummy, Alignment.TOP_CENTER);
+        
+        
         
         HorizontalLayout subLinksLayout = new HorizontalLayout();
         subLinksLayout.setSizeUndefined();
@@ -212,13 +229,16 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
         messageArea = buildMessageArea();
         
-        GridLayout gridLayout = new GridLayout(2, 2);
+        
+        GridLayout gridLayout = new GridLayout(2, 3);
         gridLayout.setMargin(true, false, false, false);
         gridLayout.setWidth("250px");
         gridLayout.addComponent(lblUsername);
         gridLayout.addComponent(txtUsername);
         gridLayout.addComponent(lblPassword);
         gridLayout.addComponent(pfPassword);
+        gridLayout.addComponent(new Label());
+        gridLayout.addComponent(rememberChk);
         //gridLayout.addComponent(messageArea, 0, 2, 1, 2);
 
         lblMessage.setVisible(false);
@@ -261,5 +281,9 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         messageSource.setValue(lblMessage, Message.ERROR_LOGIN_INVALID);
         messageSource.setCaption(forgotPasswordButton, Message.FORGOT_PASSWORD);
         messageSource.setCaption(registerUserAccountButton, Message.REGISTER_USER_ACCOUNT);
+    }
+    
+    public boolean isRememberEnabled() {
+    	return rememberChk.booleanValue();
     }
 }

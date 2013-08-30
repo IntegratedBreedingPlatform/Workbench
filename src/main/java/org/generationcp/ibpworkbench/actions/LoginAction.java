@@ -12,6 +12,8 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import javax.servlet.http.Cookie;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -20,7 +22,9 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.form.LoginForm;
 import org.generationcp.ibpworkbench.comp.window.LoginWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.util.CookieUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -101,6 +105,22 @@ public class LoginAction implements ClickListener{
             user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
             application.getSessionData().setUserData(user);
 
+            // set the cookie if remember me option is enabled
+            
+            if (loginWindow.getLoginForm().isRememberEnabled()) {
+            	LOG.debug("COOKIE: Remember Option is enabled");
+            	
+            	CookieUtils.setupCookies(
+            			new Cookie(LoginCookieProperties.REMEMBER_OPT,"true"),
+            			new Cookie(LoginCookieProperties.USERNAME,user.getName()),
+            			new Cookie(LoginCookieProperties.PASSWORD,user.getPassword())
+            			);
+            } else {
+            	CookieUtils.removeCookies(LoginCookieProperties.REMEMBER_OPT,LoginCookieProperties.USERNAME,LoginCookieProperties.PASSWORD);
+            }
+            
+            
+            
             // save the currently logged user
             WorkbenchRuntimeData data = workbenchDataManager.getWorkbenchRuntimeData();
             if (data == null) {
