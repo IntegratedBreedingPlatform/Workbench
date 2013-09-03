@@ -1,8 +1,17 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 public class SheetUtil {
 	/**
@@ -51,7 +60,6 @@ public class SheetUtil {
 		}
 	}
 	
-	
 	/*
 	 * Takes an existing Cell and merges all the styles and forumla
 	 * into the new one
@@ -82,6 +90,31 @@ public class SheetUtil {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param sheet - excel sheet to be converted
+	 * @param csvFile - file where csv is written
+	 * @throws IOException 
+	 */
+	public static void sheetToCSV(Sheet sheet,File csvFile) throws IOException {
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 		
+		Row row = null;
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            row = sheet.getRow(i);
+            
+            ArrayList<String> rowStr = new ArrayList<String>();
+            
+            for (int j = 0; j < row.getLastCellNum(); j++) {                
+                rowStr.add(row.getCell(j).getStringCellValue());
+            }
+            
+            csvWriter.writeNext(rowStr.toArray(new String[rowStr.size()]));
+        }
+        
+        csvWriter.flush();
+        csvWriter.close();
 	}
 }
