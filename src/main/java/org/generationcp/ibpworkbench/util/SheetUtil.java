@@ -107,8 +107,15 @@ public class SheetUtil {
             
             ArrayList<String> rowStr = new ArrayList<String>();
             
-            for (int j = 0; j < row.getLastCellNum(); j++) {                
-                rowStr.add(row.getCell(j).getStringCellValue());
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+            	Cell cell = row.getCell(j);
+            	
+            	if (cell != null) {
+            		cell.setCellType(Cell.CELL_TYPE_STRING);
+                    rowStr.add(cell.getStringCellValue());
+                	
+            	} else
+            		rowStr.add("");
             }
             
             csvWriter.writeNext(rowStr.toArray(new String[rowStr.size()]));
