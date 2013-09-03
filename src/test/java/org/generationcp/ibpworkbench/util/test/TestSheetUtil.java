@@ -39,4 +39,39 @@ public class TestSheetUtil {
 		
 	}
 	
+	/**
+	 * Test Remove second col (SITECODE)
+	 */
+	@Test
+	public void testRemoveColThenWriteToCSV() {
+		
+		
+		String xlsFilename = "Project Gohan nii_-6_RLWOFE99L-PD.xls";
+		String csvFilename = "Project Gohan nii_-6_RLWOFE99L-PD.csv";
+		String dir = "C:"+ File.separator+ "IBWorkflowSystem"+ File.separator + "workspace" + File.separator + "4-Project Gohan nii" + File.separator + "breeding_view" + File.separator + "input";
+		
+		int colToRemove = 1;
+		
+		Workbook wb;
+		try {
+			wb = WorkbookFactory.create(new FileInputStream(dir + File.separator + xlsFilename));
+			
+			SheetUtil.deleteColumn(wb.getSheetAt(1),colToRemove);
+			
+			// write to CSV
+			SheetUtil.sheetToCSV(wb.getSheetAt(1),new File(dir + File.separator + csvFilename));
+			
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }
