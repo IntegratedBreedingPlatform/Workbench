@@ -504,13 +504,15 @@ public class DatasetExporter {
     	   
     	  ArrayList<String[]> tableItems = new ArrayList<String[]>();
     	  List<Experiment> experiments = new ArrayList<Experiment>();
-    	  int sheetRowIndex = 0;
+    	  //int sheetRowIndex = 0;
    
           try {
               experiments = this.studyDataManager.getExperiments(this.datasetId,0,Integer.MAX_VALUE);
           } catch(Exception ex) {
              ex.printStackTrace();
           }
+          
+       
           
           ArrayList<String> rowHeader = new ArrayList<String>();
           for(String columnName : columnsMap.keySet()) {
@@ -523,9 +525,12 @@ public class DatasetExporter {
           
           tableItems.add(rowHeader.toArray(new String[0]));
           
+          //determine which columns have no values
+          
+          
           for(Experiment experiment : experiments) {
               ArrayList<String> row = new ArrayList<String>();
-              sheetRowIndex++;
+              //sheetRowIndex++;
                   
               List<Variable> factorsOfExperiments = experiment.getFactors().getVariables();
               for(Variable factorVariable : factorsOfExperiments){
@@ -543,8 +548,11 @@ public class DatasetExporter {
                               if(factorVariable.getValue() != null){
                                   try{
                                       elemValue = Double.valueOf(factorVariable.getValue());
-                                      row.add(String.valueOf(elemValue));
-                                      if (elemValue == Double.valueOf("-1E+36")) row.add("");
+                                      
+                                      if (elemValue == Double.valueOf("-1E+36")){
+                                    	  row.add("");
+                                      } else row.add(String.valueOf(elemValue));
+                                      
                                   }catch(NumberFormatException ex){
                                       String value = factorVariable.getValue();
                                       if(value != null) {
@@ -583,8 +591,11 @@ public class DatasetExporter {
                               if(variateVariable.getValue() != null){
                                   try{
                                       elemValue = Double.valueOf(variateVariable.getValue());
-                                      row.add(String.valueOf(elemValue));
-                                      if (elemValue == Double.valueOf("-1E+36")) row.add("");
+                                      
+                                      if (elemValue == Double.valueOf("-1E+36")) {
+                                    	  row.add("");
+                                      }else row.add(String.valueOf(elemValue));
+                                      
                                   }catch(NumberFormatException ex){
                                       String value = variateVariable.getValue();
                                       if(value != null) {
