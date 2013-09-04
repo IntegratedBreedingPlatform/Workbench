@@ -490,7 +490,7 @@ public class DatasetExporter {
             observationSheet.autoSizeColumn(ctr);
         }
         
-        //exportToFieldBookCSVUsingIBDBv2(filename, "",columnsMap);
+        //exportToFieldBookCSVUsingIBDBv2(filename, "URRC");
         
         try {
             //write the excel file
@@ -506,8 +506,66 @@ public class DatasetExporter {
     }
     
     @SuppressWarnings("unchecked")
-	public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment, Map<String, Integer> columnsMap){
-    	   
+	public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment) throws DatasetExporterException {
+
+        DataSet dataset = null;
+        try {
+            dataset = this.studyDataManager.getDataSet(this.datasetId);
+        } catch (MiddlewareQueryException ex) {
+            throw new DatasetExporterException("Error with getting Dataset with id: " + this.studyId, ex);
+        }
+    	
+        //this map is for mapping the columns names of the dataset to their column index in the excel sheet
+        Map<String, Integer> columnsMap = new HashMap<String, Integer>(); 
+        int observationSheetColumnIndex = 0;
+    	
+      //get the factors and their details
+        VariableTypeList datasetVariableTypes = dataset.getVariableTypes();
+        VariableTypeList factorVariableTypeList = datasetVariableTypes.getFactors();
+        List<VariableType> factorVariableTypes = factorVariableTypeList.getVariableTypes();
+        
+        for(VariableType factor : factorVariableTypes) {
+        	
+        	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET) continue;
+        	
+            String factorName = factor.getLocalName();
+            if(factorName != null) {
+                factorName = factorName.trim();
+            }
+            
+            //check if factor is already written as a condition
+            Integer temp = columnsMap.get(factorName);
+            if(temp == null && !factorName.equals("STUDY")) {
+                //add entry to columns mapping
+                columnsMap.put(factorName, Integer.valueOf(observationSheetColumnIndex));
+                observationSheetColumnIndex++;
+            }
+        }
+    	
+    	
+      //get the variates and their details
+        VariableTypeList variateVariableTypeList = datasetVariableTypes.getVariates();
+        List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
+        HashMap<Integer, String> emptyVariateColumnsMap = new HashMap<Integer, String>();
+        
+        for(VariableType variate : variateVariableTypes) {
+  
+            String variateName = variate.getLocalName();
+            if(variateName != null) {
+                variateName = variateName.trim();
+            }
+ 
+            //add entry to columns mapping
+            columnsMap.put(variateName, Integer.valueOf(observationSheetColumnIndex));
+            emptyVariateColumnsMap.put(Integer.valueOf(observationSheetColumnIndex), variateName);
+            observationSheetColumnIndex++;
+            
+        }
+    	
+    	
+    	
+    	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     	  ArrayList<String[]> tableItems = new ArrayList<String[]>();
     	  List<Experiment> experiments = new ArrayList<Experiment>();
     	  HashMap<Integer, String> notEmptyColumns = new HashMap<Integer, String>(); 
@@ -521,6 +579,14 @@ public class DatasetExporter {
           
           //Determine which variate columns have no values
           for(Experiment experiment1 : experiments) {
+        	  
+        	  boolean outerBreak = true;
+        	  for (Variable factorVariables1 : experiment1.getFactors().getVariables()){
+        		  if (factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) {
+        			  outerBreak=false; continue;} else {continue;}
+        	  }
+        	  if (outerBreak) continue;
+        	  
         	  List<Variable> variateVariables1 = experiment1.getVariates().getVariables();
         	  for(Variable variateVariable : variateVariables1){
         		  String variateName = variateVariable.getVariableType().getLocalName();
@@ -539,6 +605,7 @@ public class DatasetExporter {
 
         							  if (elemValue != Double.valueOf("-1E+36")) {
         								  notEmptyColumns.put(columnIndexInteger, variateName);
+        								  emptyVariateColumnsMap.remove(columnIndexInteger);
         							  }
 
         						  }catch(NumberFormatException ex){}
@@ -568,23 +635,23 @@ public class DatasetExporter {
 	  		ArrayList<String> rowHeader = new ArrayList<String>();
 	  		for(Iterator i=keys.iterator(); i.hasNext();){
 	  			Object k = i.next();
-	  			short columnIndex = columnsMap.get(k).shortValue();
-	              if(columnIndex >= 0) {
+	  			Integer columnIndex = columnsMap.get(k).intValue();
+	              if(columnIndex >= 0 && emptyVariateColumnsMap.get(columnIndex) == null) {
 	                  rowHeader.add((String) k);
 	              }
 	  		}
+	  		
 	  		tableItems.add(rowHeader.toArray(new String[0]));
-          /**ArrayList<String> rowHeader = new ArrayList<String>();
-          for(String columnName : columnsMap.keySet()) {
-              short columnIndex = columnsMap.get(columnName).shortValue();
-              if(columnIndex >= 0) {
-                  rowHeader.add(columnName);
-              }
-          }
-          tableItems.add(rowHeader.toArray(new String[0]));
-          **/
+      
           
           for(Experiment experiment : experiments) {
+        	  
+        	  boolean outerBreak = true;
+        	  for (Variable factorVariables1 : experiment.getFactors().getVariables()){
+        		  if (factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) { outerBreak=false; continue; }  else { continue;}
+        	  }
+        	  if (outerBreak) continue;
+        	  
               ArrayList<String> row = new ArrayList<String>();
               //sheetRowIndex++;
                   
