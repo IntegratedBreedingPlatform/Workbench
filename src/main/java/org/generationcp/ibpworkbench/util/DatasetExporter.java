@@ -512,6 +512,17 @@ public class DatasetExporter {
              ex.printStackTrace();
           }
           
+          ArrayList<String> rowHeader = new ArrayList<String>();
+          for(String columnName : columnsMap.keySet()) {
+              short columnIndex = columnsMap.get(columnName).shortValue();
+              if(columnIndex >= 0) {
+                  //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, datasetHeaderRow, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
+                  rowHeader.add(columnName);
+              }
+          }
+          
+          tableItems.add(rowHeader.toArray(new String[0]));
+          
           for(Experiment experiment : experiments) {
               ArrayList<String> row = new ArrayList<String>();
               sheetRowIndex++;
