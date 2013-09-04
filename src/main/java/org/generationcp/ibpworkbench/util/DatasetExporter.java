@@ -1,6 +1,8 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,8 @@ import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 
 public class DatasetExporter {
@@ -481,6 +485,8 @@ public class DatasetExporter {
             observationSheet.autoSizeColumn(ctr);
         }
         
+        //exportToFieldBookCSVUsingIBDBv2(filename, "",columnsMap);
+        
         try {
             //write the excel file
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
@@ -490,6 +496,124 @@ public class DatasetExporter {
         } catch(Exception ex) {
             throw new DatasetExporterException("Error with writing to: " + filename, ex);
         }
+        
+        
+    }
+    
+    public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment, Map<String, Integer> columnsMap){
+    	   
+    	  ArrayList<String[]> tableItems = new ArrayList<String[]>();
+    	  List<Experiment> experiments = new ArrayList<Experiment>();
+    	  int sheetRowIndex = 0;
+   
+          try {
+              experiments = this.studyDataManager.getExperiments(this.datasetId,0,Integer.MAX_VALUE);
+          } catch(Exception ex) {
+             ex.printStackTrace();
+          }
+          
+          for(Experiment experiment : experiments) {
+              ArrayList<String> row = new ArrayList<String>();
+              sheetRowIndex++;
+                  
+              List<Variable> factorsOfExperiments = experiment.getFactors().getVariables();
+              for(Variable factorVariable : factorsOfExperiments){
+                  String factorName = factorVariable.getVariableType().getLocalName();
+                  if(factorName != null){
+                      factorName = factorName.trim();
+                  }
+                  Integer columnIndexInteger = columnsMap.get(factorName); 
+                  if(columnIndexInteger != null){
+                      short columnIndex = columnIndexInteger.shortValue();
+                      if(columnIndex >= 0) {
+                          //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
+                          if(factorVariable.getVariableType().getStandardVariable().getDataType().getName().equals(NUMERIC_VARIABLE)){
+                              double elemValue = 0;
+                              if(factorVariable.getValue() != null){
+                                  try{
+                                      elemValue = Double.valueOf(factorVariable.getValue());
+                                      row.add(String.valueOf(elemValue));
+                                      if (elemValue == Double.valueOf("-1E+36")) row.add("");
+                                  }catch(NumberFormatException ex){
+                                      String value = factorVariable.getValue();
+                                      if(value != null) {
+                                          value = value.trim();
+                                      }
+                                      row.add(value);
+                                  }
+                              } else {
+                                  String nullValue = null;
+                                  row.add(nullValue);
+                              }
+                          } else{
+                              String value = factorVariable.getValue();
+                              if(value != null) {
+                                  value = value.trim();
+                              }
+                              row.add(value);
+                          }
+                      }
+                  }
+              }
+                  
+              List<Variable> variateVariables = experiment.getVariates().getVariables();
+              for(Variable variateVariable : variateVariables){
+                  String variateName = variateVariable.getVariableType().getLocalName();
+                  if(variateName != null){
+                      variateName = variateName.trim();
+                  }
+                  Integer columnIndexInteger = columnsMap.get(variateName); 
+                  if(columnIndexInteger != null){
+                      short columnIndex = columnIndexInteger.shortValue();
+                      if(columnIndex >= 0) {
+                          //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
+                          if(variateVariable.getVariableType().getStandardVariable().getDataType().getName().equals(NUMERIC_VARIABLE)){
+                              double elemValue = 0;
+                              if(variateVariable.getValue() != null){
+                                  try{
+                                      elemValue = Double.valueOf(variateVariable.getValue());
+                                      row.add(String.valueOf(elemValue));
+                                      if (elemValue == Double.valueOf("-1E+36")) row.add("");
+                                  }catch(NumberFormatException ex){
+                                      String value = variateVariable.getValue();
+                                      if(value != null) {
+                                          value = value.trim();
+                                      }
+                                      row.add(value);
+                                  }
+                              } else {
+                                  String nullValue = null;
+                                  row.add(nullValue);
+                              }
+                          } else{
+                              String value = variateVariable.getValue();
+                              if(value != null) {
+                                  value = value.trim();
+                              }
+                              row.add(value);
+                          }
+                      }
+                  }
+              }
+              
+              tableItems.add(row.toArray(new String[0]));
+          }
+    	
+          try {
+
+  			File csvFile = new File(filename + ".csv");
+
+  			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+  			csvWriter.writeAll(tableItems);
+  			csvWriter.flush();
+  			csvWriter.close();
+
+  			return csvFile;
+  		} catch (Exception e) {
+  			e.printStackTrace();
+  			return null;
+  		}
+    	
     }
     
 
