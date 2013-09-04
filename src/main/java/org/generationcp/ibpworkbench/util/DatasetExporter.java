@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -325,6 +329,7 @@ public class DatasetExporter {
             VariableTypeList variateVariableTypeList = datasetVariableTypes.getVariates();
             List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
             
+            
             int variateRowIndex = variateHeaderRowIndex + 1;
             for(VariableType variate : variateVariableTypes) {
             	
@@ -500,10 +505,12 @@ public class DatasetExporter {
         
     }
     
-    public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment, Map<String, Integer> columnsMap){
+    @SuppressWarnings("unchecked")
+	public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment, Map<String, Integer> columnsMap){
     	   
     	  ArrayList<String[]> tableItems = new ArrayList<String[]>();
     	  List<Experiment> experiments = new ArrayList<Experiment>();
+    	  HashMap<Integer, String> notEmptyColumns = new HashMap<Integer, String>(); 
     	  //int sheetRowIndex = 0;
    
           try {
@@ -512,21 +519,70 @@ public class DatasetExporter {
              ex.printStackTrace();
           }
           
-       
+          //Determine which variate columns have no values
+          for(Experiment experiment1 : experiments) {
+        	  List<Variable> variateVariables1 = experiment1.getVariates().getVariables();
+        	  for(Variable variateVariable : variateVariables1){
+        		  String variateName = variateVariable.getVariableType().getLocalName();
+        		  if(variateName != null){
+        			  variateName = variateName.trim();
+        		  }
+        		  Integer columnIndexInteger = columnsMap.get(variateName); 
+        		  if(columnIndexInteger != null){
+        			  short columnIndex = columnIndexInteger.shortValue();
+        			  if(columnIndex >= 0) {
+        				  if(variateVariable.getVariableType().getStandardVariable().getDataType().getName().equals(NUMERIC_VARIABLE)){
+        					  double elemValue = 0;
+        					  if(variateVariable.getValue() != null){
+        						  try{
+        							  elemValue = Double.valueOf(variateVariable.getValue());
+
+        							  if (elemValue != Double.valueOf("-1E+36")) {
+        								  notEmptyColumns.put(columnIndexInteger, variateName);
+        							  }
+
+        						  }catch(NumberFormatException ex){}
+        					  } 
+        				  }
+        			  }
+        		  }
+        	  }
+          }
+          //determine
+          	List keys = new ArrayList(columnsMap.keySet());
           
-          ArrayList<String> rowHeader = new ArrayList<String>();
+	  		//Sort keys by values.
+	  		final Map<String, Integer> langForComp = columnsMap;
+	  		Collections.sort(keys, 
+	  			new Comparator<Object>(){
+	  				public int compare(Object left, Object right){
+	  					String leftKey = (String)left;
+	  					String rightKey = (String)right;
+	   
+	  					Integer leftValue = (Integer)langForComp.get(leftKey);
+	  					Integer rightValue = (Integer)langForComp.get(rightKey);
+	  					return leftValue.compareTo(rightValue);
+	  				}
+	  			});
+	   
+	  		ArrayList<String> rowHeader = new ArrayList<String>();
+	  		for(Iterator i=keys.iterator(); i.hasNext();){
+	  			Object k = i.next();
+	  			short columnIndex = columnsMap.get(k).shortValue();
+	              if(columnIndex >= 0) {
+	                  rowHeader.add((String) k);
+	              }
+	  		}
+	  		tableItems.add(rowHeader.toArray(new String[0]));
+          /**ArrayList<String> rowHeader = new ArrayList<String>();
           for(String columnName : columnsMap.keySet()) {
               short columnIndex = columnsMap.get(columnName).shortValue();
               if(columnIndex >= 0) {
-                  //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, datasetHeaderRow, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
                   rowHeader.add(columnName);
               }
           }
-          
           tableItems.add(rowHeader.toArray(new String[0]));
-          
-          //determine which columns have no values
-          
+          **/
           
           for(Experiment experiment : experiments) {
               ArrayList<String> row = new ArrayList<String>();
@@ -582,7 +638,7 @@ public class DatasetExporter {
                       variateName = variateName.trim();
                   }
                   Integer columnIndexInteger = columnsMap.get(variateName); 
-                  if(columnIndexInteger != null){
+                  if(columnIndexInteger != null && notEmptyColumns.get(columnIndexInteger) != null){
                       short columnIndex = columnIndexInteger.shortValue();
                       if(columnIndex >= 0) {
                           //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
@@ -638,5 +694,5 @@ public class DatasetExporter {
     	
     }
     
-
+    
 }
