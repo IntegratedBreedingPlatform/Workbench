@@ -422,7 +422,7 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
 			@Override
 			public int compare(Country o1, Country o2) {
 				
-					return o1.getIsofull().compareTo(o2.getIsofull());
+					return o1.getIsoabbr().compareTo(o2.getIsoabbr());
 				
 			}
 		});
