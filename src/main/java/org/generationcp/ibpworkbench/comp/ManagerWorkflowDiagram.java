@@ -80,6 +80,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button optimasButton;
     private Button nurseryManagerButton;
     private Button projectLocationButton;
+    private Button crossStudyBrowserButton;
     private Button projectMethodsButton;
     private Button createTemplatesButton;
     
@@ -160,6 +161,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
+        
+        crossStudyBrowserButton = new Button("Cross-Study Phenotypic Queries");
+        crossStudyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        crossStudyBrowserButton.setSizeUndefined();
+        crossStudyBrowserButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSS_STUDY_BROWSER));
+        
         
         browseGermplasmButton = new Button("Germplasm Browser");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -367,6 +374,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 //        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
 //        layout.setExpandRatio(breedingPlannerButton, 0);
         
+        layout.addComponent(crossStudyBrowserButton);
+        crossStudyBrowserButton.setHeight("20px");
+        layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(crossStudyBrowserButton, 0);
         
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
@@ -641,7 +652,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
-            
+            crossStudyBrowserButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO: change this to run breeding planner tool
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
