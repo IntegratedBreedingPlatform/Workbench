@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -90,7 +91,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     public void writeProjectXML() throws BreedingViewXMLWriterException{
         //LOG.info("This Ran!: " + breedingViewInput.toString());
         
-        ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
+       /** ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
         
         StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
         
@@ -113,6 +114,14 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
                 trait.setActive(true);
                 traits.add(trait);
             }
+        }**/
+    	
+    	List<Trait> traits = new ArrayList<Trait>();
+        for( Entry<Integer, String> s : breedingViewInput.getVariateColumns().entrySet()){
+        	 Trait trait = new Trait();
+             trait.setName(s.getValue());
+             trait.setActive(true);
+             traits.add(trait);
         }
         
         //create Fieldbook element

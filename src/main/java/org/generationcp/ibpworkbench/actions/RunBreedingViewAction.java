@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -31,6 +32,8 @@ import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDeta
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
+import org.generationcp.ibpworkbench.util.DatasetExporter;
+import org.generationcp.ibpworkbench.util.DatasetExporterException;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -68,6 +71,15 @@ public class RunBreedingViewAction implements ClickListener {
     public void buttonClick(final ClickEvent event) {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+        
+        DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
+        try {
+			HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(),  (String) this.source.getSelEnvForAnalysis().getValue());
+			breedingViewInput.setVariateColumns(variateColumns);
+        } catch (DatasetExporterException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
         String newVal = source.getSelEnvFactor().getValue() + "-" + source.getSelEnvForAnalysis().getValue();
         source.getTxtNameForAnalysisEnv().setValue(newVal);

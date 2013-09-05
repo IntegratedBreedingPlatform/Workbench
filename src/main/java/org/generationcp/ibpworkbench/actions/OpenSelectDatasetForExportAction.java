@@ -104,7 +104,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             String inputDir = "";
 
             
-            DatasetExporter datasetExporter = new DatasetExporter(selectDatasetForBreedingViewWindow.getStudyDataManager(), studyId, dataSetId);
+            //DatasetExporter datasetExporter = new DatasetExporter(selectDatasetForBreedingViewWindow.getStudyDataManager(), studyId, dataSetId);
 
             Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
             LOG.info(breedingViewTool + "");
@@ -119,11 +119,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
             LOG.info("Default File Path: " + defaultFilePath);
 
-            String sourceXLSFilePath = inputDir + defaultFilePath + ".xls";
+            String sourceCSVFile = inputDir + defaultFilePath + ".csv";
 
-            LOG.info("Source XLS File Path: " + sourceXLSFilePath);
+            LOG.info("Source CSV File Path: " + sourceCSVFile);
 
-            datasetExporter.exportToFieldBookExcelUsingIBDBv2(sourceXLSFilePath);
+            //datasetExporter.exportToFieldBookCSVUsingIBDBv2(sourceXLSFilePath, "URRC");
 
             String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 
 
@@ -134,7 +134,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , studyId
                                                                         , dataSetId
                                                                         , breedingViewTool.getVersion()
-                                                                        , sourceXLSFilePath
+                                                                        , sourceCSVFile
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
@@ -152,9 +152,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
 
         }
-        catch (DatasetExporterException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }
+        //catch (DatasetExporterException e) {
+        //    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+        //}
         catch (MiddlewareQueryException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }

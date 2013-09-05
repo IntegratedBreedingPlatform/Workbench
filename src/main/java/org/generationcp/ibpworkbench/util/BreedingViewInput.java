@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.util;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -51,8 +52,17 @@ public class BreedingViewInput implements Serializable {
     private Rows rows;
     private Columns columns;
     private Environment environment;
+    private HashMap<Integer, String> variateColumns;
     
-    public BreedingViewInput(Project project, String breedingViewProjectName, Integer studyId,
+    public HashMap<Integer, String> getVariateColumns() {
+		return variateColumns;
+	}
+
+	public void setVariateColumns(HashMap<Integer, String> variateColumns) {
+		this.variateColumns = variateColumns;
+	}
+
+	public BreedingViewInput(Project project, String breedingViewProjectName, Integer studyId,
             Integer datasetId, String version,
             String sourceXLSFilePath, String destXMLFilePath,
             String projectType) {

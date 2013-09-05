@@ -506,7 +506,7 @@ public class DatasetExporter {
     }
     
     @SuppressWarnings("unchecked")
-	public File exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment) throws DatasetExporterException {
+	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment) throws DatasetExporterException {
 
         DataSet dataset = null;
         try {
@@ -753,7 +753,7 @@ public class DatasetExporter {
   			csvWriter.flush();
   			csvWriter.close();
 
-  			return csvFile;
+  			return notEmptyColumns;
   		} catch (Exception e) {
   			e.printStackTrace();
   			return null;
