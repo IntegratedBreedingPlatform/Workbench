@@ -506,7 +506,7 @@ public class DatasetExporter {
     }
     
     @SuppressWarnings("unchecked")
-	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedEnvironment) throws DatasetExporterException {
+	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedFactor ,String selectedEnvironment) throws DatasetExporterException {
 
         DataSet dataset = null;
         try {
@@ -582,7 +582,8 @@ public class DatasetExporter {
         	  
         	  boolean outerBreak = true;
         	  for (Variable factorVariables1 : experiment1.getFactors().getVariables()){
-        		  if (factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) {
+        		  if (factorVariables1.getVariableType().getLocalName().trim().equalsIgnoreCase(selectedFactor)
+        				  && factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) {
         			  outerBreak=false; continue;} else {continue;}
         	  }
         	  if (outerBreak) continue;
@@ -648,7 +649,8 @@ public class DatasetExporter {
         	  
         	  boolean outerBreak = true;
         	  for (Variable factorVariables1 : experiment.getFactors().getVariables()){
-        		  if (factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) { outerBreak=false; continue; }  else { continue;}
+        		  if (factorVariables1.getVariableType().getLocalName().trim().equalsIgnoreCase(selectedFactor)
+        				  && factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) { outerBreak=false; continue; }  else { continue;}
         	  }
         	  if (outerBreak) continue;
         	  
@@ -746,7 +748,7 @@ public class DatasetExporter {
     	
           try {
 
-  			File csvFile = new File(filename + ".csv");
+  			File csvFile = new File(filename);
 
   			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
   			csvWriter.writeAll(tableItems);

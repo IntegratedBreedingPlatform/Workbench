@@ -72,15 +72,6 @@ public class RunBreedingViewAction implements ClickListener {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
         
-        DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
-        try {
-			HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(),  (String) this.source.getSelEnvForAnalysis().getValue());
-			breedingViewInput.setVariateColumns(variateColumns);
-        } catch (DatasetExporterException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        
         String newVal = source.getSelEnvFactor().getValue() + "-" + source.getSelEnvForAnalysis().getValue();
         source.getTxtNameForAnalysisEnv().setValue(newVal);
         //txtNameForAnalysisEnv
@@ -276,6 +267,15 @@ public class RunBreedingViewAction implements ClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}**/
+        
+        DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
+        try {
+			HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), (String) this.source.getSelEnvForAnalysis().getValue());
+			breedingViewInput.setVariateColumns(variateColumns);
+        } catch (DatasetExporterException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
        
 		launchBV(event);
       	
