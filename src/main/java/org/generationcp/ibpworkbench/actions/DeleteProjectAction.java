@@ -58,7 +58,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     	    	 MessageNotifier.showError(myWindow, "Error", "Please select a project");
     	            
     	     }
-    		 ConfirmDialog.show(app.getMainWindow(), "Delete Project",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Okay", "Not Okay", new ConfirmDialog.Listener() {
+    		 ConfirmDialog.show(app.getMainWindow(), "Delete Project",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
 			 @Override
 			 public void onClose(ConfirmDialog dialog) {
 				 
