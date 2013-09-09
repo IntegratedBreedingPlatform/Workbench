@@ -72,7 +72,6 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     
     private Label actionsTitle;
     private Button createProjectButton;
-    private Button deleteProjectButton;
 
     private Button createContactButton;
     private Label recentTitle;

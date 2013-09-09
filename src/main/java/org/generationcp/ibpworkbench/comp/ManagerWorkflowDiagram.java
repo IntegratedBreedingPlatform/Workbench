@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
@@ -47,7 +48,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 200;
+    private static final int WORKFLOW_STEP_HEIGHT = 210;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -83,6 +84,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button crossStudyBrowserButton;
     private Button projectMethodsButton;
     private Button createTemplatesButton;
+    private Button deleteProjectButton;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -283,6 +285,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         userToolsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         userToolsButton.setSizeUndefined();
         userToolsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_USER_TOOLS));
+        
+        deleteProjectButton = new Button(messageSource.getMessage(Message.DELETE_PROJECT_LINK));
+        deleteProjectButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        deleteProjectButton.setSizeUndefined();
+        
     }
 
     protected void initializeLayout() {
@@ -307,7 +314,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("440px");
+        layout.setHeight("450px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -450,8 +457,14 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(createTemplatesButton, 0);
 
         layout.addComponent(userToolsButton);
+        userToolsButton.setHeight("20px");
         layout.setComponentAlignment(userToolsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(userToolsButton, 0);
+        
+        layout.addComponent(deleteProjectButton);
+        deleteProjectButton.setHeight("20px");
+        layout.setComponentAlignment(deleteProjectButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(deleteProjectButton, 0);
 
         
         return layout;
@@ -687,7 +700,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             
             userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
             
-            
+            deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
         }
     }
 
@@ -732,6 +745,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setCaption(mbdtButton,Message.MBDT_LINK);
+        
+        messageSource.setCaption(deleteProjectButton,Message.DELETE_PROJECT_LINK);
     }
 
 	@Override

@@ -36,11 +36,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     private Project currentProject;
     private ClickEvent evt;
     private WorkbenchDataManager workbenchDataManager;
-    private WorkbenchDashboard dashboard;
-    public DeleteProjectAction(WorkbenchDataManager workbenchDataManager, WorkbenchDashboard dashboard)
+
+    public DeleteProjectAction(WorkbenchDataManager workbenchDataManager)
     {
     	this.workbenchDataManager = workbenchDataManager;
-    	this.dashboard = dashboard;
     }
     
     @Override
@@ -76,26 +75,26 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 			newProj.setCentralDbName(currentProject.getCentralDbName());
 				 			workbenchDataManager.dropLocalDatabase(newProj);
 				 			workbenchDataManager.deleteProject(newProj);
+				 			
 				 			// go back to dashboard
+				 			HomeAction home = new HomeAction();
+				            home.buttonClick(evt);
+				            
+				            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
+				            WorkbenchDashboard workbenchDashboard = null;
+				            workbenchDashboard = new WorkbenchDashboard();
+				            w.setWorkbenchDashboard(workbenchDashboard);
+				            w.addTitle("");
+				            w.showContent(w.getWorkbenchDashboard());
+				            
 				 		} catch (MiddlewareQueryException e) {
 							// TODO Auto-generated catch block
 							MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
 			    	    	e.printStackTrace();
 						}
-				 	}else 
-				 	{
-				 		
 				 	}
 				 	 
-				 	HomeAction home = new HomeAction();
-		            home.buttonClick(evt);
-		            
-		            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
-		            WorkbenchDashboard workbenchDashboard = null;
-		            workbenchDashboard = new WorkbenchDashboard();
-		            w.setWorkbenchDashboard(workbenchDashboard);
-		            w.addTitle("");
-		            w.showContent(w.getWorkbenchDashboard());
+				 
 			 }
     		 });
     	 }

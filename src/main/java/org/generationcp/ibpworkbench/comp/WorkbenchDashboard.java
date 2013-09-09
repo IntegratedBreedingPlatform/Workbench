@@ -65,7 +65,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private Label lblActivitiesTitle;
     
     private Button selectDatasetForBreedingViewButton;
-    private Button deleteProjectButton;
     
     private Table tblActivity;
     
@@ -129,12 +128,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setColumnCollapsingAllowed(true);
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     
-        deleteProjectButton = new Button("Delete Project");
-        deleteProjectButton.setStyleName(Reindeer.BUTTON_LINK + " prj-delete-button");
-        //setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
-        deleteProjectButton.setWidth("100%");
-        deleteProjectButton.setImmediate(true);
-        //deleteProjectButton.setEnabled(false);
     }
     
     private void initializeActivityTable() {
@@ -182,8 +175,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblDashboardTitle.setSizeUndefined();
         
         buttonPanel.addComponent(lblDashboardTitle);
-        buttonPanel.addComponent(deleteProjectButton);
-
+        
         addComponent(buttonPanel);
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
@@ -234,7 +226,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject));
-        deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager, this));
         
     }
 
@@ -355,8 +346,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        deleteProjectButton.setEnabled(true);
-        deleteProjectButton.setImmediate(true);
         //messageSource.setValue(lblDashboardTitle, Message.DASHBOARD+ " " + currentProject.getProjectName());
     }
 }
