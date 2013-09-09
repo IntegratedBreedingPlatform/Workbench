@@ -676,7 +676,7 @@ public class DatasetExporter {
                                       
                                       if (elemValue == Double.valueOf("-1E+36")){
                                     	  row.add("");
-                                      } else row.add(String.valueOf(elemValue));
+                                      } else row.add(String.valueOf(factorVariable.getValue()));
                                       
                                   }catch(NumberFormatException ex){
                                       String value = factorVariable.getValue();
