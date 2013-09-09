@@ -164,7 +164,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
-        crossStudyBrowserButton = new Button("Cross-Study Phenotypic Queries");
+        crossStudyBrowserButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
         crossStudyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         crossStudyBrowserButton.setSizeUndefined();
         crossStudyBrowserButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSS_STUDY_BROWSER));
