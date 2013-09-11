@@ -523,3 +523,83 @@ s
     margin-left: 300px;
 }
 
+
+.loc-filterlbl {
+	line-height: 26px;
+}
+
+.loc-add-btn {
+	color: black;
+	height: 35px !important;
+	/* background-color: #4d90fe !important;
+	background-image: -moz-linear-gradient(top,#4d90fe,#4787ed) !important;
+	background-image: -ms-linear-gradient(top,#4d90fe,#4787ed) !important;
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#4d90fe),to(#4787ed)) !important;
+	background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed) !important;
+	background-image: -o-linear-gradient(top,#4d90fe,#4787ed) !important;
+	background-image: linear-gradient(top,#4d90fe,#4787ed) !important;
+	background-repeat: repeat-x !important;
+
+    -webkit-box-shadow: inset 0 0 1px 2px #f6f6f6;
+  	
+  	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4d90fe',endColorstr='#4787ed',GradientType=0);
+
+
+	border: 0;*/
+	
+	background: #e3e3e3 !important;
+	border: 1px solid #bbb;
+	width: 200px;	
+}
+
+.loc-add-btn:hover {
+	/* background-color: #0072bb !important;
+	background-image: -moz-linear-gradient(top,#0072bb,#0072bb) !important;
+	background-image: -ms-linear-gradient(top,#0072bb,#0072bb) !important;
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#0072bb),to(#0072bb)) !important;
+	background-image: -webkit-linear-gradient(top,#0072bb,#0072bb) !important;
+	background-image: -o-linear-gradient(top,#0072bb,#0072bb) !important;
+	background-image: linear-gradient(top,#0072bb,#0072bb) !important;
+	background-repeat: repeat-x !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0072bb',endColorstr='#0072bb',GradientType=0); */
+
+	background-color: #d9d9d9 !important;
+}
+
+.loc-add-btn .v-button-wrap {
+	display: block;
+	width: 100%;
+}
+
+.loc-add-btn .v-button-wrap .v-button-caption {
+	display: block;
+	color: black;
+	text-align: center;
+	text-decoration: none !important;
+	text-transform: uppercase;
+	font: bold 13px/1 "helvetica neue", helvetica, arial, sans-serif;
+	white-space:normal;
+	line-height: 25px;
+	padding: 5px;
+}
+
+.loc-select-btn {
+	background: green url('images/add.png') no-repeat center center !important;
+	background-size: 12px 12px !important;
+	border-radius: 50%;
+
+}
+
+.loc-remove-btn {
+	background: red url('images/close.png') no-repeat center center !important;
+	background-size: 12px 12px !important;
+	border-radius: 50%;
+}
+
+.loc-table .v-table-cell-content {
+	vertical-align: middle;
+}
+
+.v-table-cell-content-locationName {
+	font-weight: bold;
+}

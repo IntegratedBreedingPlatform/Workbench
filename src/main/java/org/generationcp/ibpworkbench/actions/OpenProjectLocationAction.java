@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -74,11 +75,11 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        IContentWindow w = (IContentWindow) window;
+        IContentWindow w = (IContentWindow) window;	
         
         try {
-            ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
-            projectLocationPanel.setWidth("730px"); 
+            //ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
+            //projectLocationPanel.setWidth("730px"); 
             
             try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
@@ -94,8 +95,8 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
               
             }
             
-            w.showContent(projectLocationPanel);
-            
+            //w.showContent(projectLocationPanel);
+            w.showContent(new ProjectLocationsView(project));
             NavManager.navigateApp(window, "/ProjectLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
