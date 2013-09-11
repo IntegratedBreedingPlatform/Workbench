@@ -19,6 +19,8 @@ import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -50,20 +52,17 @@ public class AddLocationsWindow extends Window{
 
     private VerticalLayout layout;
 
-    private ProjectLocationsComponent projectLocationComponent;
-    private ProjectLocationPanel projectLocationPanel;
+    private ProjectLocationsController projectLocationsController;
+    private ProjectLocationsView projectLocationsView;
 
     private GermplasmDataManager gdm;
-    
-    public AddLocationsWindow(ProjectLocationsComponent projectLocationComponent,GermplasmDataManager gdm) {
-        this.projectLocationComponent = projectLocationComponent;
-        this.gdm = gdm;
-        initialize();
-    }
+  
 
-    public AddLocationsWindow(ProjectLocationPanel projectLocationPanel,GermplasmDataManager gdm) {
-        this.projectLocationPanel = projectLocationPanel;
-        this.gdm = gdm;
+    public AddLocationsWindow(ProjectLocationsView projectLocationsView, ProjectLocationsController projectLocationsController) {
+        this.projectLocationsView = projectLocationsView;
+        this.projectLocationsController = projectLocationsController;
+        this.gdm = projectLocationsController.getGermplasmDataManager();
+        
         initialize();
     }
 
@@ -116,12 +115,10 @@ public class AddLocationsWindow extends Window{
 
     protected void initializeActions() {
 
-        if (projectLocationComponent != null) {
-            addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, this.projectLocationComponent));
-        } else if (projectLocationPanel != null) {
-            addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, projectLocationPanel));
-        }
+       
+        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, projectLocationsView, projectLocationsController));
         cancelButton.addListener(new CancelLocationAction(this));
+        
     }
 
     protected Component layoutButtonArea() {

@@ -267,4 +267,9 @@ public class ProjectLocationsController implements InitializingBean {
 		return role;
 	}
     
+    
+    public GermplasmDataManager getGermplasmDataManager(){
+    	return this.gdm;
+    }
+    
 }

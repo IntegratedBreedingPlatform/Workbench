@@ -19,6 +19,8 @@ import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
@@ -50,23 +52,19 @@ public class SaveNewLocationAction implements ClickListener{
 
     private AddLocationsWindow window;
 
-    private ProjectLocationsComponent projectLocationsComponent;
-    private ProjectLocationPanel projectLocationPanel;
+    private final ProjectLocationsView projectLocationsView;
+    private final ProjectLocationsController projectLocationsController;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
-            ProjectLocationsComponent projectLocationsComponent) {
+            ProjectLocationsView projectLocationsView, ProjectLocationsController projectLocationsController) {
         this.newLocationForm = newLocationForm;
         this.window = window;
-        this.projectLocationsComponent = projectLocationsComponent;
-    }
-
-    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window, ProjectLocationPanel projectLocationPanel) {
-        this.newLocationForm = newLocationForm;
-        this.window = window;
-        this.projectLocationPanel = projectLocationPanel;
+        this.projectLocationsView = projectLocationsView;
+        this.projectLocationsController = projectLocationsController;
+        
     }
 
     @Override
@@ -106,14 +104,14 @@ public class SaveNewLocationAction implements ClickListener{
 
             newLocationForm.commit();
 
-            Location newLoc = new Location();
+            Location newLoc = this.initiliazeLocation(new Location());
             newLoc.setLocid(newLocation.getLocationId());
             newLoc.setLname(newLocation.getLocationName());
             newLoc.setLabbr(newLocation.getLocationAbbreviation());
             newLoc.setLtype(newLocation.getLtype() != null ? newLocation.getLtype() : 0);
             newLoc.setCntryid(newLocation.getCntryid() != null ? newLocation.getCntryid() : 0);
             
-            if (projectLocationsComponent != null) {
+            /**if (projectLocationsComponent != null) {
                 projectLocationsComponent.getSelect().addItem(newLoc);
                 projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());
 
@@ -126,7 +124,18 @@ public class SaveNewLocationAction implements ClickListener{
                 
                 projectLocationPanel.getSelect().select(newLoc);
                 projectLocationPanel.getSelect().setValue(newLoc);
-            }
+            }**/
+            
+            try {
+				projectLocationsController.getGermplasmDataManager().addLocation(newLoc);
+				projectLocationsController.addNewLocations(newLoc);
+	            projectLocationsView.onUpdateAvailableTableOnFilter(null);
+			} catch (MiddlewareQueryException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            
+            
             
             User user = app.getSessionData().getUserData();
             Project currentProject = app.getSessionData().getLastOpenedProject();
@@ -143,5 +152,24 @@ public class SaveNewLocationAction implements ClickListener{
 
         }
 
+    }
+    private Location initiliazeLocation(Location l) {
+        Location location = new Location();
+        location.setLocid(l.getLocid());
+        location.setLabbr(l.getLabbr());
+        location.setLname(l.getLname());
+        location.setLrplce(0);
+
+        Integer ltype = (l.getLtype() != null) ? l.getLtype() : 0;
+        Integer cntryid = (l.getCntryid() != null) ? l.getCntryid() : 0;
+
+        location.setLtype(ltype);
+        location.setCntryid(cntryid);
+
+        location.setNllp(0);
+        location.setSnl1id(0);
+        location.setSnl2id(0);
+        location.setSnl3id(0);
+        return location;
     }
 }

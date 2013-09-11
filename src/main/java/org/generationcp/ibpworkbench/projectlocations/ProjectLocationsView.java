@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.projectlocations;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
+import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -24,7 +24,6 @@ import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -360,6 +359,8 @@ public class ProjectLocationsView extends CustomComponent {
 	}
 	
 	public void onAddLocationWindowAction(Button.ClickEvent event) {
+		 event.getComponent().getWindow().addWindow(new AddLocationsWindow(this, projectLocationsController));
+		
 		LOG.debug("onAddLocationWindowAction:");
 	}
 	
