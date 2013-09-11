@@ -60,6 +60,7 @@ public class ProjectLocationsView extends CustomComponent {
 	private ProjectLocationsController projectLocationsController;
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationsView.class);
 	private Field[] fields;
+	private ArrayList<Integer> selectedProjectLocationIds = new ArrayList<Integer>();
 	
 	public ProjectLocationsView(Project project,Role role) {
 		this.projectLocationsController = new ProjectLocationsController(project,role);
@@ -151,11 +152,12 @@ public class ProjectLocationsView extends CustomComponent {
 		itemContainer.addContainerProperty("selectBtn",Button.class,null);
 		itemContainer2.addContainerProperty("removeBtn",Button.class,null);		
 		try {
+			// add all items to selected table first
+			this.generateRows(projectLocationsController.getSavedProjectLocations(), itemContainer2, false);
+						
 			// add all items for available locations table
 			this.generateRows(projectLocationsController.getFilteredResults(null,this.getSelectedLocationTypeIdFromFilter() ,""), itemContainer, true);
 			
-			// add all items to selected table
-			this.generateRows(projectLocationsController.getSavedProjectLocations(), itemContainer2, false);
 			
 		} catch (ReadOnlyException e) {
 			e.printStackTrace();
@@ -306,6 +308,12 @@ public class ProjectLocationsView extends CustomComponent {
 			private static final long serialVersionUID = -2457435122226402123L;
 
 			public String getStyle(Object itemId, Object propertyId) {
+				
+				Item item = selectedLocationsTable.getItem(itemId);
+				if (selectedProjectLocationIds.contains((Integer)item.getItemProperty("locationId").getValue())) {
+					return "disabled-row";
+				}
+				
 			    if (propertyId != null && propertyId.toString().equals("locationName"))
 			    	return propertyId.toString();
 			    
@@ -490,10 +498,15 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.addListener(onAvailableLocationSelect);
 				newItem.getItemProperty("selectBtn").setValue(btn);
 
+				if (selectedProjectLocationIds.contains(location.getLocationId()))
+					btn.setEnabled(false);
+				
 			} else {				
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
+				
+				selectedProjectLocationIds.add(location.getLocationId());
 			}
 			
 
@@ -519,10 +532,12 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.addListener(onAvailableLocationSelect);
 				newItem.getItemProperty("selectBtn").setValue(btn);
 
-			} else {				
+			} else {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
+				
+				selectedProjectLocationIds.add(location.getLocationId());
 			}
 		
 			btn.setData(itemId);

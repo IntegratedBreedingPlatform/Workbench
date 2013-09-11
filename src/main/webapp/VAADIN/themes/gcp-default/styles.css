@@ -590,11 +590,24 @@ s
 
 }
 
+.loc-select-btn:hover {
+	background: #88d87f url('images/add.png') no-repeat center center !important;
+	background-size: 12px 12px !important;
+	
+}
+
 .loc-remove-btn {
 	background: red url('images/close.png') no-repeat center center !important;
 	background-size: 12px 12px !important;
 	border-radius: 50%;
 }
+
+.loc-remove-btn:hover {
+	background: #ff7474  url('images/close.png') no-repeat center center !important;
+	background-size: 12px 12px !important;
+}
+
+
 
 .loc-table .v-table-cell-content {
 	vertical-align: middle;
