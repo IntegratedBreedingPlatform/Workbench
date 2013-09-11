@@ -396,8 +396,8 @@ public class ProjectLocationsView extends CustomComponent {
 	
 	public void onAvailableLocationSelect(Button.ClickEvent event) {
 		LOG.debug("onAvailableLocationSelect: " + event.getButton().getData());
-		Item selectedItem = (Item) event.getButton().getData();
 		
+		Item selectedItem = availableLocationsTable.getItem(event.getButton().getData());
 		
 		LocationTableViewModel model = new LocationTableViewModel();
 		
@@ -422,6 +422,10 @@ public class ProjectLocationsView extends CustomComponent {
 
 	public void onRemoveSavedLocation(Button.ClickEvent event) {
 		LOG.debug("onRemoveSavedLocation: " + event.getButton().getData());
+		
+		//Object item = selectedLocationsTable.getItem(event.getButton().getData());
+		
+		selectedLocationsTable.removeItem(event.getButton().getData());
 		
 	}
 	
@@ -468,7 +472,9 @@ public class ProjectLocationsView extends CustomComponent {
 	 */
 	private void generateRows(List<LocationTableViewModel> results,Container dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
 		for (LocationTableViewModel location : results) {
-			Item newItem = dataContainer.getItem(dataContainer.addItem());
+			
+			Object itemId = dataContainer.addItem();
+			Item newItem = dataContainer.getItem(itemId);
 			
 			for (Field field : fields) {
 				newItem.getItemProperty(field.getName()).setValue(field.get(location));	
@@ -477,7 +483,6 @@ public class ProjectLocationsView extends CustomComponent {
 			Button btn = new Button();
 			btn.setWidth("24px");
 			btn.setHeight("24px");
-			btn.setData(newItem);
 			
 			if (isAvailableTable) {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
@@ -489,10 +494,15 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
 			}
+			
+
+			btn.setData(itemId);
 		}
 	}
 	
 	private void addRow(LocationTableViewModel location,IndexedContainer dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
+			
+			Object itemId = dataContainer.addItemAt(0);
 			Item newItem = dataContainer.getItem(dataContainer.addItemAt(0));
 			
 			for (Field field : fields) {
@@ -502,7 +512,6 @@ public class ProjectLocationsView extends CustomComponent {
 			Button btn = new Button();
 			btn.setWidth("24px");
 			btn.setHeight("24px");
-			btn.setData(newItem);
 			
 			if (isAvailableTable) {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
@@ -515,6 +524,8 @@ public class ProjectLocationsView extends CustomComponent {
 				newItem.getItemProperty("removeBtn").setValue(btn);
 			}
 		
+			btn.setData(itemId);
+			
 	}
 
 }
