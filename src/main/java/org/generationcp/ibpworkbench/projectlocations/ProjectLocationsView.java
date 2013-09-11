@@ -408,7 +408,7 @@ public class ProjectLocationsView extends CustomComponent {
 	private int getSelectedLocationTypeIdFromFilter() {
 		UserDefinedField udf = (UserDefinedField) locationTypeFilter.getValue();
 		
-		return udf.getFldno();
+		return (udf != null) ? udf.getFldno() : null;
 	}
 	
 	/**
