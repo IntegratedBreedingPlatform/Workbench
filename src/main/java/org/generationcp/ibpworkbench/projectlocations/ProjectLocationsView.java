@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.projectlocations;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -317,6 +319,9 @@ public class ProjectLocationsView extends CustomComponent {
 		table.setColumnWidth("removeBtn",60);
 		table.setColumnWidth("selectBtn",60);
 		table.setStyleName("loc-table");
+		table.setSelectable(true);
+		table.setMultiSelect(false);
+		
 		table.setHeight("250px");
 		return table;
 	}
@@ -391,7 +396,28 @@ public class ProjectLocationsView extends CustomComponent {
 	
 	public void onAvailableLocationSelect(Button.ClickEvent event) {
 		LOG.debug("onAvailableLocationSelect: " + event.getButton().getData());
+		Item selectedItem = (Item) event.getButton().getData();
 		
+		
+		LocationTableViewModel model = new LocationTableViewModel();
+		
+		model.setLocationName((String) selectedItem.getItemProperty("locationName").getValue());
+		model.setCntryFullName((String) selectedItem.getItemProperty("cntryFullName").getValue());
+		model.setLocationAbbreviation((String) selectedItem.getItemProperty("locationAbbreviation").getValue());
+		model.setLtype((String) selectedItem.getItemProperty("ltype").getValue());
+		model.setLocationId( (Integer) selectedItem.getItemProperty("locationId").getValue());
+		
+		
+		try {
+			addRow(model,(IndexedContainer) selectedLocationsTable.getContainerDataSource(),false);
+			
+			//IndexedContainer container = (IndexedContainer) selectedLocationsTable.getContainerDataSource();
+			//selectedLocationsTable.select(container.getIdByIndex(container.size()-1));
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void onRemoveSavedLocation(Button.ClickEvent event) {
@@ -464,6 +490,31 @@ public class ProjectLocationsView extends CustomComponent {
 				newItem.getItemProperty("removeBtn").setValue(btn);
 			}
 		}
+	}
+	
+	private void addRow(LocationTableViewModel location,IndexedContainer dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
+			Item newItem = dataContainer.getItem(dataContainer.addItemAt(0));
+			
+			for (Field field : fields) {
+				newItem.getItemProperty(field.getName()).setValue(field.get(location));	
+			}
+			
+			Button btn = new Button();
+			btn.setWidth("24px");
+			btn.setHeight("24px");
+			btn.setData(newItem);
+			
+			if (isAvailableTable) {
+				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
+				btn.addListener(onAvailableLocationSelect);
+				newItem.getItemProperty("selectBtn").setValue(btn);
+
+			} else {				
+				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
+				btn.addListener(onRemoveSaveLocation);
+				newItem.getItemProperty("removeBtn").setValue(btn);
+			}
+		
 	}
 
 }
