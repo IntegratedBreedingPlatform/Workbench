@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -56,8 +60,8 @@ public class ProjectLocationsView extends CustomComponent {
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationsView.class);
 	private Field[] fields;
 	
-	public ProjectLocationsView(Project project) {
-		this.projectLocationsController = new ProjectLocationsController(project);
+	public ProjectLocationsView(Project project,Role role) {
+		this.projectLocationsController = new ProjectLocationsController(project,role);
 		
 			try {
 				initializeComponents();
@@ -403,6 +407,21 @@ public class ProjectLocationsView extends CustomComponent {
 	public void onCancel(Button.ClickEvent event) {
 		LOG.debug("onCancel:");
 		
+		try {
+                (new OpenWorkflowForRoleAction(projectLocationsController.getProject())).doAction(event.getButton().getWindow(),
+                		String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d",
+                				projectLocationsController.getProject().getProjectId(),
+                				projectLocationsController.getRole().getRoleId())
+                			, true);
+        } catch (Exception e) {
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            }
+            return;
+        }
+
+		
 	}
 	
 	private int getSelectedLocationTypeIdFromFilter() {
@@ -443,7 +462,6 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
-
 			}
 		}
 	}

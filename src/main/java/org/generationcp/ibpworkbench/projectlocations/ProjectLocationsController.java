@@ -23,6 +23,7 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,20 +52,17 @@ public class ProjectLocationsController implements InitializingBean {
 
 	private CropType cropType;
 
-	
-	/**
-	 * The fields will be the parameters for the method events
-	 * @param event_type
-	 * @param fields
-	 */
-	public ProjectLocationsController(Project project) {
+	private Role role;
+
+	public ProjectLocationsController(Project project, Role role) {
 		this.project = project;
+		this.role = role;
 		
 		newLocations = new ArrayList<Location>();
 	}
 	
 	/**
-	 * SERVICE: gets the filtered location result from the database
+	 * generates random results
 	 * @param countryID
 	 * @param locationID
 	 * @param locationName
@@ -258,5 +256,15 @@ public class ProjectLocationsController implements InitializingBean {
             selectLocationType.setItemCaption(String.valueOf(u.getFldno()), u.getFname());
         }*/
     }
+
+	public Project getProject() {
+		// TODO Auto-generated method stub
+		return project;
+	}
+
+	public Role getRole() {
+		// TODO Auto-generated method stub
+		return role;
+	}
     
 }

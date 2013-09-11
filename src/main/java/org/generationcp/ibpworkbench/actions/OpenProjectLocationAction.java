@@ -75,11 +75,11 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        IContentWindow w = (IContentWindow) window;	
+        IContentWindow w = (IContentWindow) window;
         
         try {
-            //ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
-            //projectLocationPanel.setWidth("730px"); 
+            ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
+            projectLocationPanel.setWidth("730px"); 
             
             try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
@@ -96,7 +96,7 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
             }
             
             //w.showContent(projectLocationPanel);
-            w.showContent(new ProjectLocationsView(project));
+            w.showContent(new ProjectLocationsView(project,role));
             NavManager.navigateApp(window, "/ProjectLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
