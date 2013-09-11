@@ -309,11 +309,6 @@ public class ProjectLocationsView extends CustomComponent {
 
 			public String getStyle(Object itemId, Object propertyId) {
 				
-				Item item = selectedLocationsTable.getItem(itemId);
-				if (selectedProjectLocationIds.contains((Integer)item.getItemProperty("locationId").getValue())) {
-					return "disabled-row";
-				}
-				
 			    if (propertyId != null && propertyId.toString().equals("locationName"))
 			    	return propertyId.toString();
 			    
