@@ -503,7 +503,7 @@ public class ProjectLocationsView extends CustomComponent {
 	private void addRow(LocationTableViewModel location,IndexedContainer dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
 			
 			Object itemId = dataContainer.addItemAt(0);
-			Item newItem = dataContainer.getItem(dataContainer.addItemAt(0));
+			Item newItem = dataContainer.getItem(itemId);
 			
 			for (Field field : fields) {
 				newItem.getItemProperty(field.getName()).setValue(field.get(location));	
