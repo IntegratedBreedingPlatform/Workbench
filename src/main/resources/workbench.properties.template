@@ -6,10 +6,10 @@ local.user=local
 workbench.driver=com.mysql.jdbc.Driver
 workbench.url=jdbc:mysql://localhost:13306/workbench
 workbench.host=localhost
-workbench.port=3306
+workbench.port=13306
 workbench.dbname=workbench
 workbench.username=root
-workbench.password=fs0123456
+workbench.password=
 workbench.mysqlDumpPath=infrastructure/mysql/bin/mysqldump.exe
 #env settings
-web.api.url=http://localhost:18080/web/api/url.do
+web.api.url=http://localhost:18080/IBPWebService/rest/breeding_view/ssa/save_result
