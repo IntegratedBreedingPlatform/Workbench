@@ -203,7 +203,7 @@ public class ProjectLocationsView extends CustomComponent {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onAvailableLocationSelect(event);
+				ProjectLocationsView.this.onSelectAvailableLocation(event);
 			}
 		};
 		
@@ -399,7 +399,7 @@ public class ProjectLocationsView extends CustomComponent {
 		
 	}
 	
-	public void onAvailableLocationSelect(Button.ClickEvent event) {
+	public void onSelectAvailableLocation(Button.ClickEvent event) {
 		LOG.debug("onAvailableLocationSelect: " + event.getButton().getData());
 		
 		Item selectedItem = availableLocationsTable.getItem(event.getButton().getData());
@@ -412,10 +412,9 @@ public class ProjectLocationsView extends CustomComponent {
 		model.setLtype((String) selectedItem.getItemProperty("ltype").getValue());
 		model.setLocationId( (Integer) selectedItem.getItemProperty("locationId").getValue());
 		
-		
 		try {
 			addRow(model,(IndexedContainer) selectedLocationsTable.getContainerDataSource(),false);
-			
+			availableLocationsTable.removeItem(event.getButton().getData());
 			//IndexedContainer container = (IndexedContainer) selectedLocationsTable.getContainerDataSource();
 			//selectedLocationsTable.select(container.getIdByIndex(container.size()-1));
 			
@@ -428,10 +427,25 @@ public class ProjectLocationsView extends CustomComponent {
 	public void onRemoveSavedLocation(Button.ClickEvent event) {
 		LOG.debug("onRemoveSavedLocation: " + event.getButton().getData());
 		
-		//Object item = selectedLocationsTable.getItem(event.getButton().getData());
+		Item item = (Item)selectedLocationsTable.getItem(event.getButton().getData());
+		Integer locId = (Integer) item.getItemProperty("locationId").getValue();
+		
+		LocationTableViewModel model = new LocationTableViewModel();
+		
+		model.setLocationName((String) item.getItemProperty("locationName").getValue());
+		model.setCntryFullName((String) item.getItemProperty("cntryFullName").getValue());
+		model.setLocationAbbreviation((String) item.getItemProperty("locationAbbreviation").getValue());
+		model.setLtype((String) item.getItemProperty("ltype").getValue());
+		model.setLocationId( (Integer) item.getItemProperty("locationId").getValue());
+		
+		try {
+			addRow(model, (IndexedContainer) availableLocationsTable.getContainerDataSource(),true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		selectedLocationsTable.removeItem(event.getButton().getData());
-		
+		selectedProjectLocationIds.remove(locId);
 	}
 	
 	public void onSaveProjectLocations(Button.ClickEvent event) {
@@ -477,6 +491,8 @@ public class ProjectLocationsView extends CustomComponent {
 	 */
 	private void generateRows(List<LocationTableViewModel> results,Container dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
 		for (LocationTableViewModel location : results) {
+			if (selectedProjectLocationIds.contains(location.getLocationId()))
+				continue;
 			
 			Object itemId = dataContainer.addItem();
 			Item newItem = dataContainer.getItem(itemId);
@@ -494,15 +510,15 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.addListener(onAvailableLocationSelect);
 				newItem.getItemProperty("selectBtn").setValue(btn);
 
-				if (selectedProjectLocationIds.contains(location.getLocationId()))
-					btn.setEnabled(false);
+				
 				
 			} else {				
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
 				
-				selectedProjectLocationIds.add(location.getLocationId());
+				if (!selectedProjectLocationIds.contains(location.getLocationId()))
+					selectedProjectLocationIds.add(location.getLocationId());
 			}
 			
 
@@ -533,7 +549,8 @@ public class ProjectLocationsView extends CustomComponent {
 				btn.addListener(onRemoveSaveLocation);
 				newItem.getItemProperty("removeBtn").setValue(btn);
 				
-				selectedProjectLocationIds.add(location.getLocationId());
+				if (!selectedProjectLocationIds.contains(location.getLocationId()))
+					selectedProjectLocationIds.add(location.getLocationId());
 			}
 		
 			btn.setData(itemId);
