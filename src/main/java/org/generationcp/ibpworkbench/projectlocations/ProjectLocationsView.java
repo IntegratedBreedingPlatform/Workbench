@@ -1,10 +1,10 @@
 package org.generationcp.ibpworkbench.projectlocations;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
@@ -303,9 +303,8 @@ public class ProjectLocationsView extends CustomComponent {
 		
 		
 		table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-			/**
-			 * 
-			 */
+			
+			 
 			private static final long serialVersionUID = -2457435122226402123L;
 
 			public String getStyle(Object itemId, Object propertyId) {
@@ -316,6 +315,8 @@ public class ProjectLocationsView extends CustomComponent {
 			    return null;
 			}
 	    });
+	    
+	   
 		
 		table.setColumnWidth("locationName",310);
 		table.setColumnWidth("locationAbbreviation",130);
@@ -448,9 +449,15 @@ public class ProjectLocationsView extends CustomComponent {
 		selectedProjectLocationIds.remove(locId);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void onSaveProjectLocations(Button.ClickEvent event) {
-		LOG.debug("onCancel:");
-		
+		try {
+			projectLocationsController.saveProjectLocation(selectedLocationsTable.getContainerDataSource(), event);
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LOG.debug("onSaveProjectLocations:");
 	}
 	
 	public void onCancel(Button.ClickEvent event) {

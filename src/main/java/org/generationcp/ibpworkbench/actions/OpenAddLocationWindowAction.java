@@ -52,11 +52,13 @@ public class OpenAddLocationWindowAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        if (projectLocationComponent != null) {
+       /**
+    	if (projectLocationComponent != null) {
             event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationComponent,projectLocationComponent.getGermplasmDataManager()));
         } else if (projectLocationPanel != null) {
             event.getComponent().getWindow().addWindow(new AddLocationsWindow(projectLocationPanel,projectLocationPanel.getGermplasmDataManager()));
         }
+        **/
     }
 
     

@@ -30,6 +30,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Component.Event;
+
 @Configurable
 public class ProjectLocationsController implements InitializingBean {
 	
@@ -165,10 +169,7 @@ public class ProjectLocationsController implements InitializingBean {
         return location;
     }
 	
-	public boolean saveProjectLocation(Collection<Location> availableLocations, Set<Location> selectedLocations, Project projectSaved) throws MiddlewareQueryException {
-    	//DEBUG LOGS
-    	// check newLocations property
-    	//LOG.debug("newLocations count: " + newLocations.size());
+	public boolean saveProjectLocation(Container container, Event event) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
@@ -178,24 +179,15 @@ public class ProjectLocationsController implements InitializingBean {
             workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
         }
         
-        
-        //add available location to local db location table if it does not yet exist
-        for (Location l : this.newLocations) {
-            Location location = initiliazeLocation(l);
-            gdm.addLocation(location);
-        }
-        
-        projectLocationMapList = new ArrayList<ProjectLocationMap>();
-        
         /*
          * add selected location to local db location table if it does not yet exist
          * add location in workbench_project_loc_map in workbench db
          */
-        for (Location l : selectedLocations) {
+        for (Object l : container.getItemIds()) {
             ProjectLocationMap projectLocationMap = new ProjectLocationMap();
-        
-            projectLocationMap.setLocationId(l.getLocid().longValue());
-            projectLocationMap.setProject(projectSaved);
+            Item i = container.getItem(l);            
+            projectLocationMap.setLocationId(Integer.valueOf(i.getItemProperty("locationId").getValue().toString()).longValue());
+            projectLocationMap.setProject(getProject());
             projectLocationMapList.add(projectLocationMap);
         }
 
@@ -203,9 +195,8 @@ public class ProjectLocationsController implements InitializingBean {
         // Add the new set of project locations
         workbenchDataManager.addProjectLocationMap(projectLocationMapList);
         
-        // MessageNotifier.showMessage(getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
-        //            //"Success", "Project location(s) successfully configured");
-        
+        MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
+              
         return true;
     }
 	
