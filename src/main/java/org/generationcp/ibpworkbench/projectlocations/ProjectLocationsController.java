@@ -178,6 +178,7 @@ public class ProjectLocationsController implements InitializingBean {
         for (ProjectLocationMap projectLocationMap : projectLocationMapList){
             workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
         }
+        projectLocationMapList.removeAll(projectLocationMapList);
         
         /*
          * add selected location to local db location table if it does not yet exist
