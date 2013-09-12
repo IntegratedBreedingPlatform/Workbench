@@ -11,6 +11,7 @@ import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -537,6 +538,30 @@ public class ProjectLocationsView extends CustomComponent {
 		
 			btn.setData(itemId);
 			
+	}
+	
+	public void addToAvailableLocation(Location loc){
+		
+		try {
+			LocationTableViewModel location = projectLocationsController.getLocationDetailsByLocId(loc.getLocid());
+			addRow(location, (IndexedContainer) availableLocationsTable.getContainerDataSource(), true);
+		} catch (MiddlewareQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConversionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

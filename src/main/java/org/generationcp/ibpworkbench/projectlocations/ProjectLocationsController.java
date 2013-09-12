@@ -131,7 +131,7 @@ public class ProjectLocationsController implements InitializingBean {
 		return result;
 	}
 	
-	private LocationTableViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
+	public LocationTableViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
 			List<LocationDetails> locList = gdm.getLocationDetailsByLocId(locationId,0,1);
 			

@@ -128,8 +128,9 @@ public class SaveNewLocationAction implements ClickListener{
             
             try {
 				projectLocationsController.getGermplasmDataManager().addLocation(newLoc);
-				projectLocationsController.addNewLocations(newLoc);
-	            projectLocationsView.onUpdateAvailableTableOnFilter(null);
+				//projectLocationsController.addNewLocations(newLoc);
+	            //projectLocationsView.onUpdateAvailableTableOnFilter(null);
+				projectLocationsView.addToAvailableLocation(newLoc);
 			} catch (MiddlewareQueryException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
