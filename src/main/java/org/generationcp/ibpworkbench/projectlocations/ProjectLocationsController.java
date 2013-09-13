@@ -128,7 +128,16 @@ public class ProjectLocationsController implements InitializingBean {
 	
 	public LocationTableViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
+			
 			List<LocationDetails> locList = gdm.getLocationDetailsByLocId(locationId,0,1);
+			
+			
+			if (locationId < 0) {
+				Location location = gdm.getLocationByID(locationId);
+				
+				return convertFrom(location);
+			}
+			
 			
 			return convertFrom(locList.get(0));			
 		} catch (IndexOutOfBoundsException e) {
@@ -196,6 +205,23 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
 		viewModel.setLocationAbbreviation(location.getLocation_abbreviation());
 		viewModel.setCntryFullName(location.getCountry_full_name());
 		viewModel.setLtype(location.getLocation_type());
+		
+		return viewModel;
+	}
+	
+	private LocationTableViewModel convertFrom(Location location) throws MiddlewareQueryException {
+		LocationTableViewModel viewModel = new LocationTableViewModel();
+		viewModel.setLocationId(location.getLocid());
+		viewModel.setLocationName(location.getLname());
+		viewModel.setLocationAbbreviation(location.getLabbr());
+		
+		
+		
+		Country country = gdm.getCountryById(location.getCntryid());
+		UserDefinedField udf = gdm.getUserDefinedFieldByID(location.getLtype());
+	
+		viewModel.setCntryFullName(country.getIsofull());
+		viewModel.setLtype(udf.getFname());
 		
 		return viewModel;
 	}
