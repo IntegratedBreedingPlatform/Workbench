@@ -70,6 +70,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+	private Label resultCountLbl;
 	
 	public ProjectLocationsView(Project project,Role role) {
 		this.projectLocationsController = new ProjectLocationsController(project,role);
@@ -156,9 +157,11 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		try {
 			// add all items to selected table first
 			this.generateRows(projectLocationsController.getSavedProjectLocations(), itemContainer2, false);
-						
+			
 			// add all items for available locations table
 			this.generateRows(projectLocationsController.getFilteredResults(null,this.getSelectedLocationTypeIdFromFilter() ,""), itemContainer, true);
+			
+			resultCountLbl.setValue("Result: " + itemContainer.getItemIds().size() + " items");
 			
 			
 		} catch (ReadOnlyException e) {
@@ -278,9 +281,13 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		container.addComponent(searchField);
 		container.addComponent(doFilterBtn);
 		
-		//root.addComponent(spacer);
 		root.addComponent(container);
-		//root.setExpandRatio(spacer,1.0f);
+		
+		resultCountLbl = new Label("");
+		resultCountLbl.setStyleName("loc-resultcnt");
+		//root.addComponent(resultCountLbl);
+		//root.setExpandRatio(resultCountLbl,1.0f);
+		
 		root.setSizeFull();
 		return root;
 	}
@@ -392,6 +399,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			resultCountLbl.setValue("Results: " + container.getItemIds().size() + " items");
 			
 		} catch (MiddlewareQueryException e) {
 			// show error message
