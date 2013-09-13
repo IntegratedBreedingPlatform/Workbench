@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -17,6 +20,8 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
@@ -39,7 +44,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class ProjectLocationsView extends CustomComponent {
+public class ProjectLocationsView extends CustomComponent implements InitializingBean {
 
 	/**
 	 * 
@@ -63,16 +68,12 @@ public class ProjectLocationsView extends CustomComponent {
 	private Field[] fields;
 	private ArrayList<Integer> selectedProjectLocationIds = new ArrayList<Integer>();
 	
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+	
 	public ProjectLocationsView(Project project,Role role) {
 		this.projectLocationsController = new ProjectLocationsController(project,role);
 		
-			try {
-				initializeComponents();
-				initializeActions();
-				initializeValues();					
-			} catch (MiddlewareQueryException e) {
-				e.printStackTrace();
-			}
 	}
 	
 	protected void initializeComponents() {
@@ -452,7 +453,12 @@ public class ProjectLocationsView extends CustomComponent {
 	@SuppressWarnings("unchecked")
 	public void onSaveProjectLocations(Button.ClickEvent event) {
 		try {
-			projectLocationsController.saveProjectLocation(selectedLocationsTable.getContainerDataSource(), event);
+			//projectLocationsController.saveProjectLocation(selectedLocationsTable.getContainerDataSource(), event);
+			
+			if (projectLocationsController.saveProjectLocation(selectedProjectLocationIds) )
+				MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
+	        
+			
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -586,6 +592,17 @@ public class ProjectLocationsView extends CustomComponent {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			initializeComponents();
+			initializeActions();
+			initializeValues();					
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}	
 	}
 
 }
