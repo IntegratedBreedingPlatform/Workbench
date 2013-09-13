@@ -17,9 +17,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
-import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
@@ -376,10 +376,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-//        layout.addComponent(breedingPlannerButton);
-//        breedingPlannerButton.setHeight("20px");
-//        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
-//        layout.setExpandRatio(breedingPlannerButton, 0);
+        layout.addComponent(breedingPlannerButton);
+        breedingPlannerButton.setHeight("20px");
+        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingPlannerButton, 0);
         
         layout.addComponent(crossStudyBrowserButton);
         crossStudyBrowserButton.setHeight("20px");
@@ -610,10 +610,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-//        layout.addComponent(mbdtButton);
-//        mbdtButton.setHeight("20px");
-//        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
-//        layout.setExpandRatio(mbdtButton, 0);
+        layout.addComponent(mbdtButton);
+        mbdtButton.setHeight("20px");
+        layout.setComponentAlignment(mbdtButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mbdtButton, 0);
         
         layout.addComponent(optimasButton);
         //optimasButton.setHeight("20px");
