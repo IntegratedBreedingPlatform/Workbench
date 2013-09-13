@@ -220,8 +220,11 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
 		Country country = gdm.getCountryById(location.getCntryid());
 		UserDefinedField udf = gdm.getUserDefinedFieldByID(location.getLtype());
 	
-		viewModel.setCntryFullName(country.getIsofull());
-		viewModel.setLtype(udf.getFname());
+		if (country != null)
+			viewModel.setCntryFullName(country.getIsofull());
+		if (udf!=null) 	
+			viewModel.setLtype(udf.getFname());
+		
 		
 		return viewModel;
 	}
