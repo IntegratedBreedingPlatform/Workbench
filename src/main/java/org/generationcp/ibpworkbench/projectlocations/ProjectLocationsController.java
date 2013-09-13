@@ -1,17 +1,12 @@
 package org.generationcp.ibpworkbench.projectlocations;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -29,10 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Component.Event;
 
 @Configurable
 public class ProjectLocationsController implements InitializingBean {
@@ -168,39 +159,7 @@ public class ProjectLocationsController implements InitializingBean {
         location.setSnl3id(0);
         return location;
     }
-	
-	public boolean saveProjectLocation(Container container, Event event) throws MiddlewareQueryException {
-    	
-        // Delete existing project locations in the database
-        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
-                project.getProjectId(), 0,Integer.MAX_VALUE);
-        
-        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
-            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
-        }
-        projectLocationMapList.removeAll(projectLocationMapList);
-        
-        /*
-         * add selected location to local db location table if it does not yet exist
-         * add location in workbench_project_loc_map in workbench db
-         */
-        for (Object l : container.getItemIds()) {
-            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
-            Item i = container.getItem(l);            
-            projectLocationMap.setLocationId(Integer.valueOf(i.getItemProperty("locationId").getValue().toString()).longValue());
-            projectLocationMap.setProject(getProject());
-            projectLocationMapList.add(projectLocationMap);
-        }
-
-
-        // Add the new set of project locations
-        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
-        
-        MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
-              
-        return true;
-    }
-	
+		
 public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
