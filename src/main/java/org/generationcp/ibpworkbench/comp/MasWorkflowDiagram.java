@@ -80,7 +80,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button optimasButton;
     private Button browseGenotypingDataButton;
     private Button makeCrossesButton;
-
+    private Button headToHeadButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -230,6 +230,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage4 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         twoHeadedArrowImage = new Embedded("", new ThemeResource(TWO_HEADED_ARROW_THEME_RESOURCE));
+        
+        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
+        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        headToHeadButton.setSizeUndefined();
+        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
+
     }
 
     protected void initializeLayout() {
@@ -359,6 +365,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(browseGenotypingDataButton);
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
+        
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
 
         return layout;
     }
@@ -501,6 +511,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
         */
+        
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
+        
         return layout;
     }
 
@@ -546,7 +561,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         	
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
-        	
+            headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
+
         	
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));

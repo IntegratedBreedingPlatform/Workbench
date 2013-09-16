@@ -55,7 +55,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label populationDevelopmentTitle;
     private Label fieldTrialManagementTitle;
     private Label genotypingTitle;
-
+    private Button headToHeadButton;
     private Label phenotypicAnalysisTitle;
     private Label qtlAnalysisTitle;
     private Label singleSiteAnalysisTitle;
@@ -274,6 +274,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         downArrow31 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow32 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
+        
+        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
+        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        headToHeadButton.setSizeUndefined();
+        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
+
     }
 
     protected void initializeLayout() {
@@ -388,6 +394,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
         return layout;
     }
 

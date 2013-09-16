@@ -331,7 +331,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.addComponent(browseGenotypingDataButton);
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
-
+        
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
+        
         return layout;
     }
 
