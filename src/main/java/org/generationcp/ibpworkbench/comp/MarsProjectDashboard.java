@@ -394,9 +394,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
-        layout.addComponent(headToHeadButton);
-        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton, 0);
+        
         return layout;
     }
 
@@ -684,6 +682,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(headToHeadButton);
+        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton, 0);
 
         return layout;
     }
