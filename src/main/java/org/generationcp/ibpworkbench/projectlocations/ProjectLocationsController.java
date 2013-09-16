@@ -36,11 +36,7 @@ public class ProjectLocationsController implements InitializingBean {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-    
-    
-	private GermplasmDataManager gdm;
+    private GermplasmDataManager gdm;
 	private Project project;
 
 	private List<Location> newLocations;
@@ -54,6 +50,19 @@ public class ProjectLocationsController implements InitializingBean {
 		this.role = role;
 		
 		newLocations = new ArrayList<Location>();
+	}
+	
+	/* THIS IS ONLY USED FOR JUNIT TESTS */
+	public ProjectLocationsController(Project project, Role role,WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
+		this.project = project;
+		this.role = role;
+		
+		newLocations = new ArrayList<Location>();
+		
+		this.workbenchDataManager = workbenchDataManager;
+		this.managerFactoryProvider = managerFactoryProvider;
+		
+		this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
 	}
 	
 	/**
@@ -229,11 +238,6 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
 		return viewModel;
 	}
 	
-	
-	public void addNewLocations(Location location) {
-		this.newLocations.add(location);
-		
-	}
 	
     public List<Country> getCountryList() throws MiddlewareQueryException {
         cropType = project.getCropType();
