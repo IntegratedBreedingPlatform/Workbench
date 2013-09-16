@@ -70,11 +70,7 @@
           level="2"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
            
-     <view path="/crossing_manager"
-          label="Head to Head Query"
-          level="2"
-          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />     
-                 
+     
       <view path="/germplasm_headtohead"
           label="Head to Head Query"
           level="2"
