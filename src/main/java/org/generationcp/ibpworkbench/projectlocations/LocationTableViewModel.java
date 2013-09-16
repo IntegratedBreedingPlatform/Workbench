@@ -128,4 +128,12 @@ public class LocationTableViewModel {
 
 		return list;
 	}
+
+	@Override
+	public String toString() {
+		return "LocationTableViewModel: [locationId="+ locationId + ", locationName="+ locationName + ", locationAbbreviation="+ locationAbbreviation +", ltype="+ ltype + ", cntryFullName=" + cntryFullName +"]";
+	}
+	
+	
+	
 }
