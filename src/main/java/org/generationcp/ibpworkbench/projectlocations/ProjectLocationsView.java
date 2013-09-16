@@ -263,7 +263,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		final Label countryLbl = new Label("Country");
 		final Label ltypeLbl = new Label("Location Type");
-		final Label searchLbl = new Label("Search Locations");
+		final Label searchLbl = new Label("Search within Locations");
 		
 		countryLbl.setSizeFull();
 		ltypeLbl.setSizeFull();
