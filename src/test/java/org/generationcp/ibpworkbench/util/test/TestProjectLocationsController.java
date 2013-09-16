@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.util.test;
 import org.generationcp.ibpworkbench.projectlocations.LocationTableViewModel;
 import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.User;
@@ -11,41 +10,66 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:applicationContext.xml"})
-@Configurable
 public class TestProjectLocationsController {
 
 	private static ProjectLocationsController controller;
 	
-    @Autowired
     private static WorkbenchDataManager manager;
 	
-    @Autowired
-    private static GermplasmDataManager gdm;
-    
-	@BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    // NOTE: please setup VM argument on run+debug configurations on JUNIT just like when we setup a new server instance
+    // for the spring load weaving to work properly
+    // -javaagent:"${env_var:HOMEDRIVE}${env_var:HOMEPATH}\.m2\repository\org\springframework\spring-instrument\3.1.1.RELEASE\spring-instrument-3.1.1.RELEASE.jar"
+   
+    @Before
+    public void setUp() throws Exception {
 		
 		// Lest test this on the first project the workbench manager gets
-		
+		//DatabaseConnectionParameters workbenchDb = new DatabaseConnectionParameters("workbench.properties", "workbench");
+        //HibernateUtil hibernateUtil = new HibernateUtil(workbenchDb.getHost(), workbenchDb.getPort(), workbenchDb.getDbName(), 
+        //                        workbenchDb.getUsername(), workbenchDb.getPassword());
+        //HibernateSessionProvider sessionProvider = new HibernateSessionPerThreadProvider(hibernateUtil.getSessionFactory());
+        //manager = new WorkbenchDataManagerImpl(sessionProvider);
+	
 		Assert.assertNotNull(manager);
-		Assert.assertNotNull(gdm);
-		Project p = manager.getProjects().iterator().next();
 		
-		// get the user and role of this project
-		User u = manager.getUsersByProjectId(p.getProjectId()).iterator().next();
-		Role r = manager.getRolesByProjectAndUser(p,u).iterator().next();
+		User u = null;
+		Role r = null;
+		for (Project p : manager.getProjects() ) {
+			
+			try {
+				if (manager.getUsersByProjectId(p.getProjectId()).size() <= 0)
+					continue;
+				
+				u = manager.getUsersByProjectId(p.getProjectId()).iterator().next();
+				
+				Assert.assertNotNull(u);
+					
+			} catch (Exception e) {
+				continue;
+			}
+					
+			
+			if (manager.getRolesByProjectAndUser(p,u).size() <= 0)
+				continue;
+			
+			r = manager.getRolesByProjectAndUser(p,u).iterator().next();	
 		
-        controller = new ProjectLocationsController(p,r);
+			Assert.assertNotNull(r);
+		
+	        controller = new ProjectLocationsController(p,r);
+	        
+	        Assert.assertNotNull(controller);
+
+	        break;
+		}
     }
 	
 	@Test
