@@ -44,7 +44,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 155;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 175;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -345,8 +345,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("5px");
-        //layout.addComponent(emptyLabel);
-       // layout.setExpandRatio(emptyLabel, 100);
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
         
         /**
         layout.addComponent(breedingPlannerButton);
