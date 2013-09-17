@@ -85,6 +85,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button projectMethodsButton;
     private Button createTemplatesButton;
     private Button deleteProjectButton;
+    private Button crossStudyBrowserButton2;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -168,6 +169,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         crossStudyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         crossStudyBrowserButton.setSizeUndefined();
         crossStudyBrowserButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSS_STUDY_BROWSER));
+        
+        crossStudyBrowserButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
+        crossStudyBrowserButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        crossStudyBrowserButton2.setSizeUndefined();
+        crossStudyBrowserButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSS_STUDY_BROWSER));
         
         
         browseGermplasmButton = new Button("Germplasm Browser");
@@ -381,10 +387,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
         
-        layout.addComponent(crossStudyBrowserButton);
-        crossStudyBrowserButton.setHeight("20px");
-        layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(crossStudyBrowserButton, 0);
+        
         
         layout.addComponent(browseGermplasmButton);
         browseGermplasmButton.setHeight("20px");
@@ -397,11 +400,14 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(browseGermplasmListsButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        //browseStudiesButton.setHeight("20px");
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
-        
+        layout.addComponent(crossStudyBrowserButton2);
+        crossStudyBrowserButton2.setHeight("20px");
+        layout.setComponentAlignment(crossStudyBrowserButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(crossStudyBrowserButton2, 0);
         /*
         layout.addComponent(gdmsButton);
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
@@ -616,7 +622,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(mbdtButton, 0);
         
         layout.addComponent(optimasButton);
-        //optimasButton.setHeight("20px");
+        optimasButton.setHeight("20px");
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
         
@@ -671,6 +677,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
             crossStudyBrowserButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
+            crossStudyBrowserButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO: change this to run breeding planner tool
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));

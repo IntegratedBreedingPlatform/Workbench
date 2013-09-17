@@ -56,6 +56,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label fieldTrialManagementTitle;
     private Label genotypingTitle;
     private Button headToHeadButton;
+    private Button headToHeadButton2;
     private Label phenotypicAnalysisTitle;
     private Label qtlAnalysisTitle;
     private Label singleSiteAnalysisTitle;
@@ -280,6 +281,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         headToHeadButton.setSizeUndefined();
         headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
 
+        headToHeadButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
+        headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        headToHeadButton2.setSizeUndefined();
+        headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
+
     }
 
     protected void initializeLayout() {
@@ -391,8 +397,14 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
         layout.addComponent(browseGenotypingDataButton);
+        browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
+
+        layout.addComponent(headToHeadButton2);
+        headToHeadButton2.setHeight("20px");
+        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(headToHeadButton2, 0);
 
         
         return layout;
@@ -733,7 +745,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
+            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
 
+            
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
