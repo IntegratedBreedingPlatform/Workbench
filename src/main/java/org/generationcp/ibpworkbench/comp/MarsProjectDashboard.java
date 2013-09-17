@@ -379,20 +379,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(breedingPlannerButton);
+        breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
         
         layout.addComponent(browseGermplasmButton);
-       // browseGermplasmButton.setHeight("20px");
+        browseGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
-     //   browseStudiesButton.setHeight("20px");
+        browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
+        browseGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
@@ -734,7 +736,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("135px");
+        layout.setHeight("155px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
