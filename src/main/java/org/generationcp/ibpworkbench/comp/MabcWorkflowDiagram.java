@@ -385,6 +385,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
         layout.addComponent(browseGenotypingDataButton);
+        browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
         
