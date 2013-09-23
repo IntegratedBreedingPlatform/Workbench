@@ -12,7 +12,7 @@ import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectData
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.FactorType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -76,7 +76,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             
             for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
             	
-            	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
             			) continue;
             	
             	FactorModel fm = new FactorModel();

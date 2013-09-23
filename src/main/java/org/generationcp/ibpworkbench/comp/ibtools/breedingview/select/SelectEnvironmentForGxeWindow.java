@@ -27,7 +27,7 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.FactorType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -349,12 +349,12 @@ public class SelectEnvironmentForGxeWindow extends Window implements Initializin
             	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
             	
-            	if (factor.getStandardVariable().getFactorType() == FactorType.GERMPLASM){
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
             		factorList.add(fm);
             	}
             	
             	
-            	if (factor.getStandardVariable().getFactorType() == FactorType.TRIAL_ENVIRONMENT){
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
             		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
             		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
             			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)

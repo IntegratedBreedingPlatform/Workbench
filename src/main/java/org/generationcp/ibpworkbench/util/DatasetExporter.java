@@ -24,7 +24,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.generationcp.commons.util.PoiUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.FactorType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
@@ -273,7 +273,7 @@ public class DatasetExporter {
             int factorRowIndex = factorRowHeaderIndex + 1;
             for(VariableType factor : factorVariableTypes) {
             	
-            	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET) continue;
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) continue;
             	
                 String dataType = factor.getStandardVariable().getDataType().getName();
                 String factorName = factor.getLocalName();
@@ -526,7 +526,7 @@ public class DatasetExporter {
         
         for(VariableType factor : factorVariableTypes) {
         	
-        	if (factor.getStandardVariable().getFactorType() == FactorType.DATASET) continue;
+        	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) continue;
         	
             String factorName = factor.getLocalName();
             if(factorName != null) {

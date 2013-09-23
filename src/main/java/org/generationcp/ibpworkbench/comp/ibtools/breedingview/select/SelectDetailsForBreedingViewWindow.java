@@ -28,7 +28,7 @@ import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeLi
 import org.generationcp.ibpworkbench.actions.CancelDetailsAsInputForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.middleware.domain.dms.FactorType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
@@ -346,7 +346,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     	if (this.factorsInDataset == null) return;
     	
     	for (VariableType factor : factorsInDataset){
-    		if (factor.getStandardVariable().getFactorType() == FactorType.TRIAL_ENVIRONMENT){
+    		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
     			 this.selEnvFactor.addItem(factor.getLocalName());
     			 this.selEnvFactor.setValue(factor.getLocalName());
     		}
@@ -419,7 +419,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         
     	
     	for (VariableType factor : factorsInDataset){
-    		if (factor.getStandardVariable().getFactorType() == FactorType.GERMPLASM){
+    		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
     			 this.selGenotypes.addItem(factor.getLocalName());
     			 this.selGenotypes.setValue(factor.getLocalName());
     		}

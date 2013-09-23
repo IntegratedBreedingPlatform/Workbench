@@ -19,7 +19,7 @@ import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.FactorType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
@@ -227,7 +227,7 @@ public class GxeTable extends Table {
 					
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					VariableTypeList trialEnvFactors = meansDataSet.getFactorsByFactorType(FactorType.TRIAL_ENVIRONMENT);
+					VariableTypeList trialEnvFactors = meansDataSet.getFactorsByPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 					
 					for(VariableType f : trialEnvFactors.getVariableTypes()){
 						//SITE_NAME
@@ -243,7 +243,7 @@ public class GxeTable extends Table {
 						}**/
 					}
 					
-					germplasmFactors.addAll(meansDataSet.getFactorsByFactorType(FactorType.GERMPLASM));
+					germplasmFactors.addAll(meansDataSet.getFactorsByPhenotypicType(PhenotypicType.GERMPLASM));
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
