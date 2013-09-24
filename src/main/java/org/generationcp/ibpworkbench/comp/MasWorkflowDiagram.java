@@ -82,6 +82,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button makeCrossesButton;
     private Button headToHeadButton;
     private Button headToHeadButton2;
+    private Button breedingPlannerButton;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -98,7 +99,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
-	private Button breedingPlannerButton;
+	private Button planMasTimelineButton;
 
 	private Button germplasmImportButton;
 
@@ -150,6 +151,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
+        
+        planMasTimelineButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_MAS));
+        planMasTimelineButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        planMasTimelineButton.setSizeUndefined();
+        planMasTimelineButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
         germplasmImportButton = new Button("Import Germplasm Lists");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -347,6 +353,11 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         emptyLabel.setHeight("5px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
+        
+        layout.addComponent(planMasTimelineButton);
+        planMasTimelineButton.setHeight("20px");
+        layout.setComponentAlignment(planMasTimelineButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(planMasTimelineButton, 0);
         
         /**
         layout.addComponent(breedingPlannerButton);
@@ -570,13 +581,13 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     
     protected void initializeActions() {
         if (!workflowPreview) {
-        	
-        	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            
+            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            planMasTimelineButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
 
-        	
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
