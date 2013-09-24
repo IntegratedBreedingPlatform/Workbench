@@ -524,8 +524,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			}
 			
 			Button btn = new Button();
-			btn.setWidth("24px");
-			btn.setHeight("24px");
+			btn.setWidth("16px");
+			btn.setHeight("16px");
 			
 			if (isAvailableTable) {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
@@ -558,8 +558,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			}
 			
 			Button btn = new Button();
-			btn.setWidth("24px");
-			btn.setHeight("24px");
+			btn.setWidth("16px");
+			btn.setHeight("16px");
 			
 			if (isAvailableTable) {
 				btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");

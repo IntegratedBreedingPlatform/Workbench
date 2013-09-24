@@ -584,26 +584,26 @@ s
 }
 
 .loc-select-btn {
-	background: green url('images/add.png') no-repeat center center !important;
+	background: #7f7f7f url('images/add_16.png') no-repeat center center !important;
 	background-size: 12px 12px !important;
 	border-radius: 50%;
 
 }
 
 .loc-select-btn:hover {
-	background: #88d87f url('images/add.png') no-repeat center center !important;
+	background: #b4b4b4 url('images/add_16.png') no-repeat center center !important;
 	background-size: 12px 12px !important;
 	
 }
 
 .loc-remove-btn {
-	background: red url('images/close.png') no-repeat center center !important;
+	background: #7f7f7f url('images/close_16.png') no-repeat center center !important;
 	background-size: 12px 12px !important;
 	border-radius: 50%;
 }
 
 .loc-remove-btn:hover {
-	background: #ff7474  url('images/close.png') no-repeat center center !important;
+	background: #b4b4b4  url('images/close_16.png') no-repeat center center !important;
 	background-size: 12px 12px !important;
 }
 
