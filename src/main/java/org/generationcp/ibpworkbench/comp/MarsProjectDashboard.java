@@ -116,6 +116,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
 	private Button germplasmImportButton;
 
+	private Button germplasmImportButton2;
+
 	
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
@@ -207,10 +209,15 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
-        germplasmImportButton = new Button("Import Germplasm Lists");
+        germplasmImportButton = new Button("IBFB Import Germplasm Lists");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+        
+        germplasmImportButton2 = new Button("Import Germplasm Lists");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setSizeUndefined();
+        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
         
         // field trial management buttons
         fieldBookButton = new Button();
@@ -322,6 +329,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(false);
+        layout.setHeight("1000px");
 
         Component breedingManagementArea = layoutBreedingManagementArea();
         breedingManagementArea.setHeight("100%");
@@ -449,6 +457,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
         
+        layout.addComponent(germplasmImportButton2);
+        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton2, 0);
+        
+        
         /**layout.addComponent(manageGermplasmListsButton);
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(manageGermplasmListsButton, 0);**/
@@ -460,6 +473,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
+        
+        
         
         return layout;
     }
@@ -767,7 +782,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected void initializeActions() {
         if (!workflowPreview) {
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
+        	germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+        	
+        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));  
@@ -775,7 +792,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));  
 
-            
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));

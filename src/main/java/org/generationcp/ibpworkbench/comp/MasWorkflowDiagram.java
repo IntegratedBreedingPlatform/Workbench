@@ -105,6 +105,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
 	private Button germplasmImportButton;
 
+	private Button germplasmImportButton2;
+
     public MasWorkflowDiagram(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -159,10 +161,15 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         planMasTimelineButton.setSizeUndefined();
         planMasTimelineButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
-        germplasmImportButton = new Button("Import Germplasm Lists");
+        germplasmImportButton = new Button("IBFB Import Germplasm Lists");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+        
+        germplasmImportButton2 = new Button("Import Germplasm Lists");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setSizeUndefined();
+        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
         
         browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -266,12 +273,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         setSpacing(true);
         setMargin(true);
         setWidth("1000px");
+        setHeight("1500px");
 
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
-        workFlowArea.setSizeUndefined();
         addComponent(workFlowArea);
 
     }
@@ -282,7 +289,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("620px");
-        layout.setHeight("1000px");
+        layout.setHeight("1400px");
+        panel.setHeight("1500px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -433,6 +441,13 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
 
+        layout.addComponent(germplasmImportButton2);
+        germplasmImportButton2.setHeight("20px");
+        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton2, 0);
+
+        
+        
         /**layout.addComponent(manageGermplasmListsButton);
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -604,6 +619,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         if (!workflowPreview) {
             
             germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+
             planMasTimelineButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      

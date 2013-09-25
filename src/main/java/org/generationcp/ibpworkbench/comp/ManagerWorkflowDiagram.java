@@ -113,6 +113,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	private Button germplasmImportButton;
 
 	private Button userToolsButton;
+
+	private Button germplasmImportButton2;
     
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
@@ -249,10 +251,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         nurseryManagerButton.setSizeUndefined();
         nurseryManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_NURSERY_MANAGER));
         
-        germplasmImportButton = new Button("Germplasm Import");
+        germplasmImportButton = new Button("IBFB Germplasm Import");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+        
+        germplasmImportButton2 = new Button("Germplasm Import");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setSizeUndefined();
+        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
         
         projectMethodsButton = new Button("Project Methods");
         projectMethodsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -550,6 +557,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
         
+        layout.addComponent(germplasmImportButton2);
+        germplasmImportButton2.setHeight("20px");
+        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton2, 0);
+        
+        
         /**layout.addComponent(manageGermplasmListsButton);
         manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -722,6 +735,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
             
             germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));

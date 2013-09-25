@@ -56,10 +56,11 @@ public class TestSheetUtil {
 		try {
 			wb = WorkbookFactory.create(new FileInputStream(dir + File.separator + xlsFilename));
 			
-			SheetUtil.deleteColumn(wb.getSheetAt(1),colToRemove);
+			/**SheetUtil.deleteColumn(wb.getSheetAt(1),colToRemove);
 			
 			// write to CSV
 			SheetUtil.sheetToCSV(wb.getSheetAt(1),new File(dir + File.separator + csvFilename));
+			**/
 			
 		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
