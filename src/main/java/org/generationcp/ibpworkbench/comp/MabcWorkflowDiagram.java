@@ -104,6 +104,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
 	private Button germplasmImportButton;
 
+	private Button germplasmImportButton2;
+
     public MabcWorkflowDiagram(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -153,10 +155,16 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
-        germplasmImportButton = new Button("Import Germplasm Lists");
+        germplasmImportButton = new Button("IBFB Import Germplasm Lists");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+
+        germplasmImportButton2 = new Button("Import Germplasm Lists");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setSizeUndefined();
+        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
+
         
         headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
         headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -374,6 +382,12 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
 
+        
+        layout.addComponent(germplasmImportButton2);
+        germplasmImportButton2.setHeight("20px");
+        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton2, 0);
+
         /**layout.addComponent(manageGermplasmListsButton);
 		manageGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
@@ -580,7 +594,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         if (!workflowPreview) {
         	
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
+        	germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+
+        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
 

@@ -78,8 +78,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,LIST_MANAGER("list_manager")
         ,CROSSING_MANAGER("crossing_manager")
         ,NURSERY_TEMPLATE_WIZARD("nursery_template_wizard")
-        ,BREEDING_PLANNER("breeding_planner"),
-        HEAD_TO_HEAD_BROWSER("germplasm_headtohead")
+        ,BREEDING_PLANNER("breeding_planner")
+        ,IBFB_GERMPLASM_IMPORT("ibfb_germplasm_import")
+        ,GERMPLASM_IMPORT("germplasm_import")
+        ,HEAD_TO_HEAD_BROWSER("germplasm_headtohead")
         ;
         
         String toolName;
