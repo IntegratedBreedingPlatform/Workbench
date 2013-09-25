@@ -585,26 +585,26 @@ s
 
 .loc-select-btn {
 	background: #7f7f7f url('images/add_16.png') no-repeat center center !important;
-	background-size: 12px 12px !important;
+	background-size: 10px 10px !important;
 	border-radius: 50%;
 
 }
 
 .loc-select-btn:hover {
 	background: #b4b4b4 url('images/add_16.png') no-repeat center center !important;
-	background-size: 12px 12px !important;
+	background-size: 10px 10px !important;
 	
 }
 
 .loc-remove-btn {
 	background: #7f7f7f url('images/close_16.png') no-repeat center center !important;
-	background-size: 12px 12px !important;
+	background-size: 8px 8px !important;
 	border-radius: 50%;
 }
 
 .loc-remove-btn:hover {
 	background: #b4b4b4  url('images/close_16.png') no-repeat center center !important;
-	background-size: 12px 12px !important;
+	background-size: 8px 8px !important;
 }
 
 
