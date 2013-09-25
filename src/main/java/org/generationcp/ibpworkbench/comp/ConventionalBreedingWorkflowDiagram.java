@@ -98,6 +98,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 
 	private Button germplasmImportButton;
 
+	private Button germplasmImportButton2;
+
     public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -147,6 +149,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+        
+        germplasmImportButton2 = new Button("Import Germplasm Lists");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setSizeUndefined();
+        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
+        
         
         browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -370,6 +378,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         germplasmImportButton.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton, 0);
+
+        layout.addComponent(germplasmImportButton2);
+        germplasmImportButton2.setHeight("20px");
+        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(germplasmImportButton2, 0);
         
         /**layout.addComponent(manageGermplasmListsButton);
         manageGermplasmListsButton.setHeight("20px");
@@ -516,7 +529,9 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     protected void initializeActions() {
         if (!workflowPreview) {
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
+        	germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+            
+        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
