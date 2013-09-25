@@ -77,6 +77,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     private Button optimasButton;
     private Button headToHeadButton;
     private Button headToHeadButton2;
+    private Button mainHeadToHeadButton;
+    private Button mainHeadToHeadButton2;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -213,6 +215,16 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         headToHeadButton2.setSizeUndefined();
         headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
         
+        mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton.setSizeUndefined();
+        mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
+        mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton2.setSizeUndefined();
+        mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
         fieldbookButton = new Button(messageSource.getMessage(Message.FIELDBOOK_CREATE));
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
@@ -342,8 +354,14 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setExpandRatio(browseGenotypingDataButton, 0);
         
         layout.addComponent(headToHeadButton);
+        headToHeadButton.setHeight("20px");
         layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton, 0);
+        
+        layout.addComponent(mainHeadToHeadButton);
+        mainHeadToHeadButton.setHeight("20px");
+        layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton, 0);
         
        
         return layout;
@@ -466,6 +484,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton2, 0);
         
+        layout.addComponent(mainHeadToHeadButton2);
+        layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton2, 0);
+        
        
         
         /*
@@ -520,6 +542,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         	
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
+            mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));

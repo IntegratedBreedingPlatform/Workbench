@@ -57,6 +57,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label genotypingTitle;
     private Button headToHeadButton;
     private Button headToHeadButton2;
+    private Button mainHeadToHeadButton;
+    private Button mainHeadToHeadButton2;
     private Label phenotypicAnalysisTitle;
     private Label qtlAnalysisTitle;
     private Label singleSiteAnalysisTitle;
@@ -285,6 +287,16 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         headToHeadButton2.setSizeUndefined();
         headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
+        
+        mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton.setSizeUndefined();
+        mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+
+        mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton2.setSizeUndefined();
+        mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
     }
 
@@ -292,12 +304,14 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         setSpacing(true);
         setMargin(true);
         setWidth("870px");
+        setHeight("1200px");
 
         dashboardTitle.setSizeUndefined();
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
-        workFlowArea.setSizeUndefined();
+        //workFlowArea.setSizeUndefined();
+        workFlowArea.setHeight("1200px");
         addComponent(workFlowArea);
 
     }
@@ -407,6 +421,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         //headToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton2, 0);
+        
+        layout.addComponent(mainHeadToHeadButton2);
+        //headToHeadButton2.setHeight("20px");
+        layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton2, 0);
 
         
         return layout;
@@ -700,6 +719,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(headToHeadButton);
         layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton, 0);
+        
+        layout.addComponent(mainHeadToHeadButton);
+        layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton, 0);
 
         return layout;
     }
@@ -736,7 +759,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("135px");
+        layout.setHeight("150px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
@@ -747,7 +770,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
         	
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
-            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
+            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));  
+            
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
+            mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));  
 
             
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));

@@ -87,6 +87,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button deleteProjectButton;
     private Button crossStudyBrowserButton2;
     
+    private Button mainHeadToHeadButton;
+    private Button mainHeadToHeadButton2;
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
@@ -296,6 +299,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         deleteProjectButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         deleteProjectButton.setSizeUndefined();
         
+        mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton.setSizeUndefined();
+        mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
+        mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton2.setSizeUndefined();
+        mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
     }
 
     protected void initializeLayout() {
@@ -413,6 +426,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(gdmsButton, 0);
         */
+        layout.addComponent(mainHeadToHeadButton);
+        layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton, 0);
         
         return layout;
     }
@@ -630,6 +646,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         crossStudyBrowserButton.setHeight("20px");
         layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(crossStudyBrowserButton, 0);
+        
+        layout.addComponent(mainHeadToHeadButton2);
+        layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton2, 0);
           
         return layout;
     }
@@ -673,6 +693,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     
     protected void initializeActions() {
         if (!workflowPreview) {
+        	
+        	mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
+            mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));

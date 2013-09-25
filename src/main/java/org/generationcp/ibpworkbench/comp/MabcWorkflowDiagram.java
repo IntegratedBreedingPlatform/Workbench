@@ -44,7 +44,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 215;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 225;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -99,6 +99,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 	
 	private Button headToHeadButton;
 	private Button headToHeadButton2;
+	private Button mainHeadToHeadButton;
+	private Button mainHeadToHeadButton2;
 	
 	private Button breedingPlannerButton;
 
@@ -167,6 +169,16 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         headToHeadButton2.setSizeUndefined();
         headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
+        
+        mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton.setSizeUndefined();
+        mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
+        mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton2.setSizeUndefined();
+        mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
         
         browseGermplasmButton = new Button("Browse Germplasm Information");
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -393,6 +405,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         headToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton2, 0);
+        
+        layout.addComponent(mainHeadToHeadButton2);
+        mainHeadToHeadButton2.setHeight("20px");
+        layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton2, 0);
 
         return layout;
     }
@@ -531,6 +548,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(headToHeadButton, 0);
         
+        layout.addComponent(mainHeadToHeadButton);
+        layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(mainHeadToHeadButton, 0);
+        
         /*
         layout.addComponent(optimasButton);
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
@@ -582,7 +603,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
-            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
+            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER)); 
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
+            mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));     
 
         	mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
