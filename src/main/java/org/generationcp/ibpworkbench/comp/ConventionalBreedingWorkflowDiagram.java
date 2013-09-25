@@ -145,7 +145,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
         
-        germplasmImportButton = new Button("Import Germplasm Lists");
+        germplasmImportButton = new Button("IBFB Import Germplasm Lists");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
