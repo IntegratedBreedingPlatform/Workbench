@@ -48,7 +48,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private static final long serialVersionUID = 1L;
 
     //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 210;
+    private static final int WORKFLOW_STEP_HEIGHT = 225;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     
@@ -115,6 +115,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	private Button userToolsButton;
 
 	private Button germplasmImportButton2;
+
+	private Button datasetImporterBtn;
     
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
@@ -316,6 +318,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         mainHeadToHeadButton2.setSizeUndefined();
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
         
+        datasetImporterBtn = new Button("Data Import Tool");
+        datasetImporterBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        datasetImporterBtn.setSizeUndefined();
+        datasetImporterBtn.setDescription("Click to open the Data Import Tool.");
+        
+        
     }
 
     protected void initializeLayout() {
@@ -340,7 +348,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         layout.setMargin(true);
         layout.setWidth("850px");
-        layout.setHeight("450px");
+        layout.setHeight("500px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -495,6 +503,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(deleteProjectButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(deleteProjectButton, 0);
 
+        layout.addComponent(datasetImporterBtn);
+        datasetImporterBtn.setHeight("20px");
+        layout.setComponentAlignment(datasetImporterBtn, Alignment.TOP_CENTER);
+        layout.setExpandRatio(datasetImporterBtn, 0);
         
         return layout;
     }
@@ -750,6 +762,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
             
             deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
+            
+            datasetImporterBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.DATASET_IMPORTER));
         }
     }
 

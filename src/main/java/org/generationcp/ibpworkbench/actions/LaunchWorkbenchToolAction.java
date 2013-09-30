@@ -83,6 +83,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,GERMPLASM_IMPORT("germplasm_import")
         ,HEAD_TO_HEAD_BROWSER("germplasm_headtohead")
         ,MAIN_HEAD_TO_HEAD_BROWSER("germplasm_mainheadtohead")
+        ,DATASET_IMPORTER("DatasetImporter")
         ;
         
         String toolName;
