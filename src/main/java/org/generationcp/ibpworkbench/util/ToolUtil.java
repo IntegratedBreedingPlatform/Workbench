@@ -406,6 +406,14 @@ public class ToolUtil {
             updateToolMiddlewareDatabaseConfiguration(
                                                       "infrastructure/tomcat/webapps/BreedingManager/WEB-INF/classes/IBPDatasource.properties",
                                                       centralDbName, localDbName, username, password);
+        } else if (Util.isOneOf(tool.getToolName(),
+                                ToolName.dataset_importer.name())) {
+            // crossing manager uses the same property file
+            // nursery_template_wizard uses the same property file
+            // so no need to update 
+            updateToolMiddlewareDatabaseConfiguration(
+                                                      "infrastructure/tomcat/webapps/DatasetImporter/WEB-INF/classes/database.properties",
+                                                      centralDbName, localDbName, username, password, true);
         } else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
             updateToolMiddlewareDatabaseConfiguration(
                                                       "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties",
