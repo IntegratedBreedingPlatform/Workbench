@@ -327,8 +327,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         Embedded browser = new Embedded("", new ExternalResource(url));
                         browser.setType(Embedded.TYPE_BROWSER);
                         browser.setSizeFull();
-                        browser.setHeight("800px");
-                        browser.setWidth("100%");
+                        //browser.setHeight("800px");
+                        //browser.setWidth("100%");
                         
                         NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
                         
@@ -347,8 +347,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
-                browser.setHeight("800px");
-                browser.setWidth("100%");
+                //browser.setHeight("800px");
+                //browser.setWidth("100%");
                 
                 NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
                 

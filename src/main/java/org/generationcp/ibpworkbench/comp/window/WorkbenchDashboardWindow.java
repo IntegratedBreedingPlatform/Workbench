@@ -176,7 +176,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         crumbTrail.setMargin(true, true, false, true);
         crumbTrail.setSpacing(false);
         crumbTrail.setSizeUndefined();
-
+        crumbTrail.setHeight("36px");
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
 
@@ -212,11 +212,20 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         Component leftArea = layoutLeftArea();
         contentAreaSplitPanel.addComponent(leftArea);
 
+        mainContent.setSizeFull();
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
+        
         mainContent.addComponent(crumbTrail);
-        mainContent.addComponent(workbenchDashboard);
-
+        
+        VerticalLayout wrap = new VerticalLayout();
+        wrap.setSizeFull();
+        wrap.addStyleName("gcp-dashboard-main");
+        wrap.addComponent(workbenchDashboard);
+        //mainContent.setSizeUndefined();
+    	mainContent.addComponent(wrap);
+        mainContent.setExpandRatio(wrap,1.0F);
+        
         // layout the right area of the content area split panel
         // contentAreaSplitPanel.addComponent(workbenchDashboard);
         contentAreaSplitPanel.addComponent(mainContent);
@@ -413,7 +422,21 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         // contentAreaSplitPanel.addComponent(content);
 
         mainContent.removeComponent(mainContent.getComponent(1));
-        mainContent.addComponent(content);
+        
+        if (content instanceof Embedded) {
+        	//mainContent.setSizeFull();
+            mainContent.addComponent(content);
+            mainContent.setExpandRatio(content,1.0F);
+
+        } else {
+            VerticalLayout wrap = new VerticalLayout();
+            wrap.setSizeFull();
+            wrap.addStyleName("gcp-dashboard-main");
+            wrap.addComponent(content);
+            //mainContent.setSizeUndefined();
+        	mainContent.addComponent(wrap);
+            mainContent.setExpandRatio(wrap,1.0F);
+        }
     }
 
     public WorkbenchDashboard getWorkbenchDashboard() {
