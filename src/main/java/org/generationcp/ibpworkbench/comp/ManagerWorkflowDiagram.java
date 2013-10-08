@@ -327,21 +327,20 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
-        setWidth("1000px");
-
-        dashboardTitle.setSizeUndefined();
+    	this.setSizeFull();
+    	this.setSpacing(true);
+    	this.setMargin(new MarginInfo(true,false,false,true));
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
-        workFlowArea.setSizeUndefined();
         addComponent(workFlowArea);
-
+        this.setExpandRatio(workFlowArea, 1.0F);
     }
 
     protected Component layoutWorkflowArea() {
         Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         
         AbsoluteLayout layout = new AbsoluteLayout();

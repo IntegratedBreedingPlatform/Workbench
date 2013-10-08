@@ -34,6 +34,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Layout.MarginInfo;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -270,27 +271,26 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
-        setWidth("1000px");
-        setHeight("1500px");
-
-        dashboardTitle.setSizeUndefined();
+    	this.setSizeFull();
+    	this.setSpacing(true);
+    	this.setMargin(new MarginInfo(true,false,false,true));
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
-
+        this.setExpandRatio(workFlowArea, 1.0F);
     }
 
     protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
+    	Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
+        
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("620px");
         layout.setHeight("1400px");
-        panel.setHeight("1500px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;

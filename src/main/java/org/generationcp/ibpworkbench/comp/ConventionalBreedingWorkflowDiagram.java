@@ -34,6 +34,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Layout.MarginInfo;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -250,22 +251,23 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
-        setWidth("1000px");
-
-        dashboardTitle.setSizeUndefined();
+    	this.setSizeFull();
+    	this.setSpacing(true);
+    	this.setMargin(new MarginInfo(true,false,false,true));
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
-        workFlowArea.setSizeUndefined();
         addComponent(workFlowArea);
-
+        this.setExpandRatio(workFlowArea, 1.0F);
     }
 
     protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
+    	Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
+        
+        
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("300px");

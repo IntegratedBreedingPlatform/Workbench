@@ -34,6 +34,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Layout.MarginInfo;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -308,24 +309,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
-        setWidth("870px");
-        setHeight("1200px");
-
-        dashboardTitle.setSizeUndefined();
+    	this.setSizeFull();
+    	this.setSpacing(true);
+    	this.setMargin(new MarginInfo(true,false,false,true));
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
-        //workFlowArea.setSizeUndefined();
-        workFlowArea.setHeight("1200px");
         addComponent(workFlowArea);
-
+        this.setExpandRatio(workFlowArea, 1.0F);
     }
 
     protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
+    	Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
+        
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(false);

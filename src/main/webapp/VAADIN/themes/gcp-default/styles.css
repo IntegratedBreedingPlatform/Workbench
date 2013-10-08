@@ -618,5 +618,5 @@ s
 }
 
 .gcp-dashboard-main > div {
-	overflow: auto !important;
+	overflow-y: auto !important;
 }
