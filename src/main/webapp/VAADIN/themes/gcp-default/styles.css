@@ -616,3 +616,7 @@ s
 .v-table-cell-content-locationName {
 	font-weight: bold;
 }
+
+.gcp-dashboard-main > div {
+	overflow: auto !important;
+}
