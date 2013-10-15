@@ -290,10 +290,6 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	}
 
 	protected void initializeComponents() {
-
-		setSpacing(true);
-		setMargin(true);
-	
 		HorizontalLayout horizontal = new HorizontalLayout();
 
 		ManagerFactory managerFactory = managerFactoryProvider
@@ -348,7 +344,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		horizontal.setHeight("530px");
 		horizontal.setExpandRatio(studiesTabsheet, 1.0F);
 
-		addComponent(horizontal);
+		this.addComponent(horizontal);
 
 		Button button = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
 		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
@@ -516,12 +512,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			}
 		});
 		
-		
-		this.setExpandRatio(horizontal, 1.0F);
- 
 		HorizontalLayout btnLayout = new HorizontalLayout();
-		btnLayout.setSizeFull();
-		btnLayout.setSpacing(true);
+
+        btnLayout.setSizeUndefined();
+		btnLayout.setWidth("100%");
+        btnLayout.setSpacing(true);
 		btnLayout.setMargin(true);
 		
 		Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
@@ -539,9 +534,11 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 
 
 	protected void initializeLayout() {
-		setSpacing(true);
-		setMargin(true);
-		setSizeFull();
+		this.setSpacing(true);
+		this.setMargin(true);
+
+        this.setSizeUndefined();
+        this.setWidth("100%");
 	}
 
 	protected void initializeActions() {

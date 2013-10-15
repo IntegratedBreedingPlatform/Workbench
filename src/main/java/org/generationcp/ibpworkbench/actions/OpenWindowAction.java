@@ -22,7 +22,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.comp.window.GxeAnalysisWindow;
 import org.generationcp.ibpworkbench.comp.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.comp.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.comp.window.UserToolsManagerWindow;
@@ -60,7 +59,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
-        ,BREEDING_GXE("breeding_gxe")
+        //,BREEDING_GXE("breeding_gxe")
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
@@ -173,18 +172,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	Window mywindow = null;
     	Boolean windowLaunched = false;
     	String windowCaption = "";
-    	
-    	if(WindowEnum.BREEDING_GXE.getwindowName().equals(windowName) )
-    	{
-    		mywindow = new GxeAnalysisWindow(this.project,this.role);
-    		mywindow.setWidth("1000");
-    		
-    		window.addWindow(mywindow);
-    		windowLaunched = true;
-    		
-    		windowCaption = mywindow.getCaption();
-    	}
-    	else if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
+
+    	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
     	{
     		mywindow = new ProjectMemberWindow(this.project);
     		mywindow.setWidth("700");
