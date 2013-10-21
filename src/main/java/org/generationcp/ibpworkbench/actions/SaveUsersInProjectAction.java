@@ -148,10 +148,10 @@ public class SaveUsersInProjectAction implements ClickListener{
             ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
             createLocalDatabaseUsers(managerFactory, projectUserRoles, project);
             
-            event.getComponent().getWindow().showNotification("Added Members");
+            event.getComponent().getWindow().showNotification("Successfully updated this project's members list.");
         } catch(MiddlewareQueryException ex) {
             //do nothing because getting the User will not fail
-            event.getComponent().getWindow().showNotification("Failed to add members");
+            event.getComponent().getWindow().showNotification("A database problem occured while updating this project's members list. Please contact your administrator.");
         }
         
         try{
