@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
+import org.generationcp.ibpworkbench.comp.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -117,7 +118,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 	private Button germplasmImportButton2;
 
 	private Button datasetImporterBtn;
-    
+    private Button updateProjectButton;
+
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -166,7 +168,13 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         membersButton.setSizeUndefined();
         membersButton.setDescription(messageSource.getMessage(Message.MEMBERS_LINK_DESC));
-        
+
+        updateProjectButton = new Button("Update Project Details");
+        updateProjectButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        updateProjectButton.setSizeUndefined();
+        updateProjectButton.setDescription("Click to update project details and workflows.");
+
+
         breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_LINK));
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
@@ -466,6 +474,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(membersButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(membersButton, 0);
 
+        layout.addComponent(updateProjectButton);
+        updateProjectButton.setHeight("20px");
+        layout.setComponentAlignment(updateProjectButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(updateProjectButton, 0);
+
         layout.addComponent(backupIBDBButton);
         backupIBDBButton.setHeight("20px");
         layout.setComponentAlignment(backupIBDBButton, Alignment.TOP_CENTER);
@@ -717,7 +730,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     
     protected void initializeActions() {
         if (!workflowPreview) {
-        	
+            updateProjectButton.addListener(new OpenUpdateProjectPageAction());
         	mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));

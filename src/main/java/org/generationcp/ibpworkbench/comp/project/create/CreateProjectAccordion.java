@@ -53,31 +53,31 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
     public static final int FIFTH_TAB_LOCATIONS = 5;
 
     // Tabs are disabled by default, except for basic details. Once required information are supplied, they will be enabled
-    private boolean userRolesEnabled;
-    private boolean projectMembersEnabled;
+    protected boolean userRolesEnabled;
+    protected boolean projectMembersEnabled;
     //    private boolean breedingMethodsEnabled;
     //    private boolean locationsEnabled;
-    private int previousTabOnFocus;
+    protected int previousTabOnFocus;
 
-    private CreateProjectPanel createProjectPanel; // the containing panel
+    protected CreateProjectPanel createProjectPanel; // the containing panel
 
-    private ProjectBasicDetailsComponent basicDetailsTab;
-    private ProjectUserRolesComponent userRolesTab;
-    private ProjectMembersComponent membersTab;
+    protected ProjectBasicDetailsComponent basicDetailsTab;
+    protected ProjectUserRolesComponent userRolesTab;
+    protected ProjectMembersComponent membersTab;
     //    private ProjectBreedingMethodsComponent breedingMethodsTab;
     //    private ProjectLocationsComponent locationsTab;
 
-    private VerticalLayout layoutBasicDetails;
-    private VerticalLayout layoutUserRoles;
-    private VerticalLayout layoutProjectMembers;
+    protected VerticalLayout layoutBasicDetails;
+    protected VerticalLayout layoutUserRoles;
+    protected VerticalLayout layoutProjectMembers;
     //    private VerticalLayout layoutBreedingMethods;
     //    private VerticalLayout layoutLocations;
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    protected WorkbenchDataManager workbenchDataManager;
 
     @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+    protected SimpleResourceBundleMessageSource messageSource;
 
     public CreateProjectAccordion(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
@@ -91,15 +91,23 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         //        locationsEnabled = false;
     }
 
-    public void selectedTabChangeAction() throws InternationalizableException {
-    	
-    	
+    public Integer getSelectedProjectTab() {
         Component selected = this.getSelectedTab();
         Tab tab = this.getTab(selected);
-       
+
         Integer selectedTab = (Integer) ((VerticalLayout) tab.getComponent()).getData();
-        
-        switch(selectedTab) {
+
+        return selectedTab;
+    }
+
+
+    public void selectedTabChangeAction() throws InternationalizableException {
+
+
+        Component selected = this.getSelectedTab();
+        Tab tab = this.getTab(selected);
+
+        switch(this.getSelectedProjectTab()) {
 	        case FIRST_TAB_BASIC_DETAILS:
 	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
 	        	break;

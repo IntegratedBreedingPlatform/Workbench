@@ -21,6 +21,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowPreviewAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
@@ -171,7 +173,23 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         nextButton = new Button("Next");
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);
+
         return buttonLayout;
+
+
+    }
+
+
+    /**
+     * Remove the next button, for use with update project page
+     */
+    public void removeNextBtn() {
+        if (buttonArea instanceof  HorizontalLayout) {
+            HorizontalLayout _buttonArea = (HorizontalLayout)buttonArea;
+
+            if (nextButton != null)
+                _buttonArea.removeComponent(nextButton);
+        }
     }
 
     private List<CheckBox> createUserRolesCheckBoxList() {
@@ -285,6 +303,21 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
             }
         }
         return roles;
-}
+    }
+
+    public void setRolesForProjectMembers(Project currentProject,User currentUser) throws MiddlewareQueryException {
+        List <Role> roles =  workbenchDataManager.getRolesByProjectAndUser(currentProject,currentUser);
+
+        for (CheckBox cb : userRoleCheckBoxList) {
+            for (Role role : roles) {
+                if (((Integer)cb.getData()).intValue() == ((Integer)role.getRoleId()).intValue()) {
+                    cb.setValue(true); // set the value of checkbox to true
+
+                    roles.remove(role); // Pop the role as it has a match
+                    break;
+                }
+            }
+        }
+    }
 
 }
