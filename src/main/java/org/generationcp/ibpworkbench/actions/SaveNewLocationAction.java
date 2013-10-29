@@ -89,7 +89,7 @@ public class SaveNewLocationAction implements ClickListener{
     			sb.append(location.getLocationName() + "\n");
     			sb.append("Continue to save anyway?");
 
-    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Yes", "No", new ConfirmDialog.Listener() {
+    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Yes", "Cancel", new ConfirmDialog.Listener() {
 
     				private static final long serialVersionUID = 1L;
 
