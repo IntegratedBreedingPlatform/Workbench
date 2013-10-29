@@ -12,16 +12,17 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.Date;
+import java.util.List;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
+import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
 import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.User;
@@ -69,91 +70,111 @@ public class SaveNewLocationAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        newLocationForm.commit();
-
-        @SuppressWarnings("unchecked")
-        BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
+    	
+    	newLocationForm.commit();
+    	@SuppressWarnings("unchecked")
+		BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
         LocationModel location = locationBean.getBean();
+    	
+    	StringBuilder sb = new StringBuilder();
+    	try {
+    		List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.LIKE);
+		
+    		if (existingLocations.size() > 0){
+    			sb.append("There are already locations of the name you've specified:\n");
+    			for  (Location loc : existingLocations){
+    				sb.append(loc.getLname() + "\n");
+    			}
+    			sb.append("Continue to save anyway?");
 
-        newLocationForm.commit();
+    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Continue to Save", "Cancel", new ConfirmDialog.Listener() {
 
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+    				private static final long serialVersionUID = 1L;
 
-        // TODO: (BUG) there's a problem getting the nextKey of the locations when there's already existing locations
-        // in the local database. Always starts at -1 for new sessions
-        if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
-
-            app.getSessionData().getUniqueLocations().add(location.getLocationName());
-
-            Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
-
-            nextKey = nextKey * -1;
-
-            LocationModel newLocation = new LocationModel();
-
-            newLocation.setLocationName(location.getLocationName());
-            newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
-            newLocation.setLocationId(nextKey);
-            
-            newLocation.setLtype(location.getLtype() != null ? location.getLtype() : 0);
-            newLocation.setCntryid(location.getCntryid() != null ? location.getCntryid() : 0);
-            
-            app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
-
-            LOG.info(app.getSessionData().getProjectLocationData().toString());
-
-            newLocationForm.commit();
-
-            Location newLoc = this.initiliazeLocation(new Location());
-            newLoc.setLocid(newLocation.getLocationId());
-            newLoc.setLname(newLocation.getLocationName());
-            newLoc.setLabbr(newLocation.getLocationAbbreviation());
-            newLoc.setLtype(newLocation.getLtype() != null ? newLocation.getLtype() : 0);
-            newLoc.setCntryid(newLocation.getCntryid() != null ? newLocation.getCntryid() : 0);
-            
-            /**if (projectLocationsComponent != null) {
-                projectLocationsComponent.getSelect().addItem(newLoc);
-                projectLocationsComponent.getSelect().setItemCaption(newLoc, newLoc.getLname());
-
-                projectLocationsComponent.getSelect().select(newLoc);
-                projectLocationsComponent.getSelect().setValue(newLoc);
-            } else if (projectLocationPanel != null) {
-                projectLocationPanel.getSelect().addItem(newLoc);
-                projectLocationPanel.getSelect().setItemCaption(newLoc, newLoc.getLname());
-                projectLocationPanel.addNewLocations(newLoc);
-                
-                projectLocationPanel.getSelect().select(newLoc);
-                projectLocationPanel.getSelect().setValue(newLoc);
-            }**/
-            
-            try {
-				projectLocationsController.getGermplasmDataManager().addLocation(newLoc);
-				//projectLocationsController.addNewLocations(newLoc);
-	            //projectLocationsView.onUpdateAvailableTableOnFilter(null);
-				projectLocationsView.addToAvailableLocation(newLoc);
-			} catch (MiddlewareQueryException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-            
-            
-            
-            User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
-            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
-            try {
-				workbenchDataManager.addProjectActivity(projAct);
-			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-            newLocation = null;
-            window.getParent().removeWindow(window);
-
-        }
+    				@Override
+    				public void onClose(ConfirmDialog dialog) {
+    					if (dialog.isConfirmed()){
+    						saveLocation();
+    					}
+    					
+    				}
+    			});
+    			
+    		}else{
+    			saveLocation();
+    		}
+    		
+    	} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+    	
+		
 
     }
+    
+    private void saveLocation(){
+    	
+         @SuppressWarnings("unchecked")
+         BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
+         LocationModel location = locationBean.getBean();
+
+         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+         // TODO: (BUG) there's a problem getting the nextKey of the locations when there's already existing locations
+         // in the local database. Always starts at -1 for new sessions
+         //if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
+
+             app.getSessionData().getUniqueLocations().add(location.getLocationName());
+
+             Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+
+             nextKey = nextKey * -1;
+
+             LocationModel newLocation = new LocationModel();
+
+             newLocation.setLocationName(location.getLocationName());
+             newLocation.setLocationAbbreviation(location.getLocationAbbreviation());
+             newLocation.setLocationId(nextKey);
+             
+             newLocation.setLtype(location.getLtype() != null ? location.getLtype() : 0);
+             newLocation.setCntryid(location.getCntryid() != null ? location.getCntryid() : 0);
+             
+             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
+
+             LOG.info(app.getSessionData().getProjectLocationData().toString());
+
+             newLocationForm.commit();
+
+             Location newLoc = this.initiliazeLocation(new Location());
+             newLoc.setLocid(newLocation.getLocationId());
+             newLoc.setLname(newLocation.getLocationName());
+             newLoc.setLabbr(newLocation.getLocationAbbreviation());
+             newLoc.setLtype(newLocation.getLtype() != null ? newLocation.getLtype() : 0);
+             newLoc.setCntryid(newLocation.getCntryid() != null ? newLocation.getCntryid() : 0);
+             
+             
+             try {
+ 				projectLocationsController.getGermplasmDataManager().addLocation(newLoc);
+ 				projectLocationsView.addToAvailableLocation(newLoc);
+ 			} catch (MiddlewareQueryException e1) {
+ 				e1.printStackTrace();
+ 			}
+
+             User user = app.getSessionData().getUserData();
+             Project currentProject = app.getSessionData().getLastOpenedProject();
+             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
+             try {
+ 				workbenchDataManager.addProjectActivity(projAct);
+ 			} catch (MiddlewareQueryException e) {
+ 				e.printStackTrace();
+ 			}
+
+             newLocation = null;
+             window.getParent().removeWindow(window);
+
+         //}
+    }
+    
     private Location initiliazeLocation(Location l) {
         Location location = new Location();
         location.setLocid(l.getLocid());
