@@ -12,8 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.project.create;
 
-import java.util.List;
-
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
@@ -26,13 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
+import java.util.List;
 
 /**
  * The create project panel 
@@ -45,18 +38,19 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
 
     private static final long serialVersionUID = 1L;
     
-    private CreateProjectAccordion createProjectAccordion;
+    protected CreateProjectAccordion createProjectAccordion;
 
-    
-    private HorizontalLayout newProjectTitleArea;
-    private Button cancelButton;
-    private Button saveProjectButton;
-    private Component buttonArea;
-    
-    private Project project;                // the project created
-    private List<Location> newLocations;    // locations added in Locations tab (ProjectLocationsComponent)
-    private List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
-    private List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
+
+    protected HorizontalLayout newProjectTitleArea;
+    protected Button cancelButton;
+    protected Button saveProjectButton;
+    protected Component buttonArea;
+
+    protected Project project;                // the project created
+    protected List<Location> newLocations;    // locations added in Locations tab (ProjectLocationsComponent)
+    protected List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
+    protected List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
+    protected User currentUser;               // should be the currently logged in user that will try to add / update a new project
 
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -203,5 +197,14 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     	newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
     	
     	
+    }
+
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
+    public User getCurrentUser() {
+        return this.currentUser;
     }
 }

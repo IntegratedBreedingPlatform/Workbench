@@ -204,6 +204,12 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
         return comboBox;
     }
+
+    public void updateProjectDetailsFormField(Project project) {
+       this.projectNameField.setValue(project.getProjectName());
+       this.startDateField.setValue(project.getStartDate());
+       this.cropTypeCombo.setValue(project.getCropType());
+    }
     
     public boolean validate(){
         boolean success = true;
@@ -221,8 +227,14 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             try {
                 Project project = workbenchDataManager.getProjectByName(projectName);
                 if (project != null && project.getProjectName() != null && project.getProjectName().equals(projectName)){
-                    errorDescription.append("There is already a project with the given name. ");
-                    success = false;
+
+                    if (createProjectPanel.getProject() == null ||
+                                createProjectPanel.getProject().getProjectId().intValue() != project.getProjectId().intValue()
+                            ) {
+                        errorDescription.append("There is already a project with the given name. ");
+                        success = false;
+                    }
+
                 }
             }
             catch (MiddlewareQueryException e) {

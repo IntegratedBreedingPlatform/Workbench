@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -64,13 +65,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Panel;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
  *  
  */
 @Configurable
-public class ProjectBreedingMethodsPanel extends VerticalLayout implements InitializingBean {
+public class ProjectBreedingMethodsPanel extends Panel implements InitializingBean {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(ProjectBreedingMethodsPanel.class);
@@ -142,13 +144,19 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
         initializeActions();
     }
 
-    protected void initializeComponents() throws MiddlewareQueryException {    		
-    	setSpacing(true);
-        setMargin(true);
-        
-        addComponent(layoutMethodsArea());
+    protected void initializeComponents() throws MiddlewareQueryException {
+        VerticalLayout container = new VerticalLayout();
+        container.setSizeUndefined();
+        container.setWidth("750px");
+        container.setSpacing(true);
+        container.setMargin(true);
+
+        container.addComponent(layoutMethodsArea());
         buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
+        container.addComponent(buttonArea);
+        container.setComponentAlignment(buttonArea,Alignment.TOP_RIGHT);
+
+        this.addComponent(container);
 
     }
 
@@ -157,10 +165,9 @@ public class ProjectBreedingMethodsPanel extends VerticalLayout implements Initi
     }
 
     protected void initializeLayout() {
-    	setSizeFull();
-        setSpacing(true);
-        setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        this.setStyleName(Reindeer.PANEL_LIGHT);
+        this.setSizeFull();
+        this.setScrollable(true);
     }
 
     protected void initializeActions() {
