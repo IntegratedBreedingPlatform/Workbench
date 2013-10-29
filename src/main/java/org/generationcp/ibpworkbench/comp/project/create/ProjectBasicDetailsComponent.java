@@ -303,4 +303,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             }
         }
     }
+
+    public void disableCropTypeCombo() {
+        this.cropTypeCombo.setEnabled(false);
+    }
 }

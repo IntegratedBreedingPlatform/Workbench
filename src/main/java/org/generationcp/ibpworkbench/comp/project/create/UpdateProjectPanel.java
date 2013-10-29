@@ -1,12 +1,17 @@
 package org.generationcp.ibpworkbench.comp.project.create;
 
 import com.vaadin.ui.*;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UpdateProjectPanel extends CreateProjectPanel {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    private String oldProjectName;
 
     public UpdateProjectPanel() {
         super();
@@ -27,7 +33,29 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     @Override
     protected void initializeActions() {
         super.saveProjectButton.addListener(new UpdateProjectAction(this));
-        cancelButton.addListener(new HomeAction());
+        cancelButton.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                try {
+
+                    Project project = UpdateProjectPanel.this.getProject();
+
+                    // I'm defaulting the Role to Manager role
+                    WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
+                    Role role = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
+
+                    String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
+                    (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
+                } catch (Exception e) {
+                    if(e.getCause() instanceof InternationalizableException) {
+                        InternationalizableException i = (InternationalizableException) e.getCause();
+                        MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+                    }
+                    return;
+                }
+            }
+        });
 
     }
 
@@ -63,6 +91,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
             // initialize state
             currentUser = workbenchDataManager.getUserById(IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid());   // get hibernate managed version of user
             project = workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
+            oldProjectName = new String(project.getProjectName());
+
 
             this.setSelectedCropType(project.getCropType());
 
@@ -100,7 +130,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
         newProjectTitleArea.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
+    }
 
-
+    public String getOldProjectName() {
+        return oldProjectName;
     }
 }

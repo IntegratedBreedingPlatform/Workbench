@@ -125,7 +125,12 @@
     <view path="/CreateProject"
           label="Create Project"
           level="1"
-          class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />                                 
+          class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />
+
+    <view path="/UpdateProject"
+          label="Update Project"
+          level="2"
+          class="org.generationcp.ibpworkbench.comp.project.create.OpenUpdateProjectPageAction" />
 
     <view path="/CreateContacts"
           label="Create Contacts"

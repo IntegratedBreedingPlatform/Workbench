@@ -4,13 +4,21 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,10 +27,18 @@ import org.slf4j.LoggerFactory;
  * Time: 12:40 PM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class OpenUpdateProjectPageAction  implements Button.ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenUpdateProjectPageAction.class);
+
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
 
     @Override
     public void buttonClick(Button.ClickEvent event) {
@@ -45,6 +61,9 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
             w.showContent(projectPanel);
 
             NavManager.navigateApp(window, "/UpdateProject", isLinkAccessed);
+            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Project", "Launched Update Project", projectPanel.getCurrentUser(), new Date());
+            workbenchDataManager.addProjectActivity(projAct);
+
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

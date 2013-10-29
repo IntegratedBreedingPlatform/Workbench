@@ -9,7 +9,13 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +37,7 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
         layoutBasicDetails = new VerticalLayout();
         layoutBasicDetails.setData(FIRST_TAB_BASIC_DETAILS);
         basicDetailsTab = new ProjectBasicDetailsComponent(createProjectPanel);
+        basicDetailsTab.disableCropTypeCombo();
 
         // update basicDetailsTabUI
         basicDetailsTab.updateProjectDetailsFormField(createProjectPanel.getProject());
@@ -87,5 +94,43 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
         }
     }
 
+    @Override
+    public boolean validate() {
+        if (basicDetailsTab.validateAndSave()) {
+            if (userRolesTab != null) {
+                return userRolesTab.validateAndSave();
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<ProjectUserRole> getProjectUserRoles() {
+        if (userRolesTab != null) {
+            return userRolesTab.getProjectUserRoles();
+        }
+
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        try {
+
+            List<Role> currentUserRoles =  workbenchDataManager.getRolesByProjectAndUser(createProjectPanel.getProject(),createProjectPanel.getCurrentUser());
+
+            for (Role role : currentUserRoles) {
+                ProjectUserRole projectUserRole = new ProjectUserRole();
+                projectUserRole.setRole(role);
+                projectUserRole.setUserId(createProjectPanel.getCurrentUser().getUserid());
+                projectUserRole.setProject(createProjectPanel.getProject());
+
+                projectUserRoles.add(projectUserRole);
+            }
+
+        } catch (MiddlewareQueryException e) {
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+
+        return projectUserRoles;
+    }
 
 }

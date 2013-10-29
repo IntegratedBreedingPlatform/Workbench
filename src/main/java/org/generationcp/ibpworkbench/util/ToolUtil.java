@@ -569,8 +569,7 @@ public class ToolUtil {
             .getInstallationDirectory();
 
         // create the directory for the project
-        String projectDirName = String.format("%d-%s", project.getProjectId(),
-                                              project.getProjectName());
+        String projectDirName = String.format("%d", project.getProjectId());
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
         projectDir.mkdirs();
@@ -587,6 +586,21 @@ public class ToolUtil {
         }
     }
 
+    public void renameOldWorkspaceDirectoryToNewFormat(long projectId,String oldProjectName) throws MiddlewareQueryException {
+        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+        if (workbenchSetting == null)
+            return;
+
+        String installationDirectory = workbenchSetting
+                .getInstallationDirectory();
+
+        File oldDir = new File(installationDirectory + File.separator + workspaceDirectory,String.format("%d-%s",projectId,oldProjectName));
+
+        if (oldDir.exists()) {
+            oldDir.renameTo(new File(installationDirectory + File.separator + workspaceDirectory,String.format("%d",projectId)));
+        }
+    }
+
     public String getInputDirectoryForTool(Project project, Tool tool)
         throws MiddlewareQueryException {
         WorkbenchSetting workbenchSetting = workbenchDataManager
@@ -596,8 +610,7 @@ public class ToolUtil {
                 "Workbench Setting record was not found!");
         }
 
-        String projectDirName = String.format("%d-%s", project.getProjectId(),
-                                              project.getProjectName());
+        String projectDirName = String.format("%d", project.getProjectId());
 
         String installationDirectory = workbenchSetting
             .getInstallationDirectory();
@@ -617,8 +630,7 @@ public class ToolUtil {
                 "Workbench Setting record was not found!");
         }
 
-        String projectDirName = String.format("%d-%s", project.getProjectId(),
-                                              project.getProjectName());
+        String projectDirName = String.format("%d", project.getProjectId());
 
         String installationDirectory = workbenchSetting
             .getInstallationDirectory();
