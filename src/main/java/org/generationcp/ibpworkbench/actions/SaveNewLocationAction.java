@@ -81,13 +81,15 @@ public class SaveNewLocationAction implements ClickListener{
     		List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.LIKE);
 		
     		if (existingLocations.size() > 0){
-    			sb.append("There are already locations of the name you've specified:\n");
-    			for  (Location loc : existingLocations){
-    				sb.append(loc.getLname() + "\n");
+    			if (existingLocations.size() == 1){
+    				sb.append("There is already 1 location of the name you've specified:\n");
+    			}else{
+    				sb.append("There are already " + existingLocations.size() + " locations of the name you've specified:\n");
     			}
+    			sb.append(location.getLocationName() + "\n");
     			sb.append("Continue to save anyway?");
 
-    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Continue to Save", "Cancel", new ConfirmDialog.Listener() {
+    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Yes", "No", new ConfirmDialog.Listener() {
 
     				private static final long serialVersionUID = 1L;
 
