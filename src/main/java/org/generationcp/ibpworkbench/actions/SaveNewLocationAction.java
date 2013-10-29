@@ -78,7 +78,7 @@ public class SaveNewLocationAction implements ClickListener{
     	
     	StringBuilder sb = new StringBuilder();
     	try {
-    		List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.LIKE);
+    		List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
 		
     		if (existingLocations.size() > 0){
     			if (existingLocations.size() == 1){
