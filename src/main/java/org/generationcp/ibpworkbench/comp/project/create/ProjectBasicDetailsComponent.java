@@ -112,6 +112,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         
         startDateField = new DateField();
         startDateField.setRequired(true);
+        startDateField.setDateFormat("yyyy-MM-dd");
         startDateField.setRequiredError("Please enter a Start Date.");
 
         cropTypeCombo = createCropTypeComboBox();
