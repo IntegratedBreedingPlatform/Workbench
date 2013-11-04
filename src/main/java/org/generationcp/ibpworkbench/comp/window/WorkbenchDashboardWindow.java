@@ -93,7 +93,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private WorkbenchDashboardWindow thisInstance;
+    private static WorkbenchDashboardWindow thisInstance;
 
 	//private Button userToolsButton;
 
@@ -184,6 +184,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     }
 
     protected void initializeLayout() {
+
         setSizeFull();
 
         VerticalLayout layout = new VerticalLayout();
@@ -233,6 +234,8 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
         verticalSplitPanel.addComponent(contentAreaSplitPanel);
 
         setContent(layout);
+
+
     }
 
     protected void initializeActions() {
@@ -482,6 +485,7 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
          workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
     }
+
     @Override
     public void updateLabels() {
         String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
@@ -512,5 +516,9 @@ public class WorkbenchDashboardWindow extends Window implements IContentWindow, 
     	} else {
     		createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
     	}
+    }
+
+    public static WorkbenchDashboardWindow getInstance() {
+           return thisInstance;
     }
 }
