@@ -18,6 +18,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
 import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.comp.window.ConfirmLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
 import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -76,31 +78,20 @@ public class SaveNewLocationAction implements ClickListener{
 		BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
         LocationModel location = locationBean.getBean();
     	
-    	StringBuilder sb = new StringBuilder();
     	try {
     		List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
 		
     		if (existingLocations.size() > 0){
-    			if (existingLocations.size() == 1){
-    				sb.append("There is already 1 location of the name you've specified:\n");
-    			}else{
-    				sb.append("There are already " + existingLocations.size() + " locations of the name you've specified:\n");
-    			}
-    			sb.append(location.getLocationName() + "\n");
-    			sb.append("Continue to save anyway?");
 
-    			ConfirmDialog.show(window.getParent(), "Confirmation", sb.toString(), "Yes", "Cancel", new ConfirmDialog.Listener() {
+    			new ConfirmLocationsWindow(window, existingLocations ,projectLocationsController, new Button.ClickListener() {
+				
+					private static final long serialVersionUID = 1L;
 
-    				private static final long serialVersionUID = 1L;
-
-    				@Override
-    				public void onClose(ConfirmDialog dialog) {
-    					if (dialog.isConfirmed()){
-    						saveLocation();
-    					}
-    					
-    				}
-    			});
+					@Override
+					public void buttonClick(ClickEvent event) {
+						saveLocation();
+					}
+				} ).show();
     			
     		}else{
     			saveLocation();
