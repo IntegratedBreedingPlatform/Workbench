@@ -22,6 +22,17 @@
     <session-timeout>-1</session-timeout>
   </session-config>
 
+  <filter>
+      <filter-name>HTTPRequestAwareFilter</filter-name>
+      <filter-class>org.generationcp.commons.hibernate.HTTPRequestAwareServletFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+      <filter-name>HTTPRequestAwareFilter</filter-name>
+      <url-pattern>/main/*</url-pattern>
+  </filter-mapping>
+
+
   <servlet>
     <servlet-name>ibpworkbench</servlet-name>
     <servlet-class>org.generationcp.commons.vaadin.spring.SpringApplicationServlet</servlet-class>

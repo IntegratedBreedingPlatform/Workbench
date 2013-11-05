@@ -105,7 +105,8 @@ public class UpdateProjectAction implements Button.ClickListener  {
             ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Project", "Updated Project - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
-            WorkbenchDashboardWindow.getInstance().addTitle(projectPanel.getProject().getProjectName());
+            if (WorkbenchDashboardWindow.getInstance() != null)
+                WorkbenchDashboardWindow.getInstance().addTitle(projectPanel.getProject().getProjectName());
         }
     }
 }

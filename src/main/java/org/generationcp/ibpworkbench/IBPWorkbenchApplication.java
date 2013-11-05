@@ -30,7 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-public class IBPWorkbenchApplication extends SpringContextApplication implements ApplicationContextAware {
+public class IBPWorkbenchApplication extends SpringContextApplication {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,26 +44,19 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     private UpdateComponentLabelsAction messageSourceListener;
     
     private SessionData sessionData = new SessionData();
+    private static HttpServletRequest request;
 
-    private ApplicationContext applicationContext;
+    public static HttpServletResponse getResponse() {
+        return response;
+    }
+
+    public static HttpServletRequest getRequest() {
+        return request;
+    }
 
     private static HttpServletResponse response;
 
-	public static HttpServletResponse getResponse() {
-		return response;
-	}
 
-	public static HttpServletRequest getRequest() {
-		return request;
-	}
-
-	private static HttpServletRequest request;
-    
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-    
     public SessionData getSessionData() {
         return sessionData;
     }
@@ -129,26 +122,28 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     @Override
     protected void doOnRequestStart(HttpServletRequest request, HttpServletResponse response) {
         super.doOnRequestStart(request, response);
+
+        this.response = response;
+        this.request = request;
+        //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
         
-        LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
+        //synchronized (this) {
+        //    HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
+        //}
         
-        synchronized (this) {
-            HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
-        }
-        
-        IBPWorkbenchApplication.response = response;	// get a reference of the response
-        IBPWorkbenchApplication.request = request;
+        //IBPWorkbenchApplication.response = response;	// get a reference of the response
+        //IBPWorkbenchApplication.request = request;
     }
     
     @Override
     protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
         super.doOnRequestEnd(request, response);
         
-        LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
+        //LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
         
-        synchronized (this) {
-            HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
-        }
+        //synchronized (this) {
+        //    HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
+        //}
     }
     
     

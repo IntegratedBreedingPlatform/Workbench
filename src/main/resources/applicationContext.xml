@@ -167,4 +167,6 @@
     </bean>
 
     <bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
+
+    <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 </beans>
