@@ -125,6 +125,8 @@ public class ConfirmLocationsWindow extends Window{
         locationsTable.setMultiSelect(false);
         locationsTable.setSelectable(false);
         locationsTable.setImmediate(true);
+        locationsTable.setWidth("100%");
+        locationsTable.setColumnReorderingAllowed(true);
         BeanItemContainer<LocationTableViewModel> container = new BeanItemContainer<LocationTableViewModel>(LocationTableViewModel.class);
         try {
 			for (Location loc : existingLocations){
