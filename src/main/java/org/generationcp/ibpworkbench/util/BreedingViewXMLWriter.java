@@ -151,7 +151,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
         try{
             String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s-%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId(), workbenchProject.getProjectName());
+            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId());
             ssaParameters.setOutputDirectory(outputDirectory);
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
