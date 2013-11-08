@@ -7,6 +7,14 @@
          url('helveticaneue-light-webfont.woff') format('woff');
 }
 
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('helveticaneue-webfont.eot');
+    src: url('helveticaneue-webfont.eot?#iefix') format('embedded-opentype'),
+    url('helveticaneue-webfont.woff') format('woff');
+}
+
 .v-app-IBPWorkbenchApplication * {
     outline:none !important; /*removes the dotted border*/
 }
@@ -280,7 +288,6 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     -khtml-border-radius: 10px;
     border-radius: 10px;
     border: 2px solid #045d91;
-s
 }
 
 .v-verticallayout-gcp-mars-workflow-step

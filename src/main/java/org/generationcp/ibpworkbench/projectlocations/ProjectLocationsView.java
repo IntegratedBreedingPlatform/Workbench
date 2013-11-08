@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.vaadin.data.Property;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -56,7 +57,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	private Select countryFilter;
 	private Select locationTypeFilter;
 	private TextField searchField;
-	private Button doFilterBtn;
+	//private Button doFilterBtn;
 
 	private ClickListener onAvailableLocationSelect;
 	private ClickListener onRemoveSaveLocation;
@@ -192,17 +193,30 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 				ProjectLocationsView.this.onAddLocationWindowAction(event);
 			}
 		});
-		
-		doFilterBtn.addListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 3112296828898899607L;
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
-			}
-		});
-		
-		onAvailableLocationSelect = new Button.ClickListener() {
+        searchField.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+            }
+        });
+
+        countryFilter.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+            }
+        });
+
+        locationTypeFilter.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+            }
+        });
+
+
+        onAvailableLocationSelect = new Button.ClickListener() {
 			private static final long serialVersionUID = 7925088387225345287L;
 
 			@Override
@@ -246,9 +260,12 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final HorizontalLayout container = new HorizontalLayout();		
 
 		countryFilter = new Select();
+        countryFilter.setImmediate(true);
 		locationTypeFilter = new Select();
+        locationTypeFilter.setImmediate(true);
 		searchField = new TextField();
-		doFilterBtn = new Button("Filter");
+        searchField.setImmediate(true);
+		//doFilterBtn = new Button("Filter");
 		
 		countryFilter.setNullSelectionAllowed(true);
 		locationTypeFilter.select(String.valueOf(410));
@@ -272,14 +289,15 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		countryLbl.setStyleName("loc-filterlbl");
 		ltypeLbl.setStyleName("loc-filterlbl");
 		searchLbl.setStyleName("loc-filterlbl");
-		
+
+
+        container.addComponent(searchLbl);
+        container.addComponent(searchField);
 		container.addComponent(countryLbl);
 		container.addComponent(countryFilter);
 		container.addComponent(ltypeLbl);
 		container.addComponent(locationTypeFilter);
-		container.addComponent(searchLbl);
-		container.addComponent(searchField);
-		container.addComponent(doFilterBtn);
+		//container.addComponent(doFilterBtn);
 		
 		root.addComponent(container);
 		
@@ -377,7 +395,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		LOG.debug("onAddLocationWindowAction:");
 	}
 	
-	public void onUpdateAvailableTableOnFilter(Button.ClickEvent event) {
+	public void onUpdateAvailableTableOnFilter(Property.ValueChangeEvent event) {
 		LOG.debug("onUpdateAvailableTableOnFilter:");
 		
 		Country selectedCountry = (Country) countryFilter.getValue();
