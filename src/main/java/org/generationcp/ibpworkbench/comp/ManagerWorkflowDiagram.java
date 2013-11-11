@@ -119,7 +119,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
 	private Button datasetImporterBtn;
     private Button updateProjectButton;
-
+    
+    private Button queryForAdaptedGermplasmButton;
+    private Button queryForAdaptedGermplasmButton2;
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -326,6 +328,16 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         mainHeadToHeadButton2.setSizeUndefined();
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
         
+        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setSizeUndefined();
+        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
+        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setSizeUndefined();
+        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
         datasetImporterBtn = new Button("Data Import Tool");
         datasetImporterBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         datasetImporterBtn.setSizeUndefined();
@@ -449,8 +461,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(gdmsButton, 0);
         */
         layout.addComponent(mainHeadToHeadButton);
+        mainHeadToHeadButton.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton);
+        queryForAdaptedGermplasmButton.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
+        
         
         return layout;
     }
@@ -685,9 +704,15 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setExpandRatio(crossStudyBrowserButton, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
+        mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
-          
+         
+        layout.addComponent(queryForAdaptedGermplasmButton2);
+        queryForAdaptedGermplasmButton2.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
+        
         return layout;
     }
 
@@ -776,6 +801,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
             
             datasetImporterBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.DATASET_IMPORTER));
+            
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
         }
     }
 

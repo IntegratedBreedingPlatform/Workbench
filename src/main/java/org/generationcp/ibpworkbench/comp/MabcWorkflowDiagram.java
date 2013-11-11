@@ -45,7 +45,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 250;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 275;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -108,6 +108,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 	private Button germplasmImportButton;
 
 	private Button germplasmImportButton2;
+	
+	private Button queryForAdaptedGermplasmButton;
+	private Button queryForAdaptedGermplasmButton2;
 
     public MabcWorkflowDiagram(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
@@ -253,6 +256,16 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription("Click to launch Fieldbook");
+        
+        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setSizeUndefined();
+        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
+        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setSizeUndefined();
+        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
         
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -426,6 +439,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton2);
+        queryForAdaptedGermplasmButton2.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
         return layout;
     }
@@ -568,6 +586,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
         
+        layout.addComponent(queryForAdaptedGermplasmButton);
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
+        
         /*
         layout.addComponent(optimasButton);
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
@@ -643,6 +665,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));	// TODO
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             
         
         }

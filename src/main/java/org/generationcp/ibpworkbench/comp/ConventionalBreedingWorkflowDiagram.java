@@ -45,7 +45,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 175;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 195;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -102,6 +102,9 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
 	private Button germplasmImportButton;
 
 	private Button germplasmImportButton2;
+	
+	private Button queryForAdaptedGermplasmButton;
+	private Button queryForAdaptedGermplasmButton2;
 
     public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -244,6 +247,16 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         optimasButton.setSizeUndefined();
         optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
         
+        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setSizeUndefined();
+        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
+        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setSizeUndefined();
+        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
         downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
@@ -271,7 +284,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(true);
         layout.setWidth("300px");
-        layout.setHeight("1000px");
+        layout.setHeight("1200px");
         
         String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
         int top = 10;
@@ -372,6 +385,11 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         mainHeadToHeadButton.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton);
+        queryForAdaptedGermplasmButton.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
         
        
         return layout;
@@ -503,13 +521,10 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
         
-       
+        layout.addComponent(queryForAdaptedGermplasmButton2);
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
         
-        /*
-        layout.addComponent(optimasButton);
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
-        */
         return layout;
     }
 
@@ -575,7 +590,8 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
-            
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
         }
     }
 

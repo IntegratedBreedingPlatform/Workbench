@@ -118,6 +118,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 	private Button germplasmImportButton;
 
 	private Button germplasmImportButton2;
+	
+	private Button queryForAdaptedGermplasmButton;
+	
+	private Button queryForAdaptedGermplasmButton2;
 
 	
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
@@ -305,6 +309,16 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mainHeadToHeadButton2.setSizeUndefined();
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+        
+        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setSizeUndefined();
+        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
+        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setSizeUndefined();
+        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
 
     }
 
@@ -433,6 +447,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         //headToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton2);
+        //queryForAdaptedGermplasmButton2.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
         
         return layout;
@@ -737,6 +756,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(mainHeadToHeadButton);
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton);
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
 
         return layout;
     }
@@ -773,7 +796,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("150px");
+        layout.setHeight("180px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
@@ -818,6 +841,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             recomMakeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
              
         }
     }
@@ -906,5 +932,18 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(recomMakeCrossesButton, Message.MAKE_CROSSES);
         messageSource.setDescription(recomMakeCrossesButton, Message.CLICK_TO_LAUNCH_CROSSING_MANAGER);
         
+        
+        messageSource.setCaption(makeCrossesButton, Message.MAKE_CROSSES);
+        messageSource.setDescription(makeCrossesButton, Message.CLICK_TO_LAUNCH_CROSSING_MANAGER);
+        
+        messageSource.setCaption(recomMakeCrossesButton, Message.MAKE_CROSSES);
+        messageSource.setDescription(recomMakeCrossesButton, Message.CLICK_TO_LAUNCH_CROSSING_MANAGER);
+        
+        
+        messageSource.setCaption(queryForAdaptedGermplasmButton, Message.QUERY_FOR_ADAPTED_GERMPLASM);
+        messageSource.setDescription(queryForAdaptedGermplasmButton, Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM);
+        
+        messageSource.setCaption(queryForAdaptedGermplasmButton2, Message.MAKE_CROSSES);
+        messageSource.setDescription(queryForAdaptedGermplasmButton2, Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM);
     }
 }

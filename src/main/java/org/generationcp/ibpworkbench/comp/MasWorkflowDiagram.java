@@ -45,7 +45,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
 
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 185;
+    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 210;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -86,6 +86,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     private Button mainHeadToHeadButton;
     private Button mainHeadToHeadButton2;
     private Button breedingPlannerButton;
+    private Button queryForAdaptedGermplasmButton;
+    private Button queryForAdaptedGermplasmButton2;
     
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
@@ -268,6 +270,17 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         mainHeadToHeadButton2.setSizeUndefined();
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
+        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setSizeUndefined();
+        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+        
+        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setSizeUndefined();
+        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+
+        
     }
 
     protected void initializeLayout() {
@@ -414,9 +427,15 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setExpandRatio(headToHeadButton2, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
-        headToHeadButton2.setHeight("20px");
+        mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
+        
+        layout.addComponent(queryForAdaptedGermplasmButton2);
+        queryForAdaptedGermplasmButton2.setHeight("20px");
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
+        
 
         return layout;
     }
@@ -575,6 +594,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
         
+        layout.addComponent(queryForAdaptedGermplasmButton);
+        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
+        
         return layout;
     }
 
@@ -645,6 +668,9 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
         }
     }
 
