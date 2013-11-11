@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
@@ -348,7 +349,9 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     	for (VariableType factor : factorsInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
     			 this.selEnvFactor.addItem(factor.getLocalName());
-    			 this.selEnvFactor.setValue(factor.getLocalName());
+    			 if (PhenotypicType.TRIAL_ENVIRONMENT.getLabelList().contains(factor.getLocalName())){
+    				 this.selEnvFactor.setValue(factor.getLocalName());
+    			 }
     		}
     	}
     	
@@ -392,7 +395,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
 				TrialEnvironments trialEnvironments;	
 				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
 				for (Variable var : trialEnvironments.getVariablesByLocalName(envFactorName)){
-					selEnvForAnalysis.addItem(var.getValue());
+					if (var.getValue() != null) selEnvForAnalysis.addItem(var.getValue());
 				}
 				
 			} catch (ConfigException e) {
