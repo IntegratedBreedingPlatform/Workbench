@@ -342,7 +342,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(false);
-        layout.setHeight("1000px");
+        layout.setHeight("1500px");
 
         Component breedingManagementArea = layoutBreedingManagementArea();
         breedingManagementArea.setHeight("100%");
@@ -796,7 +796,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("180px");
+        layout.setHeight("210px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
@@ -943,7 +943,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(queryForAdaptedGermplasmButton, Message.QUERY_FOR_ADAPTED_GERMPLASM);
         messageSource.setDescription(queryForAdaptedGermplasmButton, Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM);
         
-        messageSource.setCaption(queryForAdaptedGermplasmButton2, Message.MAKE_CROSSES);
+        messageSource.setCaption(queryForAdaptedGermplasmButton2, Message.QUERY_FOR_ADAPTED_GERMPLASM);
         messageSource.setDescription(queryForAdaptedGermplasmButton2, Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM);
     }
 }

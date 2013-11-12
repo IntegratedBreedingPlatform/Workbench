@@ -669,8 +669,8 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             
-            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
-            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
         }
     }
 
