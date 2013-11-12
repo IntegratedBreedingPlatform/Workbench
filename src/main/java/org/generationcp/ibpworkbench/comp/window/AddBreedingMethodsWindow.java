@@ -12,6 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import projectmethods.ProjectMethodsView;
 
 public class AddBreedingMethodsWindow extends Window {
     
@@ -33,11 +34,34 @@ public class AddBreedingMethodsWindow extends Window {
     private VerticalLayout layout;
     
 
-	private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
+	private Component projectBreedingMethodsPanel;
 
     
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
-    
+
+    public AddBreedingMethodsWindow(ProjectMethodsView projectBreedingMethodsPanel) {
+        /*
+         * Make the window modal, which will disable all other components while
+         * it is visible
+         */
+
+        this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
+        setModal(true);
+
+       /* Make the sub window 50% the size of the browser window */
+        setWidth("850px");
+        /*
+         * Center the window both horizontally and vertically in the browser
+         * window
+         */
+        center();
+
+        assemble();
+
+        setCaption("Add Breeding Method");
+
+    }
+
     
     public AddBreedingMethodsWindow(ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
         /*
