@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.vaadin.ui.Component;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import projectmethods.ProjectMethodsView;
 
 /**
  * 
@@ -52,7 +54,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     
     private AddBreedingMethodsWindow window;
     
-    private ProjectBreedingMethodsPanel projectBreedingMethodsPanel;
+    private Component projectBreedingMethodsPanel;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -60,7 +62,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
-    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
+    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
         this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;
@@ -121,25 +123,45 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             
             newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newMethod.setMfprg(0);
-            
-            ManagerFactory managerFactory = projectBreedingMethodsPanel.getManagerFactory();
-            
+
+            ManagerFactory managerFactory = null;
+            //TODO: UPDATE THIS CODE
+            if (projectBreedingMethodsPanel instanceof  ProjectBreedingMethodsPanel)  {
+                managerFactory = ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getManagerFactory();
+            } else if (projectBreedingMethodsPanel instanceof ProjectMethodsView) {
+                managerFactory = ((ProjectMethodsView)projectBreedingMethodsPanel).getManagerFactory();
+            }
+
             try {
-            	 managerFactory.getGermplasmDataManager().addMethod(newMethod);
-            	
-			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
+            	 Integer newMethodId = managerFactory.getGermplasmDataManager().addMethod(newMethod);
+
+                 newMethod.setMid(newMethodId);
+
+			} catch (Exception e) { // we might have null exception, better be prepared
 				e.printStackTrace();
 			}
             
             newMethod.setIsnew(true);
-            projectBreedingMethodsPanel.getSelect().addItem(newMethod);
-            projectBreedingMethodsPanel.getSelect().setItemCaption(newMethod, newMethod.getMname());
-            projectBreedingMethodsPanel.getSelect().select(newMethod);
-            projectBreedingMethodsPanel.getSelect().setValue(newMethod);
-            
-            
-            
+
+            //TODO: compatibility to old UI, remove this if new UI is stable and final
+            if (projectBreedingMethodsPanel instanceof  ProjectBreedingMethodsPanel)  {
+                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().addItem(newMethod);
+                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().setItemCaption(newMethod, newMethod.getMname());
+                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().select(newMethod);
+                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().setValue(newMethod);
+            }
+
+            if (projectBreedingMethodsPanel instanceof  ProjectMethodsView) {
+                ProjectMethodsView pv = (ProjectMethodsView)projectBreedingMethodsPanel;
+
+                try {
+                    pv.addRow(newMethod,false,0);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+
+            /*
             User user = app.getSessionData().getUserData();
             Project currentProject = app.getSessionData().getLastOpenedProject();
             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added a new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
@@ -148,9 +170,8 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 			} catch (MiddlewareQueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-		
-            
+			} */
+
             newBreedingMethod = null;
             window.getParent().removeWindow(window);
         

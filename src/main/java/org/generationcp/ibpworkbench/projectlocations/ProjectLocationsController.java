@@ -131,7 +131,7 @@ public class ProjectLocationsController implements InitializingBean {
 		for (Long locationId : locationIds) {
 			result.add(this.getLocationDetailsByLocId(locationId.intValue()));
 		}
-		
+
 		return result;
 	}
 	

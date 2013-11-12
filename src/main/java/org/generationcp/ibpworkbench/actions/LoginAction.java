@@ -151,7 +151,7 @@ public class LoginAction implements ClickListener{
             
             Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
             if (project != null) {
-                toolUtil.updateTools(newWindow, messageSource, project, false);
+                //toolUtil.updateTools(newWindow, messageSource, project, false);
             }
             
             

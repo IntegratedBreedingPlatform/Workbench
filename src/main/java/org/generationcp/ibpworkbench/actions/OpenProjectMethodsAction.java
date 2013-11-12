@@ -37,6 +37,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+import projectmethods.ProjectMethodsView;
 
 /**
  *  @author Joyce Avestro
@@ -79,9 +80,11 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
         IContentWindow w = (IContentWindow) window;
         
         try {
-        	ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
+        	//ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
+            ProjectMethodsView methodsView = new ProjectMethodsView(project,role);
 
-            w.showContent(projectMethodsPanel);
+
+            w.showContent(methodsView);
             
             try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();

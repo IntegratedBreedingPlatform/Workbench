@@ -340,7 +340,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			    
 			    return null;
 			}
-	    });
+        	    });
 	    
 	   
 		
@@ -404,9 +404,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
 		Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
-		
-		
-		
+
 		try {
 			List<LocationTableViewModel> results = projectLocationsController.getFilteredResults(cntryId, locationTypeId, locationName);
 			Container container = availableLocationsTable.getContainerDataSource();
