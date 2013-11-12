@@ -409,9 +409,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("5px");
-        //layout.addComponent(emptyLabel);
-        //layout.setExpandRatio(emptyLabel, 100);
+        emptyLabel.setHeight("20px");
+        layout.addComponent(emptyLabel);
+        layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(breedingPlannerButton);
         //breedingPlannerButton.setHeight("20px");
