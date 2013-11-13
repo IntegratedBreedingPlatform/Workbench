@@ -41,7 +41,7 @@ import java.util.*;
 @Configurable
 public class ProjectMethodsView extends CustomComponent implements InitializingBean {
     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-    public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating","C","Clonolly Propagating"}};
+    public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonolly Propagating"},{"G","All System"}};
 
     public final static Map<String,Integer> columnWidthsMap;
 
@@ -105,7 +105,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
                  groupFilter.addItem(methodGroup[0]);
                  groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
              }
-             groupFilter.select(methodGroups[0][0]);
+             groupFilter.select("");
              groupFilter.setNullSelectionAllowed(false);
 
 
