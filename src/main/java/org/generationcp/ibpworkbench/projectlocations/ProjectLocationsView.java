@@ -374,7 +374,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final HorizontalLayout root = new HorizontalLayout();
 		saveBtn = new Button("Save");
 		cancelBtn = new Button("Cancel");
-		
+
 		final Label spacer = new Label("");
 		spacer.setWidth("100%");
 		
@@ -599,7 +599,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		try {
 			LocationTableViewModel location = projectLocationsController.getLocationDetailsByLocId(loc.getLocid());
-			addRow(location, (IndexedContainer) availableLocationsTable.getContainerDataSource(), true);
+			addRow(location, (IndexedContainer) selectedLocationsTable.getContainerDataSource(), true);
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
