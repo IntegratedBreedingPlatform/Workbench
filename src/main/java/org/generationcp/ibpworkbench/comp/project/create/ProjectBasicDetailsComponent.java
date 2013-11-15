@@ -229,10 +229,11 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
                 Project project = workbenchDataManager.getProjectByName(projectName);
                 if (project != null && project.getProjectName() != null && project.getProjectName().equals(projectName)){
 
-                    if (createProjectPanel.getProject() == null ||
-                                createProjectPanel.getProject().getProjectId().intValue() != project.getProjectId().intValue()
-                            ) {
+                    if (createProjectPanel.getProject() == null || createProjectPanel.getProject().getProjectId() == null){
                         errorDescription.append("There is already a project with the given name. ");
+                        success = false;
+                    } else if (createProjectPanel.getProject().getProjectId().intValue() != project.getProjectId().intValue()){
+                    	errorDescription.append("There is already a project with the given name. ");
                         success = false;
                     }
 
