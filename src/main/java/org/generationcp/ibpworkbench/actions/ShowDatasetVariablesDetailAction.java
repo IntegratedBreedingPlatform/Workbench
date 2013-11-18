@@ -12,7 +12,9 @@ import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectData
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -42,16 +44,13 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     private StudyDataManager studyDataManager;
     
-    private Table tblDataset;
-    
     private Table tblVariates;
     
     private Table tblFactors;
     
     private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
 
-    public ShowDatasetVariablesDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
-        this.tblDataset = tblDataset;
+    public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
@@ -60,16 +59,27 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     @Override
     public void itemClick(ItemClickEvent event) {
+    	
+    	if (!(event.getItemId() instanceof DatasetReference)) return;
 
-        Integer dataSetId = (Integer) event.getItemId();
+    	DatasetReference datasetRef = (DatasetReference) event.getItemId();
+        Integer dataSetId = datasetRef.getId();
 
-        if (dataSetId == null) {
-            return;
-        }
+        if (dataSetId == null) return;
 
         try {
             
             DataSet ds = studyDataManager.getDataSet(dataSetId);
+            
+            Study currentStudy = selectDatasetForBreedingViewWindow.getCurrentStudy();
+         
+            if (currentStudy == null){
+            	Study study = studyDataManager.getStudy(ds.getStudyId());
+	            selectDatasetForBreedingViewWindow.setCurrentStudy(study);
+            }else if (selectDatasetForBreedingViewWindow.getCurrentStudy().getId() != ds.getStudyId()){
+            	Study study = studyDataManager.getStudy(ds.getStudyId());
+	            selectDatasetForBreedingViewWindow.setCurrentStudy(study);
+            }
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();

@@ -32,12 +32,18 @@ public class StudyTreeExpandAction implements Tree.ExpandListener{
             try {
             	
             	((SelectDatasetForBreedingViewWindow) source).queryChildrenStudies((Reference)event.getItemId(), tr);
-    
+            	
                
             } catch (InternationalizableException e) {
                 LOG.error(e.toString() + "\n" + e.getStackTrace());
                 e.printStackTrace();
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+            }
+            
+            try{
+            	((SelectDatasetForBreedingViewWindow) source).queryChildrenDatasets((Reference)event.getItemId(), tr);
+            } catch (Exception e){
+            	
             }
         }
     }
