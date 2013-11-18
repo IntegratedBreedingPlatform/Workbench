@@ -6,6 +6,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -105,6 +106,7 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
 		select.setImmediate(true);
 		
 		saveBtn = new Button("Save");
+        saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		//saveBtn.setEnabled(false);
 		saveBtn.setSizeUndefined();
 		cancelBtn = new Button("Cancel");

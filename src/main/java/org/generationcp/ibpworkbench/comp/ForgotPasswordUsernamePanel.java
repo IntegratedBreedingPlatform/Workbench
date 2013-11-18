@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -81,6 +82,7 @@ public class ForgotPasswordUsernamePanel extends VerticalLayout implements Initi
         unameField = new TextField();
         addComponent(unameField);
         nextBtn = new Button(messageSource.getMessage(Message.NEXT));
+        nextBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         addComponent(nextBtn);
     }
 

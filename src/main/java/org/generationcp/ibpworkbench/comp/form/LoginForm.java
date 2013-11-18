@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp.form;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
@@ -173,6 +174,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
 
         btnLogin = new Button();
+        btnLogin.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         btnLogin.setClickShortcut(KeyCode.ENTER);
         
         

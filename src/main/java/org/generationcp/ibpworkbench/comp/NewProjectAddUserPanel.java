@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp;
 import java.util.Collection;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CloseWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
@@ -115,6 +116,8 @@ public class NewProjectAddUserPanel extends Panel {
 
     protected void initializeActions() {
         saveButton.addListener(new SaveNewProjectAddUserAction(userForm, membersSelect));
+        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
         cancelButton.addListener(new CloseWindowAction());
     }
     

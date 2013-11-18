@@ -1,6 +1,5 @@
 package projectmethods;
 
-import com.vaadin.ui.CustomComponent;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +28,7 @@ import java.util.List;
  */
 
 @Configurable
-public class ProjectMethodsPresenter extends CustomComponent implements InitializingBean {
+public class ProjectMethodsPresenter implements InitializingBean {
     private final Project project;
     private final Role role;
     private ProjectMethodsView view;

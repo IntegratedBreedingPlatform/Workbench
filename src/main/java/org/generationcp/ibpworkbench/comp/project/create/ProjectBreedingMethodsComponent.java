@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -125,6 +126,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         showMethodWindowButton = new Button("Add Breeding Method");
         previousButton = new Button("Previous");
         nextButton = new Button("Next");
+        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(showMethodWindowButton);
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);

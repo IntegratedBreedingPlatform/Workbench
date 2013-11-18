@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
@@ -378,9 +379,13 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
 		
 		addBtn = new Button(messageSource.getMessage(Message.ADD),userToolsForm,"commit");
-		editBtn = new Button(messageSource.getMessage(Message.EDIT),userToolsForm,"commit");
+		addBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
+        editBtn = new Button(messageSource.getMessage(Message.EDIT),userToolsForm,"commit");
 		editBtn.setEnabled(false);
-		
+		editBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
+
 		cancelBtn = new Button(messageSource.getMessage(Message.CANCEL),userToolsForm,"discard");
 
 		userToolsListSelect = new ListSelect();

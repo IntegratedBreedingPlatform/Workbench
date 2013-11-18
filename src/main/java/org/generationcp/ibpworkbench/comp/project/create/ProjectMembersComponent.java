@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
@@ -302,6 +303,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         buttonLayout.setMargin(true, false, false, false);
 
         newMemberButton = new Button("Add New Member");
+        newMemberButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
         previousButton = new Button("Previous");
 //        nextButton = new Button("Next");
         buttonLayout.addComponent(newMemberButton);

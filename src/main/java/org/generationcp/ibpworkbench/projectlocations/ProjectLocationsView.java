@@ -9,6 +9,7 @@ import java.util.List;
 import com.vaadin.data.Property;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
@@ -373,7 +374,9 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	public Component buildActionButtons() {
 		final HorizontalLayout root = new HorizontalLayout();
 		saveBtn = new Button("Save");
-		cancelBtn = new Button("Cancel");
+		saveBtn.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
+        cancelBtn = new Button("Cancel");
 
 		final Label spacer = new Label("");
 		spacer.setWidth("100%");
