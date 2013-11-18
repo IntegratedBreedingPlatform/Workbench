@@ -12,7 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import projectmethods.ProjectMethodsView;
+import org.generationcp.ibpworkbench.projectmethods.ProjectMethodsView;
 
 public class AddBreedingMethodsWindow extends Window {
     

@@ -1,18 +1,16 @@
-package projectmethods;
+package org.generationcp.ibpworkbench.projectmethods;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.collections.bag.HashBag;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -21,9 +19,7 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.MessageSource;
 
-import java.lang.reflect.*;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.ParseException;

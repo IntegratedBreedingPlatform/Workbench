@@ -16,9 +16,6 @@ import java.util.Date;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
-import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -37,7 +34,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
-import projectmethods.ProjectMethodsView;
+import org.generationcp.ibpworkbench.projectmethods.ProjectMethodsView;
 
 /**
  *  @author Joyce Avestro

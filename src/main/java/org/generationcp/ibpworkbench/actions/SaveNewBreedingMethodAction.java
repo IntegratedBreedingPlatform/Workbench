@@ -21,13 +21,9 @@ import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.comp.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.comp.window.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +32,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import projectmethods.ProjectMethodsView;
+import org.generationcp.ibpworkbench.projectmethods.ProjectMethodsView;
 
 /**
  * 

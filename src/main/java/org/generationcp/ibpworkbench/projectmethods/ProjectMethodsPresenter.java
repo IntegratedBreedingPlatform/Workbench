@@ -1,4 +1,4 @@
-package projectmethods;
+package org.generationcp.ibpworkbench.projectmethods;
 
 import com.vaadin.ui.CustomComponent;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
