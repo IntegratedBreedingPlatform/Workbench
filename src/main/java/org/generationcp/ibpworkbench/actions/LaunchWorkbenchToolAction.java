@@ -28,7 +28,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
@@ -266,13 +266,15 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)
                         ) {
                         
-                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
+                    //window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
                         
                 } else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL))
                  {
                 
-                    window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.LOCAL));
+                    //window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.LOCAL));
+                    
+                    new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "", true);
                 
                 }else {
                 

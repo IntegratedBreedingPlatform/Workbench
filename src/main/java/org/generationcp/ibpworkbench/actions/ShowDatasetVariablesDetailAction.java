@@ -8,7 +8,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -48,9 +48,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     private Table tblFactors;
     
-    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
 
-    public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
+    public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;

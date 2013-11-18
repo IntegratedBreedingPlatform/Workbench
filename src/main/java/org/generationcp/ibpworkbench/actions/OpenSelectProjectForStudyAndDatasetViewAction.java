@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -20,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 /**
@@ -27,7 +32,7 @@ import com.vaadin.ui.Window.Notification;
  * @author Jeffrey Morales
  *
  */
-public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListener {
+public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
     
     private Project currentProject;
@@ -43,6 +48,14 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
     
     @Override
     public void buttonClick(ClickEvent event) {
+    	 doAction(event.getComponent().getWindow(), null, true);
+    }
+
+	@Override
+	public void doAction(Window window, String uriFragment,
+			boolean isLinkAccessed) {
+		
+		IContentWindow w = (IContentWindow) window;
         
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         
@@ -50,18 +63,22 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         
         if (currentProject != null) {
             
-            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(currentProject, Database.LOCAL));
+            w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL));
             
         } else if (lastOpenedProject != null) {
             
-            event.getComponent().getWindow().addWindow(new SelectDatasetForBreedingViewWindow(lastOpenedProject, Database.LOCAL));
+        	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL));
             
         } else {
-            
-            event.getComponent().getWindow().showNotification("Please select a Project first.", Notification.TYPE_ERROR_MESSAGE);
+        	MessageNotifier.showWarning(window, "Error", "Please select a Project first.");
             
         }
+		
+	}
 
-    }
+	@Override
+	public void doAction(Event event) {
+		NavManager.breadCrumbClick(this, event);
+	}
     
 }

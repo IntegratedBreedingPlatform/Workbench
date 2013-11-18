@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -30,16 +30,16 @@ public class CancelDatasetAsInputForBreedingViewAction implements ClickListener 
     private static final Logger LOG = LoggerFactory.getLogger(CancelBreedingMethodAction.class);
     private static final long serialVersionUID = 1L;
     
-    private SelectDatasetForBreedingViewWindow window;
+    private SelectDatasetForBreedingViewPanel window;
 
-    public CancelDatasetAsInputForBreedingViewAction(SelectDatasetForBreedingViewWindow window) {
+    public CancelDatasetAsInputForBreedingViewAction(SelectDatasetForBreedingViewPanel window) {
         this.window = window;
     }
     
     @Override
     public void buttonClick(ClickEvent event) {
             
-        window.getParent().removeWindow(window);
+        //window.getParent().removeWindow(window);
     
     }
         

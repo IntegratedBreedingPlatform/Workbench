@@ -17,7 +17,7 @@ import java.util.List;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
@@ -51,7 +51,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
     
-    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow; 
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow; 
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -62,7 +62,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     @Autowired
     private ToolUtil toolUtil;
     
-    public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
+    public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
         
@@ -149,7 +149,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
            
             event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
                     , project) );
-            event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
+            
+            //event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
 
         }
         //catch (DatasetExporterException e) {

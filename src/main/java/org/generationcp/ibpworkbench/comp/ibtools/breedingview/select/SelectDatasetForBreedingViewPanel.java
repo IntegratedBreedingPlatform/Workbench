@@ -63,7 +63,7 @@ import com.vaadin.ui.Window;
  *
  */
 @Configurable
-public class SelectDatasetForBreedingViewWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -107,22 +107,12 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
     private ManagerFactory managerFactory;
 
 
-    public SelectDatasetForBreedingViewWindow(Project currentProject, Database database) {
+    public SelectDatasetForBreedingViewPanel(Project currentProject, Database database) {
   
         this.currentProject = currentProject;
         this.database = database;
 
-        setModal(true);
-
-       /* Make the sub window 50% the size of the browser window */
-        setWidth("80%");
-        /*
-         * Center the window both horizontally and vertically in the browser
-         * window
-         */
-        center();
-        
-        setCaption("SINGLE-SITE ANALYSIS");
+        setWidth("90%");
         
     }
     
@@ -214,7 +204,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
         generalLayout.addComponent(studyDetailsLayout);
         generalLayout.addComponent(buttonArea);
         
-        setContent(generalLayout);
+        addComponent(generalLayout);
         
     }
     
