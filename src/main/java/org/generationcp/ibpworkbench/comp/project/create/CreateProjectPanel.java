@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp.project.create;
 
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
@@ -159,6 +160,7 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
 
         cancelButton = new Button("Cancel");
         saveProjectButton = new Button("Save");
+        saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveProjectButton);

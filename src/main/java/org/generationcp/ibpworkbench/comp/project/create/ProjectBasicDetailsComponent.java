@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
@@ -156,6 +157,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         buttonLayout.setMargin(true, false, false, false);
 
         nextButton = new Button("Next");
+        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }

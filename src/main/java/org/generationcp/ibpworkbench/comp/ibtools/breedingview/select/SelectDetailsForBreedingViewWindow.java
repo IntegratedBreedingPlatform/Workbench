@@ -20,6 +20,7 @@ import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
@@ -338,6 +339,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         selGenotypes.setNewItemsAllowed(false);
         
         btnRun = new Button();
+        btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         btnCancel = new Button();
     }
 

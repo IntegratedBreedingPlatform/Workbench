@@ -7,6 +7,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
@@ -152,6 +153,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     private Component buildActionButtons() {
         final HorizontalLayout root = new HorizontalLayout();
         saveBtn = new Button("Save");
+        saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
         cancelBtn = new Button("Cancel");
 
         final Label spacer = new Label("");

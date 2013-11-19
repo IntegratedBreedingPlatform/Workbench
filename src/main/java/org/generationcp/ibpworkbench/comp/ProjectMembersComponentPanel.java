@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
@@ -393,6 +394,9 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
         newMemberButton = new Button("Add New Member");
         saveButton = new Button("Save");
+
+        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
 //        nextButton = new Button("Next");
         buttonLayout.addComponent(newMemberButton);
         buttonLayout.addComponent(saveButton);

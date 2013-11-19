@@ -6,6 +6,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
@@ -142,6 +143,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		//select.setImmediate(true);
 		
 		saveBtn = new Button("Restore");
+        saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		saveBtn.setSizeUndefined();
 		//saveBtn.setEnabled(false);
 		

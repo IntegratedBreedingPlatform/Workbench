@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowPreviewAction;
@@ -171,6 +172,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
         previousButton = new Button("Previous");
         nextButton = new Button("Next");
+        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);
 

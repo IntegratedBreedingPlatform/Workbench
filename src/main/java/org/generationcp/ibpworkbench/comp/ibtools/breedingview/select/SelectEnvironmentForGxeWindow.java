@@ -20,6 +20,7 @@ import java.util.List;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
@@ -313,7 +314,7 @@ public class SelectEnvironmentForGxeWindow extends Window implements Initializin
 
         btnCancel = new Button();
         btnNext = new Button();
-
+        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
         spacer.setSizeFull();
         

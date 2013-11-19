@@ -19,6 +19,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelDatasetAsInputForBreedingViewAction;
@@ -326,7 +327,7 @@ public class SelectDatasetForBreedingViewWindow extends Window implements Initia
 
         btnCancel = new Button();
         btnNext = new Button();
-
+        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
         spacer.setSizeFull();
         

@@ -58,7 +58,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- Spring Dependency -->
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>reindeermods</artifactId>
+            <version>0.2</version>
+        </dependency>
+
+        <!-- Spring Dependency -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>

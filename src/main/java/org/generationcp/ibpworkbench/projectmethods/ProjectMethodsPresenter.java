@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.projectmethods;
 
-import com.vaadin.ui.CustomComponent;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -29,7 +28,7 @@ import java.util.List;
  */
 
 @Configurable
-public class ProjectMethodsPresenter extends CustomComponent implements InitializingBean {
+public class ProjectMethodsPresenter implements InitializingBean {
     private final Project project;
     private final Role role;
     private ProjectMethodsView view;

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -308,6 +309,8 @@ public class ProjectLocationPanel extends VerticalLayout implements Initializing
         addLocationWindowButton = new Button(messageSource.getMessage(Message.LOCATION_ADD_NEW)); //"Add New Location"
         cancelButton = new Button(messageSource.getMessage(Message.CANCEL)); //"Cancel"
         saveLocationButton = new Button(messageSource.getMessage(Message.SAVE_CHANGES)); //"Save Changes"
+
+        saveLocationButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         buttonLayout.addComponent(addLocationWindowButton);
         buttonLayout.addComponent(cancelButton);

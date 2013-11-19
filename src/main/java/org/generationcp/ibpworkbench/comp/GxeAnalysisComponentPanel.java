@@ -24,6 +24,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
@@ -347,6 +348,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		this.addComponent(horizontal);
 
 		Button button = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
+		button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
 
 		button.addListener(new Button.ClickListener() {

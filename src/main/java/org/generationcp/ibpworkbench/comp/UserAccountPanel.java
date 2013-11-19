@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.comp;
 import java.util.Collection;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenLoginWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveUserAccountAction;
@@ -94,6 +95,7 @@ public class UserAccountPanel extends Panel {
         vl.addComponent(form);
        
         saveButton = new Button();
+        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
         buttonLayout.addComponent(saveButton);
