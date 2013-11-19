@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.ibpworkbench.comp.vaadin.Upload;
 
 import com.vaadin.ui.Component;
@@ -46,6 +47,9 @@ public class FileUploadWindow extends Window{
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
+
         setWidth("320px");
         setHeight("240px");
 

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -293,6 +294,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	private void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.setModal(true);
 		this.setWidth(WIDTH);
 		this.setHeight(HEIGHT);

@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -117,6 +118,8 @@ public class ProjectMemberWindow extends Window implements IContentWindow, Initi
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
         setSizeFull();
 
         VerticalLayout layout = new VerticalLayout();

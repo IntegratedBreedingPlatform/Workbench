@@ -149,6 +149,7 @@ public class SaveNewLocationAction implements ClickListener{
              try {
  				projectLocationsController.getGermplasmDataManager().addLocation(newLoc);
  				projectLocationsView.addToAvailableLocation(newLoc);
+
  			} catch (MiddlewareQueryException e1) {
  				e1.printStackTrace();
  			}

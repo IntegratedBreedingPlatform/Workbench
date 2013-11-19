@@ -3,7 +3,9 @@ package org.generationcp.ibpworkbench.comp.common;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.common.customfield.CustomField;
@@ -81,6 +83,7 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 
 	private void buildFilePicker() {
 		pickerWindow = new Window("Select an executable file");
+        pickerWindow.addStyleName(Reindeer.WINDOW_LIGHT);
 		pickerWindow.center();
 		pickerWindow.setModal(true);
 		
@@ -160,8 +163,9 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 
 		final Button selectBtn = new Button(messageSource.getMessage(Message.SELECT));
 		final Button cancelSelectBtn = new Button(messageSource.getMessage(Message.CANCEL));
-		
-		
+
+        selectBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
         btnPanel.setWidth("100%");
 		btnPanel.setSpacing(true);
 		btnPanel.setMargin(true);

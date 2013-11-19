@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.ibpworkbench.comp.NewProjectAddUserPanel;
 
 import com.vaadin.ui.TwinColSelect;
@@ -20,6 +21,9 @@ public class NewProjectAddUserWindow extends Window {
     private VerticalLayout layout;
     
     public NewProjectAddUserWindow(TwinColSelect membersSelect) {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
+
         this.membersSelect = membersSelect;
         
         // set as modal window, other components are disabled while window is open

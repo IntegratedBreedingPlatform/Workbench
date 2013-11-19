@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.comp.window;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -176,6 +177,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
 		this.setCaption("Restore IB Database");
 		this.setWidth(WINDOW_WIDTH);
 		this.setHeight(WINDOW_HEIGHT);

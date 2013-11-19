@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
@@ -56,6 +57,8 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
     }
 
     protected void initializeComponents() throws Exception {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
         // workbench header components
         workbenchTitle = new Label("&nbsp;Change Password", Label.CONTENT_XHTML);
         workbenchTitle.setStyleName("gcp-window-title");

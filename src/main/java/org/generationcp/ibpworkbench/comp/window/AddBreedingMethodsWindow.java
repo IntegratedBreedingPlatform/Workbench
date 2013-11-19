@@ -1,5 +1,7 @@
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
 import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
 import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
@@ -68,7 +70,9 @@ public class AddBreedingMethodsWindow extends Window {
          * Make the window modal, which will disable all other components while
          * it is visible
          */
-        
+
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
         this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
         setModal(true);
 
@@ -101,13 +105,14 @@ public class AddBreedingMethodsWindow extends Window {
 
         cancelButton = new Button("Cancel");
         addBreedingMethodButton = new Button("Save");
-        
+        addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonArea = layoutButtonArea();
         layout.addComponent(buttonArea);
         
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
         layout.setSpacing(true);
         layout.setMargin(true);
     }
@@ -127,7 +132,7 @@ public class AddBreedingMethodsWindow extends Window {
 
         cancelButton = new Button("Cancel");
         addBreedingMethodButton = new Button("Add");
-        
+        addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(addBreedingMethodButton);
 

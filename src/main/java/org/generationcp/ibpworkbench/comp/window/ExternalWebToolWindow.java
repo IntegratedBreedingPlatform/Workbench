@@ -16,6 +16,7 @@ import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * A Window that shows a web page in an embedded iframe.
@@ -49,6 +50,8 @@ public class ExternalWebToolWindow extends Window{
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
 

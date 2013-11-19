@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -55,10 +56,9 @@ public class WorkflowPreviewWindow extends Window implements InitializingBean {
         setModal(true);
 
         // define window size, set as not resizable
-        setWidth("640px");
-        setHeight("480px");
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
         setResizable(false);
-        
+        setDraggable(false);
         // center window within the browser
         center();
     }

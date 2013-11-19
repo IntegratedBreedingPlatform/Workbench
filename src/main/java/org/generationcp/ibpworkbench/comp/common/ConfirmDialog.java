@@ -6,6 +6,7 @@ import com.vaadin.terminal.gwt.server.JsonPaintTarget;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Cyrus: I've added the ConfirmDialog source from the Vaadin plugins as the base vaadin did not include confirmation dialogs
@@ -175,6 +176,8 @@ public class ConfirmDialog extends Window {
         center();
         setModal(modal);
         parentWindow.addWindow(this);
+
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
     }
 
     /**

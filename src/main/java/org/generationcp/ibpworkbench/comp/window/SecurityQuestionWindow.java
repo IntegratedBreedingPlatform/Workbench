@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.window;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.ibpworkbench.comp.ForgotPasswordUsernamePanel;
 
 import com.vaadin.ui.Window;
@@ -21,7 +22,7 @@ public class SecurityQuestionWindow extends Window {
     private static final long serialVersionUID = 3983198771242295731L;
 
     public SecurityQuestionWindow() {
-    	super("Integrated Breeding Platform | Workbench");
+        super("Integrated Breeding Platform | Workbench");
         // set as modal window, other components are disabled while window is open
         setModal(true);
 
@@ -34,7 +35,7 @@ public class SecurityQuestionWindow extends Window {
         center();
         
         assemble();
-        
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
         setCaption("Retrieve Forgotten Password");
     }
     

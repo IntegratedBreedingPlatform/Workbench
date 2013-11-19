@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.comp.window;
 
 import java.util.List;
 
+import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
@@ -75,7 +77,10 @@ public class ConfirmLocationsWindow extends Window{
         this.existingLocations = existingLocations;
     	this.projectLocationsController = projectLocationsController;
     	this.okButtonListener = okButtonListener;
-       
+
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+
+
         initialize();
     }
     
@@ -152,7 +157,7 @@ public class ConfirmLocationsWindow extends Window{
 
         cancelButton = new Button("Cancel");
         okButton = new Button("Save");
-
+        okButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonArea = layoutButtonArea();
         layout.addComponent(buttonArea);
 

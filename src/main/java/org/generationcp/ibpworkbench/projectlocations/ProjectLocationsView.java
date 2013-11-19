@@ -539,7 +539,11 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			Item newItem = dataContainer.getItem(itemId);
 			
 			for (Field field : fields) {
-				newItem.getItemProperty(field.getName()).setValue(field.get(location));	
+                try {
+                    newItem.getItemProperty(field.getName()).setValue(field.get(location));
+                } catch (NullPointerException e) {
+                    LOG.warn("Found a nullpointer on field " + field.toGenericString());
+                }
 			}
 			
 			Button btn = new Button();
@@ -602,7 +606,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		try {
 			LocationTableViewModel location = projectLocationsController.getLocationDetailsByLocId(loc.getLocid());
-			addRow(location, (IndexedContainer) selectedLocationsTable.getContainerDataSource(), true);
+			addRow(location, (IndexedContainer) selectedLocationsTable.getContainerDataSource(), false);
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

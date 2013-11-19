@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.comp.window;
 
 import java.util.List;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -63,7 +64,7 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
     public BackupIBDBWindow(Project project) {
     	this.project = project;
     	
-
+        this.setStyleName(Reindeer.WINDOW_LIGHT);
     }
 
 	/**
