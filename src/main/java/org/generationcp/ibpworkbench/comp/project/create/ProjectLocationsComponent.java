@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenAddLocationWindowAction;
 import org.generationcp.ibpworkbench.comp.common.TwoColumnSelect;
@@ -122,7 +123,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
     protected void initializeActions() {
         previousButton.addListener(new PreviousButtonClickListener());
-        
+
         showLocationWindowButton.addListener(new OpenAddLocationWindowAction(this));
         selectLocation.getLeftSelect().addListener( new CheckButtonClickListener(this));
     }
@@ -140,6 +141,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 
         showLocationWindowButton = new Button("Add New Location");
         previousButton = new Button("Previous");
+        previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         buttonLayout.addComponent(showLocationWindowButton);
         buttonLayout.addComponent(previousButton);

@@ -125,6 +125,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
 
         showMethodWindowButton = new Button("Add Breeding Method");
         previousButton = new Button("Previous");
+        previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         nextButton = new Button("Next");
         nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(showMethodWindowButton);
