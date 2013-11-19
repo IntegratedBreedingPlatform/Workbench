@@ -531,7 +531,9 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	 * @throws IllegalAccessException
 	 */
 	private void generateRows(List<LocationTableViewModel> results,Container dataContainer,boolean isAvailableTable) throws ReadOnlyException, ConversionException, IllegalArgumentException, IllegalAccessException {
-		for (LocationTableViewModel location : results) {
+		if (fields == null) return;
+
+        for (LocationTableViewModel location : results) {
 			if (selectedProjectLocationIds.contains(location.getLocationId()))
 				continue;
 			
@@ -539,11 +541,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			Item newItem = dataContainer.getItem(itemId);
 			
 			for (Field field : fields) {
-                try {
                     newItem.getItemProperty(field.getName()).setValue(field.get(location));
-                } catch (NullPointerException e) {
-                    LOG.warn("Found a nullpointer on field " + field.toGenericString());
-                }
 			}
 			
 			Button btn = new Button();
