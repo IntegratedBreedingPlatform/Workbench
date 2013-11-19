@@ -242,8 +242,8 @@ public class GxeUtility {
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
 			
-			// TODO NOTE: Directory location is hardcoded to workspace/{projectId-projectName/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			//NOTE: Directory location is hardcoded to workspace/{projectId/breeding_view/input}
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
 			
 			LOG.debug("save to " + dir);
 			
@@ -387,7 +387,7 @@ public class GxeUtility {
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
 
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + "-" + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
 
 			LOG.debug("save to" + dir);
 
