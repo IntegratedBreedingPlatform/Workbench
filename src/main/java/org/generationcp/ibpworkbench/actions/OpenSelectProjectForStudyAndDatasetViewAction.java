@@ -64,10 +64,11 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         if (currentProject != null) {
             
             w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL));
-            
+            NavManager.navigateApp(window, uriFragment, isLinkAccessed);	
         } else if (lastOpenedProject != null) {
             
         	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL));
+        	NavManager.navigateApp(window, uriFragment, isLinkAccessed);
             
         } else {
         	MessageNotifier.showWarning(window, "Error", "Please select a Project first.");

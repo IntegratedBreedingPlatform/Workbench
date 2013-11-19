@@ -18,7 +18,8 @@ import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
@@ -138,6 +139,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
+            breedingViewInput.setDatasetName(selectDatasetForBreedingViewWindow.getCurrentDatasetName());
+            breedingViewInput.setDatasetSource(selectDatasetForBreedingViewWindow.getCurrentStudy().getName());
+            
             List<DataSet> meansDs = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
             	if (meansDs.size() > 0){
@@ -147,15 +151,14 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             	}
             }
            
-            event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project) );
+            IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
-            //event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
+            w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
+                    , project));
+            
+            
 
         }
-        //catch (DatasetExporterException e) {
-        //    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        //}
         catch (MiddlewareQueryException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }

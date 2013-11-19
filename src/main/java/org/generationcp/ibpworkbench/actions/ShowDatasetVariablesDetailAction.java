@@ -59,6 +59,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     @Override
     public void itemClick(ItemClickEvent event) {
+
     	
     	if (!(event.getItemId() instanceof DatasetReference)) return;
 

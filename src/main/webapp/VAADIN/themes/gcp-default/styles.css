@@ -199,6 +199,12 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
     font-size: 16px;
 }
 
+.gcp-table-header-bold {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+}
+
 .gcp-btn-link-brown span span  {
 	color: #045d91 !important;
 	position: relative;

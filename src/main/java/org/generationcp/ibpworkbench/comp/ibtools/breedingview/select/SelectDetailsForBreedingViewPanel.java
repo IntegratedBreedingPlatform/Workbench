@@ -12,9 +12,7 @@
 
 package org.generationcp.ibpworkbench.comp.ibtools.breedingview.select;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -25,8 +23,8 @@ import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeLi
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvNameForAnalysisValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
-import org.generationcp.ibpworkbench.actions.CancelDetailsAsInputForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -42,14 +40,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
-import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * 
@@ -57,30 +56,18 @@ import com.vaadin.ui.Window;
  *
  */
 @Configurable
-public class SelectDetailsForBreedingViewWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
-    
-    private static final String GERMPLASM_ID = "germplasm id";
-    private static final String GERMPLASM_IDENTIFICATION = "germplasm identification";
-    private static final String GERMPLASM_ENTRY = "germplasm entry";
-    private static final String TRIAL_INSTANCE = "trial instance";
-    private static final String FIELD_PLOT = "field plot";
-    private static final String REPLICATION = "replication";
-    private static final String BLOCK = "block";
-    private static final String ROW_IN_LAYOUT = "row in layout";
-    private static final String COLUMN_IN_LAYOUT = "column in layout";
-    private static final String RCBD_DESIGN = "RCBD";
-    private static final String ALPHA_DESIGN = "ALPHA";
-    private static final String ROWCOL_DESIGN = "ROWCOL";
-    private static final String EXPERIMENTAL_DESIGN = "experimental design";
-    private static final String STUDY_TRAIT_NAME = "study";
-    
     
     private static final String REPLICATION_FACTOR = "replication factor";
     private static final String BLOCKING_FACTOR = "blocking factor";
     private static final String ROW_FACTOR = "row in layout";
     private static final String COLUMN_FACTOR = "column in layout";
+    
+    private Label lblTitle;
+    private Label lblDatasetName;
+    private Label lblDatasourceName;
     
     private Label lblVersion;
     private Label lblProjectType;
@@ -96,12 +83,21 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     private Label lblSpecifyRowFactor;
     private Label lblSpecifyColumnFactor;
     private Label lblGenotypes;
+    private Label lblDataSelectedForAnalysisHeader;
+    private Label lblAnalysisNameHeader;
+    private Label lblChooseEnvironmentHeader;
+    private Label lblChooseEnvironmentDescription;
+    private Label lblChooseEnvironmentForAnalysisDescription;
+    private Label lblSpecifyDesignDetailsHeader;
+    private Label lblSpecifyGenotypesHeader;
     private Button btnRun;
     private Button btnCancel;
     private TextField txtVersion;
     private TextField txtProjectType;
     private TextField txtAnalysisName;
     private TextField txtNameForAnalysisEnv;
+    private TextField txtDatasetName;
+    private TextField txtDatasourceName;
     private Select selDesignType;
     private Select selEnvFactor;
     private Select selEnvForAnalysis;
@@ -114,14 +110,10 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     private BreedingViewInput breedingViewInput;
     private Tool tool;
     private List<VariableType> factorsInDataset;
-    //for mapping factor ids with the key being the trait name of the factors identified by the ids
-    private Map<String, Integer> factorIdsMap;
-    //for mapping label ids with the key being the trait name of the factors identified by the ids
-    private Map<String, Integer> labelIdsMap;
     
     private Project project;
     
-    private AbsoluteLayout mainLayout;
+    private VerticalLayout mainLayout;
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -131,33 +123,17 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public SelectDetailsForBreedingViewWindow(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
+    public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
             ,Project project) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
-        
-        setModal(true);
-        
-       /* Make the sub window 50% the size of the browser window */
-        setWidth("60%");
-        setHeight("70%");
-        /*
-         * Center the window both horizontally and vertically in the browser
-         * window
-         */
-        center();
-        
-        setScrollable(true);
-
-        setCaption("Breeding View Analysis Specifications: ");
+     
+        setWidth("90%");
         
     }
-    
-    
-    
 
     public Tool getTool() {
         return tool;
@@ -220,7 +196,15 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
 
     protected void initializeComponents() {
         
-        mainLayout = new AbsoluteLayout();
+        mainLayout = new VerticalLayout();
+        
+        lblTitle = new Label();
+        lblTitle.setContentMode(Label.CONTENT_XHTML);
+        lblTitle.setStyleName("gcp-content-header");
+        lblDatasetName = new Label();
+        lblDatasetName.setContentMode(Label.CONTENT_XHTML);
+        lblDatasourceName = new Label();
+        lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
         
         lblVersion = new Label();
         lblProjectType = new Label();
@@ -228,6 +212,7 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
         lblSiteEnvironment = new Label();
         lblSpecifyEnvFactor = new Label();
+        lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
         lblSelectEnvironmentForAnalysis = new Label();
         lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
         lblSpecifyNameForAnalysisEnv = new Label();
@@ -243,6 +228,21 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         lblSpecifyColumnFactor = new Label();
         lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
         lblGenotypes = new Label();
+        
+        
+        lblDataSelectedForAnalysisHeader = new Label();
+        lblDataSelectedForAnalysisHeader.setStyleName("gcp-table-header-bold");
+        lblAnalysisNameHeader = new Label();
+        lblAnalysisNameHeader.setStyleName("gcp-table-header-bold");
+        lblChooseEnvironmentHeader = new Label();
+        lblChooseEnvironmentHeader.setStyleName("gcp-table-header-bold");
+        lblChooseEnvironmentDescription = new Label();
+        lblChooseEnvironmentForAnalysisDescription = new Label();
+        lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
+        lblSpecifyDesignDetailsHeader = new Label();
+        lblSpecifyDesignDetailsHeader.setStyleName("gcp-table-header-bold");
+        lblSpecifyGenotypesHeader = new Label();
+        lblSpecifyGenotypesHeader.setStyleName("gcp-table-header-bold");
         
         txtVersion = new TextField();
         txtVersion.setNullRepresentation("");
@@ -266,17 +266,26 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         txtProjectType.setReadOnly(true);
         txtProjectType.setRequired(false);
         
+        txtDatasetName = new TextField();
+        txtDatasetName.setNullRepresentation("");
+        txtDatasetName.setValue(breedingViewInput.getDatasetName());
+        txtDatasetName.setReadOnly(true);
+        txtDatasetName.setRequired(false);
+        
+        txtDatasourceName = new TextField();
+        txtDatasourceName.setNullRepresentation("");
+        txtDatasourceName.setValue(breedingViewInput.getDatasetSource());
+        txtDatasourceName.setReadOnly(true);
+        txtDatasourceName.setRequired(false);
+        
         txtAnalysisName = new TextField();
         txtAnalysisName.setNullRepresentation("");
         if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewProjectName())) {
             txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewProjectName());
         }
         txtAnalysisName.setRequired(false);
-        txtAnalysisName.setWidth("95%");
-        
-        factorIdsMap = new HashMap<String, Integer>();
-        labelIdsMap = new HashMap<String, Integer>();
-        
+        txtAnalysisName.setWidth("80%");
+               
         
         selEnvFactor = new Select();
         selEnvFactor.setImmediate(true); 
@@ -298,9 +307,8 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         selDesignType.setImmediate(true); 
         selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-        //selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-        //selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+        
         checkDesignFactor();
         selDesignType.setNullSelectionAllowed(false);
         selDesignType.setNewItemsAllowed(false);
@@ -420,7 +428,6 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     private void populateChoicesForGenotypes(){
         
-    	
     	for (VariableType factor : factorsInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
     			 this.selGenotypes.addItem(factor.getLocalName());
@@ -428,51 +435,6 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     		}
     	}
     	
-    	
-    	/**
-    	Integer germplasmEntryFactorId = null;
-        //try getting factor with trait germplasm entry
-        if(this.labelIdsMap.get(GERMPLASM_ENTRY) != null){
-            Factor germplasmEntryFactor = getFactorByLabelId(this.labelIdsMap.get(GERMPLASM_ENTRY));
-            this.selGenotypes.addItem(germplasmEntryFactor.getName());
-            this.selGenotypes.setValue(germplasmEntryFactor.getName());
-            germplasmEntryFactorId = germplasmEntryFactor.getFactorId();
-        } else if(this.labelIdsMap.get(GERMPLASM_ID) != null){
-            //next try getting factor with trait germplasm id
-            Factor germplasmEntryFactor = getFactorByLabelId(this.labelIdsMap.get(GERMPLASM_ID));
-            this.selGenotypes.addItem(germplasmEntryFactor.getName());
-            this.selGenotypes.setValue(germplasmEntryFactor.getName());
-            germplasmEntryFactorId = germplasmEntryFactor.getFactorId();
-        } else if(this.labelIdsMap.get(GERMPLASM_IDENTIFICATION) != null){
-            //next try getting factor with the trait germplasm identification
-            Factor germplasmEntryFactor = getFactorByLabelId(this.labelIdsMap.get(GERMPLASM_IDENTIFICATION));
-            this.selGenotypes.addItem(germplasmEntryFactor.getName());
-            this.selGenotypes.setValue(germplasmEntryFactor.getName());
-            germplasmEntryFactorId = germplasmEntryFactor.getFactorId();
-        }
-        
-        //and then add all factors which are labels of germplasm entry factor
-        if(germplasmEntryFactorId != null){
-            for(Factor factor : this.factorsInDataset){
-                if(germplasmEntryFactorId.equals(factor.getFactorId())){
-                    this.selGenotypes.addItem(factor.getName());
-                } 
-            }
-        } else {
-            //if there is no germplasm entry factor add any factor which is a possible choice
-            for(Factor factor : this.factorsInDataset){
-                if(!factor.getFactorId().equals(this.factorIdsMap.get(BLOCK))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(REPLICATION))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(ROW_IN_LAYOUT))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(COLUMN_IN_LAYOUT))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(EXPERIMENTAL_DESIGN))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(TRIAL_INSTANCE))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(STUDY_TRAIT_NAME))
-                    && !factor.getFactorId().equals(this.factorIdsMap.get(FIELD_PLOT))){
-                    this.selGenotypes.addItem(factor.getName());
-                }
-            }
-        }**/
     }
     
     private void populateChoicesForReplicates(){
@@ -561,81 +523,92 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
     
     private void checkDesignFactor(){
     	 
-    	/**for (VariableType factor : this.factorsInDataset){
-            	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(EXPERIMENTAL_DESIGN)){
-            		this.selDesignType.addItem(factor.getLocalName());
-            		this.selDesignType.setValue(factor.getLocalName());
-            	}
-           }
-    	**/
-        /**
-    	//try getting a factor with trait = experimental design
-        try{
-            if(this.labelIdsMap.get(EXPERIMENTAL_DESIGN) != null){
-                Factor designFactor = getFactorByLabelId(this.labelIdsMap.get(EXPERIMENTAL_DESIGN));
-                
-                List<CharacterLevel> levelsForDesign = managerFactory.getStudyDataManager().getCharacterLevelsByFactorAndDatasetId(designFactor
-                        , this.breedingViewInput.getDatasetId());
-                
-                if(!levelsForDesign.isEmpty()){
-                    CharacterLevel level = levelsForDesign.get(0);
-                    
-                    if(level.getValue().equals(RCBD_DESIGN)){
-                        this.selDesignType.setValue(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-                    } else if(level.getValue().equals(ALPHA_DESIGN)){
-                        this.selDesignType.setValue(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
-                    } else if(level.getValue().equals(ROWCOL_DESIGN)){
-                        this.selDesignType.setValue(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
-                    }
-                }
-            }
-        } catch(MiddlewareQueryException ex){
-            //do nothing for now
-        }**/
+    	
     }
     
     protected void initializeLayout() {
-        mainLayout.setWidth("575");
-        mainLayout.setHeight("500");
+    	
+        mainLayout.setSizeUndefined();
+        mainLayout.setWidth("100%");
+        mainLayout.setSpacing(false);
         
-        mainLayout.addComponent(lblVersion, "left: 35px; top: 30px;");
-        mainLayout.addComponent(txtVersion, "left: 165px; top: 30px;");
-        mainLayout.addComponent(lblProjectType, "left: 35px; top: 60px;");
-        mainLayout.addComponent(txtProjectType, "left: 135px; top: 60px;");
-        mainLayout.addComponent(lblAnalysisName, "left: 35px; top: 90px;");
-        mainLayout.addComponent(txtAnalysisName, "left: 135px; top: 90px;");
-        mainLayout.addComponent(lblSiteEnvironment, "left: 35px; top: 120px;");
-        mainLayout.addComponent(lblSpecifyEnvFactor, "left: 85px; top: 150px;");
-        mainLayout.addComponent(selEnvFactor, "left: 305px; top: 150px;");
-        mainLayout.addComponent(lblSelectEnvironmentForAnalysis, "left: 85px; top: 180px;");
-        mainLayout.addComponent(selEnvForAnalysis, "left: 305px; top: 180px;");
-        //mainLayout.addComponent(lblSpecifyNameForAnalysisEnv, "left: 85px; top: 210px;");
-        //mainLayout.addComponent(txtNameForAnalysisEnv, "left: 305px; top: 210px;");
-        mainLayout.addComponent(lblDesign, "left: 35px; top: 210px;");
-        mainLayout.addComponent(lblDesignType, "left: 85px; top: 240px;");
-        mainLayout.addComponent(selDesignType, "left: 305px; top: 240px;");
-        mainLayout.addComponent(lblReplicates, "left: 85px; top: 270px;");
-        mainLayout.addComponent(selReplicates, "left: 305px; top: 270px;");
-        mainLayout.addComponent(lblBlocks, "left: 85px; top: 300px;");
-        mainLayout.addComponent(selBlocks, "left: 305px; top: 300px;");
-        mainLayout.addComponent(lblSpecifyRowFactor, "left: 85px; top: 330px;");
-        mainLayout.addComponent(selRowFactor, "left: 305px; top: 330px;");
-        mainLayout.addComponent(lblSpecifyColumnFactor, "left: 85px; top: 360px;");
-        mainLayout.addComponent(selColumnFactor, "left: 305px; top: 360px;");
-        mainLayout.addComponent(lblGenotypes, "left: 35px; top: 390px;");
-        mainLayout.addComponent(selGenotypes, "left: 135px; top: 390px;");
-        mainLayout.addComponent(btnCancel, "left: 35px; top: 430px;");
-        mainLayout.addComponent(btnRun, "left: 105px; top: 430px;");
+        GridLayout selectedInfoLayout = new GridLayout(4, 5);
+        selectedInfoLayout.setSizeUndefined();
+        selectedInfoLayout.setWidth("90%");
+        selectedInfoLayout.setSpacing(true);
+        selectedInfoLayout.setMargin(true, false, true, false);
+        selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
+        selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
+        selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
+        selectedInfoLayout.addComponent(lblDatasourceName, 0, 2);
+        selectedInfoLayout.addComponent(txtDatasourceName, 1, 2);
+        selectedInfoLayout.addComponent(lblProjectType, 2, 1);
+        selectedInfoLayout.addComponent(txtProjectType, 3, 1);
+        selectedInfoLayout.addComponent(lblAnalysisNameHeader , 0, 3, 3, 3);
+        selectedInfoLayout.addComponent(lblAnalysisName, 0, 4);
+        selectedInfoLayout.addComponent(txtAnalysisName, 1, 4, 3, 4);
+        
+        
+        GridLayout chooseEnvironmentLayout = new GridLayout(2, 8);
+        chooseEnvironmentLayout.setWidth("450");
+        chooseEnvironmentLayout.setSpacing(true);
+        chooseEnvironmentLayout.setMargin(true, true, true, false);
+        chooseEnvironmentLayout.addComponent(lblChooseEnvironmentHeader ,0, 0, 1, 0);
+        chooseEnvironmentLayout.addComponent(lblChooseEnvironmentDescription , 0, 1, 1, 1);
+        chooseEnvironmentLayout.addComponent(lblSpecifyEnvFactor, 0, 2);
+        chooseEnvironmentLayout.addComponent(selEnvFactor, 1, 2);
+        chooseEnvironmentLayout.addComponent(lblChooseEnvironmentForAnalysisDescription , 0, 3, 1, 3);
+        chooseEnvironmentLayout.addComponent(selEnvForAnalysis, 0, 4, 1, 4);
+        chooseEnvironmentLayout.addComponent(lblVersion, 0, 5);
+        chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
+        
+        GridLayout designDetailsLayout = new GridLayout(2, 8);
+        designDetailsLayout.setWidth("450");
+        designDetailsLayout.setSpacing(true);
+        designDetailsLayout.setMargin(true, false, true, true);
+        designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
+        designDetailsLayout.addComponent(lblDesignType, 0, 1);
+        designDetailsLayout.addComponent(selDesignType, 1, 1);
+        designDetailsLayout.addComponent(lblReplicates, 0, 2);
+        designDetailsLayout.addComponent(selReplicates, 1, 2);
+        designDetailsLayout.addComponent(lblBlocks, 0, 3);
+        designDetailsLayout.addComponent(selBlocks, 1, 3);
+        designDetailsLayout.addComponent(lblSpecifyRowFactor, 0, 4);
+        designDetailsLayout.addComponent(selRowFactor, 1, 4);
+        designDetailsLayout.addComponent(lblSpecifyColumnFactor, 0, 5);
+        designDetailsLayout.addComponent(selColumnFactor, 1, 5);
+        designDetailsLayout.addComponent(lblSpecifyGenotypesHeader, 0, 6, 1, 6);
+        designDetailsLayout.addComponent(lblGenotypes, 0, 7);
+        designDetailsLayout.addComponent(selGenotypes, 1, 7);
+        
+        
+        mainLayout.addComponent(lblTitle);
+        mainLayout.addComponent(selectedInfoLayout);
+        
+        HorizontalLayout combineLayout = new HorizontalLayout();
+        combineLayout.addComponent(chooseEnvironmentLayout);
+        combineLayout.addComponent(designDetailsLayout);
+        mainLayout.addComponent(combineLayout);
+       
+        HorizontalLayout combineLayout2 = new HorizontalLayout();
+        combineLayout2.setSpacing(true);
+        combineLayout2.addComponent(btnCancel);
+        combineLayout2.addComponent(btnRun);
+        mainLayout.addComponent(combineLayout2);
         
         mainLayout.setMargin(true);
-        
        
-        
-        setContent(mainLayout);
+        addComponent(mainLayout);
     }
 
     protected void initializeActions() {
-       btnCancel.addListener(new CancelDetailsAsInputForBreedingViewAction(this));
+       btnCancel.addListener(new Button.ClickListener() {
+    	   	private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				NavManager.navigateApp(event.getComponent().getWindow(), "/Home", false);
+			}
+       });
        btnRun.addListener(new RunBreedingViewAction(this));
        
        btnRun.setClickShortcut(KeyCode.ENTER);
@@ -686,6 +659,17 @@ public class SelectDetailsForBreedingViewWindow extends Window implements Initia
         messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
         messageSource.setCaption(btnCancel, Message.CANCEL);
+        
+        messageSource.setValue(lblTitle, Message.BV_TITLE);
+        messageSource.setValue(lblDatasetName, Message.BV_DATASET_NAME);
+        messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
+        messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER);
+        messageSource.setValue(lblAnalysisNameHeader, Message.BV_ANALYSIS_NAME_HEADER);
+        messageSource.setValue(lblChooseEnvironmentHeader, Message.BV_CHOOSE_ENVIRONMENT_HEADER);
+        messageSource.setValue(lblChooseEnvironmentDescription, Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
+        messageSource.setValue(lblChooseEnvironmentForAnalysisDescription, Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
+        messageSource.setValue(lblSpecifyDesignDetailsHeader, Message.BV_SPECIFY_DESIGN_DETAILS_HEADER);
+        messageSource.setValue(lblSpecifyGenotypesHeader, Message.BV_SPECIFY_GENOTYPES_HEADER);
     }
 
 

@@ -23,13 +23,13 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.CancelDatasetAsInputForBreedingViewAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
-import org.generationcp.ibpworkbench.actions.ShowStudyDatasetDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -40,6 +40,7 @@ import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -47,6 +48,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -68,6 +70,9 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private static final long serialVersionUID = 1L;
     
     private Label lblStudyTreeDetailTitle;
+    private Label lblStudyTreeDetailDescription;
+    private Label lblDatasetDetailTitle;
+    private Label lblDatasetDetailDescription;
     
     private VerticalLayout generalLayout;
     
@@ -105,8 +110,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 	private StudyDataManager studyDataManager;
     
     private ManagerFactory managerFactory;
-
-
+    
     public SelectDatasetForBreedingViewPanel(Project currentProject, Database database) {
   
         this.currentProject = currentProject;
@@ -166,11 +170,11 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
         datasetVariablesDetailLayout = new HorizontalLayout();
         
-        lblStudyTreeDetailTitle = new Label("Select Data for Analysis");
+        lblStudyTreeDetailTitle = new Label();
         lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
-        Label lblStudyTreeDetailDescription = new Label("You can run Single-Site Analysis on datasets that belong to studies in your own project. Select a study and then dataset from the tree below.");
+        lblStudyTreeDetailDescription = new Label();
         studyTreeLayout.addComponent(lblStudyTreeDetailDescription);
 
         Table factors = initializeFactorsTable();
@@ -192,12 +196,12 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         VerticalLayout studyDetailsDescriptionLayout = new VerticalLayout();
         studyDetailsDescriptionLayout.setSpacing(true);
         studyDetailsDescriptionLayout.setMargin(new MarginInfo(false, true, false, true));
-        Label lblDatasetDetailTitle = new Label("Review the Factors and Variates in the Selected Dataset");
+        lblDatasetDetailTitle = new Label();
         lblDatasetDetailTitle.setStyleName("gcp-content-header");
       
         studyDetailsDescriptionLayout.addComponent(lblDatasetDetailTitle);
         
-        Label lblDatasetDetailDescription = new Label("You can review the factors and variates in the dataset you selected before submitting them for analysis.");
+        lblDatasetDetailDescription = new Label();
         studyDetailsDescriptionLayout.addComponent(lblDatasetDetailDescription);
         
         generalLayout.addComponent(studyDetailsDescriptionLayout);
@@ -229,8 +233,14 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeActions() {
-        btnCancel.addListener(new CancelDatasetAsInputForBreedingViewAction(this));
-        openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
+    	btnCancel.addListener(new Button.ClickListener() {
+    	   	private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				NavManager.navigateApp(event.getComponent().getWindow(), "/Home", false);
+			}
+        });
+    	openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
         btnNext.addListener(openSelectDatasetForExportAction);
 
     }
@@ -507,6 +517,12 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     public void updateLabels() {
         messageSource.setCaption(btnCancel, Message.CANCEL);
         messageSource.setCaption(btnNext, Message.NEXT);
+        messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
+        messageSource.setValue(lblStudyTreeDetailDescription, Message.BV_STUDY_TREE_DESCRIPTION);
+        messageSource.setValue(lblDatasetDetailTitle,  Message.BV_DATASET_DETAIL_TITLE);
+        messageSource.setValue(lblDatasetDetailDescription, Message.BV_DATASET_DETAIL_DESCRIPTION);
+        
+        
     }
 
     public StudyDataManager getStudyDataManager() {

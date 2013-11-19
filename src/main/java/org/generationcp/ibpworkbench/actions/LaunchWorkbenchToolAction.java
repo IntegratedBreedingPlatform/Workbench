@@ -266,15 +266,13 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)
                         ) {
                         
-                    //window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.CENTRAL));
+                	new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
                         
                 } else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
                         && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL))
                  {
-                
-                    //window.addWindow(new SelectDatasetForBreedingViewWindow(project, Database.LOCAL));
-                    
-                    new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "", true);
+               
+                    new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
                 
                 }else {
                 

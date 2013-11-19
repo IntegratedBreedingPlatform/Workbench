@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -10,9 +10,9 @@ public class BreedingViewEnvFactorValueChangeListener implements ValueChangeList
 
     private static final long serialVersionUID = -6425208753343322313L;
 
-    SelectDetailsForBreedingViewWindow source;
+    SelectDetailsForBreedingViewPanel source;
     
-    public BreedingViewEnvFactorValueChangeListener(SelectDetailsForBreedingViewWindow source){
+    public BreedingViewEnvFactorValueChangeListener(SelectDetailsForBreedingViewPanel source){
         this.source = source;
     }
     
