@@ -1,10 +1,15 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
+import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Tree;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +21,7 @@ import org.slf4j.LoggerFactory;
 public class WorkbenchSidebar extends CssLayout {
     private WorkbenchSidebarPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
+    private Tree sidebarTree;
 
     public WorkbenchSidebar(Project project,Role role) {
         presenter = new WorkbenchSidebarPresenter(this,project,role);
@@ -28,6 +34,9 @@ public class WorkbenchSidebar extends CssLayout {
     }
 
     protected void initializeComponents() {
+        sidebarTree = new Tree();
+        sidebarTree.setContainerDataSource(new HierarchicalContainer());
+
 
     }
 
@@ -39,10 +48,25 @@ public class WorkbenchSidebar extends CssLayout {
 
     }
 
+    protected void initializeValues() {
+        HierarchicalContainer treeDataSource = new HierarchicalContainer();
+        sidebarTree.setContainerDataSource(treeDataSource);
+
+        Map<String,String> sidebarLinkLabels = new HashMap<String,String>();    // TODO: get from presenter
+        sidebarLinkLabels.put("activities","manage_list");
+        sidebarLinkLabels.put("activities","manage_list");
+        sidebarLinkLabels.put("activities","manage_list");
+        sidebarLinkLabels.put("activities","manage_list");
+
+
+
+    }
+
 
     protected void assemble() throws Exception {
         initializeComponents();
         initializeLayout();
+        initializeValues();
         initializeActions();
     }
 }

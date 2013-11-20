@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.ui;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -27,6 +28,7 @@ import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -40,18 +42,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -207,13 +198,14 @@ public class WorkbenchMainWindow extends Window implements IContentWindow, Initi
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(87, Sizeable.UNITS_PIXELS);
-        contentAreaSplitPanel.setStyleName("gcp-workbench-content-split-panel");
-        contentAreaSplitPanel.setLocked(true);
+        contentAreaSplitPanel.setSplitPosition(300, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
+        contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
+        // TODO:
+        contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
         // layout the left area of the content area split panel
-        Component leftArea = layoutLeftArea();
-        contentAreaSplitPanel.addComponent(leftArea);
+        //contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
 
         mainContent.setSizeFull();
         mainContent.setMargin(false);
