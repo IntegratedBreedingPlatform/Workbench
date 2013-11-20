@@ -21,6 +21,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
@@ -47,6 +48,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -333,6 +335,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	leftButtonLayout.addComponent(lblPrograms);
     	
     	Button btnAddProgram = new Button("Add a Program");
+    	
+    	btnAddProgram.addListener(new OpenNewProjectAction());
+    	
+        
     	//btnAddProgram.setStyleName(Button.STYLE_LINK);
     	Button btnManageProgram = new Button("Manage Programs");
     	//btnManageProgram.setStyleName(Button.STYLE_LINK);

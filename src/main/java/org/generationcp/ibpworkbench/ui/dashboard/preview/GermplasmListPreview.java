@@ -9,6 +9,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
 
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -36,8 +37,10 @@ public class GermplasmListPreview extends Panel {
     private GermplasmListManager germplasmListManager;
     @Autowired
     private ToolUtil toolUtil;
+    private Project project;
     
     public GermplasmListPreview(Project project) {
+        this.project = project;
         presenter = new GermplasmListPreviewPresenter(this,project);
 
         try {
@@ -48,6 +51,7 @@ public class GermplasmListPreview extends Panel {
     }
     
     public void setProject(Project project){
+        this.project = project;
         presenter = new GermplasmListPreviewPresenter(this,project);
         generateTree();
         /*
@@ -156,6 +160,7 @@ public class GermplasmListPreview extends Panel {
         ThemeResource folderResource =  new ThemeResource("images/folder.png");
         ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");
         doCreateTree(treeNodes, treeView, null, folderResource, leafResource);
+        treeView.addListener(new DashboardMainTreeListener(this, project));
         /*
         treeView.addItem(1);
         treeView.setItemCaption(1, "Root");
@@ -199,6 +204,10 @@ public class GermplasmListPreview extends Panel {
             ThemeResource resource = folder;
             if(treeNode.isLeaf()){
                 resource = leaf;
+                treeView.setChildrenAllowed(treeNode.getId(), false);
+                //we add listener if its the leaf
+                Item item = treeView.getItem(treeNode.getId());
+                
             }
             
             treeView.setItemIcon(treeNode.getId(),resource);
