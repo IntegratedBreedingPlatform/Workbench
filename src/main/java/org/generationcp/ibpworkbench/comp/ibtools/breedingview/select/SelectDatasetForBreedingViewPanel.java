@@ -28,6 +28,7 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
+import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -98,6 +99,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private Component buttonArea;
 
     private Database database;
+    private Role role;
 
     private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
     
@@ -116,6 +118,16 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
   
         this.currentProject = currentProject;
         this.database = database;
+
+        setWidth("90%");
+        
+    }
+    
+    public SelectDatasetForBreedingViewPanel(Project currentProject, Database database, Role role) {
+    	  
+        this.currentProject = currentProject;
+        this.database = database;
+        this.role = role;
 
         setWidth("90%");
         
@@ -208,17 +220,14 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         generalLayout.addComponent(studyDetailsDescriptionLayout);
         generalLayout.addComponent(studyDetailsLayout);
         generalLayout.addComponent(buttonArea);
+        generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
         
         addComponent(generalLayout);
         
     }
     
     protected void initializeLayout() {
-        
-        //generalLayout.setSpacing(true);
-        //generalLayout.setMargin(true);
-        generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_LEFT);
-        
+              
         studyTreeLayout.setSpacing(true);
         studyTreeLayout.setMargin(true);
         
@@ -235,12 +244,24 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     protected void initializeActions() {
     	btnCancel.addListener(new Button.ClickListener() {
-    	   	private static final long serialVersionUID = 1L;
+			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				NavManager.navigateApp(event.getComponent().getWindow(), "/Home", false);
+				try {
+			       
+				
+	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
+	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
+				} catch (Exception e) {
+					//LOG.error("Exception", e);
+		            if(e.getCause() instanceof InternationalizableException) {
+		                InternationalizableException i = (InternationalizableException) e.getCause();
+		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+		            }
+		            return;
+				}
 			}
-        });
+		});
     	openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
         btnNext.addListener(openSelectDatasetForExportAction);
 
@@ -298,22 +319,17 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         
-        
-        buttonLayout.setSizeFull();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true);
-
+        
         btnCancel = new Button();
         btnNext = new Button();
         btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
-        spacer.setSizeFull();
-        
-        buttonLayout.addComponent(spacer);
-        buttonLayout.setExpandRatio(spacer,1.0F);
+   
         buttonLayout.addComponent(btnCancel);
         buttonLayout.addComponent(btnNext);
-
+        buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+        buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
         return buttonLayout;
     }
 
@@ -529,6 +545,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
 		return this.studyDataManager;
+	}
+
+	public Role getCurrentRole() {
+		return role;
 	}
 
 

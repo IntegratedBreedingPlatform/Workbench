@@ -22,10 +22,12 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.comp.GxeAnalysisComponentPanel;
 import org.generationcp.ibpworkbench.comp.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.comp.WorkflowConstants;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -222,7 +224,28 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
          		 w.showContent(gxeAnalysisPanel);
          		 NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
          		
-        	} 
+        	} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)){
+        		
+        		 try {
+                     IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                     User user = app.getSessionData().getUserData();
+                     Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                     ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+
+                     workbenchDataManager.addProjectActivity(projAct);
+
+                 } catch (MiddlewareQueryException e1) {
+                     MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                               "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                     return;
+                 }
+        		
+        		 SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project,Database.LOCAL,this.role);
+        		 w.showContent(breedingViewPanel);
+        		 NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
+        		
+        	}
     	else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 

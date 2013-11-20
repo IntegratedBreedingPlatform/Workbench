@@ -767,8 +767,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
-            breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+            breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
+            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
 
             //breedingViewGxeAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE));
 

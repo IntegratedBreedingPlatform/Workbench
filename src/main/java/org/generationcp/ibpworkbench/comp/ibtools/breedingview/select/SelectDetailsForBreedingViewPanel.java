@@ -15,15 +15,18 @@ package org.generationcp.ibpworkbench.comp.ibtools.breedingview.select;
 import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvNameForAnalysisValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -35,6 +38,7 @@ import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -113,6 +118,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private List<VariableType> factorsInDataset;
     
     private Project project;
+    private Role role;
     
     private VerticalLayout mainLayout;
     
@@ -125,12 +131,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private SimpleResourceBundleMessageSource messageSource;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project) {
+            ,Project project, Role role) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
+        this.role = role;
      
         setWidth("90%");
         
@@ -268,12 +275,14 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         txtProjectType.setRequired(false);
         
         txtDatasetName = new TextField();
+        txtDatasetName.setWidth("100%");
         txtDatasetName.setNullRepresentation("");
         txtDatasetName.setValue(breedingViewInput.getDatasetName());
         txtDatasetName.setReadOnly(true);
         txtDatasetName.setRequired(false);
         
         txtDatasourceName = new TextField();
+        txtDatasourceName.setWidth("100%");
         txtDatasourceName.setNullRepresentation("");
         txtDatasourceName.setValue(breedingViewInput.getDatasetSource());
         txtDatasourceName.setReadOnly(true);
@@ -539,6 +548,10 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         selectedInfoLayout.setWidth("90%");
         selectedInfoLayout.setSpacing(true);
         selectedInfoLayout.setMargin(true, false, true, false);
+        selectedInfoLayout.setColumnExpandRatio(0, 1.2f);
+        selectedInfoLayout.setColumnExpandRatio(1, 4);
+        selectedInfoLayout.setColumnExpandRatio(2, 1);
+        selectedInfoLayout.setColumnExpandRatio(3, 3);
         selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
         selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
         selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
@@ -596,7 +609,10 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         combineLayout2.setSpacing(true);
         combineLayout2.addComponent(btnCancel);
         combineLayout2.addComponent(btnRun);
+        combineLayout2.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+        combineLayout2.setComponentAlignment(btnRun, Alignment.TOP_CENTER);
         mainLayout.addComponent(combineLayout2);
+        mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
         
         mainLayout.setMargin(true);
        
@@ -605,12 +621,25 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 
     protected void initializeActions() {
        btnCancel.addListener(new Button.ClickListener() {
-    	   	private static final long serialVersionUID = 1L;
+			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				NavManager.navigateApp(event.getComponent().getWindow(), "/Home", false);
+				try {
+			       
+				
+	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
+	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
+				} catch (Exception e) {
+					//LOG.error("Exception", e);
+		            if(e.getCause() instanceof InternationalizableException) {
+		                InternationalizableException i = (InternationalizableException) e.getCause();
+		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+		            }
+		            return;
+				}
 			}
-       });
+		});
+       
        btnRun.addListener(new RunBreedingViewAction(this));
        
        btnRun.setClickShortcut(KeyCode.ENTER);

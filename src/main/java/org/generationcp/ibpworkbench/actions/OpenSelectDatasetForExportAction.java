@@ -30,6 +30,7 @@ import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -78,6 +79,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         
         Integer dataSetId = selectDatasetForBreedingViewWindow.getCurrentDataSetId();
         String datasetName = selectDatasetForBreedingViewWindow.getCurrentDatasetName();
+        
+        Role role = selectDatasetForBreedingViewWindow.getCurrentRole();
         
         // study is required
         if (selectDatasetForBreedingViewWindow.getCurrentStudy() == null) {
@@ -154,7 +157,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
             w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project));
+                    , project, role));
             
             
 
