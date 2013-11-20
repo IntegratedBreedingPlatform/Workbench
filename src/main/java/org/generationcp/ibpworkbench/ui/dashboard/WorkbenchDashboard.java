@@ -47,6 +47,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -54,6 +55,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
@@ -268,8 +270,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         for (Project project : projects) {
             //projectContainer.addBean(project);
-            Button button = new Button("List");
+            Button button = new Button();
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
+            button.setStyleName(Reindeer.BUTTON_LINK + " project-select-btn");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             tblProject.addItem(new Object[]{project.getProjectName(),  capitalizeFirstLetter(project.getCropType().getCropName()), button}, project.getProjectId());
         }
@@ -325,12 +328,28 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	HorizontalLayout mainHorizontal = new HorizontalLayout();
     	mainHorizontal.setWidth("100%");
     	
+    	HorizontalLayout leftButtonLayout = new HorizontalLayout();
+    	leftButtonLayout.setSpacing(true);
+    	leftButtonLayout.addComponent(lblPrograms);
+    	
+    	Button btnAddProgram = new Button("Add a Program");
+    	//btnAddProgram.setStyleName(Button.STYLE_LINK);
+    	Button btnManageProgram = new Button("Manage Programs");
+    	//btnManageProgram.setStyleName(Button.STYLE_LINK);
+    	leftButtonLayout.addComponent(btnAddProgram);
+        leftButtonLayout.addComponent(btnManageProgram);
+    	leftButtonLayout.setComponentAlignment(btnAddProgram, Alignment.MIDDLE_RIGHT);
+    	leftButtonLayout.setComponentAlignment(btnManageProgram, Alignment.MIDDLE_RIGHT);
     	
     	VerticalLayout vertLeft = new VerticalLayout();
-    	vertLeft.addComponent(lblPrograms);
     	vertLeft.addComponent(headerProgramLabel);
+    	vertLeft.addComponent(leftButtonLayout);
+    	vertLeft.addComponent(new Label(""));
     	vertLeft.addComponent(tblProject);
     	vertLeft.setWidth("100%");
+    	vertLeft.setSpacing(true);
+    	
+    	
     	
     	tblProject.setWidth("100%");
         //tblProject.setHeight("100%");
@@ -343,8 +362,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     	
     	VerticalLayout vertRight = new VerticalLayout();
-    	vertRight.addComponent(lblPreview);
+    	vertRight.setSpacing(true);
     	vertRight.addComponent(headerPreviewLabel);
+    	vertRight.addComponent(lblPreview);    	
+    	vertLeft.addComponent(new Label(""));
     	vertRight.addComponent(previewTab);
     	vertRight.setWidth("400px");
     	vertRight.setHeight("100%");

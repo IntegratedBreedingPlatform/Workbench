@@ -623,3 +623,11 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 .gcp-dashboard-main > div {
 	overflow-y: auto !important;
 }
+
+.project-select-btn {
+	background:  url('images/select_16.png') no-repeat center center !important;
+	background-size: 16px 16px !important;
+	border-radius: 50%;
+	width: 30px;
+
+}
