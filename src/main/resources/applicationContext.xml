@@ -150,6 +150,12 @@
         <property name="workbenchUser"      value="${workbench.username}"/>
         <property name="workbenchPassword"  value="${workbench.password}"/>
     </bean>
+    
+    <bean id="tomcatUtil" class="org.generationcp.ibpworkbench.util.tomcat.TomcatUtil">
+        <property name="managerUrl"         value="http://localhost:18080/manager/text"/>
+        <property name="username"           value="tomcat"/>
+        <property name="password"           value="tomcat"/>
+    </bean>
 
     <bean id="traitsAndMeansCVSUtil" class="org.generationcp.ibpworkbench.util.TraitsAndMeansCSVUtil">
         <property name="columnMapping">

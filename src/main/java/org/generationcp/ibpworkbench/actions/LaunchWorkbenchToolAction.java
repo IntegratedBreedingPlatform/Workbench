@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -32,6 +33,8 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
+import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -130,6 +133,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     @Autowired
     private ToolUtil toolUtil;
     
+    @Autowired
+    private TomcatUtil tomcatUtil;
+    
     public LaunchWorkbenchToolAction() {
     }
     
@@ -142,30 +148,13 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this.toolEnum = toolEnum;
         this.project = project;
         this.toolConfiguration = toolConfiguration;
-        
-        /*
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        User user = app.getSessionData().getUserData();
-        
-        ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, project.getProjectName(), project.getProjectName(), user, new Date());
-        try {
-			workbenchDataManager.addProjectActivity(projAct);
-		} catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
     }
     
-    
-
 	@Override
     public void buttonClick(ClickEvent event) {
-        
         Window window = event.getComponent().getWindow();
         
         launchTool(toolEnum.getToolName(), window, true);
-        
     }
 
     @Override
@@ -222,12 +211,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
         Tool tool = null;
         
-       
         try {
             tool = workbenchDataManager.getToolWithName(toolName);
-            
-            
-            
         } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
             MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
@@ -235,45 +220,55 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             return;
         }
         
-        
-        
         if (tool == null) {
             LOG.warn("Cannot find tool " + toolEnum);
             showLaunchError(window, toolEnum.toString());
             return;
         } else {
-
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            User user = app.getSessionData().getUserData();
+            Project currentProject = app.getSessionData().getLastOpenedProject();
+            
             try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
-
                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getTitle(), "Launched "+tool.getTitle(), user, new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
-
             } catch (MiddlewareQueryException e1) {
                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
                 return;
             }
-
+            
+            // update the tool configuration if needed
+            updateToolConfiguration(window, tool);
+            
             if (tool.getToolType() == ToolType.NATIVE) {
+                try {
+                    // close the native tool
+                    toolUtil.closeNativeTool(tool);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
                 
-                if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
-                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)
-                        ) {
-                        
+                if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName())) {
+                    // when launching BreedingView, update the web service tool first
+                    Tool webServiceTool = new Tool();
+                    webServiceTool.setToolName("ibpwebservice");
+                    webServiceTool.setPath("http://localhost:18080/IBPWebService/");
+                    webServiceTool.setToolType(ToolType.WEB);
+                    
+                    updateToolConfiguration(window, webServiceTool);
+                }
+                
+                if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)) {
                 	new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
-                        
-                } else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) 
-                        && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL))
-                 {
-               
+                }
+                else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL)) {
                     new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
                 
-                }else {
-                
+                }
+                else {
                     try {
                         toolUtil.launchNativeTool(tool);
                     }
@@ -283,17 +278,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
                         showLaunchError(window, absoluteToolFile.getAbsolutePath());
                     }
-                
                 }
-                
             }
             else if (tool.getToolType() == ToolType.WEB_WITH_LOGIN) {
                 String loginUrl = tool.getPath();
-                
-                // get the currently logged in user's local database username and password
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
                 
                 User localIbdbUser = null;
                 try {
@@ -341,7 +329,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     }
                 }
             }
-            else {
+            else if (tool.getToolType() == ToolType.WEB) {
                 Embedded browser = new Embedded("", new ExternalResource(tool.getPath() + "?restartApplication"));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
@@ -374,5 +362,72 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         int port = request.getServerPort();
         
         return String.format(urlFormat, scheme, serverName, port, contextPath, URLEncoder.encode(url, "UTF-8"), username, password);
+    }
+    
+    private boolean updateToolConfiguration(Window window, Tool tool) {
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        Project currentProject = app.getSessionData().getLastOpenedProject();
+        
+        String url = tool.getPath();
+        
+        // update the configuration of the tool
+        boolean changedConfig = false;
+        try {
+            changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
+        }
+        catch (IOException e1) {
+            MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        catch (MiddlewareQueryException e) {
+            MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        
+        boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
+        
+        WebAppStatusInfo statusInfo = null;
+        String contextPath = null;
+        String localWarPath = null;
+        try {
+            statusInfo = tomcatUtil.getWebAppStatus();
+            if (webTool) {
+                contextPath = TomcatUtil.getContextPathFromUrl(url);
+                localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
+            }
+        }
+        catch (Exception e1) {
+            MessageNotifier.showError(window, "Cannot get webapp status.",
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        
+        if (webTool && changedConfig) {
+            try {
+                boolean deployed = statusInfo.isDeployed(contextPath);
+                boolean running = statusInfo.isRunning(contextPath);
+                if (!deployed) {
+                    // deploy the webapp
+                    tomcatUtil.deployLocalWar(contextPath, localWarPath);
+                }
+                else if (running) {
+                    // reload the webapp
+                    tomcatUtil.reloadWebApp(contextPath);
+                }
+                else {
+                    // start the webapp
+                    tomcatUtil.startWebApp(contextPath);
+                }
+            }
+            catch (Exception e) {
+                MessageNotifier.showError(window, "Cannot load tool: " + tool.getToolName(),
+                                          "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

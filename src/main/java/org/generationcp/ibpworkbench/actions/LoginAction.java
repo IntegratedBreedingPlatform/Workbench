@@ -23,13 +23,12 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.form.LoginForm;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.generationcp.ibpworkbench.util.CookieUtils;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,13 +147,8 @@ public class LoginAction implements ClickListener{
             
             application.setMainWindow(newWindow);
             
-            
-            Project project = workbenchDataManager.getLastOpenedProject(user.getUserid());
-            if (project != null) {
-            //    toolUtil.updateTools(newWindow, messageSource, project, false);
-            }
-            
-            
+            // we used to update the tool configurations here
+            // but we don't need it anymore
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

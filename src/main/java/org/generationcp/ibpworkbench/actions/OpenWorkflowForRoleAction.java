@@ -146,7 +146,9 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     }
     
     private void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {
-        toolUtil.updateTools((Window) contentWindow, messageSource, project, true);
+        // we used to update the tool configurations here
+        // but we don't need it anymore
+        
         updateProjectLastOpenedDate((Window) contentWindow, project);
         
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
