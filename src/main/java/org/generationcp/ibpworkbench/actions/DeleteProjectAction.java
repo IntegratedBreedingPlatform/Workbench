@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -79,7 +79,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 			HomeAction home = new HomeAction();
 				            home.buttonClick(evt);
 				            
-				            WorkbenchMainWindow w = (WorkbenchMainWindow) myWindow;
+				            WorkbenchMainView w = (WorkbenchMainView) myWindow;
 				            WorkbenchDashboard workbenchDashboard = null;
 				            workbenchDashboard = new WorkbenchDashboard();
 				            w.setWorkbenchDashboard(workbenchDashboard);

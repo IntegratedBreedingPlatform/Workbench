@@ -19,7 +19,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.form.LoginForm;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.generationcp.ibpworkbench.util.CookieUtils;
@@ -138,9 +138,9 @@ public class LoginAction implements ClickListener{
             return;
         }
         
-        WorkbenchMainWindow newWindow = null;
+        WorkbenchMainView newWindow = null;
         try {
-            newWindow = new WorkbenchMainWindow();
+            newWindow = new WorkbenchMainView();
             //application.removeWindow(application.getMainWindow());
             
             

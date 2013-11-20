@@ -100,6 +100,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public static final String CROP_NAME_COLUMN_ID = "Workbench Dashboard Crop Name Column Id";
     public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
     
+    private List<Project> projects = null;
+    
     public WorkbenchDashboard() {
         super();
     }
@@ -241,7 +243,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     protected void initializeData() {
         //TODO: Verify the try-catch flow
         // Get the list of Projects
-        List<Project> projects = null;
+        
         lastOpenedProject = null;
         
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
@@ -292,7 +294,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab));
+        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
         
     }
 

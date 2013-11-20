@@ -20,7 +20,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     @Override
     public void fragmentChanged(FragmentChangedEvent source) {
         UriFragmentUtility u = source.getUriFragmentUtility();
-        CrumbTrail crumbTrail = ((WorkbenchMainWindow) u.getWindow()).getCrumbTrail();
+        CrumbTrail crumbTrail = ((WorkbenchMainView) u.getWindow()).getCrumbTrail();
         
         if(crumbTrail.isLinkAccessed()) {
             crumbTrail.setLinkAccessed(false);

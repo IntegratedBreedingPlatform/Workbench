@@ -48,7 +48,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 
-public class WorkbenchMainWindow extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
+public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
     
     public static final String VERSION = "1.1.4.26";
@@ -86,11 +86,11 @@ public class WorkbenchMainWindow extends Window implements IContentWindow, Initi
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private static WorkbenchMainWindow thisInstance;
+    private static WorkbenchMainView thisInstance;
 
 	//private Button userToolsButton;
 
-    public WorkbenchMainWindow() {
+    public WorkbenchMainView() {
     	super("Integrated Breeding Platform | Workbench");
     }
 
@@ -242,7 +242,7 @@ public class WorkbenchMainWindow extends Window implements IContentWindow, Initi
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				WorkbenchMainWindow.this.open(new ExternalResource(HELP_LINK),"_blank");
+				WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
 			}
 		});
         
@@ -512,7 +512,7 @@ public class WorkbenchMainWindow extends Window implements IContentWindow, Initi
     	}
     }
 
-    public static WorkbenchMainWindow getInstance() {
+    public static WorkbenchMainView getInstance() {
            return thisInstance;
     }
 }

@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
@@ -74,7 +74,7 @@ public class HomeAction implements ClickListener, ActionListener{
         // we create a new WorkbenchDashboard object here
         // so that the UI is reset to its initial state
         // we can remove this if we want to present the last UI state.
-        WorkbenchMainWindow w = (WorkbenchMainWindow) window;
+        WorkbenchMainView w = (WorkbenchMainView) window;
         WorkbenchDashboard workbenchDashboard = null;
         try {
             workbenchDashboard = new WorkbenchDashboard();
