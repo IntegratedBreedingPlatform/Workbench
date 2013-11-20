@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.exceptions.ConfigException;
@@ -15,9 +15,9 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 
     private static final long serialVersionUID = -6425208753343322313L;
 
-    SelectDetailsForBreedingViewWindow source;
+    SelectDetailsForBreedingViewPanel source;
     
-    public BreedingViewEnvNameForAnalysisValueChangeListener(SelectDetailsForBreedingViewWindow source){
+    public BreedingViewEnvNameForAnalysisValueChangeListener(SelectDetailsForBreedingViewPanel source){
         this.source = source;
     }
     

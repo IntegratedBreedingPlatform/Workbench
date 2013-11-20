@@ -17,8 +17,9 @@ import java.util.List;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.comp.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
@@ -51,7 +52,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
     
-    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow; 
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow; 
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -62,7 +63,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     @Autowired
     private ToolUtil toolUtil;
     
-    public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
+    public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
         
@@ -138,6 +139,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
+            breedingViewInput.setDatasetName(selectDatasetForBreedingViewWindow.getCurrentDatasetName());
+            breedingViewInput.setDatasetSource(selectDatasetForBreedingViewWindow.getCurrentStudy().getName());
+            
             List<DataSet> meansDs = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
             	if (meansDs.size() > 0){
@@ -147,14 +151,14 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             	}
             }
            
-            event.getComponent().getWindow().getParent().addWindow( new SelectDetailsForBreedingViewWindow(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project) );
-            event.getComponent().getWindow().getParent().removeWindow(selectDatasetForBreedingViewWindow);
+            IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+            
+            w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
+                    , project));
+            
+            
 
         }
-        //catch (DatasetExporterException e) {
-        //    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        //}
         catch (MiddlewareQueryException e) {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }

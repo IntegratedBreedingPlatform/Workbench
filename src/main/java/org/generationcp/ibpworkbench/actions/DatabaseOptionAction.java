@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.middleware.manager.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +13,9 @@ public class DatabaseOptionAction implements ValueChangeListener{
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseOptionAction.class);
     private static final long serialVersionUID = -5091664285613837786L;
 
-    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
 
-    public DatabaseOptionAction(SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
+    public DatabaseOptionAction(SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         
         this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
 

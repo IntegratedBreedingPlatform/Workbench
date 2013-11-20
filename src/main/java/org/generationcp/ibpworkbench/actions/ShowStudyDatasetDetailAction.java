@@ -7,7 +7,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Study;
@@ -46,10 +46,10 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     
     private Table tblVariates;
     
-    private SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow;
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
     
 
-    public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewWindow selectDatasetForBreedingViewWindow) {
+    public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
  
         this.tblDataset = tblDataset;
         this.tblFactors = tblFactors;
@@ -115,7 +115,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         
         tblDataset.setVisibleColumns(columns);
         
-        tblDataset.addListener(new ShowDatasetVariablesDetailAction(tblDataset, tblFactors, tblVariates, selectDatasetForBreedingViewWindow));
+        tblDataset.addListener(new ShowDatasetVariablesDetailAction(tblFactors, tblVariates, selectDatasetForBreedingViewWindow));
     }
     
     

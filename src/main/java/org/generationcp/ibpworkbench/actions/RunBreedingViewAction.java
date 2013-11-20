@@ -28,7 +28,7 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewWindow;
+import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
@@ -57,9 +57,9 @@ public class RunBreedingViewAction implements ClickListener {
     
     private final static Logger log = LoggerFactory.getLogger(RunBreedingViewAction.class);
     
-    private SelectDetailsForBreedingViewWindow source;
+    private SelectDetailsForBreedingViewPanel source;
     
-    public RunBreedingViewAction(SelectDetailsForBreedingViewWindow selectDetailsForBreedingViewWindow) {
+    public RunBreedingViewAction(SelectDetailsForBreedingViewPanel selectDetailsForBreedingViewWindow) {
         
         this.source = selectDetailsForBreedingViewWindow;
         
@@ -311,7 +311,7 @@ public class RunBreedingViewAction implements ClickListener {
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
              
-         event.getComponent().getWindow().getParent().removeWindow(this.source);
+         //event.getComponent().getWindow().getParent().removeWindow(this.source);
     	
     	
     }
