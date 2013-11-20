@@ -228,13 +228,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         lblDesign = new Label();
         lblDesignType = new Label();
         lblDesignType.setContentMode(Label.CONTENT_XHTML);
-        lblReplicates = new Label();
-        lblBlocks = new Label();
-        lblBlocks.setContentMode(Label.CONTENT_XHTML);
-        lblSpecifyRowFactor = new Label();
-        lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
-        lblSpecifyColumnFactor = new Label();
-        lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
+        setLblReplicates(new Label());
+        getLblReplicates().setVisible(false);
+        getLblReplicates().setContentMode(Label.CONTENT_XHTML);
+        setLblBlocks(new Label());
+        getLblBlocks().setContentMode(Label.CONTENT_XHTML);
+        getLblBlocks().setVisible(false);
+        setLblSpecifyRowFactor(new Label());
+        getLblSpecifyRowFactor().setContentMode(Label.CONTENT_XHTML);
+        getLblSpecifyRowFactor().setVisible(false);
+        setLblSpecifyColumnFactor(new Label());
+        getLblSpecifyColumnFactor().setContentMode(Label.CONTENT_XHTML);
+        getLblSpecifyColumnFactor().setVisible(false);
         lblGenotypes = new Label();
         
         
@@ -328,24 +333,28 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         populateChoicesForReplicates();
         selReplicates.setNullSelectionAllowed(true);
         selReplicates.setNewItemsAllowed(false);
+        selReplicates.setVisible(false);
         
         selBlocks = new Select();
         selBlocks.setImmediate(true); 
         populateChoicesForBlocks();
         selBlocks.setNullSelectionAllowed(false);
         selBlocks.setNewItemsAllowed(false);
+        selBlocks.setVisible(false);
         
         selRowFactor = new Select();
         selRowFactor.setImmediate(true); 
         populateChoicesForRowFactor();
         selRowFactor.setNullSelectionAllowed(false);
         selRowFactor.setNewItemsAllowed(false);
+        selRowFactor.setVisible(false);
         
         selColumnFactor = new Select();
         selColumnFactor.setImmediate(true); 
         populateChoicesForColumnFactor();
         selColumnFactor.setNullSelectionAllowed(false);
         selColumnFactor.setNewItemsAllowed(false);
+        selColumnFactor.setVisible(false);
         
         refineChoicesForBlocksReplicationRowAndColumnFactos();
         
@@ -483,11 +492,12 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
           	}
          }
         
+    	/**
         if (this.selRowFactor.getItemIds().size() < 1) {
         	this.selRowFactor.setEnabled(false);
         }else{
         	this.selRowFactor.setEnabled(true);
-        }
+        }**/
     }
     
     private void populateChoicesForColumnFactor(){
@@ -499,11 +509,12 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
            	}
           }
         
+    	 /**
         if (this.selColumnFactor.getItemIds().size() < 1) {
         	this.selColumnFactor.setEnabled(false);
         }else{
         	this.selColumnFactor.setEnabled(true);
-        }
+        }**/
     }
     
     private void refineChoicesForBlocksReplicationRowAndColumnFactos(){
@@ -565,6 +576,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         
         GridLayout chooseEnvironmentLayout = new GridLayout(2, 8);
+        chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
+        chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
         chooseEnvironmentLayout.setWidth("450");
         chooseEnvironmentLayout.setSpacing(true);
         chooseEnvironmentLayout.setMargin(true, true, true, false);
@@ -578,19 +591,21 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
         
         GridLayout designDetailsLayout = new GridLayout(2, 8);
-        designDetailsLayout.setWidth("450");
+        designDetailsLayout.setColumnExpandRatio(0, 4);
+        designDetailsLayout.setColumnExpandRatio(1, 4);
+        designDetailsLayout.setWidth("550");
         designDetailsLayout.setSpacing(true);
-        designDetailsLayout.setMargin(true, false, true, true);
+        designDetailsLayout.setMargin(true, false, true, false);
         designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
         designDetailsLayout.addComponent(lblDesignType, 0, 1);
         designDetailsLayout.addComponent(selDesignType, 1, 1);
-        designDetailsLayout.addComponent(lblReplicates, 0, 2);
+        designDetailsLayout.addComponent(getLblReplicates(), 0, 2);
         designDetailsLayout.addComponent(selReplicates, 1, 2);
-        designDetailsLayout.addComponent(lblBlocks, 0, 3);
+        designDetailsLayout.addComponent(getLblBlocks(), 0, 3);
         designDetailsLayout.addComponent(selBlocks, 1, 3);
-        designDetailsLayout.addComponent(lblSpecifyRowFactor, 0, 4);
+        designDetailsLayout.addComponent(getLblSpecifyRowFactor(), 0, 4);
         designDetailsLayout.addComponent(selRowFactor, 1, 4);
-        designDetailsLayout.addComponent(lblSpecifyColumnFactor, 0, 5);
+        designDetailsLayout.addComponent(getLblSpecifyColumnFactor(), 0, 5);
         designDetailsLayout.addComponent(selColumnFactor, 1, 5);
         designDetailsLayout.addComponent(lblSpecifyGenotypesHeader, 0, 6, 1, 6);
         designDetailsLayout.addComponent(lblGenotypes, 0, 7);
@@ -683,10 +698,10 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(lblSpecifyNameForAnalysisEnv, Message.BV_SPECIFY_NAME_FOR_ANALYSIS_ENV);
         messageSource.setValue(lblDesign, Message.BV_DESIGN);
         messageSource.setValue(lblDesignType, Message.DESIGN_TYPE);
-        messageSource.setValue(lblReplicates, Message.BV_SPECIFY_REPLICATES);
-        messageSource.setValue(lblBlocks, Message.BV_SPECIFY_BLOCKS);
-        messageSource.setValue(lblSpecifyRowFactor, Message.BV_SPECIFY_ROW_FACTOR);
-        messageSource.setValue(lblSpecifyColumnFactor, Message.BV_SPECIFY_COLUMN_FACTOR);
+        messageSource.setValue(getLblReplicates(), Message.BV_SPECIFY_REPLICATES);
+        messageSource.setValue(getLblBlocks(), Message.BV_SPECIFY_BLOCKS);
+        messageSource.setValue(getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
+        messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
         messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
         messageSource.setCaption(btnCancel, Message.CANCEL);
@@ -722,6 +737,38 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 
 	public void setManagerFactory(ManagerFactory managerFactory) {
 		this.managerFactory = managerFactory;
+	}
+
+	public Label getLblBlocks() {
+		return lblBlocks;
+	}
+
+	public void setLblBlocks(Label lblBlocks) {
+		this.lblBlocks = lblBlocks;
+	}
+
+	public Label getLblSpecifyRowFactor() {
+		return lblSpecifyRowFactor;
+	}
+
+	public void setLblSpecifyRowFactor(Label lblSpecifyRowFactor) {
+		this.lblSpecifyRowFactor = lblSpecifyRowFactor;
+	}
+
+	public Label getLblSpecifyColumnFactor() {
+		return lblSpecifyColumnFactor;
+	}
+
+	public void setLblSpecifyColumnFactor(Label lblSpecifyColumnFactor) {
+		this.lblSpecifyColumnFactor = lblSpecifyColumnFactor;
+	}
+
+	public Label getLblReplicates() {
+		return lblReplicates;
+	}
+
+	public void setLblReplicates(Label lblReplicates) {
+		this.lblReplicates = lblReplicates;
 	}
     
   
