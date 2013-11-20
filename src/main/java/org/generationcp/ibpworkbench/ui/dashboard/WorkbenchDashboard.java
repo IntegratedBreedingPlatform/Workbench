@@ -118,17 +118,20 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public void initializeComponents() {
     	buttonPanel = new HorizontalLayout();
         lblDashboardTitle = new Label();
-        lblDashboardTitle.setStyleName("gcp-content-title");
+        lblDashboardTitle.setStyleName("gcp-content-title label-bold");        
         
         lblActivitiesTitle = new Label();
-        lblActivitiesTitle.setStyleName("gcp-content-title");
+        lblActivitiesTitle.setStyleName("gcp-content-title label-bold");
         
         lblPrograms = new Label(messageSource.getMessage(Message.PROJECT_TABLE_CAPTION));
-        lblPreview = new Label(messageSource.getMessage(Message.PREVIEW_TAB_CAPTION));
         
+        
+        lblPreview = new Label(messageSource.getMessage(Message.PREVIEW_TAB_CAPTION));
         
         headerPreviewLabel = new Label(messageSource.getMessage(Message.PREVIEW_LABEL));
         headerProgramLabel = new Label(messageSource.getMessage(Message.PROGRAMS_LABEL));
+        headerProgramLabel.setStyleName("gcp-content-header");
+        headerPreviewLabel.setStyleName("gcp-content-header");
         
         selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
         selectDatasetForBreedingViewButton.setWidth("200px");
@@ -331,26 +334,37 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	mainHorizontal.setWidth("100%");
     	
     	HorizontalLayout leftButtonLayout = new HorizontalLayout();
+    	
+    	HorizontalLayout leftButtonOnlyLayout = new HorizontalLayout();
+    	leftButtonLayout.setWidth("100%");
     	leftButtonLayout.setSpacing(true);
     	leftButtonLayout.addComponent(lblPrograms);
+    	leftButtonLayout.setExpandRatio(lblPrograms, 1.0f);
     	
-    	Button btnAddProgram = new Button("Add a Program");
+    	Button btnAddProgram = new Button(messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
     	
     	btnAddProgram.addListener(new OpenNewProjectAction());
-    	
+    	btnAddProgram.setStyleName("v-button-wrap-dashboard");
         
     	//btnAddProgram.setStyleName(Button.STYLE_LINK);
     	Button btnManageProgram = new Button("Manage Programs");
+    	btnManageProgram.setStyleName("v-button-wrap-dashboard");
     	//btnManageProgram.setStyleName(Button.STYLE_LINK);
-    	leftButtonLayout.addComponent(btnAddProgram);
-        leftButtonLayout.addComponent(btnManageProgram);
-    	leftButtonLayout.setComponentAlignment(btnAddProgram, Alignment.MIDDLE_RIGHT);
-    	leftButtonLayout.setComponentAlignment(btnManageProgram, Alignment.MIDDLE_RIGHT);
+    	leftButtonOnlyLayout.addComponent(btnAddProgram);
+    	//leftButtonOnlyLayout.addComponent(btnManageProgram);
+    	leftButtonOnlyLayout.setSpacing(true);
+        
+        leftButtonLayout.setComponentAlignment(lblPrograms, Alignment.BOTTOM_LEFT);
+        //leftButtonOnlyLayout.setComponentAlignment(btnAddProgram, Alignment.MIDDLE_RIGHT);
+        //leftButtonOnlyLayout.setComponentAlignment(btnManageProgram, Alignment.MIDDLE_RIGHT);
     	
+        leftButtonLayout.addComponent(leftButtonOnlyLayout);
+        leftButtonLayout.setComponentAlignment(leftButtonOnlyLayout, Alignment.MIDDLE_RIGHT);
+        
     	VerticalLayout vertLeft = new VerticalLayout();
     	vertLeft.addComponent(headerProgramLabel);
     	vertLeft.addComponent(leftButtonLayout);
-    	vertLeft.addComponent(new Label(""));
+    	//vertLeft.addComponent(new Label(""));
     	vertLeft.addComponent(tblProject);
     	vertLeft.setWidth("100%");
     	vertLeft.setSpacing(true);
@@ -358,6 +372,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	
     	
     	tblProject.setWidth("100%");
+    	tblProject.setStyleName("program-tab");
         //tblProject.setHeight("100%");
     	
     	//vertLeft.setExpandRatio(tblProject, 0.9f);
@@ -368,9 +383,20 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     	
     	VerticalLayout vertRight = new VerticalLayout();
+    	HorizontalLayout labelLayout = new HorizontalLayout();
+    	labelLayout.setWidth("100%");
+    	labelLayout.setHeight("28px");
+    	labelLayout.setSpacing(true);
+    	labelLayout.setStyleName("dashboard-horizontal-label-top");
     	vertRight.setSpacing(true);
     	vertRight.addComponent(headerPreviewLabel);
-    	vertRight.addComponent(lblPreview);    	
+    	
+    	labelLayout.addComponent(lblPreview);
+    	labelLayout.setComponentAlignment(lblPreview, Alignment.BOTTOM_LEFT);
+    	labelLayout.setStyleName("dashboard-horizontal-label-top");
+    	
+    	vertRight.addComponent(labelLayout);
+    	
     	vertLeft.addComponent(new Label(""));
     	vertRight.addComponent(previewTab);
     	vertRight.setWidth("400px");
@@ -379,6 +405,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	tblRoles.setWidth("300px");
     	//hl.addComponent(tblRoles);
     	 previewTab.setWidth("100%");
+
+    	 previewTab.setStyleName("preview-tab");
     	 
     	 vertRight.setExpandRatio(previewTab, 1.0f);
     	 
@@ -388,7 +416,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	 vert1.addComponent(mainHorizontal);
     	 vert1.setWidth("100%");
          vert1.setHeight("100%");
-    	 
+    	 vert1.setSpacing(true);
     	 hl.addComponent(vert1);
     	return hl;
     }

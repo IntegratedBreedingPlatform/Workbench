@@ -34,6 +34,7 @@ public enum Message {
     ,PREVIEW_TAB_CAPTION
     ,PROGRAMS_LABEL
     ,PREVIEW_LABEL
+    ,ADD_A_PROGRAM
     ,PROJECT
     ,ACTION
     ,DATE

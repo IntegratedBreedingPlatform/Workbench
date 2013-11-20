@@ -631,3 +631,21 @@ div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizo
 	width: 30px;
 
 }
+.v-button-wrap-dashboard span.v-button-wrap{
+	padding-top: 2px;
+}
+.gcp-content-header {
+    font-size: 14px;
+}
+.preview-tab{
+	/*padding-top: 5px;*/
+}
+.program-tab{
+	padding-top: 3px;
+}
+.dashboard-horizontal-label-top{
+	padding-top: 0px;
+}
+.label-bold{
+	font-weight: bold;
+}
