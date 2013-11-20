@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.middleware.manager.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

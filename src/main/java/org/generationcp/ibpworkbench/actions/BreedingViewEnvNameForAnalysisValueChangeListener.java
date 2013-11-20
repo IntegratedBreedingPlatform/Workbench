@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.exceptions.ConfigException;

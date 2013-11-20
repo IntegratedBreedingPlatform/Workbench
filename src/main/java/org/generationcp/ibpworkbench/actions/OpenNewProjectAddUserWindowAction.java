@@ -12,7 +12,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.window.NewProjectAddUserWindow;
+import org.generationcp.ibpworkbench.ui.window.NewProjectAddUserWindow;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;

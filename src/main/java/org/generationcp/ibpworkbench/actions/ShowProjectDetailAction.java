@@ -19,8 +19,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.comp.table.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -51,7 +51,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private Label lblActivity;
     
     private Table tblProject;
-    private WorkbenchDashboardWindow workbenchDashboardwindow;
+    private WorkbenchMainWindow workbenchDashboardwindow;
     private Label lblDashboardTitle;
     private Table tblActivity;
 
@@ -120,7 +120,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
             //projectDetailLabel.setValue(label);
            
-            workbenchDashboardwindow = (WorkbenchDashboardWindow) event.getComponent().getWindow();
+            workbenchDashboardwindow = (WorkbenchMainWindow) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
             
             

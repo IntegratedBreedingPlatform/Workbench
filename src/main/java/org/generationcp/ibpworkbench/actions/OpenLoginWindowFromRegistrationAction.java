@@ -12,10 +12,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
-import org.generationcp.ibpworkbench.comp.window.LoginWindow;
+import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

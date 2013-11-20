@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.window.WorkflowPreviewWindow;
+import org.generationcp.ibpworkbench.ui.window.WorkflowPreviewWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;

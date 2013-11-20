@@ -12,22 +12,17 @@
 
 package org.generationcp.ibpworkbench;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dellroad.stuff.vaadin.SpringContextApplication;
-import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LoginAction;
-import org.generationcp.ibpworkbench.comp.window.LoginWindow;
+import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 public class IBPWorkbenchApplication extends SpringContextApplication {

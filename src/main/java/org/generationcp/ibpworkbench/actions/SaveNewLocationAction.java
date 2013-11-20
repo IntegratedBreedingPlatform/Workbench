@@ -15,13 +15,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
-import org.generationcp.ibpworkbench.comp.form.AddLocationForm;
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
-import org.generationcp.ibpworkbench.comp.window.ConfirmLocationsWindow;
+import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
-import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsView;
+import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;

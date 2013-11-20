@@ -1,17 +1,13 @@
 package org.generationcp.ibpworkbench.util.test;
 
-import java.util.Iterator;
-
 import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.projectlocations.LocationTableViewModel;
-import org.generationcp.ibpworkbench.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.ui.projectlocations.LocationTableViewModel;
+import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
 import org.generationcp.middleware.hibernate.HibernateSessionProvider;
 import org.generationcp.middleware.hibernate.HibernateUtil;
 import org.generationcp.middleware.manager.DatabaseConnectionParameters;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.WorkbenchDataManagerImpl;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
@@ -19,17 +15,10 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.BeforeTransaction;
 
 public class TestProjectLocationsController {
 

@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;

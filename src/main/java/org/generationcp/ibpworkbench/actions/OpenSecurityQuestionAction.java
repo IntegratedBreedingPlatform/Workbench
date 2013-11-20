@@ -12,12 +12,10 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.window.LoginWindow;
-import org.generationcp.ibpworkbench.comp.window.SecurityQuestionWindow;
+import org.generationcp.ibpworkbench.ui.window.SecurityQuestionWindow;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
 
 public class OpenSecurityQuestionAction implements ClickListener{
     

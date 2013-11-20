@@ -13,9 +13,9 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.project.create.CreateProjectPanel;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
-import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +44,8 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         final IContentWindow w = (IContentWindow) window;
         
-        if (w instanceof WorkbenchDashboardWindow) {
-        	WorkbenchDashboardWindow wdw = (WorkbenchDashboardWindow)w;
+        if (w instanceof WorkbenchMainWindow) {
+        	WorkbenchMainWindow wdw = (WorkbenchMainWindow)w;
         	wdw.toggleCreateButtonStyle();
         }
         
@@ -58,8 +58,8 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
                 public void detach() {
                     super.detach();
         
-                    if (w instanceof WorkbenchDashboardWindow) {
-                    	WorkbenchDashboardWindow wdw = (WorkbenchDashboardWindow)w;
+                    if (w instanceof WorkbenchMainWindow) {
+                    	WorkbenchMainWindow wdw = (WorkbenchMainWindow)w;
                     	wdw.toggleCreateButtonStyle();
                     }
                     

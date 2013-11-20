@@ -14,9 +14,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.util.List;
 
-import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectLocationsComponent;
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.ProjectLocationPanel;
+import org.generationcp.ibpworkbench.ui.project.create.ProjectLocationsComponent;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.slf4j.Logger;

@@ -8,7 +8,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;

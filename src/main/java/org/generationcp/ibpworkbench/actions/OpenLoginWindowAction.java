@@ -11,24 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Iterator;
-
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.comp.form.LoginForm;
-import org.generationcp.ibpworkbench.comp.window.LoginWindow;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.vaadin.Application;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PopupView.Content;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
 
 
 /**

@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.UserAccountPanel;
+import org.generationcp.ibpworkbench.ui.UserAccountPanel;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 
 /**

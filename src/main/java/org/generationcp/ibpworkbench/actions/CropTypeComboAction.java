@@ -17,7 +17,7 @@ import java.util.Iterator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectBasicDetailsComponent;
+import org.generationcp.ibpworkbench.ui.project.create.ProjectBasicDetailsComponent;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

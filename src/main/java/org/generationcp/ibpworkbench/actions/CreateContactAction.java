@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.comp.ContactBookPanel;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.ui.ContactBookPanel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 
 import com.vaadin.ui.Button.ClickEvent;

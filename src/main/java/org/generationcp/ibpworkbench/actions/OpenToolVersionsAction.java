@@ -13,8 +13,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ToolVersionsPanel;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.ui.ToolVersionsPanel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

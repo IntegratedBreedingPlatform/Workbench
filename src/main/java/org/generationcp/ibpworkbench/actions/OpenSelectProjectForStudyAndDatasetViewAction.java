@@ -13,8 +13,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
-import org.generationcp.ibpworkbench.comp.window.IContentWindow;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -25,7 +25,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * 

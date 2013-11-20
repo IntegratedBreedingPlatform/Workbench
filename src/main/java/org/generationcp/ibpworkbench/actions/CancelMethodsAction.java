@@ -13,10 +13,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ProjectBreedingMethodsPanel;
-import org.generationcp.ibpworkbench.comp.ProjectLocationPanel;
-import org.generationcp.ibpworkbench.comp.project.create.ProjectBreedingMethodsComponent;
-import org.generationcp.ibpworkbench.comp.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
+import org.generationcp.ibpworkbench.ui.window.AddLocationsWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;

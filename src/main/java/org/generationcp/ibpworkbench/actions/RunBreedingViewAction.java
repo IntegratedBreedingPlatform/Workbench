@@ -28,7 +28,7 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.comp.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;

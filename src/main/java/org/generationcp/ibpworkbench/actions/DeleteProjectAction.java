@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.comp.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.comp.common.ConfirmDialog;
-import org.generationcp.ibpworkbench.comp.window.WorkbenchDashboardWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -80,7 +79,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 				 			HomeAction home = new HomeAction();
 				            home.buttonClick(evt);
 				            
-				            WorkbenchDashboardWindow w = (WorkbenchDashboardWindow) myWindow;
+				            WorkbenchMainWindow w = (WorkbenchMainWindow) myWindow;
 				            WorkbenchDashboard workbenchDashboard = null;
 				            workbenchDashboard = new WorkbenchDashboard();
 				            w.setWorkbenchDashboard(workbenchDashboard);
