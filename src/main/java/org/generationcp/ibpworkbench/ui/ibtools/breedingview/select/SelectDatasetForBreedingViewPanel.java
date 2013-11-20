@@ -343,7 +343,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         tr.addContainerProperty("Title", String.class, "title");
         tr.addContainerProperty("Description", String.class, "description");
 
-
+        tr.setColumnExpandRatio("Study Name", 1);
+        tr.setColumnExpandRatio("Title", 1);
+        tr.setColumnExpandRatio("Description", 1);
+        
         List<FolderReference> folderRef = null;
         
         try {
