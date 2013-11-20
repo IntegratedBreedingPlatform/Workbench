@@ -19,7 +19,9 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
+import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -35,6 +37,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -51,7 +54,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private Label lblActivity;
     
     private Table tblProject;
-    private WorkbenchMainWindow workbenchDashboardwindow;
+    private WorkbenchMainView workbenchDashboardwindow;
     private Label lblDashboardTitle;
     private Table tblActivity;
 
@@ -64,9 +67,15 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private Button selectDatasetForBreedingViewButton;
     private Project currentProj;
     
+    private GermplasmListPreview germplasmListPreview;
+    private NurseryListPreview nurseryListPreview;
+    private TabSheet previewTab;
+    
+    private List<Project> projects;
+    
     public ShowProjectDetailAction(Label lblActivity, Table tblProject, Table tblActivity, Table tblRoles, 
             Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,
-            Project currentProject) {
+            Project currentProject, GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects) {
         this.lblActivity = lblActivity;
         this.tblProject = tblProject;
         this.tblActivity = tblActivity;
@@ -74,6 +83,10 @@ public class ShowProjectDetailAction implements ItemClickListener {
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
         this.currentProj = currentProject;
+        this.germplasmListPreview = germplasmListPreview;
+        this.nurseryListPreview = nurseryListPreview;
+        this.previewTab = previewTab;
+        this.projects = projects;
     }
     
    
@@ -81,9 +94,17 @@ public class ShowProjectDetailAction implements ItemClickListener {
     @Override
     public void itemClick(ItemClickEvent event) {
         @SuppressWarnings("unchecked")
-        BeanItem<Project> item = (BeanItem<Project>) event.getItem();
+        //BeanItem<Project> item = (BeanItem<Project>) event.getItem();              
         
-        Project project = item.getBean();
+        Project project = null; //item.getBean();
+        Long projectId = (Long)event.getItemId();
+        for(Project tempProject : projects){
+            if(tempProject.getProjectId().longValue()  == projectId.longValue()){
+                project = tempProject; 
+                break;
+            }
+        }
+        
         
         if (project == null) {
             return;
@@ -102,10 +123,12 @@ public class ShowProjectDetailAction implements ItemClickListener {
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         
         // update the project activity table's listener
+        
         if (openWorkflowForRoleAction != null) {
             tblRoles.removeListener(openWorkflowForRoleAction);
             tblRoles.setStyleName("gcp-tblroles");
         }
+        
         openWorkflowForRoleAction = new OpenWorkflowForRoleAction(project);
         tblRoles.addListener(openWorkflowForRoleAction);
         tblRoles.setStyleName("gcp-tblroles gcp-selected");
@@ -120,7 +143,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
             //projectDetailLabel.setValue(label);
            
-            workbenchDashboardwindow = (WorkbenchMainWindow) event.getComponent().getWindow();
+            workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
             
             
@@ -129,6 +152,10 @@ public class ShowProjectDetailAction implements ItemClickListener {
             
             updateActivityTable(activityList);
             updateRoleTable(roleList);
+            germplasmListPreview.setProject(project);
+            nurseryListPreview.setProject(project);
+            previewTab.setSelectedTab(germplasmListPreview);
+            
         }
         catch (MiddlewareQueryException e) {
             showDatabaseError(event.getComponent().getWindow());

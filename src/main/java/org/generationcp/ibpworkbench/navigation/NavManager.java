@@ -16,7 +16,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public final class NavManager {
      * @param breadCrumbLabel the bread crumb label
      */
     public static void navigateApp(Window window, String viewId, boolean isLinkAccessed, String breadCrumbLabel) {
-        WorkbenchMainWindow workbenchWindow = (WorkbenchMainWindow) window;
+        WorkbenchMainView workbenchWindow = (WorkbenchMainView) window;
         CrumbTrail crumbTrail = workbenchWindow.getCrumbTrail();
         
         if(crumbTrail.getCrumbTrailList().isEmpty() || !crumbTrail.getLastBreadCrumbUri().equals(viewId)) {

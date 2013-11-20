@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.ui.WorkbenchMainWindow;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -38,7 +38,7 @@ public class SignoutAction implements ClickListener {
      */
     @Override
     public void buttonClick(ClickEvent event) {
-        WorkbenchMainWindow window = (WorkbenchMainWindow) event.getButton()
+        WorkbenchMainView window = (WorkbenchMainView) event.getButton()
                 .getWindow();
         window.setUriFragment("");
 
