@@ -62,6 +62,7 @@ public enum Message {
     ,ROLES
     ,ROLE_TABLE_TITLE
     ,PROJECT_TABLE_TOOLTIP
+    ,PROGRAM_TABLE_TOOLTIP
     ,ROLE_TABLE_TOOLTIP
     ,START_DATE
     

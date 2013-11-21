@@ -168,6 +168,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.addContainerProperty(CROP_NAME_COLUMN_ID, String.class, null);
         tblProject.addContainerProperty(BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
         
+        
 
         
         tblProject.setColumnHeader(PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
@@ -489,7 +490,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
             @Override
             public String generateDescription(Component source, Object itemId, Object propertyId) {
-                return messageSource.getMessage(Message.PROJECT_TABLE_TOOLTIP);
+                return messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
             }
         });
         

@@ -20,8 +20,9 @@ public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 
     @Override
     public String getStyle(Object itemId, Object propertyId) {
-        Item item = tblProject.getItem(itemId);
-        Object projectId = item.getItemProperty("projectId").getValue();
+        //Item item = tblProject.getItem(itemId);
+        //Object projectId = item.getItemProperty("projectId").getValue();
+        Object projectId = itemId;
         
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         Project lastOpenedProject = app.getSessionData().getLastOpenedProject();
