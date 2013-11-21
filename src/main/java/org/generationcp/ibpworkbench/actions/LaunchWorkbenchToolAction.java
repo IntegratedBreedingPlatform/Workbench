@@ -404,21 +404,24 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             return false;
         }
         
-        if (webTool && changedConfig) {
+        if (webTool) {
             try {
                 boolean deployed = statusInfo.isDeployed(contextPath);
                 boolean running = statusInfo.isRunning(contextPath);
-                if (!deployed) {
-                    // deploy the webapp
-                    tomcatUtil.deployLocalWar(contextPath, localWarPath);
-                }
-                else if (running) {
-                    // reload the webapp
-                    tomcatUtil.reloadWebApp(contextPath);
-                }
-                else {
-                    // start the webapp
-                    tomcatUtil.startWebApp(contextPath);
+                
+                if (changedConfig || !running) {
+                    if (!deployed) {
+                        // deploy the webapp
+                        tomcatUtil.deployLocalWar(contextPath, localWarPath);
+                    }
+                    else if (running) {
+                        // reload the webapp
+                        tomcatUtil.reloadWebApp(contextPath);
+                    }
+                    else {
+                        // start the webapp
+                        tomcatUtil.startWebApp(contextPath);
+                    }
                 }
             }
             catch (Exception e) {

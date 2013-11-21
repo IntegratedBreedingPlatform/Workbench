@@ -161,7 +161,7 @@ public class ToolUtil {
         if (tool.getToolType() != ToolType.NATIVE) {
             throw new IllegalArgumentException("Tool must be a native tool");
         }
-
+        
         File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
         
         String parameter = "";
@@ -199,7 +199,13 @@ public class ToolUtil {
                                                executableName);
         pb.directory(absoluteToolFile.getParentFile());
 
-        pb.start();
+        Process process = pb.start();
+        try {
+            process.waitFor();
+        }
+        catch (InterruptedException e) {
+            LOG.error("Interrupted while waiting for " + tool.getToolName() + " to stop.");
+        }
     }
 
     /**
@@ -247,13 +253,17 @@ public class ToolUtil {
         WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
 
         boolean configurationChanged = false;
-        if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name())) {
+        if (Util.isOneOf(tool.getToolName()
+                         ,ToolName.breeding_manager.name()
+                         ,ToolName.fieldbook.name()
+                         ,ToolName.ibfb_germplasm_import.name())) {
             configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
         } else if (Util.isOneOf(tool.getToolName()
                                 ,ToolName.germplasm_browser.name()
                                 ,ToolName.germplasm_list_browser.name()
                                 ,ToolName.germplasm_headtohead.name()
                                 ,ToolName.germplasm_mainheadtohead.name()
+                                ,ToolName.query_for_adapted_germplasm.name()
                                 ,ToolName.study_browser.name()
                                 )) {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties";
@@ -315,7 +325,7 @@ public class ToolUtil {
         String installationDirectory = workbenchSetting == null? "" : workbenchSetting.getInstallationDirectory() + File.separator;
         
         // Update databaseconfig.properties
-        File configurationFile = new File(installationDirectory + File.separator + "tools/" + tool.getToolName() + "/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
+        File configurationFile = new File(installationDirectory + File.separator + "tools/fieldbook/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
         
         String jdbcFormat = "jdbc:mysql://%s:%s/%s";
         String centralJdbcString = String.format(jdbcFormat, jdbcHost,
