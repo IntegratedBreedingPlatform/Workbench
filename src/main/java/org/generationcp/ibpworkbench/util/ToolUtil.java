@@ -261,7 +261,7 @@ public class ToolUtil {
                                                                              localDbName, username, password);
         } else if (Util.isOneOf(tool.getToolName()
                                 ,ToolName.crossing_manager.name()
-                                ,ToolName.germplasm_import
+                                ,ToolName.germplasm_import.name()
                                 ,ToolName.list_manager.name()
                                 ,ToolName.nursery_template_wizard.name()
                                 )) {
