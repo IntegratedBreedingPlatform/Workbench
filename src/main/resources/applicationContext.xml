@@ -129,10 +129,7 @@
         <property name="sessionProviderForLocal" ref="localHibernateSessionProvider"/>
         <property name="sessionProviderForCentral" ref="centralHibernateSessionProvider"/>
     </bean>
-    <bean id="germplasmListManager" class="org.generationcp.middleware.manager.GermplasmListManagerImpl">
-        <property name="sessionProviderForLocal" ref="localHibernateSessionProvider"/>
-        <property name="sessionProviderForCentral" ref="centralHibernateSessionProvider"/>
-    </bean>
+   
     
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >

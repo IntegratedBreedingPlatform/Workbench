@@ -9,9 +9,11 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
 
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -33,10 +35,13 @@ public class NurseryListPreview extends Panel {
     private Tree treeView;
     
     @Autowired
-    private GermplasmListManager germplasmListManager;
-    @Autowired
     private ToolUtil toolUtil;
     private Project project;
+    
+    @Autowired 
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    private ManagerFactory managerFactory;
     
     public NurseryListPreview(Project project) {
         presenter = new NurseryListPreviewPresenter(this,project);
@@ -216,4 +221,18 @@ public class NurseryListPreview extends Panel {
         initializeLayout();
         initializeActions();
     }
+
+
+    
+    public ManagerFactory getManagerFactory() {
+        return managerFactory;
+    }
+
+
+    
+    public void setManagerFactory(ManagerFactory managerFactory) {
+        this.managerFactory = managerFactory;
+    }
+    
+    
 }

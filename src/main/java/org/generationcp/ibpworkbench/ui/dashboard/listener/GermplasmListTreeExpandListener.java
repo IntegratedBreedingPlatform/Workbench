@@ -37,8 +37,14 @@ public class GermplasmListTreeExpandListener implements Tree.ExpandListener{
     public void nodeExpand(ExpandEvent event) {
         if (source instanceof GermplasmListPreview) {
             try {
-               ((GermplasmListPreview) source).addGermplasmListNode(Integer.valueOf(event.getItemId().toString()));
-            } catch (InternationalizableException e) {
+                String id = event.getItemId().toString();
+                int germplasmId = Integer.valueOf(id);
+                
+               ((GermplasmListPreview) source).addGermplasmListNode(germplasmId);
+            }catch (NumberFormatException e) {
+                LOG.error("Click on the root");
+            } 
+            catch (InternationalizableException e) {
                 LOG.error(e.toString() + "\n" + e.getStackTrace());
                 e.printStackTrace();
                 MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
