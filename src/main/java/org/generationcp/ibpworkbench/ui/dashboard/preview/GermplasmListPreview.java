@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,12 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -17,6 +23,8 @@ import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +47,18 @@ public class GermplasmListPreview extends Panel {
     private ToolUtil toolUtil;
     private Project project;
     
+    private final static int BATCH_SIZE = 50;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
+    private ThemeResource folderResource;
+    private ThemeResource leafResource;
+    
+    private String MY_LIST = "My List";
+    private String SHARED_LIST = "Shared List";
+    
+    
     public GermplasmListPreview(Project project) {
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this,project);
@@ -48,175 +68,138 @@ public class GermplasmListPreview extends Panel {
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        
+        folderResource =  new ThemeResource("images/folder.png");
+        leafResource =  new ThemeResource("images/leaf_16.png");
     }
     
     public void setProject(Project project){
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this,project);
-        generateTree();
-        /*
+        
+        
         try {
-            //toolUtil.set
-            List<GermplasmList> germplasmList = germplasmListManager.getAllGermplasmLists(0, (int) germplasmListManager.countAllGermplasmLists(), Database.LOCAL);
+            Tool tool = new Tool();
+            tool.setToolName(ToolName.germplasm_list_browser.name());
+            toolUtil.updateToolConfigurationForProject(tool, project);            
+            generateTree();
         } catch (MiddlewareQueryException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        */
+        
     }
+    
+    
 
-    protected void initializeComponents() {
-        generateTree();
+    protected void initializeComponents() {        
+        treeView = new Tree();
         this.setHeight("400px");
         this.addComponent(treeView);
     }
     
-    public class TreeNode{
-        long id;
-        String name;
-        List<TreeNode> treeNodeList;
-        boolean isLeaf;
-        public TreeNode(long id, String name, List<TreeNode> treeNodes, boolean isLeaf){
-            this.id = id;
-            this.name = name;
-            this.treeNodeList = treeNodes;
-            this.isLeaf = isLeaf;
-        }
-        
-        
-        
-        public boolean isLeaf() {
-            return isLeaf;
+    private void generateTree() {
+        List<GermplasmList> germplasmListParentLocal = new ArrayList<GermplasmList>();
+        List<GermplasmList> germplasmListParentCentral = new ArrayList<GermplasmList>();
+
+        try {
+            germplasmListParentLocal = this.germplasmListManager.getAllTopLevelListsBatched(BATCH_SIZE, Database.LOCAL);
+            germplasmListParentCentral = this.germplasmListManager.getAllTopLevelListsBatched(BATCH_SIZE, Database.CENTRAL);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            e.printStackTrace();
+          
+            germplasmListParentLocal = new ArrayList<GermplasmList>();
+            germplasmListParentCentral = new ArrayList<GermplasmList>();
         }
 
+        treeView = new Tree();
 
         
-        public void setLeaf(boolean isLeaf) {
-            this.isLeaf = isLeaf;
+        treeView.addItem(MY_LIST);
+        treeView.setItemCaption(MY_LIST, MY_LIST);
+        treeView.setItemIcon(MY_LIST,folderResource);
+        
+        treeView.addItem(SHARED_LIST);
+        treeView.setItemCaption(SHARED_LIST, SHARED_LIST);
+        treeView.setItemIcon(SHARED_LIST,folderResource);
+        
+        for (GermplasmList parentList : germplasmListParentLocal) {
+            treeView.addItem(parentList.getId());
+            treeView.setItemCaption(parentList.getId(), parentList.getName());
+            treeView.setParent(parentList.getId(), MY_LIST);
+            treeView.setItemIcon(parentList.getId(),folderResource);
+        }
+        
+        for (GermplasmList parentList : germplasmListParentCentral) {
+            treeView.addItem(parentList.getId());
+            treeView.setItemCaption(parentList.getId(), parentList.getName());
+            treeView.setParent(parentList.getId(), SHARED_LIST);
+            treeView.setItemIcon(parentList.getId(),folderResource);
         }
 
-
-        public long getId() {
-            return id;
-        }
-        
-        public void setId(long id) {
-            this.id = id;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-        
-        public List<TreeNode> getTreeNodeList() {
-            return treeNodeList;
-        }
-        
-        public void setTreeNodeList(List<TreeNode> treeNodeList) {
-            this.treeNodeList = treeNodeList;
-        }
-                
-    }
-    
-    public List<TreeNode> generateDummyData(){
-        List<TreeNode> treeNodes1 = new ArrayList();
-        
-        List<TreeNode> treeNodes2 = new ArrayList();
-        List<TreeNode> treeNodes3 = new ArrayList();
-        List<TreeNode> treeNodes4 = new ArrayList();
-        
-        treeNodes2.add(new TreeNode(42, "42",  new ArrayList(), true));
-        treeNodes2.add(new TreeNode(52, "52",  new ArrayList(), true));
-        treeNodes2.add(new TreeNode(62, "62",  new ArrayList(), true));
-        
-        treeNodes3.add(new TreeNode(43, "43",  new ArrayList(), true));
-        treeNodes3.add(new TreeNode(53, "53",  new ArrayList(), true));
-        treeNodes3.add(new TreeNode(63, "63",  new ArrayList(), true));
-        
-        treeNodes4.add(new TreeNode(44, "44",  new ArrayList(), true));
-        treeNodes4.add(new TreeNode(54, "54",  new ArrayList(), true));
-        treeNodes4.add(new TreeNode(64, "64",  new ArrayList(), true));
-        
-        
-        treeNodes1.add(new TreeNode(2, "2", treeNodes2, false));
-        treeNodes1.add(new TreeNode(3, "3", treeNodes3, false));
-        treeNodes1.add(new TreeNode(4, "4", treeNodes4, false));
-        
-        
-        List<TreeNode> treeNodes = new ArrayList();
-        treeNodes.add(new TreeNode(1, "Root", treeNodes1, false));
-        return treeNodes;
-    }
-    
-    private void generateTree(){
-        treeView = new Tree("GermplasmListPreview");
-        
-        List<TreeNode> treeNodes = generateDummyData();
-        
-        ThemeResource folderResource =  new ThemeResource("images/folder.png");
-        ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");
-        doCreateTree(treeNodes, treeView, null, folderResource, leafResource);
+        treeView.addListener(new GermplasmListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
-        /*
-        treeView.addItem(1);
-        treeView.setItemCaption(1, "Root");
-        
-        // Create the tree nodes
-        treeView.addItem("Root");
-        treeView.addItem("Branch 1");
-        treeView.addItem("Branch 2");
-        treeView.addItem("Leaf 1");
-        treeView.addItem("Leaf 2");
-        treeView.addItem("Leaf 3");
-        treeView.addItem("Leaf 4");
-        
-        treeView.setChildrenAllowed("Leaf 1", false);
-        treeView.setChildrenAllowed("Leaf 2", false);
-        treeView.setChildrenAllowed("Leaf 3", false);
-        treeView.setChildrenAllowed("Leaf 4", false);
-        
-        // Set the hierarchy
-        treeView.setParent("Branch 1", "Root");
-        treeView.setParent("Branch 2", "Root");
-        treeView.setParent("Leaf 1", "Branch 1");
-        treeView.setParent("Leaf 2", "Branch 1");
-        treeView.setParent("Leaf 3", "Branch 2");
-        treeView.setParent("Leaf 4", "Branch 2");
-        
-        for (Object itemId : treeView.getItemIds()) {
-            //Here the icon can be set to anything. Just an example.
-            Item item = treeView.getItem(itemId);
-            if(item.get)
-            treeView.setItemIcon(itemId, new ThemeResource("images/folder.png"));
-        }
-        */
+
+        //return germplasmListTree;
     }
     
-    private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
-        for(TreeNode treeNode : treeNodes){
-            treeView.addItem(treeNode.getId());
-            treeView.setItemCaption(treeNode.getId(), treeNode.getName());
+    public void addGermplasmListNode(int parentGermplasmListId) throws InternationalizableException{
+        List<GermplasmList> germplasmListChildren = new ArrayList<GermplasmList>();
+
+        try {
+            germplasmListChildren = this.germplasmListManager.getGermplasmListByParentFolderIdBatched(parentGermplasmListId, BATCH_SIZE);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            e.printStackTrace();/*
+            MessageNotifier.showWarning(getWindow(), 
+                    messageSource.getMessage(Message.ERROR_DATABASE), 
+                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
+                    */
+            germplasmListChildren = new ArrayList<GermplasmList>();
+        }
+
+        for (GermplasmList listChild : germplasmListChildren) {
+            treeView.addItem(listChild.getId());
+            treeView.setItemCaption(listChild.getId(), listChild.getName());
+            treeView.setParent(listChild.getId(), parentGermplasmListId);
+            // allow children if list has sub-lists
+            boolean hasChildList =  hasChildList(listChild.getId());
+            treeView.setChildrenAllowed(listChild.getId(), hasChildList);
             
-            ThemeResource resource = folder;
-            if(treeNode.isLeaf()){
-                resource = leaf;
-                treeView.setChildrenAllowed(treeNode.getId(), false);
-                //we add listener if its the leaf
-                Item item = treeView.getItem(treeNode.getId());
+            ThemeResource resource = folderResource;
+            if(!hasChildList){
+                resource = leafResource;
                 
-            }
+            }            
+            treeView.setItemIcon(listChild.getId(),resource);
             
-            treeView.setItemIcon(treeNode.getId(),resource);
-            if(parent != null)
-                treeView.setParent(treeNode.getId(), parent);
-            
-            doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
         }
     }
+    
+    private boolean hasChildList(int listId) {
+
+        List<GermplasmList> listChildren = new ArrayList<GermplasmList>();
+
+        try {
+            listChildren = this.germplasmListManager.getGermplasmListByParentFolderId(listId, 0, 1);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            /*
+            MessageNotifier.showWarning(getWindow(), 
+                    messageSource.getMessage(Message.ERROR_DATABASE), 
+                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
+                    */
+            listChildren = new ArrayList<GermplasmList>();
+        }
+        
+        return !listChildren.isEmpty();
+    }
+    
+    
 
     protected void initializeLayout() {
         this.setStyleName(Reindeer.PANEL_LIGHT);

@@ -10,7 +10,7 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview.TreeNode;
+
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.workbench.Project;

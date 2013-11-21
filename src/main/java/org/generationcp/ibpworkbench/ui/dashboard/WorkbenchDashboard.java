@@ -400,7 +400,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	vertLeft.addComponent(new Label(""));
     	vertRight.addComponent(previewTab);
     	vertRight.setWidth("400px");
-    	vertRight.setHeight("100%");
+    	vertRight.setHeight("99%");
     	
     	tblRoles.setWidth("300px");
     	//hl.addComponent(tblRoles);

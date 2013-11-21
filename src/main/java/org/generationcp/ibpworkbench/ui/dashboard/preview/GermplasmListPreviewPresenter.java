@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
         this.project = project;
     }
+    
+    
 
     @Override
     public void afterPropertiesSet() throws Exception {
