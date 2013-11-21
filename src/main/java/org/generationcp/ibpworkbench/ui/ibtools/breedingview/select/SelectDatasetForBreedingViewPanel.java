@@ -276,8 +276,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         container.setBeanIdProperty("id");
         tblFactors.setContainerDataSource(container);
         
-        String[] columns = new String[] {"name", "trname", "scname", "tmname"};
-        String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+        //String[] columns = new String[] {"name", "trname", "scname", "tmname"};
+        //String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+        String[] columns = new String[] {"name", "description"};
+        String[] columnHeaders = new String[] {"Name", "Description"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
         return tblFactors;
@@ -294,8 +296,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         container.setBeanIdProperty("id");
         tblVariates.setContainerDataSource(container);
         
-        String[] columns = new String[] {"name", "trname", "scname", "tmname"};
-        String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+        //String[] columns = new String[] {"name", "trname", "scname", "tmname"};
+        //String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+        String[] columns = new String[] {"Select","name", "description"};
+        String[] columnHeaders = new String[] {"Select" ,"Name", "Description"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
         return tblVariates;

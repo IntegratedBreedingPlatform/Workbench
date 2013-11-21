@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -93,6 +94,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	FactorModel fm = new FactorModel();
             	fm.setId(factor.getRank());
             	fm.setName(factor.getLocalName());
+            	fm.setDescription(factor.getLocalDescription());
             	fm.setScname(factor.getStandardVariable().getScale().getName());
             	fm.setScaleid(factor.getStandardVariable().getScale().getId());
             	fm.setTmname(factor.getStandardVariable().getMethod().getName());
@@ -109,6 +111,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	VariateModel vm = new VariateModel();
             	vm.setId(variate.getRank());
             	vm.setName(variate.getLocalName());
+            	vm.setDescription(variate.getLocalDescription());
             	vm.setScname(variate.getStandardVariable().getScale().getName());
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
             	vm.setTmname(variate.getStandardVariable().getMethod().getName());
@@ -159,6 +162,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
+        
+        tblVariates.addContainerProperty("Select", CheckBox.class, new CheckBox("",true));
         tblVariates.setContainerDataSource(container);
         
         for (VariateModel v : variateList ){
