@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
  * To change this template use File | Settings | File Templates.
  */
 @Component
+@Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
     private final NurseryListPreview view;
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);

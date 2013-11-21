@@ -152,8 +152,8 @@ public class ShowProjectDetailAction implements ItemClickListener {
             
             updateActivityTable(activityList);
             updateRoleTable(roleList);
-            germplasmListPreview.setProject(project);
-            nurseryListPreview.setProject(project);
+            germplasmListPreview.setProject(currentProj);
+            nurseryListPreview.setProject(currentProj);
             previewTab.setSelectedTab(germplasmListPreview);
             
         }

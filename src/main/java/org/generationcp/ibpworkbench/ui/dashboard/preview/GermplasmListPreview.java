@@ -28,6 +28,7 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,15 +37,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Time: 7:20 PM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class GermplasmListPreview extends Panel {
     private GermplasmListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
     
     @Autowired
-    private GermplasmListManager germplasmListManager;
+    private GermplasmListManager germplasmListManager;    
     @Autowired
     private ToolUtil toolUtil;
+    
     private Project project;
     
     private final static int BATCH_SIZE = 50;
@@ -75,13 +78,13 @@ public class GermplasmListPreview extends Panel {
     
     public void setProject(Project project){
         this.project = project;
-        presenter = new GermplasmListPreviewPresenter(this,project);
+        presenter = new GermplasmListPreviewPresenter(this, this.project);
         
         
         try {
             Tool tool = new Tool();
             tool.setToolName(ToolName.germplasm_list_browser.name());
-            toolUtil.updateToolConfigurationForProject(tool, project);            
+            toolUtil.updateToolConfigurationForProject(tool,  this.project);            
             generateTree();
         } catch (MiddlewareQueryException e) {
             // TODO Auto-generated catch block

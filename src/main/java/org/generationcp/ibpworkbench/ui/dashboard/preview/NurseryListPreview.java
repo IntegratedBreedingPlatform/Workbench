@@ -17,6 +17,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Time: 7:20 PM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class NurseryListPreview extends Panel {
     private NurseryListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreview.class);

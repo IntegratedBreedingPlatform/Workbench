@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Time: 7:20 PM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class GermplasmListPreviewPresenter implements InitializingBean {
     private final GermplasmListPreview view;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreviewPresenter.class);
