@@ -65,6 +65,10 @@ public enum Message {
     ,PROGRAM_TABLE_TOOLTIP
     ,ROLE_TABLE_TOOLTIP
     ,START_DATE
+    ,MY_LIST
+    ,SHARED_LIST
+    ,MY_STUDIES
+    ,SHARED_STUDIES
     
     //General
     ,SAVE

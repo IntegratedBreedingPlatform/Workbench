@@ -75,7 +75,9 @@ public class GermplasmListPreview extends Panel {
         presenter = new GermplasmListPreviewPresenter(this,project);
 
         try {
-            assemble();
+            if (project != null){
+                assemble();
+            }
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
