@@ -229,7 +229,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         	// Check if the project name already exists
             try {
                 Project project = workbenchDataManager.getProjectByName(projectName);
-                if (project != null && project.getProjectName() != null && project.getProjectName().equals(projectName)){
+                if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)){
 
                     if (createProjectPanel.getProject() == null || createProjectPanel.getProject().getProjectId() == null){
                         errorDescription.append("There is already a project with the given name. ");
