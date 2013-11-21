@@ -309,11 +309,13 @@ public class ToolUtil {
         return configurationChanged;
     }
     
-    protected boolean updateFieldBookConfiguration(Tool tool, String centralDbName, String localDbName, String username, String password, String workbenchLoggedinUserId) {
+    protected boolean updateFieldBookConfiguration(Tool tool, String centralDbName, String localDbName, String username, String password, String workbenchLoggedinUserId) throws MiddlewareQueryException {
+        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+        
+        String installationDirectory = workbenchSetting == null? "" : workbenchSetting.getInstallationDirectory() + File.separator;
+        
         // Update databaseconfig.properties
-        File configurationFile = new File("tools/" + tool.getToolName()
-                                          + "/IBFb/ibfb/modules/ext/databaseconfig.properties")
-                                 .getAbsoluteFile();
+        File configurationFile = new File(installationDirectory + File.separator + "tools/" + tool.getToolName() + "/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
         
         String jdbcFormat = "jdbc:mysql://%s:%s/%s";
         String centralJdbcString = String.format(jdbcFormat, jdbcHost,
