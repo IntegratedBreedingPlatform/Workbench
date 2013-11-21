@@ -73,6 +73,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private VerticalLayout generalLayout;
     
     private VerticalLayout studyTreeLayout;
+    private VerticalLayout studyTreeLayoutTableContainer;
     
     private GridLayout studyDetailsLayout;
     
@@ -113,7 +114,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         this.currentProject = currentProject;
         this.database = database;
 
-        setWidth("90%");
+        setWidth("100%");
         
     }
     
@@ -123,7 +124,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         this.database = database;
         this.role = role;
 
-        setWidth("90%");
+        setWidth("100%");
         
     }
     
@@ -170,8 +171,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     protected void initializeComponents() {
         
         generalLayout = new VerticalLayout();
+        generalLayout.setWidth("95%");
         
         studyTreeLayout = new VerticalLayout();
+        studyTreeLayoutTableContainer = new VerticalLayout();
         
         studyDetailsLayout = new GridLayout(10, 1);
         
@@ -189,7 +192,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         Table variates = initializeVariatesTable();
         
         TreeTable tr = createStudyTreeTable(this.database, factors, variates);
-        studyTreeLayout.addComponent(tr);
+        studyTreeLayoutTableContainer.addComponent(tr);
+        studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
         
         buttonArea = layoutButtonArea();
         
@@ -342,11 +346,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         tr.addContainerProperty("Study Name", String.class, "sname");
         tr.addContainerProperty("Title", String.class, "title");
         tr.addContainerProperty("Description", String.class, "description");
-
-        tr.setColumnExpandRatio("Study Name", 1);
-        tr.setColumnExpandRatio("Title", 1);
-        tr.setColumnExpandRatio("Description", 1);
-        
+ 
         List<FolderReference> folderRef = null;
         
         try {
@@ -374,8 +374,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         }
         
         // reserve excess space for the "treecolumn"
-        tr.setWidth("100%");
+        tr.setSizeFull();
         tr.setColumnExpandRatio("Study Name", 1);
+        tr.setColumnExpandRatio("Title", 1);
+        tr.setColumnExpandRatio("Description", 1);
         tr.setSelectable(true);
         
         tr.addListener(new StudyTreeExpandAction(this, tr));
