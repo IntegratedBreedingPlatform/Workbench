@@ -35,6 +35,7 @@ public class FactorModel implements Serializable{
     
     private Integer id;
     private String name;
+    private String description;
     private Integer traitid;
     private String trname;
     private Integer scaleid;
@@ -147,6 +148,7 @@ public class FactorModel implements Serializable{
         result = prime * result + ((tmname == null) ? 0 : tmname.hashCode());
         result = prime * result + ((traitid == null) ? 0 : traitid.hashCode());
         result = prime * result + ((trname == null) ? 0 : trname.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
         return result;
     }
 
@@ -200,7 +202,22 @@ public class FactorModel implements Serializable{
                 return false;
         } else if (!trname.equals(other.trname))
             return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
         return true;
     }
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 }
