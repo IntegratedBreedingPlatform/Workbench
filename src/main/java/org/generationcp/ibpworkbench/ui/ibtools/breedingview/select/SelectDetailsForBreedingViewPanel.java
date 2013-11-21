@@ -138,7 +138,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         this.project = project;
         this.role = role;
      
-        setWidth("90%");
+        setWidth("100%");
         
     }
 
@@ -556,13 +556,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         GridLayout selectedInfoLayout = new GridLayout(4, 5);
         selectedInfoLayout.setSizeUndefined();
-        selectedInfoLayout.setWidth("90%");
+        selectedInfoLayout.setWidth("95%");
         selectedInfoLayout.setSpacing(true);
         selectedInfoLayout.setMargin(true, false, true, false);
         selectedInfoLayout.setColumnExpandRatio(0, 1.2f);
-        selectedInfoLayout.setColumnExpandRatio(1, 4);
+        selectedInfoLayout.setColumnExpandRatio(1, 5);
         selectedInfoLayout.setColumnExpandRatio(2, 1);
-        selectedInfoLayout.setColumnExpandRatio(3, 3);
+        selectedInfoLayout.setColumnExpandRatio(3, 2);
         selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
         selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
         selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
