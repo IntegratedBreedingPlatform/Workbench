@@ -49,20 +49,15 @@ public class GermplasmListPreview extends Panel {
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
     
-    @Autowired
-    private ToolUtil toolUtil;
     
     private Project project;
     
-    private final static int BATCH_SIZE = 50;
+    
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    @Autowired 
-    private ManagerFactoryProvider managerFactoryProvider;
     
-    private ManagerFactory managerFactory;
     
     private ThemeResource folderResource;
     private ThemeResource leafResource;
@@ -70,9 +65,13 @@ public class GermplasmListPreview extends Panel {
     private String MY_LIST = "My List";
     private String SHARED_LIST = "Shared List";
     
+    @Autowired 
+    private ManagerFactoryProvider managerFactoryProvider;
+    
     
     public GermplasmListPreview(Project project) {
         this.project = project;
+        
         presenter = new GermplasmListPreviewPresenter(this,project);
 
         try {
@@ -86,25 +85,13 @@ public class GermplasmListPreview extends Panel {
     }
     
     public void setProject(Project project){
+        this.removeAllComponents();
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this, this.project);
+        //generateTree();     
+        presenter.generateInitialTreeNode();
+        this.addComponent(treeView);
         
-        
-        try {
-            Tool tool = new Tool();
-            tool.setToolName(ToolName.germplasm_list_browser.name());
-            toolUtil.updateToolConfigurationForProject(tool,  this.project);  
-            setManagerFactory(managerFactoryProvider.getManagerFactoryForProject(this.project));
-            this.removeAllComponents();
-            generateTree();                                   
-            this.addComponent(treeView);
-        } catch (MiddlewareQueryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         
     }
     
@@ -116,21 +103,8 @@ public class GermplasmListPreview extends Panel {
         //this.addComponent(treeView);
     }
     
-    private void generateTree() {
-        List<GermplasmList> germplasmListParentLocal = new ArrayList<GermplasmList>();
-        List<GermplasmList> germplasmListParentCentral = new ArrayList<GermplasmList>();
-
-        try {
-            germplasmListParentLocal = this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(BATCH_SIZE, Database.LOCAL);
-            germplasmListParentCentral = this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(BATCH_SIZE, Database.CENTRAL);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
-            e.printStackTrace();
-          
-            germplasmListParentLocal = new ArrayList<GermplasmList>();
-            germplasmListParentCentral = new ArrayList<GermplasmList>();
-        }
-
+    public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
+        
         treeView = new Tree();
 
         
@@ -147,7 +121,7 @@ public class GermplasmListPreview extends Panel {
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), MY_LIST);
             treeView.setItemIcon(parentList.getId(),folderResource);
-            boolean hasChildList =  hasChildList(parentList.getId());
+            boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
         }
         
@@ -156,7 +130,7 @@ public class GermplasmListPreview extends Panel {
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), SHARED_LIST);
             treeView.setItemIcon(parentList.getId(),folderResource);
-            boolean hasChildList =  hasChildList(parentList.getId());
+            boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
         }
 
@@ -166,24 +140,11 @@ public class GermplasmListPreview extends Panel {
         //return germplasmListTree;
     }
     
-    public void addGermplasmListNode(int parentGermplasmListId) throws InternationalizableException{
-        List<GermplasmList> germplasmListChildren = new ArrayList<GermplasmList>();
-
-        try {
-            germplasmListChildren = getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderIdBatched(parentGermplasmListId, BATCH_SIZE);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
-            e.printStackTrace();/*
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
-                    */
-            germplasmListChildren = new ArrayList<GermplasmList>();
-        }
-
+    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren ) throws InternationalizableException{
+       
         for (GermplasmList listChild : germplasmListChildren) {
             
-            boolean hasChildList =  hasChildList(listChild.getId());
+            boolean hasChildList =  getPresenter().hasChildList(listChild.getId());
             
             treeView.addItem(listChild.getId());
             treeView.setItemCaption(listChild.getId(), listChild.getName());
@@ -202,26 +163,17 @@ public class GermplasmListPreview extends Panel {
         treeView.setImmediate(true);
     }
     
-    private boolean hasChildList(int listId) {
+    
 
-        List<GermplasmList> listChildren = new ArrayList<GermplasmList>();
-
-        try {
-            listChildren = getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(listId, 0, 1);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
-            /*
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
-                    */
-            listChildren = new ArrayList<GermplasmList>();
-        }
-        
-        return !listChildren.isEmpty();
+    
+    public GermplasmListPreviewPresenter getPresenter() {
+        return presenter;
     }
+
     
-    
+    public void setPresenter(GermplasmListPreviewPresenter presenter) {
+        this.presenter = presenter;
+    }
 
     protected void initializeLayout() {
         this.setStyleName(Reindeer.PANEL_LIGHT);
@@ -242,14 +194,16 @@ public class GermplasmListPreview extends Panel {
     }
 
     
-    public ManagerFactory getManagerFactory() {
-        return managerFactory;
+    public ManagerFactoryProvider getManagerFactoryProvider() {
+        return managerFactoryProvider;
     }
 
     
-    public void setManagerFactory(ManagerFactory managerFactory) {
-        this.managerFactory = managerFactory;
+    public void setManagerFactoryProvider(
+            ManagerFactoryProvider managerFactoryProvider) {
+        this.managerFactoryProvider = managerFactoryProvider;
     }
+
     
     
 
