@@ -68,6 +68,7 @@ public class NurseryListPreview extends AbsoluteLayout {
     public void setProject(Project project){
         panel = new Panel();
         panel.removeAllComponents();
+        this.removeAllComponents();
         this.project = project;
         presenter = new NurseryListPreviewPresenter(this, project);
         presenter.generateTreeNodes();        

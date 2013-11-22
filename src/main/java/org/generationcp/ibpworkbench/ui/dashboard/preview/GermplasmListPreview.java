@@ -95,6 +95,7 @@ public class GermplasmListPreview extends AbsoluteLayout {
     public void setProject(Project project){
         panel = new Panel();
         panel.removeAllComponents();
+        this.removeAllComponents();
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this, this.project);
         presenter.generateInitialTreeNode();  
