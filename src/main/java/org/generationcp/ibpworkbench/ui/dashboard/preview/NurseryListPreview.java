@@ -7,6 +7,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -86,6 +87,7 @@ public class NurseryListPreview extends AbsoluteLayout {
     public void generateTree(List<TreeNode> treeNodes){
         
         treeView = new Tree();
+        treeView.setDragMode(TreeDragMode.NODE);
         
         ThemeResource folderResource =  new ThemeResource("images/folder.png");
         ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");

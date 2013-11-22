@@ -12,6 +12,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -125,7 +126,7 @@ public class GermplasmListPreview extends AbsoluteLayout {
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
         
         treeView = new Tree();
-
+        treeView.setDragMode(TreeDragMode.NODE);
         
         treeView.addItem(MY_LIST);
         treeView.setItemCaption(MY_LIST, MY_LIST);
