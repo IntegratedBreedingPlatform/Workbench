@@ -53,8 +53,10 @@ public class DashboardMainTreeListener implements ItemClickListener{
         //event.getItemId()
         if(source instanceof GermplasmListPreview){
             System.out.println(event.getItemId());
+            ((GermplasmListPreview)source).expandTree(event.getItemId());
         }else if(source instanceof NurseryListPreview){
             System.out.println(event.getItemId());
+            ((NurseryListPreview)source).expandTree(event.getItemId());
         }
     }
     

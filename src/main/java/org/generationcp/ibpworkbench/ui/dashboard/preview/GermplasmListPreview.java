@@ -105,7 +105,14 @@ public class GermplasmListPreview extends AbsoluteLayout {
         
     }
     
-    
+    public void expandTree(Object itemId){
+        
+        if(treeView.isExpanded(itemId))
+            treeView.collapseItem(itemId);
+        else
+            treeView.expandItem(itemId);
+        
+    }
 
     protected void initializeComponents() {        
         //treeView = new Tree("");
