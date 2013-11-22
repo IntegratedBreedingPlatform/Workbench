@@ -43,60 +43,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     
     @Override
     public void buttonClick(final ClickEvent event) {
-    	
-    	this.evt = event;
-    	
-    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-    	 if(app.getMainWindow()!= null)
-    	 {
-    		 final Window myWindow = event.getComponent().getWindow();
-    		 User currentUser = app.getSessionData().getUserData();
-    		 this.currentProject = app.getSessionData().getSelectedProject();
-    	     if(this.currentProject == null)
-    	     {
-    	    	 MessageNotifier.showError(myWindow, "Error", "Please select a project");
-    	            
-    	     }
-    		 ConfirmDialog.show(app.getMainWindow(), "Delete Project",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
-			 @Override
-			 public void onClose(ConfirmDialog dialog) {
-				 
-					// TODO Auto-generated method stub
-				 	if (dialog.isConfirmed()) {
-				 		
-				 		try {
-				 			
-				 			workbenchDataManager.deleteProjectDependencies(currentProject);
-				 			Project newProj = new Project();
-				 			newProj.setProjectId(currentProject.getProjectId());
-				 			newProj.setProjectName(currentProject.getProjectName());
-				 			newProj.setLocalDbName(currentProject.getLocalDbName());
-				 			newProj.setCentralDbName(currentProject.getCentralDbName());
-				 			workbenchDataManager.dropLocalDatabase(newProj);
-				 			workbenchDataManager.deleteProject(newProj);
-				 			
-				 			// go back to dashboard
-				 			HomeAction home = new HomeAction();
-				            home.buttonClick(evt);
-				            
-				            WorkbenchMainView w = (WorkbenchMainView) myWindow;
-				            WorkbenchDashboard workbenchDashboard = null;
-				            workbenchDashboard = new WorkbenchDashboard();
-				            w.setWorkbenchDashboard(workbenchDashboard);
-				            w.addTitle("");
-				            w.showContent(w.getWorkbenchDashboard());
-				            
-				 		} catch (MiddlewareQueryException e) {
-							// TODO Auto-generated catch block
-							MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
-			    	    	e.printStackTrace();
-						}
-				 	}
-				 	 
-				 
-			 }
-    		 });
-    	 }
+        this.evt = event;
+
+        doAction(event.getComponent().getWindow(),"delete_project",true);
     }
 
 	@Override
@@ -108,8 +57,57 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 	@Override
 	public void doAction(Window window, String uriFragment,
 			boolean isLinkAccessed) {
-		// TODO Auto-generated method stub
-		
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        if(app.getMainWindow()!= null)
+        {
+            final Window myWindow = window;
+            User currentUser = app.getSessionData().getUserData();
+            this.currentProject = app.getSessionData().getSelectedProject();
+            if(this.currentProject == null)
+            {
+                MessageNotifier.showError(myWindow, "Error", "Please select a project");
+
+            }
+            ConfirmDialog.show(app.getMainWindow(), "Delete Project",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
+                @Override
+                public void onClose(ConfirmDialog dialog) {
+
+                    // TODO Auto-generated method stub
+                    if (dialog.isConfirmed()) {
+
+                        try {
+
+                            workbenchDataManager.deleteProjectDependencies(currentProject);
+                            Project newProj = new Project();
+                            newProj.setProjectId(currentProject.getProjectId());
+                            newProj.setProjectName(currentProject.getProjectName());
+                            newProj.setLocalDbName(currentProject.getLocalDbName());
+                            newProj.setCentralDbName(currentProject.getCentralDbName());
+                            workbenchDataManager.dropLocalDatabase(newProj);
+                            workbenchDataManager.deleteProject(newProj);
+
+                            // go back to dashboard
+                            new HomeAction().doAction(myWindow, "/Home", true);
+
+
+                            WorkbenchMainView w = (WorkbenchMainView) myWindow;
+                            WorkbenchDashboard workbenchDashboard = null;
+                            workbenchDashboard = new WorkbenchDashboard();
+                            w.setWorkbenchDashboard(workbenchDashboard);
+                            w.addTitle("");
+                            w.showContent(w.getWorkbenchDashboard());
+
+                        } catch (MiddlewareQueryException e) {
+                            // TODO Auto-generated catch block
+                            MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+            });
+        }
 	}
 
     

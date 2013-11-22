@@ -119,7 +119,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	        table.setColumnHeader("backupPath","Backup Path");
 	        
 	        // init table contents
-	        Project p = this.project;
+	        Project p = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
 	        for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
 	        	projectBackupContainer.addBean(pb);
 	        }

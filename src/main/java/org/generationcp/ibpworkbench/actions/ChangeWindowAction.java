@@ -62,8 +62,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
-        ,BACKUP_IBDB("backup_ibdb")
-        ,RESTORE_IBDB("restore_ibdb")
         ,BREEDING_GXE("breeding_gxe")
         ;
         
@@ -75,6 +73,14 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         
         public String getwindowName() {
             return windowName;
+        }
+
+        public static WindowEnums equivalentWindowEnum(String windowName) {
+            for (WindowEnums window : WindowEnums.values()) {
+                if (window.getwindowName().equals(windowName))
+                    return window;
+            }
+            return null;
         }
         
         public static boolean isCorrectTool(String windowName) {

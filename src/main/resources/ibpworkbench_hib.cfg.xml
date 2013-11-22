@@ -44,7 +44,9 @@
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount"/>
         <mapping class="org.generationcp.middleware.pojos.workbench.ProjectBackup"/>  
         <mapping class="org.generationcp.middleware.pojos.workbench.UserInfo"/>
-    
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory"/>
+        <mapping class="org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink"/>
+
         <!-- Mapping classes for new OMS schema --> 
         <mapping class="org.generationcp.middleware.pojos.oms.CV"/>
         <mapping class="org.generationcp.middleware.pojos.oms.CVTerm"/>

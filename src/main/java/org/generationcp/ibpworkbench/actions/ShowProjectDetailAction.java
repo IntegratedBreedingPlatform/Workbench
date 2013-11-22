@@ -23,6 +23,7 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -145,7 +146,10 @@ public class ShowProjectDetailAction implements ItemClickListener {
            
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
-            
+
+            if (WorkbenchSidebar.thisInstance != null)
+                WorkbenchSidebar.thisInstance.populateLinks();
+
             
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));
             tblProject.refreshRowCache();

@@ -756,8 +756,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     
     protected void initializeActions() {
         if (!workflowPreview) {
-            updateProjectButton.addListener(new OpenUpdateProjectPageAction());
-        	mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
@@ -768,43 +767,37 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
-            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
-
-            //breedingViewGxeAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE));
-
-            //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
-            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
-            
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
-            
-            membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
-            
-            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
-            
-            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
-            
             germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            
-            projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
-            projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
-            
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             createTemplatesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_TEMPLATE_WIZARD));
-            
-            userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
-            
-            deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
-            
             datasetImporterBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.DATASET_IMPORTER));
-            
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+
+
+            //breedingViewGxeAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE));
+            //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
+
+        	breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
+            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
+            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
+            membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
+            
+            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
+            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
+            userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
+
+            updateProjectButton.addListener(new OpenUpdateProjectPageAction());
+            projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
+            projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
+            deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
+            
         }
     }
 

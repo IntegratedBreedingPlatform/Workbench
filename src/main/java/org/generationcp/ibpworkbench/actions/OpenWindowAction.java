@@ -78,6 +78,14 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         public String getwindowName() {
             return windowName;
         }
+
+        public static WindowEnum equivalentWindowEnum(String windowName) {
+            for (WindowEnum window : WindowEnum.values()) {
+                if (window.getwindowName().equals(windowName))
+                    return window;
+            }
+            return null;
+        }
         
         public static boolean isCorrectTool(String windowName) {
         	

@@ -65,7 +65,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     @Autowired
     private ToolUtil toolUtil;
     
-    private Project project;
+    protected Project project;
     
     public OpenWorkflowForRoleAction() {
     }
@@ -145,7 +145,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         NavManager.navigateApp(window, uriFragment, isLinkAccessed, workflowName);
     }
     
-    private void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {
+    protected void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {
         // we used to update the tool configurations here
         // but we don't need it anymore
         

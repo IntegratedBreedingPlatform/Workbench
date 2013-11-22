@@ -208,7 +208,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     	
     }
     
-    private void launchTool(String toolName, Window window, boolean isLinkAccessed) {
+    public void launchTool(String toolName, Window window, boolean isLinkAccessed) {
         Tool tool = null;
         
         try {
