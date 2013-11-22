@@ -69,6 +69,8 @@ public enum Message {
     ,SHARED_LIST
     ,MY_STUDIES
     ,SHARED_STUDIES
+    ,NURSERIES
+    ,TRIALS
     
     //General
     ,SAVE
