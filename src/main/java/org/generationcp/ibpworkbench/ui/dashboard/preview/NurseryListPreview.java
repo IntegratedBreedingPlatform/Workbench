@@ -9,6 +9,8 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -39,6 +41,9 @@ public class NurseryListPreview extends Panel {
 
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
     
     
     public NurseryListPreview(Project project) {
@@ -95,12 +100,16 @@ public class NurseryListPreview extends Panel {
                 //we add listener if its the leaf
                 Item item = treeView.getItem(treeNode.getId());
                 
+                if (treeNode.getName().equals(messageSource.getMessage(Message.MY_STUDIES)) 
+                		|| treeNode.getName().equals(messageSource.getMessage(Message.SHARED_STUDIES))){
+                	resource = folder;
+                }
             }
             
             treeView.setItemIcon(treeNode.getId(), resource);
-            if(parent != null)
+            if(parent != null){
                 treeView.setParent(treeNode.getId(), parent);
-            
+            }
             doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
         }
     }
