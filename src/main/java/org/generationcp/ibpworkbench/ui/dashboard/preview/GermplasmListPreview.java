@@ -67,7 +67,7 @@ public class GermplasmListPreview extends AbsoluteLayout {
     private String MY_LIST = "My List";
     private String SHARED_LIST = "Shared List";
     
-    
+    private Panel panel;
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -93,11 +93,16 @@ public class GermplasmListPreview extends AbsoluteLayout {
     }
     
     public void setProject(Project project){
-        this.removeAllComponents();
+        panel = new Panel();
+        panel.removeAllComponents();
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this, this.project);
-        presenter.generateInitialTreeNode();        
-        this.addComponent(treeView, "left: 20px; top: 20px;");        
+        presenter.generateInitialTreeNode();  
+        panel.addComponent(treeView);
+        panel.setSizeFull();
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
+        this.addComponent(panel, "left: 0px; top: 0px;");
+        
     }
     
     
@@ -182,7 +187,7 @@ public class GermplasmListPreview extends AbsoluteLayout {
     }
 
     protected void initializeLayout() {
-        this.setStyleName(Reindeer.PANEL_LIGHT);
+        //this.setStyleName(Reindeer.PANEL_LIGHT);
         this.setSizeFull();
         
 

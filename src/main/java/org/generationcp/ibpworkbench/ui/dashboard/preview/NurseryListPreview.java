@@ -39,6 +39,8 @@ public class NurseryListPreview extends AbsoluteLayout {
     private Tree treeView;
 
     private Project project;
+    
+    private Panel panel;
 
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -64,11 +66,15 @@ public class NurseryListPreview extends AbsoluteLayout {
 
     
     public void setProject(Project project){
-        this.removeAllComponents();
+        panel = new Panel();
+        panel.removeAllComponents();
         this.project = project;
         presenter = new NurseryListPreviewPresenter(this, project);
         presenter.generateTreeNodes();        
-        this.addComponent(treeView, "left: 20px; top: 20px;");
+        panel.addComponent(treeView);
+        panel.setSizeFull();
+        panel.setStyleName(Reindeer.PANEL_LIGHT);
+        this.addComponent(panel, "left: 0px; top: 0px;");
     }
     
     protected void initializeComponents() {
@@ -116,8 +122,7 @@ public class NurseryListPreview extends AbsoluteLayout {
         }
     }
 
-    protected void initializeLayout() {
-        this.setStyleName(Reindeer.PANEL_LIGHT);
+    protected void initializeLayout() {        
         this.setSizeFull();
     }
 
