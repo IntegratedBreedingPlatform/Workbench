@@ -12,6 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui.ibtools.breedingview.select;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
@@ -44,13 +46,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
@@ -111,6 +118,11 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Select selRowFactor;
     private Select selColumnFactor;
     private Select selGenotypes;
+    
+    private HashMap<String, Boolean> environmentCheckboxStates;
+    
+    private VerticalLayout tblEnvironmentLayout;
+    private Table tblEnvironmentSelection;
     
     private BreedingViewInput breedingViewInput;
     private Tool tool;
@@ -202,7 +214,49 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeComponents() {
-        
+    	
+    	environmentCheckboxStates = new HashMap<String, Boolean>();
+    	
+    	tblEnvironmentLayout = new VerticalLayout();
+    	tblEnvironmentLayout.setHeight("200px");
+    	tblEnvironmentLayout.setWidth("60%");
+    	
+    	tblEnvironmentSelection = new Table();
+    	tblEnvironmentSelection.setSizeFull();
+    	tblEnvironmentSelection.addContainerProperty("SELECT", CheckBox.class, new CheckBox("",true));
+    	tblEnvironmentSelection.addContainerProperty("ENVIRONMENT", String.class, "");
+    	
+		final CheckBox footerCheckBox = new CheckBox("SELECT ALL",true);
+		footerCheckBox.addListener(new Property.ValueChangeListener(){
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void valueChange(ValueChangeEvent event) {
+					Boolean val = (Boolean) event.getProperty()
+							.getValue();
+					for (Iterator<?> itr = tblEnvironmentSelection.getItemIds().iterator(); itr.hasNext();){
+						CheckBox chkObj = (CheckBox) tblEnvironmentSelection.getContainerProperty(itr.next(), "SELECT").getValue();
+						if (chkObj.getData() != null){
+							chkObj.setValue(val);
+						}
+						
+					}
+					
+					
+				}
+				
+			});
+		footerCheckBox.setImmediate(true);
+		
+		HorizontalLayout footerCheckBoxLayout = new HorizontalLayout();
+		footerCheckBoxLayout.setSizeUndefined();
+		footerCheckBoxLayout.setStyleName("v-table-header-wrap");
+		footerCheckBoxLayout.addComponent(footerCheckBox);
+		
+		tblEnvironmentLayout.addComponent(tblEnvironmentSelection);
+		tblEnvironmentLayout.addComponent(footerCheckBoxLayout);
+          
         mainLayout = new VerticalLayout();
         
         lblTitle = new Label();
@@ -407,9 +461,11 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     public void populateChoicesForEnvForAnalysis(){
-        
+    	
     	try{
-        	this.selEnvForAnalysis.removeAllItems();
+        	selEnvForAnalysis.removeAllItems();
+        	environmentCheckboxStates.clear();
+        	tblEnvironmentSelection.removeAllItems();
         }catch(Exception e){}
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
@@ -423,7 +479,32 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				TrialEnvironments trialEnvironments;	
 				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
 				for (Variable var : trialEnvironments.getVariablesByLocalName(envFactorName)){
-					if (var.getValue() != null) selEnvForAnalysis.addItem(var.getValue());
+					if (var.getValue() != null) {
+						selEnvForAnalysis.addItem(var.getValue());
+						
+						final CheckBox chk = new CheckBox("",true);
+						chk.setData(var.getValue());
+						chk.setImmediate(true);
+						chk.addListener(new Property.ValueChangeListener(){
+
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							public void valueChange(ValueChangeEvent event) {
+								Boolean val = (Boolean) event.getProperty()
+										.getValue();
+								getEnvironmentCheckboxStates().put(chk.getData().toString(), val);
+								System.out.println(chk.getData().toString() + ":" + val);
+							}
+							
+						}
+						);
+						
+						Object[] cells = new Object[]{ chk, var.getValue() };
+						environmentCheckboxStates.put(var.getValue(), true);
+						tblEnvironmentSelection.addItem(cells, var.getValue()+"");
+					}
+					
 				}
 				
 			} catch (ConfigException e) {
@@ -575,7 +656,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         selectedInfoLayout.addComponent(txtAnalysisName, 1, 4, 3, 4);
         
         
-        GridLayout chooseEnvironmentLayout = new GridLayout(2, 8);
+        GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
         chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
         chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
         chooseEnvironmentLayout.setWidth("450");
@@ -587,8 +668,9 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         chooseEnvironmentLayout.addComponent(selEnvFactor, 1, 2);
         chooseEnvironmentLayout.addComponent(lblChooseEnvironmentForAnalysisDescription , 0, 3, 1, 3);
         chooseEnvironmentLayout.addComponent(selEnvForAnalysis, 0, 4, 1, 4);
-        chooseEnvironmentLayout.addComponent(lblVersion, 0, 5);
-        chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
+        chooseEnvironmentLayout.addComponent(tblEnvironmentLayout, 0, 5, 1, 5);
+        chooseEnvironmentLayout.addComponent(lblVersion, 0, 6);
+        chooseEnvironmentLayout.addComponent(txtVersion, 1, 6);
         
         GridLayout designDetailsLayout = new GridLayout(2, 8);
         designDetailsLayout.setColumnExpandRatio(0, 4);
@@ -770,7 +852,16 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 	public void setLblReplicates(Label lblReplicates) {
 		this.lblReplicates = lblReplicates;
 	}
+
+	public HashMap<String, Boolean> getEnvironmentCheckboxStates() {
+		return environmentCheckboxStates;
+	}
+
+	public void setEnvironmentCheckboxStates(
+			HashMap<String, Boolean> environmentCheckboxStates) {
+		this.environmentCheckboxStates = environmentCheckboxStates;
+	}
     
-  
 
 }
+

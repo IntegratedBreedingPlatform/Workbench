@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -49,12 +50,12 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     private Table tblFactors;
     
-    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel;
 
     public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
-        this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
+        this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
         this.studyDataManager = selectDatasetForBreedingViewWindow.getStudyDataManager();
     }
     
@@ -73,14 +74,14 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             
             DataSet ds = studyDataManager.getDataSet(dataSetId);
             
-            Study currentStudy = selectDatasetForBreedingViewWindow.getCurrentStudy();
+            Study currentStudy = selectDatasetForBreedingViewPanel.getCurrentStudy();
          
             if (currentStudy == null){
             	Study study = studyDataManager.getStudy(ds.getStudyId());
-	            selectDatasetForBreedingViewWindow.setCurrentStudy(study);
-            }else if (selectDatasetForBreedingViewWindow.getCurrentStudy().getId() != ds.getStudyId()){
+	            selectDatasetForBreedingViewPanel.setCurrentStudy(study);
+            }else if (selectDatasetForBreedingViewPanel.getCurrentStudy().getId() != ds.getStudyId()){
             	Study study = studyDataManager.getStudy(ds.getStudyId());
-	            selectDatasetForBreedingViewWindow.setCurrentStudy(study);
+	            selectDatasetForBreedingViewPanel.setCurrentStudy(study);
             }
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
@@ -126,8 +127,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             }
             
            
-            selectDatasetForBreedingViewWindow.setCurrentDatasetName(ds.getName());
-            selectDatasetForBreedingViewWindow.setCurrentDataSetId(ds.getId());
+            selectDatasetForBreedingViewPanel.setCurrentDatasetName(ds.getName());
+            selectDatasetForBreedingViewPanel.setCurrentDataSetId(ds.getId());
             
             updateFactorsTable(factorList);
             updateVariatesTable(variateList);
@@ -157,23 +158,22 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     
     private void updateVariatesTable(List<VariateModel> variateList){
- 	    Object[] oldColumns = tblFactors.getVisibleColumns();
-        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+ 	    //Object[] oldColumns = tblFactors.getVisibleColumns();
+        //String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
         
-        tblVariates.addContainerProperty("Select", CheckBox.class, new CheckBox("",true));
-        tblVariates.setContainerDataSource(container);
-        
         for (VariateModel v : variateList ){
-     	   container.addBean(v);
-        }
+      	   container.addBean(v);
+      	   selectDatasetForBreedingViewPanel.getVariatesCheckboxState().put(v.getName(), true);
+         }
         
         tblVariates.setContainerDataSource(container);
         
-        tblVariates.setVisibleColumns(columns);
- }
+        tblVariates.setVisibleColumns(new String[]{"","name", "description"});
+        tblVariates.setColumnHeaders(new String[]{"","Name", "Description"});
+    }
   
    
     private void showDatabaseError(Window window) {

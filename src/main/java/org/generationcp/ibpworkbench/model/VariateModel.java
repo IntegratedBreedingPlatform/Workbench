@@ -42,6 +42,7 @@ public class VariateModel implements Serializable{
     private String scname;
     private Integer tmethid;
     private String tmname;
+    private Boolean active;
     
     
     /**
@@ -52,6 +53,7 @@ public class VariateModel implements Serializable{
         trname = "";
         scname = "";
         tmname = "";
+        active = true;
 
     }
 
@@ -149,6 +151,7 @@ public class VariateModel implements Serializable{
         result = prime * result + ((traitid == null) ? 0 : traitid.hashCode());
         result = prime * result + ((trname == null) ? 0 : trname.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((active == null) ? 0 : active.hashCode());
         return result;
     }
 
@@ -207,6 +210,11 @@ public class VariateModel implements Serializable{
                 return false;
         } else if (!description.equals(other.description))
             return false;
+        if (active == null) {
+            if (other.active != null)
+                return false;
+        } else if (!active.equals(other.active))
+            return false;
         return true;
     }
 
@@ -218,6 +226,16 @@ public class VariateModel implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public Boolean getActive() {
+		return active;
+	}
+
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }
