@@ -185,8 +185,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<TreeNode> nurseryNodes = createTreeNodesByStudyType(seasonNodes, StudyType.N);
         List<TreeNode> trialNodes = createTreeNodesByStudyType(seasonNodes, StudyType.T);
         
-        returnNodes.add(new TreeNode(TreeNode.getNextId(), StudyType.N.getLabel(),  nurseryNodes, false));
-        returnNodes.add(new TreeNode(TreeNode.getNextId(), StudyType.T.getLabel(),  trialNodes, false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(), messageSource.getMessage(Message.NURSERIES),  nurseryNodes, false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(), messageSource.getMessage(Message.TRIALS),  trialNodes, false));
         
         return returnNodes;        
     }
