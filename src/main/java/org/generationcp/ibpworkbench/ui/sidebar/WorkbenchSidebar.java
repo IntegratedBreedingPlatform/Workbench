@@ -36,6 +36,35 @@ public class WorkbenchSidebar extends CssLayout {
 
     public static WorkbenchSidebar thisInstance;
 
+    private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
+        @Override
+        public void itemClick(ItemClickEvent event) {
+            WorkbenchSidebar.this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+            if (event.getItemId() == null || WorkbenchSidebar.this.project == null)
+                return;
+            else {
+                TreeItem treeItem = (TreeItem) event.getItemId();
+                if (treeItem.getId() == null)
+                    return;
+
+                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),WorkbenchSidebar.this.project);
+                if (listener instanceof LaunchWorkbenchToolAction) {
+                    ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),WorkbenchMainView.getInstance(),true);
+                }
+                if (listener instanceof OpenWindowAction) {
+                    ((OpenWindowAction)listener).launchWindow(WorkbenchMainView.getInstance(),treeItem.getId());
+                }
+
+                else {
+                    listener.doAction(WorkbenchMainView.getInstance(),treeItem.getId(),true);
+                }
+            }
+
+            LOG.trace(event.getItemId().toString());
+        }
+    };
+
+
     public WorkbenchSidebar(Project project,Role role) {
         presenter = new WorkbenchSidebarPresenter(this,project);
         thisInstance = this;
@@ -86,33 +115,9 @@ public class WorkbenchSidebar extends CssLayout {
             }
         }
 
-        sidebarTree.addListener(new ItemClickEvent.ItemClickListener() {
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                WorkbenchSidebar.this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
-                if (event.getItemId() == null || WorkbenchSidebar.this.project == null)
-                    return;
-                else {
-                    TreeItem treeItem = (TreeItem) event.getItemId();
-                    if (treeItem.getId() == null)
-                        return;
 
-                    ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),WorkbenchSidebar.this.project);
-                    if (listener instanceof LaunchWorkbenchToolAction) {
-                        ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),WorkbenchMainView.getInstance(),true);
-                    }
-                    if (listener instanceof OpenWindowAction) {
-                        ((OpenWindowAction)listener).launchWindow(WorkbenchMainView.getInstance(),treeItem.getId());
-                    }
-
-                    else {
-                        listener.doAction(WorkbenchMainView.getInstance(),treeItem.getId(),true);
-                    }
-                }
-
-                LOG.trace(event.getItemId().toString());
-            }
-        });
+        sidebarTree.removeListener(treeClickListener);
+        sidebarTree.addListener(treeClickListener);
 
     }
 
