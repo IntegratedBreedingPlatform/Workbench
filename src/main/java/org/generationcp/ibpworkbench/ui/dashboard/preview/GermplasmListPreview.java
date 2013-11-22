@@ -8,9 +8,11 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -44,7 +46,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  * To change this template use File | Settings | File Templates.
  */
 @Configurable
-public class GermplasmListPreview extends Panel {
+public class GermplasmListPreview extends AbsoluteLayout {
     private GermplasmListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
@@ -65,6 +67,8 @@ public class GermplasmListPreview extends Panel {
     private String MY_LIST = "My List";
     private String SHARED_LIST = "Shared List";
     
+    
+    
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
     
@@ -84,24 +88,24 @@ public class GermplasmListPreview extends Panel {
         
         folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
+       
+        
     }
     
     public void setProject(Project project){
         this.removeAllComponents();
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this, this.project);
-        //generateTree();     
-        presenter.generateInitialTreeNode();
-        this.addComponent(treeView);
-        
-        
+        presenter.generateInitialTreeNode();        
+        this.addComponent(treeView, "left: 20px; top: 20px;");        
     }
     
     
 
     protected void initializeComponents() {        
-        //treeView = new Tree("Test");
-        this.setHeight("400px");
+        //treeView = new Tree("");
+        //this.setHeight("400px");
+        //this.setHeight("100%");
         //this.addComponent(treeView);
     }
     
@@ -180,6 +184,7 @@ public class GermplasmListPreview extends Panel {
     protected void initializeLayout() {
         this.setStyleName(Reindeer.PANEL_LIGHT);
         this.setSizeFull();
+        
 
     }
 

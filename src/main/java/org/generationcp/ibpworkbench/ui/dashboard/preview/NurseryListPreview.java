@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.Reindeer;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  * To change this template use File | Settings | File Templates.
  */
 @Configurable
-public class NurseryListPreview extends Panel {
+public class NurseryListPreview extends AbsoluteLayout {
 
     private static final long serialVersionUID = 1L;
     
@@ -63,14 +64,15 @@ public class NurseryListPreview extends Panel {
 
     
     public void setProject(Project project){
+        this.removeAllComponents();
         this.project = project;
         presenter = new NurseryListPreviewPresenter(this, project);
-        presenter.generateTreeNodes();
-        this.addComponent(treeView);
+        presenter.generateTreeNodes();        
+        this.addComponent(treeView, "left: 20px; top: 20px;");
     }
     
     protected void initializeComponents() {
-        this.setHeight("400px");
+        //this.setHeight("400px");
     }
     
     

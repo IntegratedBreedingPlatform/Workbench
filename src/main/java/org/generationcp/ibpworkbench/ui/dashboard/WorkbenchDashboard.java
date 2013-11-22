@@ -322,10 +322,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	//hl.setSpacing(true);
     	
     
-    	
-        
-        
-        
     	VerticalLayout vert1 = new VerticalLayout();
     	vert1.addComponent(lblDashboardTitle);
     	
