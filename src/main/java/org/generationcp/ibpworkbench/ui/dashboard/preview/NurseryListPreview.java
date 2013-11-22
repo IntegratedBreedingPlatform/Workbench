@@ -98,9 +98,11 @@ public class NurseryListPreview extends AbsoluteLayout {
     
     private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
         for(TreeNode treeNode : treeNodes){
+        	
             treeView.addItem(treeNode.getId());
             treeView.setItemCaption(treeNode.getId(), treeNode.getName());
-            
+
+            // Set resource icon
             ThemeResource resource = folder;
             if(treeNode.isLeaf()){
                 resource = leaf;
@@ -113,11 +115,19 @@ public class NurseryListPreview extends AbsoluteLayout {
                 	resource = folder;
                 }
             }
-            
             treeView.setItemIcon(treeNode.getId(), resource);
+
+            // Disable arrow of folders with no children
+            if (treeNode.getTreeNodeList().size() == 0){
+                treeView.setChildrenAllowed(treeNode.getId(), false);
+            }
+            
+            // Set parent
             if(parent != null){
                 treeView.setParent(treeNode.getId(), parent);
             }
+            
+            // Create children nodes
             doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
         }
     }

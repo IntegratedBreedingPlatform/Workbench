@@ -23,6 +23,8 @@ public class TreeNode{
     private List<TreeNode> treeNodeList;
 
     private boolean isLeaf;
+    
+    private static long idCounter = 0;
 
     public TreeNode(long id, String name, List<TreeNode> treeNodes, boolean isLeaf) {
         this.id = id;
@@ -37,6 +39,10 @@ public class TreeNode{
 
     public void setLeaf(boolean isLeaf) {
         this.isLeaf = isLeaf;
+    }
+
+    public static long getNextId() {
+    	return idCounter++;
     }
 
     public long getId() {

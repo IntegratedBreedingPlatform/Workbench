@@ -71,9 +71,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<TreeNode> centralTreeNode = createTreeNodesByInstance(studyNodes, Database.CENTRAL);
         
         List<TreeNode> treeNodes = new ArrayList<TreeNode>();
-        treeNodes.add(new TreeNode(1, messageSource.getMessage(Message.MY_STUDIES), 
+        treeNodes.add(new TreeNode(TreeNode.getNextId(), messageSource.getMessage(Message.MY_STUDIES), 
                                 localTreeNode, localTreeNode == null || localTreeNode.size() == 0 ? true : false));
-        treeNodes.add(new TreeNode(2, messageSource.getMessage(Message.SHARED_STUDIES), 
+        treeNodes.add(new TreeNode(TreeNode.getNextId(), messageSource.getMessage(Message.SHARED_STUDIES), 
                                 centralTreeNode, centralTreeNode == null || centralTreeNode.size() == 0 ? true : false));
 
         view.generateTree(treeNodes);
@@ -132,11 +132,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
                     return arg1.compareTo(arg0);
                 }});
             
-            int i=0;
             for (String year : years){
-                i++;
                 List<TreeNode> currentYearTreeNodes = yearTreeNodes.get(year);
-                returnNodes.add(new TreeNode(i, year, currentYearTreeNodes, currentYearTreeNodes == null || currentYearTreeNodes.size() == 0 ? true : false));
+                returnNodes.add(new TreeNode(TreeNode.getNextId(), year, currentYearTreeNodes, currentYearTreeNodes == null || currentYearTreeNodes.size() == 0 ? true : false));
             }
             
         }
@@ -164,9 +162,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<TreeNode> wetSeasonNodes = createTreeNodesBySeason(yearNodes, Season.WET);
         List<TreeNode> generalSeasonNodes = createTreeNodesBySeason(yearNodes, Season.GENERAL);
         
-        returnNodes.add(new TreeNode(1, Season.DRY.getLabel(),  drySeasonNodes, drySeasonNodes == null || drySeasonNodes.size() == 0 ? true : false));
-        returnNodes.add(new TreeNode(2,  Season.WET.getLabel(),  wetSeasonNodes, wetSeasonNodes == null || wetSeasonNodes.size() == 0 ? true : false));
-        returnNodes.add(new TreeNode(3,  Season.GENERAL.getLabel(),  generalSeasonNodes, generalSeasonNodes == null || generalSeasonNodes.size() == 0 ? true : false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(), Season.DRY.getLabel(),  drySeasonNodes, drySeasonNodes == null || drySeasonNodes.size() == 0 ? true : false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(),  Season.WET.getLabel(),  wetSeasonNodes, wetSeasonNodes == null || wetSeasonNodes.size() == 0 ? true : false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(),  Season.GENERAL.getLabel(),  generalSeasonNodes, generalSeasonNodes == null || generalSeasonNodes.size() == 0 ? true : false));
         
         return returnNodes;        
     }
@@ -187,8 +185,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<TreeNode> nurseryNodes = createTreeNodesByStudyType(seasonNodes, StudyType.N);
         List<TreeNode> trialNodes = createTreeNodesByStudyType(seasonNodes, StudyType.T);
         
-        returnNodes.add(new TreeNode(1, StudyType.N.getLabel(),  nurseryNodes, false));
-        returnNodes.add(new TreeNode(2, StudyType.T.getLabel(),  trialNodes, false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(), StudyType.N.getLabel(),  nurseryNodes, false));
+        returnNodes.add(new TreeNode(TreeNode.getNextId(), StudyType.T.getLabel(),  trialNodes, false));
         
         return returnNodes;        
     }
@@ -197,7 +195,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<TreeNode> returnNodes = new ArrayList<TreeNode>();
         for (StudyNode studyNode : studyNodes){
             if (studyNode.getStudyType() == studyType){
-                returnNodes.add(new TreeNode(studyNode.getId(), studyNode.getName(),  new ArrayList<TreeNode>(), true));
+                returnNodes.add(new TreeNode(TreeNode.getNextId(), studyNode.getName(),  new ArrayList<TreeNode>(), true));
 
             }
         }
