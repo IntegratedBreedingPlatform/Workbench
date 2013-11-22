@@ -87,7 +87,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             workbenchDataManager.deleteProject(newProj);
 
                             // go back to dashboard
-                            new HomeAction().doAction(myWindow, "/Home", true);
+                            //new HomeAction().doAction(myWindow, "/Home", true);
 
 
                             WorkbenchMainView w = (WorkbenchMainView) myWindow;

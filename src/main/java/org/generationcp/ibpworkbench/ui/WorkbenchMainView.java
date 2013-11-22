@@ -87,8 +87,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private SimpleResourceBundleMessageSource messageSource;
     
     private static WorkbenchMainView thisInstance;
+    private WorkbenchSidebar sidebar;
 
-	//private Button userToolsButton;
+    //private Button userToolsButton;
 
     public WorkbenchMainView() {
     	super("Integrated Breeding Platform | Workbench");
@@ -202,8 +203,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
         contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
-        // TODO:
-        contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
+
+        sidebar = new WorkbenchSidebar(null,null);
+        contentAreaSplitPanel.addComponent(sidebar);
         // layout the left area of the content area split panel
         //contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
 
@@ -442,6 +444,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     public void setWorkbenchDashboard(WorkbenchDashboard workbenchDashboard) {
         this.workbenchDashboard = workbenchDashboard;
+        this.sidebar.clearLinks();
     }
 
     public CrumbTrail getCrumbTrail() {

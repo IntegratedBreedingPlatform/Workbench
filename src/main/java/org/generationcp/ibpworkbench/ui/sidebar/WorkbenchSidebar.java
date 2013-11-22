@@ -44,11 +44,12 @@ public class WorkbenchSidebar extends CssLayout {
                 return;
             else {
                 TreeItem treeItem = (TreeItem) event.getItemId();
-                if (treeItem.getId() == null)
+                if (treeItem.getValue() == null)
                     return;
 
                 ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),WorkbenchSidebar.this.project);
                 if (listener instanceof LaunchWorkbenchToolAction) {
+
                     ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),WorkbenchMainView.getInstance(),true);
                 }
                 if (listener instanceof OpenWindowAction) {
@@ -127,6 +128,10 @@ public class WorkbenchSidebar extends CssLayout {
         initializeActions();
     }
 
+    public void clearLinks() {
+        sidebarTree.setContainerDataSource(new HierarchicalContainer());
+    }
+
     private class TreeItem {
         private String id;
         private Object value;
@@ -198,7 +203,7 @@ public class WorkbenchSidebar extends CssLayout {
                             }
                             super.showWorkflowDashboard(super.project,role1,(IContentWindow)window);
 
-                            NavManager.navigateApp(window, uriFragment, isLinkAccessed, role1.getWorkflowTemplate().getName());
+                            NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getWorkflowTemplate().getName());
                         }
                     };
                 }

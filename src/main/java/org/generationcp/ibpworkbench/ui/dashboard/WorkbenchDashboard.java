@@ -19,6 +19,7 @@ import java.util.List;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -225,7 +226,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         listTab = previewTab.addTab(germplasmListPreview, "Lists");
         nurseryListPreview = new NurseryListPreview(null);
         nurseryTrialTab = previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
-        rolesTab = previewTab.addTab(tblRoles, "Roles");
+        //rolesTab = previewTab.addTab(tblRoles, "Roles");
         
         previewTab.setImmediate(true);
     }
@@ -341,7 +342,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	Button btnAddProgram = new Button(messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
     	
     	btnAddProgram.addListener(new OpenNewProjectAction());
-    	btnAddProgram.setStyleName("v-button-wrap-dashboard");
+        btnAddProgram.addStyleName(Bootstrap.Buttons.SUCCESS.styleName());
+
+        btnAddProgram.addStyleName("v-button-wrap-dashboard");
         
     	//btnAddProgram.setStyleName(Button.STYLE_LINK);
     	Button btnManageProgram = new Button("Manage Programs");
@@ -401,9 +404,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	
     	tblRoles.setWidth("300px");
     	//hl.addComponent(tblRoles);
-    	 previewTab.setWidth("100%");
-
-    	 previewTab.setStyleName("preview-tab");
+    	previewTab.setWidth("100%");
+        previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
+        previewTab.addStyleName("preview-tab");
     	 
     	 vertRight.setExpandRatio(previewTab, 1.0f);
     	 
