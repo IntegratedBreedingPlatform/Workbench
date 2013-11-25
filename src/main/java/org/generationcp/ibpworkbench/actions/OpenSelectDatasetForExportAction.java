@@ -142,7 +142,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             
             breedingViewInput.setDatasetName(selectDatasetForBreedingViewPanel.getCurrentDatasetName());
             breedingViewInput.setDatasetSource(selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
-            breedingViewInput.setVariateActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
+            breedingViewInput.setVariatesActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
             List<DataSet> meansDs = selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
             	if (meansDs.size() > 0){
