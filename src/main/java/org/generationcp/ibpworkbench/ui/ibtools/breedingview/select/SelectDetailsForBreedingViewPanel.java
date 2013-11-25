@@ -330,7 +330,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         lblTitle = new Label();
         lblTitle.setContentMode(Label.CONTENT_XHTML);
         lblTitle.setStyleName("gcp-content-header");
-        lblTitle.setHeight("20px");
         lblDatasetName = new Label();
         lblDatasetName.setContentMode(Label.CONTENT_XHTML);
         lblDatasourceName = new Label();
