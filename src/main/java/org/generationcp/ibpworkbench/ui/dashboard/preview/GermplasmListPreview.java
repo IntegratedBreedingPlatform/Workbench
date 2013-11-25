@@ -166,12 +166,12 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (treeView.getValue() == null) {
+                if (lastItemId == null) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list","");
                     return;
                 }
 
-                if (presenter.isFolder(treeView.getValue())) {
+                if (presenter.isFolder(lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
                 }
@@ -185,7 +185,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (treeView.getValue() == null || !presenter.isFolder(treeView.getValue())) {
+                if (treeView.getValue() == null || !presenter.isFolder(lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed (not folder)","");
                     return;
                 }
