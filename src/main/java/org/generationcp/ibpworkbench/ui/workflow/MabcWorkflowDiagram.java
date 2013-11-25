@@ -46,6 +46,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
     private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 275;
+    private static final int PROJECT_PLANNING_HEIGHT = 285;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -111,6 +112,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 	
 	private Button queryForAdaptedGermplasmButton;
 	private Button queryForAdaptedGermplasmButton2;
+	
+	private Button breedingManagerListManager;
 
     public MabcWorkflowDiagram(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
@@ -267,6 +270,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
         
+        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_LIST_MANAGER));
+        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerListManager.setSizeUndefined();
+        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER_LIST_MANAGER));
+        
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         optimasButton.setSizeUndefined();
@@ -315,7 +323,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
         
-        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage1, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS); 
         
@@ -377,7 +385,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     protected Component layoutProjectPlanning() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+        layout.setHeight(PROJECT_PLANNING_HEIGHT + "px");
         
         layout.addComponent(projectPlanningTitle);
         layout.setComponentAlignment(projectPlanningTitle, Alignment.TOP_CENTER);
@@ -444,7 +452,12 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         queryForAdaptedGermplasmButton2.setHeight("20px");
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
-
+        
+        layout.addComponent(breedingManagerListManager);
+        breedingManagerListManager.setHeight("20px");
+        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerListManager, 0);
+        
         return layout;
     }
 
@@ -667,8 +680,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            
-        
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
         }
     }
 

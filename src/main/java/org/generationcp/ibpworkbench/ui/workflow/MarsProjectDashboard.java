@@ -123,8 +123,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     
     private Button queryForAdaptedGermplasmButton2;
     
-    
-
+    private Button breedingManagerListManager;
     
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
@@ -321,7 +320,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
-
+        
+        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_LIST_MANAGER));
+        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerListManager.setSizeUndefined();
+        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER_LIST_MANAGER));
     }
 
     protected void initializeLayout() {
@@ -455,6 +458,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
+        layout.addComponent(breedingManagerListManager);
+        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerListManager, 0);
         
         return layout;
     }
@@ -798,7 +804,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("210px");
+        layout.setHeight("215px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
@@ -846,7 +852,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-             
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
         }
     }
 
