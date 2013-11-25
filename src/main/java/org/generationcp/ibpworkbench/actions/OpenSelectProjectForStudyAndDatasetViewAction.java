@@ -18,6 +18,7 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
     
     private Project currentProject;
     private Project lastOpenedProject;
+    private Role role;
     
     public OpenSelectProjectForStudyAndDatasetViewAction(Project currentProject) {
         
@@ -43,7 +45,13 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenSelectProjectForStudyAndDatasetViewAction.class);
+    public OpenSelectProjectForStudyAndDatasetViewAction(Project project,
+			Role role) {
+		this.currentProject = project;
+		this.role = role;
+	}
+
+	private static final Logger LOG = LoggerFactory.getLogger(OpenSelectProjectForStudyAndDatasetViewAction.class);
     
     @Override
     public void buttonClick(ClickEvent event) {
@@ -62,11 +70,11 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         
         if (currentProject != null) {
             
-            w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL));
+            w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL, role));
             NavManager.navigateApp(window, uriFragment, isLinkAccessed);	
         } else if (lastOpenedProject != null) {
             
-        	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL));
+        	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL, role));
         	NavManager.navigateApp(window, uriFragment, isLinkAccessed);
             
         } else {
