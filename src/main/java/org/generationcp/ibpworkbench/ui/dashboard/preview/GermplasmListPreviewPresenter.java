@@ -140,6 +140,12 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         this.managerFactory = managerFactory;
     }
 
-    
 
+    public boolean validateOpenList(Object value) {
+        return true;
+    }
+
+    public boolean isFolder(Object r) {
+        return true;  //To change body of created methods use File | Settings | File Templates.
+    }
 }
