@@ -37,6 +37,7 @@ import com.vaadin.ui.Window;
 @Configurable
 public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     private static final long serialVersionUID = 1L;
+    private static final String NUMERIC_VARIABLE = "Numeric variable";
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -119,10 +120,14 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
             	vm.setTrname(variate.getStandardVariable().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
+            	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
+            	
+            	if (vm.getDatatype().equals(NUMERIC_VARIABLE)){
+            		vm.setActive(true);
+            	}
             	
             	System.out.println(variate.toString());
             	variateList.add(vm);
-            	
             	
             }
             
@@ -166,13 +171,13 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
         for (VariateModel v : variateList ){
       	   container.addBean(v);
-      	   selectDatasetForBreedingViewPanel.getVariatesCheckboxState().put(v.getName(), true);
+      	   selectDatasetForBreedingViewPanel.getVariatesCheckboxState().put(v.getName(), v.getActive());
          }
         
         tblVariates.setContainerDataSource(container);
         
-        tblVariates.setVisibleColumns(new String[]{"","name", "description"});
-        tblVariates.setColumnHeaders(new String[]{"","Name", "Description"});
+        tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
+        tblVariates.setColumnHeaders(new String[]{"","Name", "Description", "Scale"});
     }
   
    

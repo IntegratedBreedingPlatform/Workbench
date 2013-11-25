@@ -43,6 +43,7 @@ public class VariateModel implements Serializable{
     private Integer tmethid;
     private String tmname;
     private Boolean active;
+    private String datatype;
     
     
     /**
@@ -53,7 +54,7 @@ public class VariateModel implements Serializable{
         trname = "";
         scname = "";
         tmname = "";
-        active = true;
+        active = false;
 
     }
 
@@ -236,6 +237,16 @@ public class VariateModel implements Serializable{
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+
+	public String getDatatype() {
+		return datatype;
+	}
+
+
+	public void setDatatype(String datatype) {
+		this.datatype = datatype;
 	}
 
 }

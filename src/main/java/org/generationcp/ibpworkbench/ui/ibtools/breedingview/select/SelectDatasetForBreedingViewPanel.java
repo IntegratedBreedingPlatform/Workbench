@@ -299,6 +299,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
         tblVariates.setHeight("450px");
+        tblVariates.setColumnExpandRatio("", 0.5f);
+        tblVariates.setColumnExpandRatio("name", 1);
+        tblVariates.setColumnExpandRatio("description", 4);
+        tblVariates.setColumnExpandRatio("scname", 1);
         tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
 
 			private static final long serialVersionUID = 1L;
@@ -324,6 +328,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 								.getValue();
 						variatesCheckboxState.put(vm.getName(), val);
 						vm.setActive(val);
+					
 					}
 				});
 
@@ -343,8 +348,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         container.setBeanIdProperty("id");
         tblVariates.setContainerDataSource(container);
         
-        String[] columns = new String[] {"","name", "description"};
-        String[] columnHeaders = new String[] {"" ,"Name", "Description"};
+        String[] columns = new String[] {"","name", "description", "scname"};
+        String[] columnHeaders = new String[] {"" ,"Name", "Description", "Scale"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
         return tblVariates;
