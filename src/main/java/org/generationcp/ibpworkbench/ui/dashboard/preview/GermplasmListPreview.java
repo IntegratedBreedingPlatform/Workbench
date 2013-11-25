@@ -18,6 +18,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -127,30 +129,35 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("Open");
+        openListManagerBtn = new Button("");
         openListManagerBtn.setDescription("Open in List Manager");
 
-        renameFolderBtn = new Button("Rename");
+        renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
 
-        addFolderBtn = new Button("+");
+        addFolderBtn = new Button("");
         addFolderBtn.setDescription("Add New Folder");
 
-        deleteFolderBtn = new Button("-");
+        deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
-        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-open");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
+
+        openListManagerBtn.setWidth("40px");
+        renameFolderBtn.setWidth("40px");
+        addFolderBtn.setWidth("40px");
+        deleteFolderBtn.setWidth("40px");
 
         this.toolbar.addComponent(openListManagerBtn);
         this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(addFolderBtn);
         this.toolbar.addComponent(deleteFolderBtn);
-            
-        //initializeToolbarActions(); 
-        
+
+        initializeToolbarActions();
+
         return this.toolbar;
     }
 
@@ -159,9 +166,18 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                //To change body of implemented methods use File | Settings | File Templates.
-                
-               System.out.println(lastItemId);
+                if (treeView.getValue() == null) {
+                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list","");
+                    return;
+                }
+
+                if (presenter.isFolder(treeView.getValue())) {
+                    MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
+                    return;
+                }
+
+                // change to list manager, with parameter passed
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.GERMPLASM_LIST_BROWSER)).buttonClick(event);
             }
         });
 
@@ -169,7 +185,61 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                if (treeView.getValue() == null || !presenter.isFolder(treeView.getValue())) {
+                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed (not folder)","");
+                    return;
+                }
+
+                final Window w = new Window("Rename a folder");
+                w.setWidth("300px");
+                w.setHeight("170px");
+                w.setModal(true);
+                w.setStyleName(Reindeer.WINDOW_LIGHT);
+
+                VerticalLayout container = new VerticalLayout();
+                container.setSpacing(true);
+                container.setMargin(true);
+
+                Label l = new Label("New Folder Name");
+                TextField name = new TextField();
+
+                HorizontalLayout btnContainer = new HorizontalLayout();
+                btnContainer.setSpacing(true);
+                btnContainer.setWidth("100%");
+
+                Label spacer = new Label("");
+                btnContainer.addComponent(spacer);
+                btnContainer.setExpandRatio(spacer,1.0F);
+
+                Button ok = new Button("Ok");
+                ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+                ok.addListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        // TODO: DO SOMETHING HERE
+                    }
+                });
+
+                Button cancel = new Button("Cancel");
+                cancel.addListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        WorkbenchMainView.getInstance().removeWindow(w);
+                    }
+                });
+
+                btnContainer.addComponent(ok);
+                btnContainer.addComponent(cancel);
+
+                container.addComponent(l);
+                container.addComponent(name);
+                container.addComponent(btnContainer);
+
+                w.setContent(container);
+
+                // show window
+                WorkbenchMainView.getInstance().addWindow(w);
+
             }
         });
 
@@ -218,7 +288,7 @@ public class GermplasmListPreview extends VerticalLayout {
         
         treeView.addItem(MY_LIST);
         treeView.setItemCaption(MY_LIST, MY_LIST);
-        treeView.setItemIcon(MY_LIST,folderResource);
+        treeView.setItemIcon(MY_LIST, folderResource);
         
         treeView.addItem(SHARED_LIST);
         treeView.setItemCaption(SHARED_LIST, SHARED_LIST);
