@@ -185,7 +185,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (lastItemId != null || !presenter.isFolder(lastItemId)) {
+                if (lastItemId == null || !presenter.isFolder(lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed (not folder)","");
                     return;
                 }
