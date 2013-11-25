@@ -27,10 +27,19 @@ import javax.xml.bind.Marshaller;
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
 import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.Data;
+import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Phenotypic;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.sea.xml.BreedingViewSession;
+import org.generationcp.commons.sea.xml.DataConfiguration;
+import org.generationcp.commons.sea.xml.DataFile;
+import org.generationcp.commons.sea.xml.Design;
+import org.generationcp.commons.sea.xml.Environments;
+import org.generationcp.commons.sea.xml.Pipeline;
+import org.generationcp.commons.sea.xml.Pipelines;
+import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
@@ -46,6 +55,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 
 
 @Configurable
@@ -89,33 +99,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     }
     
     public void writeProjectXML() throws BreedingViewXMLWriterException{
-        //LOG.info("This Ran!: " + breedingViewInput.toString());
-        
-       /** ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(breedingViewInput.getProject());
-        
-        StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
-        
-        //get the variates of the dataset, the names of the numeric ones will be included in the xml
-       VariableTypeList variates = null;
-        try{
-            variates = studyDataManager.getDataSet(breedingViewInput.getDatasetId()).getVariableTypes().getVariates();
-        } catch(MiddlewareQueryException ex){
-            throw new BreedingViewXMLWriterException("Error with getting variates of dataset with id: " + breedingViewInput.getDatasetId()
-                                                     + ": " + ex.getMessage(), ex);
-        }
-
-        //create List of Trait XML elements from List of Variate objects
-        List<Trait> traits = new ArrayList<Trait>();
-        for(VariableType variate : variates.getVariableTypes()){
-            //only numeric variates are used
-            if(numericTypes.contains(variate.getStandardVariable().getDataType().getId())){
-                Trait trait = new Trait();
-                trait.setName(variate.getLocalName().trim());
-                trait.setActive(true);
-                traits.add(trait);
-            }
-        }**/
-    	
+  
     	List<Trait> traits = new ArrayList<Trait>();
         for( Entry<Integer, String> s : breedingViewInput.getVariateColumns().entrySet()){
         	 Trait trait = new Trait();
@@ -198,7 +182,112 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-    }
+	public void writeProjectXMLV2() throws BreedingViewXMLWriterException {
+	
+		Traits traits = new Traits();
+        for( Entry<Integer, String> s : breedingViewInput.getVariateColumns().entrySet()){
+        	Trait trait = new Trait();
+             trait.setName(s.getValue());
+             trait.setActive(breedingViewInput.getVariatesActiveState().get(s.getValue()).booleanValue());
+             traits.add(trait);
+        }
+        
+        //create DataFile element
+        DataFile data = new DataFile();
+        data.setName(breedingViewInput.getSourceXLSFilePath());
+        
+        Design design = new Design();
+        design.setType(breedingViewInput.getDesignType());
+        design.setBlocks(breedingViewInput.getBlocks());
+        design.setReplicates(breedingViewInput.getReplicates());
+        design.setColumns(breedingViewInput.getColumns());
+        design.setRows(breedingViewInput.getRows());
+        
+        Environments environments = new Environments();
+        environments.setName(breedingViewInput.getEnvironment().getName());
+        environments.setTrialName(breedingViewInput.getEnvironment().getName());
+        
+        for( Entry<String, Boolean> s : breedingViewInput.getEnvironmentsActiveState().entrySet()){
+        	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
+        	env.setName(s.getKey());
+        	env.setTrial(s.getKey());
+        	if (s.getValue()) environments.add(env);
+        }
+        
+        //create the DataConfiguration element
+        DataConfiguration dataConfiguration = new DataConfiguration();
+        dataConfiguration.setEnvironments(environments);
+        dataConfiguration.setDesign(design);
+        dataConfiguration.setGenotypes(breedingViewInput.getGenotypes());
+        dataConfiguration.setTraits(traits);
+        
+        
+        SSAParameters ssaParameters = new SSAParameters();
+        ssaParameters.setWebApiUrl(webApiUrl);
+        ssaParameters.setStudyId(breedingViewInput.getStudyId());
+        ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
+        ssaParameters.setOutputDataSetId(breedingViewInput.getOutputDatasetId());
+
+        Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+        if(workbenchProject != null) {
+            ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
+        }
+        try{
+            String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId());
+            ssaParameters.setOutputDirectory(outputDirectory);
+        } catch(MiddlewareQueryException ex){
+            throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
+                    + ": " + ex.getMessage(), ex);
+        }
+        
+        Pipelines pipelines = new Pipelines();
+        Pipeline pipeline = new Pipeline();
+        pipeline.setType("SEA");
+        pipeline.setDataConfiguration(dataConfiguration);
+        pipelines.add(pipeline);
+        
+        
+        //create the Breeding View project element
+        org.generationcp.commons.sea.xml.BreedingViewProject project = new org.generationcp.commons.sea.xml.BreedingViewProject();
+        project.setName(breedingViewInput.getBreedingViewProjectName());
+        project.setVersion("1.2");
+        project.setPipelines(pipelines);
+        
+        
+        BreedingViewSession bvSession = new BreedingViewSession();
+        bvSession.setBreedingViewProject(project);
+        bvSession.setDataFile(data);
+        bvSession.setIbws(ssaParameters);
+        
+        //prepare the writing of the xml
+        JAXBContext context = null;
+        Marshaller marshaller = null;
+        try{
+            context = JAXBContext.newInstance(BreedingViewSession.class, Pipelines.class, Environments.class, Pipeline.class);
+            marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        } catch(JAXBException ex){
+            throw new BreedingViewXMLWriterException("Error with opening JAXB context and marshaller: "
+                    + ex.getMessage(), ex);
+        }
+        
+        //write the xml
+        String filePath = breedingViewInput.getDestXMLFilePath() + ".new.xml";
+        try{
+        	
+        	new File(new File(filePath).getParent()).mkdirs();
+            FileWriter fileWriter = new FileWriter(filePath);
+            System.out.println(filePath);
+            marshaller.marshal(bvSession, fileWriter);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch(Exception ex){
+            throw new BreedingViewXMLWriterException("Error with writing xml to: " + filePath + ": " + ex.getMessage(), ex);
+        }
+	}
+	
+	 @Override
+	    public void afterPropertiesSet() throws Exception {
+	    }
 }

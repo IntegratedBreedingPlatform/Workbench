@@ -13,6 +13,8 @@
 package org.generationcp.ibpworkbench.ui.ibtools.breedingview.select;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -43,10 +45,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -95,6 +100,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     private Database database;
     private Role role;
+    private HashMap<String, Boolean> variatesCheckboxState;
 
     private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
     
@@ -169,6 +175,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeComponents() {
+    	
+    	setVariatesCheckboxState(new HashMap<String, Boolean>());
         
         generalLayout = new VerticalLayout();
         generalLayout.setWidth("95%");
@@ -243,6 +251,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     protected void initializeActions() {
     	btnCancel.addListener(new Button.ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
@@ -270,14 +280,14 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         Table tblFactors = new Table("FACTORS");
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
-        tblFactors.setHeight("100%");
+        tblFactors.setHeight("450px");
         
         BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
         container.setBeanIdProperty("id");
         tblFactors.setContainerDataSource(container);
-        
-        String[] columns = new String[] {"name", "trname", "scname", "tmname"};
-        String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+       
+        String[] columns = new String[] {"name", "description"};
+        String[] columnHeaders = new String[] {"Name", "Description"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
         return tblFactors;
@@ -285,17 +295,56 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     
     protected Table initializeVariatesTable() {
         
-        Table tblVariates = new Table("VARIATES");
+        final Table tblVariates = new Table("VARIATES");
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
-        tblVariates.setHeight("100%");
+        tblVariates.setHeight("450px");
+        tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
+
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				
+				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+				final VariateModel vm = container.getItem(itemId).getBean();
+				
+				final CheckBox checkBox = new CheckBox();
+				checkBox.setImmediate(true);
+				checkBox.setVisible(true);
+				checkBox.addListener(new Property.ValueChangeListener() {
+					
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void valueChange(final ValueChangeEvent event) {
+						Boolean val = (Boolean) event.getProperty()
+								.getValue();
+						variatesCheckboxState.put(vm.getName(), val);
+						vm.setActive(val);
+					}
+				});
+
+				if (vm.getActive()) {
+					checkBox.setValue(true);
+				} else {
+					checkBox.setValue(false);
+				}
+				
+				return checkBox;
+				
+			}
+        	
+        });
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
         tblVariates.setContainerDataSource(container);
         
-        String[] columns = new String[] {"name", "trname", "scname", "tmname"};
-        String[] columnHeaders = new String[] {"Name", "Property", "Scale", "Method"};
+        String[] columns = new String[] {"","name", "description"};
+        String[] columnHeaders = new String[] {"" ,"Name", "Description"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
         return tblVariates;
@@ -315,6 +364,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     
 
     protected Component layoutButtonArea() {
+    	
         HorizontalLayout buttonLayout = new HorizontalLayout();
         
         buttonLayout.setSpacing(true);
@@ -548,6 +598,14 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
 	public Role getCurrentRole() {
 		return role;
+	}
+
+	public HashMap<String, Boolean> getVariatesCheckboxState() {
+		return variatesCheckboxState;
+	}
+
+	public void setVariatesCheckboxState(HashMap<String, Boolean> variatesCheckboxState) {
+		this.variatesCheckboxState = variatesCheckboxState;
 	}
 
 

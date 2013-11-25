@@ -115,7 +115,7 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         
         tblDataset.setVisibleColumns(columns);
         
-        tblDataset.addListener(new ShowDatasetVariablesDetailAction(tblFactors, tblVariates, selectDatasetForBreedingViewWindow));
+        tblDataset.addListener(new ShowDatasetVariablesDetailAction(tblFactors, tblVariates ,selectDatasetForBreedingViewWindow));
     }
     
     

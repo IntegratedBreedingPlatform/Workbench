@@ -12,6 +12,9 @@
 
 package org.generationcp.ibpworkbench.ui.ibtools.breedingview.select;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
@@ -30,6 +33,7 @@ import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
@@ -44,16 +48,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * 
@@ -105,12 +115,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private TextField txtDatasourceName;
     private Select selDesignType;
     private Select selEnvFactor;
-    private Select selEnvForAnalysis;
     private Select selReplicates;
     private Select selBlocks;
     private Select selRowFactor;
     private Select selColumnFactor;
     private Select selGenotypes;
+    
+    private CheckBox footerCheckBox;
+    
+    private HashMap<String, Boolean> environmentsCheckboxState;
+    
+    private VerticalLayout tblEnvironmentLayout;
+    private Table tblEnvironmentSelection;
     
     private BreedingViewInput breedingViewInput;
     private Tool tool;
@@ -128,6 +144,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    private Property.ValueChangeListener envCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
             ,Project project, Role role) {
@@ -173,10 +191,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     public Select getSelEnvFactor() {
         return selEnvFactor;
     }
-    
-    public Select getSelEnvForAnalysis() {
-        return selEnvForAnalysis;
-    }
 
     public Select getSelReplicates() {
         return selReplicates;
@@ -202,13 +216,122 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeComponents() {
-        
+    	
+    	environmentsCheckboxState = new HashMap<String, Boolean>();
+    	
+    	tblEnvironmentLayout = new VerticalLayout();
+    	tblEnvironmentLayout.setSizeUndefined();
+    	tblEnvironmentLayout.setWidth("60%");
+    	
+    	tblEnvironmentSelection = new Table();
+    	tblEnvironmentSelection.setHeight("200px");
+    	tblEnvironmentSelection.addContainerProperty("SELECT", CheckBox.class, new CheckBox("",true));
+    	tblEnvironmentSelection.addContainerProperty("ENVIRONMENT", String.class, "");
+    	
+    	
+    	envCheckBoxListener = new Property.ValueChangeListener(){
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				CheckBox chk = (CheckBox) event.getProperty();
+				Boolean val = (Boolean) event.getProperty()
+						.getValue();
+				
+				getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+				if (val == false) return; 
+				
+				 TrialEnvironments trialEnvironments;
+					try {
+						trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+						TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
+						
+						if (trialEnv == null){
+							
+							 getWindow().showNotification("\""+ chk.getData()  + "\" value is not a valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
+							 chk.setValue(false);
+							 getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+						}else{
+							
+							getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+						}
+					} catch (ConfigException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MiddlewareQueryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+			}
+			
+		};
+    	
+    	
+		footerCheckBox = new CheckBox("SELECT ALL",false);
+		footerCheckBox.addListener(new Property.ValueChangeListener(){
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void valueChange(ValueChangeEvent event) {
+					List<String> notValidEnvironments = new ArrayList<String>();
+					Boolean val = (Boolean) event.getProperty()
+							.getValue();
+					
+					for (Iterator<?> itr = tblEnvironmentSelection.getItemIds().iterator(); itr.hasNext();){
+						CheckBox chk = (CheckBox) tblEnvironmentSelection.getContainerProperty(itr.next(), "SELECT").getValue();
+						
+						if (val == false) {
+							chk.setValue(val); 
+							getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+							continue;
+						}
+						
+						chk.removeListener(envCheckBoxListener);
+						
+						 TrialEnvironments trialEnvironments;
+						 
+							try {
+								trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+								TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
+								
+								if (trialEnv == null){
+									chk.setValue(false);
+									getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+									notValidEnvironments.add(chk.getData().toString());
+								}else{
+									getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+									chk.setValue(val);
+								}
+							} catch (ConfigException e) {
+								e.printStackTrace();
+							} catch (MiddlewareQueryException e) {
+								e.printStackTrace();
+							}
+							
+							chk.addListener(envCheckBoxListener);
+						
+					}
+					
+					if (notValidEnvironments.size() != 0){
+						getWindow().showNotification("\""+ notValidEnvironments.toString()  + "\" values are not valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
+					}
+					
+				}
+				
+			});
+		footerCheckBox.setImmediate(true);
+		
+		tblEnvironmentLayout.addComponent(tblEnvironmentSelection);
+		tblEnvironmentLayout.addComponent(footerCheckBox);
+          
         mainLayout = new VerticalLayout();
         
         lblTitle = new Label();
         lblTitle.setContentMode(Label.CONTENT_XHTML);
         lblTitle.setStyleName("gcp-content-header");
-        lblTitle.setHeight("20px");
         lblDatasetName = new Label();
         lblDatasetName.setContentMode(Label.CONTENT_XHTML);
         lblDatasourceName = new Label();
@@ -307,12 +430,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         populateChoicesForEnvironmentFactor();
         selEnvFactor.setNullSelectionAllowed(true);
         selEnvFactor.setNewItemsAllowed(false);
-        
-        selEnvForAnalysis = new Select();
-        selEnvForAnalysis.setImmediate(true); 
+    
         populateChoicesForEnvForAnalysis();
-        selEnvForAnalysis.setNullSelectionAllowed(true);
-        selEnvForAnalysis.setNewItemsAllowed(false);
         
         txtNameForAnalysisEnv = new TextField();
         txtNameForAnalysisEnv.setNullRepresentation("");
@@ -390,10 +509,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         	this.selEnvFactor.setEnabled(true);
         }
         
-        if (((String)this.selEnvFactor.getValue()) == "" && this.selEnvForAnalysis != null) {
-        	this.selEnvForAnalysis.removeAllItems();
-        	this.selEnvForAnalysis.setEnabled(false);
-        }
         
     }
     
@@ -407,9 +522,12 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     public void populateChoicesForEnvForAnalysis(){
-        
+    	
+    	footerCheckBox.setValue(false);
+    	
     	try{
-        	this.selEnvForAnalysis.removeAllItems();
+        	environmentsCheckboxState.clear();
+        	tblEnvironmentSelection.removeAllItems();
         }catch(Exception e){}
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
@@ -423,7 +541,19 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				TrialEnvironments trialEnvironments;	
 				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
 				for (Variable var : trialEnvironments.getVariablesByLocalName(envFactorName)){
-					if (var.getValue() != null) selEnvForAnalysis.addItem(var.getValue());
+					if (var.getValue() != null) {
+						
+						
+						final CheckBox chk = new CheckBox("",false);
+						chk.setData(var.getValue());
+						chk.setImmediate(true);
+						chk.addListener(envCheckBoxListener);
+						
+						Object[] cells = new Object[]{ chk, var.getValue() };
+						environmentsCheckboxState.put(var.getValue(), false);
+						tblEnvironmentSelection.addItem(cells, var.getValue()+"");
+					}
+					
 				}
 				
 			} catch (ConfigException e) {
@@ -433,17 +563,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		
-            if (this.selEnvForAnalysis.getItemIds().size() < 1) {
-            	this.selEnvForAnalysis.setEnabled(false);
-            }else{
-            	this.selEnvForAnalysis.setEnabled(true);
-            }
-            
-        } else {
-            this.selEnvForAnalysis.removeAllItems();
-            this.selEnvForAnalysis.setEnabled(false);
-        }
+
+        } 
     }
     
     private void populateChoicesForGenotypes(){
@@ -575,7 +696,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         selectedInfoLayout.addComponent(txtAnalysisName, 1, 4, 3, 4);
         
         
-        GridLayout chooseEnvironmentLayout = new GridLayout(2, 8);
+        GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
         chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
         chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
         chooseEnvironmentLayout.setWidth("450");
@@ -586,7 +707,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         chooseEnvironmentLayout.addComponent(lblSpecifyEnvFactor, 0, 2);
         chooseEnvironmentLayout.addComponent(selEnvFactor, 1, 2);
         chooseEnvironmentLayout.addComponent(lblChooseEnvironmentForAnalysisDescription , 0, 3, 1, 3);
-        chooseEnvironmentLayout.addComponent(selEnvForAnalysis, 0, 4, 1, 4);
+        chooseEnvironmentLayout.addComponent(tblEnvironmentLayout, 0, 4, 1, 4);
         chooseEnvironmentLayout.addComponent(lblVersion, 0, 5);
         chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
         
@@ -663,7 +784,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
        selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
        selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
        selEnvFactor.addListener(new BreedingViewEnvFactorValueChangeListener(this));
-       selEnvForAnalysis.addListener(new BreedingViewEnvNameForAnalysisValueChangeListener(this));
     }
 
     protected void assemble() {
@@ -770,7 +890,16 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 	public void setLblReplicates(Label lblReplicates) {
 		this.lblReplicates = lblReplicates;
 	}
+
+	public HashMap<String, Boolean> getEnvironmentsCheckboxState() {
+		return environmentsCheckboxState;
+	}
+
+	public void setEnvironmentsCheckboxState(
+			HashMap<String, Boolean> environmentsCheckboxState) {
+		this.environmentsCheckboxState = environmentsCheckboxState;
+	}
     
-  
 
 }
+

@@ -506,7 +506,7 @@ public class DatasetExporter {
     }
     
     @SuppressWarnings("unchecked")
-	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedFactor ,String selectedEnvironment) throws DatasetExporterException {
+	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedFactor , List<String> selectedEnvironment) throws DatasetExporterException {
 
         DataSet dataset = null;
         try {
@@ -583,7 +583,7 @@ public class DatasetExporter {
         	  boolean outerBreak = true;
         	  for (Variable factorVariables1 : experiment1.getFactors().getVariables()){
         		  if (factorVariables1.getVariableType().getLocalName().trim().equalsIgnoreCase(selectedFactor)
-        				  && factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) {
+        				  &&  selectedEnvironment.contains(factorVariables1.getValue()) ) {
         			  outerBreak=false; continue;} else {continue;}
         	  }
         	  if (outerBreak) continue;
@@ -650,7 +650,7 @@ public class DatasetExporter {
         	  boolean outerBreak = true;
         	  for (Variable factorVariables1 : experiment.getFactors().getVariables()){
         		  if (factorVariables1.getVariableType().getLocalName().trim().equalsIgnoreCase(selectedFactor)
-        				  && factorVariables1.getValue().equalsIgnoreCase(selectedEnvironment)) { outerBreak=false; continue; }  else { continue;}
+        				  && selectedEnvironment.contains(factorVariables1.getValue())) { outerBreak=false; continue; }  else { continue;}
         	  }
         	  if (outerBreak) continue;
         	  

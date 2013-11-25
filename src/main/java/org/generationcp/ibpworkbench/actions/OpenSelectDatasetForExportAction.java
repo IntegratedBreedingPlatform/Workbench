@@ -51,7 +51,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
     
-    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow; 
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel; 
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -64,24 +64,24 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         
-        this.selectDatasetForBreedingViewWindow = selectDatasetForBreedingViewWindow;
+        this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
         
     }
 
     @Override
     public void buttonClick(ClickEvent event) {
-        Project project = selectDatasetForBreedingViewWindow.getCurrentProject();
+        Project project = selectDatasetForBreedingViewPanel.getCurrentProject();
 
-        Integer studyId = selectDatasetForBreedingViewWindow.getCurrentStudy().getId();
-        String studyName = selectDatasetForBreedingViewWindow.getCurrentStudy().getName();
+        Integer studyId = selectDatasetForBreedingViewPanel.getCurrentStudy().getId();
+        String studyName = selectDatasetForBreedingViewPanel.getCurrentStudy().getName();
         
-        Integer dataSetId = selectDatasetForBreedingViewWindow.getCurrentDataSetId();
-        String datasetName = selectDatasetForBreedingViewWindow.getCurrentDatasetName();
+        Integer dataSetId = selectDatasetForBreedingViewPanel.getCurrentDataSetId();
+        String datasetName = selectDatasetForBreedingViewPanel.getCurrentDatasetName();
         
-        Role role = selectDatasetForBreedingViewWindow.getCurrentRole();
+        Role role = selectDatasetForBreedingViewPanel.getCurrentRole();
         
         // study is required
-        if (selectDatasetForBreedingViewWindow.getCurrentStudy() == null) {
+        if (selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
             event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
             return;
         }
@@ -99,7 +99,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
            
 
             //List of factors from the new schema
-            List<VariableType> factorsInDataset = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSet(dataSetId).getVariableTypes().getFactors().getVariableTypes();
+            List<VariableType> factorsInDataset = selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSet(dataSetId).getVariableTypes().getFactors().getVariableTypes();
             
             String breedingViewProjectName;
             String defaultFilePath = "";
@@ -140,10 +140,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
-            breedingViewInput.setDatasetName(selectDatasetForBreedingViewWindow.getCurrentDatasetName());
-            breedingViewInput.setDatasetSource(selectDatasetForBreedingViewWindow.getCurrentStudy().getName());
-            
-            List<DataSet> meansDs = selectDatasetForBreedingViewWindow.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+            breedingViewInput.setDatasetName(selectDatasetForBreedingViewPanel.getCurrentDatasetName());
+            breedingViewInput.setDatasetSource(selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
+            breedingViewInput.setVariatesActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
+            List<DataSet> meansDs = selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
             	if (meansDs.size() > 0){
             		if (meansDs.get(0) != null) breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());

@@ -43,7 +43,7 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 				});			
 				**/
 				 MessageNotifier.showError(source.getParent().getWindow(),"", "The selected environment factor and its value is not a valid selection for breeding view.");
-				 source.getSelEnvForAnalysis().select(null);
+				 //source.getSelEnvForAnalysis().select(null);
 			}
 		} catch (ConfigException e) {
 			// TODO Auto-generated catch block

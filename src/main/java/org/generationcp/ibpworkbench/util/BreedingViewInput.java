@@ -55,6 +55,8 @@ public class BreedingViewInput implements Serializable {
     private HashMap<Integer, String> variateColumns;
     private String datasetName;
     private String datasetSource;
+    private HashMap<String, Boolean> variatesActiveState;
+    private HashMap<String, Boolean> environmentsActiveState;
     
     public HashMap<Integer, String> getVariateColumns() {
 		return variateColumns;
@@ -342,6 +344,22 @@ public class BreedingViewInput implements Serializable {
 
 	public void setDatasetSource(String datasetSource) {
 		this.datasetSource = datasetSource;
+	}
+
+	public HashMap<String, Boolean> getVariatesActiveState() {
+		return variatesActiveState;
+	}
+
+	public void setVariatesActiveState(HashMap<String, Boolean> variateActiveStates) {
+		this.variatesActiveState = variateActiveStates;
+	}
+
+	public HashMap<String, Boolean> getEnvironmentsActiveState() {
+		return environmentsActiveState;
+	}
+
+	public void setEnvironmentsActiveState(HashMap<String, Boolean> environmentActiveStates) {
+		this.environmentsActiveState = environmentActiveStates;
 	}
 
     
