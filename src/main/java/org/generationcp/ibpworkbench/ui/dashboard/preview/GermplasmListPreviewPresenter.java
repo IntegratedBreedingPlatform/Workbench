@@ -75,7 +75,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
     }
     
-    public void addGermplasmListNode(int parentGermplasmListId) throws InternationalizableException{
+    public void addGermplasmListNode(int parentGermplasmListId, Object itemId) throws InternationalizableException{
         List<GermplasmList> germplasmListChildren = new ArrayList<GermplasmList>();
 
         try {
@@ -94,7 +94,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             germplasmListChildren = new ArrayList<GermplasmList>();
         }
         
-        view.addGermplasmListNode(parentGermplasmListId, germplasmListChildren);
+        view.addGermplasmListNode(parentGermplasmListId, germplasmListChildren, itemId);
 
     }
     

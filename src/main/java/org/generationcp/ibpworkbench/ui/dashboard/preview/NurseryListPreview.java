@@ -137,10 +137,14 @@ public class NurseryListPreview extends AbsoluteLayout {
 
     public void expandTree(Object itemId){
         
-        if(treeView.isExpanded(itemId))
+        if(treeView.isExpanded(itemId)){
             treeView.collapseItem(itemId);
-        else
+            treeView.select(itemId);
+        }
+        else{
             treeView.expandItem(itemId);
+            treeView.select(itemId);
+        }
     }
     
     protected void initializeLayout() {        

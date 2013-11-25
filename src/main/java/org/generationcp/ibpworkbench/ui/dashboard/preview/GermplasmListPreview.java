@@ -156,6 +156,8 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 //To change body of implemented methods use File | Settings | File Templates.
+                
+               //System.out.println(treeView.getValue());
             }
         });
 
@@ -186,10 +188,15 @@ public class GermplasmListPreview extends VerticalLayout {
     
     public void expandTree(Object itemId){
         
-        if(treeView.isExpanded(itemId))
+        if(treeView.isExpanded(itemId)){
             treeView.collapseItem(itemId);
-        else
+            
+            treeView.select(itemId);
+        }
+        else{
             treeView.expandItem(itemId);
+            treeView.select(itemId);
+        }
     }
 
     protected void initializeComponents() {        
@@ -219,6 +226,7 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+            treeView.setSelectable(true);
         }
         
         for (GermplasmList parentList : germplasmListParentCentral) {
@@ -228,6 +236,7 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+            treeView.setSelectable(true);
         }
 
         treeView.addListener(new GermplasmListTreeExpandListener(this));
@@ -236,7 +245,7 @@ public class GermplasmListPreview extends VerticalLayout {
         //return germplasmListTree;
     }
     
-    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren ) throws InternationalizableException{
+    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId ) throws InternationalizableException{
        
         for (GermplasmList listChild : germplasmListChildren) {
             
@@ -254,8 +263,10 @@ public class GermplasmListPreview extends VerticalLayout {
                 
             }            
             treeView.setItemIcon(listChild.getId(),resource);
+            treeView.setSelectable(true);
             
         }
+        treeView.select(itemId);
         treeView.setImmediate(true);
     }
     
@@ -289,6 +300,7 @@ public class GermplasmListPreview extends VerticalLayout {
         
         initializeLayout();
         initializeActions();
+       
     }
 
     
