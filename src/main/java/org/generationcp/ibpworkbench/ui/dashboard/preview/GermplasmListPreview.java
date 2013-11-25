@@ -75,6 +75,8 @@ public class GermplasmListPreview extends VerticalLayout {
     private Button addFolderBtn;
     private Button deleteFolderBtn;
     private Button renameFolderBtn;
+    
+    private Object lastItemId;
 
     public GermplasmListPreview(Project project) {
         this.project = project;
@@ -146,7 +148,9 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(addFolderBtn);
         this.toolbar.addComponent(deleteFolderBtn);
-
+            
+        //initializeToolbarActions(); 
+        
         return this.toolbar;
     }
 
@@ -157,7 +161,7 @@ public class GermplasmListPreview extends VerticalLayout {
             public void buttonClick(Button.ClickEvent event) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 
-               //System.out.println(treeView.getValue());
+               System.out.println(lastItemId);
             }
         });
 
@@ -195,7 +199,9 @@ public class GermplasmListPreview extends VerticalLayout {
         else{
             treeView.expandItem(itemId);
             treeView.select(itemId);
+            
         }
+        lastItemId = itemId;
     }
 
     protected void initializeComponents() {        
@@ -265,7 +271,9 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setSelectable(true);
             
         }
+        System.out.println("add node " + itemId);
         treeView.select(itemId);
+        lastItemId = itemId;
         treeView.setImmediate(true);
     }
     
