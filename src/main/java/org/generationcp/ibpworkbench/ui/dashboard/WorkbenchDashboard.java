@@ -12,6 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -275,12 +277,25 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
         
-        for (Project project : projects) {
+        //for (Project project : projects) {
+        int i =0;
+        Project project;
+        for(i = projects.size() - 1 ; i >=0 ; i--){
             //projectContainer.addBean(project);
+            //Project project  = projects.get(i);
+            project = projects.get(i);
             Button button = new Button();
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
             button.setStyleName(Reindeer.BUTTON_LINK + " project-select-btn");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
+            
+            
+            // DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
+            //    String date = "";
+                
+            //            date = newDf.format(project.getStartDate());
+                   
+                
             tblProject.addItem(new Object[]{project.getProjectName(),  capitalizeFirstLetter(project.getCropType().getCropName()), button}, project.getProjectId());
         }
         
