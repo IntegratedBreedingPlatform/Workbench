@@ -59,7 +59,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
-        ,BREEDING_VIEW("breeding_view")
+        ,BREEDING_VIEW("breeding_view_wb")
         ,MBDT("mbdt")
         ,MEMBER("member")
         ,BREEDING_GXE("breeding_gxe")
