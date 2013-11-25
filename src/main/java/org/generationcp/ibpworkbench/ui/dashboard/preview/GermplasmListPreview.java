@@ -212,7 +212,7 @@ public class GermplasmListPreview extends VerticalLayout {
     }
     
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
-        
+        lastItemId = null;
         treeView = new Tree();
         treeView.setDragMode(TreeDragMode.NODE);
         
@@ -232,8 +232,7 @@ public class GermplasmListPreview extends VerticalLayout {
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
             treeView.setSelectable(true);
-        }
-        
+        }        
         for (GermplasmList parentList : germplasmListParentCentral) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
