@@ -8,17 +8,14 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Tree;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
@@ -47,7 +44,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  * To change this template use File | Settings | File Templates.
  */
 @Configurable
-public class GermplasmListPreview extends AbsoluteLayout {
+public class GermplasmListPreview extends VerticalLayout {
     private GermplasmListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
@@ -69,11 +66,16 @@ public class GermplasmListPreview extends AbsoluteLayout {
     private String SHARED_LIST = "Shared List";
     
     private Panel panel;
-    
+    private HorizontalLayout toolbar;
+
+
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
-    
-    
+    private Button openListManagerBtn;
+    private Button addFolderBtn;
+    private Button deleteFolderBtn;
+    private Button renameFolderBtn;
+
     public GermplasmListPreview(Project project) {
         this.project = project;
         
@@ -94,17 +96,92 @@ public class GermplasmListPreview extends AbsoluteLayout {
     }
     
     public void setProject(Project project){
+        // add toolbar here
         panel = new Panel();
         panel.removeAllComponents();
         this.removeAllComponents();
+
+        this.addComponent(buildToolbar());
+
         this.project = project;
         presenter = new GermplasmListPreviewPresenter(this, this.project);
-        presenter.generateInitialTreeNode();  
-        panel.addComponent(treeView);
-        panel.setSizeFull();
+        presenter.generateInitialTreeNode();
+
+        CssLayout treeContainer = new CssLayout();
+        treeContainer.setSizeUndefined();
+        treeContainer.addComponent(treeView);
+
+        panel.setContent(treeContainer);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
-        this.addComponent(panel, "left: 0px; top: 0px;");
-        
+        panel.setSizeFull();
+        panel.setHeight("282px");
+
+        this.addComponent(panel);
+        this.setExpandRatio(panel,1.0F);
+    }
+
+    private Component buildToolbar() {
+        this.toolbar = new HorizontalLayout();
+        this.toolbar.setSpacing(true);
+        this.toolbar.setMargin(true);
+
+        openListManagerBtn = new Button("Open");
+        openListManagerBtn.setDescription("Open in List Manager");
+
+        renameFolderBtn = new Button("Rename");
+        renameFolderBtn.setDescription("Rename Folder");
+
+        addFolderBtn = new Button("+");
+        addFolderBtn.setDescription("Add New Folder");
+
+        deleteFolderBtn = new Button("-");
+        deleteFolderBtn.setDescription("Delete Selected Folder");
+
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
+
+        this.toolbar.addComponent(openListManagerBtn);
+        this.toolbar.addComponent(renameFolderBtn);
+        this.toolbar.addComponent(addFolderBtn);
+        this.toolbar.addComponent(deleteFolderBtn);
+
+        return this.toolbar;
+    }
+
+    private void initializeToolbarActions() {
+        openListManagerBtn.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        renameFolderBtn.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        addFolderBtn.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        deleteFolderBtn.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
     }
     
     public void expandTree(Object itemId){
@@ -113,7 +190,6 @@ public class GermplasmListPreview extends AbsoluteLayout {
             treeView.collapseItem(itemId);
         else
             treeView.expandItem(itemId);
-        
     }
 
     protected void initializeComponents() {        
@@ -198,7 +274,8 @@ public class GermplasmListPreview extends AbsoluteLayout {
     protected void initializeLayout() {
         //this.setStyleName(Reindeer.PANEL_LIGHT);
         this.setSizeFull();
-        
+        this.setSpacing(false);
+        this.setMargin(false);
 
     }
 
