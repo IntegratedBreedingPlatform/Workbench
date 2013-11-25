@@ -251,7 +251,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         //create the Breeding View project element
         org.generationcp.commons.sea.xml.BreedingViewProject project = new org.generationcp.commons.sea.xml.BreedingViewProject();
         project.setName(breedingViewInput.getBreedingViewProjectName());
-        project.setVersion(breedingViewInput.getVersion());
+        project.setVersion("1.2");
         project.setPipelines(pipelines);
         
         

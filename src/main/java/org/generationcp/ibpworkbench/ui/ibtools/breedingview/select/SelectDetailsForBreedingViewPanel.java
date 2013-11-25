@@ -121,6 +121,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Select selColumnFactor;
     private Select selGenotypes;
     
+    private CheckBox footerCheckBox;
+    
     private HashMap<String, Boolean> environmentsCheckboxState;
     
     private VerticalLayout tblEnvironmentLayout;
@@ -267,7 +269,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 		};
     	
     	
-		final CheckBox footerCheckBox = new CheckBox("SELECT ALL",false);
+		footerCheckBox = new CheckBox("SELECT ALL",false);
 		footerCheckBox.addListener(new Property.ValueChangeListener(){
 
 				private static final long serialVersionUID = 1L;
@@ -520,6 +522,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     public void populateChoicesForEnvForAnalysis(){
+    	
+    	footerCheckBox.setValue(false);
     	
     	try{
         	environmentsCheckboxState.clear();
