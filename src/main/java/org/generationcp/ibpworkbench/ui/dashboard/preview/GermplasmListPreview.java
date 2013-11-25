@@ -125,22 +125,27 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("Open");
+        openListManagerBtn = new Button("");
         openListManagerBtn.setDescription("Open in List Manager");
 
-        renameFolderBtn = new Button("Rename");
+        renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
 
-        addFolderBtn = new Button("+");
+        addFolderBtn = new Button("");
         addFolderBtn.setDescription("Add New Folder");
 
-        deleteFolderBtn = new Button("-");
+        deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
-        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-open");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
+
+        openListManagerBtn.setWidth("40px");
+        renameFolderBtn.setWidth("40px");
+        addFolderBtn.setWidth("40px");
+        deleteFolderBtn.setWidth("40px");
 
         this.toolbar.addComponent(openListManagerBtn);
         this.toolbar.addComponent(renameFolderBtn);
