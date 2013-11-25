@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.ui.sidebar;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.*;
@@ -48,12 +50,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
         return manager;
     }
 
-    public Map<WorkbenchSidebarCategory,List<Tool>> getCategoryLinkItems() {
+    public Map<WorkbenchSidebarCategory,List<WorkbenchSidebarCategoryLink>> getCategoryLinkItems() {
         // get all categories first
-        Map<WorkbenchSidebarCategory,List<Tool>> sidebarLinks = new LinkedHashMap<WorkbenchSidebarCategory, List<Tool>>();
+        Map<WorkbenchSidebarCategory,List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>>();
 
         try {
-            List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<WorkbenchSidebarCategoryLink>();   // TODO: THESE SHOULD BE A MIDDLEWARE CALL
+            List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<WorkbenchSidebarCategoryLink>();
 
             List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = manager.getAllWorkbenchSidebarCategory();
 
@@ -76,20 +78,23 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"restore_ibdb","Restore Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","User Tools"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName("dataset_importer"),category,"data_import_tool","Marker Assisted Recurrent Selection (MARS)"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Dataset Import Tool"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
+
+                } else {
+                    categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
                 }
             }
 
             for (WorkbenchSidebarCategoryLink link : categoryLinks) {
                 if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null)
-                    sidebarLinks.put(link.getWorkbenchSidebarCategory(),new ArrayList<Tool>());
+                    sidebarLinks.put(link.getWorkbenchSidebarCategory(),new ArrayList<WorkbenchSidebarCategoryLink>());
 
-                if (link.getTool() == null) {
-                    sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(new Tool(link.getSidebarLinkName(),link.getSidebarLinkTitle(),""));
-                } else {
-                    sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link.getTool());
-                }
+                if (link.getTool() == null)
+                    link.setTool(new Tool(link.getSidebarLinkName(),link.getSidebarLinkTitle(),""));
 
+
+                sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
             }
 
 

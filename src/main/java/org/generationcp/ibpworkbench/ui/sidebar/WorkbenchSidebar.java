@@ -93,28 +93,35 @@ public class WorkbenchSidebar extends CssLayout {
     }
 
     public void populateLinks() {
-        Map<WorkbenchSidebarCategory,List<Tool>> links = presenter.getCategoryLinkItems();
+        Map<WorkbenchSidebarCategory,List<WorkbenchSidebarCategoryLink>> links = presenter.getCategoryLinkItems();
         sidebarTree.setContainerDataSource(new HierarchicalContainer());
         sidebarTree.addContainerProperty("id",String.class,"");
         sidebarTree.addContainerProperty("caption",String.class,"");
         sidebarTree.addContainerProperty("value",Object.class,null);
 
+        boolean expandedFirst = false;
         for (WorkbenchSidebarCategory category : links.keySet()) {
-            TreeItem parentItem;
-            parentItem = new TreeItem(category.getSidebarCategoryName(),category.getSidebarCategorylabel(),null);
+            TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(),category.getSidebarCategorylabel(),null);
 
             Item parent = sidebarTree.addItem(parentItem);
 
             sidebarTree.setChildrenAllowed(parent, true);
             sidebarTree.setItemCaption(parentItem,parentItem.getCaption());
-            for (Tool link : links.get(category)) {
-                TreeItem item = new TreeItem(link.getToolName(),link.getTitle(),link);
+            for (WorkbenchSidebarCategoryLink link : links.get(category)) {
+                TreeItem item = new TreeItem(link.getTool().getToolName(),link.getSidebarLinkTitle(),link);
                 sidebarTree.addItem(item);
                 sidebarTree.setParent(item, parentItem);
                 sidebarTree.setChildrenAllowed(item,false);
                 sidebarTree.setItemCaption(item,item.getCaption());
             }
+
+            if (!expandedFirst) {
+                sidebarTree.expandItem(parentItem);
+                expandedFirst = true;
+            }
+
         }
+
 
 
         sidebarTree.removeListener(treeClickListener);
@@ -214,5 +221,4 @@ public class WorkbenchSidebar extends CssLayout {
 
         return null;
     }
-
 }

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public
  * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui;
@@ -50,7 +50,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
-    
+
     public static final String VERSION = "1.1.4.26";
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
@@ -62,7 +62,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    
+
     private Label actionsTitle;
     private Button createProjectButton;
 
@@ -82,17 +82,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     private UriFragmentUtility uriFragUtil;
     private NavUriFragmentChangedListener uriChangeListener;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
     private static WorkbenchMainView thisInstance;
     private WorkbenchSidebar sidebar;
 
     //private Button userToolsButton;
 
     public WorkbenchMainView() {
-    	super("Integrated Breeding Platform | Workbench");
+        super("Integrated Breeding Platform | Workbench");
     }
 
     /**
@@ -105,7 +105,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     protected void initializeComponents() throws Exception {
         // workbench header components
-    	 
+
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
 
@@ -124,11 +124,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //userToolsButton = new Button();
         //userToolsButton.setStyleName(BaseTheme.BUTTON_LINK);
         //userToolsButton.setSizeUndefined();
-        
+
         toolVersionsButton = new Button();
         toolVersionsButton.setStyleName(BaseTheme.BUTTON_LINK);
         toolVersionsButton.setSizeUndefined();
-        
+
         helpButton = new Button();
         helpButton.setStyleName(BaseTheme.BUTTON_LINK);
         helpButton.setSizeUndefined();
@@ -137,9 +137,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         actionsTitle = new Label();
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
-        
-        
-      
+
+
+
 
         createProjectButton = new Button("Create Project");
         createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
@@ -190,8 +190,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         verticalSplitPanel.setStyleName("gcp-workbench-vsplit-panel");
         verticalSplitPanel.setSizeFull();
 
-        
-        
+
+
         layout.addComponent(verticalSplitPanel);
 
         // add the workbench header
@@ -199,7 +199,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(300, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.setSplitPosition(0, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
         contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
@@ -212,17 +212,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setSizeFull();
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
-        
+
         mainContent.addComponent(crumbTrail);
-        
+
         VerticalLayout wrap = new VerticalLayout();
         wrap.setSizeFull();
         wrap.addStyleName("gcp-dashboard-main");
         wrap.addComponent(workbenchDashboard);
         //mainContent.setSizeUndefined();
-    	mainContent.addComponent(wrap);
+        mainContent.addComponent(wrap);
         mainContent.setExpandRatio(wrap,1.0F);
-        
+
         // layout the right area of the content area split panel
         // contentAreaSplitPanel.addComponent(workbenchDashboard);
         contentAreaSplitPanel.addComponent(mainContent);
@@ -236,33 +236,33 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     protected void initializeActions() {
         final Window thisWindow = this;
-        
-    	homeButton.addListener(new HomeAction());
+
+        homeButton.addListener(new HomeAction());
         signOutButton.addListener(new SignoutAction());
-        
+
         helpButton.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
-			}
-		});
-        
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
+            }
+        });
+
         Button.ClickListener userToolsClickListener = new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
-				thisWindow.addWindow(new UserToolsManagerWindow());
-			}
-		};
-        
+            public void buttonClick(ClickEvent event) {
+                thisWindow.addWindow(new UserToolsManagerWindow());
+            }
+        };
+
         //userToolsButton.addListener (userToolsClickListener);
-        
+
         toolVersionsButton.addListener(new OpenToolVersionsAction());
-       
-        
-        
+
+
+
         createProjectButton.addListener(new OpenNewProjectAction());
         createProjectButton.addListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -272,7 +272,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
             }
         });
-        
+
         createContactButton.addListener(new CreateContactAction());
     }
 
@@ -296,17 +296,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         try {
             UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
             if (userInfo == null || userInfo.getLoginCount() < 1) {
-	            	if (user.getName().equals((user.getPassword())) && userInfo != null){
-		            	OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-		                ow.launchWindow(this, "change_password");
-	            	}
-	            	
-	            	if (userInfo == null) {
-	                    userInfo = new UserInfo();
-	                }
-	                userInfo.setUserId(user.getUserid());
-	                userInfo.setLoginCount(1);
-	                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+                if (user.getName().equals((user.getPassword())) && userInfo != null){
+                    OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+                    ow.launchWindow(this, "change_password");
+                }
+
+                if (userInfo == null) {
+                    userInfo = new UserInfo();
+                }
+                userInfo.setUserId(user.getUserid());
+                userInfo.setLoginCount(1);
+                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
             }
             workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
@@ -315,14 +315,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
     }
-    	
+
     private Component layoutWorkbenchHeader() {
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidth("100%");
         headerLayout.setHeight("100%");
         headerLayout.setMargin(false, false, false, false);
         headerLayout.setSpacing(false);
-        
+
         Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
         ibpLogo.setWidth("87px");
         ibpLogo.setHeight("87px");
@@ -360,12 +360,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //headerRightLayout.addComponent(userToolsButton);
         //headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
 
-        
+
         //headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(toolVersionsButton);
         headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
-        
+
         headerRightLayout.addComponent(new Label("|"));
 
         headerRightLayout.addComponent(helpButton);
@@ -385,9 +385,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //leftLayout.addComponent(actionsTitle);
         //leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
         //leftLayout.setSize;
-        
+
         leftLayout.addComponent(createProjectButton);
-        
+
         leftLayout.setExpandRatio(createProjectButton,1.0F);
         //leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
 
@@ -402,17 +402,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         //leftLayout.addComponent(usersGuideTitle);
         //leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
-        
+
         //TODO update the contents of the hint to apply to the new workflow dashboard screen
         //leftLayout.addComponent(hint1);
-        
+
         return leftLayout;
     }
 
     /**
      * Show the specified {@link Component} on the right side area of the
      * Workbench's split panel.
-     * 
+     *
      * @param content
      */
     public void showContent(Component content) {
@@ -421,9 +421,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         // contentAreaSplitPanel.addComponent(content);
 
         mainContent.removeComponent(mainContent.getComponent(1));
-        
+
         if (content instanceof Embedded) {
-        	//mainContent.setSizeFull();
+            //mainContent.setSizeFull();
             mainContent.addComponent(content);
             mainContent.setExpandRatio(content,1.0F);
 
@@ -433,9 +433,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             wrap.addStyleName("gcp-dashboard-main");
             wrap.addComponent(content);
             //mainContent.setSizeUndefined();
-        	mainContent.addComponent(wrap);
+            mainContent.addComponent(wrap);
             mainContent.setExpandRatio(wrap,1.0F);
         }
+
+        if (content instanceof  WorkbenchDashboard) {
+            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+        } else
+            contentAreaSplitPanel.setSplitPosition(300,Sizeable.UNITS_PIXELS);
     }
 
     public WorkbenchDashboard getWorkbenchDashboard() {
@@ -458,28 +463,28 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public void setUriFragment(String fragment) {
         uriFragUtil.setFragment(fragment);
     }
-    
+
     @Override
     public void attach() {
         super.attach();
-        
+
         updateLabels();
     }
 
-    
+
     public void addTitle(String myTitle)
     {
-    	
-    	if (myTitle != null && !myTitle.isEmpty()) {
-    		myTitle = ": <h1>" + myTitle +"</h1>";
-    	} else {
-    		myTitle = "";
-    	}
-    	
-    	
-    	 String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> " + myTitle;
-         workbenchTitle.setValue(title);
-         workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+
+        if (myTitle != null && !myTitle.isEmpty()) {
+            myTitle = ": <h1>" + myTitle +"</h1>";
+        } else {
+            myTitle = "";
+        }
+
+
+        String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> " + myTitle;
+        workbenchTitle.setValue(title);
+        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
     }
 
@@ -493,29 +498,29 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
-       //messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
+        //messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
         messageSource.setCaption(helpButton, Message.HELP);
-        
+
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
-        
+
         messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
         messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
-        
+
         messageSource.setValue(recentTitle, Message.RECENT);
         messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
-        
+
         messageSource.setValue(hint1, Message.USER_GUIDE_1);
     }
-    
+
     public void toggleCreateButtonStyle() {
-    	if (!createProjectButton.getStyleName().contains("gcp-enabled")) {
-    		createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn gcp-enabled");
-    	} else {
-    		createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
-    	}
+        if (!createProjectButton.getStyleName().contains("gcp-enabled")) {
+            createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn gcp-enabled");
+        } else {
+            createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
+        }
     }
 
     public static WorkbenchMainView getInstance() {
-           return thisInstance;
+        return thisInstance;
     }
 }
