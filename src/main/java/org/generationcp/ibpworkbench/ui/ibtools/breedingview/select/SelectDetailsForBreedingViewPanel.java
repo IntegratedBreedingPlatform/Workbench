@@ -418,8 +418,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         txtAnalysisName = new TextField();
         txtAnalysisName.setNullRepresentation("");
-        if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewProjectName())) {
-            txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewProjectName());
+        if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewAnalysisName())) {
+            txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
         }
         txtAnalysisName.setRequired(false);
         txtAnalysisName.setWidth("80%");

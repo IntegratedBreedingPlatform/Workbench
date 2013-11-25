@@ -37,6 +37,7 @@ public class BreedingViewInput implements Serializable {
     
     private Project project;
     private String BreedingViewProjectName;
+    private String breedingViewAnalysisName;
     private Integer studyId;
     private Integer inputDatasetId;
     private Integer outputDatasetId;
@@ -360,6 +361,14 @@ public class BreedingViewInput implements Serializable {
 
 	public void setEnvironmentsActiveState(HashMap<String, Boolean> environmentActiveStates) {
 		this.environmentsActiveState = environmentActiveStates;
+	}
+
+	public String getBreedingViewAnalysisName() {
+		return breedingViewAnalysisName;
+	}
+
+	public void setBreedingViewAnalysisName(String breedingViewAnalysisName) {
+		this.breedingViewAnalysisName = breedingViewAnalysisName;
 	}
 
     

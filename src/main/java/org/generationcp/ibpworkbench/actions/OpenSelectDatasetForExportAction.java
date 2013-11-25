@@ -12,6 +12,9 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.ProjectType;
@@ -35,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.format.datetime.joda.DateTimeParser;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -116,6 +120,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             LOG.info("Input Directory: " + inputDir);
 
             breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            String breedingViewAnalysisName = String.format("SSA analysis of %s at %s", datasetName.trim(),  timeStamp);
 
             defaultFilePath = File.separator + breedingViewProjectName;
 
@@ -140,6 +146,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
                                                                         , destXMLFilePath
                                                                         , ProjectType.FIELD_TRIAL.getName());
             
+            breedingViewInput.setBreedingViewAnalysisName(breedingViewAnalysisName);
             breedingViewInput.setDatasetName(selectDatasetForBreedingViewPanel.getCurrentDatasetName());
             breedingViewInput.setDatasetSource(selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
             breedingViewInput.setVariatesActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
