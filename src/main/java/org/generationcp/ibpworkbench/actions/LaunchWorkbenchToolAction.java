@@ -42,6 +42,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
@@ -65,6 +66,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
     
     Project project;
+    
+    Role role;
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
@@ -148,6 +151,13 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this.toolEnum = toolEnum;
         this.project = project;
         this.toolConfiguration = toolConfiguration;
+    }
+    
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration, Role role) {
+        this.toolEnum = toolEnum;
+        this.project = project;
+        this.toolConfiguration = toolConfiguration;
+        this.role = role;
     }
     
 	@Override
@@ -262,10 +272,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 }
                 
                 if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)) {
-                	new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
+                	new OpenSelectProjectForStudyAndDatasetViewAction(project, role).doAction(window, "/breeding_view", true);
                 }
                 else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL)) {
-                    new OpenSelectProjectForStudyAndDatasetViewAction(project).doAction(window, "/breeding_view", true);
+                    new OpenSelectProjectForStudyAndDatasetViewAction(project, role).doAction(window, "/breeding_view", true);
                 
                 }
                 else {

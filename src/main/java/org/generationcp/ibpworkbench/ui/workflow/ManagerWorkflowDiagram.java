@@ -779,13 +779,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             datasetImporterBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.DATASET_IMPORTER));
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-
-
-            //breedingViewGxeAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE));
-            //breedingViewMultiSiteAnalysisButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW,project,WorkflowConstants.BREEDING_VIEW_MULTI_SITE_ANALYSIS));
-
-        	breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
-            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,null));
+            breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL, this.role));
+            breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL, this.role));
+            
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
             
