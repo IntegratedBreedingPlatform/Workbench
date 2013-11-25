@@ -280,7 +280,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         Table tblFactors = new Table("FACTORS");
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
-        tblFactors.setHeight("100%");
+        tblFactors.setHeight("450px");
         
         BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
         container.setBeanIdProperty("id");
@@ -298,7 +298,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         final Table tblVariates = new Table("VARIATES");
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
-        tblVariates.setHeight("100%");
+        tblVariates.setHeight("450px");
         tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
 
 			private static final long serialVersionUID = 1L;

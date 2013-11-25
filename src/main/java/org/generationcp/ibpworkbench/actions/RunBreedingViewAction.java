@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
@@ -72,9 +74,12 @@ public class RunBreedingViewAction implements ClickListener {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
         
-        String newVal = source.getSelEnvFactor().getValue() + "-" + source.getSelEnvForAnalysis().getValue();
-        source.getTxtNameForAnalysisEnv().setValue(newVal);
-        //txtNameForAnalysisEnv
+        breedingViewInput.setEnvironmentsActiveState(source.getEnvironmentsCheckboxState());
+        
+        List<String> selectedEnvironments = new ArrayList<String>();
+        for (Entry<String, Boolean> env : breedingViewInput.getEnvironmentsActiveState().entrySet()){
+        	if (env.getValue()) selectedEnvironments.add(env.getKey());
+        }
         
         String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
         if(StringUtils.isNullOrEmpty(analysisProjectName)){
@@ -89,36 +94,22 @@ public class RunBreedingViewAction implements ClickListener {
             Environment environment = new Environment();
             environment.setName(envFactor.trim());
             
-            String envForAnalysis = (String) this.source.getSelEnvForAnalysis().getValue();
-            if(StringUtils.isNullOrEmpty(envForAnalysis)){
+            if(selectedEnvironments.size() == 0){
                 event.getComponent().getWindow().showNotification("Please select environment for analysis.", Notification.TYPE_ERROR_MESSAGE);
                 return;
             } else{
-                if(envForAnalysis.contains("-")){
-                    StringTokenizer tokenizer = new StringTokenizer(envForAnalysis, "-");
-                    if(tokenizer.hasMoreTokens()){
-                        envForAnalysis = tokenizer.nextToken().trim();
-                    }
-                }
-                
+               
                 EnvironmentLabel label = new EnvironmentLabel();
-                label.setName(envForAnalysis);
-                label.setTrial(envForAnalysis);
+                label.setName(selectedEnvironments.get(0));
+                label.setTrial(selectedEnvironments.get(0));
                 label.setSubset(true);
                 
                 environment.setLabel(label);
                 breedingViewInput.setEnvironment(environment);
+                
             }
         } else{
             breedingViewInput.setEnvironment(null);
-        }
-        
-        String envName = (String) this.source.getTxtNameForAnalysisEnv().getValue();
-        if(StringUtils.isNullOrEmpty(envName)){
-            event.getComponent().getWindow().showNotification("Please specify name for analysis environment.", Notification.TYPE_ERROR_MESSAGE);
-            return;
-        } else{
-            breedingViewInput.setEnvironmentName(envName);
         }
                 
         String designType = (String) this.source.getSelDesignType().getValue();
@@ -214,75 +205,19 @@ public class RunBreedingViewAction implements ClickListener {
             breedingViewInput.setGenotypes(genotypes);
         }
         
-        /**
-        try {
-			final DataSet sourceDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getDatasetId());
-			final DataSet meansDataSet = source.getManagerFactory().getNewStudyDataManager().getDataSet(breedingViewInput.getOutputDatasetId());
-			
-			if (sourceDataSet != null && meansDataSet != null){
-				
-				if (checkColumnsChanged(sourceDataSet, meansDataSet)){
-					  ConfirmDialog.show(source.getParent(), "Delete Means Dataset",  
-				        		"Do you want to delete the existing means dataset?", 
-				        		"Delete", 
-				        		"No", 
-				        		new ConfirmDialog.Listener() {
-										@Override
-										public void onClose(ConfirmDialog dialog) {
-											if (dialog.isConfirmed()){
-												try {
-													source.getManagerFactory().getNewStudyDataManager().deleteDataSet(meansDataSet.getId());
-													source.getBreedingViewInput().setOutputDatasetId(0);
-												} catch (ConfigException e) {
-													// TODO Auto-generated catch block
-													e.printStackTrace();
-												} catch (MiddlewareQueryException e) {
-													// TODO Auto-generated catch block
-													e.printStackTrace();
-												}
-												
-											}
-												
-											launchBV(event);
-										}
-					        		}
-				        );		
-				}else{
-					launchBV(event);
-				}
-				
-				
-			}else{
-				launchBV(event);
-			}
-			
-			
-			
-			
-			
-		} catch (ConfigException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}**/
         
         DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
+        
         try {
-			HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), (String) this.source.getSelEnvForAnalysis().getValue());
-			breedingViewInput.setVariateColumns(variateColumns);
+			//HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), (String) this.source.getSelEnvForAnalysis().getValue());
+        	HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments);
+        	breedingViewInput.setVariateColumns(variateColumns);
         } catch (DatasetExporterException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
        
 		launchBV(event);
-      	
-        
-       
-	
-        
+      	    
        
     }   
     
@@ -294,6 +229,7 @@ public class RunBreedingViewAction implements ClickListener {
          try {
              breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
              breedingViewXMLWriter.writeProjectXML();
+             breedingViewXMLWriter.writeProjectXMLV2();
              
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
              Runtime runtime = Runtime.getRuntime();
@@ -310,43 +246,9 @@ public class RunBreedingViewAction implements ClickListener {
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
-             
-         //event.getComponent().getWindow().getParent().removeWindow(this.source);
-    	
+            	
     	
     }
     
-    
-    
-    private boolean checkColumnsChanged(DataSet sourceDataSet,DataSet meansDataSet){
-    	
-    	List<Integer> numericTypes = new ArrayList<Integer>();
- 
-         
-         numericTypes.add(TermId.NUMERIC_VARIABLE.getId());
-         numericTypes.add(TermId.MIN_VALUE.getId());
-         numericTypes.add(TermId.MAX_VALUE.getId());
-         numericTypes.add(TermId.DATE_VARIABLE.getId());
-         numericTypes.add(TermId.NUMERIC_DBID_VARIABLE.getId());
-    	
-    	
-    	
-    	List<String> header1 = new ArrayList<String>();
-    	List<String> header2 = new ArrayList<String>();
-    	for (VariableType var : sourceDataSet.getVariableTypes().getVariates().getVariableTypes()){
-    		if (numericTypes.contains(var.getStandardVariable().getDataType().getId())){
-    			header1.add((var.getLocalName().trim() + "_Means").toLowerCase());
-    		}
-    		
-    	}
-    	for (VariableType var : meansDataSet.getVariableTypes().getVariates().getVariableTypes()){
-    		if (!var.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
-    		header2.add(var.getLocalName().trim().toLowerCase());
-    	}
-    	Collections.sort(header1);
-    	Collections.sort(header2);
-    	
-    	return !header2.equals(header1);
-    	
-    }
+  
 }
