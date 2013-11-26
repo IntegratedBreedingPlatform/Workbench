@@ -594,6 +594,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 						if (tabStudyData.getId() == Integer.parseInt(p2.getValue().toString())){
 							
 							SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
+							selectEnvironmentPanel.setCaption(tabStudyData.getName());
 							
 							((VerticalLayout) tab).addComponent(selectEnvironmentPanel);
 							

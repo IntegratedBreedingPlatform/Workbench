@@ -128,7 +128,6 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
         
         setWidth("100%");
-        setCaption("Select Environment to generate Multi-site Analysis: ");
         
     }
     
