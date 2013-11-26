@@ -120,7 +120,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             LOG.info("Input Directory: " + inputDir);
 
             breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm").format(Calendar.getInstance().getTime());
             String breedingViewAnalysisName = String.format("SSA analysis of %s at %s", datasetName.trim(),  timeStamp);
 
             defaultFilePath = File.separator + breedingViewProjectName;
