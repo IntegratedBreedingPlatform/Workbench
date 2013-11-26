@@ -76,6 +76,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Project Method"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"backup_ibdb","Backup Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"restore_ibdb","Restore Program"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","User Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Dataset Import Tool"));
