@@ -38,9 +38,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    
-    
+
+
+
     private ManagerFactory managerFactory;
     
     private final static int BATCH_SIZE = 50;

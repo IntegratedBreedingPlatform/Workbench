@@ -7,7 +7,16 @@ import java.util.List;
 
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.Transferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.And;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.themes.Reindeer;
@@ -96,14 +105,17 @@ public class GermplasmListPreview extends VerticalLayout {
         folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
        
-        
+
     }
     
     public void setProject(Project project){
+        this.removeAllComponents();
+
+        this.setSizeFull();
+
         // add toolbar here
         panel = new Panel();
         panel.removeAllComponents();
-        this.removeAllComponents();
 
         this.addComponent(buildToolbar());
 
@@ -118,10 +130,11 @@ public class GermplasmListPreview extends VerticalLayout {
         panel.setContent(treeContainer);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         panel.setSizeFull();
-        panel.setHeight("282px");
 
         this.addComponent(panel);
         this.setExpandRatio(panel,1.0F);
+
+
     }
 
     private Component buildToolbar() {
@@ -129,8 +142,9 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("");
-        openListManagerBtn.setDescription("Open in List Manager");
+        openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Launch");
+        openListManagerBtn.setHtmlContentAllowed(true);
+        openListManagerBtn.setDescription("Open In List Manager");
 
         renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
@@ -141,20 +155,28 @@ public class GermplasmListPreview extends VerticalLayout {
         deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
-        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-open");
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
         renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
         addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
         deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
 
-        openListManagerBtn.setWidth("40px");
+        openListManagerBtn.setWidth("100px");
         renameFolderBtn.setWidth("40px");
         addFolderBtn.setWidth("40px");
         deleteFolderBtn.setWidth("40px");
 
         this.toolbar.addComponent(openListManagerBtn);
+
+        Label spacer = new Label("");
+        this.toolbar.addComponent(spacer);
+        this.toolbar.setExpandRatio(spacer,1.0F);
+
         this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(addFolderBtn);
         this.toolbar.addComponent(deleteFolderBtn);
+
+        //this.toolbar.setSizeFull();
+        this.toolbar.setWidth("100%");
 
         initializeToolbarActions();
 
@@ -191,17 +213,25 @@ public class GermplasmListPreview extends VerticalLayout {
                 }
 
                 final Window w = new Window("Rename a folder");
-                w.setWidth("300px");
-                w.setHeight("170px");
+                w.setWidth("280px");
+                w.setHeight("150px");
                 w.setModal(true);
+                w.setResizable(false);
                 w.setStyleName(Reindeer.WINDOW_LIGHT);
 
                 VerticalLayout container = new VerticalLayout();
                 container.setSpacing(true);
                 container.setMargin(true);
 
+                HorizontalLayout formContainer = new HorizontalLayout();
+                formContainer.setSpacing(true);
+
                 Label l = new Label("New Folder Name");
                 TextField name = new TextField();
+                name.setValue(treeView.getItemCaption(lastItemId));
+
+                formContainer.addComponent(l);
+                formContainer.addComponent(name);
 
                 HorizontalLayout btnContainer = new HorizontalLayout();
                 btnContainer.setSpacing(true);
@@ -231,8 +261,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 btnContainer.addComponent(ok);
                 btnContainer.addComponent(cancel);
 
-                container.addComponent(l);
-                container.addComponent(name);
+                container.addComponent(formContainer);
                 container.addComponent(btnContainer);
 
                 w.setContent(container);
@@ -284,6 +313,8 @@ public class GermplasmListPreview extends VerticalLayout {
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
         lastItemId = null;
         treeView = new Tree();
+        treeView.setContainerDataSource(new HierarchicalContainer());
+        treeView.setDropHandler(new TreeDropHandler(treeView));
         treeView.setDragMode(TreeDragMode.NODE);
         
         treeView.addItem(MY_LIST);
@@ -359,11 +390,7 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     protected void initializeLayout() {
-        //this.setStyleName(Reindeer.PANEL_LIGHT);
-        this.setSizeFull();
-        this.setSpacing(false);
-        this.setMargin(false);
-
+        this.setMargin(true);
     }
 
     protected void initializeActions() {
@@ -390,7 +417,94 @@ public class GermplasmListPreview extends VerticalLayout {
         this.managerFactoryProvider = managerFactoryProvider;
     }
 
-    
+    private static class TreeDropHandler implements DropHandler {
+        private final Tree tree;
+
+        public TreeDropHandler (Tree tree) {
+            this.tree = tree;
+        }
+
+
+        @Override
+        public void drop(DragAndDropEvent dropEvent) {
+            // Called whenever a drop occurs on the component
+
+            // Make sure the drag source is the same tree
+            Transferable t = dropEvent.getTransferable();
+
+            // see the comment in getAcceptCriterion()
+            if (t.getSourceComponent() != tree
+                    || !(t instanceof DataBoundTransferable)) {
+                return;
+            }
+
+            Tree.TreeTargetDetails dropData = ((Tree.TreeTargetDetails) dropEvent
+                    .getTargetDetails());
+
+            Object sourceItemId = ((DataBoundTransferable) t).getItemId();
+            // FIXME: Why "over", should be "targetItemId" or just
+            // "getItemId"
+            Object targetItemId = dropData.getItemIdOver();
+
+            // Location describes on which part of the node the drop took
+            // place
+            VerticalDropLocation location = dropData.getDropLocation();
+
+            moveNode(sourceItemId, targetItemId, location);
+
+        }
+
+        @Override
+        public AcceptCriterion getAcceptCriterion() {
+            return AcceptAll.get();
+        }
+
+        /**
+         * Move a node within a tree onto, above or below another node depending
+         * on the drop location.
+         *
+         * @param sourceItemId
+         *            id of the item to move
+         * @param targetItemId
+         *            id of the item onto which the source node should be moved
+         * @param location
+         *            VerticalDropLocation indicating where the source node was
+         *            dropped relative to the target node
+         */
+        private void moveNode(Object sourceItemId, Object targetItemId,
+                              VerticalDropLocation location) {
+            HierarchicalContainer container = (HierarchicalContainer) tree
+                    .getContainerDataSource();
+
+            // Sorting goes as
+            // - If dropped ON a node, we append it as a child
+            // - If dropped on the TOP part of a node, we move/add it before
+            // the node
+            // - If dropped on the BOTTOM part of a node, we move/add it
+            // after the node
+
+            if (location == VerticalDropLocation.MIDDLE) {
+                if (container.setParent(sourceItemId, targetItemId)
+                        && container.hasChildren(targetItemId)) {
+                    // move first in the container
+                    container.moveAfterSibling(sourceItemId, null);
+                }
+            } else if (location == VerticalDropLocation.TOP) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    // reorder only the two items, moving source above target
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                    container.moveAfterSibling(targetItemId, sourceItemId);
+                }
+            } else if (location == VerticalDropLocation.BOTTOM) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                }
+            }
+        }
+
+    }
     
 
 }

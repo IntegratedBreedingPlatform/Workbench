@@ -224,10 +224,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private void initializePreviewTable() {
         previewTab = new TabSheet();
         previewTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+
         germplasmListPreview = new GermplasmListPreview(null);
         listTab = previewTab.addTab(germplasmListPreview, "Lists");
+
         nurseryListPreview = new NurseryListPreview(null);
         nurseryTrialTab = previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
+
         rolesTab = previewTab.addTab(tblRoles, "Roles");
         
         previewTab.setImmediate(true);
