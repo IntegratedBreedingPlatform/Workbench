@@ -287,9 +287,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             //projectContainer.addBean(project);
             //Project project  = projects.get(i);
             project = projects.get(i);
-            Button button = new Button();
+
+            Button button = new Button("<span class='glyphicon glyphicon-chevron-right'></span>");
+            button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
-            button.setStyleName(Reindeer.BUTTON_LINK + " project-select-btn");
+            button.setStyleName("launch");
+            button.setWidth("24px"); button.setHeight("24px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             
             
