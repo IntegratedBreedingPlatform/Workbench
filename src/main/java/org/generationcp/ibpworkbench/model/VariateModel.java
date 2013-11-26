@@ -34,7 +34,9 @@ public class VariateModel implements Serializable{
    
     
     private Integer id;
+    private Integer variableId;
     private String name;
+    private String displayName;
     private String description;
     private Integer traitid;
     private String trname;
@@ -247,6 +249,26 @@ public class VariateModel implements Serializable{
 
 	public void setDatatype(String datatype) {
 		this.datatype = datatype;
+	}
+
+
+	public Integer getVariableId() {
+		return variableId;
+	}
+
+
+	public void setVariableId(Integer variableId) {
+		this.variableId = variableId;
+	}
+
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 }
