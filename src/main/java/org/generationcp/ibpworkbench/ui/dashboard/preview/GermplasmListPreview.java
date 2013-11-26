@@ -77,6 +77,8 @@ public class GermplasmListPreview extends VerticalLayout {
     private Button addFolderBtn;
     private Button deleteFolderBtn;
     private Button renameFolderBtn;
+    
+    private Object lastItemId;
 
     public GermplasmListPreview(Project project) {
         this.project = project;
@@ -127,22 +129,27 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("Open");
+        openListManagerBtn = new Button("");
         openListManagerBtn.setDescription("Open in List Manager");
 
-        renameFolderBtn = new Button("Rename");
+        renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
 
-        addFolderBtn = new Button("+");
+        addFolderBtn = new Button("");
         addFolderBtn.setDescription("Add New Folder");
 
-        deleteFolderBtn = new Button("-");
+        deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
-        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-open");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
+
+        openListManagerBtn.setWidth("40px");
+        renameFolderBtn.setWidth("40px");
+        addFolderBtn.setWidth("40px");
+        deleteFolderBtn.setWidth("40px");
 
         this.toolbar.addComponent(openListManagerBtn);
         this.toolbar.addComponent(renameFolderBtn);
@@ -159,12 +166,12 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (treeView.getValue() == null) {
+                if (lastItemId == null) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list","");
                     return;
                 }
 
-                if (presenter.isFolder(treeView.getValue())) {
+                if (presenter.isFolder(lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
                 }
@@ -178,7 +185,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (treeView.getValue() == null || !presenter.isFolder(treeView.getValue())) {
+                if (lastItemId == null || !presenter.isFolder(lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed (not folder)","");
                     return;
                 }
@@ -255,10 +262,16 @@ public class GermplasmListPreview extends VerticalLayout {
     
     public void expandTree(Object itemId){
         
-        if(treeView.isExpanded(itemId))
-            treeView.collapseItem(itemId);
-        else
+        if(treeView.isExpanded(itemId)){
+            treeView.collapseItem(itemId);            
+            treeView.select(itemId);
+        }
+        else{
             treeView.expandItem(itemId);
+            treeView.select(itemId);
+            
+        }
+        lastItemId = itemId;
     }
 
     protected void initializeComponents() {        
@@ -269,18 +282,18 @@ public class GermplasmListPreview extends VerticalLayout {
     }
     
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
-        
+        lastItemId = null;
         treeView = new Tree();
         treeView.setDragMode(TreeDragMode.NODE);
         
         treeView.addItem(MY_LIST);
         treeView.setItemCaption(MY_LIST, MY_LIST);
-        treeView.setItemIcon(MY_LIST,folderResource);
+        treeView.setItemIcon(MY_LIST, folderResource);
         
         treeView.addItem(SHARED_LIST);
         treeView.setItemCaption(SHARED_LIST, SHARED_LIST);
         treeView.setItemIcon(SHARED_LIST,folderResource);
-
+        
         for (GermplasmList parentList : germplasmListParentLocal) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
@@ -288,8 +301,8 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
-        }
-        
+            treeView.setSelectable(true);
+        }        
         for (GermplasmList parentList : germplasmListParentCentral) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
@@ -297,6 +310,7 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
             treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+            treeView.setSelectable(true);
         }
 
         treeView.addListener(new GermplasmListTreeExpandListener(this));
@@ -305,7 +319,7 @@ public class GermplasmListPreview extends VerticalLayout {
         //return germplasmListTree;
     }
     
-    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren ) throws InternationalizableException{
+    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId ) throws InternationalizableException{
        
         for (GermplasmList listChild : germplasmListChildren) {
             
@@ -323,10 +337,17 @@ public class GermplasmListPreview extends VerticalLayout {
                 
             }            
             treeView.setItemIcon(listChild.getId(),resource);
+            treeView.setSelectable(true);
             
         }
+        System.out.println("add node " + itemId);
+        treeView.select(itemId);
+        lastItemId = itemId;
         treeView.setImmediate(true);
     }
+    
+    
+
     
     public GermplasmListPreviewPresenter getPresenter() {
         return presenter;
@@ -355,6 +376,7 @@ public class GermplasmListPreview extends VerticalLayout {
         
         initializeLayout();
         initializeActions();
+       
     }
 
     

@@ -109,21 +109,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-	private Button recomBreedingManagerButton;
+    private Button recomBreedingManagerButton;
 
-	private Role role;
+    private Role role;
 
-	private Button breedingPlannerButton;
+    private Button breedingPlannerButton;
 
-	private Button germplasmImportButton;
+    private Button germplasmImportButton;
 
-	private Button germplasmImportButton2;
-	
-	private Button queryForAdaptedGermplasmButton;
-	
-	private Button queryForAdaptedGermplasmButton2;
-
-	
+    private Button germplasmImportButton2;
+    
+    private Button queryForAdaptedGermplasmButton;
+    
+    private Button queryForAdaptedGermplasmButton2;
+    
+    private Button breedingManagerListManager;
+    
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -134,7 +135,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         this.role = role;
     }
 
-	@Override
+    @Override
     public void afterPropertiesSet() {
         assemble();
     }
@@ -319,13 +320,17 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
-
+        
+        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_LIST_MANAGER));
+        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerListManager.setSizeUndefined();
+        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER_LIST_MANAGER));
     }
 
     protected void initializeLayout() {
-    	this.setSizeFull();
-    	this.setSpacing(true);
-    	this.setMargin(new MarginInfo(true,false,false,true));
+        this.setSizeFull();
+        this.setSpacing(true);
+        this.setMargin(new MarginInfo(true,false,false,true));
         addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
@@ -334,7 +339,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected Component layoutWorkflowArea() {
-    	Panel panel = new Panel();
+        Panel panel = new Panel();
         panel.setSizeFull();
         panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
@@ -453,6 +458,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
+        layout.addComponent(breedingManagerListManager);
+        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerListManager, 0);
         
         return layout;
     }
@@ -592,7 +600,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         //breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
         //layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         //layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		
+        
         
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         //multiSiteAnalysisButton.setHeight("20px");
@@ -649,7 +657,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		
+        
         return layout;
     }
 
@@ -796,18 +804,18 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
         layout.setWidth("240px");
-        layout.setHeight("210px");
+        layout.setHeight("215px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
     }
 
     protected void initializeActions() {
         if (!workflowPreview) {
-        	germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-        	germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
-        	
-        	breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
-        	
+            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+            
+            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
+            
             headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));  
             
@@ -844,7 +852,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-             
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
         }
     }
 
@@ -854,7 +862,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         initializeActions();
         
         if (workflowPreview)
-        	this.setStyleName("gcp-removelink");
+            this.setStyleName("gcp-removelink");
     }
     
     @Override
@@ -899,7 +907,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         //messageSource.setCaption(browseGenotypingDataButton, Message.BROWSE_GENOTYPING_DATA);
         //messageSource.setDescription(browseGenotypingDataButton, Message.CLICK_TO_LAUNCH_GENOTYPING_DATA);
-	
+    
         messageSource.setCaption(breedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(breedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         

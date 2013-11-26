@@ -40,7 +40,7 @@ public class GermplasmListTreeExpandListener implements Tree.ExpandListener{
                 String id = event.getItemId().toString();
                 int germplasmId = Integer.valueOf(id);
                 
-               ((GermplasmListPreview) source).getPresenter().addGermplasmListNode(germplasmId);
+               ((GermplasmListPreview) source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
             }catch (NumberFormatException e) {
                 LOG.error("Click on the root");
             } 
