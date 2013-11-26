@@ -146,6 +146,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private SimpleResourceBundleMessageSource messageSource;
     
     private Property.ValueChangeListener envCheckBoxListener;
+    private Property.ValueChangeListener footerCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
             ,Project project, Role role) {
@@ -240,7 +241,11 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 						.getValue();
 				
 				getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
-				if (val == false) return; 
+				if (val == false) { 
+					footerCheckBox.removeListener(footerCheckBoxListener);
+					footerCheckBox.setValue(false); 
+					footerCheckBox.addListener(footerCheckBoxListener);
+					return; }
 				
 				 TrialEnvironments trialEnvironments;
 					try {
@@ -267,61 +272,63 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 			}
 			
 		};
-    	
-    	
-		footerCheckBox = new CheckBox("SELECT ALL",false);
-		footerCheckBox.addListener(new Property.ValueChangeListener(){
+		
+		footerCheckBoxListener = new Property.ValueChangeListener(){
 
-				private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = 1L;
 
-				@Override
-				public void valueChange(ValueChangeEvent event) {
-					List<String> notValidEnvironments = new ArrayList<String>();
-					Boolean val = (Boolean) event.getProperty()
-							.getValue();
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				List<String> notValidEnvironments = new ArrayList<String>();
+				Boolean val = (Boolean) event.getProperty()
+						.getValue();
+				
+				for (Iterator<?> itr = tblEnvironmentSelection.getItemIds().iterator(); itr.hasNext();){
+					CheckBox chk = (CheckBox) tblEnvironmentSelection.getContainerProperty(itr.next(), "SELECT").getValue();
 					
-					for (Iterator<?> itr = tblEnvironmentSelection.getItemIds().iterator(); itr.hasNext();){
-						CheckBox chk = (CheckBox) tblEnvironmentSelection.getContainerProperty(itr.next(), "SELECT").getValue();
-						
-						if (val == false) {
-							chk.setValue(val); 
-							getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
-							continue;
+					if (val == false) {
+						chk.setValue(val); 
+						getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+						continue;
+					}
+					
+					chk.removeListener(envCheckBoxListener);
+					
+					 TrialEnvironments trialEnvironments;
+					 
+						try {
+							trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+							TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
+							
+							if (trialEnv == null){
+								chk.setValue(false);
+								getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+								notValidEnvironments.add(chk.getData().toString());
+							}else{
+								getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+								chk.setValue(val);
+							}
+						} catch (ConfigException e) {
+							e.printStackTrace();
+						} catch (MiddlewareQueryException e) {
+							e.printStackTrace();
 						}
 						
-						chk.removeListener(envCheckBoxListener);
-						
-						 TrialEnvironments trialEnvironments;
-						 
-							try {
-								trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-								TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
-								
-								if (trialEnv == null){
-									chk.setValue(false);
-									getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
-									notValidEnvironments.add(chk.getData().toString());
-								}else{
-									getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
-									chk.setValue(val);
-								}
-							} catch (ConfigException e) {
-								e.printStackTrace();
-							} catch (MiddlewareQueryException e) {
-								e.printStackTrace();
-							}
-							
-							chk.addListener(envCheckBoxListener);
-						
-					}
-					
-					if (notValidEnvironments.size() != 0){
-						getWindow().showNotification("\""+ notValidEnvironments.toString()  + "\" values are not valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
-					}
+						chk.addListener(envCheckBoxListener);
 					
 				}
 				
-			});
+				if (notValidEnvironments.size() != 0){
+					getWindow().showNotification("\""+ notValidEnvironments.toString()  + "\" values are not valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
+				}
+				
+			}
+			
+		};
+    	
+    	
+		footerCheckBox = new CheckBox("SELECT ALL",false);
+		footerCheckBox.addListener(footerCheckBoxListener);
 		footerCheckBox.setImmediate(true);
 		
 		tblEnvironmentLayout.addComponent(tblEnvironmentSelection);

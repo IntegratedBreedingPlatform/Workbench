@@ -29,7 +29,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.ui.StudiesTabCloseListener;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectEnvironmentForGxeWindow;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -59,6 +58,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -91,6 +91,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	private Map<Integer, Table> studyTables = new HashMap<Integer, Table>();
 	private Tree studiesTree;
 	private TabSheet studiesTabsheet;
+	private ThemeResource folderResource;
+    private ThemeResource leafResource;
 	
 	protected Boolean setAll = true;
 	protected Boolean fromOthers = true;
@@ -174,10 +176,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		} else {
 			// Add children (moons) under the planets.
 			for (Reference childStudy : children) {
-				if (childStudy instanceof StudyReference)
-					addCaptionedItem(childStudy.getName(), childStudy.getId(),
+				if (childStudy instanceof StudyReference){
+					Object itemId = addCaptionedItem(childStudy.getName(), childStudy.getId(),
 							folderParentItem);
-				else if (childStudy instanceof FolderReference) {
+					studiesTree.setItemIcon(itemId, leafResource);
+				
+				}else if (childStudy instanceof FolderReference) {
 					Object myfolderParentItem = addCaptionedItem(
 							childStudy.getName(), childStudy.getId(),
 							folderParentItem);
@@ -210,6 +214,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		for (FolderReference folderParent : listFolder) {
 			Object folderParentItem = addCaptionedItem(folderParent.getName(),
 					folderParent.getId(), null);
+			studiesTree.setItemIcon(folderParentItem, folderResource);
 			generateChildren(folderParent, folderParentItem);
 
 		}
@@ -291,6 +296,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	}
 
 	protected void initializeComponents() {
+		
+		folderResource =  new ThemeResource("images/folder.png");
+        leafResource =  new ThemeResource("images/leaf_16.png");
+		
 		HorizontalLayout horizontal = new HorizontalLayout();
 
 		ManagerFactory managerFactory = managerFactoryProvider
@@ -342,7 +351,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		horizontal.addComponent(studiesTabsheet);
 
 		horizontal.setWidth("100%");
-		horizontal.setHeight("530px");
+		//horizontal.setHeight("530px");
 		horizontal.setExpandRatio(studiesTabsheet, 1.0F);
 
 		this.addComponent(horizontal);
@@ -584,11 +593,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					if (p2.getValue() != null && tabStudyData != null){
 						if (tabStudyData.getId() == Integer.parseInt(p2.getValue().toString())){
 							
-							SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
-							gxeAnalysisComponentPanel.getWindow().addWindow(win);
-							//studiesTabsheet.setSelectedTab(tab);
+							SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
+							
+							((VerticalLayout) tab).addComponent(selectEnvironmentPanel);
+							
 							studyTables.remove(tabStudyData.getId());
-							studiesTabsheet.removeComponent(tab);
+							//studiesTabsheet.removeComponent(tab);
 							
 							return;
 						}
@@ -605,8 +615,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			
 				if (study.getName() != null && studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).size() > 0){
 					
-					SelectEnvironmentForGxeWindow win = new SelectEnvironmentForGxeWindow(studyDataManager ,project, study, gxeAnalysisComponentPanel);
-					gxeAnalysisComponentPanel.getWindow().addWindow(win);
+					SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, study, gxeAnalysisComponentPanel);
+					
+					studiesTabsheet.addTab(selectEnvironmentPanel);
+					//gxeAnalysisComponentPanel.getWindow().addWindow(win);
 					//studiesTabsheet.setImmediate(true);	
 				}
 				

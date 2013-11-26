@@ -90,6 +90,13 @@ public class RunBreedingViewAction implements ClickListener {
         }
         
         String envFactor = (String) this.source.getSelEnvFactor().getValue();
+        
+        if (StringUtils.isNullOrEmpty(envFactor)){
+        	event.getComponent().getWindow().showNotification("Please select an environment factor.", Notification.TYPE_ERROR_MESSAGE);
+        	return;
+        }
+        
+        
         if(!StringUtils.isNullOrEmpty(envFactor)){
             Environment environment = new Environment();
             environment.setName(envFactor.trim());
