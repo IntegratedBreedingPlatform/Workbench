@@ -155,7 +155,7 @@ public class GermplasmListPreview extends VerticalLayout {
         deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
-        openListManagerBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        openListManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
         addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
         deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
