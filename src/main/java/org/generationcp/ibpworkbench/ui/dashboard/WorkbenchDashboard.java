@@ -300,7 +300,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             //    String date = "";
                 
             //            date = newDf.format(project.getStartDate());
-                   
+
                 
             tblProject.addItem(new Object[]{project.getProjectName(),  capitalizeFirstLetter(project.getCropType().getCropName()), button}, project.getProjectId());
         }
@@ -360,8 +360,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	leftButtonLayout.addComponent(lblPrograms);
     	leftButtonLayout.setExpandRatio(lblPrograms, 1.0f);
     	
-    	Button btnAddProgram = new Button(messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
-    	
+    	Button btnAddProgram = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
+    	btnAddProgram.setHtmlContentAllowed(true);
     	btnAddProgram.addListener(new OpenNewProjectAction());
         btnAddProgram.addStyleName(Bootstrap.Buttons.SUCCESS.styleName());
 

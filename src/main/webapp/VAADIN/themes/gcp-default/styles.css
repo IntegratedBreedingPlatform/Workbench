@@ -345,12 +345,15 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 
 .v-table-row-gcp-highlight, .v-table-cell-content-gcp-highlight {
     cursor: pointer;
-    background: #dfffcf;
+    color: #468847;
+    background-color: #dff0d8;
 }
 
 .v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project {
     cursor: pointer;
-    background: rgba(230,239,199,0.7);
+
+    color: #3a87ad;
+    background-color: #d9edf7;
 }
 
 .gcp-tblproject .v-table-row:hover .v-table-cell-content,
@@ -633,6 +636,11 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	padding-top: 3px;
 }
 
+.v-table-program-tab {
+    font-size: 16px;
+    font-weight: 300;
+}
+
 
 .dashboard-horizontal-label-top{
 	padding-top: 0px;
@@ -696,4 +704,28 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     border-radius: 100%;
     position: relative;
     right: 14px;
+}
+
+
+/* TREE (MOVE TO COMMONS) */
+.v-tree-node span {
+    padding: 1px 2px;
+    margin-left: 5px;
+    display: inline-block;
+}
+.v-tree-node-selected span {
+    background: none;
+    background-color: #3276b1;
+    background-position: left -1876px;
+    color: #fff;
+    padding: 1px 5px !important;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    text-shadow: #2b425a 0 1px 0;
+    display: inline-block;
+}
+
+.v-tree-node-focused span{
+    border: 1px solid #285e8e;
 }
