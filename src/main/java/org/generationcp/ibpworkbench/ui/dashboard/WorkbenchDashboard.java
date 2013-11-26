@@ -292,7 +292,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
             button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " launch");
-            button.setWidth("24px"); button.setHeight("24px");
+            button.setWidth("26px"); button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             
             
