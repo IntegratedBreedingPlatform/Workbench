@@ -270,10 +270,10 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
         
-        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_LIST_MANAGER));
+        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_BROWSE_FOR_GERMPLASMS_AND_LISTS));
         breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerListManager.setSizeUndefined();
-        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER_LIST_MANAGER));
+        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
         
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
