@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -101,6 +102,9 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private Database database;
     private Role role;
     private HashMap<String, Boolean> variatesCheckboxState;
+    
+    private ThemeResource folderResource;
+    private ThemeResource leafResource;
 
     private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
     
@@ -175,6 +179,9 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeComponents() {
+    	
+    	folderResource =  new ThemeResource("images/folder.png");
+        leafResource =  new ThemeResource("images/leaf_16.png");
     	
     	setVariatesCheckboxState(new HashMap<String, Boolean>());
         
@@ -424,7 +431,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
             cells[1] = "";
             cells[2] = fr.getDescription();
             
-            tr.addItem(cells, fr);
+            Object itemId = tr.addItem(cells, fr);
+            tr.setItemIcon(itemId, folderResource);
             
         }
         
@@ -489,8 +497,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         	 tr.setParent(r, parentFolderReference);
         	 if (hasChildStudy(r.getId()) || hasChildDataset(r.getId())) {
                  tr.setChildrenAllowed(r, true);
+                 tr.setItemIcon(r, folderResource);
              } else {
                  tr.setChildrenAllowed(r, false);
+                 tr.setItemIcon(r, leafResource);
              }
          }
     	
@@ -527,6 +537,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         	 tr.addItem(cells, r);
         	 tr.setParent(r, parentFolderReference);
              tr.setChildrenAllowed(r, false);
+             tr.setItemIcon(r, leafResource);
              
          }
     	

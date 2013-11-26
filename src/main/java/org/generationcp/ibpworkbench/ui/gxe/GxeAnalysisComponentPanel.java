@@ -285,100 +285,19 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		tabContainer.setCaption(study.getName());
 		tabContainer.setData(study);
 		
-		studiesTabsheet.addComponent(tabContainer);
 		
-		if (meansDataSet != null)
-			studiesTabsheet.getTab(tabContainer).setCaption(meansDataSet.getName());
 		
-		studiesTabsheet.getTab(tabContainer).setClosable(true);
-		studiesTabsheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
-		studiesTabsheet.setSelectedTab(tabContainer);
-	}
-
-	protected void initializeComponents() {
 		
-		folderResource =  new ThemeResource("images/folder.png");
-        leafResource =  new ThemeResource("images/leaf_16.png");
-		
-		HorizontalLayout horizontal = new HorizontalLayout();
+		//Generate Buttons
+		Button btnRunBreedingView = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
+		btnRunBreedingView.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-		ManagerFactory managerFactory = managerFactoryProvider
-				.getManagerFactoryForProject(project);
-		studyDataManager = managerFactory.getNewStudyDataManager();
-
-		studiesTree = new Tree("Studies");
-		studiesTree.setSizeFull();
-		studiesTree.setImmediate(true);
-
-		Panel studiesPanel = new Panel();
-		studiesPanel.setWidth("200px");
-		studiesPanel.setHeight("100%");
-		
-		selectDatabase.setImmediate(true);
-		selectDatabase.addItem(Database.CENTRAL);
-		selectDatabase.addItem(Database.LOCAL);
-		selectDatabase.setCaption("Select Database");
-		selectDatabase.select(Database.LOCAL);
-		selectDatabase.addListener(new Property.ValueChangeListener(){
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
-				try {
-					refreshStudies();
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		});
-		
-		//studiesPanel.addComponent(selectDatabase);
-		studiesPanel.addComponent(studiesTree);
-		
-		try {
-			refreshStudies();
-			requestRepaintAll();
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
-
-		horizontal.addComponent(studiesPanel);
-
-		studiesTabsheet = generateTabSheet();
-
-		horizontal.addComponent(studiesTabsheet);
-
-		horizontal.setWidth("100%");
-		//horizontal.setHeight("530px");
-		horizontal.setExpandRatio(studiesTabsheet, 1.0F);
-
-		this.addComponent(horizontal);
-
-		Button button = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
-		button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		//Button gxebutton = new Button("Launch the Breeding View's GxE Analysis");
-
-		button.addListener(new Button.ClickListener() {
+		btnRunBreedingView.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -7090745965019240566L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final ClickEvent buttonClickEvent = event;
-
-				/*
-				ConfirmDialog.show(event.getComponent().getWindow(),"Select Dataset Export Type",
-						"Please select an export type for the dataset",
-						"MS Excel File","CSV File",new ConfirmDialog.Listener() {
-							
-							@Override
-							public void onClose(ConfirmDialog dialog) {
-								launchBV(dialog.isConfirmed(),buttonClickEvent.getComponent().getWindow());
-							}
-						});
-				*/
-				
 				launchBV(false,buttonClickEvent.getComponent().getWindow());
 						
 			}
@@ -478,30 +397,9 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			}
 		});
 		
-		Button testGenerateTable = new Button("Add Rows");
-		testGenerateTable.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				try{
-
-					Study study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
-					GxeTable gxeTable = (GxeTable) studyTables.get(study.getId());
-					
-					for (int x = 99; x < 199; x++ ){
-						gxeTable.addItem(x);
-					}
-				}catch(Exception e){
-					
-				}
-				
-			
-			}
-		});
 		
-		Button cancelBtn = new Button("Cancel");
-		cancelBtn.addListener(new Button.ClickListener() {
+		Button btnCancel = new Button("Cancel");
+		btnCancel.addListener(new Button.ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -534,12 +432,81 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		btnLayout.addComponent(spacer);
 		btnLayout.setExpandRatio(spacer,1.0F);
 		
-		btnLayout.addComponent(button);
-		btnLayout.addComponent(cancelBtn);
-		//btnLayout.addComponent(gxebutton);
-		//btnLayout.addComponent(testGenerateTable);
+		btnLayout.addComponent(btnRunBreedingView);
+		btnLayout.addComponent(btnCancel);
 		
-		this.addComponent(btnLayout);
+		tabContainer.addComponent(btnLayout);
+		
+		studiesTabsheet.replaceComponent(studiesTabsheet.getSelectedTab(), tabContainer);
+		
+		if (meansDataSet != null)
+			studiesTabsheet.getTab(tabContainer).setCaption(meansDataSet.getName());
+		
+		studiesTabsheet.getTab(tabContainer).setClosable(true);
+		studiesTabsheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
+		studiesTabsheet.setSelectedTab(tabContainer);
+	}
+
+	protected void initializeComponents() {
+		
+		folderResource =  new ThemeResource("images/folder.png");
+        leafResource =  new ThemeResource("images/leaf_16.png");
+		
+		HorizontalLayout horizontal = new HorizontalLayout();
+
+		ManagerFactory managerFactory = managerFactoryProvider
+				.getManagerFactoryForProject(project);
+		studyDataManager = managerFactory.getNewStudyDataManager();
+
+		studiesTree = new Tree("Studies");
+		studiesTree.setSizeFull();
+		studiesTree.setImmediate(true);
+
+		Panel studiesPanel = new Panel();
+		studiesPanel.setWidth("200px");
+		studiesPanel.setHeight("100%");
+		
+		selectDatabase.setImmediate(true);
+		selectDatabase.addItem(Database.CENTRAL);
+		selectDatabase.addItem(Database.LOCAL);
+		selectDatabase.setCaption("Select Database");
+		selectDatabase.select(Database.LOCAL);
+		selectDatabase.addListener(new Property.ValueChangeListener(){
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				// TODO Auto-generated method stub
+				try {
+					refreshStudies();
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		
+		//studiesPanel.addComponent(selectDatabase);
+		studiesPanel.addComponent(studiesTree);
+		
+		try {
+			refreshStudies();
+			requestRepaintAll();
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+
+		horizontal.addComponent(studiesPanel);
+
+		studiesTabsheet = generateTabSheet();
+
+		horizontal.addComponent(studiesTabsheet);
+
+		horizontal.setWidth("100%");
+		//horizontal.setHeight("530px");
+		horizontal.setExpandRatio(studiesTabsheet, 1.0F);
+
+		this.addComponent(horizontal);
 
 	}
 
@@ -618,7 +585,10 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					
 					SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, study, gxeAnalysisComponentPanel);
 					
+					selectEnvironmentPanel.setCaption(study.getName());
 					studiesTabsheet.addTab(selectEnvironmentPanel);
+					studiesTabsheet.getTab(selectEnvironmentPanel).setClosable(true);
+					
 					//gxeAnalysisComponentPanel.getWindow().addWindow(win);
 					//studiesTabsheet.setImmediate(true);	
 				}
