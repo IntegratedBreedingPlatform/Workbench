@@ -291,7 +291,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             Button button = new Button("<span class='glyphicon glyphicon-chevron-right'></span>");
             button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
-            button.setStyleName("launch");
+            button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " launch");
             button.setWidth("24px"); button.setHeight("24px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             
