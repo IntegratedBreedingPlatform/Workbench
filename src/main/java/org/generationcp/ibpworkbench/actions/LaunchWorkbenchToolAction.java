@@ -28,10 +28,10 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.WorkflowConstants;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.ibpworkbench.ui.WorkflowConstants;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
@@ -64,10 +64,6 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private static final long serialVersionUID = 1L;
     
     private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
-    
-    Project project;
-    
-    Role role;
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
@@ -120,10 +116,16 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         	return null;
         }
     }
-
+    
     private ToolEnum toolEnum;
     
+    private Project project;
+    
     private String toolConfiguration;
+    
+    private Role role;
+    
+    private Integer listId;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -148,10 +150,22 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this.toolConfiguration = WorkflowConstants.DEFAULT;
     }
     
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, int listId) {
+        this.listId = listId;
+    }
+    
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project) {
+        this(toolEnum, project, null);
+    }
+    
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, int listId) {
+        this(toolEnum, project, null);
+        
+        this.listId = listId;
+    }
+    
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration) {
-        this.toolEnum = toolEnum;
-        this.project = project;
-        this.toolConfiguration = toolConfiguration;
+        this(toolEnum, project, toolConfiguration, null);
     }
     
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration, Role role) {
@@ -239,6 +253,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
             Project currentProject = app.getSessionData().getLastOpenedProject();
+            if (this.project != null) {
+                currentProject = project;
+            }
             
             try {
                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getTitle(), "Launched "+tool.getTitle(), user, new Date());
@@ -341,7 +358,20 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 }
             }
             else if (tool.getToolType() == ToolType.WEB) {
-                Embedded browser = new Embedded("", new ExternalResource(tool.getPath() + "?restartApplication"));
+                String toolUrl = tool.getPath();
+                
+                if (tool.getToolName().equals(ToolEnum.BM_LIST_MANAGER.getToolName())) {
+                    // add list id parameter to List Manager if listId was set
+                    if (listId != null) {
+                        toolUrl += "-" + listId;
+                    }
+                }
+                
+                if (toolUrl.contains("?restartApplication")) {
+                    toolUrl += "?restartApplication";
+                }
+                
+                Embedded browser = new Embedded("", new ExternalResource(toolUrl));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
@@ -378,6 +408,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private boolean updateToolConfiguration(Window window, Tool tool) {
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         Project currentProject = app.getSessionData().getLastOpenedProject();
+        if (this.project != null) {
+            currentProject = project;
+        }
         
         String url = tool.getPath();
         

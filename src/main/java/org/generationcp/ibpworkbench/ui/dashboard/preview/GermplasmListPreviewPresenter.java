@@ -8,6 +8,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -42,7 +43,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-
+    // TODO, move to message source
+    public final static String NOT_FOLDER = "Selected item is not a folder, please choose another item on the list.";
+    public final static String NO_PARENT = "Selected item is a root item, please choose another item on the list.";
+    public final static String HAS_CHILDREN = "Selected item contains other items, please choose another item on the list.";
 
     private ManagerFactory managerFactory;
     
@@ -136,8 +140,13 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         this.managerFactory = managerFactory;
     }
 
-    public boolean isFolder(Integer id) throws MiddlewareQueryException {
-        return this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id).isFolder();
+    public boolean isFolder(Integer id) {
+        try {
+            return this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id).isFolder();
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean hasChildren(Integer id) throws MiddlewareQueryException {
@@ -153,9 +162,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             return gpList;
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
-            throw new Error("database_error");
+            throw new Error(messageSource.getMessage(Message.DATABASE_ERROR));
         } catch (NullPointerException e) {
-            throw new Error("no_parent");
+            throw new Error(NO_PARENT);
         }
 
     }
@@ -165,7 +174,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
             if (!gpList.isFolder())
-                throw new Error("not_folder");
+                throw new Error(NOT_FOLDER);
 
             gpList.setName(newName);
 
@@ -174,7 +183,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             return true;
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
-            throw new Error("database_error");
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
     }
 
@@ -190,7 +199,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
 
             if (!parent.isFolder())
-                throw new Error("not_folder");
+                throw new Error(NOT_FOLDER);
             else {
                 Calendar cal = Calendar.getInstance();
                 GermplasmList gpList = new GermplasmList(null,folderName,cal.getTime().getTime(),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,parent,1);
@@ -200,7 +209,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
-            throw new Error("database_error");
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
     }
 
@@ -209,16 +218,16 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             GermplasmList gplist = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
             if (hasChildren(gplist.getId())) {
-                throw new Error("has_children");
+                throw new Error(HAS_CHILDREN);
             } else if (!gplist.isFolder()) {
-                throw new Error("not_folder");
+                throw new Error(NOT_FOLDER);
             }
 
             return this.getManagerFactory().getGermplasmListManager().deleteGermplasmList(gplist);
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
-            throw new Error("database_error");
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
     }
 
@@ -227,7 +236,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
             if (!gpList.isFolder())
-                 throw new Error("not_folder");
+                 throw new Error(NOT_FOLDER);
 
             GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
             gpList.setParent(parent);
@@ -236,7 +245,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            throw new Error("dabase_error");
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
     }
 

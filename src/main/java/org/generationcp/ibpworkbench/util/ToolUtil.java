@@ -314,7 +314,7 @@ public class ToolUtil {
                 }
             }
         } else if (Util.isOneOf(tool.getToolName(), ToolName.ibpwebservice.name())) {
-            configurationChanged = updateWebServiceConfigurationForProject(project);
+            configurationChanged = updateWebServiceConfigurationForProject(project, workbenchSetting);
         }
         
         return configurationChanged;
@@ -578,7 +578,7 @@ public class ToolUtil {
         return updatePropertyFile(configurationFile, newPropertyValues);
     }
     
-    public boolean updateWebServiceConfigurationForProject(Project project) throws IOException {
+    public boolean updateWebServiceConfigurationForProject(Project project, WorkbenchSetting workbenchSetting) throws IOException {
         String centralDbName = project.getCropType().getCentralDbName();
         String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
         
@@ -603,8 +603,9 @@ public class ToolUtil {
             }
         }
         
-        return updateToolMiddlewareDatabaseConfiguration("infrastructure/tomcat/webapps/IBPWebService/WEB-INF/classes/workbench.properties",
-                                                         centralDbName, localDbName, username, password, true);
+        String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/IBPWebService/WEB-INF/classes/IBPDatasource.properties";
+        LOG.debug("Updating ibpwebservice configuration at: " + configPath);
+        return updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username, password, false);
     }
 
     public void createWorkspaceDirectoriesForProject(Project project)
