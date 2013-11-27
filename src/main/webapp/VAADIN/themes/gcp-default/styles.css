@@ -14,6 +14,7 @@
 
 .v-splitpanel-second-container-gcp-workbench-content-split-panel {
 	background: white url(images/workbench_bg.jpg) no-repeat right bottom !important;
+    overflow: hidden;
 }
 
 .v-table-row {

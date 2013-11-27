@@ -29,6 +29,7 @@ import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
+import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
@@ -438,11 +439,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             mainContent.setExpandRatio(wrap,1.0F);
         }
 
-        if (content instanceof  WorkbenchDashboard ||
-                content instanceof CreateProjectPanel) {
-            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
-        } else
+        if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
             contentAreaSplitPanel.setSplitPosition(300,Sizeable.UNITS_PIXELS);
+        else
+            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
     }
 
     public WorkbenchDashboard getWorkbenchDashboard() {
