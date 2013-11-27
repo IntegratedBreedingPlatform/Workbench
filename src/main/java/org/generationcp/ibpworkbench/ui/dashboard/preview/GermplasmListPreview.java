@@ -420,14 +420,14 @@ public class GermplasmListPreview extends VerticalLayout {
         
         if(treeView.isExpanded(itemId)){
             treeView.collapseItem(itemId);            
-            treeView.select(itemId);
         }
         else{
             treeView.expandItem(itemId);
-            treeView.select(itemId);
-            
         }
         lastItemId = itemId;
+
+        if (!treeView.isSelected(itemId))
+            treeView.select(itemId);
     }
 
     protected void initializeComponents() {        

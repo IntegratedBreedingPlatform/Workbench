@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
+import com.vaadin.data.Property;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
@@ -32,7 +33,7 @@ import com.vaadin.ui.Panel;
  * @author Efficio.Daniel
  *
  */
-public class DashboardMainTreeListener implements ItemClickListener{
+public class DashboardMainTreeListener implements Property.ValueChangeListener{
 
     private Project project;
     private Component source;
@@ -44,31 +45,29 @@ public class DashboardMainTreeListener implements ItemClickListener{
         this.source = source;
     }
 
-    /* (non-Javadoc)
-     * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
-     */
     @Override
-    public void itemClick(ItemClickEvent event) {
+    public void valueChange(Property.ValueChangeEvent event) {
         // TODO Auto-generated method stub
         //event.getItemId()
         if(source instanceof GermplasmListPreview){
-            System.out.println(event.getItemId());
-            ((GermplasmListPreview)source).expandTree(event.getItemId());
+            System.out.println(event.getProperty().getValue());
+            ((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
 
-            if (event.getItemId() instanceof String) {
+            if (event.getProperty().getValue() == null) {
                 ((GermplasmListPreview)source).toggleToolbarBtns(false);
             }
-            else if (event.getItemId() instanceof Integer && ((Integer)event.getItemId()).intValue() > 0)
+            else if (event.getProperty().getValue() instanceof String) {
+                ((GermplasmListPreview)source).toggleToolbarBtns(false);
+            }
+            else if (event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0)
                 ((GermplasmListPreview)source).toggleToolbarBtns(false);
             else
                 ((GermplasmListPreview)source).toggleToolbarBtns(true);
 
+
         }else if(source instanceof NurseryListPreview){
-            System.out.println(event.getItemId());
-            ((NurseryListPreview)source).expandTree(event.getItemId());
+            System.out.println(event.getProperty().getValue());
+            ((NurseryListPreview)source).expandTree(event.getProperty().getValue());
         }
     }
-    
-    
-
 }
