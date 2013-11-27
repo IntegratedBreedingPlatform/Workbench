@@ -26,6 +26,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -193,7 +194,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     return;
                 }
 
-                if (presenter.isFolder(lastItemId)) {
+                if (presenter.isFolder((Integer)lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
                 }
@@ -207,7 +208,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (lastItemId == null || !presenter.isFolder(lastItemId)) {
+                if (lastItemId == null || !presenter.isFolder((Integer)lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed (not folder)","");
                     return;
                 }
@@ -227,7 +228,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 formContainer.setSpacing(true);
 
                 Label l = new Label("New Folder Name");
-                TextField name = new TextField();
+                final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(lastItemId));
 
                 formContainer.addComponent(l);
@@ -246,7 +247,14 @@ public class GermplasmListPreview extends VerticalLayout {
                 ok.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        // TODO: DO SOMETHING HERE
+                        try {
+                            presenter.renameGermplasmListFolder(name.getInputPrompt(),(Integer)lastItemId);
+                        } catch (Error e) {
+                            MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                            return;
+                        }
+                        // close popup
+                        WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
                     }
                 });
 
