@@ -264,14 +264,14 @@ public class GermplasmListPreview extends VerticalLayout {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
-                            presenter.renameGermplasmListFolder(name.getInputPrompt(),(Integer)lastItemId);
+                            presenter.renameGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             return;
                         }
 
                         // update UI
-                        treeView.setItemCaption(lastItemId,name.getInputPrompt());
+                        treeView.setItemCaption(lastItemId,name.getValue().toString());
 
                         // close popup
                         WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
@@ -456,18 +456,32 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), MY_LIST);
-            treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
-            treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+
+            if(!hasChildList && !parentList.isFolder()){
+                treeView.setChildrenAllowed(parentList.getId(),false);
+                treeView.setItemIcon(parentList.getId(),leafResource);
+            } else {
+                treeView.setChildrenAllowed(parentList.getId(),true);
+                treeView.setItemIcon(parentList.getId(),folderResource);
+            }
+
             treeView.setSelectable(true);
         }        
         for (GermplasmList parentList : germplasmListParentCentral) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), SHARED_LIST);
-            treeView.setItemIcon(parentList.getId(),folderResource);
             boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
-            treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+
+            if(!hasChildList && !parentList.isFolder()){
+                treeView.setChildrenAllowed(parentList.getId(),false);
+                treeView.setItemIcon(parentList.getId(),leafResource);
+            } else {
+                treeView.setChildrenAllowed(parentList.getId(),true);
+                treeView.setItemIcon(parentList.getId(),folderResource);
+            }
+
             treeView.setSelectable(true);
         }
 

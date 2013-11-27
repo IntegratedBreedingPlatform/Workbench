@@ -53,13 +53,10 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             System.out.println(event.getProperty().getValue());
             ((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
 
-            if (event.getProperty().getValue() == null) {
-                ((GermplasmListPreview)source).toggleToolbarBtns(false);
-            }
-            else if (event.getProperty().getValue() instanceof String) {
-                ((GermplasmListPreview)source).toggleToolbarBtns(false);
-            }
-            else if (event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0)
+            if (event.getProperty().getValue() == null
+                    || event.getProperty().getValue() instanceof String
+                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0
+                    || !((GermplasmListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue()))
                 ((GermplasmListPreview)source).toggleToolbarBtns(false);
             else
                 ((GermplasmListPreview)source).toggleToolbarBtns(true);
