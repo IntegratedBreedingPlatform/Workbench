@@ -158,6 +158,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this(toolEnum, project, null);
     }
     
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, int listId) {
+        this(toolEnum, project, null);
+        
+        this.listId = listId;
+    }
+    
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration) {
         this(toolEnum, project, toolConfiguration, null);
     }
