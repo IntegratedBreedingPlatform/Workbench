@@ -46,7 +46,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     // TODO, move to message source
     public final static String NOT_FOLDER = "Selected item is not a folder, please choose another item on the list.";
     public final static String NO_PARENT = "Selected item is a root item, please choose another item on the list.";
-    public final static String HAS_CHILDREN = "Selected item contains other items, plase choose another item on the list.";
+    public final static String HAS_CHILDREN = "Selected item contains other items, please choose another item on the list.";
 
     private ManagerFactory managerFactory;
     
