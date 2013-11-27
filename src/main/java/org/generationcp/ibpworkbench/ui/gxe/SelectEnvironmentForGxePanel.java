@@ -31,6 +31,8 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -119,7 +121,9 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
 	private StudyDataManager studyDataManager;
     
     private ManagerFactory managerFactory;
-
+    
+    private List<String> environmentNames = new ArrayList<String>();
+    private TrialEnvironments trialEnvironments = null;
 
     public SelectEnvironmentForGxePanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeAnalysisComponentPanel gxeAnalysisComponentPanel) {
     	this.studyDataManager = studyDataManager;
@@ -208,12 +212,42 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         lblStudyTreeDetailTitle = new Label();
         lblStudyTreeDetailTitle.setStyleName("gcp-content-title");
 
-        Table factors = initializeFactorsTable();
-        
-        Table variates = initializeVariatesTable();
+        final Table factors = initializeFactorsTable();
+        factors.setImmediate(true);
+        final Table variates = initializeVariatesTable();
+        variates.setImmediate(true);
         
         selectSpecifyEnvironment = new Select();
         selectSpecifyEnvironment.setSizeFull();
+        selectSpecifyEnvironment.setImmediate(true);
+        selectSpecifyEnvironment.addListener(new Property.ValueChangeListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				
+				
+				try{
+					factors.removeAllItems();
+					variates.removeAllItems();
+					environmentNames.clear();
+				}catch(Exception e){}
+					
+				 try {
+						trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
+						for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
+							if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
+						}
+			        } catch (MiddlewareQueryException e) {
+						
+						e.printStackTrace();
+					}
+			
+				populateFactorsVariatesByDataSetId(currentStudy, factors, variates);
+				
+			}
+		});
         
         selectSpecifyEnvironmentGroups = new Select();
         selectSpecifyEnvironmentGroups.setSizeFull();
@@ -222,7 +256,7 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         
         for (Iterator<?> i = selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();){
         	selectSpecifyEnvironment.select(i.next());
-        	break;
+        	//break;
         }
         
         buttonArea = layoutButtonArea();
@@ -251,6 +285,17 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         
         generalLayout.addComponent(datasetVariablesDetailLayout);
         generalLayout.addComponent(buttonArea);
+        
+        environmentNames.clear();
+        try {
+			trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
+			for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
+				if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
+			}
+        } catch (MiddlewareQueryException e) {
+			
+			e.printStackTrace();
+		}
         
         addComponent(generalLayout);
         
@@ -319,6 +364,10 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
         tblVariates.setHeight("100%");
+        tblVariates.setColumnExpandRatio("", 0.5f);
+        tblVariates.setColumnExpandRatio("name", 1);
+        tblVariates.setColumnExpandRatio("description", 4);
+        tblVariates.setColumnExpandRatio("testedin", 1);
         
         tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
 
@@ -360,13 +409,30 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
 			}
         	
         });
+		
+        
+        tblVariates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
+
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				
+					BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
+					VariateModel vm = container.getItem(itemId).getBean();
+				
+					return getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+					
+			}});
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
         tblVariates.setContainerDataSource(container);
         
-        String[] columns = new String[] {"","name", "description"};
-        String[] columnHeaders = new String[] {"","Name", "Description"};
+        String[] columns = new String[] {"","displayName", "description","testedin"};
+        String[] columnHeaders = new String[] {"","Name", "Description","Tested In"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
         return tblVariates;
@@ -438,7 +504,9 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
             	
             	VariateModel vm = new VariateModel();
             	vm.setId(variate.getRank());
+            	vm.setVariableId(variate.getId());
             	vm.setName(variate.getLocalName());
+            	vm.setDisplayName(variate.getLocalName().replace("_Means", ""));
             	vm.setScname(variate.getStandardVariable().getScale().getName());
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
             	vm.setTmname(variate.getStandardVariable().getMethod().getName());
@@ -497,8 +565,8 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
         
         variates.setContainerDataSource(container);
         
-        variates.setVisibleColumns(new String[]{ "", "name", "description"});
-        variates.setColumnHeaders(new String[]{ "", "Name", "Description"});
+        variates.setVisibleColumns(new String[]{ "", "displayName", "description","testedin"});
+        variates.setColumnHeaders(new String[]{ "", "Name", "Description", "Tested In"});
         
  }
 
@@ -553,6 +621,39 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
 
 	public void setVariatesCheckboxState(Map<String, Boolean> variatesCheckboxState) {
 		this.variatesCheckboxState = variatesCheckboxState;
+	}
+	
+	private String getTestedIn(String envFactorName, List<String> environmentNames , Integer variableId , Integer meansDataSetId ,TrialEnvironments trialEnvironments){
+		
+		
+		
+		
+		int counter = 0;
+		
+		try {
+			for (String environmentName : environmentNames){
+				long count = studyDataManager.countStocks(
+						meansDataSetId
+					,trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName).getId()
+					,variableId
+						);
+				if (count > 0) counter++;
+			
+			}
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try{
+			return String.format("%s of %s", counter, environmentNames.size());
+		}catch (Exception e){
+			return "";
+		}
+		
+		
+		 
+		
 	}
 
 
