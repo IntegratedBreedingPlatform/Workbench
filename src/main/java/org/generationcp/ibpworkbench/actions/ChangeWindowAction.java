@@ -19,7 +19,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.gxe.GxeAnalysisComponentPanel;
+import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
 import org.generationcp.ibpworkbench.ui.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
@@ -226,7 +226,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                      return;
                  }
         		 
-        		 GxeAnalysisComponentPanel gxeAnalysisPanel = new GxeAnalysisComponentPanel(this.project,this.role);
+        		 GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project,this.role);
          		 w.showContent(gxeAnalysisPanel);
          		 NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
          		

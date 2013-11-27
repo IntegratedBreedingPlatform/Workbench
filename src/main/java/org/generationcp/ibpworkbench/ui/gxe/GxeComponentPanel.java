@@ -79,11 +79,11 @@ import com.vaadin.ui.Window;
  * @author Aldrich Abrogena
  */
 @Configurable
-public class GxeAnalysisComponentPanel extends VerticalLayout implements
+public class GxeComponentPanel extends VerticalLayout implements
 		InitializingBean {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(GxeAnalysisComponentPanel.class);
+			.getLogger(GxeComponentPanel.class);
 	private static final long serialVersionUID = 1L;
 
 	// private TwinColSelect select;
@@ -116,7 +116,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 	
 	private Select selectDatabase = new Select();
 
-	public GxeAnalysisComponentPanel(Project project,Role role) {
+	public GxeComponentPanel(Project project,Role role) {
 		LOG.debug("Project is " + project.getProjectName());
 		this.project = project;
 		this.role = role;
@@ -405,8 +405,8 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			public void buttonClick(ClickEvent event) {
 				try {
 			        
-				Project project = GxeAnalysisComponentPanel.this.project;
-				Role role = GxeAnalysisComponentPanel.this.role;
+				Project project = GxeComponentPanel.this.project;
+				Role role = GxeComponentPanel.this.role;
 				
 	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
 	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
@@ -533,12 +533,12 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 		/**
 		 * 
 		 */
-		private GxeAnalysisComponentPanel gxeAnalysisComponentPanel;
+		private GxeComponentPanel gxeAnalysisComponentPanel;
 		
 		private static final long serialVersionUID = 1L;
 
 		public StudiesTreeAction(
-				GxeAnalysisComponentPanel gxeAnalysisComponentPanel) {
+				GxeComponentPanel gxeAnalysisComponentPanel) {
 			// TODO Auto-generated constructor stub
 			this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
 		}
@@ -560,7 +560,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 					if (p2.getValue() != null && tabStudyData != null){
 						if (tabStudyData.getId() == Integer.parseInt(p2.getValue().toString())){
 							
-							SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
+							GxeSelectEnvironmentPanel selectEnvironmentPanel = new GxeSelectEnvironmentPanel(studyDataManager ,project, tabStudyData, gxeAnalysisComponentPanel);
 							selectEnvironmentPanel.setCaption(tabStudyData.getName());
 							
 							((VerticalLayout) tab).addComponent(selectEnvironmentPanel);
@@ -583,7 +583,7 @@ public class GxeAnalysisComponentPanel extends VerticalLayout implements
 			
 				if (study.getName() != null && studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).size() > 0){
 					
-					SelectEnvironmentForGxePanel selectEnvironmentPanel = new SelectEnvironmentForGxePanel(studyDataManager ,project, study, gxeAnalysisComponentPanel);
+					GxeSelectEnvironmentPanel selectEnvironmentPanel = new GxeSelectEnvironmentPanel(studyDataManager ,project, study, gxeAnalysisComponentPanel);
 					
 					selectEnvironmentPanel.setCaption(study.getName());
 					studiesTabsheet.addTab(selectEnvironmentPanel);

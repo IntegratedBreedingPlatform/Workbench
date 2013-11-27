@@ -66,7 +66,7 @@ import com.vaadin.ui.Window;
  *
  */
 @Configurable
-public class SelectEnvironmentForGxePanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -116,7 +116,7 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private GxeAnalysisComponentPanel gxeAnalysisComponentPanel;
+    private GxeComponentPanel gxeAnalysisComponentPanel;
     
 	private StudyDataManager studyDataManager;
     
@@ -125,7 +125,7 @@ public class SelectEnvironmentForGxePanel extends VerticalLayout implements Init
     private List<String> environmentNames = new ArrayList<String>();
     private TrialEnvironments trialEnvironments = null;
 
-    public SelectEnvironmentForGxePanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeAnalysisComponentPanel gxeAnalysisComponentPanel) {
+    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeComponentPanel gxeAnalysisComponentPanel) {
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.jws.WebParam.Mode;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -52,6 +54,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -404,7 +407,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
         TreeTable tr = new TreeTable();
             
-        
+       
         tr.addContainerProperty("Study Name", String.class, "sname");
         tr.addContainerProperty("Title", String.class, "title");
         tr.addContainerProperty("Description", String.class, "description");
@@ -427,7 +430,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         for (FolderReference fr : folderRef) {
             
             Object[] cells = new Object[3];
-            cells[0] = fr.getName();
+            cells[0] = " " + fr.getName();
             cells[1] = "";
             cells[2] = fr.getDescription();
             
@@ -485,7 +488,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {}
         	
-             cells[0] = r.getName();
+             cells[0] = " " + r.getName();
              cells[1] = (s != null) ? s.getTitle() : "" ;
              cells[2] = r.getDescription();
              
@@ -528,7 +531,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         	 
         	 Object[] cells = new Object[3];
         	
-             cells[0] = r.getName();
+             cells[0] = " " + r.getName();
              cells[1] = "";
              cells[2] = r.getDescription();
              
