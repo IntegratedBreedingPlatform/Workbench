@@ -106,13 +106,13 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
 
         switch(this.getSelectedProjectTab()) {
 	        case FIRST_TAB_BASIC_DETAILS:
-	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the program.");
 	        	break;
 	        case SECOND_TAB_USER_ROLES:
-	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this program will be using.");
 	        	break;
 	        case THIRD_TAB_PROJECT_MEMBERS:
-	        	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
+	        	createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include program members by adding them to the \"Selected Program Members\" area. You can then give each member specific breeder access.");
 	        	 break;
         }
         
@@ -403,7 +403,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         //Initial value of the title area
         
         //TODO: internationalize this
-        createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the project.");       
+        createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Select a crop and a name for the program.");
     }
 
     public List<ProjectUserRole> getProjectUserRoles() {

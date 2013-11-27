@@ -182,7 +182,7 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     public void setTitle(String label, String description) {
     	newProjectTitleArea.removeAllComponents();
     	
-    	Label title = new Label("Create A Project: " + label);
+    	Label title = new Label("Create A Program: " + label);
     	
     	newProjectTitleArea.setStyleName("gcp-content-title");
     	newProjectTitleArea.addComponent(title);
