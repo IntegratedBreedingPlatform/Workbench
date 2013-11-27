@@ -51,6 +51,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -287,7 +288,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     protected Table initializeFactorsTable() {
         
-        Table tblFactors = new Table("FACTORS");
+        final Table tblFactors = new Table("FACTORS");
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
         tblFactors.setHeight("450px");
@@ -300,6 +301,26 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         String[] columnHeaders = new String[] {"Name", "Description"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
+        
+        tblFactors.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+        	    	 FactorModel fm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", fm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", fm.getDataType()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
+        
         return tblFactors;
     }
     
@@ -353,6 +374,25 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 			}
         	
         });
+        
+        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+        	    	 VariateModel vm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", vm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", vm.getDatatype()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");

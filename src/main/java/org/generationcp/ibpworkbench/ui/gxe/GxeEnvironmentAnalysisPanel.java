@@ -355,6 +355,10 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         String[] columnHeaders = new String[] {"Name", "Description"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
+        
+        
+        
+        
         return tblFactors;
     }
     
