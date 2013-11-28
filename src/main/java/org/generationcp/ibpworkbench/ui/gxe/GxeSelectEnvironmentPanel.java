@@ -131,7 +131,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;
-        this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
+        this.setGxeAnalysisComponentPanel(gxeAnalysisComponentPanel);
         
         setWidth("100%");
         
@@ -333,7 +333,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
-					gxeAnalysisComponentPanel.generateTabContent(currentStudy, selectSpecifyEnvironment.getValue().toString(), variatesCheckboxState);
+					getGxeAnalysisComponentPanel().generateTabContent(currentStudy, 
+							selectSpecifyEnvironment.getValue().toString(), 
+							selectSpecifyEnvironmentGroups.getValue().toString(), 
+							variatesCheckboxState, GxeSelectEnvironmentPanel.this);
 				}
 				
 			}
@@ -702,6 +705,14 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 		
 		 
 		
+	}
+
+	public GxeComponentPanel getGxeAnalysisComponentPanel() {
+		return gxeAnalysisComponentPanel;
+	}
+
+	public void setGxeAnalysisComponentPanel(GxeComponentPanel gxeAnalysisComponentPanel) {
+		this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
 	}
 
 

@@ -77,11 +77,14 @@ public class GxeTable extends Table {
 	private List<Experiment> exps;
 
 	private VariableTypeList germplasmFactors = new VariableTypeList();
+	
+	private Property.ValueChangeListener gxeCheckBoxColumnListener;
 
-	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, Map<String, Boolean> variatesCheckBoxState) {
+	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, Map<String, Boolean> variatesCheckBoxState, Property.ValueChangeListener gxeCheckBoxColumnListener) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.studyDataManager = studyDataManager;
 		this.variatesCheckBoxState = variatesCheckBoxState;
+		this.gxeCheckBoxColumnListener = gxeCheckBoxColumnListener;
 		initializeTable();
 		fillTableWithDataset(studyId);
 	}
@@ -135,52 +138,17 @@ public class GxeTable extends Table {
 			if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX)) {
 
 				CheckBox cb = new CheckBox();
-				if (rowIndex != 1) {
-					cb.addStyleName("hidecheckbox");
-				}
 				cb.setCaption(tableItems[i].getLabel());
 				cb.setValue(tableItems[i].getValue());
+				cb.setImmediate(true);
+				cb.addListener(gxeCheckBoxColumnListener);
 
 				obj[i] = cb;
 			} else if (tableItems[i].getType() == (GxeTable.CELL_LABEL)) {
 				obj[i] = tableItems[i].getLabel();
-			} else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_ALL)) {
-				GxeCheckBoxGroup og = new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, rowIndex, this);
-				
-				og.setImmediate(true);
-
-				//og.addListener(new GxeAllCheckboxListener(columnNames.toArray(new String[0]), this
-				//		.getContainerDataSource()));
-
-				obj[i] = og;
 			}
 
-			// column checkbox
-			else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_COLUMN)) {
-				CheckBox cb = new CheckBox();
-				cb.setCaption(tableItems[i].getLabel());
-				cb.setValue(tableItems[i].getValue());
-
-				cb.setImmediate(true);
-
-				cb.addListener(new GxeColumnCheckboxListener(columnNames.toArray(new String[0]), this
-						.getContainerDataSource()));
-
-				obj[i] = cb;
-			}
-
-			// row checkbox
-			else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_ROW)) {
-				CheckBox cb = new CheckBox();
-				cb.setCaption(tableItems[i].getLabel());
-				cb.setValue(tableItems[i].getValue());
-
-				cb.setImmediate(true);
-
-				cb.addListener(new GxeRowCheckboxListener(columnNames.toArray(new String[0]), this.getContainerDataSource()));
-
-				obj[i] = cb;
-			}
+			
 		}
 
 		this.addItem(obj, rowIndex);
@@ -192,7 +160,7 @@ public class GxeTable extends Table {
 		Container container = this.getContainerDataSource();
 		container.removeAllItems();
 		
-		container.addContainerProperty(" ", GxeCheckBoxGroup.class, new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, 0, null));
+		container.addContainerProperty(" ", CheckBox.class, null);
 		
 		HashSet<String> envNames = new HashSet<String>();
 		
@@ -229,7 +197,7 @@ public class GxeTable extends Table {
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
-						container.addContainerProperty(v.getLocalName(), CheckBox.class, new CheckBox());
+						container.addContainerProperty(v.getLocalName(), Label.class, null);
 						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate")){
 							if (variatesCheckBoxState.get(v.getLocalName()))
 								variateLocalNames.put(v.getRank(), v.getLocalName());
@@ -254,7 +222,7 @@ public class GxeTable extends Table {
 						
 						
 						row[0] = new TableItems();
-						row[0].setType(GxeTable.CELL_CHECKBOX_ALL);
+						row[0].setType(GxeTable.CELL_CHECKBOX);
 						row[0].setLabel(" ");
 						row[0].setValue(true);
 						
@@ -299,7 +267,7 @@ public class GxeTable extends Table {
 							
 							row[cellCounter].setLabel(meansData);
 							row[cellCounter].setValue(true);
-							row[cellCounter].setType(GxeTable.CELL_CHECKBOX);
+							row[cellCounter].setType(GxeTable.CELL_LABEL);
 							cellCounter++;
 						}
 						
@@ -324,10 +292,10 @@ public class GxeTable extends Table {
 		
 		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
 		
-		for (Integer i = 1; i < obj.length; i++){
+		for (Integer i = 0; i < obj.length; i++){
 			Property cb_column = this.getContainerProperty(obj[i], " ");
 			Property location_column = this.getContainerProperty(obj[i], selectedEnvFactorName);
-			if(((GxeCheckBoxGroup) cb_column.getValue()).getValue()){
+			if((Boolean)((CheckBox) cb_column.getValue()).getValue()){
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
 				environmentLabel.setActive(true);
@@ -340,22 +308,7 @@ public class GxeTable extends Table {
 		return gxeEnvironment;
 		
 	}
-	
-	public List<Trait> getSelectedTraits(){
-		List<Trait> traits = new ArrayList<Trait>();
-		Object obj = this.getContainerDataSource().getItemIds().toArray()[0];
-		for (Map.Entry<Integer, String> v : variateLocalNames.entrySet()){
-			Property p = this.getContainerProperty(obj, v.getValue());
-			if((Boolean) ((CheckBox) p.getValue()).getValue()){
-				Trait t = new Trait();
-				t.setName(v.getValue());
-				t.setActive(true);
-				traits.add(t);
-			}
-		}
-		 
-		return traits;
-	}
+
 
 	public int getMeansDataSetId() {
 		return meansDataSetId;

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -63,6 +64,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -72,6 +74,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -88,6 +91,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     private static final long serialVersionUID = 1L;
     
     private GxeTable gxeTable;
+    private Table selectTraitsTable;
     
     private Project currentProject;
 
@@ -102,10 +106,12 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     private Role role;
 
     private String selectedEnvFactorName;
+    private String selectedEnvGroupFactorName;
     
     private Button btnCancel;
     private Button btnRunBreedingView;
     private Map<String, Boolean> variatesCheckboxState;
+    private GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel;
     
     @Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -135,13 +141,25 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 	private Label lblAdjustedMeansHeader;
 	private Label lblAdjustedMeansDescription;
 	private Label lblSelectTraitsForAnalysis;
+	private CheckBox chkSelectAllEnvironments;
+	private CheckBox chkSelectAllTraits;
+	private Property.ValueChangeListener selectAllEnvironmentsListener;
+	private Property.ValueChangeListener selectAllTraitsListener;
 	
 	
-    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeComponentPanel gxeAnalysisComponentPanel, String selectedEnvFactorName, Map<String, Boolean> variatesCheckboxState) {
+    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,
+    		Project currentProject, 
+    		Study study,  
+    		GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel, 
+    		String selectedEnvFactorName,
+    		String selectedEnvGroupFactorName,
+    		Map<String, Boolean> variatesCheckboxState) {
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;
+        this.gxeSelectEnvironmentPanel = gxeSelectEnvironmentPanel;
         this.selectedEnvFactorName = selectedEnvFactorName;
+        this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
         this.variatesCheckboxState = variatesCheckboxState;
         
         setWidth("100%");
@@ -219,6 +237,14 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 	public void setSelectedEnvFactorName(String selectedEnvFactorName) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 	}
+	
+	public String getSelectedEnvGroupFactorName() {
+		return selectedEnvGroupFactorName;
+	}
+
+	public void setSelectedEnvGroupFactorName(String selectedEnvGroupFactorName) {
+		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
+	}
 
     protected void initializeComponents() {
     	
@@ -233,10 +259,46 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     	lblSelectedEnvironmentGroupFactor = new Label();
     	txtSelectedEnvironmentGroupFactor = new Label();
     	
+    	chkSelectAllEnvironments = new CheckBox("Select all environments", true);
+    	chkSelectAllEnvironments.setImmediate(true);
+    	chkSelectAllTraits = new CheckBox("Select all traits", true);
+    	chkSelectAllTraits.setImmediate(true);
+    	
     	lblAdjustedMeansHeader  = new Label();
     	lblAdjustedMeansHeader.setStyleName("gcp-content-header");
     	lblAdjustedMeansDescription  = new Label();
     	lblSelectTraitsForAnalysis = new Label();
+    	
+    	selectAllEnvironmentsListener = new Property.ValueChangeListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				
+				for (Iterator<?> itr = gxeTable.getItemIds().iterator(); itr.hasNext();){
+					CheckBox chk = (CheckBox) gxeTable.getItem(itr.next()).getItemProperty((Object) " ").getValue();
+					chk.setValue((Boolean) event.getProperty().getValue());
+				}
+				
+			}
+		};
+    	
+    	selectAllTraitsListener = new Property.ValueChangeListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				
+				for (Iterator<?> itr = selectTraitsTable.getContainerPropertyIds().iterator(); itr.hasNext();){
+					CheckBox chk = (CheckBox) selectTraitsTable.getItem(1).getItemProperty(itr.next()).getValue();
+					chk.setValue(event.getProperty().getValue());
+				}
+				
+				
+			}
+		};
     	
     	
     	btnRunBreedingView = new Button();
@@ -281,10 +343,28 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 			txtDatasetName.setValue(ds.get(0).getName());
 			txtDatasourceName.setValue(currentStudy.getName());
 			txtSelectedEnvironmentFactor.setValue(getSelectedEnvFactorName());
-			txtSelectedEnvironmentGroupFactor.setValue("");
+			txtSelectedEnvironmentGroupFactor.setValue(getSelectedEnvGroupFactorName());
 			
-			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState));
+			Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener(){
+
+				@Override
+				public void valueChange(ValueChangeEvent event) {
+					Boolean val = (Boolean) event.getProperty().getValue();
+					if (val == false){
+						chkSelectAllEnvironments.removeListener(selectAllEnvironmentsListener);
+						chkSelectAllEnvironments.setValue(false);
+						chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
+					}
+					
+				}
+				
+			};
+			
+			
+			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState, envCheckBoxListener));
+			getGxeTable().setHeight("300px");
 			addComponent(getGxeTable());
+			addComponent(chkSelectAllEnvironments);
 			setExpandRatio(getGxeTable(), 1.0F);
 			
 		}else{
@@ -295,6 +375,46 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		}
 		
 		addComponent(lblSelectTraitsForAnalysis);
+		
+		selectTraitsTable = new Table();
+		IndexedContainer container = new IndexedContainer();
+		
+		Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				Boolean val = (Boolean) event.getProperty().getValue();
+				
+				if (val == false){
+					chkSelectAllTraits.removeListener(selectAllTraitsListener);
+					chkSelectAllTraits.setValue(false);
+					chkSelectAllTraits.addListener(selectAllTraitsListener);
+				}
+				
+			}
+			
+		};
+		
+		List<CheckBox> cells = new ArrayList<CheckBox>();
+		List<String> columnNames = new ArrayList<String>();
+		for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
+			if (trait.getValue()){
+				container.addContainerProperty(trait.getKey(), CheckBox.class, null);
+				columnNames.add(trait.getKey().replace("_Means", ""));
+				CheckBox chk = new CheckBox("", true);
+				chk.setImmediate(true);
+				chk.addListener(traitCheckBoxListener);
+				cells.add(chk);
+			}
+		}
+		selectTraitsTable.setContainerDataSource(container);
+		selectTraitsTable.addItem(cells.toArray(new Object[0]), 1);
+		selectTraitsTable.setHeight("80px");
+		selectTraitsTable.setWidth("100%");
+		selectTraitsTable.setColumnHeaders(columnNames.toArray(new String[0]));
+		
+		addComponent(selectTraitsTable);
+		setExpandRatio(selectTraitsTable, 1.0F);
+		addComponent(chkSelectAllTraits);
 		
         addComponent(layoutButtonArea());
         
@@ -345,7 +465,18 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					inputFileName = String.format("%s_%s_%s", currentProject.getProjectName().trim(), gxeTable.getMeansDataSetId(), gxeTable.getMeansDataSet().getName());
 					GxeEnvironment gxeEnv = gxeTable.getGxeEnvironment();
 					
-					List<Trait> selectedTraits = gxeTable.getSelectedTraits();
+					List<Trait> selectedTraits = new ArrayList<Trait>();
+					Iterator<?> itr = selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
+					while (itr.hasNext()){
+						Object propertyId = itr.next();
+						CheckBox cb = (CheckBox)selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
+						if ((Boolean)cb.getValue()){
+							Trait t = new Trait();
+							t.setName(propertyId.toString());
+							t.setActive(true);
+							selectedTraits.add(t);
+						}
+					}
 					
 					File datasetExportFile = null;
 					
@@ -406,10 +537,19 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		
 		btnCancel.addListener(new Button.ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-				try {
+				
+				TabSheet tabSheet = gxeSelectEnvironmentPanel.getGxeAnalysisComponentPanel()
+					.getStudiesTabsheet();
+				tabSheet.replaceComponent(tabSheet.getSelectedTab(), gxeSelectEnvironmentPanel);
+					
+				
+				/**try {
 			        
+					
 				
 	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
 	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
@@ -420,9 +560,13 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
 		            }
 		            return;
-				}
+				}**/
 			}
 		});
+		
+		chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
+		
+		chkSelectAllTraits.addListener(selectAllTraitsListener);
 
     }
     
@@ -486,6 +630,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         messageSource.setValue(lblAdjustedMeansDescription  , Message.GXE_ADJUSTED_MEANS_DESCRIPTION);
         messageSource.setValue(lblSelectTraitsForAnalysis, Message.GXE_SELECT_TRAITS_FOR_ANALYSIS);
     }
+
+	
 
     
 

@@ -19,10 +19,6 @@ class GxeColumnCheckboxListener implements ValueChangeListener {
 		// TODO Auto-generated method stub
 		try {
 
-			container.getItemIds();
-
-			container.getItem(0);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -242,223 +242,18 @@ public class GxeComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	public void generateTabContent(Study study, String selectedEnvFactorName, Map<String, Boolean> variatesCheckboxState) {
+	public void generateTabContent(Study study, String selectedEnvFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel) {
 	
 		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
 
-		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, this, selectedEnvFactorName, variatesCheckboxState);
+		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedEnvGroupFactorName, variatesCheckboxState);
 		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
 
-		studiesTabsheet.replaceComponent(studiesTabsheet.getSelectedTab(), tabContainer);
-		studiesTabsheet.getTab(tabContainer).setClosable(true);
-		studiesTabsheet.setSelectedTab(tabContainer);
+		getStudiesTabsheet().replaceComponent(getStudiesTabsheet().getSelectedTab(), tabContainer);
+		getStudiesTabsheet().getTab(tabContainer).setClosable(true);
+		getStudiesTabsheet().setSelectedTab(tabContainer);
 	}
 	
-	@Deprecated
-	public void generateTabContentOld(Study study, String selectedEnvFactorName) {
-		
-		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
-
-		VerticalLayout tabContainer = new VerticalLayout();
-		tabContainer.setStyleName("gcp-light-grey");
-		tabContainer.setSpacing(true);
-		tabContainer.setMargin(true, false, false, false);
-
-		Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means datasets",
-				Label.CONTENT_XHTML);
-		tabTitle.setStyleName("gcp-content-title");
-		tabContainer.addComponent(tabTitle);
-		
-		List<DataSet> ds = null;
-		
-		DataSet meansDataSet = null;
-		try {
-			ds = studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
-		} catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		if (ds != null && ds.size() > 0){
-			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId(), selectedEnvFactorName, null));
-			tabContainer.addComponent(studyTables.get(study.getId()));
-			tabContainer.setExpandRatio(studyTables.get(study.getId()), 1.0F);
-			
-			meansDataSet = ds.get(0);
-		}else{
-			Label temp = new Label("&nbsp;&nbsp;No means dataset available for this study (" + study.getName().toString() + ")" );
-			temp.setContentMode(Label.CONTENT_XHTML);
-			tabContainer.addComponent(temp);
-			tabContainer.setExpandRatio(temp, 1.0F);
-		}
-		
-	
-		tabContainer.setSizeFull();
-		tabContainer.setCaption(study.getName());
-		tabContainer.setData(study);
-		
-		
-		
-		
-		//Generate Buttons
-		Button btnRunBreedingView = new Button(messageSource.getMessage(Message.LAUNCH_BREEDING_VIEW));
-		btnRunBreedingView.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
-		btnRunBreedingView.addListener(new Button.ClickListener() {
-			private static final long serialVersionUID = -7090745965019240566L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				final ClickEvent buttonClickEvent = event;
-				launchBV(false,buttonClickEvent.getComponent().getWindow());
-						
-			}
-			
-			private void launchBV(boolean isXLS,final Window windowSource) {
-				String inputDir = "";
-				Tool breedingViewTool = null;
-				try{
-					breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-					inputDir = toolUtil.getInputDirectoryForTool(project, breedingViewTool);
-				}catch(MiddlewareQueryException ex){
-					
-				}
-				//TODO NOTE: change the filename of xml/xls using unique identifiers
-				String inputFileName = "";
-				
-				
-				Study study = null;
-				try {
-					study = (Study) ((VerticalLayout)studiesTabsheet.getSelectedTab()).getData();
-						
-				} catch (NullPointerException e) {
-					MessageNotifier
-					.showError(windowSource,
-							"Cannot export dataset",
-							"No dataset is selected. Please open a study that has a dataset.");
-					
-					return;
-				}
-				
-				if (studyTables.get(study.getId()) != null && studyTables.get(study.getId()) instanceof GxeTable) {
-					GxeTable table = (GxeTable) studyTables.get(study.getId());
-					
-					inputFileName = String.format("%s_%s_%s", project.getProjectName().trim(), table.getMeansDataSetId(), table.getMeansDataSet().getName());
-					GxeEnvironment gxeEnv = table.getGxeEnvironment();
-					
-					List<Trait> selectedTraits = table.getSelectedTraits();
-					
-					//TODO: switch xls file or csv file depending on user input
-					
-					File datasetExportFile = null;
-					
-					if (isXLS)
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
-					else
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(table.getMeansDataSet(), table.getExperiments(),table.getEnvironmentName(),gxeEnv,selectedTraits, project);
-					
-					
-					LOG.debug(datasetExportFile.getAbsolutePath());
-					
-					GxeInput gxeInput =  new GxeInput(project, "", 0, 0, "", "", "", "");
-					
-					if (isXLS)
-						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
-					else
-						gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
-				
-					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-					gxeInput.setTraits(selectedTraits);
-					gxeInput.setEnvironment(gxeEnv);
-					Genotypes genotypes = new Genotypes();
-					
-					try {
-						String strGenoType;
-						strGenoType = studyDataManager.getLocalNameByStandardVariableId(table.getMeansDataSetId(), 8230);
-						if (strGenoType != null && strGenoType != "") genotypes.setName(strGenoType);
-					} catch (MiddlewareQueryException e1) {
-						genotypes.setName("G!");
-					}
-	
-					gxeInput.setGenotypes(genotypes);
-					gxeInput.setEnvironmentName(table.getEnvironmentName());
-					gxeInput.setBreedingViewProjectName(project.getProjectName());
-					
-					GxeUtility.generateXmlFieldBook(gxeInput);
-					
-					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
-		            Runtime runtime = Runtime.getRuntime();
-		            LOG.info(gxeInput.toString());
-		            LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
-		            try {
-						runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
-					
-						MessageNotifier
-						.showMessage(windowSource,
-								"GxE files saved",
-								"Successfully generated the means dataset and xml input files for breeding view.");
-		            } catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						MessageNotifier
-						.showMessage(windowSource,
-								"Cannot launch " + absoluteToolFile.getName(),
-								"But it successfully created GxE Excel and XML input file for the breeding_view!");
-					}
-				}
-			}
-		});
-		
-		
-		Button btnCancel = new Button("Cancel");
-		btnCancel.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				try {
-			        
-				Project project = GxeComponentPanel.this.project;
-				Role role = GxeComponentPanel.this.role;
-				
-	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
-	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
-				} catch (Exception e) {
-					LOG.error("Exception", e);
-		            if(e.getCause() instanceof InternationalizableException) {
-		                InternationalizableException i = (InternationalizableException) e.getCause();
-		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-		            }
-		            return;
-				}
-			}
-		});
-		
-		HorizontalLayout btnLayout = new HorizontalLayout();
-
-        btnLayout.setSizeUndefined();
-		btnLayout.setWidth("100%");
-        btnLayout.setSpacing(true);
-		btnLayout.setMargin(true);
-		
-		Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
-		btnLayout.addComponent(spacer);
-		btnLayout.setExpandRatio(spacer,1.0F);
-		
-		btnLayout.addComponent(btnRunBreedingView);
-		btnLayout.addComponent(btnCancel);
-		
-		tabContainer.addComponent(btnLayout);
-		
-		studiesTabsheet.replaceComponent(studiesTabsheet.getSelectedTab(), tabContainer);
-		
-		if (meansDataSet != null)
-			studiesTabsheet.getTab(tabContainer).setCaption(meansDataSet.getName());
-		
-		studiesTabsheet.getTab(tabContainer).setClosable(true);
-		studiesTabsheet.setCloseHandler(new StudiesTabCloseListener(studyTables));
-		studiesTabsheet.setSelectedTab(tabContainer);
-	}
 
 	protected void initializeComponents() {
 		
@@ -511,13 +306,13 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 		horizontal.addComponent(studiesPanel);
 
-		studiesTabsheet = generateTabSheet();
+		setStudiesTabsheet(generateTabSheet());
 
-		horizontal.addComponent(studiesTabsheet);
+		horizontal.addComponent(getStudiesTabsheet());
 
 		horizontal.setWidth("100%");
 		//horizontal.setHeight("530px");
-		horizontal.setExpandRatio(studiesTabsheet, 1.0F);
+		horizontal.setExpandRatio(getStudiesTabsheet(), 1.0F);
 
 		this.addComponent(horizontal);
 
@@ -567,7 +362,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 			Container container = studiesTree.getContainerDataSource();
 			Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
 			
-				for ( Iterator<Component> tabs = studiesTabsheet.getComponentIterator(); tabs.hasNext();){
+				for ( Iterator<Component> tabs = getStudiesTabsheet().getComponentIterator(); tabs.hasNext();){
 					Component tab = tabs.next();
 					Study tabStudyData = (Study)((VerticalLayout) tab).getData();
 					if (p2.getValue() != null && tabStudyData != null){
@@ -599,8 +394,8 @@ public class GxeComponentPanel extends VerticalLayout implements
 					GxeSelectEnvironmentPanel selectEnvironmentPanel = new GxeSelectEnvironmentPanel(studyDataManager ,project, study, gxeAnalysisComponentPanel);
 					
 					selectEnvironmentPanel.setCaption(study.getName());
-					studiesTabsheet.addTab(selectEnvironmentPanel);
-					studiesTabsheet.getTab(selectEnvironmentPanel).setClosable(true);
+					getStudiesTabsheet().addTab(selectEnvironmentPanel);
+					getStudiesTabsheet().getTab(selectEnvironmentPanel).setClosable(true);
 					
 					//gxeAnalysisComponentPanel.getWindow().addWindow(win);
 					//studiesTabsheet.setImmediate(true);	
@@ -633,6 +428,14 @@ public class GxeComponentPanel extends VerticalLayout implements
 		tab.setSizeFull();
 
 		return tab;
+	}
+
+	public TabSheet getStudiesTabsheet() {
+		return studiesTabsheet;
+	}
+
+	public void setStudiesTabsheet(TabSheet studiesTabsheet) {
+		this.studiesTabsheet = studiesTabsheet;
 	}
 
 }
