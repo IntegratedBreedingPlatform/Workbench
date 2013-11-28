@@ -75,8 +75,8 @@ public class GermplasmListPreview extends VerticalLayout {
     private ThemeResource folderResource;
     private ThemeResource leafResource;
     
-    private String MY_LIST = "My List";
-    private String SHARED_LIST = "Shared List";
+    public static String MY_LIST = "My List";
+    public static String SHARED_LIST = "Shared List";
     
     private Panel panel;
     private HorizontalLayout toolbar;
@@ -356,9 +356,15 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.setChildrenAllowed(newItem,true);
                             treeView.setItemIcon(newItem,folderResource);
 
-                            if (lastItemId != null) treeView.setParent(newItem,lastItemId);
 
-                            treeView.select(newItem);
+                            if (presenter.getGermplasmListParent(newItem) != null) {
+                                treeView.setParent(newItem,lastItemId);
+                            } else {
+                                treeView.setParent(newItem,MY_LIST);
+                            }
+
+                            //treeView.select(newItem);
+                            expandTree(lastItemId);
                         }
 
                         // close popup
@@ -416,6 +422,8 @@ public class GermplasmListPreview extends VerticalLayout {
                         if (dialog.isConfirmed()) {
                             try {
                                 presenter.deleteGermplasmListFolder(finalGpList);
+                                treeView.removeItem(lastItemId);
+                                treeView.select(null);
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             }
@@ -510,6 +518,14 @@ public class GermplasmListPreview extends VerticalLayout {
             addFolderBtn.setEnabled(false);
             renameFolderBtn.setEnabled(false);
             deleteFolderBtn.setEnabled(false);
+        }
+    }
+
+    public void toggleToolbarAddBtn(boolean toggle) {
+        if (toggle == true) {
+            addFolderBtn.setEnabled(true);
+        } else {
+            addFolderBtn.setEnabled(false);
         }
     }
 
