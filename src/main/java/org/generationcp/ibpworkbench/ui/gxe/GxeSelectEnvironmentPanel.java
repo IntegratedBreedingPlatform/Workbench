@@ -44,6 +44,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
@@ -257,7 +258,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         for (Iterator<?> i = selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();){
         	selectSpecifyEnvironment.select(i.next());
-        	//break;
+        	break;
         }
         
         buttonArea = layoutButtonArea();
@@ -270,7 +271,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	specifyEnvironmentFactorLayout.addComponent(selectSpecifyEnvironment);
         generalLayout.addComponent(specifyEnvironmentFactorLayout);
         
-        generalLayout.addComponent(lblEnvironmentGroupsHeader);
+        //generalLayout.addComponent(lblEnvironmentGroupsHeader);
         generalLayout.addComponent(lblEnvironmentGroupsDescription);
         	specifyEnvironmentGroupsLayout.addComponent(lblEnvironmentGroupsSpecify);
         	specifyEnvironmentGroupsLayout.addComponent(selectSpecifyEnvironmentGroups);
@@ -286,6 +287,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         generalLayout.addComponent(datasetVariablesDetailLayout);
         generalLayout.addComponent(buttonArea);
+        
+        Object item = "Analyze All";
+        selectSpecifyEnvironmentGroups.addItem(item);
+        selectSpecifyEnvironmentGroups.select(item);
         
         environmentNames.clear();
         try {
@@ -328,7 +333,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
-					gxeAnalysisComponentPanel.generateTabContent(currentStudy, selectSpecifyEnvironment.getValue().toString());
+					gxeAnalysisComponentPanel.generateTabContent(currentStudy, selectSpecifyEnvironment.getValue().toString(), variatesCheckboxState);
 				}
 				
 			}
@@ -529,17 +534,17 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	fm.setDataType(factor.getStandardVariable().getDataType().getName());
             	
             	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
+            		selectSpecifyEnvironmentGroups.addItem(fm.getName());
             		factorList.add(fm);
             	}
             	
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
-            		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-            		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+           		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
+            	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
             			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
 	            		selectSpecifyEnvironment.addItem(factor.getLocalName());
-            			selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
-            	}
+            	
+            	
+            	
             }
             
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){

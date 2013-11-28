@@ -242,8 +242,21 @@ public class GxeComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	public void generateTabContent(Study study, String selectedEnvFactorName) {
+	public void generateTabContent(Study study, String selectedEnvFactorName, Map<String, Boolean> variatesCheckboxState) {
 	
+		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
+
+		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, this, selectedEnvFactorName, variatesCheckboxState);
+		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
+
+		studiesTabsheet.replaceComponent(studiesTabsheet.getSelectedTab(), tabContainer);
+		studiesTabsheet.getTab(tabContainer).setClosable(true);
+		studiesTabsheet.setSelectedTab(tabContainer);
+	}
+	
+	@Deprecated
+	public void generateTabContentOld(Study study, String selectedEnvFactorName) {
+		
 		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
 
 		VerticalLayout tabContainer = new VerticalLayout();
@@ -268,7 +281,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 		
 		
 		if (ds != null && ds.size() > 0){
-			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId(), selectedEnvFactorName));
+			studyTables.put(study.getId(), new GxeTable(studyDataManager, study.getId(), selectedEnvFactorName, null));
 			tabContainer.addComponent(studyTables.get(study.getId()));
 			tabContainer.setExpandRatio(studyTables.get(study.getId()), 1.0F);
 			
