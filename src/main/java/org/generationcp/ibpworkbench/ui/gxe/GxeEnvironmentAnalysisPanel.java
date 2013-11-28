@@ -125,13 +125,13 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 
 	private Label lblDataSelectedForAnalysisHeader;
 	private Label lblDatasetName;
-	private TextField txtDatasetName;
+	private Label txtDatasetName;
 	private Label lblDatasourceName;
-	private TextField txtDatasourceName;
+	private Label txtDatasourceName;
 	private Label lblSelectedEnvironmentFactor;
-	private TextField txtSelectedEnvironmentFactor;
+	private Label txtSelectedEnvironmentFactor;
 	private Label lblSelectedEnvironmentGroupFactor;
-	private TextField txtSelectedEnvironmentGroupFactor;
+	private Label txtSelectedEnvironmentGroupFactor;
 	private Label lblAdjustedMeansHeader;
 	private Label lblAdjustedMeansDescription;
 	private Label lblSelectTraitsForAnalysis;
@@ -223,16 +223,18 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     protected void initializeComponents() {
     	
     	lblDataSelectedForAnalysisHeader = new Label();
+    	lblDataSelectedForAnalysisHeader.setStyleName("gcp-content-header");
     	lblDatasetName = new Label();
-    	txtDatasetName = new TextField();
+    	txtDatasetName = new Label();
     	lblDatasourceName = new Label();
-    	txtDatasourceName = new TextField();
+    	txtDatasourceName = new Label();
     	lblSelectedEnvironmentFactor = new Label();
-    	txtSelectedEnvironmentFactor = new TextField();
+    	txtSelectedEnvironmentFactor = new Label();
     	lblSelectedEnvironmentGroupFactor = new Label();
-    	txtSelectedEnvironmentGroupFactor = new TextField();
+    	txtSelectedEnvironmentGroupFactor = new Label();
     	
     	lblAdjustedMeansHeader  = new Label();
+    	lblAdjustedMeansHeader.setStyleName("gcp-content-header");
     	lblAdjustedMeansDescription  = new Label();
     	lblSelectTraitsForAnalysis = new Label();
     	
@@ -244,35 +246,15 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 
 	protected void initializeLayout() {
 		
-		List<DataSet> ds = null;
-		try {
-			ds = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.MEANS_DATA);
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
-		
-		if (ds != null && ds.size() > 0){
-			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState));
-			addComponent(getGxeTable());
-			setExpandRatio(getGxeTable(), 1.0F);
-			
-			ds.get(0);
-		}else{
-			Label temp = new Label("&nbsp;&nbsp;No means dataset available for this study (" + currentStudy.getName().toString() + ")" );
-			temp.setContentMode(Label.CONTENT_XHTML);
-			addComponent(temp);
-			setExpandRatio(temp, 1.0F);
-		}
-		
-		GridLayout selectedInfoLayout = new GridLayout(3, 4);
+		GridLayout selectedInfoLayout = new GridLayout(4, 3);
         selectedInfoLayout.setSizeUndefined();
-        selectedInfoLayout.setWidth("95%");
+        selectedInfoLayout.setWidth("100%");
         selectedInfoLayout.setSpacing(true);
         selectedInfoLayout.setMargin(true, false, true, false);
-        selectedInfoLayout.setColumnExpandRatio(0, 1.2f);
-        selectedInfoLayout.setColumnExpandRatio(1, 5);
-        selectedInfoLayout.setColumnExpandRatio(2, 1);
-        selectedInfoLayout.setColumnExpandRatio(3, 2);
+        selectedInfoLayout.setColumnExpandRatio(0, 1);
+        selectedInfoLayout.setColumnExpandRatio(1, 3);
+        selectedInfoLayout.setColumnExpandRatio(2, 2);
+        selectedInfoLayout.setColumnExpandRatio(3, 1);
         selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
         selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
         selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
@@ -283,7 +265,37 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         selectedInfoLayout.addComponent(lblSelectedEnvironmentGroupFactor , 2, 2);
         selectedInfoLayout.addComponent(txtSelectedEnvironmentGroupFactor, 3, 2);
 		
-        
+		addComponent(selectedInfoLayout);
+		addComponent(lblAdjustedMeansHeader);
+		addComponent(lblAdjustedMeansDescription);
+		
+		List<DataSet> ds = null;
+		try {
+			ds = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.MEANS_DATA);
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+		
+		if (ds != null && ds.size() > 0){
+			setCaption(ds.get(0).getName());
+			txtDatasetName.setValue(ds.get(0).getName());
+			txtDatasourceName.setValue(currentStudy.getName());
+			txtSelectedEnvironmentFactor.setValue(getSelectedEnvFactorName());
+			txtSelectedEnvironmentGroupFactor.setValue("");
+			
+			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState));
+			addComponent(getGxeTable());
+			setExpandRatio(getGxeTable(), 1.0F);
+			
+		}else{
+			Label temp = new Label("&nbsp;&nbsp;No means dataset available for this study (" + currentStudy.getName().toString() + ")" );
+			temp.setContentMode(Label.CONTENT_XHTML);
+			addComponent(temp);
+			setExpandRatio(temp, 1.0F);
+		}
+		
+		addComponent(lblSelectTraitsForAnalysis);
+		
         addComponent(layoutButtonArea());
         
     }
