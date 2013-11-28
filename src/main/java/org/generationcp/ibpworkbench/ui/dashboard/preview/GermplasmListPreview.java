@@ -195,7 +195,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (lastItemId == null) {
+                if (lastItemId == null || lastItemId instanceof String) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list","");
                     return;
                 }
@@ -305,11 +305,6 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (lastItemId == null || !presenter.isFolder((Integer)lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list where the new folder will be added.","");
-                    return;
-                }
-
                 final Window w = new Window("Add new folder");
                 w.setWidth("280px");
                 w.setHeight("150px");
@@ -324,9 +319,11 @@ public class GermplasmListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("New Folder Name");
+                Label l = new Label("Folder Name");
                 final TextField name = new TextField();
-                name.setValue(treeView.getItemCaption(lastItemId));
+
+                if (lastItemId != null)
+                    name.setValue(treeView.getItemCaption(lastItemId));
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -346,7 +343,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
                         try {
-                            newItem = presenter.addGermplasmListFolder(name.getInputPrompt(),(Integer)lastItemId);
+                            newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             return;
@@ -355,7 +352,13 @@ public class GermplasmListPreview extends VerticalLayout {
                         //update UI
                         if (newItem != null) {
                             treeView.addItem(newItem);
-                            treeView.setParent(newItem,lastItemId);
+                            treeView.setItemCaption(newItem,name.getValue().toString());
+                            treeView.setChildrenAllowed(newItem,true);
+                            treeView.setItemIcon(newItem,folderResource);
+
+                            if (lastItemId != null) treeView.setParent(newItem,lastItemId);
+
+                            treeView.select(newItem);
                         }
 
                         // close popup
@@ -388,16 +391,22 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
-                if (lastItemId == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Select an item on the list to be deleted.","");
+
+                if (lastItemId instanceof String) {
+                    MessageNotifier.showError(event.getComponent().getWindow(),lastItemId.toString() + " cannot be deleted.","");
                     return;
                 }
 
-                if (!presenter.isFolder((Integer) lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"You can only delete items that are folders.","");
+                GermplasmList gpList = null;
+
+                try {
+                    gpList = presenter.validateForDeleteGermplasmList((Integer) lastItemId);
+                } catch (Error e) {
+                    MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                     return;
                 }
 
+                final GermplasmList finalGpList = gpList;
                 ConfirmDialog.show(event.getComponent().getWindow(),
                                     "Delete " + treeView.getItemCaption(lastItemId),
                                     "Are you sure you want to delete " + treeView.getItemCaption(lastItemId),
@@ -406,7 +415,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             try {
-                                presenter.deleteGermplasmListFolder((Integer) lastItemId);
+                                presenter.deleteGermplasmListFolder(finalGpList);
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             }
@@ -662,6 +671,4 @@ public class GermplasmListPreview extends VerticalLayout {
         }
 
     }
-    
-
 }

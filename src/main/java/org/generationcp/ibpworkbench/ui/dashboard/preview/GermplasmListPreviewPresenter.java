@@ -1,11 +1,11 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -13,7 +13,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public final static String NOT_FOLDER = "Selected item is not a folder, please choose another item on the list.";
     public final static String NO_PARENT = "Selected item is a root item, please choose another item on the list.";
     public final static String HAS_CHILDREN = "Selected item contains other items, please choose another item on the list.";
+    private static final String NO_SELECTION = "Please select a folder item";
 
     private ManagerFactory managerFactory;
     
@@ -190,22 +190,38 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     /**
      *
      * @param folderName
-     * @param parentId
+     * @param id
      * @return ID of the newly added germplasmList, null if not successful
      */
-    public Integer addGermplasmListFolder(String folderName,Integer parentId) throws Error {
-        GermplasmList parent = null;
+    public Integer addGermplasmListFolder(String folderName,Integer id) throws Error {
+        GermplasmList gpList = null;
+        GermplasmList newList = null;
         try {
-            parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
 
-            if (!parent.isFolder())
-                throw new Error(NOT_FOLDER);
-            else {
-                Calendar cal = Calendar.getInstance();
-                GermplasmList gpList = new GermplasmList(null,folderName,cal.getTime().getTime(),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,parent,1);
-
-                return this.getManagerFactory().getGermplasmListManager().addGermplasmList(gpList);
+            if (id == null) {
+                newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,null,1);
             }
+            else {
+                gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+
+                if (!gpList.isFolder()) {
+                    GermplasmList parent = null;
+
+                    parent = gpList.getParent();
+
+                    if (parent == null) {
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,null,1);
+                    } else {
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,parent,1);
+                    }
+                } else {
+                    newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,gpList,1);
+                }
+
+            }
+
+            newList.setDescription("(NEW FOLDER) " + folderName);
+            return this.getManagerFactory().getGermplasmListManager().addGermplasmList(newList);
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
@@ -213,18 +229,47 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public Integer deleteGermplasmListFolder(Integer id) throws Error {
+    public GermplasmList validateForDeleteGermplasmList(Integer id) throws Error {
+        if (id == null) {
+            throw new Error(NO_SELECTION);
+        }
+        GermplasmList gpList = null;
+
         try {
-            GermplasmList gplist = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+            gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
-            if (hasChildren(gplist.getId())) {
+        } catch (MiddlewareQueryException e) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+
+        if (gpList == null) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+
+        if (!gpList.isFolder()) {
+            throw new Error(NOT_FOLDER);
+        }
+
+        try {
+            if (hasChildren(gpList.getId())) {
                 throw new Error(HAS_CHILDREN);
-            } else if (!gplist.isFolder()) {
-                throw new Error(NOT_FOLDER);
             }
+        } catch (MiddlewareQueryException e) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
 
-            return this.getManagerFactory().getGermplasmListManager().deleteGermplasmList(gplist);
+        return gpList;
+    }
 
+    /**
+     * Assumes that the deletion has been validated
+     * @param gpList
+     * @return
+     * @throws Error
+     */
+    public Integer deleteGermplasmListFolder(GermplasmList gpList) throws Error {
+        try {
+            return this.getManagerFactory().getGermplasmListManager().deleteGermplasmList(gpList);
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
