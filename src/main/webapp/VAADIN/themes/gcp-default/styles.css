@@ -723,35 +723,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     right: 14px;
 }
 
-
-/* TREE (MOVE TO COMMONS) */
-.v-tree-node span {
-    padding: 1px 2px;
-    margin-left: 5px;
-    display: inline-block;
-}
-.v-tree-node-selected span {
-    background: none;
-    background-color: #3276b1;
-    background-position: left -1876px;
-    color: #fff;
-    padding: 1px 5px !important;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    text-shadow: #2b425a 0 1px 0;
-    display: inline-block;
-}
-
-.v-tree-node-focused span{
-    /* border: 1px solid #285e8e; */
-    border: none;
-}
-
-
 /* TAB + TABSHEETS */
-
-
 .v-tabsheet-tabs .v-tabsheet-spacertd div,
 .white .v-tabsheet-tabs .v-tabsheet-spacertd div {
     border-bottom: 1px solid #bfbfbf;
@@ -813,34 +785,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     background: rgba(255,255,255,0.8);
 }
 
-/* Table */
-.v-table-header-wrap,
-.white .v-table-header-wrap,
-.v-table-header-drag {
-    background-color: #d3d7d9;
-    font-size: 12px;
-    text-shadow: none;
-    height: 25px;
-}
-
-.v-table-header, .v-table-resizer {
-    height: 25px;
-}
-
-.v-table-column-selector {
-    margin-top: -25px;
-}
-
-/* table selected color */
-.v-table .v-selected,
-.black .v-table .v-selected {
-    background: #428bca;
-    color: #fff;
-    text-shadow: none;
-}
-
-
-/* SIDEBAR styles */
 /* SIDEBAR styles */
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root {
     padding: 0px;

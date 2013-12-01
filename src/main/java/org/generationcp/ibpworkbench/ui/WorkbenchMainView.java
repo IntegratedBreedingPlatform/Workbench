@@ -201,7 +201,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.setSplitPosition(5, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
         contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
@@ -442,7 +442,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
             contentAreaSplitPanel.setSplitPosition(325,Sizeable.UNITS_PIXELS);
         else
-            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+            contentAreaSplitPanel.setSplitPosition(5,Sizeable.UNITS_PIXELS);
     }
 
     public WorkbenchDashboard getWorkbenchDashboard() {
