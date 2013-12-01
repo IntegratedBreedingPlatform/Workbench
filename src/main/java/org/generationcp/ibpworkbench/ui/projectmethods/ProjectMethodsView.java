@@ -45,10 +45,10 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     static {
         columnWidthsMap = new HashMap<String, Integer>();
         columnWidthsMap.put("mname",210);
-        columnWidthsMap.put("mgrp",80);
-        columnWidthsMap.put("mcode",75);
-        columnWidthsMap.put("mtype",70);
-        columnWidthsMap.put("fmdate",70);
+        columnWidthsMap.put("mgrp",128);
+        columnWidthsMap.put("mcode",120);
+        columnWidthsMap.put("mtype",115);
+        columnWidthsMap.put("fmdate",115);
         columnWidthsMap.put("selectBtn",60);
         columnWidthsMap.put("removeBtn",60);
     }
