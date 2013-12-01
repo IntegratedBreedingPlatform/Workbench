@@ -27,7 +27,7 @@
     
     <view path="/gdms"
           label="Genotyping Data Management System"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />        
           
     <view path="/germplasm_browser"
@@ -37,90 +37,90 @@
           
     <view path="/list_manager"
           label="Manage Germplasm Lists"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
     
     <view path="/study_browser"
           label="Browse Studies and Datasets"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
     <view path="/crossing_manager"
           label="Crossing Manager"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
     <view path="/nursery_template_wizard"
           label="Nursery Template Wizard"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/germplasm_import"
           label="Germplasm Import"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/breeding_planner"
           label="Breeding Planner"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
           
     <view path="/head_to_head"
           label="Head to Head"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
 
           
     <view path="/germplasm_mainheadtohead"
           label="Main Head to Head"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
            
      
     <view path="/germplasm_headtohead"
         label="Head to Head Query"
-        level="2"
+        level="1"
         class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/DatasetImporter"
         label="Data Import Tool"
-        level="2"
+        level="1"
         class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/germplasm_list_browser"
           label="Browse Germplasm Lists"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
     
     <view path="/germplasm_phenotypic"
           label="Retrieve Germplasm by Phenotypic Data"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
     <view path="/ProjectLocation"
           label="Project Locations"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProjectLocationAction" />
     
     <view path="/ProjectMethods"
           label="Project Methods"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction" />
     
     <view path="/ProjectMembers"
           label="Project Members"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
           
     <view path="/breeding_view"
 		  label="Single Site Analysis"
-		  level="2"
+		  level="1"
 		  class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />          
     
     <view path="/BreedingGxE"
           label="Gxe Analysis"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
     
     <view path="/CreateProject"
@@ -130,7 +130,7 @@
 
     <view path="/UpdateProject"
           label="Update Project"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction" />
 
     <view path="/CreateContacts"

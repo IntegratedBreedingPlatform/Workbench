@@ -156,7 +156,8 @@ public class WorkbenchSidebar extends CssLayout {
     }
 
     public void clearLinks() {
-    //    sidebarTree.setContainerDataSource(new HierarchicalContainer());
+        if (sidebarTree != null)
+            sidebarTree.setContainerDataSource(new HierarchicalContainer());
     }
 
     private class TreeItem {
