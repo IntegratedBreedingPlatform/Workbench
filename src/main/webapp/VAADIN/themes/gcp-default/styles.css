@@ -785,6 +785,39 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     background: rgba(255,255,255,0.8);
 }
 
+/* tabs close ICON */
+.v-tabsheet-tabs .v-tabsheet-caption-close,
+.v-tabsheet-tabs .v-tabsheet-caption-close:hover,
+.v-tabsheet-tabs .v-tabsheet-caption-close:active {
+    text-indent: 0;
+    background: transparent;
+    margin-left: 3px;
+    margin-right: -3px;
+    padding: 0;
+    color: #999;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+}
+.v-tabsheet-tabs .v-tabsheet-caption-close {
+    margin-top: 1px;
+}
+.v-ff .v-tabsheet-tabs .v-tabsheet-caption-close,
+.v-ie7 .v-tabsheet-tabs .v-tabsheet-caption-close {
+    margin-top: -15px;
+}
+.v-tabsheet-tabs .v-tabsheet-caption-close:hover,
+.white .v-tabsheet-tabs .v-tabsheet-caption-close:hover {
+    color: #fff;
+    background: #aaa;
+}
+.v-tabsheet-tabs .v-tabsheet-caption-close:active,
+.white .v-tabsheet-tabs .v-tabsheet-caption-close:active {
+    background: #777;
+}
+
 /* SIDEBAR styles */
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root {
     padding: 0px;
