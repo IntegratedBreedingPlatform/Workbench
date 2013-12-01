@@ -112,7 +112,6 @@ public class GermplasmListPreview extends VerticalLayout {
     
     public void setProject(Project project){
         this.removeAllComponents();
-
         this.setSizeFull();
 
         // add toolbar here
@@ -178,8 +177,8 @@ public class GermplasmListPreview extends VerticalLayout {
         addFolderBtn.setEnabled(false);
         deleteFolderBtn.setEnabled(false);
 
-        this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(addFolderBtn);
+        this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(deleteFolderBtn);
 
         //this.toolbar.setSizeFull();
@@ -572,7 +571,7 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     protected void initializeLayout() {
-        this.setMargin(true);
+        this.setSizeFull();
     }
 
     protected void initializeActions() {

@@ -440,7 +440,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
-            contentAreaSplitPanel.setSplitPosition(300,Sizeable.UNITS_PIXELS);
+            contentAreaSplitPanel.setSplitPosition(325,Sizeable.UNITS_PIXELS);
         else
             contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
     }

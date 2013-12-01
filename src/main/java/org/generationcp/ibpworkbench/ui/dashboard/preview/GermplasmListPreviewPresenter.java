@@ -60,7 +60,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         if(this.project != null){
             setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
          }
-
     }
     
     public void generateInitialTreeNode(){

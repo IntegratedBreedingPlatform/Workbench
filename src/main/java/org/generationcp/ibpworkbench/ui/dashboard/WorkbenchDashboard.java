@@ -426,7 +426,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	tblRoles.setWidth("300px");
     	//hl.addComponent(tblRoles);
     	previewTab.setWidth("100%");
-        previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
+        //previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
         previewTab.addStyleName("preview-tab");
     	 
     	 vertRight.setExpandRatio(previewTab, 1.0f);
