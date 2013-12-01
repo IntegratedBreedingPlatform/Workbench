@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
-import org.generationcp.ibpworkbench.ui.window.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.projectlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
