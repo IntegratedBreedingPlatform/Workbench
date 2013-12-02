@@ -19,6 +19,7 @@ import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -68,6 +69,8 @@ public class GxeTable extends Table {
 	private Map<Integer, String> variateLocalNames = new TreeMap<Integer, String>();
 	private Map<String, Boolean> variatesCheckBoxState = new HashMap<String, Boolean>();
 
+	Map<String, Map<String, String>> heritabilityValues = new HashMap<String, Map<String, String>>();
+	
 	private String selectedEnvFactorName = "";
 
 	private int meansDataSetId;
@@ -162,6 +165,68 @@ public class GxeTable extends Table {
 		
 		container.addContainerProperty(" ", CheckBox.class, null);
 		
+		
+		List<DataSet> plotDatasets = new ArrayList<DataSet>();
+		String trialInstanceFactorName = "";
+		try {
+			
+			List<DatasetReference> datasetRefs = studyDataManager.getDatasetReferences(studyId);
+			for (DatasetReference dsRef : datasetRefs){
+				DataSet ds = studyDataManager.getDataSet(dsRef.getId());
+				
+				if (ds.getDataSetType() != DataSetType.MEANS_DATA){
+					
+					Iterator<VariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
+					while(itrFactor.hasNext()){
+						VariableType f = itrFactor.next();
+						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+							trialInstanceFactorName = f.getLocalName(); break;
+						}
+					}
+					
+					Iterator<VariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
+					while(itrVariates.hasNext()){
+						if (itrVariates.next().getLocalName().contains("_Heritability")){
+							plotDatasets.add(ds); break;
+						}
+					}
+				
+					
+				}
+					
+			}
+			
+			
+			List<Experiment> exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
+			for (Experiment exp : exps){
+				
+				String envName = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
+				
+				Map<String, String> vals = new HashMap<String, String>();
+				
+				for (Entry<String, Boolean> entry : getVariatesCheckBoxState().entrySet()){
+					String name = entry.getKey().replace("_Means", "_Heritability");
+					Variable var = exp.getVariates().findByLocalName(name);
+					if (var != null){
+						//heritability value
+						vals.put(entry.getKey(), var.getValue().toString());
+					}	
+	
+				}
+				
+				heritabilityValues.put(envName, vals);
+				
+				
+			}
+			
+		} catch (MiddlewareQueryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		};
+		
+		
+		
+		
 		HashSet<String> envNames = new HashSet<String>();
 		
 		try {
@@ -214,6 +279,7 @@ public class GxeTable extends Table {
 					
 					for (Experiment exp : exps){
 						
+						String locationValTrial = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
 						String locationVal = exp.getFactors().findByLocalName(selectedEnvFactorName).getValue();
 						if (envNames.contains(locationVal)) continue;
 						
@@ -260,6 +326,12 @@ public class GxeTable extends Table {
 										,varKey
 											)
 										);
+								
+								String heritabilityVal = heritabilityValues.get(locationValTrial).get(x.getValue());
+								if (heritabilityVal != null){
+									meansData = String.format("%s (%s)", meansData, heritabilityVal);
+								}
+								
 							}catch(Exception e){
 								System.out.println("Error in getting the means data.");
 								e.printStackTrace();
@@ -282,6 +354,8 @@ public class GxeTable extends Table {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		
 	}
 
