@@ -86,7 +86,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,MAIN_HEAD_TO_HEAD_BROWSER("germplasm_mainheadtohead")
         ,DATASET_IMPORTER("dataset_importer")
         ,QUERY_FOR_ADAPTED_GERMPLASM("query_for_adapted_germplasm")
-        ;
+        ,FIELDBOOK_WEB("fieldbook_web")
+        ,NURSERY_MANAGER_FIELDBOOK_WEB("nursery_manager_fieldbook_web")
+        ,TRIAL_MANAGER_FIELDBOOK_WEB("trial_manager_fieldbook_web")
+        ,ONTOLOGY_BROWSER_FIELDBOOK_WEB("ontology_browser_fieldbook_web");
         
         String toolName;
         

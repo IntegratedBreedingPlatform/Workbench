@@ -71,9 +71,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     }
                 }
                 if (category.getSidebarCategoryName().equals("admin")) {
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"member","Project Member"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Project Location"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Project Method"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"member","Program Member"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Location"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Method"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"backup_ibdb","Backup Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"restore_ibdb","Restore from Backup File"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));

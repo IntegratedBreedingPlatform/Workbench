@@ -231,7 +231,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         nurseryListPreview = new NurseryListPreview(null);
         nurseryTrialTab = previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
 
-        rolesTab = previewTab.addTab(tblRoles, "Roles");
+        //rolesTab = previewTab.addTab(tblRoles, "Roles");
         
         previewTab.setImmediate(true);
     }
@@ -426,7 +426,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	tblRoles.setWidth("300px");
     	//hl.addComponent(tblRoles);
     	previewTab.setWidth("100%");
-        previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
+        //previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
         previewTab.addStyleName("preview-tab");
     	 
     	 vertRight.setExpandRatio(previewTab, 1.0f);

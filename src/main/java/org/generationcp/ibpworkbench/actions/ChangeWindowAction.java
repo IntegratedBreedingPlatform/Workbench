@@ -60,9 +60,10 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
         ,BREEDING_VIEW("breeding_view_wb")
+        ,BREEDING_GXE("breeding_gxe")
+        ,BV_META_ANALYSIS("bv_meta_analysis")
         ,MBDT("mbdt")
         ,MEMBER("member")
-        ,BREEDING_GXE("breeding_gxe")
         ;
         
         String windowName;

@@ -11,7 +11,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
-import org.generationcp.ibpworkbench.ui.window.AddBreedingMethodsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -45,10 +44,10 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     static {
         columnWidthsMap = new HashMap<String, Integer>();
         columnWidthsMap.put("mname",210);
-        columnWidthsMap.put("mgrp",80);
-        columnWidthsMap.put("mcode",75);
-        columnWidthsMap.put("mtype",70);
-        columnWidthsMap.put("fmdate",70);
+        columnWidthsMap.put("mgrp",128);
+        columnWidthsMap.put("mcode",120);
+        columnWidthsMap.put("mtype",115);
+        columnWidthsMap.put("fmdate",115);
         columnWidthsMap.put("selectBtn",60);
         columnWidthsMap.put("removeBtn",60);
     }
@@ -121,7 +120,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Methods</span>",Label.CONTENT_XHTML);
         availableMethodsTitle.setSizeFull();;
-        availableMethodsTitle.setStyleName("gcp-LocationsTableTitle");
+        availableMethodsTitle.setStyleName("gcp-content-header");
 
         addNewMethodBtn = new Button("Add new Method");
         addNewMethodBtn.setStyleName(Reindeer.BUTTON_LINK +  " loc-add-btn");
@@ -140,8 +139,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         root.addComponent(this.buildMethodFilterForm());
         root.addComponent(this.buildAvailableMethodsTable());
 
-        final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Project Methods</span>",Label.CONTENT_XHTML);
-        selectedLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+        final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Methods</span>",Label.CONTENT_XHTML);
+        selectedLocationsTitle.setStyleName("gcp-content-header");
 
         root.addComponent(selectedLocationsTitle);
         root.addComponent(this.buildSelectedMethodsTable());

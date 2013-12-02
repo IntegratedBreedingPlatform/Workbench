@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.gxe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,12 +19,15 @@ import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.oms.CvId;
+import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -63,7 +67,10 @@ public class GxeTable extends Table {
 	private List<String> columnNames = new ArrayList<String>(); 
 	private Map<Integer, String> factorLocalNames = new TreeMap<Integer, String>();
 	private Map<Integer, String> variateLocalNames = new TreeMap<Integer, String>();
+	private Map<String, Boolean> variatesCheckBoxState = new HashMap<String, Boolean>();
 
+	Map<String, Map<String, String>> heritabilityValues = new HashMap<String, Map<String, String>>();
+	
 	private String selectedEnvFactorName = "";
 
 	private int meansDataSetId;
@@ -73,10 +80,14 @@ public class GxeTable extends Table {
 	private List<Experiment> exps;
 
 	private VariableTypeList germplasmFactors = new VariableTypeList();
+	
+	private Property.ValueChangeListener gxeCheckBoxColumnListener;
 
-	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName) {
+	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, Map<String, Boolean> variatesCheckBoxState, Property.ValueChangeListener gxeCheckBoxColumnListener) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.studyDataManager = studyDataManager;
+		this.variatesCheckBoxState = variatesCheckBoxState;
+		this.gxeCheckBoxColumnListener = gxeCheckBoxColumnListener;
 		initializeTable();
 		fillTableWithDataset(studyId);
 	}
@@ -107,42 +118,17 @@ public class GxeTable extends Table {
 		Collections.sort(variatesList);
 		
 		
-		int cnt = 0;
-		TableItems[] rowHeaders = new TableItems[factors.size()+variates.size()+1];
-		rowHeaders[cnt] = new TableItems();
-		rowHeaders[cnt].setType(GxeTable.CELL_CHECKBOX_ALL);
-		rowHeaders[cnt].setLabel("SELECT ALL");
-		rowHeaders[cnt].setRowId(1);
-		rowHeaders[cnt].setValue(true);
-		
-		cnt++;
-		
-		for( String f : factorsList ){
-			rowHeaders[cnt] = new TableItems();
-			rowHeaders[cnt].setType(GxeTable.CELL_LABEL);
-			rowHeaders[cnt].setLabel(f);
-			rowHeaders[cnt].setRowId(1);
-			rowHeaders[cnt].setValue(true);
-			cnt++;
-		}
-		
-		for( String v : variatesList ){
-			rowHeaders[cnt] = new TableItems();
-			rowHeaders[cnt].setType(GxeTable.CELL_CHECKBOX_COLUMN);
-			rowHeaders[cnt].setLabel(v);
-			rowHeaders[cnt].setRowId(1);
-			rowHeaders[cnt].setValue(true);
-			cnt++;
-		}
-		
 		columnNames.add(" ");
 		columnNames.addAll(factorsList);
 		columnNames.addAll(variatesList);
-
+		
+		List<String> columnHeaders = new ArrayList<String>();
+		for (String s : columnNames){
+			columnHeaders.add(s.replace("_Means", ""));
+		}
+		
 		this.setVisibleColumns(columnNames.toArray(new Object[0]));
-		this.setColumnHeaders(columnNames.toArray(new String[0]));
-
-		createRow(1, rowHeaders, this.getContainerDataSource());
+		this.setColumnHeaders(columnHeaders.toArray(new String[0]));
 	
 	}
 
@@ -155,52 +141,17 @@ public class GxeTable extends Table {
 			if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX)) {
 
 				CheckBox cb = new CheckBox();
-				if (rowIndex != 1) {
-					cb.addStyleName("hidecheckbox");
-				}
 				cb.setCaption(tableItems[i].getLabel());
 				cb.setValue(tableItems[i].getValue());
+				cb.setImmediate(true);
+				cb.addListener(gxeCheckBoxColumnListener);
 
 				obj[i] = cb;
 			} else if (tableItems[i].getType() == (GxeTable.CELL_LABEL)) {
 				obj[i] = tableItems[i].getLabel();
-			} else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_ALL)) {
-				GxeCheckBoxGroup og = new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, rowIndex, this);
-				
-				og.setImmediate(true);
-
-				//og.addListener(new GxeAllCheckboxListener(columnNames.toArray(new String[0]), this
-				//		.getContainerDataSource()));
-
-				obj[i] = og;
 			}
 
-			// column checkbox
-			else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_COLUMN)) {
-				CheckBox cb = new CheckBox();
-				cb.setCaption(tableItems[i].getLabel());
-				cb.setValue(tableItems[i].getValue());
-
-				cb.setImmediate(true);
-
-				cb.addListener(new GxeColumnCheckboxListener(columnNames.toArray(new String[0]), this
-						.getContainerDataSource()));
-
-				obj[i] = cb;
-			}
-
-			// row checkbox
-			else if (tableItems[i].getType() == (GxeTable.CELL_CHECKBOX_ROW)) {
-				CheckBox cb = new CheckBox();
-				cb.setCaption(tableItems[i].getLabel());
-				cb.setValue(tableItems[i].getValue());
-
-				cb.setImmediate(true);
-
-				cb.addListener(new GxeRowCheckboxListener(columnNames.toArray(new String[0]), this.getContainerDataSource()));
-
-				obj[i] = cb;
-			}
+			
 		}
 
 		this.addItem(obj, rowIndex);
@@ -212,7 +163,70 @@ public class GxeTable extends Table {
 		Container container = this.getContainerDataSource();
 		container.removeAllItems();
 		
-		container.addContainerProperty(" ", GxeCheckBoxGroup.class, new GxeCheckBoxGroup(GxeTable.CELL_CHECKBOX_ALL, 0, null));
+		container.addContainerProperty(" ", CheckBox.class, null);
+		
+		
+		List<DataSet> plotDatasets = new ArrayList<DataSet>();
+		String trialInstanceFactorName = "";
+		try {
+			
+			List<DatasetReference> datasetRefs = studyDataManager.getDatasetReferences(studyId);
+			for (DatasetReference dsRef : datasetRefs){
+				DataSet ds = studyDataManager.getDataSet(dsRef.getId());
+				
+				if (ds.getDataSetType() != DataSetType.MEANS_DATA){
+					
+					Iterator<VariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
+					while(itrFactor.hasNext()){
+						VariableType f = itrFactor.next();
+						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+							trialInstanceFactorName = f.getLocalName(); break;
+						}
+					}
+					
+					Iterator<VariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
+					while(itrVariates.hasNext()){
+						if (itrVariates.next().getLocalName().contains("_Heritability")){
+							plotDatasets.add(ds); break;
+						}
+					}
+				
+					
+				}
+					
+			}
+			
+			
+			if (plotDatasets.size() > 0){
+				List<Experiment> exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
+				for (Experiment exp : exps){
+					
+					String envName = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
+					
+					Map<String, String> vals = new HashMap<String, String>();
+					
+					for (Entry<String, Boolean> entry : getVariatesCheckBoxState().entrySet()){
+						String name = entry.getKey().replace("_Means", "_Heritability");
+						Variable var = exp.getVariates().findByLocalName(name);
+						if (var != null){
+							//heritability value
+							vals.put(entry.getKey(), var.getValue().toString());
+						}	
+		
+					}
+					
+					heritabilityValues.put(envName, vals);
+					
+				}
+			}
+			
+		} catch (MiddlewareQueryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		};
+		
+		
+		
 		
 		HashSet<String> envNames = new HashSet<String>();
 		
@@ -230,26 +244,30 @@ public class GxeTable extends Table {
 					VariableTypeList trialEnvFactors = meansDataSet.getFactorsByPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 					
 					for(VariableType f : trialEnvFactors.getVariableTypes()){
-						//SITE_NAME
+						
+						//Always Show the TRIAL INSTANCE Factor
+						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+							container.addContainerProperty(f.getLocalName(), Label.class, "");
+							factorLocalNames.put(f.getRank(), f.getLocalName());
+						}
+						
+						//Selected Environment Name
 						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getRank(), f.getLocalName());
 						}
-						/**SITE_NO
-						if (f.getStandardVariable().getProperty().getName().equalsIgnoreCase("trial instance")){
-							container.addContainerProperty(f.getLocalName(), Label.class, "");
-							factorLocalNames.put(f.getId(), f.getLocalName());
-							
-						}**/
+						
 					}
 					
 					germplasmFactors.addAll(meansDataSet.getFactorsByPhenotypicType(PhenotypicType.GERMPLASM));
 					//get the Variates
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
-						container.addContainerProperty(v.getLocalName(), CheckBox.class, new CheckBox());
-						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate"))
-							variateLocalNames.put(v.getRank(), v.getLocalName());
+						container.addContainerProperty(v.getLocalName(), Label.class, null);
+						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate")){
+							if (variatesCheckBoxState.get(v.getLocalName()))
+								variateLocalNames.put(v.getRank(), v.getLocalName());
+						}
 					}
 					
 					
@@ -258,10 +276,11 @@ public class GxeTable extends Table {
 					//generate the rows
 					exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
 					
-					int rowCounter = 2;
+					int rowCounter = 3;
 					
 					for (Experiment exp : exps){
 						
+						String locationValTrial = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
 						String locationVal = exp.getFactors().findByLocalName(selectedEnvFactorName).getValue();
 						if (envNames.contains(locationVal)) continue;
 						
@@ -270,7 +289,7 @@ public class GxeTable extends Table {
 						
 						
 						row[0] = new TableItems();
-						row[0].setType(GxeTable.CELL_CHECKBOX_ALL);
+						row[0].setType(GxeTable.CELL_CHECKBOX);
 						row[0].setLabel(" ");
 						row[0].setValue(true);
 						
@@ -308,6 +327,12 @@ public class GxeTable extends Table {
 										,varKey
 											)
 										);
+								
+								String heritabilityVal = heritabilityValues.get(locationValTrial).get(x.getValue());
+								if (heritabilityVal != null){
+									meansData = String.format("%s (%s)", meansData, heritabilityVal);
+								}
+								
 							}catch(Exception e){
 								System.out.println("Error in getting the means data.");
 								e.printStackTrace();
@@ -315,7 +340,7 @@ public class GxeTable extends Table {
 							
 							row[cellCounter].setLabel(meansData);
 							row[cellCounter].setValue(true);
-							row[cellCounter].setType(GxeTable.CELL_CHECKBOX);
+							row[cellCounter].setType(GxeTable.CELL_LABEL);
 							cellCounter++;
 						}
 						
@@ -331,6 +356,8 @@ public class GxeTable extends Table {
 			e.printStackTrace();
 		}
 		
+		
+		
 	}
 
 
@@ -340,10 +367,10 @@ public class GxeTable extends Table {
 		
 		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
 		
-		for (Integer i = 1; i < obj.length; i++){
+		for (Integer i = 0; i < obj.length; i++){
 			Property cb_column = this.getContainerProperty(obj[i], " ");
 			Property location_column = this.getContainerProperty(obj[i], selectedEnvFactorName);
-			if(((GxeCheckBoxGroup) cb_column.getValue()).getValue()){
+			if((Boolean)((CheckBox) cb_column.getValue()).getValue()){
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
 				environmentLabel.setActive(true);
@@ -356,22 +383,7 @@ public class GxeTable extends Table {
 		return gxeEnvironment;
 		
 	}
-	
-	public List<Trait> getSelectedTraits(){
-		List<Trait> traits = new ArrayList<Trait>();
-		Object obj = this.getContainerDataSource().getItemIds().toArray()[0];
-		for (Map.Entry<Integer, String> v : variateLocalNames.entrySet()){
-			Property p = this.getContainerProperty(obj, v.getValue());
-			if((Boolean) ((CheckBox) p.getValue()).getValue()){
-				Trait t = new Trait();
-				t.setName(v.getValue());
-				t.setActive(true);
-				traits.add(t);
-			}
-		}
-		 
-		return traits;
-	}
+
 
 	public int getMeansDataSetId() {
 		return meansDataSetId;
@@ -396,6 +408,16 @@ public class GxeTable extends Table {
 	
 	public VariableTypeList getEntryCodeFactor() {
 		return meansDataSet.getFactorsByProperty(TermId.ENTRY_NUMBER_STORAGE.getId());
+	}
+
+
+	public Map<String, Boolean> getVariatesCheckBoxState() {
+		return variatesCheckBoxState;
+	}
+
+
+	public void setVariatesCheckBoxState(Map<String, Boolean> variatesCheckBoxState) {
+		this.variatesCheckBoxState = variatesCheckBoxState;
 	}
 }
 

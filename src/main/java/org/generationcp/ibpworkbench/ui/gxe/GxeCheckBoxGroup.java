@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.gxe;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -8,11 +9,13 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 
 	private Boolean value = true;
 	private GxeTable table;
+	private Property.ValueChangeListener listener;
 	
-	public GxeCheckBoxGroup(Integer cellType, Integer rowIndex, GxeTable table) {
+	public GxeCheckBoxGroup(Integer cellType, Integer rowIndex, GxeTable table, Property.ValueChangeListener listener) {
 		super();
 		// TODO Auto-generated constructor stub
 		this.table = table;
+		this.listener = listener;
 		
 		if (rowIndex == 1){
 			CheckBox cbRow = new CheckBox("All Rows");
@@ -33,6 +36,7 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 			CheckBox cb = new CheckBox(" ");
 			cb.setValue(true);
 			cb.addListener(new GxeCheckBoxGroupListener(null, table, cb));
+			cb.addListener(listener);
 			cb.setImmediate(true);
 			value = true;
 			this.addComponent(cb);

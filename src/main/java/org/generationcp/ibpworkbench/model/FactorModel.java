@@ -42,6 +42,7 @@ public class FactorModel implements Serializable{
     private String scname;
     private Integer tmethid;
     private String tmname;
+    private String dataType;
     
     
     /**
@@ -218,6 +219,16 @@ public class FactorModel implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public String getDataType() {
+		return dataType;
+	}
+
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 
 }

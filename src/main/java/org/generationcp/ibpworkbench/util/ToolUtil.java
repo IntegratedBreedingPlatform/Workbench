@@ -270,6 +270,18 @@ public class ToolUtil {
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName,
                                                                              localDbName, username, password);
         } else if (Util.isOneOf(tool.getToolName()
+                                ,ToolName.fieldbook_web.name()
+                                ,ToolName.nursery_manager_fieldbook_web.name()
+                                ,ToolName.trial_manager_fieldbook_web.name()
+                                ,ToolName.ontology_browser_fieldbook_web.name()
+                                )) {
+            // Fieldbook web apps
+            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/Fieldbook/WEB-INF/classes/IBPDatasource.properties";
+            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName,
+                    username, password);
+        }
+
+        else if (Util.isOneOf(tool.getToolName()
                                 ,ToolName.bm_list_manager.name()
                                 ,ToolName.crossing_manager.name()
                                 ,ToolName.germplasm_import.name()

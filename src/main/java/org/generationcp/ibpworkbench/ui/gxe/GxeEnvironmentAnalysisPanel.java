@@ -12,21 +12,34 @@
 
 package org.generationcp.ibpworkbench.ui.gxe;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.StudiesTabCloseListener;
+import org.generationcp.ibpworkbench.util.GxeInput;
+import org.generationcp.ibpworkbench.util.GxeUtility;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -39,7 +52,11 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -47,6 +64,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -56,7 +74,9 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -70,27 +90,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 
     private static final long serialVersionUID = 1L;
     
-    private Label lblSelectDataForAnalysisHeader;
-    private Label lblSelectDataForAnalysisDescription;
-    private Label lblEnvironmentFactorHeader;
-    private Label lblEnvironmentFactorDescription;
-    private Label lblEnvironmentGroupsHeader;
-    private Label lblEnvironmentGroupsDescription;
-    private Label lblEnvironmentGroupsSpecify;
-    private Label lblReviewSelectedDataset;
-    private Label lblFactorTableHeader;
-    private Label lblFactorTableDescription;
-    private Label lblVariateTableHeader;
-    private Label lblVariateTableDescription;
-    
-    private Label lblStudyTreeDetailTitle;
-    
-    private VerticalLayout generalLayout;
-    
-    private HorizontalLayout specifyEnvironmentFactorLayout;
-    private HorizontalLayout specifyEnvironmentGroupsLayout;
-    
-    private VerticalLayout datasetVariablesDetailLayout;
+    private GxeTable gxeTable;
+    private Table selectTraitsTable;
     
     private Project currentProject;
 
@@ -101,14 +102,22 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     private Integer currentDataSetId;
     
     private String currentDatasetName;
-
-    private Button btnCancel;
-    private Button btnNext;
-    private Component buttonArea;
-    private Select selectSpecifyEnvironment;
-    private Select selectSpecifyEnvironmentGroups;
     
+    private Role role;
+
+    private String selectedEnvFactorName;
+    private String selectedEnvGroupFactorName;
+    
+    private Button btnCancel;
+    private Button btnRunBreedingView;
     private Map<String, Boolean> variatesCheckboxState;
+    private GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel;
+    
+    @Autowired
+	private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+	private ToolUtil toolUtil;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -116,22 +125,47 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private GxeComponentPanel gxeAnalysisComponentPanel;
-    
-	private StudyDataManager studyDataManager;
+    private StudyDataManager studyDataManager;
     
     private ManagerFactory managerFactory;
-    
-    private List<String> environmentNames = new ArrayList<String>();
-    private TrialEnvironments trialEnvironments = null;
 
-    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeComponentPanel gxeAnalysisComponentPanel) {
+	private Label lblDataSelectedForAnalysisHeader;
+	private Label lblDatasetName;
+	private Label txtDatasetName;
+	private Label lblDatasourceName;
+	private Label txtDatasourceName;
+	private Label lblSelectedEnvironmentFactor;
+	private Label txtSelectedEnvironmentFactor;
+	private Label lblSelectedEnvironmentGroupFactor;
+	private Label txtSelectedEnvironmentGroupFactor;
+	private Label lblAdjustedMeansHeader;
+	private Label lblAdjustedMeansDescription;
+	private Label lblSelectTraitsForAnalysis;
+	private CheckBox chkSelectAllEnvironments;
+	private CheckBox chkSelectAllTraits;
+	private Property.ValueChangeListener selectAllEnvironmentsListener;
+	private Property.ValueChangeListener selectAllTraitsListener;
+	
+	
+    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,
+    		Project currentProject, 
+    		Study study,  
+    		GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel, 
+    		String selectedEnvFactorName,
+    		String selectedEnvGroupFactorName,
+    		Map<String, Boolean> variatesCheckboxState) {
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;
-        this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
+        this.gxeSelectEnvironmentPanel = gxeSelectEnvironmentPanel;
+        this.selectedEnvFactorName = selectedEnvFactorName;
+        this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
+        this.variatesCheckboxState = variatesCheckboxState;
         
         setWidth("100%");
+        setSpacing(true);
+		setMargin(true);
+		setCaption(study.getName());
         
     }
     
@@ -174,401 +208,392 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     public void setCurrentDatasetName(String currentDatasetName) {
         this.currentDatasetName = currentDatasetName;
     }
+    
+    public StudyDataManager getStudyDataManager() {
+    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+		return this.studyDataManager;
+	}
+
+	public Map<String, Boolean> getVariatesCheckboxState() {
+		return variatesCheckboxState;
+	}
+	
+	public void setVariatesCheckboxState(HashMap<String, Boolean> hashMap) {
+			this.variatesCheckboxState = hashMap;
+	}
+
+	public GxeTable getGxeTable() {
+		return gxeTable;
+	}
+
+	public void setGxeTable(GxeTable gxeTable) {
+		this.gxeTable = gxeTable;
+	}
+
+	public String getSelectedEnvFactorName() {
+		return selectedEnvFactorName;
+	}
+
+	public void setSelectedEnvFactorName(String selectedEnvFactorName) {
+		this.selectedEnvFactorName = selectedEnvFactorName;
+	}
+	
+	public String getSelectedEnvGroupFactorName() {
+		return selectedEnvGroupFactorName;
+	}
+
+	public void setSelectedEnvGroupFactorName(String selectedEnvGroupFactorName) {
+		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
+	}
 
     protected void initializeComponents() {
     	
-    	setVariatesCheckboxState(new HashMap<String, Boolean>());
+    	lblDataSelectedForAnalysisHeader = new Label();
+    	lblDataSelectedForAnalysisHeader.setStyleName("gcp-content-header");
+    	lblDatasetName = new Label();
+    	txtDatasetName = new Label();
+    	lblDatasourceName = new Label();
+    	txtDatasourceName = new Label();
+    	lblSelectedEnvironmentFactor = new Label();
+    	txtSelectedEnvironmentFactor = new Label();
+    	lblSelectedEnvironmentGroupFactor = new Label();
+    	txtSelectedEnvironmentGroupFactor = new Label();
     	
-    	lblSelectDataForAnalysisHeader = new Label();
-    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-header");
-    	lblSelectDataForAnalysisDescription = new Label();
-    	lblEnvironmentFactorHeader = new Label();
-    	lblEnvironmentFactorHeader.setStyleName("gcp-content-header");
-    	lblEnvironmentFactorDescription = new Label();
-    	lblEnvironmentGroupsHeader = new Label();
-    	lblEnvironmentGroupsHeader.setStyleName("gcp-content-header");
-    	lblEnvironmentGroupsDescription = new Label();
-    	lblEnvironmentGroupsSpecify = new Label();
-    	lblReviewSelectedDataset = new Label();
-    	lblReviewSelectedDataset.setStyleName("gcp-content-header");
-    	lblFactorTableHeader = new Label();
-    	lblFactorTableHeader.setStyleName("gcp-table-header-bold");
-    	lblFactorTableDescription = new Label();
-    	lblVariateTableHeader = new Label();
-    	lblVariateTableHeader.setStyleName("gcp-table-header-bold");
-    	lblVariateTableDescription = new Label();
-        
-        generalLayout = new VerticalLayout();
-        generalLayout.setSpacing(true);
-        generalLayout.setMargin(true);
-        
-        specifyEnvironmentFactorLayout = new HorizontalLayout();
-        specifyEnvironmentFactorLayout.setSpacing(true);
-        specifyEnvironmentGroupsLayout = new HorizontalLayout();
-        specifyEnvironmentGroupsLayout.setSpacing(true);
-        datasetVariablesDetailLayout = new VerticalLayout();
-        
-
-        lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-title");
-
-        final Table factors = initializeFactorsTable();
-        factors.setImmediate(true);
-        final Table variates = initializeVariatesTable();
-        variates.setImmediate(true);
-        
-        selectSpecifyEnvironment = new Select();
-        selectSpecifyEnvironment.setSizeFull();
-        selectSpecifyEnvironment.setImmediate(true);
-        selectSpecifyEnvironment.addListener(new Property.ValueChangeListener() {
+    	chkSelectAllEnvironments = new CheckBox("Select all environments", true);
+    	chkSelectAllEnvironments.setImmediate(true);
+    	chkSelectAllTraits = new CheckBox("Select all traits", true);
+    	chkSelectAllTraits.setImmediate(true);
+    	
+    	lblAdjustedMeansHeader  = new Label();
+    	lblAdjustedMeansHeader.setStyleName("gcp-content-header");
+    	lblAdjustedMeansDescription  = new Label();
+    	lblSelectTraitsForAnalysis = new Label();
+    	
+    	selectAllEnvironmentsListener = new Property.ValueChangeListener() {
 			
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				
-				
-				try{
-					factors.removeAllItems();
-					variates.removeAllItems();
-					environmentNames.clear();
-				}catch(Exception e){}
-					
-				 try {
-						trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
-						for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
-							if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
-						}
-			        } catch (MiddlewareQueryException e) {
-						
-						e.printStackTrace();
-					}
-			
-				populateFactorsVariatesByDataSetId(currentStudy, factors, variates);
+				for (Iterator<?> itr = gxeTable.getItemIds().iterator(); itr.hasNext();){
+					CheckBox chk = (CheckBox) gxeTable.getItem(itr.next()).getItemProperty((Object) " ").getValue();
+					chk.setValue((Boolean) event.getProperty().getValue());
+				}
 				
 			}
-		});
-        
-        selectSpecifyEnvironmentGroups = new Select();
-        selectSpecifyEnvironmentGroups.setSizeFull();
-        
-        populateFactorsVariatesByDataSetId(currentStudy, factors, variates);
-        
-        for (Iterator<?> i = selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();){
-        	selectSpecifyEnvironment.select(i.next());
-        	//break;
-        }
-        
-        buttonArea = layoutButtonArea();
-        
-        generalLayout.addComponent(lblSelectDataForAnalysisHeader);
-        generalLayout.addComponent(lblSelectDataForAnalysisDescription);
-        
-        generalLayout.addComponent(lblEnvironmentFactorHeader);
-        	specifyEnvironmentFactorLayout.addComponent(lblEnvironmentFactorDescription);
-        	specifyEnvironmentFactorLayout.addComponent(selectSpecifyEnvironment);
-        generalLayout.addComponent(specifyEnvironmentFactorLayout);
-        
-        generalLayout.addComponent(lblEnvironmentGroupsHeader);
-        generalLayout.addComponent(lblEnvironmentGroupsDescription);
-        	specifyEnvironmentGroupsLayout.addComponent(lblEnvironmentGroupsSpecify);
-        	specifyEnvironmentGroupsLayout.addComponent(selectSpecifyEnvironmentGroups);
-        generalLayout.addComponent(specifyEnvironmentGroupsLayout);	
-        	
-        generalLayout.addComponent(lblReviewSelectedDataset);
-        generalLayout.addComponent(lblFactorTableHeader);
-        generalLayout.addComponent(lblFactorTableDescription);
-        generalLayout.addComponent(factors);
-        generalLayout.addComponent(lblVariateTableHeader);
-        generalLayout.addComponent(lblVariateTableDescription);
-        generalLayout.addComponent(variates);
-        
-        generalLayout.addComponent(datasetVariablesDetailLayout);
-        generalLayout.addComponent(buttonArea);
-        
-        environmentNames.clear();
-        try {
-			trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
-			for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
-				if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
-			}
-        } catch (MiddlewareQueryException e) {
+		};
+    	
+    	selectAllTraitsListener = new Property.ValueChangeListener() {
 			
-			e.printStackTrace();
-		}
-        
-        addComponent(generalLayout);
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				
+				for (Iterator<?> itr = selectTraitsTable.getContainerPropertyIds().iterator(); itr.hasNext();){
+					CheckBox chk = (CheckBox) selectTraitsTable.getItem(1).getItemProperty(itr.next()).getValue();
+					chk.setValue(event.getProperty().getValue());
+				}
+				
+				
+			}
+		};
+    	
+    	
+    	btnRunBreedingView = new Button();
+		btnCancel = new Button();    	
         
     }
-    
-    protected void initializeLayout() {
-        
-        generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_LEFT);
+
+	protected void initializeLayout() {
+		
+		GridLayout selectedInfoLayout = new GridLayout(4, 3);
+        selectedInfoLayout.setSizeUndefined();
+        selectedInfoLayout.setWidth("100%");
+        selectedInfoLayout.setSpacing(true);
+        selectedInfoLayout.setMargin(true, false, true, false);
+        selectedInfoLayout.setColumnExpandRatio(0, 1);
+        selectedInfoLayout.setColumnExpandRatio(1, 3);
+        selectedInfoLayout.setColumnExpandRatio(2, 2);
+        selectedInfoLayout.setColumnExpandRatio(3, 1);
+        selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
+        selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
+        selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
+        selectedInfoLayout.addComponent(lblDatasourceName, 0, 2);
+        selectedInfoLayout.addComponent(txtDatasourceName, 1, 2);
+        selectedInfoLayout.addComponent(lblSelectedEnvironmentFactor, 2, 1);
+        selectedInfoLayout.addComponent(txtSelectedEnvironmentFactor, 3, 1);
+        selectedInfoLayout.addComponent(lblSelectedEnvironmentGroupFactor , 2, 2);
+        selectedInfoLayout.addComponent(txtSelectedEnvironmentGroupFactor, 3, 2);
+		
+		addComponent(selectedInfoLayout);
+		addComponent(lblAdjustedMeansHeader);
+		addComponent(lblAdjustedMeansDescription);
+		
+		List<DataSet> ds = null;
+		try {
+			ds = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.MEANS_DATA);
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+		
+		if (ds != null && ds.size() > 0){
+			setCaption(ds.get(0).getName());
+			txtDatasetName.setValue(ds.get(0).getName());
+			txtDatasourceName.setValue(currentStudy.getName());
+			txtSelectedEnvironmentFactor.setValue(getSelectedEnvFactorName());
+			txtSelectedEnvironmentGroupFactor.setValue(getSelectedEnvGroupFactorName());
+			
+			Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener(){
+
+				@Override
+				public void valueChange(ValueChangeEvent event) {
+					Boolean val = (Boolean) event.getProperty().getValue();
+					if (val == false){
+						chkSelectAllEnvironments.removeListener(selectAllEnvironmentsListener);
+						chkSelectAllEnvironments.setValue(false);
+						chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
+					}
+					
+				}
+				
+			};
+			
+			
+			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState, envCheckBoxListener));
+			getGxeTable().setHeight("300px");
+			addComponent(getGxeTable());
+			addComponent(chkSelectAllEnvironments);
+			setExpandRatio(getGxeTable(), 1.0F);
+			
+		}else{
+			Label temp = new Label("&nbsp;&nbsp;No means dataset available for this study (" + currentStudy.getName().toString() + ")" );
+			temp.setContentMode(Label.CONTENT_XHTML);
+			addComponent(temp);
+			setExpandRatio(temp, 1.0F);
+		}
+		
+		addComponent(lblSelectTraitsForAnalysis);
+		
+		selectTraitsTable = new Table();
+		IndexedContainer container = new IndexedContainer();
+		
+		Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				Boolean val = (Boolean) event.getProperty().getValue();
+				
+				if (val == false){
+					chkSelectAllTraits.removeListener(selectAllTraitsListener);
+					chkSelectAllTraits.setValue(false);
+					chkSelectAllTraits.addListener(selectAllTraitsListener);
+				}
+				
+			}
+			
+		};
+		
+		List<CheckBox> cells = new ArrayList<CheckBox>();
+		List<String> columnNames = new ArrayList<String>();
+		for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
+			if (trait.getValue()){
+				container.addContainerProperty(trait.getKey(), CheckBox.class, null);
+				columnNames.add(trait.getKey().replace("_Means", ""));
+				CheckBox chk = new CheckBox("", true);
+				chk.setImmediate(true);
+				chk.addListener(traitCheckBoxListener);
+				cells.add(chk);
+			}
+		}
+		selectTraitsTable.setContainerDataSource(container);
+		selectTraitsTable.addItem(cells.toArray(new Object[0]), 1);
+		selectTraitsTable.setHeight("80px");
+		selectTraitsTable.setWidth("100%");
+		selectTraitsTable.setColumnHeaders(columnNames.toArray(new String[0]));
+		
+		addComponent(selectTraitsTable);
+		setExpandRatio(selectTraitsTable, 1.0F);
+		addComponent(chkSelectAllTraits);
+		
+        addComponent(layoutButtonArea());
         
     }
     
     protected void initialize() {
+    
     }
 
     protected void initializeActions() {
-        btnCancel.addListener(new Button.ClickListener() {
-	
-			private static final long serialVersionUID = 4719456133687409089L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				//SelectEnvironmentForGxePanel.this.getParent().removeWindow(SelectEnvironmentForGxePanel.this);
-			}
-		});
-        btnNext.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 8377610125826448065L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
-					gxeAnalysisComponentPanel.generateTabContent(currentStudy, selectSpecifyEnvironment.getValue().toString());
-				}
-				
-			}
-		});
-
-    }
-    
-    protected void initializeSelectEnvironment() {
-        
-      
-    }
-
-    protected Table initializeFactorsTable() {
-        
-        Table tblFactors = new Table();
-        tblFactors.setImmediate(true);
-        tblFactors.setWidth("100%");
-        tblFactors.setHeight("100%");
-        
-        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
-        container.setBeanIdProperty("id");
-        tblFactors.setContainerDataSource(container);
-        
-        String[] columns = new String[] {"name", "description"};
-        String[] columnHeaders = new String[] {"Name", "Description"};
-        tblFactors.setVisibleColumns(columns);
-        tblFactors.setColumnHeaders(columnHeaders);
-        return tblFactors;
-    }
-    
-    protected Table initializeVariatesTable() {
-        
-        final Table tblVariates = new Table();
-        tblVariates.setImmediate(true);
-        tblVariates.setWidth("100%");
-        tblVariates.setHeight("100%");
-        tblVariates.setColumnExpandRatio("", 0.5f);
-        tblVariates.setColumnExpandRatio("name", 1);
-        tblVariates.setColumnExpandRatio("description", 4);
-        tblVariates.setColumnExpandRatio("testedin", 1);
-        
-        tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
-
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-				
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-				final VariateModel vm = container.getItem(itemId).getBean();
-				
-				final CheckBox checkBox = new CheckBox();
-				checkBox.setImmediate(true);
-				checkBox.setVisible(true);
-				checkBox.addListener(new Property.ValueChangeListener() {
-					
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void valueChange(final ValueChangeEvent event) {
-						Boolean val = (Boolean) event.getProperty()
-								.getValue();
-						getVariatesCheckboxState().put(vm.getName(), val);
-						vm.setActive(val);
-					
-					}
-				});
-
-				if (vm.getActive()) {
-					checkBox.setValue(true);
-				} else {
-					checkBox.setValue(false);
-				}
-				
-				return checkBox;
-				
-			}
-        	
-        });
+		//Generate Buttons
 		
-        
-        tblVariates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
+		btnRunBreedingView.addListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -7090745965019240566L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final ClickEvent buttonClickEvent = event;
+				launchBV(false,buttonClickEvent.getComponent().getWindow());
+						
+			}
+			
+			private void launchBV(boolean isXLS,final Window windowSource) {
+				String inputDir = "";
+				Tool breedingViewTool = null;
+				try{
+					breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+					inputDir = toolUtil.getInputDirectoryForTool(currentProject, breedingViewTool);
+				}catch(MiddlewareQueryException ex){
+					
+				}
+
+				String inputFileName = "";
+				
+				if (currentStudy == null){
+					MessageNotifier
+					.showError(windowSource,
+							"Cannot export dataset",
+							"No dataset is selected. Please open a study that has a dataset.");
+					
+					return;
+				}
+				
+				
+				if (gxeTable != null) {
+		
+					
+					inputFileName = String.format("%s_%s_%s", currentProject.getProjectName().trim(), gxeTable.getMeansDataSetId(), gxeTable.getMeansDataSet().getName());
+					GxeEnvironment gxeEnv = gxeTable.getGxeEnvironment();
+					
+					List<Trait> selectedTraits = new ArrayList<Trait>();
+					Iterator<?> itr = selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
+					while (itr.hasNext()){
+						Object propertyId = itr.next();
+						CheckBox cb = (CheckBox)selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
+						if ((Boolean)cb.getValue()){
+							Trait t = new Trait();
+							t.setName(propertyId.toString());
+							t.setActive(true);
+							selectedTraits.add(t);
+						}
+					}
+					
+					File datasetExportFile = null;
+					
+					if (isXLS)
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
+					else
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
+					
+					
+					GxeInput gxeInput =  new GxeInput(currentProject, "", 0, 0, "", "", "", "");
+					
+					if (isXLS)
+						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
+					else
+						gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
+				
+					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
+					gxeInput.setTraits(selectedTraits);
+					gxeInput.setEnvironment(gxeEnv);
+					Genotypes genotypes = new Genotypes();
+					
+					try {
+						String strGenoType;
+						strGenoType = studyDataManager.getLocalNameByStandardVariableId(gxeTable.getMeansDataSetId(), 8230);
+						if (strGenoType != null && strGenoType != "") genotypes.setName(strGenoType);
+					} catch (MiddlewareQueryException e1) {
+						genotypes.setName("G!");
+					}
+	
+					gxeInput.setGenotypes(genotypes);
+					gxeInput.setEnvironmentName(gxeTable.getEnvironmentName());
+					gxeInput.setBreedingViewProjectName(currentProject.getProjectName());
+					
+					GxeUtility.generateXmlFieldBook(gxeInput);
+					
+					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
+		            Runtime runtime = Runtime.getRuntime();
+		            
+		            try {
+						runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
+					
+						MessageNotifier
+						.showMessage(windowSource,
+								"GxE files saved",
+								"Successfully generated the means dataset and xml input files for breeding view.");
+		            } catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						MessageNotifier
+						.showMessage(windowSource,
+								"Cannot launch " + absoluteToolFile.getName(),
+								"But it successfully created GxE Excel and XML input file for the breeding_view!");
+					}
+				}
+			}
+		});
+		
+		
+		btnCancel.addListener(new Button.ClickListener() {
+			
 			private static final long serialVersionUID = 1L;
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
+			public void buttonClick(ClickEvent event) {
 				
-					BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
-					VariateModel vm = container.getItem(itemId).getBean();
-				
-					return getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+				TabSheet tabSheet = gxeSelectEnvironmentPanel.getGxeAnalysisComponentPanel()
+					.getStudiesTabsheet();
+				tabSheet.replaceComponent(tabSheet.getSelectedTab(), gxeSelectEnvironmentPanel);
 					
-			}});
-        
-        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
-        container.setBeanIdProperty("id");
-        tblVariates.setContainerDataSource(container);
-        
-        String[] columns = new String[] {"","displayName", "description","testedin"};
-        String[] columnHeaders = new String[] {"","Name", "Description","Tested In"};
-        tblVariates.setVisibleColumns(columns);
-        tblVariates.setColumnHeaders(columnHeaders);
-        return tblVariates;
+				
+				/**try {
+			        
+					
+				
+	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
+	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
+				} catch (Exception e) {
+					
+		            if(e.getCause() instanceof InternationalizableException) {
+		                InternationalizableException i = (InternationalizableException) e.getCause();
+		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+		            }
+		            return;
+				}**/
+			}
+		});
+		
+		chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
+		
+		chkSelectAllTraits.addListener(selectAllTraitsListener);
+
     }
-   
+    
+
     
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        
         
         buttonLayout.setSizeFull();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true);
 
-        btnCancel = new Button();
-        btnNext = new Button();
-        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        btnRunBreedingView.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
         spacer.setSizeFull();
         
         buttonLayout.addComponent(spacer);
         buttonLayout.setExpandRatio(spacer,1.0F);
         buttonLayout.addComponent(btnCancel);
-        buttonLayout.addComponent(btnNext);
+        buttonLayout.addComponent(btnRunBreedingView);
 
         return buttonLayout;
     }
     
-    public void populateFactorsVariatesByDataSetId(Study study, Table factors, Table variates) {
-
-        try {
-            
-        	
-            DataSet ds = studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).get(0);
-            if (ds==null) return;
-            
-            List<FactorModel> factorList = new ArrayList<FactorModel>();
-            List<VariateModel> variateList = new ArrayList<VariateModel>();
-            
-            for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
-            	
-            	FactorModel fm = new FactorModel();
-            	fm.setId(factor.getRank());
-            	fm.setName(factor.getLocalName());
-            	fm.setScname(factor.getStandardVariable().getScale().getName());
-            	fm.setScaleid(factor.getStandardVariable().getScale().getId());
-            	fm.setTmname(factor.getStandardVariable().getMethod().getName());
-            	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
-            	fm.setTrname(factor.getStandardVariable().getName());
-            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
-            	fm.setDescription(factor.getLocalDescription());
-            	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
-            		factorList.add(fm);
-            	}
-            	
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
-            		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-            		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
-	            		selectSpecifyEnvironment.addItem(factor.getLocalName());
-            			selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
-            	}
-            }
-            
-            for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
-            	
-            	VariateModel vm = new VariateModel();
-            	vm.setId(variate.getRank());
-            	vm.setVariableId(variate.getId());
-            	vm.setName(variate.getLocalName());
-            	vm.setDisplayName(variate.getLocalName().replace("_Means", ""));
-            	vm.setScname(variate.getStandardVariable().getScale().getName());
-            	vm.setScaleid(variate.getStandardVariable().getScale().getId());
-            	vm.setTmname(variate.getStandardVariable().getMethod().getName());
-            	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-            	vm.setTrname(variate.getStandardVariable().getName());
-            	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
-            	vm.setDescription(variate.getLocalDescription());
-            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate")){
-            		vm.setActive(true);
-            		variateList.add(vm);
-            	}
-            	
-            }
-            
-           
-            this.setCurrentDatasetName(ds.getName());
-            this.setCurrentDataSetId(ds.getId());
-            
-            updateFactorsTable(factorList, factors);
-            updateVariatesTable(variateList, factors, variates);
-
-        }
-        catch (MiddlewareQueryException e) {
-            
-        }
-    }
+  
     
-    private void updateFactorsTable(List<FactorModel> factorList, Table factors){
-    	   Object[] oldColumns = factors.getVisibleColumns();
-           String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-           
-           BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
-           container.setBeanIdProperty("id");
-           factors.setContainerDataSource(container);
-           
-           for (FactorModel f : factorList ){
-        	   container.addBean(f);
-           }
-           
-           factors.setContainerDataSource(container);
-           
-           factors.setVisibleColumns(columns);
-    }
-    
-    
-    private void updateVariatesTable(List<VariateModel> variateList,Table factors, Table variates){
- 	   
-        
-        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
-        container.setBeanIdProperty("id");
-        variates.setContainerDataSource(container);
-        
-        for (VariateModel v : variateList ){
-     	   container.addBean(v);
-        }
-        
-        variates.setContainerDataSource(container);
-        
-        variates.setVisibleColumns(new String[]{ "", "displayName", "description","testedin"});
-        variates.setColumnHeaders(new String[]{ "", "Name", "Description", "Tested In"});
-        
- }
+  
 
     protected void assemble() {
         initialize();
@@ -595,66 +620,24 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     @Override
     public void updateLabels() {
         messageSource.setCaption(btnCancel, Message.CANCEL);
-        messageSource.setCaption(btnNext, Message.NEXT);
-        messageSource.setValue(lblSelectDataForAnalysisHeader, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
-        messageSource.setValue(lblSelectDataForAnalysisDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
-        messageSource.setValue(lblEnvironmentFactorHeader, Message.GXE_ENVIRONMENT_FACTOR_HEADER);
-        messageSource.setValue(lblEnvironmentFactorDescription, Message.GXE_ENVIRONMENT_FACTOR_DESCRIPTION);
-        messageSource.setValue(lblEnvironmentGroupsHeader, Message.GXE_ENVIRONMENT_GROUPS_HEADER);
-        messageSource.setValue(lblEnvironmentGroupsDescription, Message.GXE_ENVIRONMENT_GROUPS_DESCRIPTION);
-        messageSource.setValue(lblEnvironmentGroupsSpecify, Message.GXE_ENVIRONMENT_GROUPS_SPECIFY);
-        messageSource.setValue(lblReviewSelectedDataset, Message.GXE_REVIEW_SELECTED_DATASET);
-        messageSource.setValue(lblFactorTableHeader, Message.GXE_FACTOR_TABLE_HEADER);
-        messageSource.setValue(lblFactorTableDescription, Message.GXE_FACTOR_TABLE_DESCRIPTION);
-        messageSource.setValue(lblVariateTableHeader, Message.GXE_VARIATE_TABLE_HEADER);
-        messageSource.setValue(lblVariateTableDescription, Message.GXE_VARIATE_TABLE_DESCRIPTION);
+        messageSource.setCaption(btnRunBreedingView, Message.LAUNCH_BREEDING_VIEW);
+        messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.GXE_SELECTED_INFO);
+        messageSource.setValue(lblDatasetName , Message.BV_DATASET_NAME);
+        messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
+        messageSource.setValue(lblSelectedEnvironmentFactor, Message.GXE_SELECTED_ENVIRONMENT_FACTOR);
+        messageSource.setValue(lblSelectedEnvironmentGroupFactor, Message.GXE_SELECTED_ENVIRONMENT_GROUP_FACTOR);
+        messageSource.setValue(lblAdjustedMeansHeader , Message.GXE_ADJUSTED_MEANS_HEADER);
+        messageSource.setValue(lblAdjustedMeansDescription  , Message.GXE_ADJUSTED_MEANS_DESCRIPTION);
+        messageSource.setValue(lblSelectTraitsForAnalysis, Message.GXE_SELECT_TRAITS_FOR_ANALYSIS);
     }
 
-    public StudyDataManager getStudyDataManager() {
-    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
-		return this.studyDataManager;
+    @Override
+	public Object getData(){
+		return this.getCurrentStudy();
+		
 	}
 
-	public Map<String, Boolean> getVariatesCheckboxState() {
-		return variatesCheckboxState;
-	}
-
-	public void setVariatesCheckboxState(Map<String, Boolean> variatesCheckboxState) {
-		this.variatesCheckboxState = variatesCheckboxState;
-	}
-	
-	private String getTestedIn(String envFactorName, List<String> environmentNames , Integer variableId , Integer meansDataSetId ,TrialEnvironments trialEnvironments){
-		
-		
-		
-		
-		int counter = 0;
-		
-		try {
-			for (String environmentName : environmentNames){
-				long count = studyDataManager.countStocks(
-						meansDataSetId
-					,trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName).getId()
-					,variableId
-						);
-				if (count > 0) counter++;
-			
-			}
-			 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		try{
-			return String.format("%s of %s", counter, environmentNames.size());
-		}catch (Exception e){
-			return "";
-		}
-		
-		
-		 
-		
-	}
+    
 
 
 }

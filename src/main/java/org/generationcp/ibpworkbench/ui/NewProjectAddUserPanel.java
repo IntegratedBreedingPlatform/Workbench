@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Collection;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -103,11 +104,13 @@ public class NewProjectAddUserPanel extends Panel {
 
     protected void initializeLayout() {
         setImmediate(false);
+        setStyleName(Reindeer.PANEL_LIGHT);
         setWidth("675px");
         
         userForm.setHeight("320px");
         
         vl.setMargin(true);
+        vl.setSpacing(true);
         vl.setComponentAlignment(userForm, Alignment.MIDDLE_CENTER);
         vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
         

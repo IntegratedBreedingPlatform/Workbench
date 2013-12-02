@@ -31,6 +31,7 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
@@ -44,11 +45,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -129,7 +132,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;
-        this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
+        this.setGxeAnalysisComponentPanel(gxeAnalysisComponentPanel);
         
         setWidth("100%");
         
@@ -256,7 +259,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         for (Iterator<?> i = selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();){
         	selectSpecifyEnvironment.select(i.next());
-        	//break;
+        	break;
         }
         
         buttonArea = layoutButtonArea();
@@ -269,7 +272,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	specifyEnvironmentFactorLayout.addComponent(selectSpecifyEnvironment);
         generalLayout.addComponent(specifyEnvironmentFactorLayout);
         
-        generalLayout.addComponent(lblEnvironmentGroupsHeader);
+        //generalLayout.addComponent(lblEnvironmentGroupsHeader);
         generalLayout.addComponent(lblEnvironmentGroupsDescription);
         	specifyEnvironmentGroupsLayout.addComponent(lblEnvironmentGroupsSpecify);
         	specifyEnvironmentGroupsLayout.addComponent(selectSpecifyEnvironmentGroups);
@@ -285,6 +288,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         generalLayout.addComponent(datasetVariablesDetailLayout);
         generalLayout.addComponent(buttonArea);
+        
+        Object item = "Analyze All";
+        selectSpecifyEnvironmentGroups.addItem(item);
+        selectSpecifyEnvironmentGroups.select(item);
         
         environmentNames.clear();
         try {
@@ -327,7 +334,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
-					gxeAnalysisComponentPanel.generateTabContent(currentStudy, selectSpecifyEnvironment.getValue().toString());
+					getGxeAnalysisComponentPanel().generateTabContent(currentStudy, 
+							selectSpecifyEnvironment.getValue().toString(), 
+							selectSpecifyEnvironmentGroups.getValue().toString(), 
+							variatesCheckboxState, GxeSelectEnvironmentPanel.this);
 				}
 				
 			}
@@ -342,7 +352,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
     protected Table initializeFactorsTable() {
         
-        Table tblFactors = new Table();
+        final Table tblFactors = new Table();
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
         tblFactors.setHeight("100%");
@@ -355,6 +365,27 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         String[] columnHeaders = new String[] {"Name", "Description"};
         tblFactors.setVisibleColumns(columns);
         tblFactors.setColumnHeaders(columnHeaders);
+        
+        
+        tblFactors.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+        	    	 FactorModel fm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", fm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", fm.getDataType()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
+        
         return tblFactors;
     }
     
@@ -400,8 +431,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 				if (vm.getActive()) {
 					checkBox.setValue(true);
+					getVariatesCheckboxState().put(vm.getName(), true);
 				} else {
 					checkBox.setValue(false);
+					getVariatesCheckboxState().put(vm.getName(), false);
 				}
 				
 				return checkBox;
@@ -409,6 +442,25 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			}
         	
         });
+        
+        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+        	    	 VariateModel vm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getDisplayName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", vm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", vm.getDatatype()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
 		
         
         tblVariates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
@@ -422,8 +474,13 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 				
 					BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
 					VariateModel vm = container.getItem(itemId).getBean();
-				
-					return getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+					
+					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+					if (testedIn > 2){
+						vm.setActive(true);
+					}
+					
+					return String.format("%s of %s", testedIn, environmentNames.size());
 					
 			}});
         
@@ -485,19 +542,20 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
             	fm.setDescription(factor.getLocalDescription());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
+            	fm.setDataType(factor.getStandardVariable().getDataType().getName());
             	
             	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
+            		selectSpecifyEnvironmentGroups.addItem(fm.getName());
             		factorList.add(fm);
             	}
             	
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
-            		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-            		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+           		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
+            	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
             			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
 	            		selectSpecifyEnvironment.addItem(factor.getLocalName());
-            			selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
-            	}
+            	
+            	
+            	
             }
             
             for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
@@ -514,8 +572,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	vm.setTrname(variate.getStandardVariable().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	vm.setDescription(variate.getLocalDescription());
+            	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
             	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate")){
-            		vm.setActive(true);
+            		vm.setActive(false);
             		variateList.add(vm);
             	}
             	
@@ -623,21 +682,21 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 		this.variatesCheckboxState = variatesCheckboxState;
 	}
 	
-	private String getTestedIn(String envFactorName, List<String> environmentNames , Integer variableId , Integer meansDataSetId ,TrialEnvironments trialEnvironments){
-		
-		
-		
+	private int getTestedIn(String envFactorName, List<String> environmentNames , Integer variableId , Integer meansDataSetId ,TrialEnvironments trialEnvironments){
 		
 		int counter = 0;
 		
 		try {
 			for (String environmentName : environmentNames){
-				long count = studyDataManager.countStocks(
-						meansDataSetId
-					,trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName).getId()
-					,variableId
-						);
-				if (count > 0) counter++;
+				TrialEnvironment te = trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName);
+				if (te!=null){
+					long count = studyDataManager.countStocks(
+							meansDataSetId
+						,te.getId()
+						,variableId
+							);
+					if (count > 0) counter++;
+				}
 			
 			}
 			 
@@ -645,14 +704,21 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			e.printStackTrace();
 		}
 		
-		try{
-			return String.format("%s of %s", counter, environmentNames.size());
-		}catch (Exception e){
-			return "";
-		}
+		return counter;
 		
-		
-		 
+	}
+
+	public GxeComponentPanel getGxeAnalysisComponentPanel() {
+		return gxeAnalysisComponentPanel;
+	}
+
+	public void setGxeAnalysisComponentPanel(GxeComponentPanel gxeAnalysisComponentPanel) {
+		this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
+	}
+	
+	@Override
+	public Object getData(){
+		return this.getCurrentStudy();
 		
 	}
 

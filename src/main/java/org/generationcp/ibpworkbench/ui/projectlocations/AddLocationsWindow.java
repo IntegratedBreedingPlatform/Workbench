@@ -9,8 +9,9 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.ui.window;
+package org.generationcp.ibpworkbench.ui.projectlocations;
 
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.CancelLocationAction;
@@ -20,13 +21,6 @@ import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
 import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -82,7 +76,7 @@ public class AddLocationsWindow extends Window{
 
         assemble();
 
-        setCaption("Add Location");
+        setCaption("Add New Location");
 
     }
 
@@ -91,10 +85,10 @@ public class AddLocationsWindow extends Window{
         layout = new VerticalLayout();
         setContent(layout);
 
-        newLocationTitle = new Label("Add Location");
-        newLocationTitle.setStyleName("gcp-content-title");
+        //newLocationTitle = new Label("Add Location");
+        //newLocationTitle.setStyleName("gcp-content-title");
 
-        layout.addComponent(newLocationTitle);
+        //layout.addComponent(newLocationTitle);
 
         addLocationForm = new AddLocationForm(new LocationModel(),gdm);
         layout.addComponent(addLocationForm);
@@ -105,6 +99,8 @@ public class AddLocationsWindow extends Window{
 
         buttonArea = layoutButtonArea();
         layout.addComponent(buttonArea);
+        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
+
 
     }
 

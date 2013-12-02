@@ -13,7 +13,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
-import org.generationcp.ibpworkbench.ui.window.AddLocationsWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -87,7 +86,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
 		final Label availableLocationsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Locations</span>",Label.CONTENT_XHTML);
 		availableLocationsTitle.setSizeFull();
-		availableLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+		availableLocationsTitle.setStyleName("gcp-content-header");
 		addNewLocationsBtn = new Button("Add New Location");
 		addNewLocationsBtn.setStyleName(Reindeer.BUTTON_LINK + " loc-add-btn");
 		final Label spacer = new Label();
@@ -104,8 +103,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		root.addComponent(this.buildLocationFilterForm());
 		root.addComponent(this.buildAvailableLocationsTable());
 
-		final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Project Locations</span>",Label.CONTENT_XHTML);
-		selectedLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+		final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Locations</span>",Label.CONTENT_XHTML);
+		selectedLocationsTitle.setStyleName("gcp-content-header");
 
 		root.addComponent(selectedLocationsTitle);
 
@@ -345,8 +344,10 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	    
 	   
 		
-		table.setColumnWidth("locationName",310);
-		table.setColumnWidth("locationAbbreviation",130);
+		table.setColumnWidth("locationName",325);
+        table.setColumnWidth("locationAbbreviation",180);
+        table.setColumnWidth("cntryFullName",250);
+        table.setColumnWidth("ltype",180);
 		table.setColumnWidth("removeBtn",60);
 		table.setColumnWidth("selectBtn",60);
 		table.setStyleName("loc-table");
