@@ -51,7 +51,7 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
         this.addListener(new WorkbenchSelectedTabChangeListener(this));
 
         //TODO: internationalize this
-        createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Update the name or date for this project.");
+        createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Update the name or date for this program.");
     }
 
     private boolean rolesInitialized = false;
@@ -79,10 +79,10 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
         // Override Title Display switching
         switch(selectedTab.intValue()) {
             case FIRST_TAB_BASIC_DETAILS:
-                createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Update the name or date for this project.");
+                createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Update the name or date for this program.");
                 break;
             case SECOND_TAB_USER_ROLES:
-                createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+                createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this program will be using.");
                 break;
         }
     }

@@ -113,7 +113,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     public void setTitle(String label, String description) {
         newProjectTitleArea.removeAllComponents();
 
-        Label title = new Label("Update Project: " + label);
+        Label title = new Label("Update Program: " + label);
 
         newProjectTitleArea.setStyleName("gcp-content-title");
         newProjectTitleArea.addComponent(title);

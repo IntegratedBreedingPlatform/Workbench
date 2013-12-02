@@ -86,7 +86,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
 		final Label availableLocationsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Locations</span>",Label.CONTENT_XHTML);
 		availableLocationsTitle.setSizeFull();
-		availableLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+		availableLocationsTitle.setStyleName("gcp-content-header");
 		addNewLocationsBtn = new Button("Add New Location");
 		addNewLocationsBtn.setStyleName(Reindeer.BUTTON_LINK + " loc-add-btn");
 		final Label spacer = new Label();
@@ -103,8 +103,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		root.addComponent(this.buildLocationFilterForm());
 		root.addComponent(this.buildAvailableLocationsTable());
 
-		final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Project Locations</span>",Label.CONTENT_XHTML);
-		selectedLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+		final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Locations</span>",Label.CONTENT_XHTML);
+		selectedLocationsTitle.setStyleName("gcp-content-header");
 
 		root.addComponent(selectedLocationsTitle);
 
