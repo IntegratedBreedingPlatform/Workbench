@@ -99,7 +99,7 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
     <view path="/ProjectLocation"
-          label="Project Locations"
+          label="Program Locations"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProjectLocationAction" />
     
@@ -109,7 +109,7 @@
           class="org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction" />
     
     <view path="/ProjectMembers"
-          label="Project Members"
+          label="Program Members"
           level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
           
@@ -124,12 +124,12 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
     
     <view path="/CreateProject"
-          label="Create Project"
+          label="Create New Program"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />
 
     <view path="/UpdateProject"
-          label="Update Project"
+          label="Update Program"
           level="1"
           class="org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction" />
 

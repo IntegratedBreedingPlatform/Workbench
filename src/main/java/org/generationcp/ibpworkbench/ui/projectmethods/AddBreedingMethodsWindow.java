@@ -55,7 +55,7 @@ public class AddBreedingMethodsWindow extends Window {
 
         assemble();
 
-        setCaption("Add Breeding Method");
+        setCaption("Add New Breeding Method");
 
     }
 

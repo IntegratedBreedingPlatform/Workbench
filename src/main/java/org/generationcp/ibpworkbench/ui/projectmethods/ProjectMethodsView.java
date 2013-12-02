@@ -120,7 +120,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Methods</span>",Label.CONTENT_XHTML);
         availableMethodsTitle.setSizeFull();;
-        availableMethodsTitle.setStyleName("gcp-LocationsTableTitle");
+        availableMethodsTitle.setStyleName("gcp-content-header");
 
         addNewMethodBtn = new Button("Add new Method");
         addNewMethodBtn.setStyleName(Reindeer.BUTTON_LINK +  " loc-add-btn");
@@ -139,8 +139,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         root.addComponent(this.buildMethodFilterForm());
         root.addComponent(this.buildAvailableMethodsTable());
 
-        final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Project Methods</span>",Label.CONTENT_XHTML);
-        selectedLocationsTitle.setStyleName("gcp-LocationsTableTitle");
+        final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Methods</span>",Label.CONTENT_XHTML);
+        selectedLocationsTitle.setStyleName("gcp-content-header");
 
         root.addComponent(selectedLocationsTitle);
         root.addComponent(this.buildSelectedMethodsTable());

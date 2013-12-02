@@ -76,7 +76,7 @@ public class AddLocationsWindow extends Window{
 
         assemble();
 
-        setCaption("Add Location");
+        setCaption("Add New Location");
 
     }
 
