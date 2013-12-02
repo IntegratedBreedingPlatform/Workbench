@@ -197,26 +197,27 @@ public class GxeTable extends Table {
 			}
 			
 			
-			List<Experiment> exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
-			for (Experiment exp : exps){
-				
-				String envName = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
-				
-				Map<String, String> vals = new HashMap<String, String>();
-				
-				for (Entry<String, Boolean> entry : getVariatesCheckBoxState().entrySet()){
-					String name = entry.getKey().replace("_Means", "_Heritability");
-					Variable var = exp.getVariates().findByLocalName(name);
-					if (var != null){
-						//heritability value
-						vals.put(entry.getKey(), var.getValue().toString());
-					}	
-	
+			if (plotDatasets.size() > 0){
+				List<Experiment> exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
+				for (Experiment exp : exps){
+					
+					String envName = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
+					
+					Map<String, String> vals = new HashMap<String, String>();
+					
+					for (Entry<String, Boolean> entry : getVariatesCheckBoxState().entrySet()){
+						String name = entry.getKey().replace("_Means", "_Heritability");
+						Variable var = exp.getVariates().findByLocalName(name);
+						if (var != null){
+							//heritability value
+							vals.put(entry.getKey(), var.getValue().toString());
+						}	
+		
+					}
+					
+					heritabilityValues.put(envName, vals);
+					
 				}
-				
-				heritabilityValues.put(envName, vals);
-				
-				
 			}
 			
 		} catch (MiddlewareQueryException e1) {

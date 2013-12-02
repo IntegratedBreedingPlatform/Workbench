@@ -631,7 +631,11 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         messageSource.setValue(lblSelectTraitsForAnalysis, Message.GXE_SELECT_TRAITS_FOR_ANALYSIS);
     }
 
-	
+    @Override
+	public Object getData(){
+		return this.getCurrentStudy();
+		
+	}
 
     
 
