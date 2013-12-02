@@ -367,7 +367,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     }
                 }
                 
-                if (toolUrl.contains("?restartApplication")) {
+                if (!toolUrl.contains("?restartApplication")) {
                     toolUrl += "?restartApplication";
                 }
                 
