@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -271,6 +272,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 		studiesTree.setImmediate(true);
 
 		Panel studiesPanel = new Panel();
+        studiesPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		studiesPanel.setWidth("200px");
 		studiesPanel.setHeight("100%");
 		
@@ -422,7 +424,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 		TabSheet tab = new TabSheet();
 
 		tab.setImmediate(true);
-
+        tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
 		//repaintTab(tab.getSelectedTab());
 
 		tab.setSizeFull();

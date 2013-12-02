@@ -53,13 +53,20 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             System.out.println(event.getProperty().getValue());
             ((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
 
-            if (event.getProperty().getValue() == null
-                    || event.getProperty().getValue() instanceof String
-                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0
-                    || !((GermplasmListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue()))
+            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(GermplasmListPreview.SHARED_LIST)
+                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
                 ((GermplasmListPreview)source).toggleToolbarBtns(false);
-            else
+                ((GermplasmListPreview)source).toggleToolbarAddBtn(false);
+            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(GermplasmListPreview.MY_LIST)) {
+                ((GermplasmListPreview)source).toggleToolbarBtns(false);
+                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
+            } else if (!((GermplasmListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue())) {
+                ((GermplasmListPreview)source).toggleToolbarBtns(false);
+                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
+            } else {
                 ((GermplasmListPreview)source).toggleToolbarBtns(true);
+                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
+            }
 
 
         }else if(source instanceof NurseryListPreview){

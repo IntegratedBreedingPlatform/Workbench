@@ -1,5 +1,6 @@
-package org.generationcp.ibpworkbench.ui.window;
+package org.generationcp.ibpworkbench.ui.projectmethods;
 
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
@@ -8,12 +9,6 @@ import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.ui.projectmethods.ProjectMethodsView;
 
 public class AddBreedingMethodsWindow extends Window {
@@ -95,10 +90,10 @@ public class AddBreedingMethodsWindow extends Window {
         layout = new VerticalLayout();
         setContent(layout);
         
-        newBreedingMethodTitle = new Label("Add Breeding Method");
-        newBreedingMethodTitle.setStyleName("gcp-content-title");
+        //newBreedingMethodTitle = new Label("Add Breeding Method");
+        //newBreedingMethodTitle.setStyleName("gcp-content-title");
 
-        layout.addComponent(newBreedingMethodTitle);
+        //layout.addComponent(newBreedingMethodTitle);
 
         addBreedingMethodForm = new AddBreedingMethodForm(new BreedingMethodModel());
         layout.addComponent(addBreedingMethodForm);
@@ -108,7 +103,8 @@ public class AddBreedingMethodsWindow extends Window {
         addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonArea = layoutButtonArea();
         layout.addComponent(buttonArea);
-        
+        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
+
     }
 
     protected void initializeLayout() {

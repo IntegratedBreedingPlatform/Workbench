@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.ui.window.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;

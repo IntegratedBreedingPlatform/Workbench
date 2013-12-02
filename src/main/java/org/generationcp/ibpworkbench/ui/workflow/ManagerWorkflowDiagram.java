@@ -649,7 +649,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight(new Integer(WORKFLOW_STEP_HEIGHT - 110).toString());
+        emptyLabel.setHeight(new Integer(WORKFLOW_STEP_HEIGHT - 115).toString());
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 

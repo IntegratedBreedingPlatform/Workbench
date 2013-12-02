@@ -15,6 +15,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.Season;
+import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,5 +220,29 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     
     public void setManagerFactory(ManagerFactory managerFactory) {
         this.managerFactory = managerFactory;
+    }
+
+    public boolean isFolder(Integer value) {
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public void renameNurseryListFolder(String s, Integer value) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public void deleteNurseryListFolder(StudyNode studyNode) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Object getStudyNodeParent(Integer newItem) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Integer addNurseryListFolder(String s, Integer value) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public StudyNode validateForDeleteNurseryList(Integer value) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 }

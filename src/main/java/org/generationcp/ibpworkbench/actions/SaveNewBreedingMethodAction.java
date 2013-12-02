@@ -19,7 +19,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
-import org.generationcp.ibpworkbench.ui.window.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;

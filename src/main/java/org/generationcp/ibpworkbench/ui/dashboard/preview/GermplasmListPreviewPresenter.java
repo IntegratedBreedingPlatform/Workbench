@@ -43,9 +43,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     private SimpleResourceBundleMessageSource messageSource;
 
     // TODO, move to message source
-    public final static String NOT_FOLDER = "Selected item is not a folder, please choose another item on the list.";
+    public final static String NOT_FOLDER = "Selected item is not a folder.";
     public final static String NO_PARENT = "Selected item is a root item, please choose another item on the list.";
-    public final static String HAS_CHILDREN = "Selected item contains other items, please choose another item on the list.";
+    public final static String HAS_CHILDREN = "Folder has child items.";
     private static final String NO_SELECTION = "Please select a folder item";
 
     private ManagerFactory managerFactory;
@@ -60,7 +60,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         if(this.project != null){
             setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
          }
-
     }
     
     public void generateInitialTreeNode(){
@@ -146,11 +145,13 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
             return false;
+        } catch (NullPointerException e) {
+            return false;
         }
     }
 
     public boolean hasChildren(Integer id) throws MiddlewareQueryException {
-        return !this.getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(id,1,Integer.MAX_VALUE).isEmpty();
+        return !this.getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(id,0,Integer.MAX_VALUE).isEmpty();
     }
 
     public GermplasmList getGermplasmListParent(Integer id) throws Error {
