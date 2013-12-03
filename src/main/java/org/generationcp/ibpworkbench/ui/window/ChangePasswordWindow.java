@@ -12,33 +12,26 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
 import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 @Configurable
 public class ChangePasswordWindow extends Window implements InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
-    
-    private Label workbenchTitle;
+
     private Label passwordLabel;
     private Label confirmLabel;
-    private Label gap;
-    private Label space;
-    
+
     private Button cancelButton;
     private Button saveButton;
     
@@ -58,17 +51,7 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
 
     protected void initializeComponents() throws Exception {
         this.addStyleName(Reindeer.WINDOW_LIGHT);
-
-        // workbench header components
-        workbenchTitle = new Label("&nbsp;Change Password", Label.CONTENT_XHTML);
-        workbenchTitle.setStyleName("gcp-window-title");
-
-        gap = new Label();
-        gap.setHeight("1em");
-        
-        space = new Label();
-        space.setWidth("1em");
-        
+        this.setCaption("Change Password");
 
         passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
         confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
@@ -81,28 +64,24 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         confirm_password = new PasswordField();
         
         saveButton = new Button("Save");
-        saveButton.setSizeUndefined();
+        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         
         cancelButton = new Button("Cancel");
-        cancelButton.setSizeUndefined();
-
     }
 
     protected void initializeLayout() {
-        setSizeFull();
+        this.setWidth("550px");
+        this.setHeight("150px");
+        this.setModal(true);
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
+        //layout.setWidth("100%");
+        layout.setMargin(true);
+        layout.setSpacing(true);
 
         // add the vertical split panel
-       
-        layout.addComponent(gap);
-        layout.addComponent(workbenchTitle);
-        
-        gap = new Label();
-        gap.setHeight("1em");
-        layout.addComponent(gap);
-        
+
         HorizontalLayout fieldslayout = new HorizontalLayout();
         fieldslayout.addComponent(passwordLabel);
         fieldslayout.addComponent(password);
@@ -111,20 +90,17 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         
         
         HorizontalLayout buttonlayout = new HorizontalLayout();
-        space = new Label();
-        space.setWidth("1em");
-        buttonlayout.addComponent(space);
-        buttonlayout.addComponent(saveButton);
-        space = new Label();
-        space.setWidth("1em");
-        buttonlayout.addComponent(space);
+
         buttonlayout.addComponent(cancelButton);
-        
+        buttonlayout.addComponent(saveButton);
+        buttonlayout.setSpacing(true);
+
         layout.addComponent(fieldslayout);
         layout.addComponent(buttonlayout);
-       // layout.setComponentAlignment(saveButton, Alignment.CENTER);
-        
-        setContent(layout);
+        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_RIGHT);
+        layout.setExpandRatio(fieldslayout,1.0F);
+
+        this.setContent(layout);
     }
 
     protected void initializeActions() {
