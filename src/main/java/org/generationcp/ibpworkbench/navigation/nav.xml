@@ -164,7 +164,7 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/query_for_adapted_germplasm"
-          label="Query For Adopted Germplasm"
+          label="Query For Adapted Germplasm"
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
