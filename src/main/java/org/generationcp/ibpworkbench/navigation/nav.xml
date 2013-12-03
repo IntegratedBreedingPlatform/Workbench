@@ -83,7 +83,7 @@
         level="1"
         class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
-    <view path="/DatasetImporter"
+    <view path="/dataset_importer"
         label="Data Import Tool"
         level="1"
         class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
@@ -137,4 +137,30 @@
           label="Create Contacts"
           level="1"
           class="org.generationcp.ibpworkbench.actions.CreateContactAction" />
+
+    <view path="/fieldbook_web"
+          label="Fieldbook"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/nursery_manager_fieldbook_web"
+          label="Manage Nurseries"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/trial_manager_fieldbook_web"
+          label="Manage Trials"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/ontology_browser_fieldbook_web"
+          label="Ontology Browser"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
+    <view path="/bm_list_manager"
+          label="List Manager"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
 </viewList>

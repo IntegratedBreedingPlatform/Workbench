@@ -174,7 +174,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 
         renameFolderBtn.setEnabled(false);
-        addFolderBtn.setEnabled(false);
+        addFolderBtn.setEnabled(true);
         deleteFolderBtn.setEnabled(false);
 
         this.toolbar.addComponent(addFolderBtn);
@@ -359,15 +359,21 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.setChildrenAllowed(newItem,true);
                             treeView.setItemIcon(newItem,folderResource);
 
-
                             if (presenter.getGermplasmListParent(newItem) != null) {
                                 treeView.setParent(newItem,lastItemId);
                             } else {
                                 treeView.setParent(newItem,MY_LIST);
                             }
 
-                            //treeView.select(newItem);
-                            expandTree(lastItemId);
+                            if (lastItemId != null) {
+                                if (!treeView.isExpanded(lastItemId))
+                                    expandTree(lastItemId);
+                            }
+                            else
+                                treeView.expandItem(MY_LIST);
+
+                            treeView.select(newItem);
+
                         }
 
                         // close popup
