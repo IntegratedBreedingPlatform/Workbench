@@ -106,9 +106,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         projectNameField = new TextField();
         projectNameField.setImmediate(true);
         projectNameField.setRequired(true);
-        projectNameField.setRequiredError("Please enter a Project Name.");
-        projectNameField.addValidator(new StringLengthValidator("Project Name must be 3-255 characters.", 3, 255, false));
-        projectNameField.addValidator(new RegexValidator("Project Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
+        projectNameField.setRequiredError("Please enter a Program Name.");
+        projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-255 characters.", 3, 255, false));
+        projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
         projectNameField.addShortcutListener(new Button.ClickShortcut(nextButton,KeyCode.ENTER));
         
         startDateField = new DateField();
@@ -121,7 +121,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         
         gridLayout.addComponent(new Label("Crop"), 1, 1);
         gridLayout.addComponent(cropTypeCombo, 2, 1);
-        gridLayout.addComponent(new Label("Project Name"), 1, 2);
+        gridLayout.addComponent(new Label("Program Name"), 1, 2);
         gridLayout.addComponent(projectNameField, 2, 2);
         gridLayout.addComponent(new Label("Start Date"), 1, 3);
         gridLayout.addComponent(startDateField, 2, 3);
@@ -223,7 +223,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         StringBuffer errorDescription = new StringBuffer();
         
         if ((projectName == null) || (projectName.equals(""))){
-            errorDescription.append("No project name supplied. ");
+            errorDescription.append("No program name supplied. ");
             success = false;
         } else {
         	// Check if the project name already exists
@@ -232,17 +232,17 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
                 if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)){
 
                     if (createProjectPanel.getProject() == null || createProjectPanel.getProject().getProjectId() == null){
-                        errorDescription.append("There is already a project with the given name. ");
+                        errorDescription.append("There is already a program with the given name. ");
                         success = false;
                     } else if (createProjectPanel.getProject().getProjectId().intValue() != project.getProjectId().intValue()){
-                    	errorDescription.append("There is already a project with the given name. ");
+                    	errorDescription.append("There is already a program with the given name. ");
                         success = false;
                     }
 
                 }
             }
             catch (MiddlewareQueryException e) {
-                LOG.error("Error encountered while getting project by name", e);
+                LOG.error("Error encountered while getting program by name", e);
                 throw new InternationalizableException(e, Message.DATABASE_ERROR, 
                         Message.CONTACT_ADMIN_ERROR_DESC);
             }

@@ -109,7 +109,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
-        select.setRightColumnCaption("Selected Project Members");
+        select.setRightColumnCaption("Selected Program Members");
         select.setRows(10);
         select.setWidth("500px");
         select.setMultiSelect(true);
@@ -142,7 +142,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             }
        */
         
-        String currentUserMsg = "* Note: By default, you are a member of this project.";	//TODO FIXME: add correct internationalization message for this.
+        String currentUserMsg = "* Note: By default, you are a member of this program.";	//TODO FIXME: add correct internationalization message for this.
         
         Label currentUserLbl = new Label(currentUserMsg,Label.CONTENT_XHTML);
         currentUserLbl.addStyleName("create_project_member_current_user_msg");

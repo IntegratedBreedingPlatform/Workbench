@@ -118,7 +118,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         
         select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
-        select.setRightColumnCaption("Selected Project Members");
+        select.setRightColumnCaption("Selected Program Members");
         select.setRows(10);
         select.setWidth("400px");
         select.setMultiSelect(true);
@@ -206,7 +206,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                     
                     projectUserRoles.add(projectUserRole);
                 } catch (MiddlewareQueryException e) {
-                  LOG.error("Error encountered while getting project user roles", e);
+                  LOG.error("Error encountered while getting program user roles", e);
                   throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
                 }
             }

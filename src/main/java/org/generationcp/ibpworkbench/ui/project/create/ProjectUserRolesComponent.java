@@ -90,7 +90,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         rolesLayout = new VerticalLayout();
         
         Label instruction = new Label();
-        instruction.setCaption("Identify the workflow(s) you want to use for this project:");
+        instruction.setCaption("Identify the workflow(s) you want to use for this program:");
         rolesLayout.addComponent(instruction);
         rolesLayout.setWidth("350px");
         
@@ -281,7 +281,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
                     projectUserRole.setRole(role);
                     projectUserRoles.add(projectUserRole);
                 } catch (MiddlewareQueryException e) {
-                  LOG.error("Error encountered while getting project user roles", e);
+                  LOG.error("Error encountered while getting program user roles", e);
                   throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
                 }
             }
