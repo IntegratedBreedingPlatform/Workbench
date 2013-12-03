@@ -342,7 +342,11 @@ public class GermplasmListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
                         try {
-                            newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
+
+                            if (lastItemId instanceof  String)
+                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),null);
+                            else
+                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             return;
