@@ -45,6 +45,10 @@
 	cursor: pointer; 
 }
 
+.v-table-row-project-table .v-table-cell-content {
+    cursor: pointer;
+}
+
 .gcp-tblroles .v-table-cell-content:hover {
 	background: #ffffaa url(images/workflow_icn.png) no-repeat 3px center !important;
 }
