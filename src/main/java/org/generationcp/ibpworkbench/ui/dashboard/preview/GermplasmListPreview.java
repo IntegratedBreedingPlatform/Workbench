@@ -321,8 +321,8 @@ public class GermplasmListPreview extends VerticalLayout {
                 Label l = new Label("Folder Name");
                 final TextField name = new TextField();
 
-                if (lastItemId != null)
-                    name.setValue(treeView.getItemCaption(lastItemId));
+                if (treeView.getValue() != null)
+                    name.setValue(treeView.getItemCaption(treeView.getValue()));
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -343,10 +343,10 @@ public class GermplasmListPreview extends VerticalLayout {
                         Integer newItem = null;
                         try {
 
-                            if (lastItemId instanceof  String)
+                            if (treeView.getValue() instanceof  String)
                                 newItem = presenter.addGermplasmListFolder(name.getValue().toString(),null);
                             else
-                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
+                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)treeView.getValue());
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             return;
@@ -360,20 +360,19 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.setItemIcon(newItem,folderResource);
 
                             if (presenter.getGermplasmListParent(newItem) != null) {
-                                treeView.setParent(newItem,lastItemId);
+                                treeView.setParent(newItem,treeView.getValue());
                             } else {
                                 treeView.setParent(newItem,MY_LIST);
                             }
 
-                            if (lastItemId != null) {
-                                if (!treeView.isExpanded(lastItemId))
-                                    expandTree(lastItemId);
+                            if (treeView.getValue() != null) {
+                                if (!treeView.isExpanded(treeView.getValue()))
+                                    expandTree(treeView.getValue());
                             }
                             else
                                 treeView.expandItem(MY_LIST);
 
                             treeView.select(newItem);
-
                         }
 
                         // close popup
