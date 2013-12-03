@@ -573,7 +573,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	vm.setDescription(variate.getLocalDescription());
             	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
-            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate")){
+            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") && !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
             		vm.setActive(false);
             		variateList.add(vm);
             	}

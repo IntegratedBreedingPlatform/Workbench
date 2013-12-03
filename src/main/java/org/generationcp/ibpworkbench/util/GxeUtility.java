@@ -124,7 +124,10 @@ public class GxeUtility {
 	
 	public static void generateXmlFieldBook(GxeInput gxeInput){
 		try {
-			new GxeXMLWriter(gxeInput).writeProjectXML();
+			GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
+			writer.writeProjectXML();
+			writer.writeProjectXMLV2();
+			
 		} catch (GxeXMLWriterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

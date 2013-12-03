@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.util;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
@@ -22,6 +23,7 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.sea.xml.Heritabilities;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 /**
@@ -42,6 +44,7 @@ public class GxeInput implements Serializable {
     private Integer studyId;
     private Integer datasetId;
     private String environmentName;
+    private String environmentGroup;
     private String version;
     private String sourceXLSFilePath;
     private String sourceCSVFilePath;
@@ -54,7 +57,9 @@ public class GxeInput implements Serializable {
     private Rows rows;
     private Columns columns;
     private GxeEnvironment environment;
+    private Heritabilities heritabilities;
     private List<Trait> traits;
+    private List<org.generationcp.commons.sea.xml.Environment> selectedEnvironments;
     
     public GxeInput(Project project, String breedingViewProjectName, Integer studyId,
             Integer datasetId, String version,
@@ -331,7 +336,28 @@ public class GxeInput implements Serializable {
 		this.sourceCSVFilePath = sourceCSVFilePath;
 	}
 
-    
+	public List<org.generationcp.commons.sea.xml.Environment> getSelectedEnvironments() {
+		return selectedEnvironments;
+	}
 
+	public void setSelectedEnvironments(List<org.generationcp.commons.sea.xml.Environment> selectedEnvironments) {
+		this.selectedEnvironments = selectedEnvironments;
+	}
+
+	public String getEnvironmentGroup() {
+		return environmentGroup;
+	}
+
+	public void setEnvironmentGroup(String environmentGroup) {
+		this.environmentGroup = environmentGroup;
+	}
+
+	public Heritabilities getHeritabilities() {
+		return heritabilities;
+	}
+
+	public void setHeritabilities(Heritabilities heritabilities) {
+		this.heritabilities = heritabilities;
+	}
     
 }

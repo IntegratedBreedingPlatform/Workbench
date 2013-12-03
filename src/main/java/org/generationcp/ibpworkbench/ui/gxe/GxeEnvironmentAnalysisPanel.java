@@ -27,6 +27,9 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.commons.sea.xml.Heritabilities;
+import org.generationcp.commons.sea.xml.Heritability;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -460,13 +463,18 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 				
 				
 				if (gxeTable != null) {
+					
+					
+					GxeInput gxeInput =  new GxeInput(currentProject, "", 0, 0, "", "", "", "");
 		
 					
 					inputFileName = String.format("%s_%s_%s", currentProject.getProjectName().trim(), gxeTable.getMeansDataSetId(), gxeTable.getMeansDataSet().getName());
 					GxeEnvironment gxeEnv = gxeTable.getGxeEnvironment();
 					
+					
 					List<Trait> selectedTraits = new ArrayList<Trait>();
 					Iterator<?> itr = selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
+					int counter = 1;
 					while (itr.hasNext()){
 						Object propertyId = itr.next();
 						CheckBox cb = (CheckBox)selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
@@ -474,9 +482,37 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 							Trait t = new Trait();
 							t.setName(propertyId.toString());
 							t.setActive(true);
+							t.setId(counter++);
 							selectedTraits.add(t);
 						}
 					}
+					
+					
+					List<Environment> selectedEnnvironments = gxeTable.getSelectedEnvironments();
+					
+					
+					Map<String, Map<String, String>> heritabilityValues = gxeTable.getHeritabilityValues();
+					Heritabilities heritabilities = new Heritabilities();
+					
+					for (Environment env : selectedEnnvironments){
+						for (Trait t : selectedTraits){
+								Heritability h2 = new Heritability();
+								h2.setEnvironmentName(env.getName());
+								h2.setTraitName(t.getName());
+								try{
+									if (heritabilityValues.get(env.getTrialno()).get(t.getName()) != null){
+											h2.setValue(heritabilityValues.get(env.getTrialno()).get(t.getName()));
+											h2.setTraitId(String.valueOf(t.getId()));
+											h2.setEnvironmentId(String.valueOf(env.getId()));
+											heritabilities.add(h2);
+									}
+								}catch(Exception e){}
+								
+						}
+						
+					}
+					gxeInput.setHeritabilities(heritabilities);
+					
 					
 					File datasetExportFile = null;
 					
@@ -486,7 +522,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
 					
 					
-					GxeInput gxeInput =  new GxeInput(currentProject, "", 0, 0, "", "", "", "");
+					
 					
 					if (isXLS)
 						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
@@ -496,6 +532,13 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
 					gxeInput.setTraits(selectedTraits);
 					gxeInput.setEnvironment(gxeEnv);
+					gxeInput.setSelectedEnvironments(selectedEnnvironments);
+					gxeInput.setEnvironmentGroup(selectedEnvGroupFactorName);
+					
+					
+					
+					
+				
 					Genotypes genotypes = new Genotypes();
 					
 					try {
@@ -509,6 +552,9 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					gxeInput.setGenotypes(genotypes);
 					gxeInput.setEnvironmentName(gxeTable.getEnvironmentName());
 					gxeInput.setBreedingViewProjectName(currentProject.getProjectName());
+					
+					
+					
 					
 					GxeUtility.generateXmlFieldBook(gxeInput);
 					
@@ -546,21 +592,6 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					.getStudiesTabsheet();
 				tabSheet.replaceComponent(tabSheet.getSelectedTab(), gxeSelectEnvironmentPanel);
 					
-				
-				/**try {
-			        
-					
-				
-	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
-	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
-				} catch (Exception e) {
-					
-		            if(e.getCause() instanceof InternationalizableException) {
-		                InternationalizableException i = (InternationalizableException) e.getCause();
-		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-		            }
-		            return;
-				}**/
 			}
 		});
 		
