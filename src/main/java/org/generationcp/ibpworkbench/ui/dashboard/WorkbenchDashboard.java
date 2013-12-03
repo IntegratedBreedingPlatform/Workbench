@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.vaadin.event.ItemClickEvent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -294,7 +295,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " launch");
             button.setWidth("26px"); button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
-            
+            button.setEnabled(false);
             
             // DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
             //    String date = "";
@@ -320,13 +321,33 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         }
         return "";
     }
-    
+
+    private Button lasSelectedProjectButton = null;
+
     protected void initializeActions() {
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
-        
+        tblProject.addListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                Object selectedButton =  tblProject.getItem(event.getItemId()).getItemProperty(BUTTON_LIST_MANAGER_COLUMN_ID).getValue();
+
+                // disable previously selected button
+
+                if (lasSelectedProjectButton != null) {
+                    lasSelectedProjectButton.setEnabled(false);
+                }
+
+                if (selectedButton instanceof Button && selectedButton != null) {
+                    ((Button)selectedButton).setEnabled(true);
+                    WorkbenchDashboard.this.lasSelectedProjectButton = (Button) selectedButton;
+                }
+
+
+            }
+        });
     }
 
     protected void assemble() {

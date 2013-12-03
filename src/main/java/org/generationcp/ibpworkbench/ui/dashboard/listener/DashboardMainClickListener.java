@@ -13,6 +13,8 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,11 @@ public class DashboardMainClickListener implements ClickListener{
         if (event.getButton().getData().equals(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID)
                 && (source instanceof WorkbenchDashboard)){
             try {
-                System.out.println("Open list manager" + this.projectId);
+
+                // page change to list manager, with parameter passed
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),null)).buttonClick(event);
+
+                //System.out.println("Open list manager" + this.projectId);
             } catch (InternationalizableException e){
                 LOG.error(e.toString() + "\n" + e.getStackTrace());
                 e.printStackTrace();
