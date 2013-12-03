@@ -32,7 +32,7 @@
           
     <view path="/germplasm_browser"
           label="Browse Germplasm Information"
-          level="2"
+          level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
           
     <view path="/list_manager"
@@ -70,8 +70,6 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
-
-          
     <view path="/germplasm_mainheadtohead"
           label="Main Head to Head"
           level="1"
@@ -167,7 +165,5 @@
           label="Query For Adapted Germplasm"
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
-
-
 
 </viewList>
