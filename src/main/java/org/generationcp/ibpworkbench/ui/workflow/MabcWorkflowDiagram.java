@@ -135,7 +135,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         dashboardTitle = new Label();
         dashboardTitle.setStyleName("gcp-content-title");
 
-        projectPlanningTitle = new Label("Project Planning");
+        projectPlanningTitle = new Label("Program Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
         //projectPlanningTitle.setSizeUndefined();
 
