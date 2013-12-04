@@ -729,10 +729,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
         
-        layout.addComponent(crossStudyBrowserButton);
-        crossStudyBrowserButton.setHeight("20px");
-        layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(crossStudyBrowserButton, 0);
+        //layout.addComponent(crossStudyBrowserButton);
+        //crossStudyBrowserButton.setHeight("20px");
+        //layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(crossStudyBrowserButton, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");

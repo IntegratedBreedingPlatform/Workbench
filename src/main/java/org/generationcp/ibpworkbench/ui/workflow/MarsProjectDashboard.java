@@ -124,7 +124,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button queryForAdaptedGermplasmButton2;
     
     private Button breedingManagerListManager;
-    
+    private Button ontologyBrowserFBBtn;
+    private Button metaAnalysisBtn;
+    private Button metaAnalysisBtn2;
+
     public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
         this.workflowPreview = workflowPreview;
         
@@ -226,8 +229,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
         
         // field trial management buttons
-        fieldBookButton = new Button();
+        fieldBookButton = new Button("Manage Trials");
         fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        fieldBookButton.setDescription("Click to launch Fieldbook on Trial Manager View");
         fieldBookButton.setSizeUndefined();
 
         // genotyping buttons
@@ -325,6 +329,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingManagerListManager.setSizeUndefined();
         breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
+
+        ontologyBrowserFBBtn = new Button("Manage Ontologies");
+        ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        ontologyBrowserFBBtn.setSizeUndefined();
+        ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
+
+        metaAnalysisBtn = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        metaAnalysisBtn.setSizeUndefined();
+        metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
+
+
+        metaAnalysisBtn2 = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        metaAnalysisBtn2.setSizeUndefined();
+        metaAnalysisBtn2.setDescription("Click to launch Meta Analysis of Field Trial Tool");
     }
 
     protected void initializeLayout() {
@@ -423,10 +443,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
         
-        layout.addComponent(browseGermplasmButton);
+        //layout.addComponent(browseGermplasmButton);
        // browseGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmButton, 0);
+        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
         //browseStudiesButton.setHeight("20px");
@@ -434,19 +454,25 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setExpandRatio(browseStudiesButton, 0);
         
         layout.addComponent(browseGermplasmListsButton);
-        //browseGermplasmListsButton.setHeight("20px");
+        browseGermplasmListsButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
-        
+
+        layout.addComponent(ontologyBrowserFBBtn);
+        ontologyBrowserFBBtn.setHeight("20px");
+        layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
+        layout.setExpandRatio(ontologyBrowserFBBtn, 0);
+
+
         layout.addComponent(browseGenotypingDataButton);
        // browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
-        layout.addComponent(headToHeadButton2);
+        //layout.addComponent(headToHeadButton2);
         //headToHeadButton2.setHeight("20px");
-        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton2, 0);
+        //layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(headToHeadButton2, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
         //headToHeadButton2.setHeight("20px");
@@ -458,9 +484,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
-        layout.addComponent(breedingManagerListManager);
-        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerListManager, 0);
+        //layout.addComponent(breedingManagerListManager);
+        //layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(breedingManagerListManager, 0);
         
         return layout;
     }
@@ -606,7 +632,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         //multiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
-        
+
+        layout.addComponent(metaAnalysisBtn2);
+        //breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
+        layout.setComponentAlignment(metaAnalysisBtn2, Alignment.TOP_CENTER);
+        layout.setExpandRatio(metaAnalysisBtn2, 0);
+
         layout.addComponent(phenotypicBreedingViewButton);
         layout.setComponentAlignment(phenotypicBreedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(phenotypicBreedingViewButton, 0);
@@ -657,7 +688,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-        
+
+        layout.addComponent(metaAnalysisBtn);
+        layout.setComponentAlignment(metaAnalysisBtn, Alignment.TOP_CENTER);
+        layout.setExpandRatio(metaAnalysisBtn, 0);
+
         return layout;
     }
 
@@ -757,9 +792,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        layout.addComponent(headToHeadButton);
-        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton, 0);
+        //layout.addComponent(headToHeadButton);
+        //layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(headToHeadButton, 0);
         
         layout.addComponent(mainHeadToHeadButton);
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
@@ -824,7 +859,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
             
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             
@@ -833,9 +868,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
 
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
 
-            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            recomBreedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             
             phenotypicBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             qtlBreedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
@@ -853,6 +888,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+
+            ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
+            metaAnalysisBtn2.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
         }
     }
 
@@ -914,8 +953,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         messageSource.setCaption(recomBreedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(recomBreedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         
-        messageSource.setCaption(fieldBookButton, Message.FIELDBOOK_CREATE);
-        messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
+        //messageSource.setCaption(fieldBookButton, Message.FIELDBOOK_CREATE);
+        //messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
         
         messageSource.setCaption(gdmsButton, Message.MANAGE_GENOTYPING_DATA);
         messageSource.setDescription(gdmsButton, Message.CLICK_TO_LAUNCH_GDMS);
