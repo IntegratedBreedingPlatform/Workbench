@@ -56,8 +56,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Label populationDevelopmentTitle;
     private Label fieldTrialManagementTitle;
     private Label genotypingTitle;
-    private Button headToHeadButton;
-    private Button headToHeadButton2;
+    //private Button headToHeadButton;
+    //private Button headToHeadButton2;
     private Button mainHeadToHeadButton;
     private Button mainHeadToHeadButton2;
     private Label phenotypicAnalysisTitle;
@@ -294,7 +294,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         downArrow31 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow32 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        
+        /*
         headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
         headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         headToHeadButton.setSizeUndefined();
@@ -304,7 +304,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         headToHeadButton2.setSizeUndefined();
         headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-        
+          */
         mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
         mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mainHeadToHeadButton.setSizeUndefined();
@@ -366,7 +366,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
-        layout.setSpacing(false);
+        layout.setSpacing(true);
         layout.setHeight("1500px");
 
         Component breedingManagementArea = layoutBreedingManagementArea();
@@ -390,7 +390,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        layout.setMargin(true);
+        //layout.setMargin(true);
         layout.setSpacing(true);
 
         Component projectPlanningArea = layoutProjectPlanning();
@@ -579,7 +579,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        layout.setMargin(true);
+        //layout.setMargin(true);
         layout.setSpacing(true);
 
         Component markerTraitAnalysisArea = layoutPhenotypicAnalysis();
@@ -702,7 +702,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
         //layout.setWidth("274px");
-        layout.setMargin(true);
+        //layout.setMargin(true);
         layout.setSpacing(true);
 
         Component qtlSelectionArea = layoutQtlSelection();
@@ -838,7 +838,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected void configureWorkflowStepLayout(VerticalLayout layout) {
-        layout.setWidth("240px");
+        layout.setWidth("280px");
         layout.setHeight("215px");
         layout.setStyleName("gcp-workflow-step");
         layout.setMargin(false, false, true, false);
@@ -851,9 +851,9 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             
-            headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));      
+            /*headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));  
-            
+              */
             mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));  
 
@@ -865,7 +865,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
 
-            fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            fieldBookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
 
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));

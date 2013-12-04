@@ -276,7 +276,7 @@ public class GxeUtility {
 		}
 	}
 	
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 
 		// get the headers first
@@ -292,8 +292,13 @@ public class GxeUtility {
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName,j);
-		
 			headerRow.add(environmentName);
+			j++;
+		}
+		
+		if (environmentGroup != null && !environmentGroup.isEmpty() && !environmentGroup.equalsIgnoreCase("analyze all")) {
+			traitToColNoMap.put(environmentGroup,j);
+			headerRow.add(environmentGroup);
 			j++;
 		}
 		
@@ -325,12 +330,9 @@ public class GxeUtility {
 		}*/
 				
 		for (Trait trait : selectedTraits) {
-			
-			//if (trait.getName().trim().)
-			traitToColNoMap.put(trait.getName(),j);
-			
+
+			traitToColNoMap.put(trait.getName(),j);			
 			headerRow.add(j,trait.getName());
-			
 			j++;
 		}
 		
@@ -366,7 +368,7 @@ public class GxeUtility {
 				}
 			}
 			
-			
+		
 			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
 				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
