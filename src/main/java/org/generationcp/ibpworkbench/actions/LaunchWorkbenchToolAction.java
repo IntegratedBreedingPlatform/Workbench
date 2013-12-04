@@ -368,6 +368,11 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     if (listId != null) {
                         toolUrl += "-" + listId;
                     }
+                } else if(tool.getToolName().equals(ToolEnum.STUDY_BROWSER.getToolName())) {
+                    // add id parameter to Study Browser if listId was set
+                    if (listId != null) {
+                        toolUrl += "-" + listId;
+                    }
                 }
                 
                 if (!toolUrl.contains("?restartApplication")) {
