@@ -125,6 +125,8 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     private Button queryForAdaptedGermplasmButton2;
     
     private Button breedingManagerListManager;
+    private Button ontologyBrowserFBBtn;
+    private Button metaAnalysisBtn;
 
     public ManagerWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
@@ -153,7 +155,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         genoTypingTitle.setStyleName("gcp-section-title-large");
         //genoTypingTitle.setSizeUndefined();
 
-        projectPlanningTitle = new Label("Project Planning");
+        projectPlanningTitle = new Label("Program Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
         //projectPlanningTitle.setSizeUndefined();
         
@@ -174,10 +176,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         membersButton.setSizeUndefined();
         membersButton.setDescription(messageSource.getMessage(Message.MEMBERS_LINK_DESC));
 
-        updateProjectButton = new Button("Update Project Details");
+        updateProjectButton = new Button("Update Program Details");
         updateProjectButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         updateProjectButton.setSizeUndefined();
-        updateProjectButton.setDescription("Click to update project details and workflows.");
+        updateProjectButton.setDescription("Click to update program details and workflows.");
 
 
         breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_LINK));
@@ -251,10 +253,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         mbdtButton.setSizeUndefined();
         mbdtButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MBDT));
         
-        fieldbookButton = new Button("Fieldbook");
+        fieldbookButton = new Button("Trial Manager");
         fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         fieldbookButton.setSizeUndefined();
-        fieldbookButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_FIELDBOOK));
+        fieldbookButton.setDescription("Click to launch Fieldbook on Trial Manager View");
         
         optimasButton = new Button("OptiMAS");
         optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -269,19 +271,19 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         germplasmImportButton = new Button("IBFB Germplasm Import");
         germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton.setSizeUndefined();
-        germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+        germplasmImportButton.setDescription("Click to launch Fieldbook on Germplasm Import View.");
         
         germplasmImportButton2 = new Button("Germplasm Import");
         germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton2.setSizeUndefined();
         germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
         
-        projectMethodsButton = new Button("Project Methods");
+        projectMethodsButton = new Button("Program Methods");
         projectMethodsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         projectMethodsButton.setSizeUndefined();
         projectMethodsButton.setDescription(messageSource.getMessage(Message.PROJECT_METHODS_DESC));
         
-        projectLocationButton = new Button("Project Locations");
+        projectLocationButton = new Button("Program Locations");
         projectLocationButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         projectLocationButton.setSizeUndefined();
         projectLocationButton.setDescription(messageSource.getMessage(Message.PROJECT_LOCATIONS_DESC));
@@ -349,9 +351,19 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         datasetImporterBtn = new Button("Data Import Tool");
         datasetImporterBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         datasetImporterBtn.setSizeUndefined();
-        datasetImporterBtn.setDescription("Click to open the Data Import Tool.");
+        datasetImporterBtn.setDescription("Click to launch the Data Import Tool.");
         
-        
+        ontologyBrowserFBBtn = new Button("Ontology Browser");
+        ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        ontologyBrowserFBBtn.setSizeUndefined();
+        ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
+
+        metaAnalysisBtn = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        metaAnalysisBtn.setSizeUndefined();
+        metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
+
+
     }
 
     protected void initializeLayout() {
@@ -436,31 +448,41 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-        
+
+        layout.addComponent(ontologyBrowserFBBtn);
+        ontologyBrowserFBBtn.setHeight("20px");
+        layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
+        layout.setExpandRatio(ontologyBrowserFBBtn, 0);
+
+        layout.addComponent(breedingManagerListManager);
+        breedingManagerListManager.setHeight("20px");
+        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
+        layout.setExpandRatio(breedingManagerListManager, 0);
+
         layout.addComponent(breedingPlannerButton);
         breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
         
-        layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmButton, 0);
+        //layout.addComponent(browseGermplasmButton);
+        //browseGermplasmButton.setHeight("20px");
+        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(browseGermplasmButton, 0);
         
-        layout.addComponent(browseGermplasmListsButton);
-        browseGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmListsButton, 0);
+        //layout.addComponent(browseGermplasmListsButton);
+        //browseGermplasmListsButton.setHeight("20px");
+        //layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(browseGermplasmListsButton, 0);
 
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
-        layout.addComponent(crossStudyBrowserButton2);
-        crossStudyBrowserButton2.setHeight("20px");
-        layout.setComponentAlignment(crossStudyBrowserButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(crossStudyBrowserButton2, 0);
+        //layout.addComponent(crossStudyBrowserButton2);
+        //crossStudyBrowserButton2.setHeight("20px");
+        //layout.setComponentAlignment(crossStudyBrowserButton2, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(crossStudyBrowserButton2, 0);
         /*
         layout.addComponent(gdmsButton);
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
@@ -475,11 +497,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         queryForAdaptedGermplasmButton.setHeight("20px");
         layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
-        
-        layout.addComponent(breedingManagerListManager);
-        breedingManagerListManager.setHeight("20px");
-        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerListManager, 0);
         
         return layout;
     }
@@ -529,10 +546,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
         
-        layout.addComponent(createTemplatesButton);
-        createTemplatesButton.setHeight("20px");
-        layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(createTemplatesButton, 0);
+        //layout.addComponent(createTemplatesButton);
+        //createTemplatesButton.setHeight("20px");
+        //layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(createTemplatesButton, 0);
 
         layout.addComponent(userToolsButton);
         userToolsButton.setHeight("20px");
@@ -649,7 +666,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
-        emptyLabel.setHeight(new Integer(WORKFLOW_STEP_HEIGHT - 115).toString());
+        emptyLabel.setHeight(new Integer(WORKFLOW_STEP_HEIGHT - 135).toString());
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
@@ -675,7 +692,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
 
-        
+        layout.addComponent(metaAnalysisBtn);
+        metaAnalysisBtn.setHeight("20px");
+        layout.setComponentAlignment(metaAnalysisBtn, Alignment.TOP_CENTER);
+        layout.setExpandRatio(metaAnalysisBtn, 0);
+
         layout.addComponent(breedingViewButton);
         //breedingViewMultiSiteAnalysisButton.setHeight("28px");
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
@@ -708,10 +729,10 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
         
-        layout.addComponent(crossStudyBrowserButton);
-        crossStudyBrowserButton.setHeight("20px");
-        layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(crossStudyBrowserButton, 0);
+        //layout.addComponent(crossStudyBrowserButton);
+        //crossStudyBrowserButton.setHeight("20px");
+        //layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(crossStudyBrowserButton, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
@@ -776,12 +797,12 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
             germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            nurseryManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             createTemplatesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_TEMPLATE_WIZARD));
@@ -803,7 +824,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             projectLocationButton.addListener(new OpenProjectLocationAction(project, role));
             projectMethodsButton.addListener(new OpenProjectMethodsAction(project, role));
             deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
-            
+
+            ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
         }
     }
 
@@ -841,7 +864,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
         
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
-        messageSource.setCaption(fieldbookButton,Message.FIELDBOOK);
+        //messageSource.setCaption(fieldbookButton,Message.FIELDBOOK);
         messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
         
         
