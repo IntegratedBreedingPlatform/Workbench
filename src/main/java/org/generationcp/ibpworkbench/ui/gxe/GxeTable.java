@@ -409,7 +409,7 @@ public class GxeTable extends Table {
 				Environment environment = new Environment();
 				environment.setName(((Label)location_column.getValue()).getValue().toString());
 				environment.setActive(true);
-				environment.setId(i+1);
+				//environment.setId(i+1);
 				environment.setTrialno(((Label) trialno_column.getValue()).getValue().toString()); 
 				selectedEnvironments.add(environment);
 			}

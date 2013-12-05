@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,23 @@ public class StudyTreeExpandAction implements Tree.ExpandListener{
             
             try{
             	((SelectDatasetForBreedingViewPanel) source).queryChildrenDatasets((Reference)event.getItemId(), tr);
+            } catch (Exception e){
+            	
+            }
+        }else  if (source instanceof SelectDatasetsForMetaAnalysisPanel) {
+            try {
+            	
+            	((SelectDatasetsForMetaAnalysisPanel) source).queryChildrenStudies((Reference)event.getItemId(), tr);
+            	
+               
+            } catch (InternationalizableException e) {
+                LOG.error(e.toString() + "\n" + e.getStackTrace());
+                e.printStackTrace();
+                MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+            }
+            
+            try{
+            	((SelectDatasetsForMetaAnalysisPanel) source).queryChildrenDatasets((Reference)event.getItemId(), tr);
             } catch (Exception e){
             	
             }
