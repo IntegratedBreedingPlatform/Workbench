@@ -1,0 +1,931 @@
+/*******************************************************************************
+ * Copyright (c) 2012, All Rights Reserved.
+ * 
+ * Generation Challenge Programme (GCP)
+ * 
+ * 
+ * This software is licensed for use under the terms of the GNU General Public
+ * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
+ * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * 
+ *******************************************************************************/
+
+package org.generationcp.ibpworkbench.ui.metaanalysis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
+import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
+import org.generationcp.ibpworkbench.model.FactorModel;
+import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
+import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.PopupView.Content;
+import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.ui.themes.Reindeer;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+
+/**
+ * 
+ * @author Jeffrey Morales
+ *
+ */
+@Configurable
+public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+
+    private static final long serialVersionUID = 1L;
+   
+	private TabSheet tabSheet; 
+    private Label lblStudyTreeDetailTitle;
+    private Label lblStudyTreeDetailDescription;
+    private Label lblBuildNewAnalysisHeader;
+    private Label lblBuildNewAnalysisDescription;
+    private Label lblReviewEnvironments;
+    private Label lblSelectedEnvironments;
+    private Button linkCloseAllTab;
+    
+    private VerticalLayout generalLayout;
+    private VerticalLayout studyTreeLayout;
+    private VerticalLayout studyTreeLayoutTableContainer;
+    private GridLayout studyDetailsLayout;
+    
+    private Project currentProject;
+    private Study currentStudy;
+    private Integer currentRepresentationId;
+    private Integer currentDataSetId;
+  
+    private String currentDatasetName;
+
+    private Button btnCancel;
+    private Button btnNext;
+    private Component buttonArea;
+
+    private Database database;
+    private Role role;
+    private HashMap<String, Boolean> variatesCheckboxState;
+    
+    private ThemeResource folderResource;
+    private ThemeResource leafResource;
+    
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
+	private StudyDataManager studyDataManager;
+    
+    private ManagerFactory managerFactory;
+    
+    public SelectDatasetsForMetaAnalysisPanel(Project currentProject, Database database) {
+  
+        this.currentProject = currentProject;
+        this.database = database;
+
+        setWidth("100%");
+        
+    }
+    
+    public SelectDatasetsForMetaAnalysisPanel(Project currentProject, Database database, Role role) {
+    	  
+        this.currentProject = currentProject;
+        this.database = database;
+        this.role = role;
+
+        setWidth("100%");
+        
+    }
+    
+    public Project getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject(Project currentProject) {
+        this.currentProject = currentProject;
+    }
+
+    public Study getCurrentStudy() {
+        return currentStudy;
+    }
+
+    public void setCurrentStudy(Study currentStudy) {
+        this.currentStudy = currentStudy;
+    }
+
+    public Integer getCurrentRepresentationId() {
+        return currentRepresentationId;
+    }
+
+    public void setCurrentRepresentationId(Integer currentRepresentationId) {
+        this.currentRepresentationId = currentRepresentationId;
+    }
+    
+    public Integer getCurrentDataSetId() {
+        return currentDataSetId;
+    }
+
+    public void setCurrentDataSetId(Integer currentDataSetId) {
+        this.currentDataSetId = currentDataSetId;
+    }
+
+    public String getCurrentDatasetName() {
+        return currentDatasetName;
+    }
+
+    public void setCurrentDatasetName(String currentDatasetName) {
+        this.currentDatasetName = currentDatasetName;
+    }
+
+    protected void initializeComponents() {
+    	
+    	tabSheet = new TabSheet();
+    	tabSheet.setWidth("100%");
+    	tabSheet.setHeight("400px");
+    	tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
+    	
+    	folderResource =  new ThemeResource("images/folder.png");
+        leafResource =  new ThemeResource("images/leaf_16.png");
+        
+        generalLayout = new VerticalLayout();
+        generalLayout.setWidth("95%");
+        
+        studyTreeLayout = new VerticalLayout();
+        studyTreeLayoutTableContainer = new VerticalLayout();
+        
+        studyDetailsLayout = new GridLayout(10, 4);
+        studyDetailsLayout.setMargin(true);
+        studyDetailsLayout.setSpacing(true);
+      
+        lblStudyTreeDetailTitle = new Label();
+        lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
+        studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
+        
+        lblStudyTreeDetailDescription = new Label();
+        studyTreeLayout.addComponent(lblStudyTreeDetailDescription);
+        
+        final Table selectedEnvironmenTable = new Table();
+        BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+        selectedEnvironmenTable.setWidth("100%");
+        selectedEnvironmenTable.setHeight("450px");
+        selectedEnvironmenTable.setContainerDataSource(container);
+        selectedEnvironmenTable.setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
+        selectedEnvironmenTable.setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
+        selectedEnvironmenTable.setDropHandler(new DropHandler(){
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void drop(DragAndDropEvent event) {
+				MetaEnvironmentModel bean = (MetaEnvironmentModel) event.getTransferable().getData("itemId");			
+				selectedEnvironmenTable.getContainerDataSource().addItem(bean);
+				
+			}
+
+			@Override
+			public AcceptCriterion getAcceptCriterion() {
+				
+				return AcceptAll.get();
+			}
+        	
+        });
+        
+        
+        TreeTable tr = createStudyTreeTable(this.database);
+        studyTreeLayoutTableContainer.addComponent(tr);
+        studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
+        
+        lblBuildNewAnalysisHeader = new Label();
+        lblBuildNewAnalysisHeader.setStyleName("gcp-content-header");
+        lblBuildNewAnalysisDescription = new Label();
+        lblReviewEnvironments = new Label();
+        lblReviewEnvironments.setStyleName("gcp-table-header-bold");
+        lblSelectedEnvironments = new Label();
+        lblSelectedEnvironments.setStyleName("gcp-table-header-bold");
+        linkCloseAllTab = new Button();
+        linkCloseAllTab.setStyleName("link");
+        linkCloseAllTab.setImmediate(true);
+        linkCloseAllTab.setCaption("Close All Tabs");
+        
+        linkCloseAllTab.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tabSheet.removeAllComponents();
+			}
+		});
+     
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisHeader, 0, 0, 9, 0);
+        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 1, 2, 1);
+        studyDetailsLayout.addComponent(linkCloseAllTab, 3, 1, 4, 1);
+        studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
+        studyDetailsLayout.addComponent(lblSelectedEnvironments, 5, 1, 9, 1);
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 2, 4, 2);
+        studyDetailsLayout.addComponent(tabSheet, 0, 3, 4, 3);
+        studyDetailsLayout.addComponent(selectedEnvironmenTable, 5, 2, 9, 3);
+        
+        buttonArea = layoutButtonArea();
+          
+        generalLayout.addComponent(studyTreeLayout);  
+        generalLayout.addComponent(studyDetailsLayout);
+        generalLayout.addComponent(buttonArea);
+        generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        
+        addComponent(generalLayout);
+        
+    }
+    
+    protected void initializeLayout() {
+              
+        studyTreeLayout.setSpacing(true);
+        studyTreeLayout.setMargin(true);
+        studyDetailsLayout.setWidth("100%");
+        
+    }
+    
+    protected void initialize() {
+    }
+
+    protected void initializeActions() {
+    	btnCancel.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+			       
+				
+	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
+	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
+				} catch (Exception e) {
+					//LOG.error("Exception", e);
+		            if(e.getCause() instanceof InternationalizableException) {
+		                InternationalizableException i = (InternationalizableException) e.getCause();
+		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+		            }
+		            return;
+				}
+			}
+		});
+    	//openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
+        //btnNext.addListener(openSelectDatasetForExportAction);
+
+    }
+
+    protected Table initializeFactorsTable() {
+        
+        final Table tblFactors = new Table("FACTORS");
+        tblFactors.setImmediate(true);
+        tblFactors.setWidth("100%");
+        tblFactors.setHeight("450px");
+        
+        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+        container.setBeanIdProperty("id");
+        tblFactors.setContainerDataSource(container);
+       
+        String[] columns = new String[] {"name", "description"};
+        String[] columnHeaders = new String[] {"Name", "Description"};
+        tblFactors.setVisibleColumns(columns);
+        tblFactors.setColumnHeaders(columnHeaders);
+        
+        tblFactors.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+        	    	 FactorModel fm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", fm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", fm.getDataType()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
+        
+        return tblFactors;
+    }
+    
+    protected Table initializeVariatesTable() {
+        
+        final Table tblVariates = new Table("VARIATES");
+        tblVariates.setImmediate(true);
+        tblVariates.setWidth("100%");
+        tblVariates.setHeight("450px");
+        tblVariates.setColumnExpandRatio("", 0.5f);
+        tblVariates.setColumnExpandRatio("name", 1);
+        tblVariates.setColumnExpandRatio("description", 4);
+        tblVariates.setColumnExpandRatio("scname", 1);
+        tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
+
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				
+				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+				final VariateModel vm = container.getItem(itemId).getBean();
+				
+				final CheckBox checkBox = new CheckBox();
+				checkBox.setImmediate(true);
+				checkBox.setVisible(true);
+				checkBox.addListener(new Property.ValueChangeListener() {
+					
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void valueChange(final ValueChangeEvent event) {
+						Boolean val = (Boolean) event.getProperty()
+								.getValue();
+						variatesCheckboxState.put(vm.getName(), val);
+						vm.setActive(val);
+					
+					}
+				});
+
+				if (vm.getActive()) {
+					checkBox.setValue(true);
+				} else {
+					checkBox.setValue(false);
+				}
+				
+				return checkBox;
+				
+			}
+        	
+        });
+        
+        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+			private static final long serialVersionUID = 1L;
+
+				public String generateDescription(Component source, Object itemId, Object propertyId) {
+        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+        	    	 VariateModel vm = container.getItem(itemId).getBean();
+        	    	 
+        	    	 StringBuilder sb = new StringBuilder();
+        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getName()));
+        	    	 sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
+        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
+        	    	 sb.append(String.format("<span>Method:</span> %s<br>", vm.getTmname()));
+        	    	 sb.append(String.format("<span>Data Type:</span> %s", vm.getDatatype()));
+        	                                                                        
+        	         return sb.toString();
+        	     }
+        	});
+        
+        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+        container.setBeanIdProperty("id");
+        tblVariates.setContainerDataSource(container);
+        
+        String[] columns = new String[] {"","name", "description", "scname"};
+        String[] columnHeaders = new String[] {"" ,"Name", "Description", "Scale"};
+        tblVariates.setVisibleColumns(columns);
+        tblVariates.setColumnHeaders(columnHeaders);
+        return tblVariates;
+    }
+    
+    private Table[] refreshFactorsAndVariatesTable() {
+        Table toreturn[] = new Table[2];
+        Table factors = initializeFactorsTable();
+        Table variates = initializeVariatesTable();
+        toreturn[0] = factors;
+        toreturn[1] = variates;
+        return toreturn;
+    }
+    
+
+    protected Component layoutButtonArea() {
+    	
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        
+        buttonLayout.setSpacing(true);
+        buttonLayout.setMargin(true);
+        
+        btnCancel = new Button();
+        btnNext = new Button();
+        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+   
+        buttonLayout.addComponent(btnCancel);
+        buttonLayout.addComponent(btnNext);
+        buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+        buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
+        return buttonLayout;
+    }
+
+    protected void assemble() {
+        initialize();
+        initializeComponents();
+        initializeLayout();
+        initializeActions();
+    }
+    
+    private TreeTable createStudyTreeTable(Database database) {
+        
+        TreeTable tr = new TreeTable();
+            
+       
+        tr.addContainerProperty("Study Name", String.class, "sname");
+        tr.addContainerProperty("Title", String.class, "title");
+        tr.addContainerProperty("Description", String.class, "description");
+ 
+        List<FolderReference> folderRef = null;
+        
+        try {
+			folderRef = getStudyDataManager().getRootFolders(database);
+        } catch (MiddlewareQueryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+	            if (getWindow() != null){
+	                MessageNotifier.showWarning(getWindow(), 
+	                        messageSource.getMessage(Message.ERROR_DATABASE),
+	                    messageSource.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
+	            }
+		}
+        
+
+        for (FolderReference fr : folderRef) {
+            
+            Object[] cells = new Object[3];
+            cells[0] = " " + fr.getName();
+            cells[1] = "";
+            cells[2] = fr.getDescription();
+            
+            Object itemId = tr.addItem(cells, fr);
+            tr.setItemIcon(itemId, folderResource);
+            
+        }
+        
+        // reserve excess space for the "treecolumn"
+        tr.setSizeFull();
+        tr.setColumnExpandRatio("Study Name", 1);
+        tr.setColumnExpandRatio("Title", 1);
+        tr.setColumnExpandRatio("Description", 1);
+        tr.setSelectable(true);
+        
+        tr.addListener(new StudyTreeExpandAction(this, tr));
+        tr.addListener(new ShowEnvironmentTab());
+        return tr;
+    }
+    
+    public void refreshStudyTreeTable(Database database) {
+        
+        Table variables[] =  refreshFactorsAndVariatesTable();
+        
+        this.studyTreeLayout.removeAllComponents();
+        TreeTable tr = createStudyTreeTable(database);
+        this.studyTreeLayout.addComponent(tr);
+    }
+    
+    
+    public void queryChildrenStudies(Reference parentFolderReference, TreeTable tr) throws InternationalizableException{
+    	 
+    	List<Reference> childrenReference = new ArrayList<Reference>();
+    	  
+         try {
+         
+         	childrenReference = getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId());
+         	
+         } catch (MiddlewareQueryException e) {
+             //LOG.error(e.toString() + "\n" + e.getStackTrace());
+             e.printStackTrace();
+             MessageNotifier.showWarning(getWindow(), 
+                     messageSource.getMessage(Message.ERROR_DATABASE), 
+                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+         }
+         
+         for (java.util.Iterator<Reference> i = childrenReference.iterator(); i.hasNext(); ){
+
+        	 Reference r = i.next();
+        	 
+        	 Object[] cells = new Object[3];
+        	 
+        	Study s = null;
+			try {
+				s = this.getStudyDataManager().getStudy(r.getId());
+			} catch (MiddlewareQueryException e) {}
+        	
+             cells[0] = " " + r.getName();
+             cells[1] = (s != null) ? s.getTitle() : "" ;
+             cells[2] = r.getDescription();
+             
+             if (r instanceof FolderReference) System.out.println("r is FolderReference");
+             if (r instanceof StudyReference) System.out.println("r is StudyReference");
+
+				
+        	 tr.addItem(cells, r);
+        	 tr.setParent(r, parentFolderReference);
+        	 if (hasChildStudy(r.getId()) || hasChildDataset(r.getId())) {
+                 tr.setChildrenAllowed(r, true);
+                 tr.setItemIcon(r, folderResource);
+             } else {
+                 tr.setChildrenAllowed(r, false);
+                 tr.setItemIcon(r, leafResource);
+             }
+         }
+    	
+    }
+    
+    public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) throws InternationalizableException{
+   	 
+    	List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
+    	  
+         try {
+         
+         	childrenReference = getStudyDataManager().getDatasetReferences(parentFolderReference.getId());
+         	
+         } catch (MiddlewareQueryException e) {
+             //LOG.error(e.toString() + "\n" + e.getStackTrace());
+             e.printStackTrace();
+             MessageNotifier.showWarning(getWindow(), 
+                     messageSource.getMessage(Message.ERROR_DATABASE), 
+                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+         }
+         
+         for (java.util.Iterator<DatasetReference> i = childrenReference.iterator(); i.hasNext(); ){
+
+        	 Reference r = i.next();
+        	 
+        	 Object[] cells = new Object[3];
+        	
+             cells[0] = " " + r.getName();
+             cells[1] = "";
+             cells[2] = r.getDescription();
+             
+             if (r instanceof DatasetReference) System.out.println("r is DatasetReference");
+				
+        	 tr.addItem(cells, r);
+        	 tr.setParent(r, parentFolderReference);
+             tr.setChildrenAllowed(r, false);
+             tr.setItemIcon(r, leafResource);
+             
+         }
+    	
+    }
+    
+    private boolean hasChildStudy(int folderId) {
+
+        List<Reference> children = new ArrayList<Reference>();
+
+        try {
+            children = getStudyDataManager().getChildrenOfFolder(folderId);
+        } catch (MiddlewareQueryException e) {
+            //LOG.error(e.toString() + "\n" + e.getStackTrace());
+            MessageNotifier.showWarning(getWindow(), 
+                    messageSource.getMessage(Message.ERROR_DATABASE), 
+                    messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+            children = new ArrayList<Reference>();
+        }
+        if (!children.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean hasChildDataset(int folderId) {
+
+        List<DatasetReference> children = new ArrayList<DatasetReference>();
+
+        try {
+            children = getStudyDataManager().getDatasetReferences(folderId);
+        } catch (MiddlewareQueryException e) {
+            //LOG.error(e.toString() + "\n" + e.getStackTrace());
+            MessageNotifier.showWarning(getWindow(), 
+                    messageSource.getMessage(Message.ERROR_DATABASE), 
+                    messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+            children = new ArrayList<DatasetReference>();
+        }
+        if (!children.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+        
+        assemble();
+    }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        
+        updateLabels();
+    }
+    
+    @Override
+    public void updateLabels() {
+        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnNext, Message.NEXT);
+        messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
+        messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
+        messageSource.setValue(lblBuildNewAnalysisHeader,  Message.META_BUILD_NEW_ANALYSIS_HEADER);
+        messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
+        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
+        messageSource.setValue(lblSelectedEnvironments, Message.META_SELECTED_ENVIRONMENTS);
+        
+        
+    }
+
+    public StudyDataManager getStudyDataManager() {
+    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+		return this.studyDataManager;
+	}
+
+	public Role getCurrentRole() {
+		return role;
+	}
+
+	public HashMap<String, Boolean> getVariatesCheckboxState() {
+		return variatesCheckboxState;
+	}
+
+	public void setVariatesCheckboxState(HashMap<String, Boolean> variatesCheckboxState) {
+		this.variatesCheckboxState = variatesCheckboxState;
+	}
+
+	public TabSheet getTabsheet() {
+		return tabSheet;
+	}
+
+	public void setTabsheet(TabSheet tabsheet) {
+		this.tabSheet = tabsheet;
+	}
+	
+	class ShowEnvironmentTab implements ItemClickListener {
+
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void itemClick(ItemClickEvent event) {
+			
+			if (!(event.getItemId() instanceof DatasetReference)) return;
+
+	    	DatasetReference datasetRef = (DatasetReference) event.getItemId();
+	        Integer dataSetId = datasetRef.getId();
+
+	        if (dataSetId == null) return;
+
+	        try {
+	        	
+	        	
+	            TabSheet tabSheet = SelectDatasetsForMetaAnalysisPanel.this.getTabsheet();
+	            DataSet ds = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
+	            
+	            Iterator<Component> itr = tabSheet.getComponentIterator();
+	            while(itr.hasNext()){
+	            	EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
+	            	if (tab.getDataSetId() == ds.getId()){
+	            		tabSheet.setSelectedTab(tab);
+	            		return;
+	            	}
+	            }
+	            
+	            
+	            EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
+	            tabSheet.addTab(component);
+	            tabSheet.getTab(component).setClosable(true);
+	            tabSheet.getTab(component).setCaption(ds.getName());
+	            tabSheet.setSelectedTab(component);
+	            
+	            
+	        }catch(Exception e){
+	        	e.printStackTrace();
+	        }
+			
+			
+			
+		}
+		
+	}
+	
+	class EnvironmentTabComponent extends VerticalLayout {
+		
+		private static final long serialVersionUID = 1L;
+		
+		Table environmentTable;
+		Select environmentSelect;
+		DataSet dataSet;
+		String studyName;
+
+		public EnvironmentTabComponent(DataSet dataSet){
+			
+			this.dataSet = dataSet;
+			
+			setSpacing(true);
+			setMargin(true);
+			
+			initializeComponents();
+			
+		}
+		
+		public int getDataSetId(){
+			return dataSet.getId();
+		}
+		
+		private void initializeComponents(){
+			
+			try {
+				studyName = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			environmentSelect = new Select();
+			environmentSelect.setImmediate(true);
+			
+			environmentTable = new Table();
+			environmentTable.setSizeUndefined();
+			environmentTable.setDragMode(TableDragMode.MULTIROW);
+			environmentTable.setSelectable(true);
+			
+			environmentSelect.addListener(new Property.ValueChangeListener(){
+
+				@Override
+				public void valueChange(ValueChangeEvent event) {
+						
+					initializeTable();
+				}});
+			
+			
+			for (VariableType factor : dataSet.getVariableTypes().getFactors().getVariableTypes()){
+				if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
+					environmentSelect.addItem(factor.getLocalName());
+			}
+			
+			environmentSelect.select(environmentSelect.getItemIds().iterator().next());
+			
+			initializeTable();
+			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);
+			lblStudyName.setContentMode(Label.CONTENT_XHTML);
+			addComponent(lblStudyName);
+			addComponent(new Label("Which factor defines the environment?"));
+			addComponent(environmentSelect);
+			addComponent(environmentTable);
+
+			
+		}
+		
+		private void initializeTable(){
+			
+			BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+			environmentTable.setContainerDataSource(container);
+			environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
+			environmentTable.setColumnHeaders(new String[] {"TRIAL", "ENVIRONMENT"});
+			
+			
+			String trialInstanceFactorName=null;
+			try {
+				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
+			
+				List<Variable> variables = envs.getVariablesByLocalName(environmentSelect.getValue().toString());
+				for (Variable var : variables){
+					if (var != null){
+						if (var.getValue() != ""){
+								//
+								TrialEnvironment env = envs.findOnlyOneByLocalName(environmentSelect.getValue().toString(), var.getValue());
+								
+								if (env!=null){
+										if (trialInstanceFactorName==null){
+											for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
+												if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+													trialInstanceFactorName = f.getLocalName();
+												}
+											}
+										}
+										
+										String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+										String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
+										
+										MetaEnvironmentModel bean = new MetaEnvironmentModel();
+										bean.setTrial(trialNo);
+										bean.setEnvironment(envName);
+										bean.setDataSetId(dataSet.getId());
+										bean.setDataSetName(dataSet.getName());
+										bean.setStudyId(dataSet.getStudyId());
+										bean.setStudyName(studyName);
+										
+										container.addBean(bean);
+								}
+						}
+					}
+				}
+				
+				/**
+				
+				for (TrialEnvironment env : envs.getTrialEnvironments()){
+					
+					if (trialInstanceFactorName==null){
+						for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
+							if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+								trialInstanceFactorName = f.getLocalName();
+							}
+						}
+					}
+					
+					String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+					String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
+					
+					MetaEnvironmentModel bean = new MetaEnvironmentModel();
+					bean.setTrial(trialNo);
+					bean.setEnvironment(envName);
+					bean.setDataSetId(dataSet.getId());
+					bean.setDataSetName(dataSet.getName());
+					bean.setStudyId(dataSet.getStudyId());
+					bean.setStudyName(studyName);
+					
+					container.addBean(bean);
+				}**/
+				
+				if (trialInstanceFactorName!=null){
+						if (trialInstanceFactorName.equals(environmentSelect.getValue().toString())){
+							environmentTable.setVisibleColumns(new Object[] {"environment"});
+							environmentTable.setColumnHeaders(new String[] {environmentSelect.getValue().toString()});
+						}else{
+							environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
+							environmentTable.setColumnHeaders(new String[] {trialInstanceFactorName, environmentSelect.getValue().toString()});
+						}
+				}
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e){}
+		}
+		
+	}
+
+
+}
+
+

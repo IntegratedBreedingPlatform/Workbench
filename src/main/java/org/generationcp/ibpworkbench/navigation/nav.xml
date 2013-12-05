@@ -166,4 +166,9 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
+    <view path="/bv_meta_analysis"
+          label="Query For Adapted Germplasm"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
+
 </viewList>

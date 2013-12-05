@@ -72,6 +72,22 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
         }else if(source instanceof NurseryListPreview){
             System.out.println(event.getProperty().getValue());
             ((NurseryListPreview)source).expandTree(event.getProperty().getValue());
+            /*
+            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.SHARED_LIST)
+                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
+                ((NurseryListPreview)source).toggleToolbarBtns(false);
+                ((NurseryListPreview)source).toggleToolbarAddBtn(false);
+            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.MY_LIST)) {
+                ((NurseryListPreview)source).toggleToolbarBtns(false);
+                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
+            } else if (!((NurseryListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue())) {
+                ((NurseryListPreview)source).toggleToolbarBtns(false);
+                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
+            } else {
+                ((NurseryListPreview)source).toggleToolbarBtns(true);
+                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
+            } */
+
         }
     }
 }
