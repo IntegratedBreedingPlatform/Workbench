@@ -38,6 +38,7 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -49,6 +50,8 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -231,7 +234,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
 			@Override
 			public void drop(DragAndDropEvent event) {
-				MetaEnvironmentModel bean = (MetaEnvironmentModel) event.getTransferable().getData("itemId");
+				MetaEnvironmentModel bean = (MetaEnvironmentModel) event.getTransferable().getData("itemId");			
 				selectedEnvironmenTable.getContainerDataSource().addItem(bean);
 				
 			}
@@ -838,12 +841,48 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			
 			BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 			environmentTable.setContainerDataSource(container);
+			environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
+			environmentTable.setColumnHeaders(new String[] {"TRIAL", "ENVIRONMENT"});
 			
 			
 			String trialInstanceFactorName=null;
 			try {
 				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
 			
+				List<Variable> variables = envs.getVariablesByLocalName(environmentSelect.getValue().toString());
+				for (Variable var : variables){
+					if (var != null){
+						if (var.getValue() != ""){
+								//
+								TrialEnvironment env = envs.findOnlyOneByLocalName(environmentSelect.getValue().toString(), var.getValue());
+								
+								if (env!=null){
+										if (trialInstanceFactorName==null){
+											for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
+												if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+													trialInstanceFactorName = f.getLocalName();
+												}
+											}
+										}
+										
+										String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+										String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
+										
+										MetaEnvironmentModel bean = new MetaEnvironmentModel();
+										bean.setTrial(trialNo);
+										bean.setEnvironment(envName);
+										bean.setDataSetId(dataSet.getId());
+										bean.setDataSetName(dataSet.getName());
+										bean.setStudyId(dataSet.getStudyId());
+										bean.setStudyName(studyName);
+										
+										container.addBean(bean);
+								}
+						}
+					}
+				}
+				
+				/**
 				
 				for (TrialEnvironment env : envs.getTrialEnvironments()){
 					
@@ -867,14 +906,16 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					bean.setStudyName(studyName);
 					
 					container.addBean(bean);
-				}
+				}**/
 				
-				if (trialInstanceFactorName.equals(environmentSelect.getValue().toString())){
-					environmentTable.setVisibleColumns(new Object[] {"environment"});
-					environmentTable.setColumnHeaders(new String[] {environmentSelect.getValue().toString()});
-				}else{
-					environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
-					environmentTable.setColumnHeaders(new String[] {trialInstanceFactorName, environmentSelect.getValue().toString()});
+				if (trialInstanceFactorName!=null){
+						if (trialInstanceFactorName.equals(environmentSelect.getValue().toString())){
+							environmentTable.setVisibleColumns(new Object[] {"environment"});
+							environmentTable.setColumnHeaders(new String[] {environmentSelect.getValue().toString()});
+						}else{
+							environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
+							environmentTable.setColumnHeaders(new String[] {trialInstanceFactorName, environmentSelect.getValue().toString()});
+						}
 				}
 			} catch (MiddlewareQueryException e) {
 				// TODO Auto-generated catch block
