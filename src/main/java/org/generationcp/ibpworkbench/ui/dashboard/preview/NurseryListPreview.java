@@ -224,7 +224,7 @@ public class NurseryListPreview extends VerticalLayout {
         addFolderBtn = new Button("");
         addFolderBtn.setDescription("Add New Folder");
 
-        Button deleteFolderBtn = new Button("");
+        deleteFolderBtn = new Button("");
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
         openStudyManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -255,7 +255,7 @@ public class NurseryListPreview extends VerticalLayout {
         //this.toolbar.setSizeFull();
         this.toolbar.setWidth("100%");
 
-        //initializeToolbarActions();
+        initializeToolbarActions();
 
         return this.toolbar;
     }
@@ -276,7 +276,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) treeView.getValue())).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue()  )).buttonClick(event);
 
             }
         });
@@ -285,7 +285,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (treeView.getValue() == null) {
+                /*if (treeView.getValue() == null) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
                     return;
                 }
@@ -367,7 +367,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 // show window
                 WorkbenchMainView.getInstance().addWindow(w);
-
+                 */
             }
         });
 
@@ -375,7 +375,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final Window w = new Window("Add new folder");
+                /*final Window w = new Window("Add new folder");
                 w.setWidth("280px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -468,6 +468,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 // show window
                 WorkbenchMainView.getInstance().addWindow(w);
+                */
             }
         });
 
@@ -475,7 +476,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
-
+                /*
                 if (treeView.getValue() instanceof String) {
                     MessageNotifier.showError(event.getComponent().getWindow(),treeView.getValue().toString() + " cannot be deleted.","");
                     return;
@@ -508,8 +509,29 @@ public class NurseryListPreview extends VerticalLayout {
                         }
                     }
                 });
+                */
             }
         });
     }
 
+
+    public void toggleToolbarBtns(boolean toggle) {
+        if (toggle == true) {
+            addFolderBtn.setEnabled(true);
+            renameFolderBtn.setEnabled(true);
+            deleteFolderBtn.setEnabled(true);
+        } else {
+            addFolderBtn.setEnabled(false);
+            renameFolderBtn.setEnabled(false);
+            deleteFolderBtn.setEnabled(false);
+        }
+    }
+
+    public void toggleToolbarAddBtn(boolean toggle) {
+        if (toggle == true) {
+            addFolderBtn.setEnabled(true);
+        } else {
+            addFolderBtn.setEnabled(false);
+        }
+    }
 }
