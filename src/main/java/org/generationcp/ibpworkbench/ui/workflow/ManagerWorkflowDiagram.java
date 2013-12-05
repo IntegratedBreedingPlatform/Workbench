@@ -370,7 +370,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     	this.setSizeFull();
     	this.setSpacing(true);
     	this.setMargin(new MarginInfo(true,false,false,true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
