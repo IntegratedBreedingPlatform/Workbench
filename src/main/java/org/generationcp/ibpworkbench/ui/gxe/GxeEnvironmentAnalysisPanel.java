@@ -483,7 +483,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 							Trait t = new Trait();
 							t.setName(propertyId.toString());
 							t.setActive(true);
-							t.setId(counter++);
+							//t.setId(counter++);
 							selectedTraits.add(t);
 						}
 					}
@@ -492,7 +492,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					List<Environment> selectedEnnvironments = gxeTable.getSelectedEnvironments();
 					
 					
-					Map<String, Map<String, String>> heritabilityValues = gxeTable.getHeritabilityValues();
+					/**Map<String, Map<String, String>> heritabilityValues = gxeTable.getHeritabilityValues();
 					Heritabilities heritabilities = new Heritabilities();
 					
 					for (Environment env : selectedEnnvironments){
@@ -513,7 +513,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 						
 					}
 					gxeInput.setHeritabilities(heritabilities);
-					
+					**/
 					
 					File datasetExportFile = null;
 					
