@@ -826,7 +826,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
-            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));
         }
     }
 
