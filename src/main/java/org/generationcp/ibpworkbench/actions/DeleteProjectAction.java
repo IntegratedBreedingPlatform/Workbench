@@ -45,7 +45,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     public void buttonClick(final ClickEvent event) {
         this.evt = event;
 
-        doAction(event.getComponent().getWindow(),"delete_project",true);
+        doAction(event.getComponent().getWindow(),"delete_program",true);
     }
 
 	@Override
@@ -65,10 +65,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
             this.currentProject = app.getSessionData().getSelectedProject();
             if(this.currentProject == null)
             {
-                MessageNotifier.showError(myWindow, "Error", "Please select a project");
+                MessageNotifier.showError(myWindow, "Error", "Please select a program");
 
             }
-            ConfirmDialog.show(app.getMainWindow(), "Delete Project",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
+            ConfirmDialog.show(app.getMainWindow(), "Delete Program",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
                 @Override
                 public void onClose(ConfirmDialog dialog) {
 

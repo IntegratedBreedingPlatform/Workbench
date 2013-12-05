@@ -232,7 +232,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         nurseryListPreview = new NurseryListPreview(null);
         nurseryTrialTab = previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
 
-        rolesTab = previewTab.addTab(tblRoles, "Roles");
+        //rolesTab = previewTab.addTab(tblRoles, "Roles");
         
         previewTab.setImmediate(true);
     }
