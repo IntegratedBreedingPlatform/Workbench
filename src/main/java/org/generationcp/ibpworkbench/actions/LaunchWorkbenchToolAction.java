@@ -363,18 +363,19 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             else if (tool.getToolType() == ToolType.WEB) {
                 String toolUrl = tool.getPath();
                 
-                if (tool.getToolName().equals(ToolEnum.BM_LIST_MANAGER.getToolName())) {
-                    // add list id parameter to List Manager if listId was set
+                // append the list id if it was set
+                if (Util.isOneOf(tool.getToolName(), ToolEnum.BM_LIST_MANAGER.getToolName()
+                                                   , ToolEnum.STUDY_BROWSER.getToolName())) {
                     if (listId != null) {
-                        toolUrl += "-" + listId;
-                    }
-                } else if(tool.getToolName().equals(ToolEnum.STUDY_BROWSER.getToolName())) {
-                    // add id parameter to Study Browser if listId was set
-                    if (listId != null) {
+                        if (toolUrl.endsWith("/")) {
+                            toolUrl = toolUrl.substring(0, toolUrl.length() - 1);
+                        }
+                        
                         toolUrl += "-" + listId;
                     }
                 }
                 
+                // append ?restartApplication if the url does not have one yet
                 if (!toolUrl.contains("?restartApplication")) {
                     toolUrl += "?restartApplication";
                 }
