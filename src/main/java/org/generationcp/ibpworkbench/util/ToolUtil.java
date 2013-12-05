@@ -276,12 +276,9 @@ public class ToolUtil {
                                 ,ToolName.ontology_browser_fieldbook_web.name()
                                 )) {
             // Fieldbook web apps
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/Fieldbook/WEB-INF/classes/IBPDatasource.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName,
-                    username, password);
-        }
-
-        else if (Util.isOneOf(tool.getToolName()
+            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/Fieldbook/WEB-INF/classes/database.properties";
+            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username, password, true, true, true);
+        } else if (Util.isOneOf(tool.getToolName()
                                 ,ToolName.bm_list_manager.name()
                                 ,ToolName.crossing_manager.name()
                                 ,ToolName.germplasm_import.name()
@@ -535,14 +532,22 @@ public class ToolUtil {
         return changed;
     }
 
-    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName,
-                                                          String localDbName, String username, String password) throws IOException {
+    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
+                                                            ,String localDbName, String username, String password) throws IOException, MiddlewareQueryException {
         return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false);
     }
     
-    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName,
-                                                                      String localDbName, String username, String password, boolean includeWorkbenchConfig)
-                                                                          throws IOException {
+    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
+                                                            ,String localDbName, String username, String password
+                                                            ,boolean includeWorkbenchConfig) throws IOException, MiddlewareQueryException {
+        return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false, false, false);
+    }
+    
+    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
+                                                            ,String localDbName, String username, String password
+                                                            ,boolean includeWorkbenchConfig
+                                                            ,boolean includeCurrentProjectId
+                                                            ,boolean includeOldFieldbookPath) throws IOException, MiddlewareQueryException {
         File configurationFile = new File(ibpDatasourcePropertyFile).getAbsoluteFile();
 
         String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost,
@@ -587,10 +592,28 @@ public class ToolUtil {
             newPropertyValues.put("workbench.password", workbenchPassword);
         }
         
+        // if we are instructed to include the workbench current project id, add it
+        if (includeCurrentProjectId) {
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+            Project project = app.getSessionData().getLastOpenedProject();
+            
+            if (project != null) {
+                newPropertyValues.put("workbench.currentProjectId", String.valueOf(project.getProjectId()));
+            }
+        }
+        
+        // if we are instructed to include the fieldbook tool path, add it
+        if (includeOldFieldbookPath) {
+            Tool tool = workbenchDataManager.getToolWithName(ToolName.fieldbook.name());
+            if (tool != null) {
+                newPropertyValues.put("old.fb.tool.path", tool.getPath());
+            }
+        }
+        
         return updatePropertyFile(configurationFile, newPropertyValues);
     }
     
-    public boolean updateWebServiceConfigurationForProject(Project project, WorkbenchSetting workbenchSetting) throws IOException {
+    public boolean updateWebServiceConfigurationForProject(Project project, WorkbenchSetting workbenchSetting) throws IOException, MiddlewareQueryException {
         String centralDbName = project.getCropType().getCentralDbName();
         String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
         
