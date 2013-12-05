@@ -2,12 +2,6 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
 import java.util.List;
 
-import com.vaadin.data.Item;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.themes.Reindeer;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -18,13 +12,39 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
-
+import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.workbench.StudyNode;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.Transferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,10 +71,6 @@ public class NurseryListPreview extends VerticalLayout {
     private ThemeResource folderResource =  new ThemeResource("images/folder.png");
     private ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");
     
-    public static String MY_LIST = "My List";
-    public static String SHARED_LIST = "Shared List";
-
-
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
     
@@ -66,6 +82,8 @@ public class NurseryListPreview extends VerticalLayout {
     private Button addFolderBtn;
     private Button deleteFolderBtn;
 
+    public static String SHARED_STUDIES;
+    public static String MY_STUDIES;
 
     public NurseryListPreview(Project project) {
         
@@ -79,7 +97,6 @@ public class NurseryListPreview extends VerticalLayout {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
-
     }
 
     
@@ -93,8 +110,13 @@ public class NurseryListPreview extends VerticalLayout {
         this.addComponent(buildToolbar());
 
         this.project = project;
+        
+        MY_STUDIES = messageSource.getMessage(Message.MY_STUDIES);
+        SHARED_STUDIES = messageSource.getMessage(Message.SHARED_STUDIES);
+        
         presenter = new NurseryListPreviewPresenter(this, project);
-        presenter.generateTreeNodes();
+        //presenter.generateTreeNodes();
+        presenter.generateInitialTreeNodes();
 
         CssLayout treeContainer = new CssLayout();
         treeContainer.setSizeUndefined();
@@ -112,54 +134,104 @@ public class NurseryListPreview extends VerticalLayout {
         //this.setHeight("400px");
     }
     
-    
-    public void generateTree(List<TreeNode> treeNodes){
+    public void generateTopListOfTree(List<FolderReference> centralFolders, List<FolderReference> localFolders){
         
         treeView = new Tree();
+        treeView.setContainerDataSource(new HierarchicalContainer());
+        treeView.setDropHandler(new TreeDropHandler(treeView));
         treeView.setDragMode(TreeDragMode.NODE);
-
-        doCreateTree(treeNodes, treeView, null, folderResource, leafResource);
         
+        addInstanceTree(treeView,localFolders,false);
+        addInstanceTree(treeView,centralFolders,true);
+        
+        treeView.addListener(new NurseryListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
         treeView.setImmediate(true);
         
     }
     
-    private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
-        for(TreeNode treeNode : treeNodes){
-        	
-            treeView.addItem(treeNode.getId());
-            treeView.setItemCaption(treeNode.getId(), treeNode.getName());
+    
+    private void addInstanceTree(Tree treeView, List<FolderReference> folders, boolean isCentral) {
+    	
+    	
+    	String folderName = null;
+    	if(isCentral) {
+    		folderName = SHARED_STUDIES;
+    	} else {
+    		folderName = MY_STUDIES;
+    	}
+    	
+    	treeView.addItem(folderName);
+        treeView.setItemCaption(folderName, folderName);
+        treeView.setItemIcon(folderName, folderResource);
+        
+        
+		for (FolderReference folderReference : folders) {
+        	treeView.addItem(folderReference.getId());
+            treeView.setItemCaption(folderReference.getId(), folderReference.getName());
+            treeView.setParent(folderReference.getId(), folderName);
+            boolean isFolder =  getPresenter().isFolder(folderReference.getId());
 
-            // Set resource icon
-            ThemeResource resource = folder;
-            if(treeNode.isLeaf()){
-                resource = leaf;
-                treeView.setChildrenAllowed(treeNode.getId(), false);
-                //we add listener if its the leaf
-                Item item = treeView.getItem(treeNode.getId());
-                
-                if (treeNode.getName().equals(messageSource.getMessage(Message.MY_STUDIES)) 
-                		|| treeNode.getName().equals(messageSource.getMessage(Message.SHARED_STUDIES))){
-                	resource = folder;
-                }
+            if(isFolder){
+            	treeView.setChildrenAllowed(folderReference.getId(),true);
+                treeView.setItemIcon(folderReference.getId(),folderResource);
+            } else {
+                treeView.setChildrenAllowed(folderReference.getId(),false);
+                treeView.setItemIcon(folderReference.getId(),leafResource);
             }
-            treeView.setItemIcon(treeNode.getId(), resource);
 
-            // Disable arrow of folders with no children
-            if (treeNode.getTreeNodeList().size() == 0){
-                treeView.setChildrenAllowed(treeNode.getId(), false);
-            }
-            
-            // Set parent
-            if(parent != null){
-                treeView.setParent(treeNode.getId(), parent);
-            }
-            
-            // Create children nodes
-            doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
-        }
-    }
+            treeView.setSelectable(true);
+		}
+	}
+
+
+//	public void generateTree(List<TreeNode> treeNodes){
+//        
+//        treeView = new Tree();
+//        treeView.setDragMode(TreeDragMode.NODE);
+//
+//        doCreateTree(treeNodes, treeView, null, folderResource, leafResource);
+//        
+//        treeView.addListener(new DashboardMainTreeListener(this, project));
+//        treeView.setImmediate(true);
+//        
+//    }
+    
+//    private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
+//        for(TreeNode treeNode : treeNodes){
+//        	
+//            treeView.addItem(treeNode.getId());
+//            treeView.setItemCaption(treeNode.getId(), treeNode.getName());
+//
+//            // Set resource icon
+//            ThemeResource resource = folder;
+//            if(treeNode.isLeaf()){
+//                resource = leaf;
+//                treeView.setChildrenAllowed(treeNode.getId(), false);
+//                //we add listener if its the leaf
+//                Item item = treeView.getItem(treeNode.getId());
+//                
+//                if (treeNode.getName().equals(messageSource.getMessage(Message.MY_STUDIES)) 
+//                		|| treeNode.getName().equals(messageSource.getMessage(Message.SHARED_STUDIES))){
+//                	resource = folder;
+//                }
+//            }
+//            treeView.setItemIcon(treeNode.getId(), resource);
+//
+//            // Disable arrow of folders with no children
+//            if (treeNode.getTreeNodeList().size() == 0){
+//                treeView.setChildrenAllowed(treeNode.getId(), false);
+//            }
+//            
+//            // Set parent
+//            if(parent != null){
+//                treeView.setParent(treeNode.getId(), parent);
+//            }
+//            
+//            // Create children nodes
+//            doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
+//        }
+//    }
 
     public void expandTree(Object itemId){
         
@@ -432,7 +504,7 @@ public class NurseryListPreview extends VerticalLayout {
                             if (presenter.getStudyNodeParent(newItem) != null) {
                                 treeView.setParent(newItem,treeView.getValue());
                             } else {
-                                treeView.setParent(newItem,MY_LIST);
+                                treeView.setParent(newItem,MY_STUDIES);
                             }
 
                             if (treeView.getValue() != null) {
@@ -440,7 +512,7 @@ public class NurseryListPreview extends VerticalLayout {
                                     expandTree(treeView.getValue());
                             }
                             else
-                                treeView.expandItem(MY_LIST);
+                                treeView.expandItem(MY_STUDIES);
 
                             treeView.select(newItem);
                         }
@@ -511,5 +583,110 @@ public class NurseryListPreview extends VerticalLayout {
             }
         });
     }
+    
+    private static class TreeDropHandler implements DropHandler {
+        private final Tree tree;
+
+        public TreeDropHandler (Tree tree) {
+            this.tree = tree;
+        }
+
+
+        @Override
+        public void drop(DragAndDropEvent dropEvent) {
+            // Called whenever a drop occurs on the component
+
+            // Make sure the drag source is the same tree
+            Transferable t = dropEvent.getTransferable();
+
+            // see the comment in getAcceptCriterion()
+            if (t.getSourceComponent() != tree
+                    || !(t instanceof DataBoundTransferable)) {
+                return;
+            }
+
+            Tree.TreeTargetDetails dropData = ((Tree.TreeTargetDetails) dropEvent
+                    .getTargetDetails());
+
+            Object sourceItemId = ((DataBoundTransferable) t).getItemId();
+            // FIXME: Why "over", should be "targetItemId" or just
+            // "getItemId"
+            Object targetItemId = dropData.getItemIdOver();
+
+            // Location describes on which part of the node the drop took
+            // place
+            VerticalDropLocation location = dropData.getDropLocation();
+
+            moveNode(sourceItemId, targetItemId, location);
+
+        }
+
+        @Override
+        public AcceptCriterion getAcceptCriterion() {
+            return AcceptAll.get();
+        }
+
+        /**
+         * Move a node within a tree onto, above or below another node depending
+         * on the drop location.
+         *
+         * @param sourceItemId
+         *            id of the item to move
+         * @param targetItemId
+         *            id of the item onto which the source node should be moved
+         * @param location
+         *            VerticalDropLocation indicating where the source node was
+         *            dropped relative to the target node
+         */
+        private void moveNode(Object sourceItemId, Object targetItemId,
+                              VerticalDropLocation location) {
+            HierarchicalContainer container = (HierarchicalContainer) tree
+                    .getContainerDataSource();
+
+            // Sorting goes as
+            // - If dropped ON a node, we append it as a child
+            // - If dropped on the TOP part of a node, we move/add it before
+            // the node
+            // - If dropped on the BOTTOM part of a node, we move/add it
+            // after the node
+
+            if (location == VerticalDropLocation.MIDDLE) {
+                if (container.setParent(sourceItemId, targetItemId)
+                        && container.hasChildren(targetItemId)) {
+                    // move first in the container
+                    container.moveAfterSibling(sourceItemId, null);
+                }
+            } else if (location == VerticalDropLocation.TOP) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    // reorder only the two items, moving source above target
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                    container.moveAfterSibling(targetItemId, sourceItemId);
+                }
+            } else if (location == VerticalDropLocation.BOTTOM) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                }
+            }
+        }
+
+    }
+
+	public void addChildrenNode(int parentId, List<Reference> studyChildren) {
+		for (Reference sc : studyChildren) {
+			treeView.addItem(sc.getId());
+			treeView.setItemCaption(sc.getId(), sc.getName());
+			treeView.setParent(sc.getId(), parentId);
+            // check if the study has sub study
+            if (presenter.isFolder(sc.getId())) {
+            	treeView.setChildrenAllowed(sc.getId(), true);
+            	treeView.setItemIcon(sc.getId(),folderResource);
+            } else {
+            	treeView.setChildrenAllowed(sc.getId(), false);
+            	treeView.setItemIcon(sc.getId(),leafResource);
+            }
+		}
+	}
 
 }

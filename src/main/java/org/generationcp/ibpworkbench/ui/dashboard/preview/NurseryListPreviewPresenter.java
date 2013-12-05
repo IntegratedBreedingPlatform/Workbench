@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.domain.workbench.StudyNode;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -58,7 +62,23 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     }
 
+    public void generateInitialTreeNodes(){
+    	
+    	List<FolderReference> centralRootFolders = new ArrayList<FolderReference>();
+    	List<FolderReference> localRootFolders = new ArrayList<FolderReference>();
+    	try {
+    		centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL);
+    		localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL);
+    		
+    		view.generateTopListOfTree(centralRootFolders,localRootFolders);
+    	} catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+    	}
+    }
+    
+    
     public List<TreeNode> generateTreeNodes(){
+    	
         List<StudyNode> studyNodes = new ArrayList<StudyNode>();
 
         try {
@@ -223,7 +243,14 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public boolean isFolder(Integer value) {
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        try {
+        	boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
+        	return !isStudy;
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+        }
+        
+        return false;
     }
 
     public void renameNurseryListFolder(String s, Integer value) {
@@ -239,10 +266,25 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public Integer addNurseryListFolder(String s, Integer value) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        
+    	return null;
     }
 
     public StudyNode validateForDeleteNurseryList(Integer value) {
         return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+    
+    public void addChildrenNode(int parentId) throws InternationalizableException{
+    	List<Reference> studyChildren = new ArrayList<Reference>();
+
+        try {
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(parentId));
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            studyChildren = new ArrayList<Reference>();
+        }
+        
+        view.addChildrenNode(parentId, studyChildren);
+
     }
 }
