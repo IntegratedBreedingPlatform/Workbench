@@ -14,10 +14,8 @@ package org.generationcp.ibpworkbench.ui.metaanalysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-
-import javax.jws.WebParam.Mode;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -28,7 +26,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
-import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
@@ -47,7 +44,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.gdms.Dataset;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
@@ -69,16 +65,18 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 
@@ -91,33 +89,26 @@ import com.vaadin.ui.VerticalLayout;
 public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
-    
-	private TabSheet tabsheet;
-	
-    ///////
-    
+   
+	private TabSheet tabSheet; 
     private Label lblStudyTreeDetailTitle;
     private Label lblStudyTreeDetailDescription;
-    private Label lblDatasetDetailTitle;
-    private Label lblDatasetDetailDescription;
+    private Label lblBuildNewAnalysisHeader;
+    private Label lblBuildNewAnalysisDescription;
+    private Label lblReviewEnvironments;
+    private Label lblSelectedEnvironments;
+    private Button linkCloseAllTab;
     
     private VerticalLayout generalLayout;
-    
     private VerticalLayout studyTreeLayout;
     private VerticalLayout studyTreeLayoutTableContainer;
-    
     private GridLayout studyDetailsLayout;
     
-    private HorizontalLayout datasetVariablesDetailLayout;
-    
     private Project currentProject;
-
     private Study currentStudy;
-    
     private Integer currentRepresentationId;
-    
     private Integer currentDataSetId;
-    
+  
     private String currentDatasetName;
 
     private Button btnCancel;
@@ -130,15 +121,12 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     
     private ThemeResource folderResource;
     private ThemeResource leafResource;
-
-    private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
     
 	private StudyDataManager studyDataManager;
     
@@ -205,12 +193,13 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
     protected void initializeComponents() {
     	
-    	setTabsheet(new TabSheet());
+    	tabSheet = new TabSheet();
+    	tabSheet.setWidth("100%");
+    	tabSheet.setHeight("400px");
+    	tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
     	
     	folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
-    	
-    	setVariatesCheckboxState(new HashMap<String, Boolean>());
         
         generalLayout = new VerticalLayout();
         generalLayout.setWidth("95%");
@@ -218,23 +207,27 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyTreeLayout = new VerticalLayout();
         studyTreeLayoutTableContainer = new VerticalLayout();
         
-        studyDetailsLayout = new GridLayout(10, 1);
-        
-        datasetVariablesDetailLayout = new HorizontalLayout();
-        
+        studyDetailsLayout = new GridLayout(10, 4);
+        studyDetailsLayout.setMargin(true);
+        studyDetailsLayout.setSpacing(true);
+      
         lblStudyTreeDetailTitle = new Label();
         lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
         lblStudyTreeDetailDescription = new Label();
         studyTreeLayout.addComponent(lblStudyTreeDetailDescription);
-
-        //Table factors = initializeFactorsTable();
-        //Table variates = initializeVariatesTable();
+        
         final Table selectedEnvironmenTable = new Table();
         BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+        selectedEnvironmenTable.setWidth("100%");
+        selectedEnvironmenTable.setHeight("450px");
         selectedEnvironmenTable.setContainerDataSource(container);
+        selectedEnvironmenTable.setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
+        selectedEnvironmenTable.setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
         selectedEnvironmenTable.setDropHandler(new DropHandler(){
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void drop(DragAndDropEvent event) {
@@ -256,27 +249,40 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyTreeLayoutTableContainer.addComponent(tr);
         studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
         
+        lblBuildNewAnalysisHeader = new Label();
+        lblBuildNewAnalysisHeader.setStyleName("gcp-content-header");
+        lblBuildNewAnalysisDescription = new Label();
+        lblReviewEnvironments = new Label();
+        lblReviewEnvironments.setStyleName("gcp-table-header-bold");
+        lblSelectedEnvironments = new Label();
+        lblSelectedEnvironments.setStyleName("gcp-table-header-bold");
+        linkCloseAllTab = new Button();
+        linkCloseAllTab.setStyleName("link");
+        linkCloseAllTab.setImmediate(true);
+        linkCloseAllTab.setCaption("Close All Tabs");
+        
+        linkCloseAllTab.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tabSheet.removeAllComponents();
+			}
+		});
+     
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisHeader, 0, 0, 9, 0);
+        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 1, 2, 1);
+        studyDetailsLayout.addComponent(linkCloseAllTab, 3, 1, 4, 1);
+        studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
+        studyDetailsLayout.addComponent(lblSelectedEnvironments, 5, 1, 9, 1);
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 2, 4, 2);
+        studyDetailsLayout.addComponent(tabSheet, 0, 3, 4, 3);
+        studyDetailsLayout.addComponent(selectedEnvironmenTable, 5, 2, 9, 3);
+        
         buttonArea = layoutButtonArea();
-        
-        datasetVariablesDetailLayout.addComponent(getTabsheet());
-        datasetVariablesDetailLayout.addComponent(selectedEnvironmenTable);     
-    
-        studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 0, 0, 9, 0);
-         
+          
         generalLayout.addComponent(studyTreeLayout);  
-        
-        VerticalLayout studyDetailsDescriptionLayout = new VerticalLayout();
-        studyDetailsDescriptionLayout.setSpacing(true);
-        studyDetailsDescriptionLayout.setMargin(new MarginInfo(false, true, false, true));
-        lblDatasetDetailTitle = new Label();
-        lblDatasetDetailTitle.setStyleName("gcp-content-header");
-      
-        studyDetailsDescriptionLayout.addComponent(lblDatasetDetailTitle);
-        
-        lblDatasetDetailDescription = new Label();
-        studyDetailsDescriptionLayout.addComponent(lblDatasetDetailDescription);
-        
-        generalLayout.addComponent(studyDetailsDescriptionLayout);
         generalLayout.addComponent(studyDetailsLayout);
         generalLayout.addComponent(buttonArea);
         generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
@@ -289,12 +295,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
               
         studyTreeLayout.setSpacing(true);
         studyTreeLayout.setMargin(true);
-        
         studyDetailsLayout.setWidth("100%");
-
-        datasetVariablesDetailLayout.setMargin(true);
-        datasetVariablesDetailLayout.setSpacing(true);
-        datasetVariablesDetailLayout.setWidth("100%");
         
     }
     
@@ -449,11 +450,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     
     private Table[] refreshFactorsAndVariatesTable() {
         Table toreturn[] = new Table[2];
-        datasetVariablesDetailLayout.removeAllComponents();
         Table factors = initializeFactorsTable();
         Table variates = initializeVariatesTable();
-        datasetVariablesDetailLayout.addComponent(factors);
-        datasetVariablesDetailLayout.addComponent(variates);
         toreturn[0] = factors;
         toreturn[1] = variates;
         return toreturn;
@@ -685,9 +683,11 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         messageSource.setCaption(btnCancel, Message.CANCEL);
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
-        messageSource.setValue(lblStudyTreeDetailDescription, Message.BV_STUDY_TREE_DESCRIPTION);
-        messageSource.setValue(lblDatasetDetailTitle,  Message.BV_DATASET_DETAIL_TITLE);
-        messageSource.setValue(lblDatasetDetailDescription, Message.BV_DATASET_DETAIL_DESCRIPTION);
+        messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
+        messageSource.setValue(lblBuildNewAnalysisHeader,  Message.META_BUILD_NEW_ANALYSIS_HEADER);
+        messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
+        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
+        messageSource.setValue(lblSelectedEnvironments, Message.META_SELECTED_ENVIRONMENTS);
         
         
     }
@@ -710,11 +710,11 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 	}
 
 	public TabSheet getTabsheet() {
-		return tabsheet;
+		return tabSheet;
 	}
 
 	public void setTabsheet(TabSheet tabsheet) {
-		this.tabsheet = tabsheet;
+		this.tabSheet = tabsheet;
 	}
 	
 	class ShowEnvironmentTab implements ItemClickListener {
@@ -733,13 +733,26 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 	        if (dataSetId == null) return;
 
 	        try {
+	        	
+	        	
 	            TabSheet tabSheet = SelectDatasetsForMetaAnalysisPanel.this.getTabsheet();
 	            DataSet ds = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
-	            EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
 	            
+	            Iterator<Component> itr = tabSheet.getComponentIterator();
+	            while(itr.hasNext()){
+	            	EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
+	            	if (tab.getDataSetId() == ds.getId()){
+	            		tabSheet.setSelectedTab(tab);
+	            		return;
+	            	}
+	            }
+	            
+	            
+	            EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
 	            tabSheet.addTab(component);
 	            tabSheet.getTab(component).setClosable(true);
 	            tabSheet.getTab(component).setCaption(ds.getName());
+	            tabSheet.setSelectedTab(component);
 	            
 	            
 	        }catch(Exception e){
@@ -759,7 +772,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		Table environmentTable;
 		Select environmentSelect;
 		DataSet dataSet;
-		
+		String studyName;
 
 		public EnvironmentTabComponent(DataSet dataSet){
 			
@@ -772,11 +785,24 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			
 		}
 		
+		public int getDataSetId(){
+			return dataSet.getId();
+		}
+		
 		private void initializeComponents(){
+			
+			try {
+				studyName = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			environmentSelect = new Select();
 			environmentSelect.setImmediate(true);
 			
 			environmentTable = new Table();
+			environmentTable.setSizeUndefined();
 			environmentTable.setDragMode(TableDragMode.MULTIROW);
 			environmentTable.setSelectable(true);
 			
@@ -795,8 +821,13 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					environmentSelect.addItem(factor.getLocalName());
 			}
 			
-	
-		
+			environmentSelect.select(environmentSelect.getItemIds().iterator().next());
+			
+			initializeTable();
+			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);
+			lblStudyName.setContentMode(Label.CONTENT_XHTML);
+			addComponent(lblStudyName);
+			addComponent(new Label("Which factor defines the environment?"));
 			addComponent(environmentSelect);
 			addComponent(environmentTable);
 
@@ -808,20 +839,43 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 			environmentTable.setContainerDataSource(container);
 			
+			
+			String trialInstanceFactorName=null;
 			try {
 				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
 			
+				
 				for (TrialEnvironment env : envs.getTrialEnvironments()){
+					
+					if (trialInstanceFactorName==null){
+						for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
+							if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+								trialInstanceFactorName = f.getLocalName();
+							}
+						}
+					}
+					
+					String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
 					String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
 					
 					MetaEnvironmentModel bean = new MetaEnvironmentModel();
+					bean.setTrial(trialNo);
 					bean.setEnvironment(envName);
 					bean.setDataSetId(dataSet.getId());
 					bean.setDataSetName(dataSet.getName());
+					bean.setStudyId(dataSet.getStudyId());
+					bean.setStudyName(studyName);
 					
 					container.addBean(bean);
 				}
-			
+				
+				if (trialInstanceFactorName.equals(environmentSelect.getValue().toString())){
+					environmentTable.setVisibleColumns(new Object[] {"environment"});
+					environmentTable.setColumnHeaders(new String[] {environmentSelect.getValue().toString()});
+				}else{
+					environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
+					environmentTable.setColumnHeaders(new String[] {trialInstanceFactorName, environmentSelect.getValue().toString()});
+				}
 			} catch (MiddlewareQueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
