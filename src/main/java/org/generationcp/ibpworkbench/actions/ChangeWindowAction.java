@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public
  * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
@@ -23,6 +23,7 @@ import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
 import org.generationcp.ibpworkbench.ui.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -46,11 +47,11 @@ import com.vaadin.ui.Window;
 @Configurable
 public class ChangeWindowAction implements WorkflowConstants, ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
-    
+
     private final static Logger LOG = LoggerFactory.getLogger(ChangeWindowAction.class);
-    
+
     Project project;
-     
+
     public static enum WindowEnums {
          GERMPLASM_BROWSER("germplasm_browser")
         ,STUDY_BROWSER("study_browser")
@@ -65,13 +66,13 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,MBDT("mbdt")
         ,MEMBER("member")
         ;
-        
+
         String windowName;
-        
+
         WindowEnums(String windowName) {
             this.windowName = windowName;
         }
-        
+
         public String getwindowName() {
             return windowName;
         }
@@ -83,16 +84,16 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
             }
             return null;
         }
-        
+
         public static boolean isCorrectTool(String windowName) {
-        	
-        	for (WindowEnums winEnum : WindowEnums.values()) {
-        		if (winEnum.getwindowName().equals(windowName)) {
-        			return true;
-        		}
-        	}
-        	
-        	return false;
+
+            for (WindowEnums winEnum : WindowEnums.values()) {
+                if (winEnum.getwindowName().equals(windowName)) {
+                    return true;
+                }
+            }
+
+            return false;
 
         	/*
             if(WindowEnum.GERMPLASM_BROWSER.getwindowName().equals(windowName) 
@@ -112,53 +113,52 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     }
 
     private WindowEnums windowEnums;
-    
+
     private String toolConfiguration;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    
+
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
     @Autowired
     private ToolUtil toolUtil;
 
-	private Role role;
-    
+    private Role role;
+
     public ChangeWindowAction() {
     }
-    
+
     public ChangeWindowAction(WindowEnums windowEnum) {
         this.windowEnums = windowEnum;
         this.toolConfiguration = WorkflowConstants.DEFAULT;
     }
-    
+
     public ChangeWindowAction(WindowEnums windowEnum, Project project) {
         this.windowEnums = windowEnum;
         this.project = project;
-      
+
     }
-     
+
     public ChangeWindowAction(WindowEnums windowEnum, Project project, String toolConfiguration) {
         this.windowEnums = windowEnum;
         this.project = project;
         this.toolConfiguration = toolConfiguration;
     }
-    
-    public ChangeWindowAction(WindowEnums windowEnum, Project project,Role role, String toolConfiguration) {
+
+    public ChangeWindowAction(WindowEnums windowEnum, Project project, Role role, String toolConfiguration) {
         this.windowEnums = windowEnum;
         this.project = project;
         this.role = role;
         this.toolConfiguration = toolConfiguration;
     }
-    
-    
 
-	@Override
+
+    @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
     }
@@ -170,96 +170,111 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-    	String windowName = windowEnums.getwindowName();
-        if(WindowEnums.isCorrectTool(windowName)) {
-        	launchWindow(window, windowName, isLinkAccessed);
+        String windowName = windowEnums.getwindowName();
+        if (WindowEnums.isCorrectTool(windowName)) {
+            launchWindow(window, windowName, isLinkAccessed);
         } else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
+            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
                     messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
         }
     }
-    
-    public void launchWindow(Window window, String windowName, boolean isLinkAccessed)
-    {
-    	IContentWindow w = (IContentWindow) window;
-    	
-    	System.out.println("ChangeWindow");
-    	if(WindowEnums.MEMBER.getwindowName().equals(windowName) )
-    	{
-    		
-    		
-    		 try {
-                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                 User user = app.getSessionData().getUserData();
-                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+    public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
+        IContentWindow w = (IContentWindow) window;
 
-                 workbenchDataManager.addProjectActivity(projAct);
+        System.out.println("ChangeWindow");
+        if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
 
-             } catch (MiddlewareQueryException e1) {
-                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                 return;
-             }
-    		 
-    		 ProjectMembersComponentPanel projectLocationPanel = new ProjectMembersComponentPanel(this.project);
-     		 w.showContent(projectLocationPanel);
-     		 NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
-     		
-    	} else if(WindowEnums.BREEDING_GXE.getwindowName().equals(windowName) )
-        	{
-        		
-        		
-        		 try {
-                     IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                     User user = app.getSessionData().getUserData();
-                     Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                     ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                     workbenchDataManager.addProjectActivity(projAct);
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
 
-                 } catch (MiddlewareQueryException e1) {
-                     MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                                               "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                     return;
-                 }
-        		 
-        		 GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project,this.role);
-         		 w.showContent(gxeAnalysisPanel);
-         		 NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
-         		
-        	} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)){
-        		
-        		 try {
-                     IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                     User user = app.getSessionData().getUserData();
-                     Project currentProject = app.getSessionData().getLastOpenedProject();
+                workbenchDataManager.addProjectActivity(projAct);
 
-                     ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+windowName, user, new Date());
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
 
-                     workbenchDataManager.addProjectActivity(projAct);
+            ProjectMembersComponentPanel projectLocationPanel = new ProjectMembersComponentPanel(this.project);
+            w.showContent(projectLocationPanel);
+            NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
 
-                 } catch (MiddlewareQueryException e1) {
-                     MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                                               "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                     return;
-                 }
-        		
-        		 SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project,Database.LOCAL,this.role);
-        		 w.showContent(breedingViewPanel);
-        		 NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
-        		
-        	}
-    	else {
+        } else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
+
+
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
+
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
+
+            GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project, this.role);
+            w.showContent(gxeAnalysisPanel);
+            NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
+
+        } else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
+
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
+
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
+
+            SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project, Database.LOCAL, this.role);
+            w.showContent(breedingViewPanel);
+            NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
+
+        } else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
+            try {
+                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+                User user = app.getSessionData().getUserData();
+                Project currentProject = app.getSessionData().getLastOpenedProject();
+
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
+
+                workbenchDataManager.addProjectActivity(projAct);
+
+            } catch (MiddlewareQueryException e1) {
+                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return;
+            }
+
+            SelectDatasetsForMetaAnalysisPanel metaAnalyis = new SelectDatasetsForMetaAnalysisPanel(this.project, Database.LOCAL, this.role);
+            w.showContent(metaAnalyis);
+            NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
+        } else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
-            messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
+            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
         }
-    	
+
     }
-   
-    
+
+
 }
