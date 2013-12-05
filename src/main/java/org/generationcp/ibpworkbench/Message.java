@@ -207,6 +207,7 @@ public enum Message {
     ,MANAGE_TRIALS
     ,BROWSE_GERMPLASM_AND_LISTS
     ,CLICK_TO_LAUNCH_GERMPLASM_AND_LIST_BROWSER
+    ,META_ANALYSIS
     
     //Breeding View Window
     ,STUDY_EFFECT

@@ -107,6 +107,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     //GCP-6394
     private Button ontologyBrowserButton;
+    private Button metaAnalysisButton;
     /*private Button browseGermplasmAndListsButton;*/
 
     private Button breedingPlannerButton;
@@ -214,6 +215,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         ontologyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         ontologyBrowserButton.setSizeUndefined();
         ontologyBrowserButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_ONTOLOGY_BROWSER));
+
+        metaAnalysisButton = new Button(messageSource.getMessage(Message.META_ANALYSIS));
+        metaAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        metaAnalysisButton.setSizeUndefined();
+        metaAnalysisButton.setDescription(messageSource.getMessage(Message.META_ANALYSIS));
 
         /*browseGermplasmAndListsButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_AND_LISTS));
         browseGermplasmAndListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -471,6 +477,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(ontologyBrowserButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserButton, 0);
 
+        layout.addComponent(metaAnalysisButton);
+        metaAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(metaAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(metaAnalysisButton, 0);
+
         /*layout.addComponent(browseGermplasmAndListsButton);
         ontologyBrowserButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmAndListsButton, Alignment.TOP_CENTER);
@@ -691,6 +702,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             /*browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));*/
             /*browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));*/
             ontologyBrowserButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
+            metaAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS, this.project, this.role, null));
             /*browseGermplasmAndListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));*/
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
@@ -700,7 +712,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
 
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
