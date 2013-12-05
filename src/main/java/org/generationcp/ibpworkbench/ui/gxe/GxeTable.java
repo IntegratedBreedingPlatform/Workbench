@@ -75,6 +75,7 @@ public class GxeTable extends Table {
 	private String trialInstanceFactorName = "";
 	
 	private String selectedEnvFactorName = "";
+	private String selectedEnvGroupFactorName = "";
 
 	private int meansDataSetId;
 
@@ -86,8 +87,9 @@ public class GxeTable extends Table {
 	
 	private Property.ValueChangeListener gxeCheckBoxColumnListener;
 
-	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, Map<String, Boolean> variatesCheckBoxState, Property.ValueChangeListener gxeCheckBoxColumnListener) {
+	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckBoxState, Property.ValueChangeListener gxeCheckBoxColumnListener) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
+		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
 		this.studyDataManager = studyDataManager;
 		this.variatesCheckBoxState = variatesCheckBoxState;
 		this.gxeCheckBoxColumnListener = gxeCheckBoxColumnListener;
@@ -105,6 +107,7 @@ public class GxeTable extends Table {
 		this.setEditable(true);
 		this.setColumnReorderingAllowed(true);
 		this.setSortDisabled(true);
+		this.setColumnCollapsingAllowed(true);
 
 
 	}
@@ -244,7 +247,8 @@ public class GxeTable extends Table {
 					
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					VariableTypeList trialEnvFactors = meansDataSet.getFactorsByPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
+					//VariableTypeList trialEnvFactors = meansDataSet.getFactorsByPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
+					VariableTypeList trialEnvFactors = meansDataSet.getVariableTypes().getFactors();
 					
 					for(VariableType f : trialEnvFactors.getVariableTypes()){
 						
@@ -256,6 +260,12 @@ public class GxeTable extends Table {
 						
 						//Selected Environment Name
 						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
+							container.addContainerProperty(f.getLocalName(), Label.class, "");
+							factorLocalNames.put(f.getRank(), f.getLocalName());
+						}
+						
+						//Selected Environment Group Name
+						if (f.getLocalName().equalsIgnoreCase(selectedEnvGroupFactorName)){
 							container.addContainerProperty(f.getLocalName(), Label.class, "");
 							factorLocalNames.put(f.getRank(), f.getLocalName());
 						}
@@ -297,11 +307,12 @@ public class GxeTable extends Table {
 						row[0].setValue(true);
 						
 						int cellCounter = 1;
+						int colIndexEnvFactorName = 0;
 						
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
 							String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
-							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) envNames.add(fValue);
+							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) {envNames.add(fValue); colIndexEnvFactorName = cellCounter;}
 							row[cellCounter] = new TableItems();
 							row[cellCounter].setLabel(fValue);
 							row[cellCounter].setType(GxeTable.CELL_LABEL);
@@ -321,12 +332,10 @@ public class GxeTable extends Table {
 							}
 							String meansData = "";
 							try{
-								//meansData = String.valueOf(studyDataManager.countExperimentsByTrialEnvironmentAndVariate(
-								//		envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId(), 
-								//		v.getKey()));
+								
 								meansData = String.valueOf(studyDataManager.countStocks(
 										meansDataSetId
-										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[1].getLabel()).getId()
+										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[colIndexEnvFactorName].getLabel()).getId()
 										,varKey
 											)
 										);

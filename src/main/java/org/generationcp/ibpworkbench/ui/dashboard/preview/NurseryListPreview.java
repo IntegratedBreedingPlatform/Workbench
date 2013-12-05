@@ -50,6 +50,9 @@ public class NurseryListPreview extends VerticalLayout {
 
     private ThemeResource folderResource =  new ThemeResource("images/folder.png");
     private ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");
+    
+    public static String MY_LIST = "My List";
+    public static String SHARED_LIST = "Shared List";
 
 
     @Autowired 
@@ -273,7 +276,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) treeView.getValue())).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) treeView.getValue())).buttonClick(event);
 
             }
         });
@@ -410,7 +413,10 @@ public class NurseryListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
                         try {
-                            newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
+                        	if (treeView.getValue() instanceof  String)//top folder
+                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), null);
+                        	else
+                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                             return;
@@ -426,11 +432,17 @@ public class NurseryListPreview extends VerticalLayout {
                             if (presenter.getStudyNodeParent(newItem) != null) {
                                 treeView.setParent(newItem,treeView.getValue());
                             } else {
-                            //    treeView.setParent(newItem,MY_LIST);
+                                treeView.setParent(newItem,MY_LIST);
                             }
 
-                            //treeView.select(newItem);
-                            expandTree(treeView.getValue());
+                            if (treeView.getValue() != null) {
+                                if (!treeView.isExpanded(treeView.getValue()))
+                                    expandTree(treeView.getValue());
+                            }
+                            else
+                                treeView.expandItem(MY_LIST);
+
+                            treeView.select(newItem);
                         }
 
                         // close popup

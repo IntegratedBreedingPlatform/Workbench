@@ -364,7 +364,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 			};
 			
 			
-			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), variatesCheckboxState, envCheckBoxListener));
+			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), selectedEnvGroupFactorName, variatesCheckboxState, envCheckBoxListener));
 			getGxeTable().setHeight("300px");
 			addComponent(getGxeTable());
 			addComponent(chkSelectAllEnvironments);
@@ -414,6 +414,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		selectTraitsTable.setHeight("80px");
 		selectTraitsTable.setWidth("100%");
 		selectTraitsTable.setColumnHeaders(columnNames.toArray(new String[0]));
+		selectTraitsTable.setColumnCollapsingAllowed(true);
 		
 		addComponent(selectTraitsTable);
 		setExpandRatio(selectTraitsTable, 1.0F);
@@ -516,10 +517,10 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					
 					File datasetExportFile = null;
 					
-					if (isXLS)
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
-					else
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
+					//if (isXLS)
+					//	datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
+					//else
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName ,gxeEnv,selectedTraits, currentProject);
 					
 					
 					
