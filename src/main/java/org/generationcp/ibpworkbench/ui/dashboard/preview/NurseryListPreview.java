@@ -12,7 +12,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -23,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.Transferable;
@@ -350,6 +348,7 @@ public class NurseryListPreview extends VerticalLayout {
                 // page change to list manager, with parameter passed
                 (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue()  )).buttonClick(event);
 
+
             }
         });
 
@@ -357,7 +356,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                /*if (treeView.getValue() == null) {
+                if (treeView.getValue() == null) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
                     return;
                 }
@@ -439,7 +438,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 // show window
                 WorkbenchMainView.getInstance().addWindow(w);
-                 */
+
             }
         });
 
@@ -447,7 +446,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                /*final Window w = new Window("Add new folder");
+                final Window w = new Window("Add new folder");
                 w.setWidth("280px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -540,7 +539,6 @@ public class NurseryListPreview extends VerticalLayout {
 
                 // show window
                 WorkbenchMainView.getInstance().addWindow(w);
-                */
             }
         });
 
@@ -548,7 +546,7 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
-                /*
+
                 if (treeView.getValue() instanceof String) {
                     MessageNotifier.showError(event.getComponent().getWindow(),treeView.getValue().toString() + " cannot be deleted.","");
                     return;
@@ -581,7 +579,6 @@ public class NurseryListPreview extends VerticalLayout {
                         }
                     }
                 });
-                */
             }
         });
     }
@@ -690,7 +687,7 @@ public class NurseryListPreview extends VerticalLayout {
             }
 		}
 	}
-
+	
 
     public void toggleToolbarBtns(boolean toggle) {
         if (toggle == true) {
@@ -711,4 +708,6 @@ public class NurseryListPreview extends VerticalLayout {
             addFolderBtn.setEnabled(false);
         }
     }
+
+
 }
