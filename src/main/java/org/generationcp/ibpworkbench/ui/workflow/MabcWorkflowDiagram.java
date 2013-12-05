@@ -318,7 +318,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         this.setSizeFull();
         this.setSpacing(true);
         this.setMargin(new MarginInfo(true, false, false, true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -477,11 +479,6 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.setComponentAlignment(ontologyBrowserButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserButton, 0);
 
-        layout.addComponent(metaAnalysisButton);
-        metaAnalysisButton.setHeight("20px");
-        layout.setComponentAlignment(metaAnalysisButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(metaAnalysisButton, 0);
-
         /*layout.addComponent(browseGermplasmAndListsButton);
         ontologyBrowserButton.setHeight("20px");
         layout.setComponentAlignment(browseGermplasmAndListsButton, Alignment.TOP_CENTER);
@@ -594,6 +591,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
+
+        layout.addComponent(metaAnalysisButton);
+        metaAnalysisButton.setHeight("20px");
+        layout.setComponentAlignment(metaAnalysisButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(metaAnalysisButton, 0);
         
         /*
         layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);

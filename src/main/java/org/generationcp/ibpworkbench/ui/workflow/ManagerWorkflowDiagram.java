@@ -370,7 +370,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     	this.setSizeFull();
     	this.setSpacing(true);
     	this.setMargin(new MarginInfo(true,false,false,true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -826,7 +828,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
             deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
-            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));
         }
     }
 
