@@ -354,9 +354,9 @@ public class NurseryListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue()  )).buttonClick(event);
-
-
+                Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                Object value = treeView.getValue();
+                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, project, ((Integer) value).intValue()).buttonClick(event);
             }
         });
 
