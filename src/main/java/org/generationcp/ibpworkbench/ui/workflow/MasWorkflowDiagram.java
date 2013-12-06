@@ -333,7 +333,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         //the steps on the first column
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
-        
+
         top = top + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage1, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
@@ -371,8 +371,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         //the steps on the second column   
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
                 + ARROW_IMAGE_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
@@ -381,8 +380,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Component genotypingArea = layoutGenotypingStep();
         layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
         
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 40; 
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 50;
         topInPixels = top + "px";
         left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
                 + EXTRA_SPACE_BETWEEN_COMPONENTS;
