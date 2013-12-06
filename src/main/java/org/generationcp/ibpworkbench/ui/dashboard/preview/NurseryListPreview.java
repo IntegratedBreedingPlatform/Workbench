@@ -294,6 +294,7 @@ public class NurseryListPreview extends VerticalLayout {
         openStudyManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Launch");
         openStudyManagerBtn.setHtmlContentAllowed(true);
         openStudyManagerBtn.setDescription("Open In List Manager");
+        openStudyManagerBtn.setEnabled(false);
 
         renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
@@ -353,9 +354,9 @@ public class NurseryListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue())).buttonClick(event);
-
-
+                Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                Object value = treeView.getValue();
+                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, project, ((Integer) value).intValue()).buttonClick(event);
             }
         });
 
@@ -696,6 +697,18 @@ public class NurseryListPreview extends VerticalLayout {
                         container.moveAfterSibling(sourceItemId, targetItemId);
                     }
                 }
+            } else if (location == VerticalDropLocation.TOP) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    // reorder only the two items, moving source above target
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                    container.moveAfterSibling(targetItemId, sourceItemId);
+                }
+            } else if (location == VerticalDropLocation.BOTTOM) {
+                Object parentId = container.getParent(targetItemId);
+                if (container.setParent(sourceItemId, parentId)) {
+                    container.moveAfterSibling(sourceItemId, targetItemId);
+                }
             }
         }
 
@@ -714,29 +727,21 @@ public class NurseryListPreview extends VerticalLayout {
                 treeView.setChildrenAllowed(sc.getId(), false);
                 treeView.setItemIcon(sc.getId(), leafResource);
             }
-        }
+		}
+	}
+
+    public void setToolbarButtonsEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
+        renameFolderBtn.setEnabled(enabled);
+        deleteFolderBtn.setEnabled(enabled);
     }
 
-
-    public void toggleToolbarBtns(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-            renameFolderBtn.setEnabled(true);
-            deleteFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-            renameFolderBtn.setEnabled(false);
-            deleteFolderBtn.setEnabled(false);
-        }
+    public void setToolbarAddButtonEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
     }
 
-    public void toggleToolbarAddBtn(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-        }
+    public void setToolbarLaunchButtonEnabled(boolean enabled) {
+        openStudyManagerBtn.setEnabled(enabled);
     }
-
 
 }

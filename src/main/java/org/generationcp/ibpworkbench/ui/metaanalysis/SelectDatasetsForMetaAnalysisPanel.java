@@ -30,9 +30,11 @@ import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
@@ -99,12 +101,16 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private Label lblBuildNewAnalysisHeader;
     private Label lblBuildNewAnalysisDescription;
     private Label lblReviewEnvironments;
-    private Label lblSelectedEnvironments;
+    private Label lblSelectDatasetsForAnalysis;
+    private Label lblSelectDatasetsForAnalysisDescription;
     private Button linkCloseAllTab;
+    private Table selectedEnvironmenTable;
+    
     
     private VerticalLayout generalLayout;
     private VerticalLayout studyTreeLayout;
     private VerticalLayout studyTreeLayoutTableContainer;
+    private VerticalLayout selectedDataSetEnvironmentLayout;
     private GridLayout studyDetailsLayout;
     
     private Project currentProject;
@@ -198,7 +204,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
-    	tabSheet.setHeight("400px");
+    	tabSheet.setHeight("440px");
     	tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
     	
     	folderResource =  new ThemeResource("images/folder.png");
@@ -213,6 +219,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyDetailsLayout = new GridLayout(10, 4);
         studyDetailsLayout.setMargin(true);
         studyDetailsLayout.setSpacing(true);
+        
+        selectedDataSetEnvironmentLayout = new VerticalLayout();
+        selectedDataSetEnvironmentLayout.setMargin(true);
+        selectedDataSetEnvironmentLayout.setSpacing(true);
       
         lblStudyTreeDetailTitle = new Label();
         lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
@@ -221,31 +231,13 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         lblStudyTreeDetailDescription = new Label();
         studyTreeLayout.addComponent(lblStudyTreeDetailDescription);
         
-        final Table selectedEnvironmenTable = new Table();
+        setSelectedEnvironmenTable(new Table());
         BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
-        selectedEnvironmenTable.setWidth("100%");
-        selectedEnvironmenTable.setHeight("450px");
-        selectedEnvironmenTable.setContainerDataSource(container);
-        selectedEnvironmenTable.setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
-        selectedEnvironmenTable.setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
-        selectedEnvironmenTable.setDropHandler(new DropHandler(){
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void drop(DragAndDropEvent event) {
-				MetaEnvironmentModel bean = (MetaEnvironmentModel) event.getTransferable().getData("itemId");			
-				selectedEnvironmenTable.getContainerDataSource().addItem(bean);
-				
-			}
-
-			@Override
-			public AcceptCriterion getAcceptCriterion() {
-				
-				return AcceptAll.get();
-			}
-        	
-        });
+        getSelectedEnvironmenTable().setWidth("100%");
+        getSelectedEnvironmenTable().setHeight("450px");
+        getSelectedEnvironmenTable().setContainerDataSource(container);
+        getSelectedEnvironmenTable().setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
+        getSelectedEnvironmenTable().setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
         
         
         TreeTable tr = createStudyTreeTable(this.database);
@@ -257,12 +249,13 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         lblBuildNewAnalysisDescription = new Label();
         lblReviewEnvironments = new Label();
         lblReviewEnvironments.setStyleName("gcp-table-header-bold");
-        lblSelectedEnvironments = new Label();
-        lblSelectedEnvironments.setStyleName("gcp-table-header-bold");
         linkCloseAllTab = new Button();
         linkCloseAllTab.setStyleName("link");
         linkCloseAllTab.setImmediate(true);
         linkCloseAllTab.setCaption("Close All Tabs");
+        lblSelectDatasetsForAnalysis = new Label();
+        lblSelectDatasetsForAnalysis.setStyleName("gcp-content-header");
+        lblSelectDatasetsForAnalysisDescription = new Label();
         
         linkCloseAllTab.addListener(new Button.ClickListener() {
 			
@@ -276,17 +269,22 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
      
         studyDetailsLayout.addComponent(lblBuildNewAnalysisHeader, 0, 0, 9, 0);
         studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 1, 2, 1);
-        studyDetailsLayout.addComponent(linkCloseAllTab, 3, 1, 4, 1);
+        studyDetailsLayout.addComponent(linkCloseAllTab, 8, 1, 9, 1);
         studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
-        studyDetailsLayout.addComponent(lblSelectedEnvironments, 5, 1, 9, 1);
-        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 2, 4, 2);
-        studyDetailsLayout.addComponent(tabSheet, 0, 3, 4, 3);
-        studyDetailsLayout.addComponent(selectedEnvironmenTable, 5, 2, 9, 3);
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 2, 9, 2);
+        studyDetailsLayout.addComponent(tabSheet, 0, 3, 9, 3);
+        //studyDetailsLayout.addComponent(selectedEnvironmenTable, 5, 2, 9, 3);
+        
+        
+        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysis);
+        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysisDescription);
+        selectedDataSetEnvironmentLayout.addComponent(getSelectedEnvironmenTable());
         
         buttonArea = layoutButtonArea();
           
         generalLayout.addComponent(studyTreeLayout);  
         generalLayout.addComponent(studyDetailsLayout);
+        generalLayout.addComponent(selectedDataSetEnvironmentLayout);
         generalLayout.addComponent(buttonArea);
         generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
         
@@ -327,139 +325,26 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				}
 			}
 		});
-    	//openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
-        //btnNext.addListener(openSelectDatasetForExportAction);
-
-    }
-
-    protected Table initializeFactorsTable() {
-        
-        final Table tblFactors = new Table("FACTORS");
-        tblFactors.setImmediate(true);
-        tblFactors.setWidth("100%");
-        tblFactors.setHeight("450px");
-        
-        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
-        container.setBeanIdProperty("id");
-        tblFactors.setContainerDataSource(container);
-       
-        String[] columns = new String[] {"name", "description"};
-        String[] columnHeaders = new String[] {"Name", "Description"};
-        tblFactors.setVisibleColumns(columns);
-        tblFactors.setColumnHeaders(columnHeaders);
-        
-        tblFactors.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
-
-			private static final long serialVersionUID = 1L;
-
-				public String generateDescription(Component source, Object itemId, Object propertyId) {
-        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
-        	    	 FactorModel fm = container.getItem(itemId).getBean();
-        	    	 
-        	    	 StringBuilder sb = new StringBuilder();
-        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
-        	    	 sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
-        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
-        	    	 sb.append(String.format("<span>Method:</span> %s<br>", fm.getTmname()));
-        	    	 sb.append(String.format("<span>Data Type:</span> %s", fm.getDataType()));
-        	                                                                        
-        	         return sb.toString();
-        	     }
-        	});
-        
-        return tblFactors;
-    }
-    
-    protected Table initializeVariatesTable() {
-        
-        final Table tblVariates = new Table("VARIATES");
-        tblVariates.setImmediate(true);
-        tblVariates.setWidth("100%");
-        tblVariates.setHeight("450px");
-        tblVariates.setColumnExpandRatio("", 0.5f);
-        tblVariates.setColumnExpandRatio("name", 1);
-        tblVariates.setColumnExpandRatio("description", 4);
-        tblVariates.setColumnExpandRatio("scname", 1);
-        tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
-
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
+    	
+        btnNext.addListener(new Button.ClickListener() {
+			
 			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-				
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-				final VariateModel vm = container.getItem(itemId).getBean();
-				
-				final CheckBox checkBox = new CheckBox();
-				checkBox.setImmediate(true);
-				checkBox.setVisible(true);
-				checkBox.addListener(new Property.ValueChangeListener() {
-					
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void valueChange(final ValueChangeEvent event) {
-						Boolean val = (Boolean) event.getProperty()
-								.getValue();
-						variatesCheckboxState.put(vm.getName(), val);
-						vm.setActive(val);
-					
+			public void buttonClick(ClickEvent event) {
+					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
+					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
+					while(itr.hasNext()){
+						metaEnvironments.add(itr.next());
 					}
-				});
-
-				if (vm.getActive()) {
-					checkBox.setValue(true);
-				} else {
-					checkBox.setValue(false);
-				}
-				
-				return checkBox;
-				
+					
+					if (metaEnvironments.size() > 0){
+						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments));
+					}
+					
 			}
-        	
-        });
-        
-        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+		});
 
-			private static final long serialVersionUID = 1L;
-
-				public String generateDescription(Component source, Object itemId, Object propertyId) {
-        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-        	    	 VariateModel vm = container.getItem(itemId).getBean();
-        	    	 
-        	    	 StringBuilder sb = new StringBuilder();
-        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getName()));
-        	    	 sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
-        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
-        	    	 sb.append(String.format("<span>Method:</span> %s<br>", vm.getTmname()));
-        	    	 sb.append(String.format("<span>Data Type:</span> %s", vm.getDatatype()));
-        	                                                                        
-        	         return sb.toString();
-        	     }
-        	});
-        
-        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
-        container.setBeanIdProperty("id");
-        tblVariates.setContainerDataSource(container);
-        
-        String[] columns = new String[] {"","name", "description", "scname"};
-        String[] columnHeaders = new String[] {"" ,"Name", "Description", "Scale"};
-        tblVariates.setVisibleColumns(columns);
-        tblVariates.setColumnHeaders(columnHeaders);
-        return tblVariates;
-    }
-    
-    private Table[] refreshFactorsAndVariatesTable() {
-        Table toreturn[] = new Table[2];
-        Table factors = initializeFactorsTable();
-        Table variates = initializeVariatesTable();
-        toreturn[0] = factors;
-        toreturn[1] = variates;
-        return toreturn;
-    }
-    
+    }  
 
     protected Component layoutButtonArea() {
     	
@@ -535,8 +420,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     }
     
     public void refreshStudyTreeTable(Database database) {
-        
-        Table variables[] =  refreshFactorsAndVariatesTable();
         
         this.studyTreeLayout.removeAllComponents();
         TreeTable tr = createStudyTreeTable(database);
@@ -690,7 +573,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         messageSource.setValue(lblBuildNewAnalysisHeader,  Message.META_BUILD_NEW_ANALYSIS_HEADER);
         messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
         messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
-        messageSource.setValue(lblSelectedEnvironments, Message.META_SELECTED_ENVIRONMENTS);
+        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
+        messageSource.setValue(lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
         
         
     }
@@ -720,6 +604,14 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		this.tabSheet = tabsheet;
 	}
 	
+	public Table getSelectedEnvironmenTable() {
+		return selectedEnvironmenTable;
+	}
+
+	public void setSelectedEnvironmenTable(Table selectedEnvironmenTable) {
+		this.selectedEnvironmenTable = selectedEnvironmenTable;
+	}
+
 	class ShowEnvironmentTab implements ItemClickListener {
 
 
@@ -773,9 +665,15 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		private static final long serialVersionUID = 1L;
 		
 		Table environmentTable;
-		Select environmentSelect;
+		Table factorTable;
+		Table variateTable;
 		DataSet dataSet;
 		String studyName;
+		
+		Label lblFactor;
+		Label lblFactorDescription;
+		Label lblVariate;
+		Label lblVariateDescription;
 
 		public EnvironmentTabComponent(DataSet dataSet){
 			
@@ -800,73 +698,209 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			environmentSelect = new Select();
-			environmentSelect.setImmediate(true);
-			
-			environmentTable = new Table();
-			environmentTable.setSizeUndefined();
-			environmentTable.setDragMode(TableDragMode.MULTIROW);
-			environmentTable.setSelectable(true);
-			
-			environmentSelect.addListener(new Property.ValueChangeListener(){
 
-				@Override
-				public void valueChange(ValueChangeEvent event) {
-						
-					initializeTable();
-				}});
+			lblFactor = new Label("Factor");
+			lblFactor.setStyleName("gcp-table-header-bold");
+			lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
+			lblVariate = new Label("Variate");
+			lblVariate.setStyleName("gcp-table-header-bold");
+			lblVariateDescription = new Label("The variates of the dataset you have selected are shown below for your review.");
 			
-			
-			for (VariableType factor : dataSet.getVariableTypes().getFactors().getVariableTypes()){
-				if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()	)
-					environmentSelect.addItem(factor.getLocalName());
-			}
-			
-			environmentSelect.select(environmentSelect.getItemIds().iterator().next());
-			
-			initializeTable();
 			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);
 			lblStudyName.setContentMode(Label.CONTENT_XHTML);
-			addComponent(lblStudyName);
-			addComponent(new Label("Which factor defines the environment?"));
-			addComponent(environmentSelect);
-			addComponent(environmentTable);
+			Button linkFullStudyDetails = new Button();
+			linkFullStudyDetails.setStyleName("link");
+			linkFullStudyDetails.setCaption("Full Study Details");
+			Button linkSaveToList = new Button();
+			linkSaveToList.setStyleName("link");
+			linkSaveToList.setCaption("Save To List");
+			
+			linkSaveToList.addListener(new Button.ClickListener() {
+				@Override
+				public void buttonClick(ClickEvent event) {
+						addDataSetToTable();
+					
+				}
+			});
+			
+			
+			GridLayout gLayout = new GridLayout(10,3);
+			gLayout.setWidth("100%");
+			gLayout.setSpacing(true);
+			gLayout.addComponent(lblStudyName, 0, 0, 2, 0);
+			gLayout.addComponent(linkFullStudyDetails, 3, 0, 5, 0);
+			gLayout.addComponent(linkSaveToList, 6, 0, 9, 0);
+			gLayout.addComponent(lblFactor, 0, 1, 4, 1);
+			gLayout.addComponent(lblVariate, 5, 1, 9, 1);
+			gLayout.addComponent(lblFactorDescription, 0, 2, 4, 2);
+			gLayout.addComponent(lblVariateDescription, 5, 2, 9, 2);
+			
+			addComponent(gLayout);
+			
+			HorizontalLayout hLayout = new HorizontalLayout();
+			hLayout.setWidth("100%");
+			hLayout.setSpacing(true);
+			hLayout.addComponent(initializeFactorsTable());
+			hLayout.addComponent(initializeVariatesTable());
+			addComponent(hLayout);
 
 			
 		}
 		
-		private void initializeTable(){
+		protected Table initializeVariatesTable() {
+	        
+	        final Table tblVariates = new Table();
+	        tblVariates.setImmediate(true);
+	        tblVariates.setWidth("100%");
+	        tblVariates.setHeight("300px");
+	        tblVariates.setColumnExpandRatio("name", 1);
+	        tblVariates.setColumnExpandRatio("description", 4);
+	        tblVariates.setColumnExpandRatio("scname", 1);
+	        
+	        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+	        	
+				private static final long serialVersionUID = 1L;
+
+					public String generateDescription(Component source, Object itemId, Object propertyId) {
+	        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+	        	    	 VariateModel vm = container.getItem(itemId).getBean();
+	        	    	 
+	        	    	 StringBuilder sb = new StringBuilder();
+	        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getName()));
+	        	    	 sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
+	        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
+	        	    	 sb.append(String.format("<span>Method:</span> %s<br>", vm.getTmname()));
+	        	    	 sb.append(String.format("<span>Data Type:</span> %s", vm.getDatatype()));
+	        	                                                                        
+	        	         return sb.toString();
+	        	     }
+	        	});
+	        
+	        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+	        container.setBeanIdProperty("id");
+	        
+	        for (VariableType variate : dataSet.getVariableTypes().getVariates().getVariableTypes()){
+	        	VariateModel vm = new VariateModel();
+            	vm.setId(variate.getRank());
+            	vm.setName(variate.getLocalName());
+            	vm.setDescription(variate.getLocalDescription());
+            	vm.setScname(variate.getStandardVariable().getScale().getName());
+            	vm.setScaleid(variate.getStandardVariable().getScale().getId());
+            	vm.setTmname(variate.getStandardVariable().getMethod().getName());
+            	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
+            	vm.setTrname(variate.getStandardVariable().getName());
+            	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
+            	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
+            	container.addBean(vm);
+	        }
+	        
+	        
+	        
+	        tblVariates.setContainerDataSource(container);
+	        
+	        String[] columns = new String[] {"name", "description", "scname"};
+	        String[] columnHeaders = new String[] {"Name", "Description", "Scale"};
+	        tblVariates.setVisibleColumns(columns);
+	        tblVariates.setColumnHeaders(columnHeaders);
+	        
+	        return tblVariates;
+	    }
+		
+		 protected Table initializeFactorsTable() {
+		        
+		        final Table tblFactors = new Table();
+		        tblFactors.setImmediate(true);
+		        tblFactors.setWidth("100%");
+		        tblFactors.setHeight("300px");
+		        
+		        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+		        container.setBeanIdProperty("id");
+		        
+		        for (VariableType factor : dataSet.getVariableTypes().getFactors().getVariableTypes()){
+		        	
+		        	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
+	            			) continue;
+		        	
+			        FactorModel fm = new FactorModel();
+	            	fm.setId(factor.getRank());
+	            	fm.setName(factor.getLocalName());
+	            	fm.setDescription(factor.getLocalDescription());
+	            	fm.setScname(factor.getStandardVariable().getScale().getName());
+	            	fm.setScaleid(factor.getStandardVariable().getScale().getId());
+	            	fm.setTmname(factor.getStandardVariable().getMethod().getName());
+	            	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
+	            	fm.setTrname(factor.getStandardVariable().getName());
+	            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
+	            	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
+	            	container.addBean(fm);
+		        }
+		        
+		        
+		        
+		        tblFactors.setContainerDataSource(container);
+		       
+		        String[] columns = new String[] {"name", "description"};
+		        String[] columnHeaders = new String[] {"Name", "Description"};
+		        tblFactors.setVisibleColumns(columns);
+		        tblFactors.setColumnHeaders(columnHeaders);
+		        
+		        tblFactors.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+
+					private static final long serialVersionUID = 1L;
+
+						public String generateDescription(Component source, Object itemId, Object propertyId) {
+		        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+		        	    	 FactorModel fm = container.getItem(itemId).getBean();
+		        	    	 
+		        	    	 StringBuilder sb = new StringBuilder();
+		        	    	 sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
+		        	    	 sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
+		        	    	 sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
+		        	    	 sb.append(String.format("<span>Method:</span> %s<br>", fm.getTmname()));
+		        	    	 sb.append(String.format("<span>Data Type:</span> %s", fm.getDataType()));
+		        	                                                                        
+		        	         return sb.toString();
+		        	     }
+		        	});
+		        
+		        return tblFactors;
+		    }  
+		
+		
+		private void addDataSetToTable(){
 			
-			BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
-			environmentTable.setContainerDataSource(container);
-			environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
-			environmentTable.setColumnHeaders(new String[] {"TRIAL", "ENVIRONMENT"});
-			
-			
+			BeanItemContainer<MetaEnvironmentModel> container  = (BeanItemContainer<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
+				
 			String trialInstanceFactorName=null;
+			String environmentFactorName=null;
+			
+			for (VariableType f : dataSet.getVariableTypes().getFactors().getVariableTypes()){
+				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+					trialInstanceFactorName = f.getLocalName();
+				}
+				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+						&& f.getStandardVariable().getScale().getName().equalsIgnoreCase("abbreviation")){
+					environmentFactorName = f.getLocalName();
+				}
+			}
+			
+			if (environmentFactorName == null) environmentFactorName = trialInstanceFactorName;
+			
 			try {
 				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
 			
-				List<Variable> variables = envs.getVariablesByLocalName(environmentSelect.getValue().toString());
+				List<Variable> variables = envs.getVariablesByLocalName(environmentFactorName);
 				for (Variable var : variables){
 					if (var != null){
 						if (var.getValue() != ""){
 								//
-								TrialEnvironment env = envs.findOnlyOneByLocalName(environmentSelect.getValue().toString(), var.getValue());
+								TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
 								
 								if (env!=null){
-										if (trialInstanceFactorName==null){
-											for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
-												if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
-													trialInstanceFactorName = f.getLocalName();
-												}
-											}
-										}
 										
 										String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
-										String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
+										String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
 										
 										MetaEnvironmentModel bean = new MetaEnvironmentModel();
 										bean.setTrial(trialNo);
@@ -875,6 +909,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 										bean.setDataSetName(dataSet.getName());
 										bean.setStudyId(dataSet.getStudyId());
 										bean.setStudyName(studyName);
+										bean.setTrialFactorName(trialInstanceFactorName);
 										
 										container.addBean(bean);
 								}
@@ -882,41 +917,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					}
 				}
 				
-				/**
-				
-				for (TrialEnvironment env : envs.getTrialEnvironments()){
-					
-					if (trialInstanceFactorName==null){
-						for (VariableType f : env.getVariables().getVariableTypes().getFactors().getVariableTypes()){
-							if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
-								trialInstanceFactorName = f.getLocalName();
-							}
-						}
-					}
-					
-					String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
-					String envName = env.getVariables().findByLocalName(environmentSelect.getValue().toString()).getValue();
-					
-					MetaEnvironmentModel bean = new MetaEnvironmentModel();
-					bean.setTrial(trialNo);
-					bean.setEnvironment(envName);
-					bean.setDataSetId(dataSet.getId());
-					bean.setDataSetName(dataSet.getName());
-					bean.setStudyId(dataSet.getStudyId());
-					bean.setStudyName(studyName);
-					
-					container.addBean(bean);
-				}**/
-				
-				if (trialInstanceFactorName!=null){
-						if (trialInstanceFactorName.equals(environmentSelect.getValue().toString())){
-							environmentTable.setVisibleColumns(new Object[] {"environment"});
-							environmentTable.setColumnHeaders(new String[] {environmentSelect.getValue().toString()});
-						}else{
-							environmentTable.setVisibleColumns(new Object[] {"trial", "environment"});
-							environmentTable.setColumnHeaders(new String[] {trialInstanceFactorName, environmentSelect.getValue().toString()});
-						}
-				}
 			} catch (MiddlewareQueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

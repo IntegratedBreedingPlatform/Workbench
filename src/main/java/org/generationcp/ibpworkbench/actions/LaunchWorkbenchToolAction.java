@@ -129,7 +129,16 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     
     private Role role;
     
-    private Integer listId;
+    /**
+     * An id passed to the tool.
+     * We assume that the tool recognizes:
+     *      <tool url>-idParam
+     * format and gets the id parameter from there.
+     * This is used for Germplasm Browser and Study Browser tools at the moment.
+     * This is a very dirty implementation.
+     * I wish we could do better but that is what we have for now.
+     */
+    private Integer idParam;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -154,8 +163,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         this.toolConfiguration = WorkflowConstants.DEFAULT;
     }
     
-    public LaunchWorkbenchToolAction(ToolEnum toolEnum, int listId) {
-        this.listId = listId;
+    public LaunchWorkbenchToolAction(ToolEnum toolEnum, int idParam) {
+        this.idParam = idParam;
     }
     
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project) {
@@ -165,7 +174,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, int listId) {
         this(toolEnum, project, null);
         
-        this.listId = listId;
+        this.idParam = listId;
     }
     
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration) {
@@ -392,12 +401,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 // append the list id if it was set
                 if (Util.isOneOf(tool.getToolName(), ToolEnum.BM_LIST_MANAGER.getToolName()
                                                    , ToolEnum.STUDY_BROWSER.getToolName())) {
-                    if (listId != null) {
+                    if (idParam != null) {
                         if (toolUrl.endsWith("/")) {
                             toolUrl = toolUrl.substring(0, toolUrl.length() - 1);
                         }
                         
-                        toolUrl += "-" + listId;
+                        toolUrl += "-" + idParam;
                     }
                 }
                 
