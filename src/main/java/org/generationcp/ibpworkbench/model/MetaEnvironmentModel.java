@@ -1,5 +1,7 @@
 package org.generationcp.ibpworkbench.model;
 
+import org.generationcp.middleware.pojos.dms.DmsProject;
+
 public class MetaEnvironmentModel {
 
 	public MetaEnvironmentModel() {
@@ -59,6 +61,32 @@ public class MetaEnvironmentModel {
 	private String dataSetName;
 	private String trial;
 	private String environment;
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		MetaEnvironmentModel other = (MetaEnvironmentModel) obj;
+
+		if (studyId != other.studyId)
+			return false;
+		if (dataSetId != other.dataSetId)
+			return false;
+		if (!trial.equals(other.trial))
+			return false;
+		
+		return true;
+	}
+	
+	 @Override
+	    public int hashCode() {
+	        return this.studyId;
+	    }
 	
 
 }

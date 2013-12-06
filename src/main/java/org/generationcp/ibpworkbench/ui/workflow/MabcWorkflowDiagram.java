@@ -320,7 +320,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         this.setSizeFull();
         this.setSpacing(true);
         this.setMargin(new MarginInfo(true, false, false, true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
