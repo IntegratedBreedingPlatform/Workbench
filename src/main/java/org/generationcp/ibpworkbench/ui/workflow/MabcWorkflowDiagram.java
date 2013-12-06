@@ -46,7 +46,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     //this is in pixels and used for layouting
     private static final int WORKFLOW_STEP_HEIGHT = 125;
     private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 275;
-    private static final int PROJECT_PLANNING_HEIGHT = 285;
+    private static final int PROJECT_PLANNING_HEIGHT = 250;
+    private static final int STATISTICAL_ANALYSIS_HEIGHT = 150;
+    private static final int FIELD_TRIAL_MANAGEMENT_HEIGHT = 100;
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
@@ -363,7 +365,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         Component fieldTrialArea = layoutFieldTrialManagement();
         layout.addComponent(fieldTrialArea, "top:" + topInPixels + "; left:" + extraSpace);
 
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + FIELD_TRIAL_MANAGEMENT_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage3, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
 
@@ -372,7 +374,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         Component statisticalAnalysisArea = layoutStatisticalAnalysis();
         layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels + "; left:" + extraSpace);
 
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        top = top + STATISTICAL_ANALYSIS_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage4, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
 
@@ -530,6 +532,8 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
+        layout.setHeight(FIELD_TRIAL_MANAGEMENT_HEIGHT + "px");
+
         layout.addComponent(fieldTrialManagementTitle);
         layout.setComponentAlignment(fieldTrialManagementTitle, Alignment.TOP_CENTER);
         layout.setExpandRatio(fieldTrialManagementTitle, 0);
@@ -573,7 +577,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
-        layout.setHeight(WORKFLOW_STEP_HEIGHT + "px");
+        layout.setHeight(STATISTICAL_ANALYSIS_HEIGHT + "px");
 
         layout.addComponent(statisticalAnalysisTitle);
         layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
