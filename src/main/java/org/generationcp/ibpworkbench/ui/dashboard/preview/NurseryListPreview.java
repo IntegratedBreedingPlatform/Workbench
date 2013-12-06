@@ -49,31 +49,31 @@ import com.vaadin.ui.themes.Reindeer;
  * User: cyrus
  * Date: 11/19/13
  * Time: 7:20 PM
- * 
+ * <p/>
  * Revision done by mae
- * 1. Display hierarchy of studies from root to children per database instance (instead of categories like year, season and study type) 
+ * 1. Display hierarchy of studies from root to children per database instance (instead of categories like year, season and study type)
  */
 @Configurable
 public class NurseryListPreview extends VerticalLayout {
 
     private static final long serialVersionUID = 1L;
-    
+
     private NurseryListPreviewPresenter presenter;
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreview.class);
-    
+
     private Tree treeView;
 
     private Project project;
-    
+
     private Panel panel;
 
-    private ThemeResource folderResource =  new ThemeResource("images/folder.png");
-    private ThemeResource leafResource =  new ThemeResource("images/leaf_16.png");
-    
-    @Autowired 
+    private ThemeResource folderResource = new ThemeResource("images/folder.png");
+    private ThemeResource leafResource = new ThemeResource("images/leaf_16.png");
+
+    @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     private HorizontalLayout toolbar;
@@ -84,16 +84,16 @@ public class NurseryListPreview extends VerticalLayout {
 
     public static String SHARED_STUDIES;
     public static String MY_STUDIES;
-    
+
     public static final int ROOT_FOLDER = 1;
 
     public NurseryListPreview(Project project) {
-        
+
         this.project = project;
         presenter = new NurseryListPreviewPresenter(this, project);
 
         try {
-            if (project != null){
+            if (project != null) {
                 assemble();
             }
         } catch (Exception e) {
@@ -101,8 +101,8 @@ public class NurseryListPreview extends VerticalLayout {
         }
     }
 
-    
-    public void setProject(Project project){
+
+    public void setProject(Project project) {
         this.removeAllComponents();
         this.setSizeFull();
 
@@ -112,10 +112,10 @@ public class NurseryListPreview extends VerticalLayout {
         this.addComponent(buildToolbar());
 
         this.project = project;
-        
+
         MY_STUDIES = messageSource.getMessage(Message.MY_STUDIES);
         SHARED_STUDIES = messageSource.getMessage(Message.SHARED_STUDIES);
-        
+
         presenter = new NurseryListPreviewPresenter(this, project);
         //presenter.generateTreeNodes();
         presenter.generateInitialTreeNodes();
@@ -129,62 +129,62 @@ public class NurseryListPreview extends VerticalLayout {
         panel.setSizeFull();
 
         this.addComponent(panel);
-        this.setExpandRatio(panel,1.0F);
+        this.setExpandRatio(panel, 1.0F);
     }
-    
+
     protected void initializeComponents() {
         //this.setHeight("400px");
     }
-    
-    public void generateTopListOfTree(List<FolderReference> centralFolders, List<FolderReference> localFolders){
-        
+
+    public void generateTopListOfTree(List<FolderReference> centralFolders, List<FolderReference> localFolders) {
+
         treeView = new Tree();
         treeView.setContainerDataSource(new HierarchicalContainer());
-        treeView.setDropHandler(new TreeDropHandler(treeView));
+        treeView.setDropHandler(new NurseryTreeDropHandler(treeView, presenter));
         treeView.setDragMode(TreeDragMode.NODE);
-        
-        addInstanceTree(treeView,localFolders,false);
-        addInstanceTree(treeView,centralFolders,true);
-        
+
+        addInstanceTree(treeView, localFolders, false);
+        addInstanceTree(treeView, centralFolders, true);
+
         treeView.addListener(new NurseryListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
         treeView.setImmediate(true);
-        
+
     }
-    
-    
+
+
     private void addInstanceTree(Tree treeView, List<FolderReference> folders, boolean isCentral) {
-    	
-    	
-    	String folderName = null;
-    	if(isCentral) {
-    		folderName = SHARED_STUDIES;
-    	} else {
-    		folderName = MY_STUDIES;
-    	}
-    	
-    	treeView.addItem(folderName);
+
+
+        String folderName = null;
+        if (isCentral) {
+            folderName = SHARED_STUDIES;
+        } else {
+            folderName = MY_STUDIES;
+        }
+
+        treeView.addItem(folderName);
         treeView.setItemCaption(folderName, folderName);
         treeView.setItemIcon(folderName, folderResource);
-        
-        
-		for (FolderReference folderReference : folders) {
-        	treeView.addItem(folderReference.getId());
+
+
+        for (FolderReference folderReference : folders) {
+            treeView.addItem(folderReference.getId());
             treeView.setItemCaption(folderReference.getId(), folderReference.getName());
             treeView.setParent(folderReference.getId(), folderName);
-            boolean isFolder =  getPresenter().isFolder(folderReference.getId());
+            boolean isFolder = getPresenter().isFolder(folderReference.getId());
 
-            if(isFolder){
-            	treeView.setChildrenAllowed(folderReference.getId(),true);
-                treeView.setItemIcon(folderReference.getId(),folderResource);
+            if (isFolder) {
+                treeView.setChildrenAllowed(folderReference.getId(), true);
+                treeView.setItemIcon(folderReference.getId(), folderResource);
             } else {
-                treeView.setChildrenAllowed(folderReference.getId(),false);
-                treeView.setItemIcon(folderReference.getId(),leafResource);
+                treeView.setChildrenAllowed(folderReference.getId(), false);
+                treeView.setItemIcon(folderReference.getId(), leafResource);
             }
 
             treeView.setSelectable(true);
-		}
-	}
+        }
+    }
 
 
 //	public void generateTree(List<TreeNode> treeNodes){
@@ -198,7 +198,7 @@ public class NurseryListPreview extends VerticalLayout {
 //        treeView.setImmediate(true);
 //        
 //    }
-    
+
 //    private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
 //        for(TreeNode treeNode : treeNodes){
 //        	
@@ -235,23 +235,22 @@ public class NurseryListPreview extends VerticalLayout {
 //        }
 //    }
 
-    public void expandTree(Object itemId){
-        
-    	if(itemId==null) {
-    		return;
-    	}
-    	
-        if(treeView.isExpanded(itemId)){
+    public void expandTree(Object itemId) {
+
+        if (itemId == null) {
+            return;
+        }
+
+        if (treeView.isExpanded(itemId)) {
             treeView.collapseItem(itemId);
             treeView.select(itemId);
-        }
-        else{
+        } else {
             treeView.expandItem(itemId);
             treeView.select(itemId);
         }
     }
-    
-    protected void initializeLayout() {        
+
+    protected void initializeLayout() {
         this.setSizeFull();
     }
 
@@ -264,13 +263,13 @@ public class NurseryListPreview extends VerticalLayout {
         initializeLayout();
         initializeActions();
     }
-    
+
 
     public NurseryListPreviewPresenter getPresenter() {
         return presenter;
     }
 
-    
+
     public void setPresenter(NurseryListPreviewPresenter presenter) {
         this.presenter = presenter;
     }
@@ -280,7 +279,7 @@ public class NurseryListPreview extends VerticalLayout {
         return managerFactoryProvider;
     }
 
-    
+
     public void setManagerFactoryProvider(
             ManagerFactoryProvider managerFactoryProvider) {
         this.managerFactoryProvider = managerFactoryProvider;
@@ -306,9 +305,9 @@ public class NurseryListPreview extends VerticalLayout {
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
         openStudyManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-pencil");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-plus");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName() + " toolbar button-trash");
 
         openStudyManagerBtn.setWidth("100px");
         renameFolderBtn.setWidth("40px");
@@ -319,7 +318,7 @@ public class NurseryListPreview extends VerticalLayout {
 
         Label spacer = new Label("");
         this.toolbar.addComponent(spacer);
-        this.toolbar.setExpandRatio(spacer,1.0F);
+        this.toolbar.setExpandRatio(spacer, 1.0F);
 
 
         renameFolderBtn.setEnabled(false);
@@ -354,7 +353,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue()  )).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), ((Long) treeView.getValue()).intValue())).buttonClick(event);
 
 
             }
@@ -365,17 +364,17 @@ public class NurseryListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (treeView.getValue() == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
                     return;
                 }
 
                 if (treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),(String)treeView.getValue() + " cannot be renamed","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), (String) treeView.getValue() + " cannot be renamed", "");
                     return;
                 }
 
-                if (!presenter.isFolder((Integer)treeView.getValue())) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
+                if (!presenter.isFolder((Integer) treeView.getValue())) {
+                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
                     return;
                 }
 
@@ -406,7 +405,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 Label spacer = new Label("");
                 btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer,1.0F);
+                btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button("Ok");
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -416,12 +415,12 @@ public class NurseryListPreview extends VerticalLayout {
                         try {
                             presenter.renameNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             return;
                         }
 
                         // update UI
-                        treeView.setItemCaption(treeView.getValue(),name.getValue().toString());
+                        treeView.setItemCaption(treeView.getValue(), name.getValue().toString());
 
                         // close popup
                         WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
@@ -483,7 +482,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 Label spacer = new Label("");
                 btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer,1.0F);
+                btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button("Ok");
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -492,33 +491,32 @@ public class NurseryListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
                         try {
-                        	if (treeView.getValue() instanceof  String)//top folder
-                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), ROOT_FOLDER);
-                        	else
-                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
+                            if (treeView.getValue() instanceof String)//top folder
+                                newItem = presenter.addNurseryListFolder(name.getValue().toString(), ROOT_FOLDER);
+                            else
+                                newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             return;
                         }
 
                         //update UI
                         if (newItem != null) {
                             treeView.addItem(newItem);
-                            treeView.setItemCaption(newItem,name.getValue().toString());
-                            treeView.setChildrenAllowed(newItem,true);
-                            treeView.setItemIcon(newItem,folderResource);
+                            treeView.setItemCaption(newItem, name.getValue().toString());
+                            treeView.setChildrenAllowed(newItem, true);
+                            treeView.setItemIcon(newItem, folderResource);
 
                             if (presenter.getStudyNodeParent(newItem) != null) {
-                                treeView.setParent(newItem,treeView.getValue());
+                                treeView.setParent(newItem, treeView.getValue());
                             } else {
-                                treeView.setParent(newItem,MY_STUDIES);
+                                treeView.setParent(newItem, MY_STUDIES);
                             }
 
                             if (treeView.getValue() != null) {
                                 if (!treeView.isExpanded(treeView.getValue()))
                                     expandTree(treeView.getValue());
-                            }
-                            else
+                            } else
                                 treeView.expandItem(MY_STUDIES);
 
                             treeView.select(newItem);
@@ -554,11 +552,11 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
-            	
-            	LOG.info(treeView.getValue()!=null?treeView.getValue().toString():null);
-            	
+
+                LOG.info(treeView.getValue() != null ? treeView.getValue().toString() : null);
+
                 if (treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),treeView.getValue().toString() + " cannot be deleted.","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), treeView.getValue().toString() + " cannot be deleted.", "");
                     return;
                 }
 
@@ -567,7 +565,7 @@ public class NurseryListPreview extends VerticalLayout {
                 try {
                     id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                     return;
                 }
 
@@ -580,13 +578,13 @@ public class NurseryListPreview extends VerticalLayout {
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             try {
-                            	DmsProject parent = (DmsProject)presenter.getStudyNodeParent(finalId);
-                            	presenter.deleteNurseryListFolder(finalId);
+                                DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
+                                presenter.deleteNurseryListFolder(finalId);
                                 treeView.removeItem(treeView.getValue());
-                                if(parent.getProjectId().intValue()==ROOT_FOLDER) {
-                                	treeView.select(MY_STUDIES);
+                                if (parent.getProjectId().intValue() == ROOT_FOLDER) {
+                                    treeView.select(MY_STUDIES);
                                 } else {
-                                	treeView.select(parent.getProjectId());
+                                    treeView.select(parent.getProjectId());
                                 }
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
@@ -597,12 +595,14 @@ public class NurseryListPreview extends VerticalLayout {
             }
         });
     }
-    
-    private static class TreeDropHandler implements DropHandler {
-        private final Tree tree;
 
-        public TreeDropHandler (Tree tree) {
+    private static class NurseryTreeDropHandler implements DropHandler {
+        private final Tree tree;
+        private final NurseryListPreviewPresenter presenter;
+
+        public NurseryTreeDropHandler(Tree tree, NurseryListPreviewPresenter presenter) {
             this.tree = tree;
+            this.presenter = presenter;
         }
 
 
@@ -644,18 +644,20 @@ public class NurseryListPreview extends VerticalLayout {
          * Move a node within a tree onto, above or below another node depending
          * on the drop location.
          *
-         * @param sourceItemId
-         *            id of the item to move
-         * @param targetItemId
-         *            id of the item onto which the source node should be moved
-         * @param location
-         *            VerticalDropLocation indicating where the source node was
-         *            dropped relative to the target node
+         * @param sourceItemId id of the item to move
+         * @param targetItemId id of the item onto which the source node should be moved
+         * @param location     VerticalDropLocation indicating where the source node was
+         *                     dropped relative to the target node
          */
         private void moveNode(Object sourceItemId, Object targetItemId,
                               VerticalDropLocation location) {
             HierarchicalContainer container = (HierarchicalContainer) tree
                     .getContainerDataSource();
+
+            if (container.hasChildren(sourceItemId)) {
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder with child elements");
+                return;
+            }
 
             // Sorting goes as
             // - If dropped ON a node, we append it as a child
@@ -664,45 +666,57 @@ public class NurseryListPreview extends VerticalLayout {
             // - If dropped on the BOTTOM part of a node, we move/add it
             // after the node
 
-            if (location == VerticalDropLocation.MIDDLE) {
-                if (container.setParent(sourceItemId, targetItemId)
-                        && container.hasChildren(targetItemId)) {
-                    // move first in the container
-                    container.moveAfterSibling(sourceItemId, null);
-                }
-            } else if (location == VerticalDropLocation.TOP) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    // reorder only the two items, moving source above target
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                    container.moveAfterSibling(targetItemId, sourceItemId);
-                }
-            } else if (location == VerticalDropLocation.BOTTOM) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    container.moveAfterSibling(sourceItemId, targetItemId);
+            boolean success = true;
+            try {
+                success = presenter.moveNurseryListFolder((Integer)sourceItemId, (Integer)targetItemId);
+            } catch (Error error) {
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), error.getMessage(), "");
+                success = false;
+            }
+
+            // only perform UI change if backend modification was successful
+            if (success) {
+
+                if (location == VerticalDropLocation.MIDDLE) {
+                    if (container.setParent(sourceItemId, targetItemId)
+                            && container.hasChildren(targetItemId)) {
+                        // move first in the container
+                        container.moveAfterSibling(sourceItemId, null);
+                    }
+                } else if (location == VerticalDropLocation.TOP) {
+                    Object parentId = container.getParent(targetItemId);
+                    if (container.setParent(sourceItemId, parentId)) {
+                        // reorder only the two items, moving source above target
+                        container.moveAfterSibling(sourceItemId, targetItemId);
+                        container.moveAfterSibling(targetItemId, sourceItemId);
+                    }
+                } else if (location == VerticalDropLocation.BOTTOM) {
+                    Object parentId = container.getParent(targetItemId);
+                    if (container.setParent(sourceItemId, parentId)) {
+                        container.moveAfterSibling(sourceItemId, targetItemId);
+                    }
                 }
             }
         }
 
     }
 
-	public void addChildrenNode(int parentId, List<Reference> studyChildren) {
-		for (Reference sc : studyChildren) {
-			treeView.addItem(sc.getId());
-			treeView.setItemCaption(sc.getId(), sc.getName());
-			treeView.setParent(sc.getId(), parentId);
+    public void addChildrenNode(int parentId, List<Reference> studyChildren) {
+        for (Reference sc : studyChildren) {
+            treeView.addItem(sc.getId());
+            treeView.setItemCaption(sc.getId(), sc.getName());
+            treeView.setParent(sc.getId(), parentId);
             // check if the study has sub study
             if (presenter.isFolder(sc.getId())) {
-            	treeView.setChildrenAllowed(sc.getId(), true);
-            	treeView.setItemIcon(sc.getId(),folderResource);
+                treeView.setChildrenAllowed(sc.getId(), true);
+                treeView.setItemIcon(sc.getId(), folderResource);
             } else {
-            	treeView.setChildrenAllowed(sc.getId(), false);
-            	treeView.setItemIcon(sc.getId(),leafResource);
+                treeView.setChildrenAllowed(sc.getId(), false);
+                treeView.setItemIcon(sc.getId(), leafResource);
             }
-		}
-	}
-	
+        }
+    }
+
 
     public void toggleToolbarBtns(boolean toggle) {
         if (toggle == true) {
