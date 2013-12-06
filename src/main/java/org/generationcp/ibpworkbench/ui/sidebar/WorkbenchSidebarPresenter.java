@@ -80,7 +80,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","User Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
 
                 } else {
                     categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
