@@ -287,7 +287,9 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
         this.setSizeFull();
         this.setSpacing(true);
         this.setMargin(new MarginInfo(true,false,false,true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -619,7 +621,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
-            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));
 
         }
     }

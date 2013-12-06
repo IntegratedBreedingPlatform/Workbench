@@ -167,7 +167,7 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/bv_meta_analysis"
-          label="Query For Adapted Germplasm"
+          label="Meta Analysis of Field Trials"
           level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
 

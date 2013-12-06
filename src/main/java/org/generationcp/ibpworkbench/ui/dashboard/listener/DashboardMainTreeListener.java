@@ -47,11 +47,12 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        // TODO Auto-generated method stub
-        //event.getItemId()
+        if(event.getProperty()==null || event.getProperty().getValue() ==null ) {
+        	return;
+        }
+        
         if(source instanceof GermplasmListPreview){
-            System.out.println(event.getProperty().getValue());
-            ((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
+        	((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
 
             if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(GermplasmListPreview.SHARED_LIST)
                     || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
@@ -70,14 +71,13 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
 
 
         }else if(source instanceof NurseryListPreview){
-            System.out.println(event.getProperty().getValue());
-            ((NurseryListPreview)source).expandTree(event.getProperty().getValue());
-            /*
-            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.SHARED_LIST)
+        	((NurseryListPreview)source).expandTree(event.getProperty().getValue());
+            
+            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.SHARED_STUDIES)
                     || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
                 ((NurseryListPreview)source).toggleToolbarBtns(false);
                 ((NurseryListPreview)source).toggleToolbarAddBtn(false);
-            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.MY_LIST)) {
+            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.MY_STUDIES)) {
                 ((NurseryListPreview)source).toggleToolbarBtns(false);
                 ((NurseryListPreview)source).toggleToolbarAddBtn(true);
             } else if (!((NurseryListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue())) {
@@ -86,7 +86,7 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             } else {
                 ((NurseryListPreview)source).toggleToolbarBtns(true);
                 ((NurseryListPreview)source).toggleToolbarAddBtn(true);
-            } */
+            } 
 
         }
     }

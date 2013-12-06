@@ -44,6 +44,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -363,18 +364,44 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
             else if (tool.getToolType() == ToolType.WEB) {
                 String toolUrl = tool.getPath();
                 
-                if (tool.getToolName().equals(ToolEnum.BM_LIST_MANAGER.getToolName())) {
-                    // add list id parameter to List Manager if listId was set
-                    if (listId != null) {
-                        toolUrl += "-" + listId;
+                // if user is trying to launch the FieldBook webapp,
+                // we need to close the old Fieldbook webapp
+                // to make sure that it is already configured
+                // when the Fieldbook webapp tries to launch it
+                if (Util.isOneOf(tool.getToolName()
+                                 ,ToolName.fieldbook_web.name()
+                                 ,ToolName.nursery_manager_fieldbook_web.name()
+                                 ,ToolName.trial_manager_fieldbook_web.name()
+                                 ,ToolName.ontology_browser_fieldbook_web.name()
+                                 )) {
+                    try {
+                        Tool fieldbookTool = workbenchDataManager.getToolWithName(ToolName.fieldbook.name());
+                        toolUtil.closeNativeTool(fieldbookTool);
                     }
-                } else if(tool.getToolName().equals(ToolEnum.STUDY_BROWSER.getToolName())) {
-                    // add id parameter to Study Browser if listId was set
+                    catch (MiddlewareQueryException e) {
+                        LOG.error("QueryException", e);
+                        MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                        return;
+                    }
+                    catch (IOException e) {
+                        LOG.error("Cannot close fieldbook app", e);
+                    }
+                }
+                
+                // append the list id if it was set
+                if (Util.isOneOf(tool.getToolName(), ToolEnum.BM_LIST_MANAGER.getToolName()
+                                                   , ToolEnum.STUDY_BROWSER.getToolName())) {
                     if (listId != null) {
+                        if (toolUrl.endsWith("/")) {
+                            toolUrl = toolUrl.substring(0, toolUrl.length() - 1);
+                        }
+                        
                         toolUrl += "-" + listId;
                     }
                 }
                 
+                // append ?restartApplication if the url does not have one yet
                 if (!toolUrl.contains("?restartApplication")) {
                     toolUrl += "?restartApplication";
                 }

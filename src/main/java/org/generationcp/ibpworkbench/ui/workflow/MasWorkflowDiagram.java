@@ -188,7 +188,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_STUDY_BROWSER));
 
-        browseGermplasmListsButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLAM_LISTS));
+        browseGermplasmListsButton = new Button("Browse Germplasms and Lists");
         browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseGermplasmListsButton.setSizeUndefined();
         browseGermplasmListsButton.setDescription("Click to launch the Germplasm List Manager.");
@@ -306,7 +306,9 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     	this.setSizeFull();
     	this.setSpacing(true);
     	this.setMargin(new MarginInfo(true,false,false,true));
-        addComponent(dashboardTitle);
+
+        if (!workflowPreview)
+            addComponent(dashboardTitle);
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -331,7 +333,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         //the steps on the first column
         Component projectPlanningArea = layoutProjectPlanning();
         layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
-        
+
         top = top + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         layout.addComponent(downArrowImage1, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
@@ -369,8 +371,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
         //the steps on the second column   
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS; 
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
                 + ARROW_IMAGE_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
@@ -379,8 +380,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         Component genotypingArea = layoutGenotypingStep();
         layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
         
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 40; 
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 50;
         topInPixels = top + "px";
         left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
                 + EXTRA_SPACE_BETWEEN_COMPONENTS;
@@ -417,12 +417,10 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
         layout.setComponentAlignment(planMasTimelineButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(planMasTimelineButton, 0);
         
-        /**
-        layout.addComponent(breedingPlannerButton);
+        /* layout.addComponent(breedingPlannerButton);
         breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingPlannerButton, 0);
-        **/
+        layout.setExpandRatio(breedingPlannerButton, 0); */
 
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
@@ -679,14 +677,14 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
             breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL, this.role));
             breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL, this.role));
             
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             
-            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.FIELDBOOK));
+            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
             optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
             
             makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
@@ -695,7 +693,7 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             //breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
 
-            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS));
+            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
         }
     }

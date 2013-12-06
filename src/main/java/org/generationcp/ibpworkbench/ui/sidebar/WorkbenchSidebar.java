@@ -205,7 +205,7 @@ public class WorkbenchSidebar extends CssLayout {
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
             return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,this.role,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
-            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName));
+            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),project);
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
