@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.workbench.StudyNode;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,12 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
 
     private Project project;
+    // TODO, move to message source    
+    private static final String NO_SELECTION = "Please select a folder item";
+    public final static String NOT_FOLDER = "Selected item is not a folder.";
+    public final static String HAS_CHILDREN = "Folder has child items.";
+    private static final String BLANK_NAME = "Folder name cannot be blank";
+    private static final String INVALID_NAME = "Please choose a different name";
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -234,8 +241,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public boolean isFolder(Integer value) {
-        try {
+    	try {
         	boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
+        	LOG.info("isFolder = " + !isStudy);
         	return !isStudy;
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
@@ -248,24 +256,99 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void deleteNurseryListFolder(StudyNode studyNode) {
-        //To change body of created methods use File | Settings | File Templates.
+    public void deleteNurseryListFolder(Integer id) {
+    	try {
+            this.getManagerFactory().getStudyDataManager().deleteEmptyFolder(id);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+        }
     }
 
     public Object getStudyNodeParent(Integer newItem) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+    	try {
+            return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            return null;
+        }
     }
 
-    public Integer addNurseryListFolder(String s, Integer value) {
-        
-    	return null;
+    public Integer addNurseryListFolder(String name, Integer id) throws Error{
+    	try {
+    		if(name==null || name.trim().equals("")) {
+    			throw new Error(BLANK_NAME);
+    		}
+    		if(name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
+    			throw new Error(INVALID_NAME);
+    		}
+    		Integer parentFolderId = id;
+    		if(!isFolder(id)) {
+    			//get parent
+    			DmsProject project = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
+    			if(project==null) {
+    				throw new Error("Parent folder cannot be null");
+    			}
+    			parentFolderId = project.getProjectId();
+    		}
+            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId,name,name);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            throw new Error(e.getMessage());
+        }
     }
 
-    public StudyNode validateForDeleteNurseryList(Integer value) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+    public Integer validateForDeleteNurseryList(Integer id) throws Error {
+    	LOG.info("id = " + id);
+    	if (id == null) {
+            throw new Error(NO_SELECTION);
+        }
+    	DmsProject project = null;
+
+        try {
+        	project = this.getManagerFactory().getStudyDataManager().getProject(id);
+
+        } catch (MiddlewareQueryException e) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+
+        if (project == null) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+
+        if (!isFolder(id)) {
+            throw new Error(NOT_FOLDER);
+        }
+
+        try {
+            if (hasChildren(id)) {
+                throw new Error(HAS_CHILDREN);
+            }
+        } catch (MiddlewareQueryException e) {
+            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+
+        return id;
     }
     
-    public void addChildrenNode(int parentId) throws InternationalizableException{
+    private boolean hasChildren(Integer id) throws MiddlewareQueryException {
+    	List<Reference> studyChildren = null;
+
+        try {
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(id));
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            throw e;
+        }
+        if(studyChildren!=null && !studyChildren.isEmpty()) {
+        	LOG.info("hasChildren = true");
+        	return true;
+        }
+        LOG.info("hasChildren = false");
+        return false;
+        
+	}
+
+	public void addChildrenNode(int parentId) throws InternationalizableException{
     	List<Reference> studyChildren = new ArrayList<Reference>();
 
         try {

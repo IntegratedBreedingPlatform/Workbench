@@ -15,7 +15,7 @@ import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeList
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.workbench.StudyNode;
+import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,9 @@ import com.vaadin.ui.themes.Reindeer;
  * User: cyrus
  * Date: 11/19/13
  * Time: 7:20 PM
- * To change this template use File | Settings | File Templates.
+ * 
+ * Revision done by mae
+ * 1. Display hierarchy of studies from root to children per database instance (instead of categories like year, season and study type) 
  */
 @Configurable
 public class NurseryListPreview extends VerticalLayout {
@@ -82,6 +84,8 @@ public class NurseryListPreview extends VerticalLayout {
 
     public static String SHARED_STUDIES;
     public static String MY_STUDIES;
+    
+    public static final int ROOT_FOLDER = 1;
 
     public NurseryListPreview(Project project) {
         
@@ -233,6 +237,10 @@ public class NurseryListPreview extends VerticalLayout {
 
     public void expandTree(Object itemId){
         
+    	if(itemId==null) {
+    		return;
+    	}
+    	
         if(treeView.isExpanded(itemId)){
             treeView.collapseItem(itemId);
             treeView.select(itemId);
@@ -362,7 +370,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }
 
                 if (treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),(String)treeView.getValue() + " cannot br renamed","");
+                    MessageNotifier.showError(event.getComponent().getWindow(),(String)treeView.getValue() + " cannot be renamed","");
                     return;
                 }
 
@@ -485,7 +493,7 @@ public class NurseryListPreview extends VerticalLayout {
                         Integer newItem = null;
                         try {
                         	if (treeView.getValue() instanceof  String)//top folder
-                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), null);
+                        		newItem = presenter.addNurseryListFolder(name.getValue().toString(), ROOT_FOLDER);
                         	else
                         		newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
@@ -546,22 +554,24 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
-
+            	
+            	LOG.info(treeView.getValue()!=null?treeView.getValue().toString():null);
+            	
                 if (treeView.getValue() instanceof String) {
                     MessageNotifier.showError(event.getComponent().getWindow(),treeView.getValue().toString() + " cannot be deleted.","");
                     return;
                 }
 
-                StudyNode studyNode = null;
+                Integer id;
 
                 try {
-                    studyNode = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
+                    id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
                 } catch (Error e) {
                     MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
                     return;
                 }
 
-                final StudyNode finalStudyNode = studyNode;
+                final Integer finalId = id;
                 ConfirmDialog.show(event.getComponent().getWindow(),
                         "Delete " + treeView.getItemCaption(treeView.getValue()),
                         "Are you sure you want to delete " + treeView.getItemCaption(treeView.getValue()),
@@ -570,9 +580,14 @@ public class NurseryListPreview extends VerticalLayout {
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             try {
-                                presenter.deleteNurseryListFolder(finalStudyNode);
+                            	DmsProject parent = (DmsProject)presenter.getStudyNodeParent(finalId);
+                            	presenter.deleteNurseryListFolder(finalId);
                                 treeView.removeItem(treeView.getValue());
-                                treeView.select(null);
+                                if(parent.getProjectId().intValue()==ROOT_FOLDER) {
+                                	treeView.select(MY_STUDIES);
+                                } else {
+                                	treeView.select(parent.getProjectId());
+                                }
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             }
