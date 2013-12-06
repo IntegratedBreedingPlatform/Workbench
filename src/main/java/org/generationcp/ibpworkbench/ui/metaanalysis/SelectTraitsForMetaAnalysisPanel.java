@@ -9,6 +9,7 @@ import java.util.Map;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -22,9 +23,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+
+
+
+
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.VerticalLayout;
@@ -40,6 +46,13 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	private Table variatesSelectionTable;
 	private Table factorsAnalysisTable;
 	private Table factorsSelectionTable;
+	
+	private Label lblSelectEnvVarForAnalysis;
+	private Label lblSelectEnvVarForAnalysisDesc;
+	private Label lblSelectVariates;
+	private Label lblSelectFactorsForAnalysis;
+	private Label lblSelectFactorsForAnalysisDesc;
+	private Label lblSelectFactors;
 	
 	private Project currentProject;
 	
@@ -61,6 +74,18 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	
 
 	private void initializeComponents(){
+		
+		lblSelectEnvVarForAnalysis = new Label();
+		lblSelectEnvVarForAnalysis.setStyleName("gcp-content-header");
+		lblSelectEnvVarForAnalysisDesc  = new Label();
+		lblSelectVariates  = new Label();
+		lblSelectFactorsForAnalysis  = new Label();
+		lblSelectFactorsForAnalysis.setStyleName("gcp-content-header");
+		lblSelectFactorsForAnalysisDesc  = new Label();
+		lblSelectFactors  = new Label();
+		
+	
+		
 		 environmentsTable = new Table();
 		 environmentsTable.setWidth("100%");
 		 factorsAnalysisTable = new Table();
@@ -245,9 +270,18 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		setMargin(true);
 		setWidth("95%");
 		
+		addComponent(lblSelectEnvVarForAnalysis);
+		addComponent(lblSelectEnvVarForAnalysisDesc);
 		addComponent(environmentsTable);
+		
+		addComponent(lblSelectVariates);
 		addComponent(variatesSelectionTable);
+		
+		addComponent(lblSelectFactorsForAnalysis);
+		addComponent(lblSelectFactorsForAnalysisDesc);
 		addComponent(factorsAnalysisTable);
+		
+		addComponent(lblSelectFactors);
 		addComponent(factorsSelectionTable);
 		
 	}
@@ -255,6 +289,13 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	@Override
 	public void updateLabels() {
 		// TODO Auto-generated method stub
+		
+		messageSource.setValue(lblSelectEnvVarForAnalysis, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS);
+		messageSource.setValue(lblSelectEnvVarForAnalysisDesc, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS_DESC);
+		messageSource.setValue(lblSelectVariates, Message.META_SELECT_VARIATES);
+		messageSource.setValue(lblSelectFactorsForAnalysis, Message.META_SELECT_FACTORS_FOR_ANALYSIS);
+		messageSource.setValue(lblSelectFactorsForAnalysisDesc, Message.META_SELECT_FACTORS_FOR_ANALYSIS_DESC);
+		messageSource.setValue(lblSelectFactors, Message.META_SELECT_FACTORS);
 		
 	}
 	
@@ -269,6 +310,13 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		assemble();
 		
 	}
+	
+	 @Override
+	    public void attach() {
+	        super.attach();
+	        
+	        updateLabels();
+	    }
 	
 	public StudyDataManager getStudyDataManager() {
 	    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
