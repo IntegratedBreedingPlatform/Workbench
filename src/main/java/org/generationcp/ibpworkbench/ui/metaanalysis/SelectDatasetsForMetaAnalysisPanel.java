@@ -30,6 +30,7 @@ import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
@@ -324,8 +325,24 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				}
 			}
 		});
-    	//openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
-        //btnNext.addListener(openSelectDatasetForExportAction);
+    	
+        btnNext.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
+					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
+					while(itr.hasNext()){
+						metaEnvironments.add(itr.next());
+					}
+					
+					if (metaEnvironments.size() > 0){
+						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments));
+					}
+					
+			}
+		});
 
     }  
 
