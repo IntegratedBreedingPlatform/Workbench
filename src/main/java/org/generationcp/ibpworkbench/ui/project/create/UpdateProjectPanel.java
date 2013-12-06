@@ -88,7 +88,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         try {
             // initialize state
             currentUser = workbenchDataManager.getUserById(IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid());   // get hibernate managed version of user
-            project = workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
+            project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
             oldProjectName = new String(project.getProjectName());
 
 
