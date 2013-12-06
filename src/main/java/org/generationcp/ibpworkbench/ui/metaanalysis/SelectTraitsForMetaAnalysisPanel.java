@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.metaanalysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -33,6 +35,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	private static final long serialVersionUID = 1L;
 	private List<MetaEnvironmentModel> metaEnvironments;
 	private Map<Integer, DataSet> dataSets;
+	private Map<Integer, TrialEnvironments> trialEnvironmentsList;
 	private Table environmentsTable;
 	private Table variatesSelectionTable;
 	private Table factorsAnalysisTable;
@@ -64,6 +67,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 factorsAnalysisTable.setWidth("100%");
 		
 		 dataSets =  new HashMap<Integer, DataSet>();
+		 trialEnvironmentsList =  new HashMap<Integer, TrialEnvironments>();
 		
 		 ColumnGenerator generatedVariateColumn = new ColumnGenerator(){
 
@@ -72,8 +76,27 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			@Override
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
+				String countData = "0";
+				MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
+				VariableType varType = dataSets.get(item.getDataSetId()).findVariableTypeByLocalName(columnId.toString());
 				
-				return 0;
+				if (varType == null) return "0";
+				
+				try {
+					countData = String.valueOf(getStudyDataManager().countStocks(
+								item.getDataSetId()
+								,trialEnvironmentsList.get(item.getDataSetId()).findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId()
+								,varType.getId()
+									)
+								);
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+				
+				return countData;
 			}
 			 
 		 };
@@ -86,7 +109,14 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				public Object generateCell(Table source, Object itemId,
 						Object columnId) {
 					
-					return "X";
+					MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
+					VariableType varType = dataSets.get(item.getDataSetId()).findVariableTypeByLocalName(columnId.toString());
+					if (varType ==  null){
+						return "";
+					}else{
+						return "X";
+					}
+					
 				}
 				 
 			 };
@@ -108,8 +138,11 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			 if (dataSets.get(metaEnvironment.getDataSetId()) == null){
 				try {
 					DataSet ds;
+					TrialEnvironments envs;
 					ds = this.getStudyDataManager().getDataSet(metaEnvironment.getDataSetId());
+					envs = this.getStudyDataManager().getTrialEnvironmentsInDataset(ds.getId());
 					dataSets.put(metaEnvironment.getDataSetId(), ds);
+					trialEnvironmentsList.put(metaEnvironment.getDataSetId(), envs);
 					
 			
 					for (VariableType v : ds.getVariableTypes().getVariates().getVariableTypes()){
@@ -145,6 +178,20 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			 
 		 }
 		 environmentsTable.setContainerDataSource(environmentsTableContainer);
+		 List<String> visibleCols = new ArrayList<String>();
+		 visibleCols.add("");
+		 visibleCols.add("dataSetName");
+		 visibleCols.add("trial");
+		 visibleCols.add("environment");
+		 visibleCols.addAll(variatesColumnList);
+		 environmentsTable.setVisibleColumns(visibleCols.toArray());
+		 visibleCols.clear();
+		 visibleCols.add("SELECT");
+		 visibleCols.add("Dataset Name");
+		 visibleCols.add("Trial");
+		 visibleCols.add("Environment");
+		 visibleCols.addAll(variatesColumnList);
+		 environmentsTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 		 
 		 BeanItemContainer<MetaEnvironmentModel> factorsAnalysisTableContainer = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 		 for (MetaEnvironmentModel metaEnvironment : metaEnvironments){
@@ -152,6 +199,18 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			 
 		 }
 		 factorsAnalysisTable.setContainerDataSource(factorsAnalysisTableContainer);
+		 visibleCols.clear();
+		 visibleCols.add("dataSetName");
+		 visibleCols.add("trial");
+		 visibleCols.add("environment");
+		 visibleCols.addAll(factorsColumnList);
+		 factorsAnalysisTable.setVisibleColumns(visibleCols.toArray());
+		 visibleCols.clear();
+		 visibleCols.add("Dataset Name");
+		 visibleCols.add("Trial");
+		 visibleCols.add("Environment");
+		 visibleCols.addAll(factorsColumnList);
+		 factorsAnalysisTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 		 
 		 
 		 variatesSelectionTable = new Table();
@@ -164,6 +223,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 variatesSelectionTableContainer.addItem();
 		 variatesSelectionTable.setContainerDataSource(variatesSelectionTableContainer);
 		
+		 
 		 
 		 factorsSelectionTable = new Table();
 		 factorsSelectionTable.setWidth("100%");
@@ -180,10 +240,10 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	
 	private void initializeLayout(){
 		
+		setSizeUndefined();
 		setSpacing(true);
 		setMargin(true);
-		setWidth("90%");
-		setHeight("1200px");
+		setWidth("95%");
 		
 		addComponent(environmentsTable);
 		addComponent(variatesSelectionTable);

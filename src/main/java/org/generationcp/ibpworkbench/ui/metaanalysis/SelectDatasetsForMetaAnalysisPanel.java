@@ -909,6 +909,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 										bean.setDataSetName(dataSet.getName());
 										bean.setStudyId(dataSet.getStudyId());
 										bean.setStudyName(studyName);
+										bean.setTrialFactorName(trialInstanceFactorName);
 										
 										container.addBean(bean);
 								}

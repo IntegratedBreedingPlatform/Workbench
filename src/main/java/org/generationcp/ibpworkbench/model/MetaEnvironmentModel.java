@@ -61,6 +61,7 @@ public class MetaEnvironmentModel {
 	private String dataSetName;
 	private String trial;
 	private String environment;
+	private String trialFactorName;
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -87,6 +88,14 @@ public class MetaEnvironmentModel {
 	    public int hashCode() {
 	        return this.studyId;
 	    }
+
+	public String getTrialFactorName() {
+		return trialFactorName;
+	}
+
+	public void setTrialFactorName(String trialFactorName) {
+		this.trialFactorName = trialFactorName;
+	}
 	
 
 }
