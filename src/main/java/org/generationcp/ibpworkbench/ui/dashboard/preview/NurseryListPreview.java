@@ -295,6 +295,7 @@ public class NurseryListPreview extends VerticalLayout {
         openStudyManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Launch");
         openStudyManagerBtn.setHtmlContentAllowed(true);
         openStudyManagerBtn.setDescription("Open In List Manager");
+        openStudyManagerBtn.setEnabled(false);
 
         renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
@@ -702,27 +703,19 @@ public class NurseryListPreview extends VerticalLayout {
             }
 		}
 	}
-	
 
-    public void toggleToolbarBtns(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-            renameFolderBtn.setEnabled(true);
-            deleteFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-            renameFolderBtn.setEnabled(false);
-            deleteFolderBtn.setEnabled(false);
-        }
+    public void setToolbarButtonsEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
+        renameFolderBtn.setEnabled(enabled);
+        deleteFolderBtn.setEnabled(enabled);
     }
 
-    public void toggleToolbarAddBtn(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-        }
+    public void setToolbarAddButtonEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
     }
 
+    public void setToolbarLaunchButtonEnabled(boolean enabled) {
+        openStudyManagerBtn.setEnabled(enabled);
+    }
 
 }

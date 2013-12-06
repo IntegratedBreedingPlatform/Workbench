@@ -48,46 +48,66 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
         if(event.getProperty()==null || event.getProperty().getValue() ==null ) {
-        	return;
+            return;
         }
         
         if(source instanceof GermplasmListPreview){
-        	((GermplasmListPreview)source).expandTree(event.getProperty().getValue());
-
-            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(GermplasmListPreview.SHARED_LIST)
-                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
-                ((GermplasmListPreview)source).toggleToolbarBtns(false);
-                ((GermplasmListPreview)source).toggleToolbarAddBtn(false);
-            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(GermplasmListPreview.MY_LIST)) {
-                ((GermplasmListPreview)source).toggleToolbarBtns(false);
-                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
-            } else if (!((GermplasmListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue())) {
-                ((GermplasmListPreview)source).toggleToolbarBtns(false);
-                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
-            } else {
-                ((GermplasmListPreview)source).toggleToolbarBtns(true);
-                ((GermplasmListPreview)source).toggleToolbarAddBtn(true);
-            }
-
-
-        }else if(source instanceof NurseryListPreview){
-        	((NurseryListPreview)source).expandTree(event.getProperty().getValue());
+            GermplasmListPreview preview = ((GermplasmListPreview)source);
             
-            if ( event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.SHARED_STUDIES)
-                    || event.getProperty().getValue() instanceof Integer && ((Integer)event.getProperty().getValue()).intValue() > 0 ) {
-                ((NurseryListPreview)source).toggleToolbarBtns(false);
-                ((NurseryListPreview)source).toggleToolbarAddBtn(false);
-            } else if (event.getProperty().getValue() instanceof  String && event.getProperty().getValue().equals(NurseryListPreview.MY_STUDIES)) {
-                ((NurseryListPreview)source).toggleToolbarBtns(false);
-                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
-            } else if (!((NurseryListPreview)source).getPresenter().isFolder((Integer) event.getProperty().getValue())) {
-                ((NurseryListPreview)source).toggleToolbarBtns(false);
-                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
+            Object propertyValue = event.getProperty().getValue();
+            
+            boolean isSharedListNode = (propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.SHARED_LIST));
+            boolean isCentralGermplasmList = (propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0);
+            boolean isMyListNode = propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.MY_LIST);
+            boolean isFolder = propertyValue instanceof Integer && preview.getPresenter().isFolder((Integer) propertyValue);
+            
+            // expand the node
+            preview.expandTree(event.getProperty().getValue());
+            
+            // set the toolbar button state
+            if (isSharedListNode || isCentralGermplasmList) {
+                preview.setToolbarButtonsEnabled(false);
+            } else if (isMyListNode) {
+                preview.setToolbarButtonsEnabled(false);
+                preview.setToolbarAddButtonEnabled(true);
+            } else if (!isFolder) {
+                preview.setToolbarButtonsEnabled(false);
+                preview.setToolbarAddButtonEnabled(true);
             } else {
-                ((NurseryListPreview)source).toggleToolbarBtns(true);
-                ((NurseryListPreview)source).toggleToolbarAddBtn(true);
+                preview.setToolbarButtonsEnabled(true);
+            }
+            
+            // set the launch button state
+            preview.setToolbarLaunchButtonEnabled(!isSharedListNode && !isMyListNode && !isFolder);
+        }
+        else if (source instanceof NurseryListPreview) {
+            NurseryListPreview preview = ((NurseryListPreview)source);
+            
+            Object propertyValue = event.getProperty().getValue();
+            
+            boolean isSharedStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.SHARED_STUDIES);
+            boolean isCentralStudy = propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0;
+            boolean isMyStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.MY_STUDIES);
+            boolean isFolder = preview.getPresenter().isFolder((Integer) propertyValue);
+            
+            // expand the node
+            preview.expandTree(event.getProperty().getValue());
+            
+            // set the toolbar button state
+            if (isSharedStudy || isCentralStudy) {
+                preview.setToolbarButtonsEnabled(false);
+            } else if (isMyStudy) {
+                preview.setToolbarButtonsEnabled(false);
+                preview.setToolbarAddButtonEnabled(true);
+            } else if (!isFolder) {
+                preview.setToolbarButtonsEnabled(false);
+                preview.setToolbarAddButtonEnabled(true);
+            } else {
+                preview.setToolbarButtonsEnabled(true);
             } 
 
+            // set the launch button state
+            preview.setToolbarLaunchButtonEnabled(!isSharedStudy && !isMyStudy && !isFolder);
         }
     }
 }
