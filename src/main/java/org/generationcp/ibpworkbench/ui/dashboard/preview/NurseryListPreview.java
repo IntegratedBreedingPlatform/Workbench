@@ -393,7 +393,7 @@ public class NurseryListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("New Folder Name");
+                Label l = new Label("Folder Name");
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(treeView.getValue()));
 
