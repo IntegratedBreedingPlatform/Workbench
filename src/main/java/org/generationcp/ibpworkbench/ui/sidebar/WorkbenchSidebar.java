@@ -231,7 +231,7 @@ public class WorkbenchSidebar extends CssLayout {
                             }
                             super.showWorkflowDashboard(super.project,role1,(IContentWindow)window);
 
-                            NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getWorkflowTemplate().getName());
+                            NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getLabel());
                         }
                     };
                 }

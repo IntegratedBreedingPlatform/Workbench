@@ -169,10 +169,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
         crumbTrail = new CrumbTrail();
-        crumbTrail.setMargin(true, true, false, true);
+        crumbTrail.setMargin(true, true, true, true);
         crumbTrail.setSpacing(false);
         crumbTrail.setSizeUndefined();
-        crumbTrail.setHeight("36px");
+
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
 
@@ -215,7 +215,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
 
-        mainContent.addComponent(crumbTrail);
+
+
+        final HorizontalLayout crumbTrailContainer = new HorizontalLayout();
+        crumbTrailContainer.setStyleName("gcp-crumbtrail");
+        crumbTrailContainer.setWidth("100%");
+        crumbTrailContainer.addComponent(crumbTrail);
+
+        mainContent.addComponent(crumbTrailContainer);
 
         VerticalLayout wrap = new VerticalLayout();
         wrap.setSizeFull();

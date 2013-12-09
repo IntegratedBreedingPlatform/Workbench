@@ -118,31 +118,33 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         root.setMargin(true);
 
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
-        final Label availableMethodsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Methods</span>",Label.CONTENT_XHTML);
-        availableMethodsTitle.setSizeFull();;
+        final Label availableMethodsTitle = new Label("Available Methods");
         availableMethodsTitle.setStyleName("gcp-content-header");
 
         addNewMethodBtn = new Button("Add new Method");
-        addNewMethodBtn.setStyleName(Reindeer.BUTTON_LINK +  " loc-add-btn");
-
-        final Label spacer = new Label();
+        addNewMethodBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() +  " loc-add-btn");
 
         availableMethodsTitleContainer.addComponent(availableMethodsTitle);
-        availableMethodsTitleContainer.addComponent(spacer);
         availableMethodsTitleContainer.addComponent(addNewMethodBtn);
-        availableMethodsTitleContainer.setExpandRatio(availableMethodsTitle, 1.0f);
-        availableMethodsTitleContainer.setExpandRatio(spacer,1.0f);
+
+        availableMethodsTitleContainer.setComponentAlignment(addNewMethodBtn,Alignment.MIDDLE_RIGHT);
+        availableMethodsTitleContainer.setSizeUndefined();
         availableMethodsTitleContainer.setWidth("100%");
-        availableMethodsTitleContainer.setMargin(false,false,true,false);	// move this to css
+        availableMethodsTitleContainer.setMargin(false,true,true,false);	// move this to css
 
         root.addComponent(availableMethodsTitleContainer);
         root.addComponent(this.buildMethodFilterForm());
         root.addComponent(this.buildAvailableMethodsTable());
 
-        final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Methods</span>",Label.CONTENT_XHTML);
-        selectedLocationsTitle.setStyleName("gcp-content-header");
+        final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
+        selectedMethodTitleContainer.setMargin(true,true,false,false);
 
-        root.addComponent(selectedLocationsTitle);
+        final Label selectedMethodsTitle = new Label("Program Methods");
+        selectedMethodsTitle.setStyleName("gcp-content-header");
+
+        selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
+
+        root.addComponent(selectedMethodTitleContainer);
         root.addComponent(this.buildSelectedMethodsTable());
         root.addComponent(this.buildActionButtons());
 

@@ -350,10 +350,12 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     protected void initializeLayout() {
         this.setSizeFull();
         this.setSpacing(true);
-        this.setMargin(new MarginInfo(true,false,false,true));
 
-        if (!workflowPreview)
-            addComponent(dashboardTitle);
+        this.setMargin(new MarginInfo(true,false,false,true));
+        if (!workflowPreview) {
+            this.setMargin(new MarginInfo(false,false,false,true));
+        //    addComponent(dashboardTitle);
+        }
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -861,7 +863,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
             
             browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             
@@ -889,7 +891,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
             
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
             metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));

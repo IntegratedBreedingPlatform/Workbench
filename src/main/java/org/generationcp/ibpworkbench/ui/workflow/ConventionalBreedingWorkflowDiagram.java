@@ -286,10 +286,12 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
     protected void initializeLayout() {
         this.setSizeFull();
         this.setSpacing(true);
-        this.setMargin(new MarginInfo(true,false,false,true));
 
-        if (!workflowPreview)
-            addComponent(dashboardTitle);
+        this.setMargin(new MarginInfo(true,false,false,true));
+        if (!workflowPreview) {
+            this.setMargin(new MarginInfo(false,false,false,true));
+        //    addComponent(dashboardTitle);
+        }
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -603,7 +605,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             //browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
          
@@ -618,7 +620,7 @@ public class ConventionalBreedingWorkflowDiagram extends VerticalLayout implemen
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
             metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,this.role,null));

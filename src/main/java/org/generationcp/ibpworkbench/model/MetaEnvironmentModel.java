@@ -62,6 +62,7 @@ public class MetaEnvironmentModel {
 	private String trial;
 	private String environment;
 	private String trialFactorName;
+	private Boolean active;
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -95,6 +96,19 @@ public class MetaEnvironmentModel {
 
 	public void setTrialFactorName(String trialFactorName) {
 		this.trialFactorName = trialFactorName;
+	}
+
+	public String getKey() {
+		// TODO Auto-generated method stub
+		return String.format("%s%s%s", studyId, dataSetId, trial) ;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 	
 

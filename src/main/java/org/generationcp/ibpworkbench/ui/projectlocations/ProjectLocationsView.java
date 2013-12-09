@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -31,18 +32,9 @@ import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class ProjectLocationsView extends CustomComponent implements InitializingBean {
@@ -84,29 +76,34 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		root.setMargin(true);
 		
 		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
-		final Label availableLocationsTitle = new Label("<span style='font-size: 18px; line-height: 35px;'>Available Locations</span>",Label.CONTENT_XHTML);
-		availableLocationsTitle.setSizeFull();
+		final Label availableLocationsTitle = new Label("Available Locations");
 		availableLocationsTitle.setStyleName("gcp-content-header");
 		addNewLocationsBtn = new Button("Add New Location");
-		addNewLocationsBtn.setStyleName(Reindeer.BUTTON_LINK + " loc-add-btn");
-		final Label spacer = new Label();
-				
-		availableLocationsTitleContainer.addComponent(availableLocationsTitle);
-		availableLocationsTitleContainer.addComponent(spacer);
+		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " loc-add-btn");
+
+        availableLocationsTitleContainer.addComponent(availableLocationsTitle);
 		availableLocationsTitleContainer.addComponent(addNewLocationsBtn);
-		availableLocationsTitleContainer.setExpandRatio(availableLocationsTitle, 1.0f);
-		availableLocationsTitleContainer.setExpandRatio(spacer,1.0f);
-		availableLocationsTitleContainer.setWidth("100%");
-		availableLocationsTitleContainer.setMargin(false,false,true,false);	// move this to css
+
+        availableLocationsTitleContainer.setComponentAlignment(addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
+		availableLocationsTitleContainer.setSizeUndefined();
+        availableLocationsTitleContainer.setWidth("100%");
+		availableLocationsTitleContainer.setMargin(false,true,true,false);	// move this to css
 		
 		root.addComponent(availableLocationsTitleContainer);
 		root.addComponent(this.buildLocationFilterForm());
 		root.addComponent(this.buildAvailableLocationsTable());
 
-		final Label selectedLocationsTitle = new Label("<span style='font-size: 18px; display: inline-block; margin-top: 15px'>Program Locations</span>",Label.CONTENT_XHTML);
-		selectedLocationsTitle.setStyleName("gcp-content-header");
 
-		root.addComponent(selectedLocationsTitle);
+        final HorizontalLayout selectedLocationsTitleContainer = new HorizontalLayout();
+        selectedLocationsTitleContainer.setMargin(true,true,false,false);
+
+        final Label selectedLocationsTitle = new Label("Program Locations");
+        selectedLocationsTitle.setStyleName("gcp-content-header");
+
+        selectedLocationsTitleContainer.addComponent(selectedLocationsTitle);
+
+
+        root.addComponent(selectedLocationsTitleContainer);
 
 		root.addComponent(this.buildSelectedLocationsTable());
 		root.addComponent(this.buildActionButtons());

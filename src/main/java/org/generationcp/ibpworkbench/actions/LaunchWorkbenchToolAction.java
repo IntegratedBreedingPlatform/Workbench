@@ -78,6 +78,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         ,MBDT("mbdt")
         ,LIST_MANAGER("list_manager")
         ,BM_LIST_MANAGER("bm_list_manager")
+        ,BM_LIST_MANAGER_MAIN("bm_list_manager_main")
         ,CROSSING_MANAGER("crossing_manager")
         ,NURSERY_TEMPLATE_WIZARD("nursery_template_wizard")
         ,BREEDING_PLANNER("breeding_planner")
@@ -352,7 +353,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                             url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
                         }
                         
-                        Embedded browser = new Embedded("", new ExternalResource(url));
+                        Embedded browser = new Embedded(null,new ExternalResource(url));
+                        browser.setStyleName("gcp-embedded");
                         browser.setType(Embedded.TYPE_BROWSER);
                         browser.setSizeFull();
                         //browser.setHeight("800px");
@@ -415,7 +417,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     toolUrl += "?restartApplication";
                 }
                 
-                Embedded browser = new Embedded("", new ExternalResource(toolUrl));
+                Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();

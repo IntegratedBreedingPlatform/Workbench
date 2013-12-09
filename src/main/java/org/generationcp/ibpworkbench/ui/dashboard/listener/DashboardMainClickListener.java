@@ -50,7 +50,7 @@ public class DashboardMainClickListener implements ClickListener{
             try {
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),null)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),null)).buttonClick(event);
 
                 //System.out.println("Open list manager" + this.projectId);
             } catch (InternationalizableException e){

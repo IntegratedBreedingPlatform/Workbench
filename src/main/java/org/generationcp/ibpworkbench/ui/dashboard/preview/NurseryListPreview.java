@@ -380,7 +380,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }
 
                 final Window w = new Window("Rename a folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -393,7 +393,7 @@ public class NurseryListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("New Folder Name");
+                Label l = new Label("Folder Name");
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(treeView.getValue()));
 
@@ -455,7 +455,7 @@ public class NurseryListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 final Window w = new Window("Add new folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);

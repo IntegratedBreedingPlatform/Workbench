@@ -319,10 +319,12 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
     protected void initializeLayout() {
         this.setSizeFull();
         this.setSpacing(true);
-        this.setMargin(new MarginInfo(true, false, false, true));
 
-        if (!workflowPreview)
-            addComponent(dashboardTitle);
+        this.setMargin(new MarginInfo(true,false,false,true));
+        if (!workflowPreview) {
+            this.setMargin(new MarginInfo(false,false,false,true));
+        //    addComponent(dashboardTitle);
+        }
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -708,7 +710,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
             /*browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));*/
             ontologyBrowserButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
             metaAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS, this.project, this.role, null));
-            /*browseGermplasmAndListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));*/
+            /*browseGermplasmAndListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));*/
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
@@ -726,7 +728,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER));
+            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
         }
     }
 
