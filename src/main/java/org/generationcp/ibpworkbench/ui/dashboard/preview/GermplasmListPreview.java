@@ -54,56 +54,54 @@ public class GermplasmListPreview extends VerticalLayout {
     private GermplasmListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
-    
-    
+
+
     private Project project;
-    
-    
-    
+
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    
-    
+
+
     private ThemeResource folderResource;
     private ThemeResource leafResource;
-    
+
     public static String MY_LIST = "My List";
     public static String SHARED_LIST = "Shared List";
-    
+
     private Panel panel;
     private HorizontalLayout toolbar;
 
 
-    @Autowired 
+    @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     private Button openListManagerBtn;
     private Button addFolderBtn;
     private Button deleteFolderBtn;
     private Button renameFolderBtn;
-    
+
     private Object lastItemId;
 
     public GermplasmListPreview(Project project) {
         this.project = project;
-        
-        presenter = new GermplasmListPreviewPresenter(this,project);
+
+        presenter = new GermplasmListPreviewPresenter(this, project);
 
         try {
-            if (project != null){
+            if (project != null) {
                 assemble();
             }
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        
-        folderResource =  new ThemeResource("images/folder.png");
-        leafResource =  new ThemeResource("images/leaf_16.png");
-       
+
+        folderResource = new ThemeResource("images/folder.png");
+        leafResource = new ThemeResource("images/leaf_16.png");
+
 
     }
-    
-    public void setProject(Project project){
+
+    public void setProject(Project project) {
         this.removeAllComponents();
         this.setSizeFull();
 
@@ -126,7 +124,7 @@ public class GermplasmListPreview extends VerticalLayout {
         panel.setSizeFull();
 
         this.addComponent(panel);
-        this.setExpandRatio(panel,1.0F);
+        this.setExpandRatio(panel, 1.0F);
 
 
     }
@@ -151,9 +149,9 @@ public class GermplasmListPreview extends VerticalLayout {
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
         openListManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-pencil");
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName()+" toolbar button-plus");
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName()+" toolbar button-trash");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-pencil");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-plus");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName() + " toolbar button-trash");
 
         openListManagerBtn.setWidth("100px");
         renameFolderBtn.setWidth("40px");
@@ -164,7 +162,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
         Label spacer = new Label("");
         this.toolbar.addComponent(spacer);
-        this.toolbar.setExpandRatio(spacer,1.0F);
+        this.toolbar.setExpandRatio(spacer, 1.0F);
 
 
         renameFolderBtn.setEnabled(false);
@@ -189,7 +187,7 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null || lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select an item in the list","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select an item in the list", "");
                     return;
                 }
                 /*
@@ -199,7 +197,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 }*/
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER,IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),(Integer)lastItemId)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
 
             }
         });
@@ -209,17 +207,17 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
                     return;
                 }
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),(String)lastItemId + " cannot br renamed","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), (String) lastItemId + " cannot br renamed", "");
                     return;
                 }
 
-                if (!presenter.isFolder((Integer)lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Please select a folder to be renamed","");
+                if (!presenter.isFolder((Integer) lastItemId)) {
+                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
                     return;
                 }
 
@@ -250,7 +248,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 Label spacer = new Label("");
                 btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer,1.0F);
+                btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button("Ok");
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -258,14 +256,14 @@ public class GermplasmListPreview extends VerticalLayout {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
-                            presenter.renameGermplasmListFolder(name.getValue().toString(),(Integer)lastItemId);
+                            presenter.renameGermplasmListFolder(name.getValue().toString(), (Integer) lastItemId);
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             return;
                         }
 
                         // update UI
-                        treeView.setItemCaption(lastItemId,name.getValue().toString());
+                        treeView.setItemCaption(lastItemId, name.getValue().toString());
 
                         // close popup
                         WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
@@ -327,7 +325,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 Label spacer = new Label("");
                 btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer,1.0F);
+                btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button("Ok");
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -337,33 +335,32 @@ public class GermplasmListPreview extends VerticalLayout {
                         Integer newItem = null;
                         try {
 
-                            if (treeView.getValue() instanceof  String)
-                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),null);
+                            if (treeView.getValue() instanceof String)
+                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(), null);
                             else
-                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(),(Integer)treeView.getValue());
+                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             return;
                         }
 
                         //update UI
                         if (newItem != null) {
                             treeView.addItem(newItem);
-                            treeView.setItemCaption(newItem,name.getValue().toString());
-                            treeView.setChildrenAllowed(newItem,true);
-                            treeView.setItemIcon(newItem,folderResource);
+                            treeView.setItemCaption(newItem, name.getValue().toString());
+                            treeView.setChildrenAllowed(newItem, true);
+                            treeView.setItemIcon(newItem, folderResource);
 
                             if (presenter.getGermplasmListParent(newItem) != null) {
-                                treeView.setParent(newItem,treeView.getValue());
+                                treeView.setParent(newItem, treeView.getValue());
                             } else {
-                                treeView.setParent(newItem,MY_LIST);
+                                treeView.setParent(newItem, MY_LIST);
                             }
 
                             if (treeView.getValue() != null) {
                                 if (!treeView.isExpanded(treeView.getValue()))
                                     expandTree(treeView.getValue());
-                            }
-                            else
+                            } else
                                 treeView.expandItem(MY_LIST);
 
                             treeView.select(newItem);
@@ -401,7 +398,7 @@ public class GermplasmListPreview extends VerticalLayout {
             public void buttonClick(final Button.ClickEvent event) {
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),lastItemId.toString() + " cannot be deleted.","");
+                    MessageNotifier.showError(event.getComponent().getWindow(), lastItemId.toString() + " cannot be deleted.", "");
                     return;
                 }
 
@@ -410,15 +407,15 @@ public class GermplasmListPreview extends VerticalLayout {
                 try {
                     gpList = presenter.validateForDeleteGermplasmList((Integer) lastItemId);
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                     return;
                 }
 
                 final GermplasmList finalGpList = gpList;
                 ConfirmDialog.show(event.getComponent().getWindow(),
-                                    "Delete " + treeView.getItemCaption(lastItemId),
-                                    "Are you sure you want to delete " + treeView.getItemCaption(lastItemId),
-                                    "Yes","No",new ConfirmDialog.Listener() {
+                        "Delete " + treeView.getItemCaption(lastItemId),
+                        "Are you sure you want to delete " + treeView.getItemCaption(lastItemId),
+                        "Yes", "No", new ConfirmDialog.Listener() {
                     @Override
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
@@ -427,7 +424,7 @@ public class GermplasmListPreview extends VerticalLayout {
                                 treeView.removeItem(lastItemId);
                                 treeView.select(null);
                             } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(),e.getMessage(),"");
+                                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             }
                         }
                     }
@@ -435,13 +432,12 @@ public class GermplasmListPreview extends VerticalLayout {
             }
         });
     }
-    
-    public void expandTree(Object itemId){
-        
-        if(treeView.isExpanded(itemId)){
-            treeView.collapseItem(itemId);            
-        }
-        else{
+
+    public void expandTree(Object itemId) {
+
+        if (treeView.isExpanded(itemId)) {
+            treeView.collapseItem(itemId);
+        } else {
             treeView.expandItem(itemId);
         }
         lastItemId = itemId;
@@ -450,56 +446,56 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.select(itemId);
     }
 
-    protected void initializeComponents() {        
+    protected void initializeComponents() {
         //treeView = new Tree("");
         //this.setHeight("400px");
         //this.setHeight("100%");
         //this.addComponent(treeView);
     }
-    
+
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
         lastItemId = null;
         treeView = new Tree();
         treeView.setContainerDataSource(new HierarchicalContainer());
-        treeView.setDropHandler(new TreeDropHandler(treeView));
+        treeView.setDropHandler(new GermplasmListTreeDropHandler(treeView, presenter));
         treeView.setDragMode(TreeDragMode.NODE);
-        
+
         treeView.addItem(MY_LIST);
         treeView.setItemCaption(MY_LIST, MY_LIST);
         treeView.setItemIcon(MY_LIST, folderResource);
-        
+
         treeView.addItem(SHARED_LIST);
         treeView.setItemCaption(SHARED_LIST, SHARED_LIST);
-        treeView.setItemIcon(SHARED_LIST,folderResource);
-        
+        treeView.setItemIcon(SHARED_LIST, folderResource);
+
         for (GermplasmList parentList : germplasmListParentLocal) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), MY_LIST);
-            boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
+            boolean hasChildList = getPresenter().hasChildList(parentList.getId());
 
-            if(!hasChildList && !parentList.isFolder()){
-                treeView.setChildrenAllowed(parentList.getId(),false);
-                treeView.setItemIcon(parentList.getId(),leafResource);
+            if (!hasChildList && !parentList.isFolder()) {
+                treeView.setChildrenAllowed(parentList.getId(), false);
+                treeView.setItemIcon(parentList.getId(), leafResource);
             } else {
-                treeView.setChildrenAllowed(parentList.getId(),true);
-                treeView.setItemIcon(parentList.getId(),folderResource);
+                treeView.setChildrenAllowed(parentList.getId(), true);
+                treeView.setItemIcon(parentList.getId(), folderResource);
             }
 
             treeView.setSelectable(true);
-        }        
+        }
         for (GermplasmList parentList : germplasmListParentCentral) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
             treeView.setParent(parentList.getId(), SHARED_LIST);
-            boolean hasChildList =  getPresenter().hasChildList(parentList.getId());
+            boolean hasChildList = getPresenter().hasChildList(parentList.getId());
 
-            if(!hasChildList && !parentList.isFolder()){
-                treeView.setChildrenAllowed(parentList.getId(),false);
-                treeView.setItemIcon(parentList.getId(),leafResource);
+            if (!hasChildList && !parentList.isFolder()) {
+                treeView.setChildrenAllowed(parentList.getId(), false);
+                treeView.setItemIcon(parentList.getId(), leafResource);
             } else {
-                treeView.setChildrenAllowed(parentList.getId(),true);
-                treeView.setItemIcon(parentList.getId(),folderResource);
+                treeView.setChildrenAllowed(parentList.getId(), true);
+                treeView.setItemIcon(parentList.getId(), folderResource);
             }
 
             treeView.setSelectable(true);
@@ -513,7 +509,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
     /**
      * Set the toolbar button's enabled state.
-     * 
+     *
      * @param enabled
      */
     public void setToolbarButtonsEnabled(boolean enabled) {
@@ -524,60 +520,58 @@ public class GermplasmListPreview extends VerticalLayout {
 
     /**
      * Set the Add button's enabled state.
-     * 
+     *
      * @param enabled
      */
     public void setToolbarAddButtonEnabled(boolean enabled) {
         addFolderBtn.setEnabled(enabled);
     }
-    
+
     /**
      * Set the Launch button's enabled state.
-     * 
+     *
      * @param enabled
      */
     public void setToolbarLaunchButtonEnabled(boolean enabled) {
         openListManagerBtn.setEnabled(enabled);
     }
 
-    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId ) throws InternationalizableException{
-       
+    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId) throws InternationalizableException {
+
         for (GermplasmList listChild : germplasmListChildren) {
-            
-            boolean hasChildList =  getPresenter().hasChildList(listChild.getId());
-            
+
+            boolean hasChildList = getPresenter().hasChildList(listChild.getId());
+
             treeView.addItem(listChild.getId());
             treeView.setItemCaption(listChild.getId(), listChild.getName());
             treeView.setParent(listChild.getId(), parentGermplasmListId);
             // allow children if list has sub-lists
 
             ThemeResource resource = folderResource;
-            if(!hasChildList && !listChild.isFolder()){
+            if (!hasChildList && !listChild.isFolder()) {
                 resource = leafResource;
-                treeView.setChildrenAllowed(listChild.getId(),false);
+                treeView.setChildrenAllowed(listChild.getId(), false);
             } else {
-                treeView.setChildrenAllowed(listChild.getId(),true);
+                treeView.setChildrenAllowed(listChild.getId(), true);
             }
 
 
-            treeView.setItemIcon(listChild.getId(),resource);
+            treeView.setItemIcon(listChild.getId(), resource);
             treeView.setSelectable(true);
-            
+
         }
         System.out.println("add node " + itemId);
         treeView.select(itemId);
         lastItemId = itemId;
         treeView.setImmediate(true);
     }
-    
-    
 
-    
+
     public GermplasmListPreviewPresenter getPresenter() {
         return presenter;
     }
 
-    
+
     public void setPresenter(GermplasmListPreviewPresenter presenter) {
         this.presenter = presenter;
     }
@@ -593,28 +587,30 @@ public class GermplasmListPreview extends VerticalLayout {
 
     protected void assemble() throws Exception {
         initializeComponents();
-        
+
         initializeLayout();
         initializeActions();
-       
+
     }
 
-    
+
     public ManagerFactoryProvider getManagerFactoryProvider() {
         return managerFactoryProvider;
     }
 
-    
+
     public void setManagerFactoryProvider(
             ManagerFactoryProvider managerFactoryProvider) {
         this.managerFactoryProvider = managerFactoryProvider;
     }
 
-    private static class TreeDropHandler implements DropHandler {
+    private static class GermplasmListTreeDropHandler implements DropHandler {
         private final Tree tree;
+        private final GermplasmListPreviewPresenter presenter;
 
-        public TreeDropHandler (Tree tree) {
+        public GermplasmListTreeDropHandler(Tree tree, GermplasmListPreviewPresenter presenter) {
             this.tree = tree;
+            this.presenter = presenter;
         }
 
 
@@ -656,45 +652,60 @@ public class GermplasmListPreview extends VerticalLayout {
          * Move a node within a tree onto, above or below another node depending
          * on the drop location.
          *
-         * @param sourceItemId
-         *            id of the item to move
-         * @param targetItemId
-         *            id of the item onto which the source node should be moved
-         * @param location
-         *            VerticalDropLocation indicating where the source node was
-         *            dropped relative to the target node
+         * @param sourceItemId id of the item to move
+         * @param targetItemId id of the item onto which the source node should be moved
+         * @param location     VerticalDropLocation indicating where the source node was
+         *                     dropped relative to the target node
          */
         private void moveNode(Object sourceItemId, Object targetItemId,
                               VerticalDropLocation location) {
             HierarchicalContainer container = (HierarchicalContainer) tree
                     .getContainerDataSource();
 
-            // Sorting goes as
-            // - If dropped ON a node, we append it as a child
-            // - If dropped on the TOP part of a node, we move/add it before
-            // the node
-            // - If dropped on the BOTTOM part of a node, we move/add it
-            // after the node
-
-            if (location == VerticalDropLocation.MIDDLE) {
-                if (container.setParent(sourceItemId, targetItemId)
-                        && container.hasChildren(targetItemId)) {
-                    // move first in the container
-                    container.moveAfterSibling(sourceItemId, null);
-                }
-            } else if (location == VerticalDropLocation.TOP) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    // reorder only the two items, moving source above target
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                    container.moveAfterSibling(targetItemId, sourceItemId);
-                }
-            } else if (location == VerticalDropLocation.BOTTOM) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                }
+            if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Shared List");
+                return;
             }
+
+            if (container.hasChildren(sourceItemId)) {
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder with child elements");
+                return;
+            }
+
+
+            try {
+                presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, (Integer) targetItemId);
+                // Sorting goes as
+                // - If dropped ON a node, we append it as a child
+                // - If dropped on the TOP part of a node, we move/add it before
+                // the node
+                // - If dropped on the BOTTOM part of a node, we move/add it
+                // after the node
+
+                if (location == VerticalDropLocation.MIDDLE) {
+                    if (container.setParent(sourceItemId, targetItemId)
+                            && container.hasChildren(targetItemId)) {
+                        // move first in the container
+                        container.moveAfterSibling(sourceItemId, null);
+                    }
+                } else if (location == VerticalDropLocation.TOP) {
+                    Object parentId = container.getParent(targetItemId);
+                    if (container.setParent(sourceItemId, parentId)) {
+                        // reorder only the two items, moving source above target
+                        container.moveAfterSibling(sourceItemId, targetItemId);
+                        container.moveAfterSibling(targetItemId, sourceItemId);
+                    }
+                } else if (location == VerticalDropLocation.BOTTOM) {
+                    Object parentId = container.getParent(targetItemId);
+                    if (container.setParent(sourceItemId, parentId)) {
+                        container.moveAfterSibling(sourceItemId, targetItemId);
+                    }
+                }
+            } catch (Error error) {
+                error.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+
         }
 
     }
