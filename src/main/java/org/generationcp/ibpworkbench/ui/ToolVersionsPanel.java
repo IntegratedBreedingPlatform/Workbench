@@ -10,6 +10,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -65,9 +66,13 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
         	Long toolId = 0L;
             List<Tool> tools = workbenchDataManager.getAllTools();
             for (Tool tool : tools) {
-                toolContainer.addBean(tool);
-                System.out.println(tool);
-                toolId++;
+
+                if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))) {
+                    toolContainer.addBean(tool);
+                    //System.out.println(tool);
+                    toolId++;
+                }
+
             }
             
             for(String name: propertyNames)
@@ -80,8 +85,8 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
                  t.setPath(props.getProperty("tool_name."+name));
                  t.setToolId(toolId);
                  t.setTitle(props.getProperty("tool_name."+name));
-                 System.out.println(props.getProperty("tool_name."+name) + " : " + props.getProperty("tool_version."+name));
-                 System.out.println(t);
+                 //System.out.println(props.getProperty("tool_name."+name) + " : " + props.getProperty("tool_version."+name));
+                 //System.out.println(t);
                  toolContainer.addBean(t);
             }
            
@@ -92,7 +97,9 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
         catch (IOException ioe) {
         	ioe.printStackTrace();
         }
-        
+
+        toolContainer.sort(new String[]{"title"},new boolean[] {true});
+
         tblTools.setContainerDataSource(toolContainer);
         
         String[] columns = new String[] {"title", "version"};
