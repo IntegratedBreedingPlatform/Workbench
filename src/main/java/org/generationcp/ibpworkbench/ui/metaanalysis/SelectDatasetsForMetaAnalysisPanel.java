@@ -106,7 +106,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private Button linkCloseAllTab;
     private Table selectedEnvironmenTable;
     
-    
     private VerticalLayout generalLayout;
     private VerticalLayout studyTreeLayout;
     private VerticalLayout studyTreeLayoutTableContainer;
@@ -201,6 +200,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     }
 
     protected void initializeComponents() {
+    	
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
@@ -310,19 +310,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				try {
-			       
-				
-	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
-	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
-				} catch (Exception e) {
-					//LOG.error("Exception", e);
-		            if(e.getCause() instanceof InternationalizableException) {
-		                InternationalizableException i = (InternationalizableException) e.getCause();
-		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-		            }
-		            return;
-				}
+				tabSheet.removeAllComponents();
+				selectedEnvironmenTable.removeAllItems();
 			}
 		});
     	
@@ -338,7 +327,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					
 					if (metaEnvironments.size() > 0){
 						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
-						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments));
+						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, SelectDatasetsForMetaAnalysisPanel.this));
 					}
 					
 			}
