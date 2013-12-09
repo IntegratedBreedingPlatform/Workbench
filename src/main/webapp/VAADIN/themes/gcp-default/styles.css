@@ -26,7 +26,7 @@
 }
 
 .v-table-row-odd {
-	background: rgba(239,240,241,0.5);
+	background: rgba(249, 249, 249,0.7);
 }
 
 .gcp-light-grey .v-table-row {
@@ -35,7 +35,7 @@
 }
 
 .gcp-light-grey .v-table-row-odd {
-	background: rgba(239,240,241,1);
+	background: rgba(249, 249, 249,1);
 	
 }
 
