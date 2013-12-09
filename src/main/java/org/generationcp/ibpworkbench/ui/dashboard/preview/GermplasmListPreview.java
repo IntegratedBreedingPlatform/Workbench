@@ -222,7 +222,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 }
 
                 final Window w = new Window("Rename a folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -297,7 +297,7 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 final Window w = new Window("Add new folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
