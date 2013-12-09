@@ -101,10 +101,6 @@ span.v-checkbox-hidecheckbox input {
 	width: 0px !important;
 }
 
-.v-splitpanel-first-container-gcp-workbench-content-split-panel {
-	background-color: rgb(233,233,233)
-}
-
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout {
 	margin-top: 20px;
 }
