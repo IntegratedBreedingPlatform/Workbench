@@ -1,25 +1,6 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.event.dd.acceptcriteria.And;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -27,27 +8,39 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
-import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.GetGermplasmByNameModes;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.Transferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -146,6 +139,7 @@ public class GermplasmListPreview extends VerticalLayout {
         openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Launch");
         openListManagerBtn.setHtmlContentAllowed(true);
         openListManagerBtn.setDescription("Open In List Manager");
+        openListManagerBtn.setEnabled(false);
 
         renameFolderBtn = new Button("");
         renameFolderBtn.setDescription("Rename Folder");
@@ -517,24 +511,33 @@ public class GermplasmListPreview extends VerticalLayout {
         //return germplasmListTree;
     }
 
-    public void toggleToolbarBtns(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-            renameFolderBtn.setEnabled(true);
-            deleteFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-            renameFolderBtn.setEnabled(false);
-            deleteFolderBtn.setEnabled(false);
-        }
+    /**
+     * Set the toolbar button's enabled state.
+     * 
+     * @param enabled
+     */
+    public void setToolbarButtonsEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
+        renameFolderBtn.setEnabled(enabled);
+        deleteFolderBtn.setEnabled(enabled);
     }
 
-    public void toggleToolbarAddBtn(boolean toggle) {
-        if (toggle == true) {
-            addFolderBtn.setEnabled(true);
-        } else {
-            addFolderBtn.setEnabled(false);
-        }
+    /**
+     * Set the Add button's enabled state.
+     * 
+     * @param enabled
+     */
+    public void setToolbarAddButtonEnabled(boolean enabled) {
+        addFolderBtn.setEnabled(enabled);
+    }
+    
+    /**
+     * Set the Launch button's enabled state.
+     * 
+     * @param enabled
+     */
+    public void setToolbarLaunchButtonEnabled(boolean enabled) {
+        openListManagerBtn.setEnabled(enabled);
     }
 
     public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId ) throws InternationalizableException{

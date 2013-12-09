@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
-    
+
     private final NurseryListPreview view;
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
 
@@ -44,37 +44,37 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
     private ManagerFactory managerFactory;
 
 
     public NurseryListPreviewPresenter(NurseryListPreview view, Project project) {
         this.view = view;
         this.project = project;
-        
-        if(this.project != null){
-            if (view.getManagerFactoryProvider() != null){
+
+        if (this.project != null) {
+            if (view.getManagerFactoryProvider() != null) {
                 setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
             }
-         }
+        }
 
     }
 
-    public void generateInitialTreeNodes(){
-    	
-    	List<FolderReference> centralRootFolders = new ArrayList<FolderReference>();
-    	List<FolderReference> localRootFolders = new ArrayList<FolderReference>();
-    	try {
-    		centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL);
-    		localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL);
-    		
-    		view.generateTopListOfTree(centralRootFolders,localRootFolders);
-    	} catch (MiddlewareQueryException e) {
+    public void generateInitialTreeNodes() {
+
+        List<FolderReference> centralRootFolders = new ArrayList<FolderReference>();
+        List<FolderReference> localRootFolders = new ArrayList<FolderReference>();
+        try {
+            centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL);
+            localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL);
+
+            view.generateTopListOfTree(centralRootFolders, localRootFolders);
+        } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
-    	}
+        }
     }
-    
-    
+
+
 //    public List<TreeNode> generateTreeNodes(){
 //    	
 //        List<StudyNode> studyNodes = new ArrayList<StudyNode>();
@@ -161,9 +161,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 //
 //        return returnNodes;        
 //    }
-    
 
-    
+
 //    private List<TreeNode> createTreeNodesByYear(List<StudyNode> studyNodes, String year){
 //        List<TreeNode> returnNodes = new ArrayList<TreeNode>();
 //        
@@ -187,8 +186,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 //        
 //        return returnNodes;        
 //    }
-    
-    
+
+
 //    private List<TreeNode> createTreeNodesBySeason(List<StudyNode> studyNodes, Season season){
 //        List<TreeNode> returnNodes = new ArrayList<TreeNode>();
 //        
@@ -220,44 +219,45 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 //        }
 //        return returnNodes;        
 //    }
-    
-    
+
+
     @Override
     public void afterPropertiesSet() throws Exception {
     }
 
 
-    
     public ManagerFactory getManagerFactory() {
-        
+
         return managerFactory;
     }
 
 
-
-    
     public void setManagerFactory(ManagerFactory managerFactory) {
         this.managerFactory = managerFactory;
     }
 
     public boolean isFolder(Integer value) {
-    	try {
-        	boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
-        	LOG.info("isFolder = " + !isStudy);
-        	return !isStudy;
+        try {
+            boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
+            LOG.info("isFolder = " + !isStudy);
+            return !isStudy;
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
         }
-        
+
         return false;
     }
 
-    public void renameNurseryListFolder(String s, Integer value) {
-        //To change body of created methods use File | Settings | File Templates.
+    public void renameNurseryListFolder(String newFolderName, Integer folderId) {
+        try {
+            this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+        }
     }
 
     public void deleteNurseryListFolder(Integer id) {
-    	try {
+        try {
             this.getManagerFactory().getStudyDataManager().deleteEmptyFolder(id);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
@@ -265,7 +265,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public Object getStudyNodeParent(Integer newItem) {
-    	try {
+        try {
             return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
@@ -273,24 +273,35 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public Integer addNurseryListFolder(String name, Integer id) throws Error{
-    	try {
-    		if(name==null || name.trim().equals("")) {
-    			throw new Error(BLANK_NAME);
-    		}
-    		if(name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
-    			throw new Error(INVALID_NAME);
-    		}
-    		Integer parentFolderId = id;
-    		if(!isFolder(id)) {
-    			//get parent
-    			DmsProject project = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
-    			if(project==null) {
-    				throw new Error("Parent folder cannot be null");
-    			}
-    			parentFolderId = project.getProjectId();
-    		}
-            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId,name,name);
+    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId) throws Error {
+
+
+        try {
+            return getManagerFactory().getStudyDataManager().moveFolder(sourceId, targetId);
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            throw new Error(e.getMessage());
+        }
+    }
+
+    public Integer addNurseryListFolder(String name, Integer id) throws Error {
+        try {
+            if (name == null || name.trim().equals("")) {
+                throw new Error(BLANK_NAME);
+            }
+            if (name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
+                throw new Error(INVALID_NAME);
+            }
+            Integer parentFolderId = id;
+            if (!isFolder(id)) {
+                //get parent
+                DmsProject project = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
+                if (project == null) {
+                    throw new Error("Parent folder cannot be null");
+                }
+                parentFolderId = project.getProjectId();
+            }
+            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             throw new Error(e.getMessage());
@@ -298,14 +309,14 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public Integer validateForDeleteNurseryList(Integer id) throws Error {
-    	LOG.info("id = " + id);
-    	if (id == null) {
+        LOG.info("id = " + id);
+        if (id == null) {
             throw new Error(NO_SELECTION);
         }
-    	DmsProject project = null;
+        DmsProject project = null;
 
         try {
-        	project = this.getManagerFactory().getStudyDataManager().getProject(id);
+            project = this.getManagerFactory().getStudyDataManager().getProject(id);
 
         } catch (MiddlewareQueryException e) {
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
@@ -329,9 +340,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
         return id;
     }
-    
+
     private boolean hasChildren(Integer id) throws MiddlewareQueryException {
-    	List<Reference> studyChildren = null;
+        List<Reference> studyChildren = null;
 
         try {
             studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(id));
@@ -339,17 +350,17 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             throw e;
         }
-        if(studyChildren!=null && !studyChildren.isEmpty()) {
-        	LOG.info("hasChildren = true");
-        	return true;
+        if (studyChildren != null && !studyChildren.isEmpty()) {
+            LOG.info("hasChildren = true");
+            return true;
         }
         LOG.info("hasChildren = false");
         return false;
-        
-	}
 
-	public void addChildrenNode(int parentId) throws InternationalizableException{
-    	List<Reference> studyChildren = new ArrayList<Reference>();
+    }
+
+    public void addChildrenNode(int parentId) throws InternationalizableException {
+        List<Reference> studyChildren = new ArrayList<Reference>();
 
         try {
             studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(parentId));
@@ -357,7 +368,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             studyChildren = new ArrayList<Reference>();
         }
-        
+
         view.addChildrenNode(parentId, studyChildren);
 
     }
