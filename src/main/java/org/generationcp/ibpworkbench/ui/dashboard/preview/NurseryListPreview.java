@@ -471,6 +471,7 @@ public class NurseryListPreview extends VerticalLayout {
                 Label l = new Label("Folder Name");
                 final TextField name = new TextField();
 
+
                 if (treeView.getValue() != null)
                     name.setValue(treeView.getItemCaption(treeView.getValue()));
 
@@ -655,6 +656,11 @@ public class NurseryListPreview extends VerticalLayout {
             HierarchicalContainer container = (HierarchicalContainer) tree
                     .getContainerDataSource();
 
+            if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Shared Studies");
+                return;
+            }
+
             if (container.hasChildren(sourceItemId)) {
                 MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder with child elements");
                 return;
@@ -669,7 +675,15 @@ public class NurseryListPreview extends VerticalLayout {
 
             boolean success = true;
             try {
-                success = presenter.moveNurseryListFolder((Integer)sourceItemId, (Integer)targetItemId);
+                int actualTargetId = 0;
+                // switch to using the root folder id if target is the root of the local folder
+                if (targetItemId instanceof String && ((String) targetItemId).equals(MY_STUDIES)) {
+                    actualTargetId = ROOT_FOLDER;
+                } else {
+                    actualTargetId = (Integer)targetItemId;
+                }
+
+                success = presenter.moveNurseryListFolder((Integer) sourceItemId, actualTargetId);
             } catch (Error error) {
                 MessageNotifier.showError(WorkbenchMainView.getInstance(), error.getMessage(), "");
                 success = false;
