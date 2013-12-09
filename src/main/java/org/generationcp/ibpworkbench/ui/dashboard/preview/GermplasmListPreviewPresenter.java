@@ -284,8 +284,13 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             if (!gpList.isFolder())
                  throw new Error(NOT_FOLDER);
 
-            GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
-            gpList.setParent(parent);
+            if (parentId != null) {
+                GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
+                            gpList.setParent(parent);
+            } else {
+                gpList.setParent(null);
+            }
+
 
             return this.getManagerFactory().getGermplasmListManager().updateGermplasmList(gpList);
 

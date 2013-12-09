@@ -674,7 +674,12 @@ public class GermplasmListPreview extends VerticalLayout {
 
 
             try {
-                presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, (Integer) targetItemId);
+                if (targetItemId instanceof String) {
+                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, null);
+                } else {
+                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, (Integer) targetItemId);
+                }
+
                 // Sorting goes as
                 // - If dropped ON a node, we append it as a child
                 // - If dropped on the TOP part of a node, we move/add it before
