@@ -239,13 +239,13 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 }
 
 .gcp-workflow-link span span {
-	color: #045d91 !important;
+	/* color: #045d91 !important; */
 	display: block;
 	text-align: center;
 }
 
 .gcp-workflow-link span span:hover {
-	color: #4185d8 !important;
+	/* color: #4185d8 !important; */
 }
 
 .gcp-workflow-step .gcp-section-title {
