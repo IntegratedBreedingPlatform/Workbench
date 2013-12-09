@@ -675,9 +675,9 @@ public class GermplasmListPreview extends VerticalLayout {
 
             try {
                 if (targetItemId instanceof String) {
-                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, null);
+                    presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
                 } else {
-                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, (Integer) targetItemId);
+                    presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
                 }
 
                 // Sorting goes as
