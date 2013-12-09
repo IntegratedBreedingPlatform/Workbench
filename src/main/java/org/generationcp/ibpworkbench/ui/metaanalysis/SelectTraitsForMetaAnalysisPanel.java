@@ -1,6 +1,8 @@
 package org.generationcp.ibpworkbench.ui.metaanalysis;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -526,7 +530,31 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 								
 								) { return;}
 						
-						exportData();
+						final File file = exportData();
+						
+						if (file == null) return;
+						
+						FileResource fr = new FileResource(file, event.getComponent().getWindow().getApplication()) {
+							private static final long serialVersionUID = 765143030552676513L;
+							@Override
+							public DownloadStream getStream() {
+								DownloadStream ds;
+								try {
+									ds = new DownloadStream(new FileInputStream(
+											getSourceFile()), getMIMEType(), getFilename());
+									
+									ds.setParameter("Content-Disposition", "attachment; filename="+ file.getName());
+									ds.setCacheTime(getCacheTime());
+									return ds;
+									
+								} catch (FileNotFoundException e) {
+									// No logging for non-existing files at this level.
+									return null;
+								}
+							}
+						};
+						
+						event.getComponent().getWindow().getApplication().getMainWindow().open(fr);
 				}
 			});
 

@@ -24,8 +24,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
@@ -53,34 +51,21 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
-
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.PopupView.Content;
-import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -204,7 +189,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
-    	tabSheet.setHeight("440px");
+    	tabSheet.setHeight("480px");
     	tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
     	
     	folderResource =  new ThemeResource("images/folder.png");
@@ -670,6 +655,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			
 			setSpacing(true);
 			setMargin(true);
+			setWidth("100%");
+			setHeight("100%");
 			
 			initializeComponents();
 			
@@ -697,12 +684,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			
 			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);
 			lblStudyName.setContentMode(Label.CONTENT_XHTML);
-			Button linkFullStudyDetails = new Button();
-			linkFullStudyDetails.setStyleName("link");
-			linkFullStudyDetails.setCaption("Full Study Details");
-			Button linkSaveToList = new Button();
-			linkSaveToList.setStyleName("link");
-			linkSaveToList.setCaption("Save To List");
+			Button linkFullStudyDetails = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Full Study Details");
+			Button linkSaveToList = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span>Save To List");
+			linkFullStudyDetails.setHtmlContentAllowed(true);
+			linkSaveToList.setHtmlContentAllowed(true);
 			
 			linkSaveToList.addListener(new Button.ClickListener() {
 				@Override
@@ -713,12 +698,14 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			});
 			
 			
+			
 			GridLayout gLayout = new GridLayout(10,3);
 			gLayout.setWidth("100%");
 			gLayout.setSpacing(true);
 			gLayout.addComponent(lblStudyName, 0, 0, 2, 0);
-			gLayout.addComponent(linkFullStudyDetails, 3, 0, 5, 0);
-			gLayout.addComponent(linkSaveToList, 6, 0, 9, 0);
+			gLayout.addComponent(linkFullStudyDetails, 3, 0);
+			gLayout.setComponentAlignment(linkFullStudyDetails, Alignment.TOP_RIGHT);
+			gLayout.addComponent(linkSaveToList, 4, 0);
 			gLayout.addComponent(lblFactor, 0, 1, 4, 1);
 			gLayout.addComponent(lblVariate, 5, 1, 9, 1);
 			gLayout.addComponent(lblFactorDescription, 0, 2, 4, 2);
