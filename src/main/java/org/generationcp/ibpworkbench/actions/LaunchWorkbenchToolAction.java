@@ -353,7 +353,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                             url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
                         }
                         
-                        Embedded browser = new Embedded("", new ExternalResource(url));
+                        Embedded browser = new Embedded(null,new ExternalResource(url));
+                        browser.setStyleName("gcp-embedded");
                         browser.setType(Embedded.TYPE_BROWSER);
                         browser.setSizeFull();
                         //browser.setHeight("800px");
@@ -416,7 +417,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     toolUrl += "?restartApplication";
                 }
                 
-                Embedded browser = new Embedded("", new ExternalResource(toolUrl));
+                Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
