@@ -266,7 +266,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         } else {
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
+            Project currentProject = app.getSessionData().getSelectedProject();
+            if (currentProject == null) {
+                currentProject = app.getSessionData().getLastOpenedProject();
+            }
             if (this.project != null) {
                 currentProject = project;
             }
