@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.generationcp.browser.study.StudyInfoDialog;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -44,6 +45,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -697,6 +699,14 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				}
 			});
 			
+			linkFullStudyDetails.addListener(new Button.ClickListener() {
+				@Override
+				public void buttonClick(ClickEvent event) {
+						
+					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), (Integer) dataSet.getStudyId(), false, (StudyDataManagerImpl) getStudyDataManager());
+					event.getComponent().getWindow().addWindow(dialog);
+				}
+			});
 			
 			
 			GridLayout gLayout = new GridLayout(10,3);
