@@ -59,7 +59,7 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             boolean isSharedListNode = (propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.SHARED_LIST));
             boolean isCentralGermplasmList = (propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0);
             boolean isMyListNode = propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.MY_LIST);
-            boolean isFolder = propertyValue instanceof Integer && preview.getPresenter().isFolder((Integer) propertyValue);
+            boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
             
             // expand the node
             preview.expandTree(event.getProperty().getValue());
@@ -88,8 +88,7 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             boolean isSharedStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.SHARED_STUDIES);
             boolean isCentralStudy = propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0;
             boolean isMyStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.MY_STUDIES);
-            boolean isFolder = preview.getPresenter().isFolder((Integer) propertyValue);
-            
+            boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
             // expand the node
             preview.expandTree(event.getProperty().getValue());
             

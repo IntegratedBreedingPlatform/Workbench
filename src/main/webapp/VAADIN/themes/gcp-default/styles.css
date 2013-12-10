@@ -5,7 +5,7 @@
 }
 
 .v-app-IBPWorkbenchApplication {
-	background: rgb(233,233,233);
+	background: #f9f9f9;
 }
 
 .v-table-body {
@@ -99,10 +99,6 @@ span.v-checkbox-hidecheckbox input {
 
 .v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked {
 	width: 0px !important;
-}
-
-.v-splitpanel-first-container-gcp-workbench-content-split-panel {
-	background-color: rgb(233,233,233)
 }
 
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout {
