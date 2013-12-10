@@ -148,12 +148,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     protected void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {
         // we used to update the tool configurations here
         // but we don't need it anymore
-        
-        updateProjectLastOpenedDate((Window) contentWindow, project);
-        
-        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
-        sessionData.setLastOpenedProject(project);
-        
+
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName != null){
             if (workflowName.equals("MARS")) {
@@ -177,38 +172,5 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
                 contentWindow.showContent(cbDiagram);
             }
         }
-    }
-    
-    
-    
-    private void updateProjectLastOpenedDate(Window window, Project project) {
-        try {
-        	
-        	// set the last opened project in the session
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-            
-            
-        	ProjectUserInfoDAO projectUserInfoDao = workbenchDataManager.getProjectUserInfoDao();
-        	ProjectUserInfo	projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
-        	if (projectUserInfo != null) {
-            	projectUserInfo.setLastOpenDate(new Date());
-            	workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
-        	}
-    
-        	project.setLastOpenDate(new Date());
-            workbenchDataManager.mergeProject(project);
-            
-            app.getSessionData().setLastOpenedProject(project);
-            
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString(), e);
-            showDatabaseError(window);
-        }
-    }
-    
-    private void showDatabaseError(Window window) {
-        MessageNotifier.showError(window, 
-                messageSource.getMessage(Message.DATABASE_ERROR), 
-                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
     }
 }
