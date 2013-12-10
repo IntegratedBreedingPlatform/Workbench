@@ -195,7 +195,7 @@ public class WorkbenchSidebar extends CssLayout {
         if (toolName == null) return null;
 
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
-            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName));
+            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
             return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,this.role,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
