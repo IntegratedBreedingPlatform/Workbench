@@ -197,14 +197,14 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 	                    	if (stringValue != null) {
 	                    		stringValue = stringValue.trim();
 	                    		// display value as Link if GID, else display as string
-		                    	if ("GID".equals(variable.getVariableType().getLocalName().trim())) {
-	                                Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
-	                                gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-	                                gidButton.setDescription("Click to view Germplasm information");
-	                                item.getItemProperty(columnId).setValue(gidButton);
-		                    	} else {
+		                    	//if ("GID".equals(variable.getVariableType().getLocalName().trim())) {
+	                            //    Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
+	                            //    gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+	                            //    gidButton.setDescription("Click to view Germplasm information");
+	                            //    item.getItemProperty(columnId).setValue(gidButton);
+		                    	//} else {
 			                    	item.getItemProperty(columnId).setValue(stringValue);
-		                    	}
+		                    	//}
 	                    	}
 	                    }
 	                }

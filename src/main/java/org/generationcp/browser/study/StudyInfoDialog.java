@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
 
 @Configurable
 public class StudyInfoDialog extends Window implements InitializingBean, InternationalizableComponent {
@@ -71,10 +73,11 @@ public class StudyInfoDialog extends Window implements InitializingBean, Interna
         center();
 
          
-        AbsoluteLayout mainLayout = new AbsoluteLayout();
+        VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setMargin(true);
-        mainLayout.setWidth("1100px");
-        mainLayout.setHeight("550px");
+        mainLayout.setSpacing(true);
+        mainLayout.setWidth("100%");
+        mainLayout.setHeight("100%");
         
         
         try {
@@ -87,9 +90,9 @@ public class StudyInfoDialog extends Window implements InitializingBean, Interna
             //}
             Accordion accordion = new StudyAccordionMenu(studyId, new StudyDetailComponent(this.studyDataManager, studyId),
                     studyDataManager, false,h2hCall);
-            accordion.setWidth("93%");
-            accordion.setHeight("470px");
-            mainLayout.addComponent(accordion, "top:10px;left:5px");
+            accordion.setWidth("100%");
+            accordion.setHeight("100%");
+            mainLayout.addComponent(accordion);
         } catch (NumberFormatException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             e.printStackTrace();
@@ -109,16 +112,26 @@ public class StudyInfoDialog extends Window implements InitializingBean, Interna
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         
-        
         cancelButton = new Button("Close");
         cancelButton.setData(CLOSE_SCREEN_BUTTON_ID);
-        //cancelButton.addListener(null);
+        cancelButton.addListener(new Button.ClickListener() {
+		
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				parentWindow.removeWindow(StudyInfoDialog.this);
+				
+			}
+		});
         
         
         
         
         buttonLayout.addComponent(cancelButton);
-        mainLayout.addComponent(buttonLayout, "top:520px;left:950px");
+        mainLayout.addComponent(buttonLayout);
+        mainLayout.setComponentAlignment(buttonLayout, Alignment.TOP_RIGHT);
         
         
         addComponent(mainLayout);

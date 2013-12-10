@@ -67,6 +67,8 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
         setColumns(3);
         setSpacing(true);
         setMargin(true);
+        setHeight("100%");
+        setHeight("330px");
 
         lblName = new Label(messageSource.getMessage(Message.NAME_LABEL)); // "Name"
         lblTitle = new Label(messageSource.getMessage(Message.TITLE_LABEL)); // "Title"

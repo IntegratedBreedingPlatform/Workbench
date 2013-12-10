@@ -64,7 +64,8 @@ public class StudyVariateComponent extends Table implements InitializingBean, In
         setSelectable(true);
         setMultiSelect(false);
         setImmediate(true); // react at once when something is
-        setSizeFull();
+        setWidth("100%");
+        setHeight("330px");
         setColumnReorderingAllowed(true);
         setColumnCollapsingAllowed(true);
         setColumnHeaders(new String[] { NAME, DESC, PROP, SCA, METH, DTYPE, VALUE });        

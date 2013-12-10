@@ -127,7 +127,7 @@ public class RepresentationDataSetQuery implements Query{
                     
                     //check factor name, if it's a GID, then make the GID as a link. else, show it as a value only
                     //make GID as link only if the page wasn't directly accessed from the URL
-                    if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !fromUrl) {
+                    /**if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !fromUrl) {
                         // get Item for ounitid
                         Item item = itemMap.get(Integer.valueOf(experiment.getId()));
                         if (item == null) {
@@ -146,7 +146,7 @@ public class RepresentationDataSetQuery implements Query{
                             item.addItemProperty(columnId, null);
                         }
                     //end GID link creation
-                    } else {
+                    } else {**/
                         Item item = itemMap.get(Integer.valueOf(experiment.getId()));
                         if (item == null) {
                             // not yet in map so create a new Item and add to map
@@ -171,7 +171,7 @@ public class RepresentationDataSetQuery implements Query{
                         } else{
                             item.addItemProperty(columnId, null);
                         }
-                    }
+                    //}
                 }
             }
         }

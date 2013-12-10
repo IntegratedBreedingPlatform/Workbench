@@ -158,7 +158,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	            buttonLayout.addComponent(openTableViewerButton);
 	        }
 	
-	        addComponent(buttonLayout);
+	        //addComponent(buttonLayout);
         }
     }
     
