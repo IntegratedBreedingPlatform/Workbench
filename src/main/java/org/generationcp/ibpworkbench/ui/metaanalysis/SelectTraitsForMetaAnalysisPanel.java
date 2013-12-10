@@ -650,7 +650,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	@Override
 	public void updateLabels() {
 		// TODO Auto-generated method stub
-		messageSource.setCaption(btnCancel, Message.CANCEL);
+		messageSource.setCaption(btnCancel, Message.BACK);
         messageSource.setCaption(btnNext, Message.EXPORT_DATA);
 		messageSource.setValue(lblSelectEnvVarForAnalysis, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS);
 		messageSource.setValue(lblSelectEnvVarForAnalysisDesc, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS_DESC);
