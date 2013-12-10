@@ -64,7 +64,7 @@ public class WorkbenchSidebar extends CssLayout {
                 }
 
                 else {
-                    listener.doAction(WorkbenchMainView.getInstance(),treeItem.getId(),true);
+                    listener.doAction(WorkbenchMainView.getInstance(),"/" + treeItem.getId(),true);
                 }
             }
         }
