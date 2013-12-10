@@ -94,6 +94,9 @@ public class GxeComponentPanel extends VerticalLayout implements
 	private TabSheet studiesTabsheet;
 	private ThemeResource folderResource;
     private ThemeResource leafResource;
+    
+    private Label lblSelectDataForAnalysisHeader;
+    private Label lblSelectDataForAnalysisDescription;
 	
 	protected Boolean setAll = true;
 	protected Boolean fromOthers = true;
@@ -126,6 +129,12 @@ public class GxeComponentPanel extends VerticalLayout implements
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		assemble();
+		updateLabels();
+	}
+	
+	private void updateLabels(){
+		 messageSource.setValue(lblSelectDataForAnalysisHeader, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
+	     messageSource.setValue(lblSelectDataForAnalysisDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
 	}
 
 	protected void assemble() {
@@ -258,6 +267,10 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 	protected void initializeComponents() {
 		
+		lblSelectDataForAnalysisHeader = new Label();
+    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-header");
+    	lblSelectDataForAnalysisDescription = new Label();
+		
 		folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
 		
@@ -305,6 +318,9 @@ public class GxeComponentPanel extends VerticalLayout implements
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
+		
+		addComponent(lblSelectDataForAnalysisHeader);
+        addComponent(lblSelectDataForAnalysisDescription);
 
 		horizontal.addComponent(studiesPanel);
 
