@@ -190,11 +190,11 @@ public class GermplasmListPreview extends VerticalLayout {
                     MessageNotifier.showError(event.getComponent().getWindow(), "Please select an item in the list", "");
                     return;
                 }
-                /*
+
                 if (presenter.isFolder((Integer)lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
-                }*/
+                }
 
                 // page change to list manager, with parameter passed
                 (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);

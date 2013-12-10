@@ -729,7 +729,10 @@ public class NurseryListPreview extends VerticalLayout {
                 treeView.setChildrenAllowed(sc.getId(), false);
                 treeView.setItemIcon(sc.getId(), leafResource);
             }
+            treeView.setSelectable(true);
         }
+        treeView.select(parentId);
+        treeView.setImmediate(true);
     }
 
 
