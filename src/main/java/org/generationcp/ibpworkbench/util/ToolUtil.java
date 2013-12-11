@@ -280,6 +280,7 @@ public class ToolUtil {
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username, password, true, true, true);
         } else if (Util.isOneOf(tool.getToolName()
                                 ,ToolName.bm_list_manager.name()
+                                ,ToolName.bm_list_manager_main.name()
                                 ,ToolName.crossing_manager.name()
                                 ,ToolName.germplasm_import.name()
                                 ,ToolName.list_manager.name()

@@ -266,14 +266,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         } else {
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getSelectedProject();
-            if (currentProject == null) {
-                currentProject = app.getSessionData().getLastOpenedProject();
-            }
-            if (this.project != null) {
-                currentProject = project;
-            }
             
+            Project currentProject = getCurrentProject();
             try {
                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, tool.getTitle(), "Launched "+tool.getTitle(), user, new Date());
 
@@ -455,11 +449,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     }
     
     private boolean updateToolConfiguration(Window window, Tool tool) {
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        Project currentProject = app.getSessionData().getLastOpenedProject();
-        if (this.project != null) {
-            currentProject = project;
-        }
+        Project currentProject = getCurrentProject();
         
         String url = tool.getPath();
         
@@ -525,5 +515,18 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         }
         
         return true;
+    }
+    
+    private Project getCurrentProject() {
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        Project currentProject = app.getSessionData().getSelectedProject();
+        if (currentProject == null) {
+            currentProject = app.getSessionData().getLastOpenedProject();
+        }
+        if (this.project != null) {
+            currentProject = project;
+        }
+        
+        return currentProject;
     }
 }
