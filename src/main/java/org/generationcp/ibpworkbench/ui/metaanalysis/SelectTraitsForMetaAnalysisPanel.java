@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -218,12 +219,23 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				if (varType == null) return "0";
 				
 				try {
-					countData = String.valueOf(getStudyDataManager().countStocks(
+					
+					if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()){
+						countData = String.valueOf(getStudyDataManager().countStocks(
 								item.getDataSetId()
 								,trialEnvironmentsList.get(item.getDataSetId()).findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId()
 								,varType.getId()
 									)
 								);
+					}else{
+						countData = String.valueOf(getStudyDataManager().countObservations(
+								item.getDataSetId()
+								,trialEnvironmentsList.get(item.getDataSetId()).findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId()
+								,varType.getId()
+									)
+								);
+					}
+					
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
