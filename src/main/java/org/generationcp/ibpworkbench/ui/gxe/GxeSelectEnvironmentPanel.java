@@ -73,8 +73,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
     private static final long serialVersionUID = 1L;
     
-    private Label lblSelectDataForAnalysisHeader;
-    private Label lblSelectDataForAnalysisDescription;
+    
     private Label lblEnvironmentFactorHeader;
     private Label lblEnvironmentFactorDescription;
     private Label lblEnvironmentGroupsHeader;
@@ -182,9 +181,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     	
     	setVariatesCheckboxState(new HashMap<String, Boolean>());
     	
-    	lblSelectDataForAnalysisHeader = new Label();
-    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-header");
-    	lblSelectDataForAnalysisDescription = new Label();
+    	
     	lblEnvironmentFactorHeader = new Label();
     	lblEnvironmentFactorHeader.setStyleName("gcp-content-header");
     	lblEnvironmentFactorDescription = new Label();
@@ -263,9 +260,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         }
         
         buttonArea = layoutButtonArea();
-        
-        generalLayout.addComponent(lblSelectDataForAnalysisHeader);
-        generalLayout.addComponent(lblSelectDataForAnalysisDescription);
+       
         
         generalLayout.addComponent(lblEnvironmentFactorHeader);
         	specifyEnvironmentFactorLayout.addComponent(lblEnvironmentFactorDescription);
@@ -655,8 +650,6 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     public void updateLabels() {
         messageSource.setCaption(btnCancel, Message.CANCEL);
         messageSource.setCaption(btnNext, Message.NEXT);
-        messageSource.setValue(lblSelectDataForAnalysisHeader, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
-        messageSource.setValue(lblSelectDataForAnalysisDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
         messageSource.setValue(lblEnvironmentFactorHeader, Message.GXE_ENVIRONMENT_FACTOR_HEADER);
         messageSource.setValue(lblEnvironmentFactorDescription, Message.GXE_ENVIRONMENT_FACTOR_DESCRIPTION);
         messageSource.setValue(lblEnvironmentGroupsHeader, Message.GXE_ENVIRONMENT_GROUPS_HEADER);

@@ -53,7 +53,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
 
-    public static final String VERSION = "1.1.4.30";
+    public static final String VERSION = "1.1.4.32";
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
@@ -169,10 +169,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
         crumbTrail = new CrumbTrail();
-        crumbTrail.setMargin(true, true, false, true);
+        crumbTrail.setMargin(true, true, true, true);
         crumbTrail.setSpacing(false);
         crumbTrail.setSizeUndefined();
-        crumbTrail.setHeight("36px");
+
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
 
@@ -215,7 +215,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
 
-        mainContent.addComponent(crumbTrail);
+
+
+        final HorizontalLayout crumbTrailContainer = new HorizontalLayout();
+        crumbTrailContainer.setStyleName("gcp-crumbtrail");
+        crumbTrailContainer.setWidth("100%");
+        crumbTrailContainer.addComponent(crumbTrail);
+
+        mainContent.addComponent(crumbTrailContainer);
 
         VerticalLayout wrap = new VerticalLayout();
         wrap.setSizeFull();

@@ -45,7 +45,7 @@ public class ExternalWebToolWindow extends Window{
     }
 
     protected void initializeComponents() {
-        browser = new Embedded("", new ExternalResource(url));
+        browser = new Embedded(null, new ExternalResource(url));
         browser.setType(Embedded.TYPE_BROWSER);
     }
 

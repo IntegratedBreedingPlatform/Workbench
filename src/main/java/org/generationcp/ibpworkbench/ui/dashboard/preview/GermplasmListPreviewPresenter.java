@@ -277,12 +277,12 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public Integer dropGermplasmListFolderToParent(Integer id,Integer parentId) throws Error {
+    public Integer dropGermplasmListToParent(Integer id, Integer parentId) throws Error {
         try {
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
-            if (!gpList.isFolder())
-                 throw new Error(NOT_FOLDER);
+            /*if (!gpList.isFolder())
+                 throw new Error(NOT_FOLDER);*/
 
             if (parentId != null) {
                 GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);

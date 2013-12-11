@@ -266,7 +266,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         } else {
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
+            Project currentProject = app.getSessionData().getSelectedProject();
+            if (currentProject == null) {
+                currentProject = app.getSessionData().getLastOpenedProject();
+            }
             if (this.project != null) {
                 currentProject = project;
             }
@@ -353,7 +356,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                             url = getWebLoginForwardUrl(loginUrl, user.getName(), user.getPassword());
                         }
                         
-                        Embedded browser = new Embedded("", new ExternalResource(url));
+                        Embedded browser = new Embedded(null,new ExternalResource(url));
+                        browser.setStyleName("gcp-embedded");
                         browser.setType(Embedded.TYPE_BROWSER);
                         browser.setSizeFull();
                         //browser.setHeight("800px");
@@ -416,7 +420,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     toolUrl += "?restartApplication";
                 }
                 
-                Embedded browser = new Embedded("", new ExternalResource(toolUrl));
+                Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();

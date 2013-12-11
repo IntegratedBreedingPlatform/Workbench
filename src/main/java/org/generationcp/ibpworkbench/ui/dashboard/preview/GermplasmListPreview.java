@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -190,14 +191,17 @@ public class GermplasmListPreview extends VerticalLayout {
                     MessageNotifier.showError(event.getComponent().getWindow(), "Please select an item in the list", "");
                     return;
                 }
-                /*
+
                 if (presenter.isFolder((Integer)lastItemId)) {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
-                }*/
+                }
+
+                if (WorkbenchSidebar.thisInstance != null)
+                    WorkbenchSidebar.thisInstance.updateLastOpenedProject();
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
+                        (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
 
             }
         });
@@ -222,7 +226,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 }
 
                 final Window w = new Window("Rename a folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -235,7 +239,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("New Folder Name");
+                Label l = new Label("Folder Name");
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(lastItemId));
 
@@ -297,7 +301,7 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 final Window w = new Window("Add new folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -675,9 +679,9 @@ public class GermplasmListPreview extends VerticalLayout {
 
             try {
                 if (targetItemId instanceof String) {
-                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, null);
+                    presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
                 } else {
-                    presenter.dropGermplasmListFolderToParent((Integer) sourceItemId, (Integer) targetItemId);
+                    presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
                 }
 
                 // Sorting goes as

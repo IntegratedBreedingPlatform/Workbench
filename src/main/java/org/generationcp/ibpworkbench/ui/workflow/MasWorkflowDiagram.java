@@ -305,10 +305,12 @@ public class MasWorkflowDiagram extends VerticalLayout implements InitializingBe
     protected void initializeLayout() {
     	this.setSizeFull();
     	this.setSpacing(true);
-    	this.setMargin(new MarginInfo(true,false,false,true));
 
-        if (!workflowPreview)
-            addComponent(dashboardTitle);
+        this.setMargin(new MarginInfo(true,false,false,true));
+        if (!workflowPreview) {
+            this.setMargin(new MarginInfo(false,false,false,true));
+        //    addComponent(dashboardTitle);
+        }
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);

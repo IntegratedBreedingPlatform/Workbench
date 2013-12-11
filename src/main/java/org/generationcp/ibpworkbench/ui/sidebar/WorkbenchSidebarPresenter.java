@@ -1,9 +1,11 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.*;
@@ -116,5 +118,33 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
     }
 
 
+    public void updateProjectLastOpenedDate(Project project) {
+        try {
 
+            // set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+
+            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
+            ProjectUserInfo	projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+            if (projectUserInfo != null) {
+                projectUserInfo.setLastOpenDate(new Date());
+                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+            }
+
+            project.setLastOpenDate(new Date());
+            manager.mergeProject(project);
+
+            app.getSessionData().setLastOpenedProject(project);
+
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString(), e);
+
+            /*
+            MessageNotifier.showError(window,
+                messageSource.getMessage(Message.DATABASE_ERROR),
+                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+             */
+        }
+    }
 }

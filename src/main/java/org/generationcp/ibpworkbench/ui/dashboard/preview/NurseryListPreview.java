@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -353,9 +354,13 @@ public class NurseryListPreview extends VerticalLayout {
                     return;
                 }*/
 
+                if (WorkbenchSidebar.thisInstance != null)
+                    WorkbenchSidebar.thisInstance.updateLastOpenedProject();
+
                 // page change to list manager, with parameter passed
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
                 Object value = treeView.getValue();
+
                 new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, project, ((Integer) value).intValue()).buttonClick(event);
             }
         });
@@ -380,7 +385,7 @@ public class NurseryListPreview extends VerticalLayout {
                 }
 
                 final Window w = new Window("Rename a folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -393,7 +398,7 @@ public class NurseryListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("New Folder Name");
+                Label l = new Label("Folder Name");
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(treeView.getValue()));
 
@@ -455,7 +460,7 @@ public class NurseryListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 final Window w = new Window("Add new folder");
-                w.setWidth("280px");
+                w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
                 w.setResizable(false);
@@ -729,7 +734,10 @@ public class NurseryListPreview extends VerticalLayout {
                 treeView.setChildrenAllowed(sc.getId(), false);
                 treeView.setItemIcon(sc.getId(), leafResource);
             }
+            treeView.setSelectable(true);
         }
+        treeView.select(parentId);
+        treeView.setImmediate(true);
     }
 
 

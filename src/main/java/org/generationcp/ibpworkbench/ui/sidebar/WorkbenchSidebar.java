@@ -52,17 +52,19 @@ public class WorkbenchSidebar extends CssLayout {
                     return;
                 }
 
+                presenter.updateProjectLastOpenedDate(WorkbenchSidebar.this.project);
+
                 ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),WorkbenchSidebar.this.project);
                 if (listener instanceof LaunchWorkbenchToolAction) {
 
                     ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),WorkbenchMainView.getInstance(),true);
                 }
-                if (listener instanceof OpenWindowAction) {
+                else if (listener instanceof OpenWindowAction) {
                     ((OpenWindowAction)listener).launchWindow(WorkbenchMainView.getInstance(),treeItem.getId());
                 }
 
                 else {
-                    listener.doAction(WorkbenchMainView.getInstance(),treeItem.getId(),true);
+                    listener.doAction(WorkbenchMainView.getInstance(),"/" + treeItem.getId(),true);
                 }
             }
         }
@@ -201,7 +203,7 @@ public class WorkbenchSidebar extends CssLayout {
         if (toolName == null) return null;
 
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
-            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName));
+            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),project,null);
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
             return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,this.role,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
@@ -231,7 +233,7 @@ public class WorkbenchSidebar extends CssLayout {
                             }
                             super.showWorkflowDashboard(super.project,role1,(IContentWindow)window);
 
-                            NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getWorkflowTemplate().getName());
+                            NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getLabel());
                         }
                     };
                 }
@@ -241,5 +243,11 @@ public class WorkbenchSidebar extends CssLayout {
         }
 
         return null;
+    }
+
+    public void updateLastOpenedProject() {
+        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+
+        presenter.updateProjectLastOpenedDate(this.project);
     }
 }

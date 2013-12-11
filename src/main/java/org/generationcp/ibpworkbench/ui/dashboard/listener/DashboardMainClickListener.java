@@ -12,27 +12,44 @@
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Date;
 
 
 /**
  * @author Efficio.Daniel
  *
  */
+@Configurable
 public class DashboardMainClickListener implements ClickListener{
 
     private Long projectId;
     private Component source;
-    
+
+    @Autowired
+    private WorkbenchDataManager manager;
+
+    //@Autowired
+    //private SimpleResourceBundleMessageSource messageSource;
+
     private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
     
     public DashboardMainClickListener(Component source, Long projectId){
@@ -49,8 +66,12 @@ public class DashboardMainClickListener implements ClickListener{
                 && (source instanceof WorkbenchDashboard)){
             try {
 
+                // lets update last opened project
+                Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                this.updateProjectLastOpenedDate(project);
+
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),null)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
 
                 //System.out.println("Open list manager" + this.projectId);
             } catch (InternationalizableException e){
@@ -60,6 +81,33 @@ public class DashboardMainClickListener implements ClickListener{
             }
         } 
     }
-    
 
+    public void updateProjectLastOpenedDate(Project project) {
+        try {
+
+            // set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
+            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+            if (projectUserInfo != null) {
+                projectUserInfo.setLastOpenDate(new Date());
+                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+            }
+
+            project.setLastOpenDate(new Date());
+            manager.mergeProject(project);
+
+            app.getSessionData().setLastOpenedProject(project);
+
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString(), e);
+
+            /*
+            MessageNotifier.showError(window,
+                messageSource.getMessage(Message.DATABASE_ERROR),
+                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+             */
+        }
+    }
 }

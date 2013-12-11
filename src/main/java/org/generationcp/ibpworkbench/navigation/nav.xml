@@ -161,6 +161,11 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
+    <view path="/bm_list_manager_main"
+          label="List Manager"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
     <view path="/query_for_adapted_germplasm"
           label="Query For Adapted Germplasm"
           level="1"
