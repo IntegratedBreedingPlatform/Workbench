@@ -1,4 +1,4 @@
-@import url(../vaadin-bootstrap/styles.css);
+@import url(../vaadin-retro/styles.css);
 
 .v-app-IBPWorkbenchApplication * {
     outline:none !important; /*removes the dotted border*/
@@ -653,101 +653,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     border-radius: 100%;
     position: relative;
     right: 14px;
-}
-
-/* TAB + TABSHEETS */
-.v-tabsheet-tabs .v-tabsheet-spacertd div,
-.white .v-tabsheet-tabs .v-tabsheet-spacertd div {
-    border-bottom: 1px solid #bfbfbf;
-    height: auto;
-    background: transparent;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitemcell,
-.v-tabsheet-tabs .v-tabsheet-spacertd {
-    height: auto;
-    background: transparent;
-    padding-left: 0;
-}
-.v-tabsheet-spacertd div {
-    margin-right: 0px;
-}
-
-.v-tabsheet-tabs .v-tabsheet-tabitem,
-.white .v-tabsheet-tabs .v-tabsheet-tabitem {
-    border: none;
-    border-bottom: 1px solid #bfbfbf;
-    color: #4d748f;
-    padding: 0;
-    height: auto;
-    background: transparent;
-    text-shadow: none;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitem .v-caption {
-    padding: 5px 16px;
-    height: auto;
-    background: transparent;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitemcell-selected {
-    background: transparent;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitem-selected,
-.white .v-tabsheet-tabs .v-tabsheet-tabitem-selected {
-    background: transparent;
-    border: 1px solid #bfbfbf;
-    border-bottom: none;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    color: #222;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitem-selected .v-caption {
-    background: transparent;
-    padding: 4px 15px 6px 15px;
-}
-.v-tabsheet-tabs .v-tabsheet-tabitem .v-caption-closable,
-.v-tabsheet-tabs .v-tabsheet-tabitem-selected .v-caption-closable {
-    padding-right: 6px;
-}
-
-.v-sa .v-tabsheet-content,
-.v-ff3 .v-tabsheet-content {
-    border-color: #bfbfbf;
-}
-
-.v-tabsheet-tabsheetpanel {
-    background: rgba(255,255,255,0.8);
-}
-
-/* tabs close ICON */
-.v-tabsheet-tabs .v-tabsheet-caption-close,
-.v-tabsheet-tabs .v-tabsheet-caption-close:hover,
-.v-tabsheet-tabs .v-tabsheet-caption-close:active {
-    text-indent: 0;
-    background: transparent;
-    margin-left: 3px;
-    margin-right: -3px;
-    padding: 0;
-    color: #999;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    -webkit-border-radius: 7px;
-    -moz-border-radius: 7px;
-}
-.v-tabsheet-tabs .v-tabsheet-caption-close {
-    margin-top: 1px;
-}
-.v-ff .v-tabsheet-tabs .v-tabsheet-caption-close,
-.v-ie7 .v-tabsheet-tabs .v-tabsheet-caption-close {
-    margin-top: -15px;
-}
-.v-tabsheet-tabs .v-tabsheet-caption-close:hover,
-.white .v-tabsheet-tabs .v-tabsheet-caption-close:hover {
-    color: #fff;
-    background: #aaa;
-}
-.v-tabsheet-tabs .v-tabsheet-caption-close:active,
-.white .v-tabsheet-tabs .v-tabsheet-caption-close:active {
-    background: #777;
 }
 
 /* SIDEBAR styles */
