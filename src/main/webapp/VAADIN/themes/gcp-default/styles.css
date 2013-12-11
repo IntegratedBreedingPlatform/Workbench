@@ -194,24 +194,19 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 }
 
 .gcp-popup-view {
-	background-color: #ff8109;
-	font-size: 12px;
-	box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
-	padding: 1px 3px;
-	text-decoration: none;
-	border-radius: 1px;
-	color: white;
-	
-	margin-right: 20px;
+    background-color: #ff8109;
+    font-size: 12px; font-weight: bold;
+    padding: 1px 8px;
+    text-decoration: none;
+    border-radius: 3px;
+    color: white;
+
+    margin-right: 20px;
 }
 
 .gcp-popup-view:hover {
-	color: white;
-}
-
-.v-popupview-popup-gcp-popup-view {
-	background-color: #ff8109;
-	color: white;
+    color: white;
+    background:#f9aa60;
 }
 
 .gcp-section-title {

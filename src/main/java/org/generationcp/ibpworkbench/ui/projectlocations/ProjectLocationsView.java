@@ -79,7 +79,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final Label availableLocationsTitle = new Label("Available Locations");
 		availableLocationsTitle.setStyleName("gcp-content-header");
 		addNewLocationsBtn = new Button("Add New Location");
-		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " loc-add-btn");
+		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
         availableLocationsTitleContainer.addComponent(availableLocationsTitle);
 		availableLocationsTitleContainer.addComponent(addNewLocationsBtn);

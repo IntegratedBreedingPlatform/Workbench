@@ -122,7 +122,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         availableMethodsTitle.setStyleName("gcp-content-header");
 
         addNewMethodBtn = new Button("Add new Method");
-        addNewMethodBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() +  " loc-add-btn");
+        addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() +  " loc-add-btn");
 
         availableMethodsTitleContainer.addComponent(availableMethodsTitle);
         availableMethodsTitleContainer.addComponent(addNewMethodBtn);
