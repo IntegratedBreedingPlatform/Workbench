@@ -226,6 +226,7 @@ public enum Message {
     ,ENVIRONMENT
     ,DESIGN_TYPE
     ,RUN_BREEDING_VIEW
+    ,BACK
     ,NEXT
     ,BV_VERSION
     ,BV_PROJECT_TYPE
@@ -410,6 +411,7 @@ public enum Message {
     ,META_SELECT_FACTORS_FOR_ANALYSIS_DESC
     ,META_SELECT_FACTORS
     ,EXPORT_DATA
+
     //Study Browser
     ,STUDY_DETAILS_TEXT
     ,CANCEL_LABEL
