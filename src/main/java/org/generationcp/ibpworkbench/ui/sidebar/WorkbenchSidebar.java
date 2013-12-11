@@ -244,4 +244,10 @@ public class WorkbenchSidebar extends CssLayout {
 
         return null;
     }
+
+    public void updateLastOpenedProject() {
+        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+
+        presenter.updateProjectLastOpenedDate(this.project);
+    }
 }
