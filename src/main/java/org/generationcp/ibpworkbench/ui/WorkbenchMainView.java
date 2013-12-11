@@ -169,7 +169,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
         crumbTrail = new CrumbTrail();
-        crumbTrail.setMargin(true, true, true, true);
+        //crumbTrail.setMargin(true, true, true, true);
         crumbTrail.setSpacing(false);
         crumbTrail.setSizeUndefined();
 
@@ -220,7 +220,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         final HorizontalLayout crumbTrailContainer = new HorizontalLayout();
         crumbTrailContainer.setStyleName("gcp-crumbtrail");
         crumbTrailContainer.setWidth("100%");
+        crumbTrailContainer.setHeight("28px");
         crumbTrailContainer.addComponent(crumbTrail);
+        crumbTrailContainer.setComponentAlignment(crumbTrail,Alignment.MIDDLE_LEFT);
 
         mainContent.addComponent(crumbTrailContainer);
 
@@ -447,7 +449,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
-            contentAreaSplitPanel.setSplitPosition(325,Sizeable.UNITS_PIXELS);
+            contentAreaSplitPanel.setSplitPosition(360,Sizeable.UNITS_PIXELS);
         else
             contentAreaSplitPanel.setSplitPosition(5,Sizeable.UNITS_PIXELS);
     }

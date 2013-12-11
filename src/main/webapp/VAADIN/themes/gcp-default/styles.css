@@ -8,10 +8,6 @@
 	background: #f9f9f9;
 }
 
-.v-table-body {
-	background: rgba(255,255,255,0.7);
-}
-
 .v-splitpanel-second-container-gcp-workbench-content-split-panel {
 	background: white url(images/workbench_bg.jpg) no-repeat right bottom !important;
     overflow: hidden;
@@ -21,13 +17,8 @@
     margin-top: 20px;
 }
 
-.v-table-row {
-	background: rgba(255,255,255,0.5);
-}
 
-.v-table-row-odd {
-	background: rgba(249, 249, 249,0.7);
-}
+
 
 .gcp-light-grey .v-table-row {
 	background: rgba(255,255,255,1);
@@ -85,7 +76,7 @@ span.v-checkbox-hidecheckbox input {
 
 
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel {
-	background-color: #045d91;
+	background-color: #225591;
 }
 
 .v-splitpanel-hsplitter-small {
@@ -139,7 +130,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 .gcp-window-title {
     font-size: 20px;
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light","Arial", sans-serif; !important;
 	
 }
 
@@ -150,7 +140,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     font-weight: 100;
 	margin-left: 20px;	
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light","Arial", sans-serif; !important;
 }
 
 .gcp-window-title H1 {
@@ -158,7 +147,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     font-size: 20px;
     display: inline-block; 
 	color: #dde5ec;
-	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light","Arial", sans-serif; !important;
 	font-weight: 100;
 }
 
@@ -167,7 +155,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     font-weight: normal;
     display: inline-block; 
 	color: #02385a;
-	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light","Arial", sans-serif; !important;
 }
 
 
@@ -656,6 +643,12 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 }
 
 /* SIDEBAR styles */
+
+.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-caption {
+    color: #43b2db;
+    font-weight: bold;
+}
+
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root {
     padding: 0px;
 }
@@ -672,7 +665,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-leaf span:hover {
     display: block;
     color: #fff;
-    background-color: #428bca;
+    background-color: #026ec2;
     border-color: #357ebd;
     border-radius: 0;
     padding-top: 5px;
@@ -690,8 +683,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-selected span {
     display: block;
     color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
+    background-color: #026ec2;
     border-radius: 0;
     text-shadow: none;
     padding-left: 34px !important;
@@ -699,7 +691,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     padding-bottom: 5px !important;
 }
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-root > .v-tree-node-caption span {
-    color: black;
+    color: #9e9e9e;
     text-shadow:none;
     font-size: 16px;
     text-transform: uppercase;
@@ -711,4 +703,21 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     background: none;
 }
 
-/* move to commons */
+.gcp-crumbtrail {
+    background-color: #83aac9;
+}
+
+.gcp-crumbtrail .v-button-link .v-button-caption {
+    color: white;
+}
+
+
+.gcp-crumbtrail .v-label.v-label-undef-w {
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    bottom: 1px;
+}
+
+
