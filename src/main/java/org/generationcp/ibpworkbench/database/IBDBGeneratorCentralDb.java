@@ -136,6 +136,9 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             // run the common scripts
             runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
             
+            // run the common-post scripts
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common-post"));
+            
             // run the scripts for custom crops
             runScriptsInDirectory(connection, new File(localDatabaseDirectory, "custom"));
             
