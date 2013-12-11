@@ -369,7 +369,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setMargin(false);
+        layout.setMargin(true);
         layout.setSpacing(true);
         layout.setHeight("1500px");
 

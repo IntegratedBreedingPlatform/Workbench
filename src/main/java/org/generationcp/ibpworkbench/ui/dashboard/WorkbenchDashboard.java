@@ -289,10 +289,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             //Project project  = projects.get(i);
             project = projects.get(i);
 
-            Button button = new Button("<span class='glyphicon glyphicon-chevron-right'></span>");
+            Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
             button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
-            button.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " launch");
+            button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
             button.setWidth("26px"); button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
@@ -361,7 +361,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
      
     	HorizontalLayout hl = new HorizontalLayout();
     	hl.setWidth("100%");
-    	hl.setMargin(false);
+        hl.setMargin(false);
+    	hl.setStyleName("program-table");
     	//hl.setSpacing(true);
     	
     
@@ -381,10 +382,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	leftButtonLayout.addComponent(lblPrograms);
     	leftButtonLayout.setExpandRatio(lblPrograms, 1.0f);
     	
-    	Button btnAddProgram = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
+    	Button btnAddProgram = new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
     	btnAddProgram.setHtmlContentAllowed(true);
     	btnAddProgram.addListener(new OpenNewProjectAction());
-        btnAddProgram.addStyleName(Bootstrap.Buttons.SUCCESS.styleName());
+        btnAddProgram.addStyleName(Bootstrap.Buttons.INFO.styleName());
 
         btnAddProgram.addStyleName("v-button-wrap-dashboard");
         

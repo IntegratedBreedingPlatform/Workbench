@@ -72,6 +72,7 @@ public class CrumbTrail extends HorizontalLayout {
         navXmlParser = new NavXmlParser();
         
         addBreadCrumb("/Home", "Home", -1, 0, "org.generationcp.ibpworkbench.actions.HomeAction");
+        this.setMargin(new MarginInfo(false,false,false,true));
 
     }
     

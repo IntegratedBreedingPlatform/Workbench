@@ -38,6 +38,7 @@
 
 .v-table-row-project-table .v-table-cell-content {
     cursor: pointer;
+    line-height: 26px;
 }
 
 .gcp-tblroles .v-table-cell-content:hover {
@@ -119,6 +120,7 @@ div div div div.v-horizontallayout div div div div.v-label-undef-w {
 	text-decoration: underline;
 }
 
+/*
 .v-splitpanel-second-container-gcp-workbench-content-split-panel
 div.v-verticallayout div div div div.v-horizontallayout div div div div.v-horizontallayout
 div div div div.v-button span.v-button-wrap span.v-button-caption {
@@ -126,6 +128,8 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	padding-right: 4px;
     padding-left: 4px;
 }
+
+*/
 
 .gcp-window-title {
     font-size: 20px;
@@ -346,21 +350,22 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 
 .v-table-row-gcp-highlight, .v-table-cell-content-gcp-highlight {
     cursor: pointer;
-    color: #468847;
-    background-color: #dff0d8;
+    color: #615d5e;
+    background-color: #f6f6f6;
+    line-height: 26px;
 
 }
 
 .v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project:first-child {
-    border-left: 3px solid #3276b1;
+    border-left: 3px solid olivedrab;
     padding-left: 3px;
 }
 
 .v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project {
     cursor: pointer;
-
-    color: #3a87ad;
-    background-color: #d9edf7;
+    color: olivedrab;
+    background-color: #BED6B2;
+    line-height: 26px;
 }
 
 .gcp-tblproject .v-table-row:hover .v-table-cell-content,
@@ -387,8 +392,13 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 }
 
 .gcp-crumb-active .v-button-caption {
-	font-weight: bold;
+    font-weight: bold;
 }
+
+.gcp-crumbtrail .v-button.v-button-link.link {
+    padding-right: 8px;
+}
+
 
 .gcp-login-title {
 	line-height: 24px;
@@ -585,63 +595,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	font-weight: bold;
 }
 
-.v-button-toolbar .v-button-caption {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    right: 6px;
-}
-
-.v-button-toolbar.v-button-button-open .v-button-caption:before {
-    content: "\e167";
-}
-
-.v-button-toolbar.v-button-button-plus .v-button-caption:before {
-    content: "\2b";
-}
-
-.v-button-toolbar.v-button-button-trash .v-button-caption:before {
-    content: "\e020";
-}
-
-.v-button-toolbar.v-button-button-pencil .v-button-caption:before {
-    content: "\270f";
-}
-
-/* launcher button */
-.v-button-launch:hover .v-button-wrap,
-.v-button-launch:focus .v-button-wrap
-{
-    border: none;
-    background: none;
-}
-
-.v-button-launch:active .v-button-wrap,
-.v-pressed.v-button-launch .v-button-wrap {
-    border: none;
-    background: none;
-}
-
-.v-button-launch,
-.v-disabled.v-button-launch {
-    border-radius: 100%;
-}
-
-.v-button-launch .v-button-wrap,
-.v-disabled.v-button-launch .v-button-wrap {
-    background: none;
-    border: none;
-    border-radius: 100%;
-    position: relative;
-    right: 14px;
-}
-
 /* SIDEBAR styles */
 
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-caption {
@@ -721,3 +674,70 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 }
 
 
+.v-accordion {
+    border: 1px solid #dcdcdc;
+    border-radius: 3px;
+    background: #f6f6f6;
+}
+
+.v-accordion-item-caption {
+    height: 25px;
+    background: #e3e3e3;
+    font-size: 14px;
+
+    border-radius: 3px;
+    margin: 5px;
+    box-sizing: border-box;
+    font-weight: 600;
+
+    border: 1px solid #dcdcdc;
+}
+
+.v-accordion-item-open .v-accordion-item-caption {
+    background: #e3e3e3;
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+}
+
+.v-accordion-item-first .v-accordion-item-caption {
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+}
+
+.v-accordion-item {
+    background-color: #f6f6f6;
+}
+
+.v-accordion-item-caption {
+    text-shadow: none;
+    color: #615d5e;
+}
+
+/* launcher button */
+.v-button.v-button-link.v-button-launch {
+    background: #545153;
+    border-radius: 100%;
+}
+.v-button.v-button-link.v-button-launch:hover {
+    background: #8F868B;
+}
+
+
+.v-button.v-button-link.v-button-launch .v-button-caption span {
+    font-size: 13px;
+    width: 26px;
+    text-align: center;
+    line-height: 23px;
+    display: inline-block;
+    color: white
+}
+
+.v-button-launch .v-button-wrap {
+
+}
+
+.program-table .v-button .v-button-caption,
+.gcp-crumbtrail .v-button-link .v-button-caption
+{
+    text-transform: uppercase;
+}

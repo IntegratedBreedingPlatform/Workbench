@@ -135,24 +135,27 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Launch");
+        openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 4px'></span>Launch");
         openListManagerBtn.setHtmlContentAllowed(true);
         openListManagerBtn.setDescription("Open In List Manager");
         openListManagerBtn.setEnabled(false);
 
-        renameFolderBtn = new Button("");
+        renameFolderBtn =new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
+        renameFolderBtn.setHtmlContentAllowed(true);
         renameFolderBtn.setDescription("Rename Folder");
 
-        addFolderBtn = new Button("");
+        addFolderBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 2px'></span>");
+        addFolderBtn.setHtmlContentAllowed(true);
         addFolderBtn.setDescription("Add New Folder");
 
-        deleteFolderBtn = new Button("");
+        deleteFolderBtn = new Button("<span class='glyphicon glyphicon-trash' style='right: 2px'></span>");
+        deleteFolderBtn.setHtmlContentAllowed(true);
         deleteFolderBtn.setDescription("Delete Selected Folder");
 
         openListManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-pencil");
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " toolbar button-plus");
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName() + " toolbar button-trash");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
 
         openListManagerBtn.setWidth("100px");
         renameFolderBtn.setWidth("40px");
