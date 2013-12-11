@@ -341,9 +341,9 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	    
 	   
 		
-		table.setColumnWidth("locationName",325);
+		table.setColumnWidth("locationName",300);
         table.setColumnWidth("locationAbbreviation",180);
-        table.setColumnWidth("cntryFullName",250);
+        table.setColumnWidth("cntryFullName",225);
         table.setColumnWidth("ltype",180);
 		table.setColumnWidth("removeBtn",60);
 		table.setColumnWidth("selectBtn",60);
