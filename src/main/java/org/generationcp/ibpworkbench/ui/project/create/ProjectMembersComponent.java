@@ -306,7 +306,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         newMemberButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         previousButton = new Button("Previous");
-        previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        //previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 //        nextButton = new Button("Next");
         buttonLayout.addComponent(previousButton);
