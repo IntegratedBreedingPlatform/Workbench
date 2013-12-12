@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui.form;
 
 import java.util.Arrays;
 
+import com.vaadin.ui.Layout;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.UserAccountFormFieldFactory;
 
@@ -32,7 +33,7 @@ import com.vaadin.ui.GridLayout;
  * <br>
  * <b>File Created</b>: Jul 11, 2012
  */
-public class UserAccountForm extends Form{
+public class UserAccountForm extends Form {
 
     private static final long serialVersionUID = -7726164779128415602L;
     
@@ -59,7 +60,7 @@ public class UserAccountForm extends Form{
     	setImmediate(false);
         grid = new GridLayout(4, 7);
         grid.setSpacing(true);
-        grid.setMargin(true);
+        grid.setMargin(new Layout.MarginInfo(true,true,true,true));
         
         setLayout(grid);
         
