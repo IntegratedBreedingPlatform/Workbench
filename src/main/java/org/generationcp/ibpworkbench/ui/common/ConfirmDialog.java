@@ -7,6 +7,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 
 /**
  * Cyrus: I've added the ConfirmDialog source from the Vaadin plugins as the base vaadin did not include confirmation dialogs
@@ -177,7 +178,7 @@ public class ConfirmDialog extends Window {
         setModal(modal);
         parentWindow.addWindow(this);
 
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
+        this.addStyleName(Bootstrap.WINDOW.CONFIRM.styleName());
     }
 
     /**
