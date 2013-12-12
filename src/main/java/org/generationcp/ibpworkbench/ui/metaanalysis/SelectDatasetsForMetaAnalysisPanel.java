@@ -31,6 +31,7 @@ import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -896,7 +897,12 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 										bean.setStudyId(dataSet.getStudyId());
 										bean.setStudyName(studyName);
 										bean.setTrialFactorName(trialInstanceFactorName);
-										bean.setDataSetTypeId(dataSet.getDataSetType().getId());
+										if (dataSet.getDataSetType() == null){
+											bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
+										}else{
+											bean.setDataSetTypeId(dataSet.getDataSetType().getId());
+										}
+										
 										
 										container.addBean(bean);
 								}
@@ -907,7 +913,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			} catch (MiddlewareQueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (Exception e){}
+			} catch (Exception e){
+				
+				e.printStackTrace();
+			}
 		}
 		
 	}
