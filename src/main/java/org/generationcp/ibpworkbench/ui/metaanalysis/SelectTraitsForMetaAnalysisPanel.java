@@ -24,11 +24,13 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -115,6 +117,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		
 		
 		environmentsTable = new Table();
+		environmentsTable.setColumnCollapsingAllowed(true);
 		
 		selectAllEnvironmentsListener = new Property.ValueChangeListener() {
 			
@@ -143,8 +146,11 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				for (Iterator<?> itr = factorsSelectionTable.getContainerPropertyIds().iterator(); itr.hasNext();){
 					Object propertyId = itr.next();
 					CheckBox chk = (CheckBox) factorsSelectionTable.getItem(1).getItemProperty(propertyId).getValue();
-					chk.setValue(event.getProperty().getValue());
-					factorsCheckBoxState.put(propertyId.toString(), (Boolean) event.getProperty().getValue());
+					if (chk.isEnabled()) {
+						chk.setValue(event.getProperty().getValue());
+						factorsCheckBoxState.put(propertyId.toString(), (Boolean) event.getProperty().getValue());
+					}
+					
 				}
 				
 				
@@ -183,6 +189,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
     	chkSelectAllEnvironments.setImmediate(true);
     	chkSelectAllEnvironments.setCaption("Select All Environments");
     	chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
+    	chkSelectAllEnvironments.setValue(true);
 		
 		lblSelectEnvVarForAnalysis = new Label();
 		lblSelectEnvVarForAnalysis.setStyleName("gcp-content-header");
@@ -199,6 +206,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 environmentsTable.setWidth("100%");
 		 factorsAnalysisTable = new Table();
 		 factorsAnalysisTable.setWidth("100%");
+		 factorsAnalysisTable.setColumnCollapsingAllowed(true);
 		
 		 dataSets =  new HashMap<Integer, DataSet>();
 		 trialEnvironmentsList =  new HashMap<Integer, TrialEnvironments>();
@@ -217,12 +225,23 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				if (varType == null) return "0";
 				
 				try {
-					countData = String.valueOf(getStudyDataManager().countStocks(
+					
+					if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()){
+						countData = String.valueOf(getStudyDataManager().countStocks(
 								item.getDataSetId()
 								,trialEnvironmentsList.get(item.getDataSetId()).findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId()
 								,varType.getId()
 									)
 								);
+					}else{
+						countData = String.valueOf(getStudyDataManager().countStocks(
+								item.getDataSetId()
+								,trialEnvironmentsList.get(item.getDataSetId()).findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId()
+								,varType.getId()
+									)
+								);
+					}
+					
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -289,7 +308,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			}});
 		 
 		 HashSet<String> variatesColumnList = new HashSet<String>();
-		 HashSet<String> factorsColumnList = new HashSet<String>();
+		 HashMap<String, Boolean> factorsColumnList = new HashMap<String, Boolean>();
 		 for (MetaEnvironmentModel metaEnvironment : metaEnvironments){
 			 if (dataSets.get(metaEnvironment.getDataSetId()) == null){
 				try {
@@ -311,9 +330,16 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 					for (VariableType f : ds.getVariableTypes().getFactors().getVariableTypes()){
 						if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
 		            			) continue;
+						
+						Boolean isGidOrDesig = false;
+						
+						if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId() ||
+								f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()
+		            			) isGidOrDesig = true;
+						
 						try{
 							factorsAnalysisTable.addGeneratedColumn(f.getLocalName(), generatedFactorColumn);
-							factorsColumnList.add(f.getLocalName());
+							factorsColumnList.put(f.getLocalName(), isGidOrDesig);
 						}catch(Exception e){}
 					}
 					
@@ -361,13 +387,15 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 visibleCols.add("dataSetName");
 		 visibleCols.add("trial");
 		 visibleCols.add("environment");
-		 visibleCols.addAll(factorsColumnList);
+		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet())
+			 	visibleCols.add(s.getKey());
 		 factorsAnalysisTable.setVisibleColumns(visibleCols.toArray());
 		 visibleCols.clear();
 		 visibleCols.add("Dataset Name");
 		 visibleCols.add("Trial");
 		 visibleCols.add("Environment");
-		 visibleCols.addAll(factorsColumnList);
+		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet())
+			 	visibleCols.add(s.getKey());
 		 factorsAnalysisTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 		 
 		 Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
@@ -391,6 +419,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 variatesSelectionTable = new Table();
 		 variatesSelectionTable.setWidth("100%");
 		 variatesSelectionTable.setHeight("80px");
+		 variatesSelectionTable.setColumnCollapsingAllowed(true);
 		 List<CheckBox> vCheckBoxes = new ArrayList<CheckBox>();
 		 IndexedContainer variatesSelectionTableContainer = new IndexedContainer();
 		 for (Object s : variatesColumnList.toArray()){
@@ -427,23 +456,32 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 factorsSelectionTable = new Table();
 		 factorsSelectionTable.setWidth("100%");
 		 factorsSelectionTable.setHeight("80px");
+		 factorsSelectionTable.setColumnCollapsingAllowed(true);
 		 List<CheckBox> fCheckBoxes = new ArrayList<CheckBox>();
 		 IndexedContainer factorsSelectionTableContainer = new IndexedContainer();
-		 for (Object s : factorsColumnList.toArray()){
-			 factorsSelectionTableContainer.addContainerProperty(s.toString(), CheckBox.class, null);
+		 for (Entry<String, Boolean> s : factorsColumnList.entrySet()){
+			 factorsSelectionTableContainer.addContainerProperty(s.getKey(), CheckBox.class, null);
 				 CheckBox factorCheckBox = new CheckBox();
 				 factorCheckBox.setImmediate(true);
 				 factorCheckBox.addListener(factorCheckBoxListener);
-				 factorCheckBox.setData(s);
+				 factorCheckBox.setData(s.getKey());
 				 fCheckBoxes.add(factorCheckBox);
-				 factorsCheckBoxState.put(s.toString(), false);
+				 factorsCheckBoxState.put(s.getKey(), false);
+				 
+				 if (s.getValue()){//GID and DESIG factors are required
+					 factorCheckBox.setValue(true);
+					 factorCheckBox.setCaption("Required");
+					 factorCheckBox.setStyleName("gcp-required-caption");
+					 factorCheckBox.setEnabled(false);
+					 factorsCheckBoxState.put(s.getKey(), true);
+				 }
+				 
 				 
 		 }
 		 factorsSelectionTable.setContainerDataSource(factorsSelectionTableContainer);
 		 factorsSelectionTable.addItem(fCheckBoxes.toArray(), 1);
 		
 	}
-	
 	
 	private void initializeLayout(){
 		
@@ -569,15 +607,10 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		//Create Header Row
 		int cellCounter = 0;
 		int rowCounter = 0;
-		Row headerRow = defaultSheet.createRow(rowCounter++);
+		Boolean headerRowCreated=false;
+		List<String> supressColumnList = new ArrayList<String>();
 		
-		for (Entry<String, Boolean> entry : factorsCheckBoxState.entrySet()){
-			if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
-		}
-		for (Entry<String, Boolean> entry : variatesCheckBoxState.entrySet()){
-			if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
-		}
-	
+		Row headerRow = defaultSheet.createRow(rowCounter++);
 		
 		Iterator<?> envIterator = environmentsTable.getItemIds().iterator();
 		while(envIterator.hasNext()){
@@ -586,8 +619,49 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			if (envModel.getActive()){
 				
 				 try {
+					 
+					String desigFactorName = "";
+					String gidFactorName = "";
+					String entrynoFactorName = "";
+					
 					List<Experiment> exps = getStudyDataManager().getExperiments(envModel.getDataSetId(), 0, Integer.MAX_VALUE);
+					Experiment e = exps.get(0);
+					if (e != null){
+						for (VariableType var : e.getFactors().getVariableTypes().getVariableTypes()){
+							if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()){
+								desigFactorName = var.getLocalName();
+							}else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()){
+								gidFactorName = var.getLocalName();
+							}else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()){
+								entrynoFactorName = var.getLocalName();
+							}
+						}
+					}
+					
 					for (Experiment exp : exps){
+						
+						if (!headerRowCreated){
+							
+							headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");	
+							headerRow.createCell(cellCounter++).setCellValue("TRIALID");	
+							headerRow.createCell(cellCounter++).setCellValue("ENTRYID");	
+							if (desigFactorName!="") headerRow.createCell(cellCounter++).setCellValue(desigFactorName);  else  headerRow.createCell(cellCounter++).setCellValue("DESIG");	
+							if (gidFactorName!="") headerRow.createCell(cellCounter++).setCellValue(gidFactorName);	else headerRow.createCell(cellCounter++).setCellValue("GID");
+							supressColumnList.add(desigFactorName);
+							supressColumnList.add(gidFactorName);
+							for (Entry<String, Boolean> entry : factorsCheckBoxState.entrySet()){
+								//suppress the desig and gid columns
+								if (supressColumnList.contains(entry.getKey())) continue;
+								
+								if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
+							}
+							for (Entry<String, Boolean> entry : variatesCheckBoxState.entrySet()){
+								if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
+							}
+							
+							headerRowCreated = true;
+						}//if header Row Created
+						
 						
 						Variable trialVariable = exp.getFactors().findByLocalName(envModel.getTrialFactorName());
 						if (trialVariable == null) continue;
@@ -596,7 +670,20 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 						cellCounter = 0;
 						Row row = defaultSheet.createRow(rowCounter++);
 						
+						row.createCell(cellCounter++).setCellValue(envModel.getStudyName());	//STUDYNAME
+						row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial()));	//TRIALID	
+						Variable varEntryNo = exp.getFactors().findByLocalName(entrynoFactorName); ////ENTRYID
+						if (varEntryNo != null) row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue())); else row.createCell(cellCounter++).setCellValue(""); 
+						Variable varDesig = exp.getFactors().findByLocalName(desigFactorName); //DESIG
+						if (varDesig != null) row.createCell(cellCounter++).setCellValue(varDesig.getValue()); else row.createCell(cellCounter++).setCellValue(""); 		
+						Variable varGid = exp.getFactors().findByLocalName(gidFactorName); //GID
+						if (varGid != null) row.createCell(cellCounter++).setCellValue(varGid.getValue()); else row.createCell(cellCounter++).setCellValue(""); 
+						
 						for (Entry<String, Boolean> entry : factorsCheckBoxState.entrySet()){
+							
+							//suppress the desig and gid columns
+							if (supressColumnList.contains(entry.getKey())) continue;
+							
 							if (entry.getValue()) {
 								Variable var = exp.getFactors().findByLocalName(entry.getKey());
 								String cellValue = "";

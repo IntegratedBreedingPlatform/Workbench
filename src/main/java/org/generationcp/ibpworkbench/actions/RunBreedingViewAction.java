@@ -235,7 +235,7 @@ public class RunBreedingViewAction implements ClickListener {
     	 
          try {
              breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-             breedingViewXMLWriter.writeProjectXML();
+             //breedingViewXMLWriter.writeProjectXML();
              breedingViewXMLWriter.writeProjectXMLV2();
              
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();

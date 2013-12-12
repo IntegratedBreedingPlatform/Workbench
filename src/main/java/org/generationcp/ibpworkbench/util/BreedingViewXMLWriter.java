@@ -211,6 +211,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
         	env.setName(s.getKey());
         	env.setTrial(s.getKey());
+        	env.setActive(true);
         	if (s.getValue()) environments.add(env);
         }
         
@@ -273,7 +274,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
         
         //write the xml
-        String filePath = breedingViewInput.getDestXMLFilePath() + ".new.xml";
+        String filePath = breedingViewInput.getDestXMLFilePath();
         try{
         	
         	new File(new File(filePath).getParent()).mkdirs();

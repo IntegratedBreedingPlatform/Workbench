@@ -63,6 +63,7 @@ public class MetaEnvironmentModel {
 	private String environment;
 	private String trialFactorName;
 	private Boolean active;
+	private int dataSetTypeId;
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -109,6 +110,14 @@ public class MetaEnvironmentModel {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public int getDataSetTypeId() {
+		return dataSetTypeId;
+	}
+
+	public void setDataSetTypeId(int dataSetTypeId) {
+		this.dataSetTypeId = dataSetTypeId;
 	}
 	
 

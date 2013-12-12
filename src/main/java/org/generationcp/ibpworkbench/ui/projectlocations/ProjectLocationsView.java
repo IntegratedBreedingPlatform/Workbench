@@ -13,6 +13,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
@@ -79,7 +80,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		final Label availableLocationsTitle = new Label("Available Locations");
 		availableLocationsTitle.setStyleName("gcp-content-header");
 		addNewLocationsBtn = new Button("Add New Location");
-		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName() + " loc-add-btn");
+		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
         availableLocationsTitleContainer.addComponent(availableLocationsTitle);
 		availableLocationsTitleContainer.addComponent(addNewLocationsBtn);
@@ -341,9 +342,9 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	    
 	   
 		
-		table.setColumnWidth("locationName",325);
+		table.setColumnWidth("locationName",300);
         table.setColumnWidth("locationAbbreviation",180);
-        table.setColumnWidth("cntryFullName",250);
+        table.setColumnWidth("cntryFullName",225);
         table.setColumnWidth("ltype",180);
 		table.setColumnWidth("removeBtn",60);
 		table.setColumnWidth("selectBtn",60);
@@ -380,10 +381,10 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		spacer.setWidth("100%");
 		
 		root.addComponent(spacer);
-		root.addComponent(saveBtn);
 		root.addComponent(cancelBtn);
-		
-		root.setExpandRatio(spacer, 1.0f);
+        root.addComponent(saveBtn);
+
+        root.setExpandRatio(spacer, 1.0f);
 		root.setSpacing(true);
 		root.setMargin(true);
 		root.setWidth("100%");
@@ -496,11 +497,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		LOG.debug("onCancel:");
 		
 		try {
-                (new OpenWorkflowForRoleAction(projectLocationsController.getProject())).doAction(event.getButton().getWindow(),
-                		String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d",
-                				projectLocationsController.getProject().getProjectId(),
-                				projectLocationsController.getRole().getRoleId())
-                			, true);
+            new HomeAction().buttonClick(event);
         } catch (Exception e) {
             if(e.getCause() instanceof InternationalizableException) {
                 InternationalizableException i = (InternationalizableException) e.getCause();

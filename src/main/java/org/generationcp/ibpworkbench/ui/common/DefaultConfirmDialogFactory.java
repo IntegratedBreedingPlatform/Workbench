@@ -92,14 +92,10 @@ public class DefaultConfirmDialogFactory implements ConfirmDialog.Factory  {
 
         HorizontalLayout buttons = new HorizontalLayout();
         c.addComponent(buttons);
+        c.setComponentAlignment(buttons,Alignment.MIDDLE_CENTER);
         buttons.setSpacing(true);
 
         buttons.setHeight(format(BUTTON_HEIGHT) + "em");
-        buttons.setWidth("100%");
-        Label spacer = new Label("");
-        buttons.addComponent(spacer);
-        spacer.setWidth("100%");
-        buttons.setExpandRatio(spacer, 1f);
 
         Button cancel = null;
         
@@ -123,6 +119,9 @@ public class DefaultConfirmDialogFactory implements ConfirmDialog.Factory  {
         buttons.addComponent(ok);
         buttons.setComponentAlignment(ok, Alignment.MIDDLE_RIGHT);
         confirm.setOkButton(ok);
+
+        // layout ok and cancel button
+
 
         // Create a listener for buttons
         Button.ClickListener cb = new Button.ClickListener() {

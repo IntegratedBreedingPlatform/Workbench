@@ -115,6 +115,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         startDateField.setRequired(true);
         startDateField.setDateFormat("yyyy-MM-dd");
         startDateField.setRequiredError("Please enter a Start Date.");
+		startDateField.setStyleName("project-data-time");
 
         cropTypeCombo = createCropTypeComboBox();
         cropTypeCombo.addValidator(new RegexValidator("Crop name must not contain any of the following: ' \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
@@ -157,7 +158,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         buttonLayout.setMargin(true, false, false, false);
 
         nextButton = new Button("Next");
-        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        //nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }

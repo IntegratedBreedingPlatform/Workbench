@@ -141,7 +141,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         for( Trait t : gxeInput.getTraits()){
         	t.setBlues(t.getName());
         	t.setBlups(t.getName().replace("_Means", "_BLUPs"));
-        	t.setName(null);
+        	t.setName(t.getName());
             traits.add(t);
         }
         
@@ -169,6 +169,13 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         	megaEnv.setName(gxeInput.getEnvironmentGroup());
         	megaEnvs.add(megaEnv);
         	dataConfiguration.setMegaEnvironments(megaEnvs);
+        }else{
+        	MegaEnvironment megaEnv = new MegaEnvironment();
+        	MegaEnvironments megaEnvs = new MegaEnvironments();
+        	megaEnv.setActive(false);
+        	megaEnv.setName("Analyze all");
+        	megaEnvs.add(megaEnv);
+        	dataConfiguration.setMegaEnvironments(megaEnvs);
         }
         
         
@@ -189,6 +196,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         BreedingViewSession bvSession = new BreedingViewSession();
         bvSession.setBreedingViewProject(project);
         bvSession.setDataFile(data);
+        bvSession.setIbws(new SSAParameters());
         
         //prepare the writing of the xml
         JAXBContext context = null;
@@ -206,7 +214,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         try{
         	
         	//new File(outputDirectory).mkdirs();
-            final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath() + "new.xml");
+            final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath());
             marshaller.marshal(bvSession, fileWriter);
             fileWriter.flush();
             fileWriter.close();
