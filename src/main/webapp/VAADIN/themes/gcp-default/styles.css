@@ -736,3 +736,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 {
     text-transform: uppercase;
 }
+.project-data-time .v-datefield-calendarpanel-time{
+	display: none;
+}
