@@ -163,8 +163,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         spacer.setWidth("100%");
 
         root.addComponent(spacer);
-        root.addComponent(saveBtn);
         root.addComponent(cancelBtn);
+        root.addComponent(saveBtn);
 
         root.setExpandRatio(spacer, 1.0f);
         root.setSpacing(true);

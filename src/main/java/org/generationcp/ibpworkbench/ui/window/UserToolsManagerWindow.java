@@ -61,7 +61,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final String WIDTH = "780px";
-	private static final String HEIGHT = "400px";
+	private static final String HEIGHT = "420px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -316,11 +316,11 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		btnPanel.setMargin(true);
 		
 		btnPanel.addComponentAsFirst(spacer);
-		btnPanel.addComponent(addBtn);
-		btnPanel.addComponent(editBtn);
 		btnPanel.addComponent(cancelBtn);
-		
-		btnPanel.setComponentAlignment(addBtn, Alignment.MIDDLE_RIGHT);
+        btnPanel.addComponent(addBtn);
+        btnPanel.addComponent(editBtn);
+
+        btnPanel.setComponentAlignment(addBtn, Alignment.MIDDLE_RIGHT);
 		btnPanel.setComponentAlignment(editBtn, Alignment.MIDDLE_RIGHT);
 		btnPanel.setComponentAlignment(cancelBtn, Alignment.MIDDLE_RIGHT);
 		btnPanel.setExpandRatio(spacer,1.0f);

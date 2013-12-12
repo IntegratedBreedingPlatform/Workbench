@@ -381,10 +381,10 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		spacer.setWidth("100%");
 		
 		root.addComponent(spacer);
-		root.addComponent(saveBtn);
 		root.addComponent(cancelBtn);
-		
-		root.setExpandRatio(spacer, 1.0f);
+        root.addComponent(saveBtn);
+
+        root.setExpandRatio(spacer, 1.0f);
 		root.setSpacing(true);
 		root.setMargin(true);
 		root.setWidth("100%");
