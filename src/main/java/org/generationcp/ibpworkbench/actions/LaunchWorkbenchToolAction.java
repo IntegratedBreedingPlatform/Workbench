@@ -373,9 +373,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 String toolUrl = tool.getPath();
                 
                 // if user is trying to launch the FieldBook webapp,
-                // we need to close the old Fieldbook webapp
-                // to make sure that it is already configured
-                // when the Fieldbook webapp tries to launch it
+                // we need to close and reconfigure the old Fieldbook app
                 if (Util.isOneOf(tool.getToolName()
                                  ,ToolName.fieldbook_web.name()
                                  ,ToolName.nursery_manager_fieldbook_web.name()
@@ -385,6 +383,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     try {
                         Tool fieldbookTool = workbenchDataManager.getToolWithName(ToolName.fieldbook.name());
                         toolUtil.closeNativeTool(fieldbookTool);
+                        
+                        toolUtil.updateToolConfigurationForProject(fieldbookTool, currentProject);
                     }
                     catch (MiddlewareQueryException e) {
                         LOG.error("QueryException", e);
@@ -396,6 +396,30 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         LOG.error("Cannot close fieldbook app", e);
                     }
                 }
+                
+                // if the user is trying to launch the BreedingManager webapp
+                // we need to reconfigure and deploy the GermplasmBrowser webapp too
+                if (Util.isOneOf(tool.getToolName()
+                                 ,ToolName.bm_list_manager.name()
+                                 ,ToolName.bm_list_manager_main.name()
+                                 ,ToolName.crossing_manager.name()
+                                 ,ToolName.germplasm_import.name()
+                                 ,ToolName.list_manager.name()
+                                 ,ToolName.nursery_template_wizard.name()
+                                 )) {
+                    try {
+                        Tool germplasmBrowserTool = workbenchDataManager.getToolWithName(ToolName.germplasm_browser.name());
+                        updateToolConfiguration(window, germplasmBrowserTool);
+                    }
+                    catch (MiddlewareQueryException e) {
+                        LOG.error("QueryException", e);
+                        MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+                                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                        return;
+                    }
+                }
+                
+                // if the user is trying the 
                 
                 // append the list id if it was set
                 if (Util.isOneOf(tool.getToolName(), ToolEnum.BM_LIST_MANAGER.getToolName()
