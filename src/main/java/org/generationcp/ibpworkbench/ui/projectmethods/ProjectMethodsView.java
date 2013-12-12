@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -162,8 +163,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         spacer.setWidth("100%");
 
         root.addComponent(spacer);
-        root.addComponent(saveBtn);
         root.addComponent(cancelBtn);
+        root.addComponent(saveBtn);
 
         root.setExpandRatio(spacer, 1.0f);
         root.setSpacing(true);
@@ -364,10 +365,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 try {
-                    (new OpenWorkflowForRoleAction(project)).doAction(event.getButton().getWindow(),
-                            String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d",
-                                    project.getProjectId(),role.getRoleId())
-                                    , true);
+                    new HomeAction().buttonClick(event);
                 } catch (Exception e) {
                     if(e.getCause() instanceof InternationalizableException) {
                         InternationalizableException i = (InternationalizableException) e.getCause();

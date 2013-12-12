@@ -57,7 +57,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	private Button saveBtn;
 	
 	private static final String WINDOW_WIDTH = "400px";
-	private static final String WINDOW_HEIGHT = "400px";
+	private static final String WINDOW_HEIGHT = "430px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -211,10 +211,10 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		
 		
 		hl.addComponent(spacer);
-		hl.addComponent(saveBtn);
 		hl.addComponent(cancelBtn);
-		
-		hl.setComponentAlignment(saveBtn, Alignment.MIDDLE_RIGHT);
+        hl.addComponent(saveBtn);
+
+        hl.setComponentAlignment(saveBtn, Alignment.MIDDLE_RIGHT);
 		hl.setComponentAlignment(cancelBtn, Alignment.MIDDLE_RIGHT);
 		hl.setExpandRatio(spacer,1.0f);
 		

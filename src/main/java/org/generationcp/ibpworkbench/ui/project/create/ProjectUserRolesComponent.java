@@ -171,10 +171,10 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
         buttonLayout.setMargin(true, false, false, false);
 
         previousButton = new Button("Previous");
-        previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        //previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         nextButton = new Button("Next");
-        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        //nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(previousButton);
         buttonLayout.addComponent(nextButton);
 
