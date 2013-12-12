@@ -13,6 +13,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
@@ -496,11 +497,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		LOG.debug("onCancel:");
 		
 		try {
-                (new OpenWorkflowForRoleAction(projectLocationsController.getProject())).doAction(event.getButton().getWindow(),
-                		String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d",
-                				projectLocationsController.getProject().getProjectId(),
-                				projectLocationsController.getRole().getRoleId())
-                			, true);
+            new HomeAction().buttonClick(event);
         } catch (Exception e) {
             if(e.getCause() instanceof InternationalizableException) {
                 InternationalizableException i = (InternationalizableException) e.getCause();
