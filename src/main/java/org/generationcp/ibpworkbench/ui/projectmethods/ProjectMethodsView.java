@@ -120,7 +120,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("Available Methods");
-        availableMethodsTitle.setStyleName("gcp-content-header");
+        availableMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         addNewMethodBtn = new Button("Add new Method");
         addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() +  " loc-add-btn");
@@ -141,7 +141,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         selectedMethodTitleContainer.setMargin(true,true,false,false);
 
         final Label selectedMethodsTitle = new Label("Program Methods");
-        selectedMethodsTitle.setStyleName("gcp-content-header");
+        selectedMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
 

@@ -78,7 +78,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
 		final Label availableLocationsTitle = new Label("Available Locations");
-		availableLocationsTitle.setStyleName("gcp-content-header");
+		availableLocationsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 		addNewLocationsBtn = new Button("Add New Location");
 		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
@@ -99,7 +99,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
         selectedLocationsTitleContainer.setMargin(true,true,false,false);
 
         final Label selectedLocationsTitle = new Label("Program Locations");
-        selectedLocationsTitle.setStyleName("gcp-content-header");
+        selectedLocationsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         selectedLocationsTitleContainer.addComponent(selectedLocationsTitle);
 

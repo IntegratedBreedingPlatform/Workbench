@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.List;
 
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.manager.IContactManager;
 import org.generationcp.ibpworkbench.manager.MockContactManager;
 import org.generationcp.middleware.pojos.workbench.Contact;
@@ -53,7 +54,7 @@ public class ContactBookPanel extends VerticalLayout{
 
     protected void initializeComponent() {
         lblContactBook = new Label("Contact Book");
-        lblContactBook.setStyleName("gcp-content-title");
+        lblContactBook.setStyleName(Bootstrap.Typography.H1.styleName());
 
         txtSearch = new TextField();
         txtSearch.setInputPrompt("Search Contacts");

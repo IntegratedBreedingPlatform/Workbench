@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
@@ -62,7 +63,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         this.newProjectTitleArea = new HorizontalLayout();
         this.newProjectTitleArea.setSpacing(true);
 
-        this.newProjectTitleArea.setHeight("40px");
+        //this.newProjectTitleArea.setHeight("40px");
         //newProjectTitleArea.setStyleName("gcp-content-title");
 
         this.addComponent(newProjectTitleArea);
@@ -113,9 +114,13 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     public void setTitle(String label, String description) {
         newProjectTitleArea.removeAllComponents();
 
-        Label title = new Label("Update Program: " + label);
+        Label heading = new Label("Update Program");
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
 
-        newProjectTitleArea.setStyleName("gcp-content-title");
+        Label title = new Label(label);
+        title.setStyleName(Bootstrap.Typography.H2.styleName());
+
+        newProjectTitleArea.addComponent(heading);
         newProjectTitleArea.addComponent(title);
 
         Label descLbl = new Label(description);
@@ -125,8 +130,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         popup.setStyleName("gcp-popup-view");
 
         newProjectTitleArea.addComponent(popup);
-
-        newProjectTitleArea.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
+        newProjectTitleArea.setComponentAlignment(heading, Alignment.BOTTOM_LEFT);
+        newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
     }
 

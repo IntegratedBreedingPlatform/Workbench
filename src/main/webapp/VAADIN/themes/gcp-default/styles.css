@@ -17,9 +17,6 @@
     margin-top: 20px;
 }
 
-
-
-
 .gcp-light-grey .v-table-row {
 	background: rgba(255,255,255,1);
 	
@@ -159,10 +156,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     font-weight: normal;
     display: inline-block; 
 	color: #02385a;
-}
-
-.gcp-content-subheading {
-    font-size:15px;
 }
 
 .gcp-btn-link-brown span span  {

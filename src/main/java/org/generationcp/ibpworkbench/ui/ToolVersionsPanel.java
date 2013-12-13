@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -44,7 +45,7 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
     
     protected void initializeComponents() {
         lblToolVersions = new Label();
-        lblToolVersions.setStyleName("gcp-content-title");
+        lblToolVersions.setStyleName(Bootstrap.Typography.H1.styleName());
         
         initializeToolsTable();
     }
