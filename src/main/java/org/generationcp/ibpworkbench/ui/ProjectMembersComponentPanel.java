@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -44,16 +45,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.TwinColSelect;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -113,9 +104,11 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeComponents(){
 
-        setSpacing(true);
-        setMargin(true);
-        
+        final Label header = new Label("Manage Program Members");
+        header.setStyleName(Bootstrap.Typography.H1.styleName());
+        this.addComponent(header);
+
+
         select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Program Members");
@@ -125,7 +118,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);
         
-        addComponent(select);
+        this.addComponent(select);
         
         VerticalLayout container = new VerticalLayout();
         container.setSpacing(true);
@@ -137,7 +130,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         container.addComponent(tblMembers);
         container.addComponent(buttonArea);
         container.setComponentAlignment(buttonArea,Alignment.MIDDLE_RIGHT);
-        addComponent(container);
+        this.addComponent(container);
     }
     
     private List<CheckBox> createUserRolesCheckBoxList() {
@@ -298,7 +291,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeLayout() {
         setSpacing(true);
-        setMargin(true);
+        setMargin(new MarginInfo(false,true,true,true));
         //setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
     	

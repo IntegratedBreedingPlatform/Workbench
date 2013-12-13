@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.workflow;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
@@ -320,12 +321,6 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         this.setSizeFull();
         this.setSpacing(true);
 
-        this.setMargin(new MarginInfo(true,false,false,true));
-        if (!workflowPreview) {
-            this.setMargin(new MarginInfo(false,false,false,true));
-        //    addComponent(dashboardTitle);
-        }
-
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
         this.setExpandRatio(workFlowArea, 1.0F);
@@ -339,7 +334,6 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
 
         AbsoluteLayout layout = new AbsoluteLayout();
-        layout.setMargin(true);
         layout.setWidth("620px");
         layout.setHeight("1000px");
 
@@ -405,7 +399,23 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         leftInPixels = left + "px";
         layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
 
-        panel.setContent(layout);
+        final VerticalLayout rootContainer = new VerticalLayout();
+        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setSpacing(false);
+
+        if (!workflowPreview) {
+            Label header = new Label();
+            header.setStyleName(Bootstrap.Typography.H1.styleName());
+            header.setValue(role.getLabel());
+            rootContainer.addComponent(header);
+
+        }
+        rootContainer.addComponent(layout);
+
+        panel.setContent(rootContainer);
+
+
+
         return panel;
     }
 
