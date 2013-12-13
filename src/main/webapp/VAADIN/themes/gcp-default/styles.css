@@ -161,26 +161,8 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	color: #02385a;
 }
 
-
-.gcp-content-title {
-    font-size: 16px;
-    text-transform: uppercase;
-}
-
-.gcp-content-header {
-    font-size:24px;
-    line-height: 32px;
-    font-weight:300;
-}
-
 .gcp-content-subheading {
     font-size:15px;
-}
-
-.gcp-table-header-bold {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 12px;
 }
 
 .gcp-btn-link-brown span span  {
@@ -406,7 +388,6 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	margin-left: 104px;
 	margin-top: 17px;
 	text-transform: uppercase;
-	font-family: "Helvetica Neue", "Segoe UI Light", "Segoe UI", "Helvetica Neue Light","Arial", sans-serif; !important;
 	font-weight: 100;
 }
 
@@ -497,7 +478,7 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 	text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.8);
 	text-decoration: none !important;
 	text-transform: uppercase;
-	font: bold 12px/1 "helvetica neue", helvetica, arial, sans-serif;
+	font: bold 12px/1;
 	white-space:normal;
 	line-height: 15px;
 	padding: 5px;

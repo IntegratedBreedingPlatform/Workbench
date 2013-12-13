@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Collection;
 
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -23,14 +24,6 @@ import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TwinColSelect;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -107,9 +100,7 @@ public class NewProjectAddUserPanel extends Panel {
         setStyleName(Reindeer.PANEL_LIGHT);
         setWidth("675px");
         
-        userForm.setHeight("320px");
-        
-        vl.setMargin(true);
+        vl.setMargin(new Layout.MarginInfo(false,true,true,true));
         vl.setSpacing(true);
         vl.setComponentAlignment(userForm, Alignment.MIDDLE_CENTER);
         vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);

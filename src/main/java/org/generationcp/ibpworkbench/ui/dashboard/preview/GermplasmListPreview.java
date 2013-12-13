@@ -10,7 +10,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;

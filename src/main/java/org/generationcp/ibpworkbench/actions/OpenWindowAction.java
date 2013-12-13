@@ -20,7 +20,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
-import org.generationcp.ibpworkbench.ui.common.ConfirmDialog;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.ui.window.RestoreIBDBWindow;
