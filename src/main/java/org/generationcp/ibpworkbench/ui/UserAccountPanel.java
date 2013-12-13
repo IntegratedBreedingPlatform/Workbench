@@ -75,23 +75,23 @@ public class UserAccountPanel extends Panel {
 
     protected void initializeComponents() {
         vl = new VerticalLayout();
-        
+        setContent(vl);
+
+        // login panel layout
+        VerticalLayout loginPanelLayout = new VerticalLayout();
+        loginPanelLayout.setImmediate(false);
+        loginPanelLayout.setStyleName("gcp-login");
+        loginPanelLayout.setHeight("90px");
+        loginPanelLayout.setMargin(true, false, true, false);
+        vl.addComponent(loginPanelLayout);
+
         lblTitle = new Label();
         lblTitle.setWidth("100%");
-        lblTitle.setStyleName("gcp-login-title");
-        
-        setContent(vl);
-        
+        lblTitle.setStyleName("gcp-login-title gcp-user-account-title");
+        loginPanelLayout.addComponent(lblTitle);
+
         form = new UserAccountForm(new UserAccountModel());
-        spaceLayout = new HorizontalLayout();
-        spaceLayout.setHeight(100);
-        spaceLayout.addComponent(lblTitle);
-        
-        
-        smallSpaceLayout = new HorizontalLayout();
-        smallSpaceLayout.setHeight(10);
-        
-        vl.addComponent(spaceLayout);
+
         vl.addComponent(form);
        
         saveButton = new Button();
@@ -101,7 +101,6 @@ public class UserAccountPanel extends Panel {
         buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
         vl.addComponent(buttonLayout);
-        vl.addComponent(smallSpaceLayout);
         vl.setStyleName("v-panel-content-gcp-createuser");
     }
     
@@ -115,12 +114,13 @@ public class UserAccountPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setWidth("675px");
-        
-        form.setHeight("425px");
-        
+        setHeight("580px");
+
         vl.setMargin(false);
+        vl.setSpacing(true);
+
         vl.setComponentAlignment(form, Alignment.MIDDLE_CENTER);
-        vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
+        vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
         
         buttonLayout.setWidth("140px");
     }

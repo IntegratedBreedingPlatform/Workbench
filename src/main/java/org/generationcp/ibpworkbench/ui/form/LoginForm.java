@@ -191,7 +191,8 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
         
         HorizontalLayout subLinksLayout = new HorizontalLayout();
-        subLinksLayout.setSizeUndefined();
+        subLinksLayout.setWidth("290px");
+        subLinksLayout.setHeight("30px");
         //subLinksLayout.setMargin(true,false,true,false);
         subLinksLayout.setSpacing(true);
         
