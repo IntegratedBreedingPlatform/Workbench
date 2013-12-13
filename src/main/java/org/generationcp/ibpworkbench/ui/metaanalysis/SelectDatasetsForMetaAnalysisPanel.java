@@ -290,7 +290,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     protected void initializeLayout() {
               
         studyTreeLayout.setSpacing(true);
-        studyTreeLayout.setMargin(true);
+        studyTreeLayout.setMargin(new MarginInfo(false,true,true,true));
         studyDetailsLayout.setWidth("100%");
         
     }

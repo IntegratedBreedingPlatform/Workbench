@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.workflow;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
@@ -351,12 +352,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         this.setSizeFull();
         this.setSpacing(true);
 
-        this.setMargin(new MarginInfo(true,false,false,true));
-        if (!workflowPreview) {
-            this.setMargin(new MarginInfo(false,false,false,true));
-        //    addComponent(dashboardTitle);
-        }
-
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
         this.setExpandRatio(workFlowArea, 1.0F);
@@ -369,7 +364,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         
         HorizontalLayout layout = new HorizontalLayout();
-        layout.setMargin(true);
         layout.setSpacing(true);
         layout.setHeight("1500px");
 
@@ -385,7 +379,22 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         markerImplementationArea.setHeight("100%");
         layout.addComponent(markerImplementationArea);
 
-        panel.setContent(layout);
+        final VerticalLayout rootContainer = new VerticalLayout();
+        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setSpacing(false);
+
+        if (!workflowPreview) {
+            Label header = new Label();
+            header.setStyleName(Bootstrap.Typography.H1.styleName());
+            header.setValue(role.getLabel());
+            rootContainer.addComponent(header);
+
+        }
+        rootContainer.addComponent(layout);
+
+        panel.setContent(rootContainer);
+
+
         return panel;
     }
 
@@ -394,7 +403,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        //layout.setMargin(true);
+        layout.setMargin(new MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component projectPlanningArea = layoutProjectPlanning();
@@ -583,7 +592,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        //layout.setMargin(true);
+        layout.setMargin(new MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component markerTraitAnalysisArea = layoutPhenotypicAnalysis();
@@ -706,7 +715,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
         //layout.setWidth("274px");
-        //layout.setMargin(true);
+        layout.setMargin(new MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component qtlSelectionArea = layoutQtlSelection();

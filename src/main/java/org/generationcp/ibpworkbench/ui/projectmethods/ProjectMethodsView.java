@@ -115,12 +115,16 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
     private void initalizeComponents() {
         final VerticalLayout root = new VerticalLayout();
-        root.setSpacing(true);
-        root.setMargin(true);
+        root.setSpacing(false);
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+
+        final Label heading = new Label("Manage Program Methods");
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+        root.addComponent(heading);
 
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("Available Methods");
-        availableMethodsTitle.setStyleName("gcp-content-header");
+        availableMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         addNewMethodBtn = new Button("Add new Method");
         addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() +  " loc-add-btn");
@@ -141,7 +145,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         selectedMethodTitleContainer.setMargin(true,true,false,false);
 
         final Label selectedMethodsTitle = new Label("Program Methods");
-        selectedMethodsTitle.setStyleName("gcp-content-header");
+        selectedMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
 
@@ -178,6 +182,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final HorizontalLayout container = new HorizontalLayout();
 
         container.setSpacing(true);
+        container.setMargin(new Layout.MarginInfo(false,false,true,false));
 
         groupFilter = new Select();
         groupFilter.setImmediate(true);

@@ -109,7 +109,7 @@ public class ConfirmLocationsWindow extends Window{
 			confirmMessage.setCaption("There are already " + existingLocations.size() + " locations of the name you've specified:\n");
 		}
         
-        confirmMessage.setStyleName("gcp-content-title");
+        confirmMessage.setStyleName(Bootstrap.Typography.H3.styleName());
 
         layout.addComponent(confirmMessage);
         

@@ -122,10 +122,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public void initializeComponents() {
     	buttonPanel = new HorizontalLayout();
         lblDashboardTitle = new Label();
-        lblDashboardTitle.setStyleName("gcp-content-title label-bold");        
+        lblDashboardTitle.setStyleName(Bootstrap.Typography.H3.styleName());
         
         lblActivitiesTitle = new Label();
-        lblActivitiesTitle.setStyleName("gcp-content-title label-bold");
+        lblActivitiesTitle.setStyleName(Bootstrap.Typography.H2.styleName());
         
         lblPrograms = new Label(messageSource.getMessage(Message.PROJECT_TABLE_CAPTION));
         
@@ -134,8 +134,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         headerPreviewLabel = new Label(messageSource.getMessage(Message.PREVIEW_LABEL));
         headerProgramLabel = new Label(messageSource.getMessage(Message.PROGRAMS_LABEL));
-        headerProgramLabel.setStyleName("gcp-content-header");
-        headerPreviewLabel.setStyleName("gcp-content-header");
+        headerProgramLabel.setStyleName(Bootstrap.Typography.H2.styleName());
+        headerPreviewLabel.setStyleName(Bootstrap.Typography.H2.styleName());
         
         selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
         selectDatasetForBreedingViewButton.setWidth("200px");

@@ -255,7 +255,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     protected void initializeLayout() {
               
         studyTreeLayout.setSpacing(true);
-        studyTreeLayout.setMargin(true);
+        studyTreeLayout.setMargin(new MarginInfo(false,true,false,true));
         
         studyDetailsLayout.setWidth("100%");
 

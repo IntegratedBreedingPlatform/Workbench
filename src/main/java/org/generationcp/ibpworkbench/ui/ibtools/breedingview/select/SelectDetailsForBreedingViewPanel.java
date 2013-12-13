@@ -793,7 +793,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         mainLayout.addComponent(combineLayout2);
         mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
         
-        mainLayout.setMargin(true);
+        mainLayout.setMargin(new MarginInfo(false,true,true,true));
        
         addComponent(mainLayout);
     }

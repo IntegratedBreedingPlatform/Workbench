@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.workflow;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
@@ -145,7 +146,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
     protected void initializeComponents() {
         // dashboard title
         dashboardTitle = new Label();
-        dashboardTitle.setStyleName("gcp-content-title");
+        dashboardTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
         administrationTitle = new Label("Administration & Configuration");
         administrationTitle.setStyleName("gcp-section-title-large");
@@ -368,13 +369,6 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
     protected void initializeLayout() {
     	this.setSizeFull();
-    	this.setSpacing(true);
-
-        this.setMargin(new MarginInfo(true,false,false,true));
-        if (!workflowPreview) {
-            this.setMargin(new MarginInfo(false,false,false,true));
-        //    addComponent(dashboardTitle);
-        }
 
         Component workFlowArea = layoutWorkflowArea();
         addComponent(workFlowArea);
@@ -386,10 +380,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         panel.setSizeFull();
         panel.setScrollable(true);
         panel.setStyleName(Reindeer.PANEL_LIGHT);
-        
+
         AbsoluteLayout layout = new AbsoluteLayout();
-        
-        layout.setMargin(true);
+        layout.setMargin(false);
         layout.setWidth("850px");
         layout.setHeight("600px");
         
@@ -435,7 +428,21 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         Component projectCompletionArea = layoutDecisionSupport();
         layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + leftInPixels);
 
-        panel.setContent(layout);
+        final VerticalLayout rootContainer = new VerticalLayout();
+        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setSpacing(false);
+
+        if (!workflowPreview) {
+            Label header = new Label();
+            header.setStyleName(Bootstrap.Typography.H1.styleName());
+            header.setValue(role.getLabel());
+            rootContainer.addComponent(header);
+
+        }
+        rootContainer.addComponent(layout);
+
+        panel.setContent(rootContainer);
+
         return panel;
     }
 
@@ -870,8 +877,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
         //messageSource.setCaption(fieldbookButton,Message.FIELDBOOK);
         messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
-        
-        
+
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);
         messageSource.setCaption(optimasButton, Message.OPTIMAS);
         messageSource.setCaption(mbdtButton,Message.MBDT_LINK);

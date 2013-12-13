@@ -1,5 +1,7 @@
 package org.generationcp.browser.study;
 
+import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.browser.study.StudyAccordionMenu;
 import org.generationcp.browser.study.StudyDetailComponent;
@@ -62,12 +64,13 @@ public class StudyInfoDialog extends Window implements InitializingBean, Interna
     @Override
     public void afterPropertiesSet() throws Exception {
         //set as modal window, other components are disabled while window is open
-        setModal(true);
+        this.setModal(true);
         // define window size, set as not resizable
-        setWidth("1100px");
-        setHeight("650px");
-        setResizable(false);
-        setClosable(true);
+        this.setWidth("1100px");
+        this.setHeight("650px");
+        this.setResizable(false);
+        this.setClosable(true);
+        this.setStyleName(Reindeer.WINDOW_LIGHT);
         //setCaption("Study Information");
         // center window within the browser
         center();

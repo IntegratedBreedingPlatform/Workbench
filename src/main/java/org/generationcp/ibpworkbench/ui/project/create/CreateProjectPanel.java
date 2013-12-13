@@ -124,7 +124,6 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
         
-        newProjectTitleArea.setHeight("40px");
         //newProjectTitleArea.setStyleName("gcp-content-title");
     	
         addComponent(newProjectTitleArea);
@@ -143,8 +142,8 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
+        setSpacing(false);
+        setMargin(new Layout.MarginInfo(false,true,true,true));
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
 
@@ -181,12 +180,16 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     
     public void setTitle(String label, String description) {
     	newProjectTitleArea.removeAllComponents();
-    	
-    	Label title = new Label("Create A Program: " + label);
-    	
-    	newProjectTitleArea.setStyleName("gcp-content-title");
-    	newProjectTitleArea.addComponent(title);
-    	
+
+        Label heading = new Label("Create A Program");
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+
+    	Label title = new Label(label);
+        title.setStyleName(Bootstrap.Typography.H2.styleName());
+
+        newProjectTitleArea.addComponent(heading);
+        newProjectTitleArea.addComponent(title);
+
     	Label descLbl = new Label(description);
     	descLbl.setWidth("300px");
     	
@@ -194,9 +197,9 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     	popup.setStyleName("gcp-popup-view");
     	
     	newProjectTitleArea.addComponent(popup);
-    	
-    	newProjectTitleArea.setComponentAlignment(title,Alignment.MIDDLE_LEFT);
-    	newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
+        newProjectTitleArea.setComponentAlignment(heading, Alignment.BOTTOM_LEFT);
+        newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
+        newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
     	
     	
     }
