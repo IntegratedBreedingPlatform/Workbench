@@ -84,6 +84,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private static final long serialVersionUID = 1L;
    
 	private TabSheet tabSheet; 
+	private Label lblPageTitle;
     private Label lblStudyTreeDetailTitle;
     private Label lblStudyTreeDetailDescription;
     private Label lblBuildNewAnalysisHeader;
@@ -189,6 +190,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
     protected void initializeComponents() {
     	
+    	lblPageTitle = new Label();
+    	lblPageTitle.setStyleName("gcp-content-title");
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
@@ -211,9 +214,12 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         selectedDataSetEnvironmentLayout = new VerticalLayout();
         selectedDataSetEnvironmentLayout.setMargin(true);
         selectedDataSetEnvironmentLayout.setSpacing(true);
+        
+        
+        studyTreeLayout.addComponent(lblPageTitle);
       
         lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
+        lblStudyTreeDetailTitle.setStyleName("gcp-content-subheading");
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
         lblStudyTreeDetailDescription = new Label();
@@ -233,7 +239,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
         
         lblBuildNewAnalysisHeader = new Label();
-        lblBuildNewAnalysisHeader.setStyleName("gcp-content-header");
+        lblBuildNewAnalysisHeader.setStyleName("gcp-content-subheading");
         lblBuildNewAnalysisDescription = new Label();
         lblReviewEnvironments = new Label();
         lblReviewEnvironments.setStyleName("gcp-table-header-bold");
@@ -242,7 +248,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         linkCloseAllTab.setImmediate(true);
         linkCloseAllTab.setCaption("Close All Tabs");
         lblSelectDatasetsForAnalysis = new Label();
-        lblSelectDatasetsForAnalysis.setStyleName("gcp-content-header");
+        lblSelectDatasetsForAnalysis.setStyleName("gcp-content-subheading");
         lblSelectDatasetsForAnalysisDescription = new Label();
         
         linkCloseAllTab.addListener(new Button.ClickListener() {
@@ -543,8 +549,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     
     @Override
     public void updateLabels() {
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnCancel, Message.RESET);
         messageSource.setCaption(btnNext, Message.NEXT);
+        messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
         messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
         messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
         messageSource.setValue(lblBuildNewAnalysisHeader,  Message.META_BUILD_NEW_ANALYSIS_HEADER);

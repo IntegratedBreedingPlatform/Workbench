@@ -179,18 +179,20 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
     protected void initializeComponents() {
     	
+    	
+    	
     	setVariatesCheckboxState(new HashMap<String, Boolean>());
     	
     	
     	lblEnvironmentFactorHeader = new Label();
-    	lblEnvironmentFactorHeader.setStyleName("gcp-content-header");
+    	lblEnvironmentFactorHeader.setStyleName("gcp-content-subheading");
     	lblEnvironmentFactorDescription = new Label();
     	lblEnvironmentGroupsHeader = new Label();
-    	lblEnvironmentGroupsHeader.setStyleName("gcp-content-header");
+    	lblEnvironmentGroupsHeader.setStyleName("gcp-content-subheading");
     	lblEnvironmentGroupsDescription = new Label();
     	lblEnvironmentGroupsSpecify = new Label();
     	lblReviewSelectedDataset = new Label();
-    	lblReviewSelectedDataset.setStyleName("gcp-content-header");
+    	lblReviewSelectedDataset.setStyleName("gcp-content-subheading");
     	lblFactorTableHeader = new Label();
     	lblFactorTableHeader.setStyleName("gcp-table-header-bold");
     	lblFactorTableDescription = new Label();

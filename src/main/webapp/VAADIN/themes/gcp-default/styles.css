@@ -173,6 +173,10 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
     font-weight:300;
 }
 
+.gcp-content-subheading {
+    font-size:15px;
+}
+
 .gcp-table-header-bold {
     text-transform: uppercase;
     font-weight: bold;
