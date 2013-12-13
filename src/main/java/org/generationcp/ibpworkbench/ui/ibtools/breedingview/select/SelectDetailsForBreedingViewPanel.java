@@ -80,6 +80,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private static final String ROW_FACTOR = "row in layout";
     private static final String COLUMN_FACTOR = "column in layout";
     
+    private Label lblPageTitle;
     private Label lblTitle;
     private Label lblDatasetName;
     private Label lblDatasourceName;
@@ -218,6 +219,9 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 
     protected void initializeComponents() {
     	
+    	lblPageTitle = new Label();
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+    	
     	environmentsCheckboxState = new HashMap<String, Boolean>();
     	
     	tblEnvironmentLayout = new VerticalLayout();
@@ -338,14 +342,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         lblTitle = new Label();
         lblTitle.setContentMode(Label.CONTENT_XHTML);
-        lblTitle.setStyleName("gcp-content-subheading");
+        lblTitle.setStyleName(Bootstrap.Typography.H2.styleName());
         lblDatasetName = new Label();
         lblDatasetName.setContentMode(Label.CONTENT_XHTML);
+        lblDatasetName.setStyleName("label-bold");
         lblDatasourceName = new Label();
         lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
+        lblDatasourceName.setStyleName("label-bold");
         
         lblVersion = new Label();
+        lblVersion.setStyleName("label-bold");
         lblProjectType = new Label();
+        lblProjectType.setStyleName("label-bold");
         lblAnalysisName = new Label();
         lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
         lblSiteEnvironment = new Label();
@@ -374,18 +382,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         
         lblDataSelectedForAnalysisHeader = new Label();
-        lblDataSelectedForAnalysisHeader.setStyleName("gcp-table-header-bold");
+        lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         lblAnalysisNameHeader = new Label();
-        lblAnalysisNameHeader.setStyleName("gcp-table-header-bold");
+        lblAnalysisNameHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         lblChooseEnvironmentHeader = new Label();
-        lblChooseEnvironmentHeader.setStyleName("gcp-table-header-bold");
+        lblChooseEnvironmentHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         lblChooseEnvironmentDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
         lblSpecifyDesignDetailsHeader = new Label();
-        lblSpecifyDesignDetailsHeader.setStyleName("gcp-table-header-bold");
+        lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         lblSpecifyGenotypesHeader = new Label();
-        lblSpecifyGenotypesHeader.setStyleName("gcp-table-header-bold");
+        lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         
         txtVersion = new TextField();
         txtVersion.setNullRepresentation("");
@@ -680,7 +688,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	
         mainLayout.setSizeUndefined();
         mainLayout.setWidth("100%");
-        mainLayout.setSpacing(false);
+        mainLayout.setSpacing(true);
         
         GridLayout selectedInfoLayout = new GridLayout(4, 5);
         selectedInfoLayout.setSizeUndefined();
@@ -739,7 +747,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         designDetailsLayout.addComponent(lblGenotypes, 0, 7);
         designDetailsLayout.addComponent(selGenotypes, 1, 7);
         
-        
+        mainLayout.addComponent(lblPageTitle);
+        mainLayout.addComponent(new Label(""));
         mainLayout.addComponent(lblTitle);
         mainLayout.addComponent(selectedInfoLayout);
         
@@ -834,6 +843,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setCaption(btnCancel, Message.CANCEL);
         
         messageSource.setValue(lblTitle, Message.BV_TITLE);
+        messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
         messageSource.setValue(lblDatasetName, Message.BV_DATASET_NAME);
         messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
         messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER);

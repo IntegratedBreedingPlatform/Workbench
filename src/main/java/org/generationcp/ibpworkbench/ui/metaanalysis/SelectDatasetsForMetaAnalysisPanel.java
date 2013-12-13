@@ -191,7 +191,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     protected void initializeComponents() {
     	
     	lblPageTitle = new Label();
-    	lblPageTitle.setStyleName("gcp-content-title");
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
@@ -217,9 +217,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         
         
         studyTreeLayout.addComponent(lblPageTitle);
+        studyTreeLayout.addComponent(new Label(""));
       
         lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-subheading");
+        lblStudyTreeDetailTitle.setStyleName(Bootstrap.Typography.H2.styleName());
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
         lblStudyTreeDetailDescription = new Label();
@@ -239,16 +240,16 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
         
         lblBuildNewAnalysisHeader = new Label();
-        lblBuildNewAnalysisHeader.setStyleName("gcp-content-subheading");
+        lblBuildNewAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
         lblBuildNewAnalysisDescription = new Label();
         lblReviewEnvironments = new Label();
-        lblReviewEnvironments.setStyleName("gcp-table-header-bold");
+        lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
         linkCloseAllTab = new Button();
         linkCloseAllTab.setStyleName("link");
         linkCloseAllTab.setImmediate(true);
         linkCloseAllTab.setCaption("Close All Tabs");
         lblSelectDatasetsForAnalysis = new Label();
-        lblSelectDatasetsForAnalysis.setStyleName("gcp-content-subheading");
+        lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
         lblSelectDatasetsForAnalysisDescription = new Label();
         
         linkCloseAllTab.addListener(new Button.ClickListener() {
@@ -686,10 +687,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			}
 
 			lblFactor = new Label("Factor");
-			lblFactor.setStyleName("gcp-table-header-bold");
+			lblFactor.setStyleName(Bootstrap.Typography.H3.styleName());
 			lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
 			lblVariate = new Label("Variate");
-			lblVariate.setStyleName("gcp-table-header-bold");
+			lblVariate.setStyleName(Bootstrap.Typography.H3.styleName());
 			lblVariateDescription = new Label("The variates of the dataset you have selected are shown below for your review.");
 			
 			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);

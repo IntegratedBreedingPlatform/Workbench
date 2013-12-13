@@ -252,14 +252,18 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     protected void initializeComponents() {
     	
     	lblDataSelectedForAnalysisHeader = new Label();
-    	lblDataSelectedForAnalysisHeader.setStyleName("gcp-content-subheading");
+    	lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblDatasetName = new Label();
+    	lblDatasetName.setStyleName("label-bold");
     	txtDatasetName = new Label();
     	lblDatasourceName = new Label();
+    	lblDatasourceName.setStyleName("label-bold");
     	txtDatasourceName = new Label();
     	lblSelectedEnvironmentFactor = new Label();
+    	lblSelectedEnvironmentFactor.setStyleName("label-bold");
     	txtSelectedEnvironmentFactor = new Label();
     	lblSelectedEnvironmentGroupFactor = new Label();
+    	lblSelectedEnvironmentGroupFactor.setStyleName("label-bold");
     	txtSelectedEnvironmentGroupFactor = new Label();
     	
     	chkSelectAllEnvironments = new CheckBox("Select all environments", true);
@@ -268,7 +272,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     	chkSelectAllTraits.setImmediate(true);
     	
     	lblAdjustedMeansHeader  = new Label();
-    	lblAdjustedMeansHeader.setStyleName("gcp-content-subheading");
+    	lblAdjustedMeansHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblAdjustedMeansDescription  = new Label();
     	lblSelectTraitsForAnalysis = new Label();
     	
@@ -397,6 +401,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 			
 		};
 		
+		
 		List<CheckBox> cells = new ArrayList<CheckBox>();
 		List<String> columnNames = new ArrayList<String>();
 		for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
@@ -407,6 +412,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 				chk.setImmediate(true);
 				chk.addListener(traitCheckBoxListener);
 				cells.add(chk);
+				
 			}
 		}
 		selectTraitsTable.setContainerDataSource(container);
@@ -415,6 +421,11 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		selectTraitsTable.setWidth("100%");
 		selectTraitsTable.setColumnHeaders(columnNames.toArray(new String[0]));
 		selectTraitsTable.setColumnCollapsingAllowed(true);
+		for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
+			if (trait.getValue()){
+				selectTraitsTable.setColumnWidth(trait.getKey(), 100);
+			}
+		}
 		
 		addComponent(selectTraitsTable);
 		setExpandRatio(selectTraitsTable, 1.0F);

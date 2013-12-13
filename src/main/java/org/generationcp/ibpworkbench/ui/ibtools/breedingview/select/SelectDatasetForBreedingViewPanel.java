@@ -186,7 +186,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     protected void initializeComponents() {
     	
     	lblPageTitle = new Label();
-    	lblPageTitle.setStyleName("gcp-content-title");
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
     	
     	folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
@@ -204,9 +204,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         datasetVariablesDetailLayout = new HorizontalLayout();
         
         studyTreeLayout.addComponent(lblPageTitle);
+        studyTreeLayout.addComponent(new Label(""));
         
         lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-subheading");
+        lblStudyTreeDetailTitle.setStyleName(Bootstrap.Typography.H2.styleName());
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
         lblStudyTreeDetailDescription = new Label();
@@ -235,7 +236,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         studyDetailsDescriptionLayout.setSpacing(true);
         studyDetailsDescriptionLayout.setMargin(new MarginInfo(false, true, false, true));
         lblDatasetDetailTitle = new Label();
-        lblDatasetDetailTitle.setStyleName("gcp-content-subheading");
+        lblDatasetDetailTitle.setStyleName(Bootstrap.Typography.H2.styleName());
       
         studyDetailsDescriptionLayout.addComponent(lblDatasetDetailTitle);
         
@@ -410,6 +411,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         String[] columnHeaders = new String[] {"" ,"Name", "Description", "Scale"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
+        tblVariates.setColumnWidth("", 18);
         return tblVariates;
     }
     

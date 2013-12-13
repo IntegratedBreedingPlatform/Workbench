@@ -243,7 +243,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 			Label tabTitle = new Label("&nbsp;&nbsp;"
 					+ "Adjusted means dataset", Label.CONTENT_XHTML);
-			tabTitle.setStyleName("gcp-content-title");
+			tabTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 			container.addComponent(tabTitle);
 			
@@ -260,7 +260,9 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedEnvGroupFactorName, variatesCheckboxState);
 		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
+		tabContainer.setVisible(true);
 
+		getStudiesTabsheet().setVisible(true);
 		getStudiesTabsheet().replaceComponent(getStudiesTabsheet().getSelectedTab(), tabContainer);
 		getStudiesTabsheet().getTab(tabContainer).setClosable(true);
 		getStudiesTabsheet().setSelectedTab(tabContainer);
@@ -270,10 +272,10 @@ public class GxeComponentPanel extends VerticalLayout implements
 	protected void initializeComponents() {
 		
     	lblPageTitle = new Label();
-    	lblPageTitle.setStyleName("gcp-content-title");
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		
 		lblSelectDataForAnalysisHeader = new Label();
-    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-subheading");
+    	lblSelectDataForAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblSelectDataForAnalysisDescription = new Label();
 		
 		folderResource =  new ThemeResource("images/folder.png");
@@ -325,6 +327,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 		}
 		
 		addComponent(lblPageTitle);
+		addComponent(new Label(""));
 		addComponent(lblSelectDataForAnalysisHeader);
         addComponent(lblSelectDataForAnalysisDescription);
 
@@ -439,8 +442,6 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 		tab.setImmediate(true);
         tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
-		//repaintTab(tab.getSelectedTab());
-
 		tab.setSizeFull();
 
 		return tab;

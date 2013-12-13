@@ -185,19 +185,19 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     	
     	
     	lblEnvironmentFactorHeader = new Label();
-    	lblEnvironmentFactorHeader.setStyleName("gcp-content-subheading");
+    	lblEnvironmentFactorHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblEnvironmentFactorDescription = new Label();
     	lblEnvironmentGroupsHeader = new Label();
-    	lblEnvironmentGroupsHeader.setStyleName("gcp-content-subheading");
+    	lblEnvironmentGroupsHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblEnvironmentGroupsDescription = new Label();
     	lblEnvironmentGroupsSpecify = new Label();
     	lblReviewSelectedDataset = new Label();
-    	lblReviewSelectedDataset.setStyleName("gcp-content-subheading");
+    	lblReviewSelectedDataset.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblFactorTableHeader = new Label();
-    	lblFactorTableHeader.setStyleName("gcp-table-header-bold");
+    	lblFactorTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
     	lblFactorTableDescription = new Label();
     	lblVariateTableHeader = new Label();
-    	lblVariateTableHeader.setStyleName("gcp-table-header-bold");
+    	lblVariateTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
     	lblVariateTableDescription = new Label();
         
         generalLayout = new VerticalLayout();
@@ -212,7 +212,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
 
         lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-title");
+        lblStudyTreeDetailTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
         final Table factors = initializeFactorsTable();
         factors.setImmediate(true);
@@ -352,7 +352,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         final Table tblFactors = new Table();
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
-        tblFactors.setHeight("100%");
+        tblFactors.setHeight("170px");
         
         BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
         container.setBeanIdProperty("id");
@@ -489,6 +489,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         String[] columnHeaders = new String[] {"","Name", "Description","Tested In"};
         tblVariates.setVisibleColumns(columns);
         tblVariates.setColumnHeaders(columnHeaders);
+        tblVariates.setColumnWidth("", 18);
         return tblVariates;
     }
    

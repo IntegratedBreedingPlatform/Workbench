@@ -81,6 +81,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
     private Button btnNext;
     private Component buttonArea;
 	
+    private Label lblPageTitle;
 	private Label lblSelectEnvVarForAnalysis;
 	private Label lblSelectEnvVarForAnalysisDesc;
 	private Label lblSelectVariates;
@@ -111,6 +112,9 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	
 
 	private void initializeComponents(){
+		
+		lblPageTitle = new Label();
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		
 		factorsCheckBoxState = new HashMap<String, Boolean>();
 		variatesCheckBoxState = new HashMap<String, Boolean>();
@@ -192,11 +196,11 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
     	chkSelectAllEnvironments.setValue(true);
 		
 		lblSelectEnvVarForAnalysis = new Label();
-		lblSelectEnvVarForAnalysis.setStyleName("gcp-content-subheading");
+		lblSelectEnvVarForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
 		lblSelectEnvVarForAnalysisDesc  = new Label();
 		lblSelectVariates  = new Label();
 		lblSelectFactorsForAnalysis  = new Label();
-		lblSelectFactorsForAnalysis.setStyleName("gcp-content-subheading");
+		lblSelectFactorsForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
 		lblSelectFactorsForAnalysisDesc  = new Label();
 		lblSelectFactors  = new Label();
 		
@@ -492,6 +496,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		VerticalLayout layout1 = new VerticalLayout();
 		layout1.setMargin(true);
 		layout1.setSpacing(true);
+		layout1.addComponent(lblPageTitle);
+		layout1.addComponent(new Label(""));
 		layout1.addComponent(lblSelectEnvVarForAnalysis);
 		layout1.addComponent(lblSelectEnvVarForAnalysisDesc);
 		layout1.addComponent(environmentsTable);
@@ -739,6 +745,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		// TODO Auto-generated method stub
 		messageSource.setCaption(btnCancel, Message.BACK);
         messageSource.setCaption(btnNext, Message.EXPORT_DATA);
+        messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
 		messageSource.setValue(lblSelectEnvVarForAnalysis, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS);
 		messageSource.setValue(lblSelectEnvVarForAnalysisDesc, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS_DESC);
 		messageSource.setValue(lblSelectVariates, Message.META_SELECT_VARIATES);
