@@ -115,8 +115,12 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
     private void initalizeComponents() {
         final VerticalLayout root = new VerticalLayout();
-        root.setSpacing(true);
-        root.setMargin(true);
+        root.setSpacing(false);
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+
+        final Label heading = new Label("Manage Program Methods");
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+        root.addComponent(heading);
 
         final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("Available Methods");
@@ -178,6 +182,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final HorizontalLayout container = new HorizontalLayout();
 
         container.setSpacing(true);
+        container.setMargin(new Layout.MarginInfo(false,false,true,false));
 
         groupFilter = new Select();
         groupFilter.setImmediate(true);

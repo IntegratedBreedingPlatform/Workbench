@@ -494,7 +494,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		setWidth("95%");
 		
 		VerticalLayout layout1 = new VerticalLayout();
-		layout1.setMargin(true);
+		layout1.setMargin(new MarginInfo(false,true,true,true));
 		layout1.setSpacing(true);
 		layout1.addComponent(lblPageTitle);
 		layout1.addComponent(new Label(""));

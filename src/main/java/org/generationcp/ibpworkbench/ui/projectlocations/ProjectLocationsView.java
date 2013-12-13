@@ -73,11 +73,16 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	
 	protected void initializeComponents() {
 		final VerticalLayout root = new VerticalLayout();
-		root.setSpacing(true);
-		root.setMargin(true);
+		root.setSpacing(false);
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
 		
 		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
-		final Label availableLocationsTitle = new Label("Available Locations");
+
+        final Label heading = new Label("Manage Program Locations");
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+        root.addComponent(heading);
+
+        final Label availableLocationsTitle = new Label("Available Locations");
 		availableLocationsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 		addNewLocationsBtn = new Button("Add New Location");
 		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
@@ -89,7 +94,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		availableLocationsTitleContainer.setSizeUndefined();
         availableLocationsTitleContainer.setWidth("100%");
 		availableLocationsTitleContainer.setMargin(false,true,true,false);	// move this to css
-		
+
+
 		root.addComponent(availableLocationsTitleContainer);
 		root.addComponent(this.buildLocationFilterForm());
 		root.addComponent(this.buildAvailableLocationsTable());
@@ -272,7 +278,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		final Label spacer = new Label();
 		spacer.setWidth("100%");
-		
+
+        container.setMargin(new Layout.MarginInfo(false,false,true,false));
 		container.setSpacing(true);
 		
 		

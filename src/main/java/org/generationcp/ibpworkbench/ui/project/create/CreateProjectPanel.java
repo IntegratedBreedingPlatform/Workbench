@@ -142,8 +142,8 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
+        setSpacing(false);
+        setMargin(new Layout.MarginInfo(false,true,true,true));
         setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
     }
 
