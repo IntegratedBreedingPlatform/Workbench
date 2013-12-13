@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.dashboard.SummaryView;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
@@ -45,6 +46,7 @@ import com.vaadin.ui.Window;
 @Configurable
 public class ShowProjectDetailAction implements ItemClickListener {
     private static final long serialVersionUID = 1L;
+    private SummaryView summaryView;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -57,9 +59,8 @@ public class ShowProjectDetailAction implements ItemClickListener {
     private Table tblProject;
     private WorkbenchMainView workbenchDashboardwindow;
     private Label lblDashboardTitle;
-    private Table tblActivity;
 
-    private Table tblRoles;
+    //private Table tblRoles;
     
     private OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction;
     
@@ -74,13 +75,11 @@ public class ShowProjectDetailAction implements ItemClickListener {
     
     private List<Project> projects;
     
-    public ShowProjectDetailAction(Label lblActivity, Table tblProject, Table tblActivity, Table tblRoles, 
+    public ShowProjectDetailAction(Label lblActivity, Table tblProject, SummaryView summaryView,
             Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,
             Project currentProject, GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects) {
         this.lblActivity = lblActivity;
         this.tblProject = tblProject;
-        this.tblActivity = tblActivity;
-        this.tblRoles = tblRoles;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
         this.currentProj = currentProject;
@@ -88,6 +87,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
         this.nurseryListPreview = nurseryListPreview;
         this.previewTab = previewTab;
         this.projects = projects;
+        this.summaryView = summaryView;
     }
     
    
@@ -123,25 +123,15 @@ public class ShowProjectDetailAction implements ItemClickListener {
         openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(project);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         
-        // update the project activity table's listener
-        
-        if (openWorkflowForRoleAction != null) {
-            tblRoles.removeListener(openWorkflowForRoleAction);
-            tblRoles.setStyleName("gcp-tblroles");
-        }
-        
-        openWorkflowForRoleAction = new OpenWorkflowForRoleAction(project);
-        tblRoles.addListener(openWorkflowForRoleAction);
-        tblRoles.setStyleName("gcp-tblroles gcp-selected");
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
         
         try {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
             
-            List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
+            //List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
             
-            String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
+            //String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
             //projectDetailLabel.setValue(label);
            
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
@@ -153,9 +143,9 @@ public class ShowProjectDetailAction implements ItemClickListener {
             
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));
             tblProject.refreshRowCache();
-            
-            updateActivityTable(activityList);
-            updateRoleTable(roleList);
+
+            summaryView.updateActivityTable(activityList);
+            // updateRoleTable(roleList);
             germplasmListPreview.setProject(currentProj);
             nurseryListPreview.setProject(currentProj);
             previewTab.setSelectedTab(germplasmListPreview);
@@ -165,42 +155,27 @@ public class ShowProjectDetailAction implements ItemClickListener {
             showDatabaseError(event.getComponent().getWindow());
         }
     }
-    
+    /*
     private void updateActivityTable(List<ProjectActivity> activityList) {
         Object[] oldColumns = tblActivity.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-        
+
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
         container.setBeanIdProperty("projectActivityId");
         tblActivity.setContainerDataSource(container);
-        
+
         for (ProjectActivity activity : activityList) {
             container.addBean(activity);
         }
-        
+
         lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
-        
+
         tblActivity.setContainerDataSource(container);
-        
+
         tblActivity.setVisibleColumns(columns);
-    }
+    }*/
     
-    private void updateRoleTable(List<Role> roleList) {
-        Object[] oldColumns = tblRoles.getVisibleColumns();
-        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-        
-        BeanContainer<Integer, Role> container = new BeanContainer<Integer, Role>(Role.class);
-        container.setBeanIdProperty("roleId");
-        tblRoles.setContainerDataSource(container);
-        
-        for (Role role : roleList) {
-            container.addBean(role);
-        }
-        
-        tblRoles.setContainerDataSource(container);
-        
-        tblRoles.setVisibleColumns(columns);
-    }
+
     
     private void showDatabaseError(Window window) {
         MessageNotifier.showError(window, 
