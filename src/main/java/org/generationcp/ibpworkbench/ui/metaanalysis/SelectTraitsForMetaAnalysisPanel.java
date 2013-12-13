@@ -192,11 +192,11 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
     	chkSelectAllEnvironments.setValue(true);
 		
 		lblSelectEnvVarForAnalysis = new Label();
-		lblSelectEnvVarForAnalysis.setStyleName("gcp-content-header");
+		lblSelectEnvVarForAnalysis.setStyleName("gcp-content-subheading");
 		lblSelectEnvVarForAnalysisDesc  = new Label();
 		lblSelectVariates  = new Label();
 		lblSelectFactorsForAnalysis  = new Label();
-		lblSelectFactorsForAnalysis.setStyleName("gcp-content-header");
+		lblSelectFactorsForAnalysis.setStyleName("gcp-content-subheading");
 		lblSelectFactorsForAnalysisDesc  = new Label();
 		lblSelectFactors  = new Label();
 		

@@ -441,5 +441,9 @@ public enum Message {
     ,VARIATES_TEXT
     ,ERROR_INVALID_FORMAT
     ,ERROR_IN_NUMBER_FORMAT
+    ,RESET
+    ,TITLE_SSA
+    ,TITLE_GXE
+    ,TITLE_METAANALYSIS
 
 }

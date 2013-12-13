@@ -114,7 +114,7 @@ public class UserAccountPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setWidth("675px");
-        setHeight("580px");
+        setHeight("590px");
 
         vl.setMargin(false);
         vl.setSpacing(true);

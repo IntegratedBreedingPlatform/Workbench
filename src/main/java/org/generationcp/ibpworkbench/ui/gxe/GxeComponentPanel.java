@@ -95,6 +95,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 	private ThemeResource folderResource;
     private ThemeResource leafResource;
     
+    private Label lblPageTitle;
     private Label lblSelectDataForAnalysisHeader;
     private Label lblSelectDataForAnalysisDescription;
 	
@@ -133,6 +134,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 	}
 	
 	private void updateLabels(){
+		 messageSource.setValue(lblPageTitle, Message.TITLE_GXE);
 		 messageSource.setValue(lblSelectDataForAnalysisHeader, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
 	     messageSource.setValue(lblSelectDataForAnalysisDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
 	}
@@ -267,8 +269,11 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 	protected void initializeComponents() {
 		
+    	lblPageTitle = new Label();
+    	lblPageTitle.setStyleName("gcp-content-title");
+		
 		lblSelectDataForAnalysisHeader = new Label();
-    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-header");
+    	lblSelectDataForAnalysisHeader.setStyleName("gcp-content-subheading");
     	lblSelectDataForAnalysisDescription = new Label();
 		
 		folderResource =  new ThemeResource("images/folder.png");
@@ -319,6 +324,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 			e.printStackTrace();
 		}
 		
+		addComponent(lblPageTitle);
 		addComponent(lblSelectDataForAnalysisHeader);
         addComponent(lblSelectDataForAnalysisDescription);
 

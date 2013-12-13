@@ -252,7 +252,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     protected void initializeComponents() {
     	
     	lblDataSelectedForAnalysisHeader = new Label();
-    	lblDataSelectedForAnalysisHeader.setStyleName("gcp-content-header");
+    	lblDataSelectedForAnalysisHeader.setStyleName("gcp-content-subheading");
     	lblDatasetName = new Label();
     	txtDatasetName = new Label();
     	lblDatasourceName = new Label();
@@ -268,7 +268,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     	chkSelectAllTraits.setImmediate(true);
     	
     	lblAdjustedMeansHeader  = new Label();
-    	lblAdjustedMeansHeader.setStyleName("gcp-content-header");
+    	lblAdjustedMeansHeader.setStyleName("gcp-content-subheading");
     	lblAdjustedMeansDescription  = new Label();
     	lblSelectTraitsForAnalysis = new Label();
     	

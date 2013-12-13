@@ -75,6 +75,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     private static final long serialVersionUID = 1L;
     
+    private Label lblPageTitle;
     private Label lblStudyTreeDetailTitle;
     private Label lblStudyTreeDetailDescription;
     private Label lblDatasetDetailTitle;
@@ -184,6 +185,9 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     protected void initializeComponents() {
     	
+    	lblPageTitle = new Label();
+    	lblPageTitle.setStyleName("gcp-content-title");
+    	
     	folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
     	
@@ -199,8 +203,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
         datasetVariablesDetailLayout = new HorizontalLayout();
         
+        studyTreeLayout.addComponent(lblPageTitle);
+        
         lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName("gcp-content-header");
+        lblStudyTreeDetailTitle.setStyleName("gcp-content-subheading");
         studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
         
         lblStudyTreeDetailDescription = new Label();
@@ -220,6 +226,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         datasetVariablesDetailLayout.addComponent(variates);     
     
         studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 0, 0, 9, 0);
+        
+        
          
         generalLayout.addComponent(studyTreeLayout);  
         
@@ -227,7 +235,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         studyDetailsDescriptionLayout.setSpacing(true);
         studyDetailsDescriptionLayout.setMargin(new MarginInfo(false, true, false, true));
         lblDatasetDetailTitle = new Label();
-        lblDatasetDetailTitle.setStyleName("gcp-content-header");
+        lblDatasetDetailTitle.setStyleName("gcp-content-subheading");
       
         studyDetailsDescriptionLayout.addComponent(lblDatasetDetailTitle);
         
@@ -642,6 +650,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     public void updateLabels() {
         messageSource.setCaption(btnCancel, Message.CANCEL);
         messageSource.setCaption(btnNext, Message.NEXT);
+        messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
         messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
         messageSource.setValue(lblStudyTreeDetailDescription, Message.BV_STUDY_TREE_DESCRIPTION);
         messageSource.setValue(lblDatasetDetailTitle,  Message.BV_DATASET_DETAIL_TITLE);
