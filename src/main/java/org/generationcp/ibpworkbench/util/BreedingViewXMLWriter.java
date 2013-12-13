@@ -41,6 +41,7 @@ import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -205,14 +206,14 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
         Environments environments = new Environments();
         environments.setName(breedingViewInput.getEnvironment().getName());
-        environments.setTrialName(breedingViewInput.getEnvironment().getName());
+        environments.setTrialName(breedingViewInput.getTrialInstanceName());
         
-        for( Entry<String, Boolean> s : breedingViewInput.getEnvironmentsActiveState().entrySet()){
+        for( SeaEnvironmentModel s : breedingViewInput.getSelectedEnvironments()){
         	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
-        	env.setName(s.getKey());
-        	env.setTrial(s.getKey());
+        	env.setName(s.getEnvironmentName());
+        	env.setTrial(s.getTrialno());
         	env.setActive(true);
-        	if (s.getValue()) environments.add(env);
+        	if (s.getActive()) environments.add(env);
         }
         
         //create the DataConfiguration element

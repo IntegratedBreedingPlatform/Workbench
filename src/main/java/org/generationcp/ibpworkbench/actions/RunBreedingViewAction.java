@@ -30,6 +30,7 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
@@ -74,12 +75,7 @@ public class RunBreedingViewAction implements ClickListener {
         
         BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
         
-        breedingViewInput.setEnvironmentsActiveState(source.getEnvironmentsCheckboxState());
-        
-        List<String> selectedEnvironments = new ArrayList<String>();
-        for (Entry<String, Boolean> env : breedingViewInput.getEnvironmentsActiveState().entrySet()){
-        	if (env.getValue()) selectedEnvironments.add(env.getKey());
-        }
+        breedingViewInput.setSelectedEnvironments(source.getSelectedEnvironments());
         
         String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
         if(StringUtils.isNullOrEmpty(analysisProjectName)){
@@ -101,17 +97,11 @@ public class RunBreedingViewAction implements ClickListener {
             Environment environment = new Environment();
             environment.setName(envFactor.trim());
             
-            if(selectedEnvironments.size() == 0){
+            if(breedingViewInput.getSelectedEnvironments().size() == 0){
                 event.getComponent().getWindow().showNotification("Please select environment for analysis.", Notification.TYPE_ERROR_MESSAGE);
                 return;
             } else{
                
-                EnvironmentLabel label = new EnvironmentLabel();
-                label.setName(selectedEnvironments.get(0));
-                label.setTrial(selectedEnvironments.get(0));
-                label.setSubset(true);
-                
-                environment.setLabel(label);
                 breedingViewInput.setEnvironment(environment);
                 
             }
@@ -217,6 +207,11 @@ public class RunBreedingViewAction implements ClickListener {
         
         try {
 			//HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), (String) this.source.getSelEnvForAnalysis().getValue());
+        	List<String> selectedEnvironments = new ArrayList<String>();
+        	for (SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()){
+        		selectedEnvironments.add(m.getEnvironmentName());
+        	}
+        	
         	HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments);
         	breedingViewInput.setVariateColumns(variateColumns);
         } catch (DatasetExporterException e1) {
@@ -235,7 +230,6 @@ public class RunBreedingViewAction implements ClickListener {
     	 
          try {
              breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-             //breedingViewXMLWriter.writeProjectXML();
              breedingViewXMLWriter.writeProjectXMLV2();
              
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();

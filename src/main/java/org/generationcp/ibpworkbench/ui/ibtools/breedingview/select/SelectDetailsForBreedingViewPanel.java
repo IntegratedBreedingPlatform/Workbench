@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -27,16 +28,19 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
-import org.generationcp.ibpworkbench.actions.BreedingViewEnvNameForAnalysisValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
+import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -50,6 +54,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.mysql.jdbc.StringUtils;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -59,7 +64,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
+import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
@@ -230,9 +235,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	
     	tblEnvironmentSelection = new Table();
     	tblEnvironmentSelection.setHeight("200px");
-    	tblEnvironmentSelection.addContainerProperty("SELECT", CheckBox.class, new CheckBox("",true));
-    	tblEnvironmentSelection.addContainerProperty("ENVIRONMENT", String.class, "");
-    	
     	
     	envCheckBoxListener = new Property.ValueChangeListener(){
 
@@ -243,8 +245,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				CheckBox chk = (CheckBox) event.getProperty();
 				Boolean val = (Boolean) event.getProperty()
 						.getValue();
-				
-				getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+				SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
+			
 				if (val == false) { 
 					footerCheckBox.removeListener(footerCheckBoxListener);
 					footerCheckBox.setValue(false); 
@@ -254,16 +256,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				 TrialEnvironments trialEnvironments;
 					try {
 						trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-						TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
+						TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
 						
 						if (trialEnv == null){
 							
-							 getWindow().showNotification("\""+ chk.getData()  + "\" value is not a valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
+							 getWindow().showNotification("\""+ model.getEnvironmentName()  + "\" value is not a valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
 							 chk.setValue(false);
-							 getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
+							 model.setActive(false);
+							
 						}else{
 							
-							getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
+							model.setActive(true);
+							
 						}
 					} catch (ConfigException e) {
 						// TODO Auto-generated catch block
@@ -277,56 +281,40 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 			
 		};
 		
+		
+		tblEnvironmentSelection.addGeneratedColumn("select", new ColumnGenerator(){
+
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
+				
+				CheckBox chk = new CheckBox();
+				chk.setData(item);
+				chk.setValue(item.getActive());
+				chk.setImmediate(true);
+				chk.addListener(envCheckBoxListener);
+				return chk;
+			}
+			
+		});
+		
 		footerCheckBoxListener = new Property.ValueChangeListener(){
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				List<String> notValidEnvironments = new ArrayList<String>();
-				Boolean val = (Boolean) event.getProperty()
-						.getValue();
-				
-				for (Iterator<?> itr = tblEnvironmentSelection.getItemIds().iterator(); itr.hasNext();){
-					CheckBox chk = (CheckBox) tblEnvironmentSelection.getContainerProperty(itr.next(), "SELECT").getValue();
-					
-					if (val == false) {
-						chk.setValue(val); 
-						getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
-						continue;
+
+					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();){
+						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
+						m.setActive((Boolean) event.getProperty().getValue());
 					}
 					
-					chk.removeListener(envCheckBoxListener);
-					
-					 TrialEnvironments trialEnvironments;
-					 
-						try {
-							trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-							TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), chk.getData().toString());
-							
-							if (trialEnv == null){
-								chk.setValue(false);
-								getEnvironmentsCheckboxState().put(chk.getData().toString(), false);
-								notValidEnvironments.add(chk.getData().toString());
-							}else{
-								getEnvironmentsCheckboxState().put(chk.getData().toString(), val);
-								chk.setValue(val);
-							}
-						} catch (ConfigException e) {
-							e.printStackTrace();
-						} catch (MiddlewareQueryException e) {
-							e.printStackTrace();
-						}
-						
-						chk.addListener(envCheckBoxListener);
-					
+					tblEnvironmentSelection.refreshRowCache();
 				}
 				
-				if (notValidEnvironments.size() != 0){
-					getWindow().showNotification("\""+ notValidEnvironments.toString()  + "\" values are not valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
-				}
-				
-			}
+			
 			
 		};
     	
@@ -539,11 +527,14 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     public void populateChoicesForEnvForAnalysis(){
     	
     	footerCheckBox.setValue(false);
+    	Map<String, Integer> factorLocalNames = new HashMap<String, Integer>();
+    	String trialInstanceFactor = "";
+
     	
     	try{
         	environmentsCheckboxState.clear();
         	tblEnvironmentSelection.removeAllItems();
-        }catch(Exception e){}
+        }catch(Exception e){}	
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
 		
@@ -552,24 +543,60 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         if (factor != null){
         	
 			try {
+
+				///////////////////////////////////////////////////////////////////////////////
+				BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
+				tblEnvironmentSelection.setContainerDataSource(container);
 				
-				TrialEnvironments trialEnvironments;	
-				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-				for (Variable var : trialEnvironments.getVariablesByLocalName(envFactorName)){
-					if (var.getValue() != null) {
-						
-						
-						final CheckBox chk = new CheckBox("",false);
-						chk.setData(var.getValue());
-						chk.setImmediate(true);
-						chk.addListener(envCheckBoxListener);
-						
-						Object[] cells = new Object[]{ chk, var.getValue() };
-						environmentsCheckboxState.put(var.getValue(), false);
-						tblEnvironmentSelection.addItem(cells, var.getValue()+"");
+				VariableTypeList trialEnvFactors = getManagerFactory().getNewStudyDataManager().getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
+				
+				for(VariableType f : trialEnvFactors.getVariableTypes()){
+					
+					//Always Show the TRIAL INSTANCE Factor
+					if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+						trialInstanceFactor = f.getLocalName();
 					}
 					
 				}
+				
+				
+				TrialEnvironments trialEnvironments;	
+				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+				
+				
+				for (TrialEnvironment env : trialEnvironments.getTrialEnvironments()){
+					
+						Variable trialVar = env.getVariables().findByLocalName(trialInstanceFactor);
+						Variable selectedEnvVar = env.getVariables().findByLocalName(envFactorName);
+						
+						
+						if (trialVar != null && selectedEnvVar != null){
+							
+							TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
+							if (temp == null) continue;
+							
+							SeaEnvironmentModel bean = new SeaEnvironmentModel();
+							bean.setActive(false);	
+							bean.setEnvironmentName(selectedEnvVar.getValue());
+							bean.setTrialno(trialVar.getValue());
+							container.addBean(bean);
+
+						}else{
+							continue;
+						}
+						
+				}
+				
+				if (trialInstanceFactor.equalsIgnoreCase(envFactorName)){
+					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno" });
+					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",trialInstanceFactor});
+					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+				}else{
+					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno", "environmentName"});
+					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",trialInstanceFactor, envFactorName});
+					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+				}
+				
 				
 			} catch (ConfigException e) {
 				// TODO Auto-generated catch block
@@ -915,6 +942,17 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 	public void setEnvironmentsCheckboxState(
 			HashMap<String, Boolean> environmentsCheckboxState) {
 		this.environmentsCheckboxState = environmentsCheckboxState;
+	}
+	
+	
+	public List<SeaEnvironmentModel> getSelectedEnvironments(){
+		
+		List<SeaEnvironmentModel> envs = new ArrayList<SeaEnvironmentModel>();
+		for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();){
+			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
+			if (m.getActive()) envs.add(m);
+		}
+		return envs;
 	}
     
 

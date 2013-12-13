@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -20,6 +21,7 @@ import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 /**
@@ -42,6 +44,7 @@ public class BreedingViewInput implements Serializable {
     private Integer inputDatasetId;
     private Integer outputDatasetId;
     private String environmentName;
+    private String trialInstanceName;
     private String version;
     private String sourceXLSFilePath;
     private String destXMLFilePath;
@@ -57,7 +60,7 @@ public class BreedingViewInput implements Serializable {
     private String datasetName;
     private String datasetSource;
     private HashMap<String, Boolean> variatesActiveState;
-    private HashMap<String, Boolean> environmentsActiveState;
+    private List<SeaEnvironmentModel> selectedEnvironments;
     
     public HashMap<Integer, String> getVariateColumns() {
 		return variateColumns;
@@ -355,20 +358,28 @@ public class BreedingViewInput implements Serializable {
 		this.variatesActiveState = variateActiveStates;
 	}
 
-	public HashMap<String, Boolean> getEnvironmentsActiveState() {
-		return environmentsActiveState;
-	}
-
-	public void setEnvironmentsActiveState(HashMap<String, Boolean> environmentActiveStates) {
-		this.environmentsActiveState = environmentActiveStates;
-	}
-
 	public String getBreedingViewAnalysisName() {
 		return breedingViewAnalysisName;
 	}
 
 	public void setBreedingViewAnalysisName(String breedingViewAnalysisName) {
 		this.breedingViewAnalysisName = breedingViewAnalysisName;
+	}
+
+	public String getTrialInstanceName() {
+		return trialInstanceName;
+	}
+
+	public void setTrialInstanceName(String trialInstanceName) {
+		this.trialInstanceName = trialInstanceName;
+	}
+
+	public List<SeaEnvironmentModel> getSelectedEnvironments() {
+		return selectedEnvironments;
+	}
+
+	public void setSelectedEnvironments(List<SeaEnvironmentModel> selectedEnvironments) {
+		this.selectedEnvironments = selectedEnvironments;
 	}
 
     
