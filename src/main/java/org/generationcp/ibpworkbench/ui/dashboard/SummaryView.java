@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.dashboard;
 
+import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
@@ -34,10 +35,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private Label header;
     private PopupView toolsPopup;
 
-    private Table tblActivity;
-    private Table tblTrial;
-    private Table tblNursery;
-    private Table tblSeason;
+    private PagedTable tblActivity;
+    private PagedTable tblTrial;
+    private PagedTable tblNursery;
+    private PagedTable tblSeason;
 
     private int activityCount = 0;
     private int trialCount = 0;
@@ -104,10 +105,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                     int selection = toolsDropDown.getSelectedItem();
 
                     if (selection >= 0) {
-                        SummaryView.this.removeComponent(tblActivity);
-                        SummaryView.this.removeComponent(tblTrial);
-                        SummaryView.this.removeComponent(tblNursery);
-                        SummaryView.this.removeComponent(tblSeason);
+                        SummaryView.this.removeComponent(SummaryView.this.getComponent(1));
+                        SummaryView.this.removeComponent(SummaryView.this.getComponent(2));
                     }
                     String count = "";
 
@@ -152,8 +151,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblSeason = buildSeasonSummaryTable();
     }
 
-    private Table buildActivityTable() {
-        final Table tblActivity = new Table() {
+    private PagedTable buildActivityTable() {
+        final PagedTable tblActivity = new PagedTable() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -171,6 +170,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
         container.setBeanIdProperty("projectActivityId");
         tblActivity.setContainerDataSource(container);
+        tblActivity.setPageLength(5);
 
         String[] columns = new String[] {"createdAt", "name", "description"};
         tblActivity.setVisibleColumns(columns);
@@ -185,8 +185,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         return tblActivity;
     }
 
-    private Table buildTrialSummaryTable() {
-        final Table tblTrial = new Table() {
+    private PagedTable buildTrialSummaryTable() {
+        final PagedTable tblTrial = new PagedTable() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -219,8 +219,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         return tblTrial;
     }
 
-    private Table buildNurserySummaryTable() {
-        final Table tblNursery = new Table() {
+    private PagedTable buildNurserySummaryTable() {
+        final PagedTable tblNursery = new PagedTable() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -253,8 +253,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         return tblNursery;
     }
 
-    private Table buildSeasonSummaryTable() {
-        final Table tblSeason = new Table() {
+    private PagedTable buildSeasonSummaryTable() {
+        final PagedTable tblSeason = new PagedTable() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -307,8 +307,11 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             header.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]");
 
         tblActivity.setContainerDataSource(container);
-
+        tblActivity.setPageLength(5);
         tblActivity.setVisibleColumns(columns);
+
+        // add controls
+        SummaryView.this.addComponent(tblActivity.createControls());
     }
 
     public void updateTrialSummaryTable(List<Object> list) {
