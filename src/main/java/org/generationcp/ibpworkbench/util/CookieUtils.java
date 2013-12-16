@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.util;
 import javax.servlet.http.Cookie;
 
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +23,12 @@ public class CookieUtils {
     		cookie.setMaxAge(3600 * 1000 * 24 * 365 * 10);
         	cookie.setPath(IBPWorkbenchApplication.get().getURL().getPath());
         	
-        	IBPWorkbenchApplication.getResponse().addCookie(cookie);
+        	IBPWorkbenchApplication.get().getResponse().addCookie(cookie);
     	}
     }
     
     public static void removeCookies(String... properties) {
-    	Cookie[] cookies = IBPWorkbenchApplication.getRequest().getCookies();
+    	Cookie[] cookies = IBPWorkbenchApplication.get().getRequest().getCookies();
     	for (Cookie cookie : cookies) {
     		
     		for (String property : properties) {
@@ -37,7 +36,7 @@ public class CookieUtils {
     				LOG.debug("Removing cookie [" + cookie.getName() + "] = [" + cookie.getValue() + "]" );
     	        	
     				cookie.setMaxAge(0);
-    	    		IBPWorkbenchApplication.getResponse().addCookie(cookie);    				
+    	    		IBPWorkbenchApplication.get().getResponse().addCookie(cookie);
     			}
     		}
     	}
@@ -45,7 +44,7 @@ public class CookieUtils {
     
     public static String getCookieValue(String property) {
     	try {
-    		Cookie[] cookies = IBPWorkbenchApplication.getRequest().getCookies();
+    		Cookie[] cookies = IBPWorkbenchApplication.get().getRequest().getCookies();
         	for (Cookie cookie : cookies) {
         		if (cookie.getName().equals(property)) {
         			return cookie.getValue();

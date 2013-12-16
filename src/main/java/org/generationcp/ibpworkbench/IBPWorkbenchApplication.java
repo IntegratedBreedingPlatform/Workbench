@@ -28,29 +28,34 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
 public class IBPWorkbenchApplication extends SpringContextApplication {
 
     private static final long serialVersionUID = 1L;
-
     private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
     private LoginWindow loginWindow;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
     private UpdateComponentLabelsAction messageSourceListener;
     
     private SessionData sessionData = new SessionData();
-    private static HttpServletRequest request;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
 
-    public static HttpServletResponse getResponse() {
-        return response;
+    @Override
+    public void close() {
+        super.close();
+
+        // implement this when we need to do something on session timeout
+
+        messageSource.removeListener(messageSourceListener);
+
+        LOG.debug("Application closed");
     }
 
-    public static HttpServletRequest getRequest() {
-        return request;
+    @Override
+    public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
+        LOG.error("Encountered error", event.getThrowable());
     }
-
-    private static HttpServletResponse response;
-
 
     public SessionData getSessionData() {
         return sessionData;
@@ -59,7 +64,46 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
     public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
         this.messageSource = messageSource;
     }
-    
+
+    public HttpServletResponse getResponse() {
+        return response;
+    }
+
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    public static IBPWorkbenchApplication get() {
+        return get(IBPWorkbenchApplication.class);
+    }
+
+    @Override
+    protected void doOnRequestStart(HttpServletRequest request, HttpServletResponse response) {
+        super.doOnRequestStart(request, response);
+
+        this.response = response;
+        this.request = request;
+        //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
+
+        //synchronized (this) {
+        //    HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
+        //}
+
+        //IBPWorkbenchApplication.response = response;	// get a reference of the response
+        //IBPWorkbenchApplication.request = request;
+    }
+
+    @Override
+    protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+        super.doOnRequestEnd(request, response);
+
+        //LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
+
+        //synchronized (this) {
+        //    HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
+        //}
+    }
+
     @Override
     protected void initSpringApplication(ConfigurableWebApplicationContext context) {
         assemble();
@@ -93,53 +137,4 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
         setMainWindow(loginWindow);
     }
-
-    @Override
-    public void close() {
-        super.close();
-
-        // implement this when we need to do something on session timeout
-        
-        messageSource.removeListener(messageSourceListener);
-
-        LOG.debug("Application closed");
-    }
-
-    @Override
-    public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
-        LOG.error("Encountered error", event.getThrowable());
-    }
-    
-    public static IBPWorkbenchApplication get() {
-        return get(IBPWorkbenchApplication.class);
-    }
-    
-    @Override
-    protected void doOnRequestStart(HttpServletRequest request, HttpServletResponse response) {
-        super.doOnRequestStart(request, response);
-
-        this.response = response;
-        this.request = request;
-        //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
-        
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
-        //}
-        
-        //IBPWorkbenchApplication.response = response;	// get a reference of the response
-        //IBPWorkbenchApplication.request = request;
-    }
-    
-    @Override
-    protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-        super.doOnRequestEnd(request, response);
-        
-        //LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
-        
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
-        //}
-    }
-    
-    
 }
