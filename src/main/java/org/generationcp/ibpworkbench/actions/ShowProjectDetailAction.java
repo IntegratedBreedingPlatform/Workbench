@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -25,7 +27,6 @@ import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -129,9 +130,6 @@ public class ShowProjectDetailAction implements ItemClickListener {
         try {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
-            List<StudyDetails> trialSummaryList = studyDataManager.getStudyDetails(StudyType.T,0,Integer.MAX_VALUE);
-            List<StudyDetails> nurserySummaryList = studyDataManager.getStudyDetails(StudyType.N,0,Integer.MAX_VALUE);
-            List<StudyDetails> seasonSummaryList = studyDataManager.getNurseryAndTrialStudyDetails(0,Integer.MAX_VALUE);
             
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
@@ -144,9 +142,20 @@ public class ShowProjectDetailAction implements ItemClickListener {
             tblProject.refreshRowCache();
 
             summaryView.updateActivityTable(activityList);
-            summaryView.updateTrialSummaryTable(trialSummaryList);
-            summaryView.updateNurserySummaryTable(nurserySummaryList);
-            summaryView.updateSeasonSummaryTable(seasonSummaryList);
+            
+            StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(
+            		studyDataManager, StudyType.T, Arrays.asList(summaryView.getTblTrialColumns()));
+            
+            summaryView.updateTrialSummaryTable(trialFactory);
+            
+            
+            StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(
+            		studyDataManager, StudyType.N, Arrays.asList(summaryView.getTblNurseryColumns()));
+            summaryView.updateNurserySummaryTable(nurseryFactory);
+
+            StudyDetailsQueryFactory seasonFactory = new StudyDetailsQueryFactory(
+            		studyDataManager, null, Arrays.asList(summaryView.getTblSeasonColumns()));
+            summaryView.updateSeasonSummaryTable(seasonFactory);
             
             germplasmListPreview.setProject(currentProj);
             nurseryListPreview.setProject(currentProj);

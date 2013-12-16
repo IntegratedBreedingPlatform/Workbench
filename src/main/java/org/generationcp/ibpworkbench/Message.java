@@ -449,5 +449,6 @@ public enum Message {
     //ADDITIONAL FOR PROGRAM SUMMARY
     ,PI_NAME_LABEL
     ,SITE_NAME_LABEL
+    ,STUDY_TYPE_LABEL
 
 }
