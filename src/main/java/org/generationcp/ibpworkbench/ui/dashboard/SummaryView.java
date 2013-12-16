@@ -105,8 +105,12 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                     int selection = toolsDropDown.getSelectedItem();
 
                     if (selection >= 0) {
-                        SummaryView.this.removeComponent(SummaryView.this.getComponent(1));
-                        SummaryView.this.removeComponent(SummaryView.this.getComponent(2));
+                        try {
+                            SummaryView.this.removeComponent(SummaryView.this.getComponent(1));
+                        } catch (IndexOutOfBoundsException e) {
+                            // dont care
+                        }
+
                     }
                     String count = "";
 
@@ -115,29 +119,29 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                             if (activityCount != 0)
                                 count =  " [" + activityCount + "]";
 
-                            header.setValue(messageSource.getMessage(Message.ACTIVITIES) + count);
-                            SummaryView.this.addComponent(tblActivity);
+                            SummaryView.this.addComponent(tblActivity,1);
+                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES) + count,tblActivity);
                             break;
                         case 1:
                            if (trialCount != 0)
                                 count =  " [" + trialCount + "]";
 
-                            header.setValue("Trial Summary" + count);
-                            SummaryView.this.addComponent(tblTrial);
+                            SummaryView.this.addComponent(tblTrial,1);
+                            SummaryView.this.updateHeaderAndTableControls("Trial Summary" + count,tblTrial);
                             break;
                         case 2:
                             if (nurseryCount != 0)
                                 count =  " [" + nurseryCount + "]";
 
-                            header.setValue("Nursery Summary" + count);
-                            SummaryView.this.addComponent(tblNursery);
+                            SummaryView.this.addComponent(tblNursery,1);
+                            SummaryView.this.updateHeaderAndTableControls("Nursery Summary" + count,tblNursery);
                             break;
                         case 3:
                             if (seasonCount != 0)
                                 count =  " [" + seasonCount + "]";
 
-                            header.setValue("Seasons Summary" + count);
                             SummaryView.this.addComponent(tblSeason);
+                            SummaryView.this.updateHeaderAndTableControls("Season Summary" + count,tblSeason);
                             break;
                     }
 
@@ -303,33 +307,29 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         //lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
         activityCount = activityList.size();
 
-        if (this.getComponent(1).equals(tblActivity))
-            header.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]");
 
         tblActivity.setContainerDataSource(container);
         tblActivity.setPageLength(5);
         tblActivity.setVisibleColumns(columns);
 
         // add controls
-        SummaryView.this.addComponent(tblActivity.createControls());
+        updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]",tblActivity);
     }
 
     public void updateTrialSummaryTable(List<Object> list) {
         trialCount = list.size();
-        if (this.getComponent(1).equals(tblTrial))
-            header.setValue("Trial Summary" + " [" + trialCount + "]");
+        updateHeaderAndTableControls("Trial Summary" + " [" + trialCount + "]",tblTrial);
     }
 
     public void updateNurserySummaryTable(List<Object> list) {
         nurseryCount = list.size();
-        if (this.getComponent(1).equals(tblNursery))
-        header.setValue("Nursery Summary" + " [" + nurseryCount + "]");
+        updateHeaderAndTableControls("Trial Summary" + " [" + nurseryCount + "]",tblNursery);
+
     }
 
     public void updateSeasonSummaryTable(List<Object> list) {
         seasonCount = list.size();
-        if (this.getComponent(1).equals(seasonCount))
-        header.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + seasonCount + "]");
+        updateHeaderAndTableControls("Season Summary" + " [" + seasonCount + "]",tblSeason);
     }
 
     private class ToolsDropDown implements PopupView.Content {
@@ -384,6 +384,17 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 selectedItem = choice;
                 toolsPopup.setPopupVisible(false);
             }
+        }
+    }
+
+    private void updateHeaderAndTableControls(String label,PagedTable table) {
+        if (this.getComponent(1).equals(table)) {
+            header.setValue(label);
+
+            if (this.getComponentCount() > 2)
+                SummaryView.this.replaceComponent(this.getComponent(2),table.createControls());
+            else if (this.getComponentCount() == 2)
+                SummaryView.this.addComponent(table.createControls());
         }
     }
 }
