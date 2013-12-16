@@ -111,7 +111,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                             // dont care
                         }
 
-                    }
+                    } else
+                        return;
+
                     String count = "";
 
                     switch (selection) {
@@ -140,7 +142,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                             if (seasonCount != 0)
                                 count =  " [" + seasonCount + "]";
 
-                            SummaryView.this.addComponent(tblSeason);
+                            SummaryView.this.addComponent(tblSeason,1);
                             SummaryView.this.updateHeaderAndTableControls("Season Summary" + count,tblSeason);
                             break;
                     }
