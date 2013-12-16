@@ -445,5 +445,9 @@ public enum Message {
     ,TITLE_SSA
     ,TITLE_GXE
     ,TITLE_METAANALYSIS
+    
+    //ADDITIONAL FOR PROGRAM SUMMARY
+    ,PI_NAME_LABEL
+    ,SITE_NAME_LABEL
 
 }

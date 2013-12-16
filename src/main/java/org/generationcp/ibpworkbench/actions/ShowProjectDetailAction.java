@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -25,20 +25,20 @@ import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.middleware.domain.etl.StudyDetails;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -50,6 +50,12 @@ public class ShowProjectDetailAction implements ItemClickListener {
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+    
+    private StudyDataManager studyDataManager;
+    private ManagerFactory managerFactory;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -117,9 +123,15 @@ public class ShowProjectDetailAction implements ItemClickListener {
         
         SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
         
+        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProj);
+        studyDataManager = managerFactory.getStudyDataManager();
+        
         try {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
+            List<StudyDetails> trialSummaryList = studyDataManager.getStudyDetails(StudyType.T,0,Integer.MAX_VALUE);
+            List<StudyDetails> nurserySummaryList = studyDataManager.getStudyDetails(StudyType.N,0,Integer.MAX_VALUE);
+            List<StudyDetails> seasonSummaryList = studyDataManager.getNurseryAndTrialStudyDetails(0,Integer.MAX_VALUE);
             
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
@@ -132,7 +144,10 @@ public class ShowProjectDetailAction implements ItemClickListener {
             tblProject.refreshRowCache();
 
             summaryView.updateActivityTable(activityList);
-
+            summaryView.updateTrialSummaryTable(trialSummaryList);
+            summaryView.updateNurserySummaryTable(nurserySummaryList);
+            summaryView.updateSeasonSummaryTable(seasonSummaryList);
+            
             germplasmListPreview.setProject(currentProj);
             nurseryListPreview.setProject(currentProj);
             previewTab.setSelectedTab(germplasmListPreview);
