@@ -29,10 +29,12 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
@@ -810,10 +812,15 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
 				} catch (Exception e) {
 					//LOG.error("Exception", e);
+					
+					new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
+					
 		            if(e.getCause() instanceof InternationalizableException) {
 		                InternationalizableException i = (InternationalizableException) e.getCause();
 		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
 		            }
+		            
+		            
 		            return;
 				}
 			}
