@@ -9,6 +9,7 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.springframework.beans.factory.InitializingBean;
@@ -207,21 +208,25 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         };
         tblTrial.setImmediate(true);
 
-        /*
-        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
-        container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
+        
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblTrial.setContainerDataSource(container);
 
-        String[] columns = new String[] {"createdAt", "name", "description"};
-        tblActivity.setVisibleColumns(columns);
+        String[] columns = new String[] {"studyName","title","objective","startDate","endDate","piName","siteName"};
+        tblTrial.setVisibleColumns(columns);
 
         // LAYOUT
-        tblActivity.setWidth("100%");
+        tblTrial.setWidth("100%");
 
-        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
-        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
-        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
-        */
+        messageSource.setColumnHeader(tblTrial, "studyName", Message.NAME_LABEL);
+        messageSource.setColumnHeader(tblTrial, "title", Message.TITLE_LABEL);
+        messageSource.setColumnHeader(tblTrial, "objective", Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(tblTrial, "startDate", Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(tblTrial, "endDate", Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(tblTrial, "piName", Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(tblTrial, "siteName", Message.SITE_NAME_LABEL);
+       
         return tblTrial;
     }
 
@@ -241,21 +246,24 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         };
         tblNursery.setImmediate(true);
 
-        /*
-        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
-        container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblNursery.setContainerDataSource(container);
 
-        String[] columns = new String[] {"createdAt", "name", "description"};
-        tblActivity.setVisibleColumns(columns);
+        String[] columns = new String[] {"studyName","title","objective","startDate","endDate","piName","siteName"};
+        tblNursery.setVisibleColumns(columns);
 
         // LAYOUT
-        tblActivity.setWidth("100%");
+        tblNursery.setWidth("100%");
 
-        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
-        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
-        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
-        */
+        messageSource.setColumnHeader(tblNursery, "studyName", Message.NAME_LABEL);
+        messageSource.setColumnHeader(tblNursery, "title", Message.TITLE_LABEL);
+        messageSource.setColumnHeader(tblNursery, "objective", Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(tblNursery, "startDate", Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(tblNursery, "endDate", Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(tblNursery, "piName", Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(tblNursery, "siteName", Message.SITE_NAME_LABEL);
+        
         return tblNursery;
     }
 
@@ -275,21 +283,24 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         };
         tblSeason.setImmediate(true);
 
-        /*
-        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
-        container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblSeason.setContainerDataSource(container);
 
-        String[] columns = new String[] {"createdAt", "name", "description"};
-        tblActivity.setVisibleColumns(columns);
+        String[] columns = new String[] {"studyName","title","objective","startDate","endDate","piName","siteName","studyType"};
+        tblSeason.setVisibleColumns(columns);
 
         // LAYOUT
-        tblActivity.setWidth("100%");
+        tblSeason.setWidth("100%");
 
-        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
-        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
-        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
-        */
+        messageSource.setColumnHeader(tblSeason, "studyName", Message.NAME_LABEL);
+        messageSource.setColumnHeader(tblSeason, "title", Message.TITLE_LABEL);
+        messageSource.setColumnHeader(tblSeason, "objective", Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(tblSeason, "startDate", Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(tblSeason, "endDate", Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(tblSeason, "piName", Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(tblSeason, "siteName", Message.SITE_NAME_LABEL);
+        
         return tblSeason;
     }
 
@@ -318,19 +329,75 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]",tblActivity);
     }
 
-    public void updateTrialSummaryTable(List<Object> list) {
+    public void updateTrialSummaryTable(List<StudyDetails> list) {
         trialCount = list.size();
+
+        Object[] oldColumns = tblTrial.getVisibleColumns();
+        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblTrial.setContainerDataSource(container);
+
+        for (StudyDetails studyDetail : list) {
+            container.addBean(studyDetail);
+        }
+
+        tblTrial.setContainerDataSource(container);
+
+        tblTrial.setVisibleColumns(columns);
+        tblTrial.setPageLength(5);
+
+        // add controls
         updateHeaderAndTableControls("Trial Summary" + " [" + trialCount + "]",tblTrial);
+
     }
 
-    public void updateNurserySummaryTable(List<Object> list) {
+    public void updateNurserySummaryTable(List<StudyDetails> list) {
         nurseryCount = list.size();
-        updateHeaderAndTableControls("Trial Summary" + " [" + nurseryCount + "]",tblNursery);
+
+    	Object[] oldColumns = tblNursery.getVisibleColumns();
+        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblNursery.setContainerDataSource(container);
+
+        for (StudyDetails studyDetail : list) {
+            container.addBean(studyDetail);
+        }
+
+        tblNursery.setContainerDataSource(container);
+
+        tblNursery.setVisibleColumns(columns);
+
+        tblTrial.setPageLength(5);
+
+        // add controls
+        updateHeaderAndTableControls("Nursery Summary" + " [" + nurseryCount + "]",tblNursery);
+
 
     }
 
-    public void updateSeasonSummaryTable(List<Object> list) {
+    public void updateSeasonSummaryTable(List<StudyDetails> list) {
         seasonCount = list.size();
+
+		Object[] oldColumns = tblSeason.getVisibleColumns();
+        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+
+        BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+        container.setBeanIdProperty("id");
+        tblSeason.setContainerDataSource(container);
+
+        for (StudyDetails studyDetail : list) {
+            container.addBean(studyDetail);
+        }
+
+        tblSeason.setContainerDataSource(container);
+
+        tblSeason.setVisibleColumns(columns);
+
+        // add controls
         updateHeaderAndTableControls("Season Summary" + " [" + seasonCount + "]",tblSeason);
     }
 

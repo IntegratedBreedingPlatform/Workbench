@@ -282,6 +282,7 @@ public class GxeComponentPanel extends VerticalLayout implements
         leafResource =  new ThemeResource("images/leaf_16.png");
 		
 		HorizontalLayout horizontal = new HorizontalLayout();
+		horizontal.setHeight("1200px");
 
 		ManagerFactory managerFactory = managerFactoryProvider
 				.getManagerFactoryForProject(project);
@@ -442,7 +443,9 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 		tab.setImmediate(true);
         tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
-		tab.setSizeFull();
+        tab.setStyleName("panel-border");
+		//tab.setSizeFull();
+		tab.setHeight("100%");
 
 		return tab;
 	}
