@@ -36,6 +36,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private Table tblActivity;
     private Table tblTrial;
     private Table tblNursery;
+    private Table tblSeason;
 
 
     @Override
@@ -78,7 +79,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         header = new Label("Activity Summary");
         header.setStyleName(Bootstrap.Typography.H2.styleName());
 
-        final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Trial Summaries","Nursery Summaries");
+        final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Trial Summaries","Nursery Summaries","Season Summaries");
         toolsPopup = new PopupView(toolsDropDown);
         toolsPopup.setStyleName("btn-dropdown");
         toolsPopup.setHideOnMouseOut(false);
@@ -92,6 +93,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                         SummaryView.this.removeComponent(tblActivity);
                         SummaryView.this.removeComponent(tblTrial);
                         SummaryView.this.removeComponent(tblNursery);
+                        SummaryView.this.removeComponent(tblSeason);
                     }
 
                     switch (selection) {
@@ -103,6 +105,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                         case 2:
                             SummaryView.this.addComponent(tblNursery);
                             break;
+                        case 3:
+                            SummaryView.this.addComponent(tblSeason);
+                            break;
                     }
 
                 }
@@ -112,7 +117,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblActivity = buildActivityTable();
         tblTrial = buildTrialSummaryTable();
         tblNursery = buildNurserySummaryTable();
-
+        tblSeason = buildSeasonSummaryTable();
     }
 
     private Table buildActivityTable() {
@@ -216,6 +221,40 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         return tblNursery;
     }
 
+    private Table buildSeasonSummaryTable() {
+        final Table tblSeason = new Table() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+                if (property.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        tblSeason.setImmediate(true);
+
+        /*
+        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+        container.setBeanIdProperty("projectActivityId");
+        tblActivity.setContainerDataSource(container);
+
+        String[] columns = new String[] {"createdAt", "name", "description"};
+        tblActivity.setVisibleColumns(columns);
+
+        // LAYOUT
+        tblActivity.setWidth("100%");
+
+        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
+        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
+        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
+        */
+        return tblSeason;
+    }
+
     public void updateActivityTable(List<ProjectActivity> activityList) {
         Object[] oldColumns = tblActivity.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
@@ -244,6 +283,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     }
 
+    public void updateSeasonSummmaryTable(List<Object> list) {
+
+    }
 
     private class ToolsDropDown implements PopupView.Content {
         private Button[] choices;
