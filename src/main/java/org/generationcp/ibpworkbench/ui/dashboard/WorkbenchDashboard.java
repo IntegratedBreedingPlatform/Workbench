@@ -85,9 +85,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     private Button selectDatasetForBreedingViewButton;
     
-    private Table tblActivity;
+    //private Table tblActivity;
     
-    private Table tblRoles;
+    //private Table tblRoles;
     private TabSheet previewTab;
     private Tab listTab;
     private Tab nurseryTrialTab;
@@ -109,7 +109,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
     
     private List<Project> projects = null;
-    
+    private SummaryView summaryView;
+
     public WorkbenchDashboard() {
         super();
     }
@@ -124,8 +125,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         lblDashboardTitle = new Label();
         lblDashboardTitle.setStyleName(Bootstrap.Typography.H3.styleName());
         
-        lblActivitiesTitle = new Label();
-        lblActivitiesTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        //lblActivitiesTitle = new Label();
+        //lblActivitiesTitle.setStyleName(Bootstrap.Typography.H2.styleName());
         
         lblPrograms = new Label(messageSource.getMessage(Message.PROJECT_TABLE_CAPTION));
         
@@ -141,8 +142,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         selectDatasetForBreedingViewButton.setWidth("200px");
 
         initializeProjectTable();
-        initializeActivityTable();
-        initializeRolesTable();
         initializePreviewTable();
     }
     
@@ -184,43 +183,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     
     }
-    
-    private void initializeActivityTable() {
-        tblActivity = new Table() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-                if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-                }
-
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        tblActivity.setImmediate(true);
-        
-        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
-        container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
-        
-        String[] columns = new String[] {"createdAt", "name", "description"};
-        tblActivity.setVisibleColumns(columns);
-    }
-    
-    private void initializeRolesTable() {
-        tblRoles = new Table();
-        tblRoles.setImmediate(true);
-        
-        BeanContainer<Integer, Role> container = new BeanContainer<Integer, Role>(Role.class);
-        container.setBeanIdProperty("label");
-        tblRoles.setContainerDataSource(container);
-        tblRoles.setStyleName("gcp-tblroles");
-        
-        String[] columns = new String[] {"label"};
-        tblRoles.setVisibleColumns(columns);
-    }
 
     private void initializePreviewTable() {
         previewTab = new TabSheet();
@@ -238,10 +200,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
     
     protected void initializeLayout() {
-        setWidth("100%");
-        setMargin(true);
-        setSpacing(true);
-        
         lblDashboardTitle.setSizeUndefined();
         
         //buttonPanel.addComponent(lblDashboardTitle);
@@ -249,10 +207,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         //addComponent(buttonPanel);
         Component projectTableArea = layoutProjectTableArea();
         addComponent(projectTableArea);
-        setExpandRatio(projectTableArea, 1.0f);
+        //setExpandRatio(projectTableArea, 1.0f);
         
         Component projectDetailArea = layoutProjectDetailArea();
         addComponent(projectDetailArea);
+
+        this.setSizeUndefined();
+        this.setMargin(new MarginInfo(false,true,true,true));
+        this.setWidth("98%");
+
     }
 
     protected void initializeData() {
@@ -328,7 +291,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, tblActivity, tblRoles, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
+        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
         tblProject.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
@@ -444,9 +407,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     	vertRight.addComponent(previewTab);
     	vertRight.setWidth("400px");
     	vertRight.setHeight("99%");
-    	
-    	tblRoles.setWidth("300px");
-    	//hl.addComponent(tblRoles);
+
     	previewTab.setWidth("100%");
         //previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
         previewTab.addStyleName("preview-tab");
@@ -465,33 +426,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
     
     private Component layoutProjectDetailArea() {
-        // layout the tables
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setWidth("100%");
-        horizontalLayout.setMargin(false);
-        horizontalLayout.setSpacing(true);
-        
-        tblActivity.setWidth("100%");
-        horizontalLayout.addComponent(tblActivity);
-        horizontalLayout.setExpandRatio(tblActivity, 1.0f);
-        
-        //tblRoles.setWidth("300px");
-        //horizontalLayout.addComponent(tblRoles);
-       
-        
-        // layout the project detail area
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setWidth("100%");
-        verticalLayout.setMargin(false);
-        verticalLayout.setSpacing(true);
-        
-        verticalLayout.addComponent(lblActivitiesTitle);
-        verticalLayout.addComponent(horizontalLayout);
-        
-        //verticalLayout.addComponent(selectDatasetForBreedingViewButton);
-        //verticalLayout.setComponentAlignment(selectDatasetForBreedingViewButton, Alignment.TOP_LEFT);
-        
-        return verticalLayout;
+        this.summaryView = new SummaryView();
+
+        return summaryView;
     }
     
     @Override
@@ -510,7 +447,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setCaption(lblPrograms, Message.PROGRAMS_LABEL);
         messageSource.setCaption(lblPreview, Message.PREVIEW_LABEL);
         */
-        messageSource.setValue(lblActivitiesTitle, Message.ACTIVITIES);
+        //messageSource.setValue(lblActivitiesTitle, Message.ACTIVITIES);
         
         messageSource.setColumnHeader(tblProject, "startDate", Message.START_DATE);
         messageSource.setColumnHeader(tblProject, "projectName", Message.PROJECT);
@@ -518,15 +455,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         messageSource.setColumnHeader(tblProject, "status", Message.STATUS);
         messageSource.setColumnHeader(tblProject, "owner", Message.OWNER);
         //messageSource.setCaption(selectDatasetForBreedingViewButton, Message.BREEDING_VIEW_DATASET_SELECT);
-        
-        //messageSource.setCaption(tblActivity, Message.ACTIVITIES);
-        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
-        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
-        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
-        
-        messageSource.setColumnHeader(tblRoles, "label", Message.NAME);
-        messageSource.setCaption(tblRoles, Message.ROLE_TABLE_TITLE);
-        
+
         tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
             private static final long serialVersionUID = 1L;
 
@@ -535,23 +464,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 return messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
             }
         });
-        
-        tblRoles.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String generateDescription(Component source, Object itemId, Object propertyId) {
-                Table table = (Table) source;
-                Container container = table.getContainerDataSource();
-                
-                @SuppressWarnings("unchecked")
-                BeanItem<Role> item = (BeanItem<Role>) container.getItem(itemId);
-                Role role = item.getBean();
-                
-                return role == null ? "" : messageSource.getMessage(Message.ROLE_TABLE_TOOLTIP, role.getLabel());
-            }
-        });
-        
     }
 
     public Project getCurrentProject() {
