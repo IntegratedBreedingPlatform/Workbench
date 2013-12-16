@@ -32,7 +32,6 @@ import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeLi
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
-import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -60,6 +59,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -69,7 +69,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Window.Notification;
 
 /**
@@ -826,7 +825,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 			}
 		});
        
-       btnRun.addListener(new RunBreedingViewAction(this));
+       btnRun.addListener(new RunBreedingViewAction(this, project));
        
        btnRun.setClickShortcut(KeyCode.ENTER);
        btnRun.addStyleName("primary");
