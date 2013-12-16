@@ -721,3 +721,40 @@ div div div div.v-button span.v-button-wrap span.v-button-caption {
 .project-data-time .v-datefield-calendarpanel-time{
 	display: none;
 }
+
+.btn-dropdown {
+    font-size: 12px; font-weight: bold;
+    padding: 0 20px;
+    text-decoration: none;
+    border-radius: 3px;
+    color: white;
+    margin-right: 10px; margin-bottom: 10px;
+
+    height: 24px; line-height: 24px;
+    border: 1px solid #0B748D;
+    background: #1B95B2;
+}
+
+.btn-dropdown:hover {
+    color: white;
+    border: 1px solid #1B95B2;
+    background: #29AFCF;
+}
+
+.v-popupview-popup-btn-dropdown {
+    padding: 5px 0;
+    background: #fff;
+    border-radius: 3px;
+}
+
+.v-popupview-popup-btn-dropdown .v-button.v-button-link {
+    border-radius: 0;
+}
+
+.v-popupview-popup-btn-dropdown .v-button.v-button-link:hover {
+    background: #BED6B2;
+}
+
+.v-popupview-popup-btn-dropdown .v-button.v-button-link span span {
+    display:block; padding-left: 10px; line-height: 26px; font-weight: bold; color: #333; text-decoration: none;
+}
