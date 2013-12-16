@@ -94,6 +94,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         this.addComponent(headerArea);
         this.addComponent(tblActivity);
 
+        // set initial header
+        this.updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES),tblActivity);
+
+
         this.setWidth("100%");
         this.setSpacing(true);
 
@@ -170,6 +174,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblTrial = buildTrialSummaryTable();
         tblNursery = buildNurserySummaryTable();
         tblSeason = buildSeasonSummaryTable();
+
     }
 
     private PagedTable buildActivityTable() {
@@ -216,7 +221,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
         container.setBeanIdProperty("projectActivityId");
         tblActivity.setContainerDataSource(container);
-        tblActivity.setPageLength(5);
 
         String[] columns = new String[] {"createdAt", "name", "description"};
         tblActivity.setVisibleColumns(columns);
@@ -279,7 +283,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         String[] columns = getTblTrialColumns();
         tblTrial.setVisibleColumns(columns);
-        tblTrial.setPageLength(5);
 
         // LAYOUT
         tblTrial.setWidth("100%");
@@ -342,7 +345,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         String[] columns = getTblNurseryColumns();
         tblNursery.setVisibleColumns(columns);
-        tblNursery.setPageLength(5);
         // LAYOUT
         tblNursery.setWidth("100%");
 
@@ -404,7 +406,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         String[] columns = getTblSeasonColumns();
         tblSeason.setVisibleColumns(columns);
-        tblSeason.setPageLength(5);
         // LAYOUT
         tblSeason.setWidth("100%");
 
@@ -438,7 +439,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
 
         tblActivity.setContainerDataSource(container);
-        tblActivity.setPageLength(5);
         tblActivity.setVisibleColumns(columns);
 
         // add controls
@@ -459,7 +459,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         
         tblTrial.setContainerDataSource(container);
         tblTrial.setVisibleColumns(columns);
-        tblTrial.setPageLength(5);
         tblTrial.setImmediate(true);
         // add controls
         updateHeaderAndTableControls("Trial Summary" + " [" + trialCount + "]",tblTrial);
@@ -480,7 +479,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         
         tblNursery.setContainerDataSource(container);
         tblNursery.setVisibleColumns(columns);
-        tblNursery.setPageLength(5);
         tblNursery.setImmediate(true);
         // add controls
         updateHeaderAndTableControls("Nursery Summary" + " [" + nurseryCount + "]",tblNursery);
@@ -502,7 +500,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         
         tblSeason.setContainerDataSource(container);
         tblSeason.setVisibleColumns(columns);
-        tblSeason.setPageLength(5);
         tblSeason.setImmediate(true);
         // add controls
         updateHeaderAndTableControls("Season Summary" + " [" + seasonCount + "]",tblSeason);
@@ -572,6 +569,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             else if (this.getComponentCount() == 2)
                 SummaryView.this.addComponent(table.createControls());
         }
+
+        table.setPageLength(10);
     }
 
 	public String[] getTblTrialColumns() {
