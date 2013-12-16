@@ -54,18 +54,11 @@ public class ShowProjectDetailAction implements ItemClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private Label lblActivity;
-    
     private Table tblProject;
     private WorkbenchMainView workbenchDashboardwindow;
-    private Label lblDashboardTitle;
 
-    //private Table tblRoles;
-    
     private OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction;
-    
-    private OpenWorkflowForRoleAction openWorkflowForRoleAction;
-    
+
     private Button selectDatasetForBreedingViewButton;
     private Project currentProj;
     
@@ -75,10 +68,9 @@ public class ShowProjectDetailAction implements ItemClickListener {
     
     private List<Project> projects;
     
-    public ShowProjectDetailAction(Label lblActivity, Table tblProject, SummaryView summaryView,
+    public ShowProjectDetailAction(Table tblProject, SummaryView summaryView,
             Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,
             Project currentProject, GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects) {
-        this.lblActivity = lblActivity;
         this.tblProject = tblProject;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
@@ -129,11 +121,6 @@ public class ShowProjectDetailAction implements ItemClickListener {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
             
-            //List<Role> roleList = workbenchDataManager.getRolesByProjectAndUser(project, sessionData.getUserData());
-            
-            //String label = messageSource.getMessage(Message.PROJECT_DETAIL) + ": " + project.getProjectName();
-            //projectDetailLabel.setValue(label);
-           
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
 
@@ -145,7 +132,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             tblProject.refreshRowCache();
 
             summaryView.updateActivityTable(activityList);
-            // updateRoleTable(roleList);
+
             germplasmListPreview.setProject(currentProj);
             nurseryListPreview.setProject(currentProj);
             previewTab.setSelectedTab(germplasmListPreview);

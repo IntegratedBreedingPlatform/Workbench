@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -53,17 +54,8 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.themes.Reindeer;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -71,31 +63,17 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     private static final long serialVersionUID = 1L;
 
-    private Label lblDashboardTitle;
-    private Label lblPrograms;
-    private Label lblPreview;
-    private Label headerProgramLabel;
-    private Label headerPreviewLabel;
-    
     private Table tblProject;
     
     private Project currentProject;
     
-    private Label lblActivitiesTitle;
-    
     private Button selectDatasetForBreedingViewButton;
     
-    //private Table tblActivity;
-    
-    //private Table tblRoles;
     private TabSheet previewTab;
-    private Tab listTab;
-    private Tab nurseryTrialTab;
-    private Tab rolesTab;
+
     private GermplasmListPreview germplasmListPreview;
     private NurseryListPreview nurseryListPreview;
-    
-    private HorizontalLayout buttonPanel;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -121,24 +99,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     public void initializeComponents() {
-    	buttonPanel = new HorizontalLayout();
-        lblDashboardTitle = new Label();
-        lblDashboardTitle.setStyleName(Bootstrap.Typography.H3.styleName());
-        
-        //lblActivitiesTitle = new Label();
-        //lblActivitiesTitle.setStyleName(Bootstrap.Typography.H2.styleName());
-        
-        lblPrograms = new Label(messageSource.getMessage(Message.PROJECT_TABLE_CAPTION));
-        
-        
-        lblPreview = new Label(messageSource.getMessage(Message.PREVIEW_TAB_CAPTION));
-        
-        headerPreviewLabel = new Label(messageSource.getMessage(Message.PREVIEW_LABEL));
-        headerProgramLabel = new Label(messageSource.getMessage(Message.PROGRAMS_LABEL));
-        headerProgramLabel.setStyleName(Bootstrap.Typography.H2.styleName());
-        headerPreviewLabel.setStyleName(Bootstrap.Typography.H2.styleName());
-        
-        selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
+    	selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
         selectDatasetForBreedingViewButton.setWidth("200px");
 
         initializeProjectTable();
@@ -163,59 +124,40 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         };
         tblProject.setImmediate(true); // react at once when something is selected
         tblProject.setStyleName("gcp-tblproject");
-        //BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-        //projectContainer.setBeanIdProperty("projectId");
-        //tblProject.setContainerDataSource(projectContainer);
-        
+
         tblProject.addContainerProperty(PROGRAM_NAME_COLUMN_ID, String.class, null);
         tblProject.addContainerProperty(CROP_NAME_COLUMN_ID, String.class, null);
         tblProject.addContainerProperty(BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
-        
-        
 
-        
         tblProject.setColumnHeader(PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
         tblProject.setColumnHeader(CROP_NAME_COLUMN_ID, "CROP");
         tblProject.setColumnHeader(BUTTON_LIST_MANAGER_COLUMN_ID, "");
-        
-        
+
         tblProject.setColumnCollapsingAllowed(true);
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     
     }
 
     private void initializePreviewTable() {
+        germplasmListPreview = new GermplasmListPreview(null);
+        nurseryListPreview = new NurseryListPreview(null);
+
         previewTab = new TabSheet();
         previewTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+        previewTab.addTab(germplasmListPreview, "Lists");
 
-        germplasmListPreview = new GermplasmListPreview(null);
-        listTab = previewTab.addTab(germplasmListPreview, "Lists");
+        previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
 
-        nurseryListPreview = new NurseryListPreview(null);
-        nurseryTrialTab = previewTab.addTab(nurseryListPreview, "Nurseries & Trials");
-
-        //rolesTab = previewTab.addTab(tblRoles, "Roles");
-        
         previewTab.setImmediate(true);
     }
     
     protected void initializeLayout() {
-        lblDashboardTitle.setSizeUndefined();
-        
-        //buttonPanel.addComponent(lblDashboardTitle);
-        
-        //addComponent(buttonPanel);
-        Component projectTableArea = layoutProjectTableArea();
-        addComponent(projectTableArea);
-        //setExpandRatio(projectTableArea, 1.0f);
-        
-        Component projectDetailArea = layoutProjectDetailArea();
-        addComponent(projectDetailArea);
-
         this.setSizeUndefined();
         this.setMargin(new MarginInfo(false,true,true,true));
         this.setWidth("98%");
 
+        this.addComponent(layoutProjectTableArea());
+        this.addComponent(layoutProjectDetailArea());
     }
 
     protected void initializeData() {
@@ -243,13 +185,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
         projectContainer.setBeanIdProperty("projectName");
-        
-        //for (Project project : projects) {
+
         int i =0;
         Project project;
         for(i = projects.size() - 1 ; i >=0 ; i--){
-            //projectContainer.addBean(project);
-            //Project project  = projects.get(i);
             project = projects.get(i);
 
             Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
@@ -259,30 +198,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.setWidth("26px"); button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
-            
-            // DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
-            //    String date = "";
-                
-            //            date = newDf.format(project.getStartDate());
 
-                
-            tblProject.addItem(new Object[]{project.getProjectName(),  capitalizeFirstLetter(project.getCropType().getCropName()), button}, project.getProjectId());
+            // capitalization done on CSS
+            tblProject.addItem(new Object[]{project.getProjectName(),project.getCropType().getCropName(), button}, project.getProjectId());
         }
-        
-        
-        //tblProject.setContainerDataSource(projectContainer);
-
-        
-        // set the visible columns on the Project Table
-        //String[] columns = new String[] { "startDate", "projectName"};
-        //tblProject.setVisibleColumns(columns);
-    }
-
-    private String capitalizeFirstLetter(String temp){
-        if(temp != null && !temp.equalsIgnoreCase("")){
-            return temp.substring (0,1).toUpperCase() + temp.substring (1).toLowerCase();
-        }
-        return "";
     }
 
     private Button lasSelectedProjectButton = null;
@@ -291,7 +210,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-        tblProject.addListener(new ShowProjectDetailAction(lblActivitiesTitle, tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
+        tblProject.addListener(new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
         tblProject.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
@@ -321,108 +240,63 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     }
 
     private Component layoutProjectTableArea() {
-     
-    	HorizontalLayout hl = new HorizontalLayout();
-    	hl.setWidth("100%");
-        hl.setMargin(false);
-    	hl.setStyleName("program-table");
-    	//hl.setSpacing(true);
-    	
-    
-    	VerticalLayout vert1 = new VerticalLayout();
-    	vert1.addComponent(lblDashboardTitle);
-    	
-    	
-    	
-    	HorizontalLayout mainHorizontal = new HorizontalLayout();
-    	mainHorizontal.setWidth("100%");
-    	
-    	HorizontalLayout leftButtonLayout = new HorizontalLayout();
-    	
-    	HorizontalLayout leftButtonOnlyLayout = new HorizontalLayout();
-    	leftButtonLayout.setWidth("100%");
-    	leftButtonLayout.setSpacing(true);
-    	leftButtonLayout.addComponent(lblPrograms);
-    	leftButtonLayout.setExpandRatio(lblPrograms, 1.0f);
-    	
-    	Button btnAddProgram = new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
-    	btnAddProgram.setHtmlContentAllowed(true);
-    	btnAddProgram.addListener(new OpenNewProjectAction());
-        btnAddProgram.addStyleName(Bootstrap.Buttons.INFO.styleName());
+        final HorizontalSplitPanel root = new HorizontalSplitPanel();
+        root.setSplitPosition(400,UNITS_PIXELS,true);
+        root.setStyleName(Reindeer.SPLITPANEL_SMALL + " gcp-program-table-area");
 
-        btnAddProgram.addStyleName("v-button-wrap-dashboard");
-        
-    	//btnAddProgram.setStyleName(Button.STYLE_LINK);
-    	Button btnManageProgram = new Button("Manage Programs");
-    	btnManageProgram.setStyleName("v-button-wrap-dashboard");
-    	//btnManageProgram.setStyleName(Button.STYLE_LINK);
-    	leftButtonOnlyLayout.addComponent(btnAddProgram);
-    	//leftButtonOnlyLayout.addComponent(btnManageProgram);
-    	leftButtonOnlyLayout.setSpacing(true);
-        
-        leftButtonLayout.setComponentAlignment(lblPrograms, Alignment.BOTTOM_LEFT);
-        //leftButtonOnlyLayout.setComponentAlignment(btnAddProgram, Alignment.MIDDLE_RIGHT);
-        //leftButtonOnlyLayout.setComponentAlignment(btnManageProgram, Alignment.MIDDLE_RIGHT);
-    	
-        leftButtonLayout.addComponent(leftButtonOnlyLayout);
-        leftButtonLayout.setComponentAlignment(leftButtonOnlyLayout, Alignment.MIDDLE_RIGHT);
-        
-    	VerticalLayout vertLeft = new VerticalLayout();
-    	vertLeft.addComponent(headerProgramLabel);
-    	vertLeft.addComponent(leftButtonLayout);
-    	//vertLeft.addComponent(new Label(""));
-    	vertLeft.addComponent(tblProject);
-    	vertLeft.setWidth("100%");
-    	vertLeft.setSpacing(true);
-    	
-    	
-    	
-    	tblProject.setWidth("100%");
-    	tblProject.setStyleName("program-tab");
-        //tblProject.setHeight("100%");
-    	
-    	//vertLeft.setExpandRatio(tblProject, 0.9f);
-    	
-    	mainHorizontal.addComponent(vertLeft);
-    	mainHorizontal.setExpandRatio(vertLeft,1.0f);
-    	mainHorizontal.setSpacing(true);
+        final VerticalLayout programArea = new VerticalLayout();
+        programArea.setSizeFull();
+        programArea.setMargin(new MarginInfo(true,true,false,false));
 
-    	
-    	VerticalLayout vertRight = new VerticalLayout();
-    	HorizontalLayout labelLayout = new HorizontalLayout();
-    	labelLayout.setWidth("100%");
-    	labelLayout.setHeight("28px");
-    	labelLayout.setSpacing(true);
-    	labelLayout.setStyleName("dashboard-horizontal-label-top");
-    	vertRight.setSpacing(true);
-    	vertRight.addComponent(headerPreviewLabel);
-    	
-    	labelLayout.addComponent(lblPreview);
-    	labelLayout.setComponentAlignment(lblPreview, Alignment.BOTTOM_LEFT);
-    	labelLayout.setStyleName("dashboard-horizontal-label-top");
-    	
-    	vertRight.addComponent(labelLayout);
-    	
-    	vertLeft.addComponent(new Label(""));
-    	vertRight.addComponent(previewTab);
-    	vertRight.setWidth("400px");
-    	vertRight.setHeight("99%");
+        final HorizontalLayout programHeaderArea = new HorizontalLayout();
+        programHeaderArea.setWidth("100%");
+        final Label programLbl = new Label(messageSource.getMessage(Message.PROGRAMS_LABEL));
+        programLbl.setStyleName(Bootstrap.Typography.H3.styleName());
 
-    	previewTab.setWidth("100%");
-        //previewTab.setStyleName(Reindeer.TABSHEET_MINIMAL);
+        final Label programDescLbl = new Label(messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
+        programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());
+
+        final Button addProgramBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
+        addProgramBtn.setHtmlContentAllowed(true);
+        addProgramBtn.addListener(new OpenNewProjectAction());
+        addProgramBtn.addStyleName(Bootstrap.Buttons.INFO.styleName());
+        addProgramBtn.setWidth("135px");
+
+        programHeaderArea.addComponent(programLbl);
+
+        final HorizontalLayout headerContainer = new HorizontalLayout();
+        headerContainer.setSizeUndefined();
+        headerContainer.setSpacing(true);
+        headerContainer.addComponent(programLbl);
+        headerContainer.addComponent(programDescLbl);
+        headerContainer.setComponentAlignment(programLbl, Alignment.BOTTOM_LEFT);
+        headerContainer.setComponentAlignment(programDescLbl,Alignment.BOTTOM_LEFT);
+
+        programHeaderArea.addComponent(headerContainer);
+        programHeaderArea.addComponent(addProgramBtn);
+        programHeaderArea.setComponentAlignment(addProgramBtn,Alignment.MIDDLE_LEFT);
+        programHeaderArea.setExpandRatio(headerContainer,1.0F);
+
+        tblProject.setSizeFull();
+        tblProject.setStyleName("program-tab");
+
+        programArea.addComponent(programHeaderArea);
+        programArea.addComponent(tblProject);
+        programArea.setExpandRatio(tblProject, 1.0F);
+
+        final VerticalLayout previewArea = new VerticalLayout();
+        previewArea.setStyleName("preview-area");
+        previewArea.setSizeFull();
+        previewArea.setMargin(new MarginInfo(true,false,false,false));
+
+        previewArea.addComponent(previewTab);
         previewTab.addStyleName("preview-tab");
-    	 
-    	 vertRight.setExpandRatio(previewTab, 1.0f);
-    	 
-    	 
-    	 mainHorizontal.addComponent(vertRight);
-    	 
-    	 vert1.addComponent(mainHorizontal);
-    	 vert1.setWidth("100%");
-         vert1.setHeight("100%");
-    	 vert1.setSpacing(true);
-    	 hl.addComponent(vert1);
-    	return hl;
+
+        root.setFirstComponent(programArea);
+        root.setSecondComponent(previewArea);
+        root.setHeight("580px");
+
+        return root;
     }
     
     private Component layoutProjectDetailArea() {
@@ -440,21 +314,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     @Override
     public void updateLabels() {
-        messageSource.setValue(lblDashboardTitle, Message.DASHBOARD);
-        /*
-        messageSource.setCaption(tblProject, Message.PROJECT_TABLE_CAPTION);
-        messageSource.setCaption(previewTab, Message.PREVIEW_TAB_CAPTION);
-        messageSource.setCaption(lblPrograms, Message.PROGRAMS_LABEL);
-        messageSource.setCaption(lblPreview, Message.PREVIEW_LABEL);
-        */
-        //messageSource.setValue(lblActivitiesTitle, Message.ACTIVITIES);
-        
         messageSource.setColumnHeader(tblProject, "startDate", Message.START_DATE);
         messageSource.setColumnHeader(tblProject, "projectName", Message.PROJECT);
         messageSource.setColumnHeader(tblProject, "action", Message.ACTION);
         messageSource.setColumnHeader(tblProject, "status", Message.STATUS);
         messageSource.setColumnHeader(tblProject, "owner", Message.OWNER);
-        //messageSource.setCaption(selectDatasetForBreedingViewButton, Message.BREEDING_VIEW_DATASET_SELECT);
 
         tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
             private static final long serialVersionUID = 1L;
@@ -472,6 +336,5 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        //messageSource.setValue(lblDashboardTitle, Message.DASHBOARD+ " " + currentProject.getProjectName());
-    }
+     }
 }
