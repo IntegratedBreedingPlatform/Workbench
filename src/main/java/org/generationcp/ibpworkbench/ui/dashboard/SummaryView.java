@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.dashboard;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -38,6 +39,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private Table tblNursery;
     private Table tblSeason;
 
+    private int activityCount = 0;
+    private int trialCount = 0;
+    private int nurseryCount = 0;
+    private int seasonCount = 0;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -52,14 +57,23 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private void initializeLayout() {
-        HorizontalLayout headerArea = new HorizontalLayout();
-        headerArea.setSizeUndefined();
-        headerArea.setWidth("100%");
-        headerArea.addComponent(header);
-        headerArea.addComponent(toolsPopup);
-        headerArea.setComponentAlignment(header,Alignment.BOTTOM_LEFT);
-        headerArea.setComponentAlignment(toolsPopup,Alignment.BOTTOM_RIGHT);
+        final HorizontalLayout headerArea = new HorizontalLayout();
+        headerArea.setSizeFull();
 
+        final Embedded headerImg = new Embedded(null,new ThemeResource("images/recent-activity.png"));
+        headerImg.setStyleName("header-img");
+
+        final HorizontalLayout headerTitleWrap = new HorizontalLayout();
+        headerTitleWrap.setSizeUndefined();
+        headerTitleWrap.setSpacing(true);
+
+        headerTitleWrap.addComponent(headerImg);
+        headerTitleWrap.addComponent(header);
+
+        headerArea.addComponent(headerTitleWrap);
+        headerArea.addComponent(toolsPopup);
+        headerArea.setComponentAlignment(headerTitleWrap,Alignment.BOTTOM_LEFT);
+        headerArea.setComponentAlignment(toolsPopup,Alignment.BOTTOM_RIGHT);
 
         this.addComponent(headerArea);
         this.addComponent(tblActivity);
@@ -76,8 +90,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private void initializeComponents() {
-        header = new Label("Activity Summary");
-        header.setStyleName(Bootstrap.Typography.H2.styleName());
+        header = new Label(messageSource.getMessage(Message.ACTIVITIES));
+        header.setStyleName(Bootstrap.Typography.H3.styleName());
 
         final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Trial Summaries","Nursery Summaries","Season Summaries");
         toolsPopup = new PopupView(toolsDropDown);
@@ -95,17 +109,35 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                         SummaryView.this.removeComponent(tblNursery);
                         SummaryView.this.removeComponent(tblSeason);
                     }
+                    String count = "";
 
                     switch (selection) {
                         case 0:
+                            if (activityCount != 0)
+                                count =  " [" + activityCount + "]";
+
+                            header.setValue(messageSource.getMessage(Message.ACTIVITIES) + count);
                             SummaryView.this.addComponent(tblActivity);
                             break;
                         case 1:
+                           if (trialCount != 0)
+                                count =  " [" + trialCount + "]";
+
+                            header.setValue("Trial Summary" + count);
                             SummaryView.this.addComponent(tblTrial);
+                            break;
                         case 2:
+                            if (nurseryCount != 0)
+                                count =  " [" + nurseryCount + "]";
+
+                            header.setValue("Nursery Summary" + count);
                             SummaryView.this.addComponent(tblNursery);
                             break;
                         case 3:
+                            if (seasonCount != 0)
+                                count =  " [" + seasonCount + "]";
+
+                            header.setValue("Seasons Summary" + count);
                             SummaryView.this.addComponent(tblSeason);
                             break;
                     }
@@ -269,6 +301,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         //TODO: update label
         //lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
+        activityCount = activityList.size();
+
+        if (this.getComponent(1).equals(tblActivity))
+            header.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]");
 
         tblActivity.setContainerDataSource(container);
 
@@ -276,15 +312,21 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     public void updateTrialSummaryTable(List<Object> list) {
-
+        trialCount = list.size();
+        if (this.getComponent(1).equals(tblTrial))
+            header.setValue("Trial Summary" + " [" + trialCount + "]");
     }
 
-    public void updateNurserySummmaryTable(List<Object> list) {
-
+    public void updateNurserySummaryTable(List<Object> list) {
+        nurseryCount = list.size();
+        if (this.getComponent(1).equals(tblNursery))
+        header.setValue("Nursery Summary" + " [" + nurseryCount + "]");
     }
 
-    public void updateSeasonSummmaryTable(List<Object> list) {
-
+    public void updateSeasonSummaryTable(List<Object> list) {
+        seasonCount = list.size();
+        if (this.getComponent(1).equals(seasonCount))
+        header.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + seasonCount + "]");
     }
 
     private class ToolsDropDown implements PopupView.Content {

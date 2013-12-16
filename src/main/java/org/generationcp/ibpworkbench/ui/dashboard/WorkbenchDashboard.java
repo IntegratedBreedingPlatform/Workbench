@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -271,10 +272,18 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         final HorizontalLayout headerContainer = new HorizontalLayout();
         headerContainer.setSizeUndefined();
         headerContainer.setSpacing(true);
+
+        final Embedded headerImg = new Embedded(null,new ThemeResource("images/programs.png"));
+        headerImg.setStyleName("header-img");
+
+        headerContainer.addComponent(headerImg);
         headerContainer.addComponent(programLbl);
         headerContainer.addComponent(programDescLbl);
+
+        headerContainer.setComponentAlignment(headerImg, Alignment.BOTTOM_LEFT);
         headerContainer.setComponentAlignment(programLbl, Alignment.BOTTOM_LEFT);
         headerContainer.setComponentAlignment(programDescLbl,Alignment.BOTTOM_LEFT);
+
 
         programHeaderArea.addComponent(headerContainer);
         programHeaderArea.addComponent(addProgramBtn);
