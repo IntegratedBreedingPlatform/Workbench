@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -163,6 +164,31 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public HorizontalLayout createControls() {
+
+                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+                Iterator<Component> iterator= controls.getComponentIterator();
+
+                while (iterator.hasNext()) {
+                    Component c = iterator.next();
+                    if (c instanceof HorizontalLayout) {
+                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
+
+                        while (iterator2.hasNext()) {
+                            Component d = iterator2.next();
+
+                            if (d instanceof Button) {
+                                d.setStyleName("");
+                            }
+
+                        }
+                    }
+                }
+                return controls;
+            }
+
+            @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
                 if (property.getType() == Date.class) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -195,6 +221,31 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private PagedTable buildTrialSummaryTable() {
         final PagedTable tblTrial = new PagedTable() {
             private static final long serialVersionUID = 1L;
+
+            @Override
+            public HorizontalLayout createControls() {
+
+                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+                Iterator<Component> iterator= controls.getComponentIterator();
+
+                while (iterator.hasNext()) {
+                    Component c = iterator.next();
+                    if (c instanceof HorizontalLayout) {
+                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
+
+                        while (iterator2.hasNext()) {
+                            Component d = iterator2.next();
+
+                            if (d instanceof Button) {
+                                d.setStyleName("");
+                            }
+
+                        }
+                    }
+                }
+                return controls;
+            }
 
             @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
@@ -235,6 +286,31 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public HorizontalLayout createControls() {
+
+                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+                Iterator<Component> iterator= controls.getComponentIterator();
+
+                while (iterator.hasNext()) {
+                    Component c = iterator.next();
+                    if (c instanceof HorizontalLayout) {
+                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
+
+                        while (iterator2.hasNext()) {
+                            Component d = iterator2.next();
+
+                            if (d instanceof Button) {
+                                d.setStyleName("");
+                            }
+
+                        }
+                    }
+                }
+                return controls;
+            }
+
+            @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
                 if (property.getType() == Date.class) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -270,6 +346,31 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private PagedTable buildSeasonSummaryTable() {
         final PagedTable tblSeason = new PagedTable() {
             private static final long serialVersionUID = 1L;
+
+            @Override
+            public HorizontalLayout createControls() {
+
+                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+                Iterator<Component> iterator= controls.getComponentIterator();
+
+                while (iterator.hasNext()) {
+                    Component c = iterator.next();
+                    if (c instanceof HorizontalLayout) {
+                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
+
+                        while (iterator2.hasNext()) {
+                            Component d = iterator2.next();
+
+                            if (d instanceof Button) {
+                                d.setStyleName("");
+                            }
+
+                        }
+                    }
+                }
+                return controls;
+            }
 
             @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
