@@ -156,6 +156,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         this.setMargin(new MarginInfo(false,true,true,true));
         this.setWidth("98%");
 
+        final Label dashboardLbl = new Label(messageSource.getMessage(Message.DASHBOARD));
+        dashboardLbl.setStyleName(Bootstrap.Typography.H1.styleName());
+
+        this.addComponent(dashboardLbl);
         this.addComponent(layoutProjectTableArea());
         this.addComponent(layoutProjectDetailArea());
     }
