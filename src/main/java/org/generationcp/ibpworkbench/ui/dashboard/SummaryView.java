@@ -92,10 +92,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         headerArea.setComponentAlignment(toolsPopup,Alignment.BOTTOM_RIGHT);
 
         this.addComponent(headerArea);
-        this.addComponent(tblActivity);
+        this.addComponent(tblSeason);
 
         // set initial header
-        this.updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES),tblActivity);
+        this.updateHeaderAndTableControls("Season Summary",tblSeason);
 
 
         this.setWidth("100%");
