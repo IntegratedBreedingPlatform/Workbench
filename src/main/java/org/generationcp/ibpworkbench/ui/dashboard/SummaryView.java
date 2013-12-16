@@ -53,13 +53,15 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         headerArea.setWidth("100%");
         headerArea.addComponent(header);
         headerArea.addComponent(toolsPopup);
-        headerArea.setComponentAlignment(toolsPopup,Alignment.MIDDLE_RIGHT);
+        headerArea.setComponentAlignment(header,Alignment.BOTTOM_LEFT);
+        headerArea.setComponentAlignment(toolsPopup,Alignment.BOTTOM_RIGHT);
 
 
         this.addComponent(headerArea);
         this.addComponent(tblActivity);
 
         this.setWidth("100%");
+        this.setSpacing(true);
 
     }
 
@@ -80,7 +82,18 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         toolsPopup.addListener(new PopupView.PopupVisibilityListener() {
             @Override
             public void popupVisibilityChange(PopupView.PopupVisibilityEvent event) {
-                toolsDropDown.getSelectedItem();
+                if (!event.isPopupVisible()) {
+                    switch (toolsDropDown.getSelectedItem()) {
+                        case 0:
+                            SummaryView.this.removeComponent(tblActivity);
+                            break;
+                        case 1:
+                            SummaryView.this.addComponent(tblActivity);
+                        case 2:
+                            break;
+                    }
+
+                }
             }
         });
 
@@ -143,7 +156,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     private class ToolsDropDown implements PopupView.Content {
         private Button[] choices;
-        private Integer selectedItem = 0;
+        private Integer selectedItem = -1;
         private final VerticalLayout root = new VerticalLayout();
         public ToolsDropDown(String... selections) {
             choices = new Button[selections.length];
@@ -152,19 +165,19 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 choices[i] = new Button(selections[i]);
                 choices[i].setStyleName(Reindeer.BUTTON_LINK);
                 choices[i].addListener(new ChoiceListener(i));
-
+                choices[i].setWidth("100%"); choices[i].setHeight("26px");
                 root.addComponent(choices[i]);
             }
 
             root.setSizeUndefined();
-            root.setSpacing(true);
-            root.setMargin(true);
+            root.setWidth("150px");
+            //root.setMargin(new MarginInfo(true,false,true,false));
 
         }
 
         @Override
         public String getMinimizedValueAsHTML() {
-            return "tools";
+            return "<span class='glyphicon glyphicon-cog' style='right: 6px; top: 2px; font-size: 13px; font-weight: 300'></span>TOOLS";
         }
 
         @Override
@@ -173,7 +186,11 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         }
 
         public Integer getSelectedItem() {
-            return selectedItem;
+            int value = selectedItem;
+
+            selectedItem = -1;  // reset the selected item;
+
+            return value;
         }
 
         private class ChoiceListener implements Button.ClickListener {
