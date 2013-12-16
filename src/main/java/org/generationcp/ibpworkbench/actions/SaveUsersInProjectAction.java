@@ -151,7 +151,7 @@ public class SaveUsersInProjectAction implements ClickListener{
             event.getComponent().getWindow().showNotification("Successfully updated this project's members list.");
         } catch(MiddlewareQueryException ex) {
             //do nothing because getting the User will not fail
-            event.getComponent().getWindow().showNotification("A database problem occured while updating this project's members list. Please contact your administrator.");
+            event.getComponent().getWindow().showNotification("A database problem occured while updating this project's members list. Please see error logs.");
         }
         
         try{

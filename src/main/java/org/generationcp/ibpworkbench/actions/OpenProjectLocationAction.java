@@ -91,7 +91,7 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
 
             } catch (MiddlewareQueryException e1) {
                 MessageNotifier.showError(window, "Database Error",
-                                          "<br />" + "Contact your administrator");
+                                          "<br />" + "Please see error logs");
               
             }
             
