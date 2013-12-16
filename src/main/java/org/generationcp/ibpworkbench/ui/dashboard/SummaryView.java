@@ -34,6 +34,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private PopupView toolsPopup;
 
     private Table tblActivity;
+    private Table tblTrial;
+    private Table tblNursery;
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -83,13 +86,22 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             @Override
             public void popupVisibilityChange(PopupView.PopupVisibilityEvent event) {
                 if (!event.isPopupVisible()) {
-                    switch (toolsDropDown.getSelectedItem()) {
+                    int selection = toolsDropDown.getSelectedItem();
+
+                    if (selection >= 0) {
+                        SummaryView.this.removeComponent(tblActivity);
+                        SummaryView.this.removeComponent(tblTrial);
+                        SummaryView.this.removeComponent(tblNursery);
+                    }
+
+                    switch (selection) {
                         case 0:
-                            SummaryView.this.removeComponent(tblActivity);
+                            SummaryView.this.addComponent(tblActivity);
                             break;
                         case 1:
-                            SummaryView.this.addComponent(tblActivity);
+                            SummaryView.this.addComponent(tblTrial);
                         case 2:
+                            SummaryView.this.addComponent(tblNursery);
                             break;
                     }
 
@@ -98,6 +110,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         });
 
         tblActivity = buildActivityTable();
+        tblTrial = buildTrialSummaryTable();
+        tblNursery = buildNurserySummaryTable();
 
     }
 
@@ -134,6 +148,74 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         return tblActivity;
     }
 
+    private Table buildTrialSummaryTable() {
+        final Table tblTrial = new Table() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+                if (property.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        tblTrial.setImmediate(true);
+
+        /*
+        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+        container.setBeanIdProperty("projectActivityId");
+        tblActivity.setContainerDataSource(container);
+
+        String[] columns = new String[] {"createdAt", "name", "description"};
+        tblActivity.setVisibleColumns(columns);
+
+        // LAYOUT
+        tblActivity.setWidth("100%");
+
+        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
+        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
+        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
+        */
+        return tblTrial;
+    }
+
+    private Table buildNurserySummaryTable() {
+        final Table tblNursery = new Table() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+                if (property.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        tblNursery.setImmediate(true);
+
+        /*
+        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+        container.setBeanIdProperty("projectActivityId");
+        tblActivity.setContainerDataSource(container);
+
+        String[] columns = new String[] {"createdAt", "name", "description"};
+        tblActivity.setVisibleColumns(columns);
+
+        // LAYOUT
+        tblActivity.setWidth("100%");
+
+        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
+        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
+        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
+        */
+        return tblNursery;
+    }
+
     public void updateActivityTable(List<ProjectActivity> activityList) {
         Object[] oldColumns = tblActivity.getVisibleColumns();
         String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
@@ -153,6 +235,15 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         tblActivity.setVisibleColumns(columns);
     }
+
+    public void updateTrialSummaryTable(List<Object> list) {
+
+    }
+
+    public void updateNurserySummmaryTable(List<Object> list) {
+
+    }
+
 
     private class ToolsDropDown implements PopupView.Content {
         private Button[] choices;
