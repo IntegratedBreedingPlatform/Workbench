@@ -67,8 +67,8 @@ public class GermplasmListPreview extends VerticalLayout {
     private ThemeResource folderResource;
     private ThemeResource leafResource;
 
-    public static String MY_LIST = "My List";
-    public static String SHARED_LIST = "Shared List";
+    public static String MY_LIST = "Program Lists";
+    public static String SHARED_LIST = "Public Lists";
 
     private Panel panel;
     private HorizontalLayout toolbar;
