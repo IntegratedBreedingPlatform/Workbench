@@ -523,14 +523,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         messageSource.setValue(hint1, Message.USER_GUIDE_1);
     }
 
-    public void toggleCreateButtonStyle() {
-        if (!createProjectButton.getStyleName().contains("gcp-enabled")) {
-            createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn gcp-enabled");
-        } else {
-            createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
-        }
-    }
-
     public static WorkbenchMainView getInstance() {
         return thisInstance;
     }

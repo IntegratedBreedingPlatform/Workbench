@@ -165,6 +165,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     private void updateVariatesTable(List<VariateModel> variateList){
  	    //Object[] oldColumns = tblFactors.getVisibleColumns();
         //String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+    	selectDatasetForBreedingViewPanel.getVariatesCheckboxState().clear();
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
