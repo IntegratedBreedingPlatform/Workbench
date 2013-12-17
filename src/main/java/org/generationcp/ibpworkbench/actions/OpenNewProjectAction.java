@@ -44,10 +44,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         final IContentWindow w = (IContentWindow) window;
         
-        if (w instanceof WorkbenchMainView) {
-        	WorkbenchMainView wdw = (WorkbenchMainView)w;
-        	wdw.toggleCreateButtonStyle();
-        }
+
         
         
         try {
@@ -57,12 +54,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
 				@Override
                 public void detach() {
                     super.detach();
-        
-                    if (w instanceof WorkbenchMainView) {
-                    	WorkbenchMainView wdw = (WorkbenchMainView)w;
-                    	wdw.toggleCreateButtonStyle();
-                    }
-                    
+
                 }
             };
             newProjectPanel.setWidth("800px");

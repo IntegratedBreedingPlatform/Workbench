@@ -81,7 +81,7 @@ public class UserAccountPanel extends Panel {
         VerticalLayout loginPanelLayout = new VerticalLayout();
         loginPanelLayout.setImmediate(false);
         loginPanelLayout.setStyleName("gcp-login");
-        loginPanelLayout.setHeight("90px");
+        loginPanelLayout.setHeight("87px");
         loginPanelLayout.setMargin(true, false, true, false);
         vl.addComponent(loginPanelLayout);
 
@@ -113,8 +113,8 @@ public class UserAccountPanel extends Panel {
 
     protected void initializeLayout() {
         setImmediate(false);
-        setWidth("675px");
-        setHeight("590px");
+        setWidth("680px");
+        setHeight("620px");
 
         vl.setMargin(false);
         vl.setSpacing(true);
