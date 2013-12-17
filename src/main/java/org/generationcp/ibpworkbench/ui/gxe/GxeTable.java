@@ -120,7 +120,7 @@ public class GxeTable extends Table {
 		List<String> factorsList = new ArrayList<String>(factors.values());
 		List<String> variatesList = new ArrayList<String>(variates.values());
 		
-		Collections.sort(factorsList);
+		//Collections.sort(factorsList);
 		Collections.sort(variatesList);
 		
 		

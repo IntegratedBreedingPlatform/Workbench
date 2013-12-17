@@ -112,12 +112,12 @@
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
           
     <view path="/breeding_view"
-		  label="Single Site Analysis"
+		  label="Single-Site Analysis"
 		  level="1"
 		  class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />          
     
     <view path="/BreedingGxE"
-          label="Gxe Analysis"
+          label="Multi-Site Analysis"
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
     
