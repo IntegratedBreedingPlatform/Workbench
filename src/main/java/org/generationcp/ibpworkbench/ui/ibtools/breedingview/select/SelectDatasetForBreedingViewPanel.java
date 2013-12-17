@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.jws.WebParam.Mode;
 
@@ -82,6 +83,10 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private Label lblStudyTreeDetailDescription;
     private Label lblDatasetDetailTitle;
     private Label lblDatasetDetailDescription;
+    
+    private Table variates;
+    private Property.ValueChangeListener selectAllListener;
+    private CheckBox chkVariatesSelectAll;
     
     private VerticalLayout generalLayout;
     
@@ -201,7 +206,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         studyTreeLayout = new VerticalLayout();
         studyTreeLayoutTableContainer = new VerticalLayout();
         
-        studyDetailsLayout = new GridLayout(10, 1);
+        studyDetailsLayout = new GridLayout(10, 2);
         
         datasetVariablesDetailLayout = new HorizontalLayout();
         
@@ -217,7 +222,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
         Table factors = initializeFactorsTable();
         
-        Table variates = initializeVariatesTable();
+        variates = initializeVariatesTable();
         
         TreeTable tr = createStudyTreeTable(this.database, factors, variates);
         studyTreeLayoutTableContainer.addComponent(tr);
@@ -229,6 +234,40 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         datasetVariablesDetailLayout.addComponent(variates);     
     
         studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 0, 0, 9, 0);
+        
+        
+        selectAllListener = new Property.ValueChangeListener(){
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				// TODO Auto-generated method stub
+				Boolean val = (Boolean) event.getProperty().getValue();
+				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
+				for (Object itemId : container.getItemIds()){
+					container.getItem(itemId).getBean().setActive(val);
+				}
+				for (Entry<String, Boolean> entry : variatesCheckboxState.entrySet()){
+					variatesCheckboxState.put(entry.getKey(), val);
+				}
+				
+
+				variates.refreshRowCache();
+				//variatesCheckboxState.put(vm.getName(), val);
+				//vm.setActive(val);
+			}
+        	
+        };
+        
+        chkVariatesSelectAll = new CheckBox();
+        chkVariatesSelectAll.setImmediate(true);
+        chkVariatesSelectAll.addListener(selectAllListener);
+        
+        
+        
+        
+        chkVariatesSelectAll.setCaption("Select All");
+        
+        studyDetailsLayout.addComponent(chkVariatesSelectAll, 6, 1, 9, 1);
         
         
          
@@ -339,6 +378,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     
     protected Table initializeVariatesTable() {
         
+    	variatesCheckboxState.clear();
+    	
         final Table tblVariates = new Table("VARIATES");
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
@@ -372,6 +413,12 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 								.getValue();
 						variatesCheckboxState.put(vm.getName(), val);
 						vm.setActive(val);
+						
+						if (!val){
+							chkVariatesSelectAll.removeListener(selectAllListener);
+							chkVariatesSelectAll.setValue(val);
+							chkVariatesSelectAll.addListener(selectAllListener);
+						}
 					
 					}
 				});
@@ -423,7 +470,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         Table toreturn[] = new Table[2];
         datasetVariablesDetailLayout.removeAllComponents();
         Table factors = initializeFactorsTable();
-        Table variates = initializeVariatesTable();
+        variates = initializeVariatesTable();
         datasetVariablesDetailLayout.addComponent(factors);
         datasetVariablesDetailLayout.addComponent(variates);
         toreturn[0] = factors;
