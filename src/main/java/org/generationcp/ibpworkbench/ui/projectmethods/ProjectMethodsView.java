@@ -38,7 +38,7 @@ import java.util.*;
 @Configurable
 public class ProjectMethodsView extends CustomComponent implements InitializingBean {
     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-    public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonolly Propagating"},{"G","All System"}};
+    public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 
     public final static Map<String,Integer> columnWidthsMap;
 
