@@ -356,7 +356,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         lblDesignType = new Label();
         lblDesignType.setContentMode(Label.CONTENT_XHTML);
         setLblReplicates(new Label());
-        getLblReplicates().setVisible(false);
         getLblReplicates().setContentMode(Label.CONTENT_XHTML);
         setLblBlocks(new Label());
         getLblBlocks().setContentMode(Label.CONTENT_XHTML);
@@ -457,7 +456,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         populateChoicesForReplicates();
         selReplicates.setNullSelectionAllowed(true);
         selReplicates.setNewItemsAllowed(false);
-        selReplicates.setVisible(false);
         
         selBlocks = new Select();
         selBlocks.setImmediate(true); 

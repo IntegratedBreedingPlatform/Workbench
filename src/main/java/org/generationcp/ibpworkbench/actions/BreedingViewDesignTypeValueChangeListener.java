@@ -27,8 +27,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
             this.source.getSelRowFactor().setEnabled(true);
             this.source.getSelBlocks().setEnabled(false);
             **/
-        	 this.source.getSelReplicates().setVisible(false);
-        	 this.source.getLblReplicates().setVisible(false);
+        	
         	 this.source.getSelColumnFactor().setVisible(true);
         	 this.source.getLblSpecifyColumnFactor().setVisible(true);
              this.source.getSelRowFactor().setVisible(true);
@@ -42,8 +41,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
             this.source.getSelRowFactor().setEnabled(false);
             this.source.getSelBlocks().setEnabled(true);
             **/
-        	this.source.getSelReplicates().setVisible(false);
-        	this.source.getLblReplicates().setVisible(false);
+        
         	this.source.getSelColumnFactor().setVisible(false);
         	this.source.getLblSpecifyColumnFactor().setVisible(false);
             this.source.getSelRowFactor().setVisible(false);
@@ -57,8 +55,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
             this.source.getSelRowFactor().setEnabled(false);
             this.source.getSelBlocks().setEnabled(false);
             **/
-        	this.source.getSelReplicates().setVisible(true);
-        	this.source.getLblReplicates().setVisible(true);
+        	
         	this.source.getSelColumnFactor().setVisible(false);
         	this.source.getLblSpecifyColumnFactor().setVisible(false);
             this.source.getSelRowFactor().setVisible(false);
