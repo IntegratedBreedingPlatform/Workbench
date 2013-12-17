@@ -168,44 +168,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private PagedTable buildActivityTable() {
-        final PagedTable tblActivity = new PagedTable() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public HorizontalLayout createControls() {
-
-                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
-
-                Iterator<Component> iterator= controls.getComponentIterator();
-
-                while (iterator.hasNext()) {
-                    Component c = iterator.next();
-                    if (c instanceof HorizontalLayout) {
-                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
-
-                        while (iterator2.hasNext()) {
-                            Component d = iterator2.next();
-
-                            if (d instanceof Button) {
-                                d.setStyleName("");
-                            }
-
-                        }
-                    }
-                }
-                return controls;
-            }
-
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-                if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-                }
-
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
+        final PagedTable tblActivity = new PagedTableWithUpdatedControls();
         tblActivity.setImmediate(true);
 
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
@@ -226,44 +189,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private PagedTable buildTrialSummaryTable() {
-        final PagedTable tblTrial = new PagedTable() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public HorizontalLayout createControls() {
-
-                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
-
-                Iterator<Component> iterator= controls.getComponentIterator();
-
-                while (iterator.hasNext()) {
-                    Component c = iterator.next();
-                    if (c instanceof HorizontalLayout) {
-                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
-
-                        while (iterator2.hasNext()) {
-                            Component d = iterator2.next();
-
-                            if (d instanceof Button) {
-                                d.setStyleName("");
-                            }
-
-                        }
-                    }
-                }
-                return controls;
-            }
-
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-                if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-                }
-
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
+        final PagedTable tblTrial = new PagedTableWithUpdatedControls();
         tblTrial.setImmediate(true);
 
         
@@ -289,44 +215,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private PagedTable buildNurserySummaryTable() {
-        final PagedTable tblNursery = new PagedTable() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public HorizontalLayout createControls() {
-
-                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
-
-                Iterator<Component> iterator= controls.getComponentIterator();
-
-                while (iterator.hasNext()) {
-                    Component c = iterator.next();
-                    if (c instanceof HorizontalLayout) {
-                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
-
-                        while (iterator2.hasNext()) {
-                            Component d = iterator2.next();
-
-                            if (d instanceof Button) {
-                                d.setStyleName("");
-                            }
-
-                        }
-                    }
-                }
-                return controls;
-            }
-
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-                if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-                }
-
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
+        final PagedTable tblNursery = new PagedTableWithUpdatedControls();
         tblNursery.setImmediate(true);
 
         BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
@@ -350,44 +239,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private PagedTable buildSeasonSummaryTable() {
-        final PagedTable tblSeason = new PagedTable() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public HorizontalLayout createControls() {
-
-                HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
-
-                Iterator<Component> iterator= controls.getComponentIterator();
-
-                while (iterator.hasNext()) {
-                    Component c = iterator.next();
-                    if (c instanceof HorizontalLayout) {
-                        Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
-
-                        while (iterator2.hasNext()) {
-                            Component d = iterator2.next();
-
-                            if (d instanceof Button) {
-                                d.setStyleName("");
-                            }
-
-                        }
-                    }
-                }
-                return controls;
-            }
-
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-                if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-                }
-
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
+        final PagedTable tblSeason = new PagedTableWithUpdatedControls();
         tblSeason.setImmediate(true);
 
         BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
@@ -559,7 +411,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 header.setValue(label);
 
             if (this.getComponentCount() > 2)
-                SummaryView.this.replaceComponent(this.getComponent(2),table.createControls());
+                SummaryView.this.replaceComponent(this.getComponent(2), table.createControls());
             else if (this.getComponentCount() == 2)
                 SummaryView.this.addComponent(table.createControls());
         }
@@ -578,4 +430,42 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 	public String[] getTblSeasonColumns() {
 		return new String[] {"studyName","title","objective","startDate","endDate","piName","siteName", "studyType"};
 	}
+
+    private class PagedTableWithUpdatedControls extends PagedTable {
+        @Override
+        public HorizontalLayout createControls() {
+            HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+            Iterator<Component> iterator= controls.getComponentIterator();
+
+            while (iterator.hasNext()) {
+                Component c = iterator.next();
+                if (c instanceof HorizontalLayout) {
+                    Iterator<Component> iterator2 = ((HorizontalLayout)c).getComponentIterator();
+
+                    while (iterator2.hasNext()) {
+                        Component d = iterator2.next();
+
+                        if (d instanceof Button) {
+                            d.setStyleName("");
+                        }
+
+                    }
+                }
+            }
+            return controls;
+        }
+
+        @Override
+        protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+            if (property.getType() == Date.class) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
+            }
+
+            return super.formatPropertyValue(rowId, colId, property);
+        }
+
+    }
+
 }

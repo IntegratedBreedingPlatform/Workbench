@@ -33,7 +33,7 @@ import com.vaadin.ui.Panel;
  * @author Efficio.Daniel
  *
  */
-public class DashboardMainTreeListener implements Property.ValueChangeListener{
+public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListener{ //Property.ValueChangeListener{
 
     private Project project;
     private Component source;
@@ -45,16 +45,24 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
         this.source = source;
     }
 
+
+    /* (non-Javadoc)
+     * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
+     */
     @Override
-    public void valueChange(Property.ValueChangeEvent event) {
+    public void itemClick(ItemClickEvent event) {
+        /*
         if(event.getProperty()==null || event.getProperty().getValue() ==null ) {
+            GermplasmListPreview preview = ((GermplasmListPreview)source);
+            preview.test();
             return;
-        }
+        }*/
+        
         
         if(source instanceof GermplasmListPreview){
             GermplasmListPreview preview = ((GermplasmListPreview)source);
             
-            Object propertyValue = event.getProperty().getValue();
+            Object propertyValue = event.getItemId();
             
             boolean isSharedListNode = (propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.SHARED_LIST));
             boolean isCentralGermplasmList = (propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0);
@@ -62,7 +70,7 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
             boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
             
             // expand the node
-            preview.expandTree(event.getProperty().getValue());
+            preview.expandTree(event.getItemId());
             
             // set the toolbar button state
             if (isSharedListNode || isCentralGermplasmList) {
@@ -83,14 +91,14 @@ public class DashboardMainTreeListener implements Property.ValueChangeListener{
         else if (source instanceof NurseryListPreview) {
             NurseryListPreview preview = ((NurseryListPreview)source);
             
-            Object propertyValue = event.getProperty().getValue();
+            Object propertyValue = event.getItemId();
             
             boolean isSharedStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.SHARED_STUDIES);
             boolean isCentralStudy = propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0;
             boolean isMyStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.MY_STUDIES);
             boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
             // expand the node
-            preview.expandTree(event.getProperty().getValue());
+            preview.expandTree(event.getItemId());
             
             // set the toolbar button state
             if (isSharedStudy || isCentralStudy) {
