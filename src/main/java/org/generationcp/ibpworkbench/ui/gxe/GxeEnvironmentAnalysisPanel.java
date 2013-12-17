@@ -16,11 +16,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -404,7 +407,22 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		
 		List<CheckBox> cells = new ArrayList<CheckBox>();
 		List<String> columnNames = new ArrayList<String>();
-		for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
+		
+
+		SortedSet<String> keys = new TreeSet<String>(getVariatesCheckboxState().keySet());
+		for (String key : keys) { 
+		   if(getVariatesCheckboxState().get(key)){
+			   container.addContainerProperty(key, CheckBox.class, null);
+				columnNames.add(key.replace("_Means", ""));
+				CheckBox chk = new CheckBox("", true);
+				chk.setImmediate(true);
+				chk.addListener(traitCheckBoxListener);
+				cells.add(chk);
+		   }
+		 
+		}
+		
+		/**for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
 			if (trait.getValue()){
 				container.addContainerProperty(trait.getKey(), CheckBox.class, null);
 				columnNames.add(trait.getKey().replace("_Means", ""));
@@ -414,7 +432,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 				cells.add(chk);
 				
 			}
-		}
+		}**/
+		
 		selectTraitsTable.setContainerDataSource(container);
 		selectTraitsTable.addItem(cells.toArray(new Object[0]), 1);
 		selectTraitsTable.setHeight("80px");
