@@ -26,12 +26,14 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -282,6 +284,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
 				} catch (Exception e) {
 					//LOG.error("Exception", e);
+					new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
+					
 		            if(e.getCause() instanceof InternationalizableException) {
 		                InternationalizableException i = (InternationalizableException) e.getCause();
 		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -506,7 +507,7 @@ public class DatasetExporter {
     }
     
     @SuppressWarnings("unchecked")
-	public HashMap<Integer, String> exportToFieldBookCSVUsingIBDBv2(String filename, String selectedFactor , List<String> selectedEnvironment) throws DatasetExporterException {
+	public void exportToFieldBookCSVUsingIBDBv2(String filename, String selectedFactor , List<String> selectedEnvironment, BreedingViewInput breedingViewInput) throws DatasetExporterException {
 
         DataSet dataset = null;
         try {
@@ -546,19 +547,24 @@ public class DatasetExporter {
       //get the variates and their details
         VariableTypeList variateVariableTypeList = datasetVariableTypes.getVariates();
         List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
-        HashMap<Integer, String> emptyVariateColumnsMap = new HashMap<Integer, String>();
+        HashMap<Integer, String> variateColumnsMap = new HashMap<Integer, String>();
         
         for(VariableType variate : variateVariableTypes) {
   
             String variateName = variate.getLocalName();
+            
             if(variateName != null) {
                 variateName = variateName.trim();
             }
- 
-            //add entry to columns mapping
-            columnsMap.put(variateName, Integer.valueOf(observationSheetColumnIndex));
-            emptyVariateColumnsMap.put(Integer.valueOf(observationSheetColumnIndex), variateName);
-            observationSheetColumnIndex++;
+            
+            //get only the selected traits
+            if (breedingViewInput.getVariatesActiveState().get(variateName).booleanValue()){
+            	//add entry to columns mapping
+                columnsMap.put(variateName, Integer.valueOf(observationSheetColumnIndex));
+                variateColumnsMap.put(Integer.valueOf(observationSheetColumnIndex), variateName);
+                observationSheetColumnIndex++;
+            }
+
             
         }
     	
@@ -568,7 +574,7 @@ public class DatasetExporter {
     	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     	  ArrayList<String[]> tableItems = new ArrayList<String[]>();
     	  List<Experiment> experiments = new ArrayList<Experiment>();
-    	  HashMap<Integer, String> notEmptyColumns = new HashMap<Integer, String>(); 
+    	
     	  //int sheetRowIndex = 0;
    
           try {
@@ -577,46 +583,6 @@ public class DatasetExporter {
              ex.printStackTrace();
           }
           
-          //Determine which variate columns have no values
-          for(Experiment experiment1 : experiments) {
-        	  
-        	  boolean outerBreak = true;
-        	  for (Variable factorVariables1 : experiment1.getFactors().getVariables()){
-        		  if (factorVariables1.getVariableType().getLocalName().trim().equalsIgnoreCase(selectedFactor)
-        				  &&  selectedEnvironment.contains(factorVariables1.getValue()) ) {
-        			  outerBreak=false; continue;} else {continue;}
-        	  }
-        	  if (outerBreak) continue;
-        	  
-        	  List<Variable> variateVariables1 = experiment1.getVariates().getVariables();
-        	  for(Variable variateVariable : variateVariables1){
-        		  String variateName = variateVariable.getVariableType().getLocalName();
-        		  if(variateName != null){
-        			  variateName = variateName.trim();
-        		  }
-        		  Integer columnIndexInteger = columnsMap.get(variateName); 
-        		  if(columnIndexInteger != null){
-        			  short columnIndex = columnIndexInteger.shortValue();
-        			  if(columnIndex >= 0) {
-        				  if(variateVariable.getVariableType().getStandardVariable().getDataType().getName().equals(NUMERIC_VARIABLE)){
-        					  double elemValue = 0;
-        					  if(variateVariable.getValue() != null){
-        						  try{
-        							  elemValue = Double.valueOf(variateVariable.getValue());
-
-        							  if (elemValue != Double.valueOf("-1E+36")) {
-        								  notEmptyColumns.put(columnIndexInteger, variateName);
-        								  emptyVariateColumnsMap.remove(columnIndexInteger);
-        							  }
-
-        						  }catch(NumberFormatException ex){}
-        					  } 
-        				  }
-        			  }
-        		  }
-        	  }
-          }
-          //determine
           	List keys = new ArrayList(columnsMap.keySet());
           
 	  		//Sort keys by values.
@@ -637,7 +603,7 @@ public class DatasetExporter {
 	  		for(Iterator i=keys.iterator(); i.hasNext();){
 	  			Object k = i.next();
 	  			Integer columnIndex = columnsMap.get(k).intValue();
-	              if(columnIndex >= 0 && emptyVariateColumnsMap.get(columnIndex) == null) {
+	              if(columnIndex >= 0) {
 	                  rowHeader.add((String) k);
 	              }
 	  		}
@@ -646,6 +612,8 @@ public class DatasetExporter {
       
           
           for(Experiment experiment : experiments) {
+        	  
+        	  Variable temp = experiment.getFactors().findByLocalName("TRIALNO");
         	  
         	  boolean outerBreak = true;
         	  for (Variable factorVariables1 : experiment.getFactors().getVariables()){
@@ -700,14 +668,22 @@ public class DatasetExporter {
                   }
               }
                   
-              List<Variable> variateVariables = experiment.getVariates().getVariables();
-              for(Variable variateVariable : variateVariables){
-                  String variateName = variateVariable.getVariableType().getLocalName();
-                  if(variateName != null){
-                      variateName = variateName.trim();
-                  }
+              //List<Variable> variateVariables = experiment.getVariates().getVariables();
+              for( Entry<Integer, String> entry : variateColumnsMap.entrySet()){
+            	  String variateName = "";
+            	  Variable variateVariable = experiment.getVariates().findByLocalName(entry.getValue());
+            	  if (variateVariable != null){
+            		  variateName = variateVariable.getVariableType().getLocalName();
+                      if(variateName != null){
+                          variateName = variateName.trim();
+                      }
+            	  }else{
+            		  row.add("");
+            		  continue;
+            	  }
+                   
                   Integer columnIndexInteger = columnsMap.get(variateName); 
-                  if(columnIndexInteger != null && notEmptyColumns.get(columnIndexInteger) != null){
+                  if(columnIndexInteger != null){
                       short columnIndex = columnIndexInteger.shortValue();
                       if(columnIndex >= 0) {
                           //Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER, CellStyle.ALIGN_CENTER);
@@ -729,13 +705,15 @@ public class DatasetExporter {
                                       row.add(value);
                                   }
                               } else {
-                                  String nullValue = null;
-                                  row.add(nullValue);
+                                  
+                                  row.add("");
                               }
                           } else{
                               String value = variateVariable.getValue();
                               if(value != null) {
                                   value = value.trim();
+                              }else{
+                            	  value = "";
                               }
                               row.add(value);
                           }
@@ -755,10 +733,9 @@ public class DatasetExporter {
   			csvWriter.flush();
   			csvWriter.close();
 
-  			return notEmptyColumns;
   		} catch (Exception e) {
   			e.printStackTrace();
-  			return null;
+ 
   		}
     	
     }

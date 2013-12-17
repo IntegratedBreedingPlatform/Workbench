@@ -29,10 +29,11 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
-import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
@@ -58,6 +59,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -67,7 +69,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Window.Notification;
 
 /**
@@ -797,29 +798,40 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
        
         addComponent(mainLayout);
     }
+    
+    private void reset(){
+    	
+    }
 
     protected void initializeActions() {
        btnCancel.addListener(new Button.ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				try {
+				
+				reset();
+				/**try {
 			       
 				
 	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
 	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
 				} catch (Exception e) {
 					//LOG.error("Exception", e);
+					
+					new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
+					
 		            if(e.getCause() instanceof InternationalizableException) {
 		                InternationalizableException i = (InternationalizableException) e.getCause();
 		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
 		            }
+		            
+		            
 		            return;
-				}
+				}**/
 			}
 		});
        
-       btnRun.addListener(new RunBreedingViewAction(this));
+       btnRun.addListener(new RunBreedingViewAction(this, project));
        
        btnRun.setClickShortcut(KeyCode.ENTER);
        btnRun.addStyleName("primary");
@@ -867,7 +879,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
         messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnCancel, Message.RESET);
         
         messageSource.setValue(lblTitle, Message.BV_TITLE);
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
