@@ -95,8 +95,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         this.addComponent(tblSeason);
 
         // set initial header
-        this.updateHeaderAndTableControls("Season Summary",tblSeason);
-
+        this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),0,tblSeason);
 
         this.setWidth("100%");
         this.setSpacing(true);
@@ -113,7 +112,12 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         header = new Label(messageSource.getMessage(Message.ACTIVITIES));
         header.setStyleName(Bootstrap.Typography.H3.styleName());
 
-        final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Program Summary Trials","Program Summary Nurseries","Program Summary All");
+        final ToolsDropDown toolsDropDown = new ToolsDropDown(
+                messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES)
+                ,messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS)
+                ,messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY)
+                ,messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL));
+
         toolsPopup = new PopupView(toolsDropDown);
         toolsPopup.setStyleName("btn-dropdown");
         toolsPopup.setHideOnMouseOut(false);
@@ -133,36 +137,22 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                     } else
                         return;
 
-                    String count = "";
-
                     switch (selection) {
                         case 0:
-                            if (activityCount != 0)
-                                count =  " [" + activityCount + "]";
-
                             SummaryView.this.addComponent(tblActivity,1);
-                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES) + count,tblActivity);
+                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES),activityCount,tblActivity);
                             break;
                         case 1:
-                           if (trialCount != 0)
-                                count =  " [" + trialCount + "]";
-
                             SummaryView.this.addComponent(tblTrial,1);
-                            SummaryView.this.updateHeaderAndTableControls("Trial Summary" + count,tblTrial);
+                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),trialCount,tblTrial);
                             break;
                         case 2:
-                            if (nurseryCount != 0)
-                                count =  " [" + nurseryCount + "]";
-
                             SummaryView.this.addComponent(tblNursery,1);
-                            SummaryView.this.updateHeaderAndTableControls("Nursery Summary" + count,tblNursery);
+                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY),nurseryCount,tblNursery);
                             break;
                         case 3:
-                            if (seasonCount != 0)
-                                count =  " [" + seasonCount + "]";
-
                             SummaryView.this.addComponent(tblSeason,1);
-                            SummaryView.this.updateHeaderAndTableControls("Season Summary" + count,tblSeason);
+                            SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),seasonCount,tblSeason);
                             break;
                     }
 
@@ -442,7 +432,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblActivity.setVisibleColumns(columns);
 
         // add controls
-        updateHeaderAndTableControls(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityCount + "]",tblActivity);
+        updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES),activityCount,tblActivity);
     }
 
     public void updateTrialSummaryTable(StudyDetailsQueryFactory factory) {
@@ -461,7 +451,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblTrial.setVisibleColumns(columns);
         tblTrial.setImmediate(true);
         // add controls
-        updateHeaderAndTableControls("Trial Summary" + " [" + trialCount + "]",tblTrial);
+        updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),trialCount,tblTrial);
 
     }
 
@@ -481,7 +471,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblNursery.setVisibleColumns(columns);
         tblNursery.setImmediate(true);
         // add controls
-        updateHeaderAndTableControls("Nursery Summary" + " [" + nurseryCount + "]",tblNursery);
+        updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY),nurseryCount,tblNursery);
 
 
     }
@@ -502,7 +492,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         tblSeason.setVisibleColumns(columns);
         tblSeason.setImmediate(true);
         // add controls
-        updateHeaderAndTableControls("Season Summary" + " [" + seasonCount + "]",tblSeason);
+        updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),seasonCount,tblSeason);
     }
 
     private class ToolsDropDown implements PopupView.Content {
@@ -521,7 +511,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             }
 
             root.setSizeUndefined();
-            root.setWidth("150px");
+            root.setWidth("200px");
             //root.setMargin(new MarginInfo(true,false,true,false));
 
         }
@@ -560,9 +550,13 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         }
     }
 
-    private void updateHeaderAndTableControls(String label,PagedTable table) {
+    private void updateHeaderAndTableControls(String label,int count,PagedTable table) {
         if (this.getComponent(1).equals(table)) {
-            header.setValue(label);
+
+            if (count > 0)
+                header.setValue(label + " [" + count + "]");
+            else
+                header.setValue(label);
 
             if (this.getComponentCount() > 2)
                 SummaryView.this.replaceComponent(this.getComponent(2),table.createControls());
