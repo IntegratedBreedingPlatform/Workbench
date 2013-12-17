@@ -35,7 +35,7 @@ import java.util.List;
  *
  */
 @Configurable
-public class CreateProjectPanel extends VerticalLayout implements InitializingBean{
+public class CreateProjectPanel extends Panel implements InitializingBean{
 
     private static final long serialVersionUID = 1L;
     
@@ -79,30 +79,6 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
         this.project = project;
     }
 
-    public List<Location> getNewLocations() {
-        return newLocations;
-    }
-    
-    public void setNewLocations(List<Location> newLocations) {
-        this.newLocations = newLocations;
-    }
-    
-    public List<Method> getNewMethods() {
-        return newMethods;
-    }
-    
-    public void setNewMethods(List<Method> newMethods) {
-        this.newMethods = newMethods;
-    }
-
-    public List<User> getNewUsers() {
-        return newUsers;
-    }
-    
-    public void setNewUsers(List<User> newUsers) {
-        this.newUsers = newUsers;
-    }
-
     public List<ProjectUserRole> getProjectUserRoles(){
         return createProjectAccordion.getProjectUserRoles();
     }
@@ -124,27 +100,31 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
         
-        //newProjectTitleArea.setStyleName("gcp-content-title");
-    	
-        addComponent(newProjectTitleArea);
-        
         project = new Project();
 
         createProjectAccordion = new CreateProjectAccordion(this);
-        addComponent(createProjectAccordion);
 
         buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
-           
     }
 
     protected void initializeValues() {
     }
 
     protected void initializeLayout() {
-        setSpacing(false);
-        setMargin(new Layout.MarginInfo(false,true,true,true));
-        setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+        VerticalLayout root = new VerticalLayout();
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+        root.setSpacing(false);
+        root.setSizeUndefined();
+        root.setWidth("800px");
+
+        root.addComponent(newProjectTitleArea);
+        root.addComponent(createProjectAccordion);
+        root.addComponent(buttonArea);
+        root.setComponentAlignment(buttonArea,Alignment.TOP_RIGHT);
+
+        this.setScrollable(true);
+        this.setSizeFull();
+        this.setContent(root);
     }
 
     protected void initializeActions() {
@@ -200,8 +180,7 @@ public class CreateProjectPanel extends VerticalLayout implements InitializingBe
         newProjectTitleArea.setComponentAlignment(heading, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
-    	
-    	
+
     }
 
 

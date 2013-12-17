@@ -22,7 +22,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.ProjectMemberWindow;
 import org.generationcp.ibpworkbench.ui.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -181,19 +180,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	Boolean windowLaunched = false;
     	String windowCaption = "";
 
-    	if(WindowEnum.MEMBER.getwindowName().equals(windowName) )
-    	{
-    		mywindow = new ProjectMemberWindow(this.project);
-    		mywindow.setWidth("700");
-    		
-    		
-    		window.addWindow(mywindow);
-    		windowLaunched = true;
-    		
-    		windowCaption = mywindow.getCaption();
-    	}
-    	
-    	else if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) )
+    	if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) )
     	{
     		mywindow = new ChangePasswordWindow();
 
