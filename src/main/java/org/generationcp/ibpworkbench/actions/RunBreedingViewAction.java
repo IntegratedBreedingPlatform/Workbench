@@ -14,22 +14,20 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
-import org.generationcp.commons.breedingview.xml.EnvironmentLabel;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.commons.util.Util;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -37,17 +35,23 @@ import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
+import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.mysql.jdbc.StringUtils;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 /**
@@ -55,6 +59,7 @@ import com.vaadin.ui.Window.Notification;
  * @author Jeffrey Morales
  *
  */
+@Configurable
 public class RunBreedingViewAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
@@ -62,10 +67,20 @@ public class RunBreedingViewAction implements ClickListener {
     
     private SelectDetailsForBreedingViewPanel source;
     
-    public RunBreedingViewAction(SelectDetailsForBreedingViewPanel selectDetailsForBreedingViewWindow) {
-        
+    private Project project;
+    
+    @Autowired
+    private ToolUtil toolUtil;
+    
+    @Autowired
+    private TomcatUtil tomcatUtil;
+    
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+    
+    public RunBreedingViewAction(SelectDetailsForBreedingViewPanel selectDetailsForBreedingViewWindow, Project project) {
         this.source = selectDetailsForBreedingViewWindow;
-        
+        this.project = project;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
@@ -229,9 +244,18 @@ public class RunBreedingViewAction implements ClickListener {
          BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
     	 
          try {
+             // when launching BreedingView, update the web service tool first
+             Tool webServiceTool = new Tool();
+             webServiceTool.setToolName("ibpwebservice");
+             webServiceTool.setPath("http://localhost:18080/IBPWebService/");
+             webServiceTool.setToolType(ToolType.WEB);
+             updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
+             
+             // write the XML input for breeding view
              breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
              breedingViewXMLWriter.writeProjectXMLV2();
              
+             // launch breeding view
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
              Runtime runtime = Runtime.getRuntime();
              LOG.info(breedingViewInput.toString());
@@ -251,5 +275,72 @@ public class RunBreedingViewAction implements ClickListener {
     	
     }
     
-  
+    private boolean updateToolConfiguration(Window window, Tool tool) {
+        Project currentProject = project;
+        
+        String url = tool.getPath();
+        
+        // update the configuration of the tool
+        boolean changedConfig = false;
+        try {
+            changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
+        }
+        catch (IOException e1) {
+            MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        catch (MiddlewareQueryException e) {
+            MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        
+        boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
+        
+        WebAppStatusInfo statusInfo = null;
+        String contextPath = null;
+        String localWarPath = null;
+        try {
+            statusInfo = tomcatUtil.getWebAppStatus();
+            if (webTool) {
+                contextPath = TomcatUtil.getContextPathFromUrl(url);
+                localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
+            }
+        }
+        catch (Exception e1) {
+            MessageNotifier.showError(window, "Cannot get webapp status.",
+                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+            return false;
+        }
+        
+        if (webTool) {
+            try {
+                boolean deployed = statusInfo.isDeployed(contextPath);
+                boolean running = statusInfo.isRunning(contextPath);
+                
+                if (changedConfig || !running) {
+                    if (!deployed) {
+                        // deploy the webapp
+                        tomcatUtil.deployLocalWar(contextPath, localWarPath);
+                    }
+                    else if (running) {
+                        // reload the webapp
+                        tomcatUtil.reloadWebApp(contextPath);
+                    }
+                    else {
+                        // start the webapp
+                        tomcatUtil.startWebApp(contextPath);
+                    }
+                }
+            }
+            catch (Exception e) {
+                MessageNotifier.showError(window, "Cannot load tool: " + tool.getToolName(),
+                                          "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                return false;
+            }
+        }
+        
+        return true;
+    }
 }

@@ -82,7 +82,8 @@ public class SaveUserAccountAction implements ClickListener {
             //vaadin shows an "Internal Error" message
             if (e instanceof InternationalizableException) {                
                 InternationalizableException i = (InternationalizableException) e;
-                MessageNotifier.showError(event.getComponent().getWindow(), 
+
+                MessageNotifier.showError(event.getComponent().getWindow(),
                         i.getCaption(), 
                         i.getDescription());
             } else if(e instanceof InvalidValueException){
@@ -91,11 +92,10 @@ public class SaveUserAccountAction implements ClickListener {
             	if(errorMessage==null){
             		errorMessage="Please enter valid Email Address";
             	}
-            
-            	this.userAccountForm.getWindow().showNotification(
-    					null,
-    					errorMessage,
-    					Notification.TYPE_WARNING_MESSAGE);
+
+                MessageNotifier.showWarning(this.userAccountForm.getWindow(),
+                        errorMessage,
+                        "");
 
             } else {
                 MessageNotifier.showError(event.getComponent().getWindow(), 
