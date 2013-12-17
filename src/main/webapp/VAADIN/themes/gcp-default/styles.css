@@ -65,11 +65,12 @@ span.v-checkbox-hidecheckbox input {
     background-color: transparent;
 }
 
-.v-panel-content-gcp-createuser > div {
-    background-image: url(images/createuser.jpg);
-    background-repeat: no-repeat;
-    background-color: transparent;
-   
+.v-verticallayout-v-panel-content-gcp-createuser.v-panel-content-gcp-createuser {
+    background: #fff url(images/workbench_bg.jpg) no-repeat bottom right;
+}
+
+.v-panel-content-gcp-createuser .v-verticallayout-gcp-login {
+    background: #225591 url(images/ibp_logo2.jpg) no-repeat top left;
 }
 
 
