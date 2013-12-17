@@ -113,7 +113,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         header = new Label(messageSource.getMessage(Message.ACTIVITIES));
         header.setStyleName(Bootstrap.Typography.H3.styleName());
 
-        final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Trial Summaries","Nursery Summaries","Season Summaries");
+        final ToolsDropDown toolsDropDown = new ToolsDropDown("Activities","Program Summary Trials","Program Summary Nurseries","Program Summary All");
         toolsPopup = new PopupView(toolsDropDown);
         toolsPopup.setStyleName("btn-dropdown");
         toolsPopup.setHideOnMouseOut(false);
