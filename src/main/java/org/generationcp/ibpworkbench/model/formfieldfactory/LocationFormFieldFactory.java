@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -29,12 +30,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.TextField;
 
 
 /**
@@ -55,8 +50,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     private Field locationName;
     private Field locationAbbreviation;
     
-    private NativeSelect lType;
-    private NativeSelect country;
+    private ComboBox lType;
+    private ComboBox country;
     
     private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
     
@@ -106,13 +101,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 		countryBeanContainer.addAll(countryList);
 
 		        
-        lType = new NativeSelect();     
+        lType = new ComboBox();
         lType.setWidth("230px");
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
 
-        country = new NativeSelect();
+        country = new ComboBox();
         country.setWidth("230px");
         country.setContainerDataSource(countryBeanContainer);
         country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);

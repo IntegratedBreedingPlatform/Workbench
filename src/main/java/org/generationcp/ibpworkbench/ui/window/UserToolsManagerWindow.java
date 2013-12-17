@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -29,20 +30,7 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.FormFieldFactory;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 @Configurable
 public class UserToolsManagerWindow extends Window implements InitializingBean {
@@ -391,7 +379,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 	}
 
 	class UserToolsFormFieldFactory implements FormFieldFactory {
-		private NativeSelect toolTypeFld;
+		private ComboBox toolTypeFld;
 		private TextField nameFld;
 		private TextField titleFld;
 		private TextField versionFld;
@@ -417,7 +405,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 			versionFld = new TextField(messageSource.getMessage(Message.VERSION));
 			versionFld.setWidth("80px");
 			
-			toolTypeFld = new NativeSelect(messageSource.getMessage(Message.TOOL_TYPE),Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
+			toolTypeFld = new ComboBox(messageSource.getMessage(Message.TOOL_TYPE),Arrays.asList(new ToolType[] {ToolType.WEB,ToolType.WEB_WITH_LOGIN,ToolType.NATIVE}));
 			toolTypeFld.setWidth("120px");
 			toolTypeFld.setRequired(true);
 			toolTypeFld.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_TYPE_REQUIRED));			
