@@ -195,8 +195,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
-    	tabSheet.setHeight("480px");
-    	tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
+    	//tabSheet.setStyleName(Reindeer.);
     	
     	folderResource =  new ThemeResource("images/folder.png");
         leafResource =  new ThemeResource("images/leaf_16.png");
@@ -648,10 +647,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 	class EnvironmentTabComponent extends VerticalLayout {
 		
 		private static final long serialVersionUID = 1L;
-		
-		Table environmentTable;
-		Table factorTable;
-		Table variateTable;
+
 		DataSet dataSet;
 		String studyName;
 		
@@ -716,38 +712,63 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					event.getComponent().getWindow().addWindow(dialog);
 				}
 			});
-			
-			
-			GridLayout gLayout = new GridLayout(10,3);
-			gLayout.setWidth("100%");
-			gLayout.setSpacing(true);
-			gLayout.addComponent(lblStudyName, 0, 0, 2, 0);
-			gLayout.addComponent(linkFullStudyDetails, 3, 0);
-			gLayout.setComponentAlignment(linkFullStudyDetails, Alignment.TOP_RIGHT);
-			gLayout.addComponent(linkSaveToList, 4, 0);
-			gLayout.addComponent(lblFactor, 0, 1, 4, 1);
-			gLayout.addComponent(lblVariate, 5, 1, 9, 1);
-			gLayout.addComponent(lblFactorDescription, 0, 2, 4, 2);
-			gLayout.addComponent(lblVariateDescription, 5, 2, 9, 2);
-			
-			addComponent(gLayout);
-			
-			HorizontalLayout hLayout = new HorizontalLayout();
-			hLayout.setWidth("100%");
-			hLayout.setSpacing(true);
-			hLayout.addComponent(initializeFactorsTable());
-			hLayout.addComponent(initializeVariatesTable());
-			addComponent(hLayout);
 
-			
-		}
+            final HorizontalLayout buttonContainer = new HorizontalLayout();
+            buttonContainer.setSpacing(true);
+            buttonContainer.addComponent(linkFullStudyDetails);
+            buttonContainer.addComponent(linkSaveToList);
+
+            final HorizontalLayout tableContainer = new HorizontalLayout();
+            tableContainer.setSpacing(true);
+            tableContainer.setSizeFull();
+
+            final VerticalLayout factorsContainer = new VerticalLayout();
+            factorsContainer.setSpacing(true);
+
+            final VerticalLayout descContainer1 = new VerticalLayout();
+            descContainer1.setSpacing(false);
+            descContainer1.setHeight("90px");
+            descContainer1.setWidth("100%");
+            descContainer1.addComponent(lblFactor);
+            descContainer1.addComponent(lblFactorDescription);
+            descContainer1.setExpandRatio(lblFactorDescription,1.0f);
+
+            factorsContainer.addComponent(descContainer1);
+            factorsContainer.addComponent(initializeFactorsTable());
+
+            final VerticalLayout variatesContainer = new VerticalLayout();
+            variatesContainer.setSpacing(true);
+
+            final VerticalLayout descContainer2 = new VerticalLayout();
+            descContainer2.setSpacing(false);
+            descContainer2.setHeight("90px");
+            descContainer2.setWidth("100%");
+            descContainer2.addComponent(lblVariate);
+            descContainer2.addComponent(lblVariateDescription);
+            descContainer2.setExpandRatio(lblVariateDescription,1.0f);
+
+            variatesContainer.addComponent(descContainer2);
+            variatesContainer.addComponent(initializeVariatesTable());
+
+            tableContainer.addComponent(factorsContainer);
+            tableContainer.addComponent(variatesContainer);
+            tableContainer.setExpandRatio(factorsContainer, 1.0F);
+            tableContainer.setExpandRatio(variatesContainer,1.0F);
+
+            this.addComponent(lblStudyName);
+            this.addComponent(buttonContainer);
+            this.addComponent(tableContainer);
+
+            this.setComponentAlignment(buttonContainer,Alignment.MIDDLE_CENTER);
+            this.setExpandRatio(tableContainer,1.0f);
+        }
 		
 		protected Table initializeVariatesTable() {
 	        
 	        final Table tblVariates = new Table();
 	        tblVariates.setImmediate(true);
 	        tblVariates.setWidth("100%");
-	        tblVariates.setHeight("300px");
+            tblVariates.setHeight("270px");
 	        tblVariates.setColumnExpandRatio("name", 1);
 	        tblVariates.setColumnExpandRatio("description", 4);
 	        tblVariates.setColumnExpandRatio("scname", 1);
@@ -806,10 +827,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		        
 		        final Table tblFactors = new Table();
 		        tblFactors.setImmediate(true);
-		        tblFactors.setWidth("100%");
-		        tblFactors.setHeight("300px");
-		        
-		        BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+                tblFactors.setWidth("100%");
+                tblFactors.setHeight("270px");
+                BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 		        container.setBeanIdProperty("id");
 		        
 		        for (VariableType factor : dataSet.getVariableTypes().getFactors().getVariableTypes()){

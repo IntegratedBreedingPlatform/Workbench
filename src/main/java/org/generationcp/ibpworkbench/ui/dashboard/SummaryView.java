@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.ui.*;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -24,14 +25,6 @@ import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -448,6 +441,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
                         if (d instanceof Button) {
                             d.setStyleName("");
+                        }
+                        if (d instanceof TextField) {
+                            ((TextField)d).setWidth("30px");
                         }
 
                     }
