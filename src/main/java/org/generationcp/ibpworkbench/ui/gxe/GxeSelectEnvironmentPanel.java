@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -73,6 +74,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
     private static final long serialVersionUID = 1L;
     
+    private Table variates;
+    private Property.ValueChangeListener selectAllListener;
+    private CheckBox chkVariatesSelectAll;
     
     private Label lblEnvironmentFactorHeader;
     private Label lblEnvironmentFactorDescription;
@@ -216,8 +220,36 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
         final Table factors = initializeFactorsTable();
         factors.setImmediate(true);
-        final Table variates = initializeVariatesTable();
+        variates = initializeVariatesTable();
         variates.setImmediate(true);
+        
+        
+        selectAllListener = new Property.ValueChangeListener(){
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				// TODO Auto-generated method stub
+				Boolean val = (Boolean) event.getProperty().getValue();
+				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
+				for (Object itemId : container.getItemIds()){
+					container.getItem(itemId).getBean().setActive(val);
+				}
+				for (Entry<String, Boolean> entry : variatesCheckboxState.entrySet()){
+					variatesCheckboxState.put(entry.getKey(), val);
+				}
+				
+
+				variates.refreshRowCache();
+				//variatesCheckboxState.put(vm.getName(), val);
+				//vm.setActive(val);
+			}
+        	
+        };
+        
+        chkVariatesSelectAll = new CheckBox();
+        chkVariatesSelectAll.setImmediate(true);
+        chkVariatesSelectAll.setCaption("Select All");
+        chkVariatesSelectAll.addListener(selectAllListener);
         
         selectSpecifyEnvironment = new Select();
         selectSpecifyEnvironment.setSizeFull();
@@ -282,6 +314,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         generalLayout.addComponent(lblVariateTableHeader);
         generalLayout.addComponent(lblVariateTableDescription);
         generalLayout.addComponent(variates);
+        generalLayout.addComponent(chkVariatesSelectAll);
         
         generalLayout.addComponent(datasetVariablesDetailLayout);
         generalLayout.addComponent(buttonArea);
@@ -422,6 +455,12 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 								.getValue();
 						getVariatesCheckboxState().put(vm.getName(), val);
 						vm.setActive(val);
+						
+						if (!val){
+							chkVariatesSelectAll.removeListener(selectAllListener);
+							chkVariatesSelectAll.setValue(val);
+							chkVariatesSelectAll.addListener(selectAllListener);
+						}
 					
 					}
 				});
