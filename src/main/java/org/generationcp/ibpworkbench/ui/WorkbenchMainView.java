@@ -439,13 +439,18 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             mainContent.setExpandRatio(content,1.0F);
 
         } else {
-            VerticalLayout wrap = new VerticalLayout();
-            wrap.setSizeFull();
-            wrap.addStyleName("gcp-dashboard-main");
-            wrap.addComponent(content);
-            //mainContent.setSizeUndefined();
-            mainContent.addComponent(wrap);
-            mainContent.setExpandRatio(wrap,1.0F);
+
+            if (content instanceof Panel) {
+                mainContent.addComponent(content);
+            } else {
+                VerticalLayout wrap = new VerticalLayout();
+                wrap.setSizeFull();
+                wrap.addStyleName("gcp-dashboard-main");
+                wrap.addComponent(content);
+                //mainContent.setSizeUndefined();
+                mainContent.addComponent(wrap);
+                mainContent.setExpandRatio(wrap,1.0F);
+            }
         }
 
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
