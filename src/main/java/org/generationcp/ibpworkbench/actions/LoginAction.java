@@ -115,7 +115,12 @@ public class LoginAction implements ClickListener{
             			new Cookie(LoginCookieProperties.PASSWORD,user.getPassword())
             			);
             } else {
-            	CookieUtils.removeCookies(LoginCookieProperties.REMEMBER_OPT,LoginCookieProperties.USERNAME,LoginCookieProperties.PASSWORD);
+                CookieUtils.setupCookies(
+                        new Cookie(LoginCookieProperties.REMEMBER_OPT,"false"),
+                        new Cookie(LoginCookieProperties.USERNAME,""),
+                        new Cookie(LoginCookieProperties.PASSWORD,"")
+                );
+            	//CookieUtils.removeCookies(LoginCookieProperties.REMEMBER_OPT,LoginCookieProperties.USERNAME,LoginCookieProperties.PASSWORD);
             }
             
             
