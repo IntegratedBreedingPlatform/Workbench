@@ -186,11 +186,14 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 	public void writeProjectXMLV2() throws BreedingViewXMLWriterException {
 	
 		Traits traits = new Traits();
-        for( Entry<Integer, String> s : breedingViewInput.getVariateColumns().entrySet()){
+        for ( Entry<String, Boolean> entry : breedingViewInput.getVariatesActiveState().entrySet()){
         	Trait trait = new Trait();
-             trait.setName(s.getValue());
-             trait.setActive(breedingViewInput.getVariatesActiveState().get(s.getValue()).booleanValue());
-             traits.add(trait);
+            trait.setName(entry.getKey());
+            trait.setActive(true);
+            if (entry.getValue()){
+            	traits.add(trait);
+            }
+            
         }
         
         //create DataFile element

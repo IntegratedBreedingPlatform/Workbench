@@ -212,8 +212,8 @@ public class RunBreedingViewAction implements ClickListener {
         		selectedEnvironments.add(m.getEnvironmentName());
         	}
         	
-        	HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments);
-        	breedingViewInput.setVariateColumns(variateColumns);
+        	datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
+        	//breedingViewInput.setVariateColumns(variateColumns);
         } catch (DatasetExporterException e1) {
 			e1.printStackTrace();
 		}

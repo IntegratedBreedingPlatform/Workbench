@@ -799,13 +799,19 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
        
         addComponent(mainLayout);
     }
+    
+    private void reset(){
+    	
+    }
 
     protected void initializeActions() {
        btnCancel.addListener(new Button.ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				try {
+				
+				reset();
+				/**try {
 			       
 				
 	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
@@ -822,7 +828,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 		            
 		            
 		            return;
-				}
+				}**/
 			}
 		});
        
@@ -874,7 +880,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
         messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnCancel, Message.RESET);
         
         messageSource.setValue(lblTitle, Message.BV_TITLE);
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
