@@ -134,32 +134,10 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeActions() {
         saveProjectButton.addListener(new SaveNewProjectAction(this));
-        //cancelButton.addListener(new HomeAction());
-        
-        cancelButton.addListener(new Button.ClickListener() {
-            private static final long serialVersionUID = 5980254872602301350L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-               onCancel(event);
-            }
-        });
+        cancelButton.addListener(new HomeAction());
+       
     }
-    
-    public void onCancel(Button.ClickEvent event) {
         
-        try {
-            new HomeAction().buttonClick(event);
-        } catch (Exception e) {
-            if(e.getCause() instanceof InternationalizableException) {
-                InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-            }
-            return;
-        }
-
-        
-    }
 
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
