@@ -125,6 +125,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
                 emptyLabel4.setWidth("100%");
                 emptyLabel4.setHeight("10px");
                 rolesLayout.addComponent(emptyLabel4);
+                //continue; // added so we wont display the roles anymore
             }
             
             HorizontalLayout checkboxButtonLayout = new HorizontalLayout();
@@ -138,6 +139,11 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
             checkboxButtonLayout.addComponent(checkBox);
             checkboxButtonLayout.addComponent(showButton);
             rolesLayout.addComponent(checkboxButtonLayout);
+            
+            if (checkBox.getCaption().contains(managerRoleLabel)) {
+                //we would just hide it
+                checkboxButtonLayout.setVisible(false);
+            }
         }
 
         
