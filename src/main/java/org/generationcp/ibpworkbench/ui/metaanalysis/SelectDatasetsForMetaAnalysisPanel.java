@@ -895,7 +895,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					trialInstanceFactorName = f.getLocalName();
 				}
 				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& f.getStandardVariable().getScale().getName().equalsIgnoreCase("abbreviation")){
+						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
 					environmentFactorName = f.getLocalName();
 				}
 			}
