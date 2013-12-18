@@ -143,6 +143,9 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             
             // run crop specific script
             runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
+            
+            // run the common-update scripts
+            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common-update"));
         }
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
