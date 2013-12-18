@@ -21,6 +21,18 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
     public void valueChange(ValueChangeEvent event) {
         String value = (String) event.getProperty().getValue();
         
+        if (value == null) {
+        	
+        	this.source.getSelColumnFactor().setVisible(false);
+        	this.source.getLblSpecifyColumnFactor().setVisible(false);
+            this.source.getSelRowFactor().setVisible(false);
+            this.source.getLblSpecifyRowFactor().setVisible(false);
+            this.source.getSelBlocks().setVisible(false);
+            this.source.getLblBlocks().setVisible(false);
+        	
+        	return;
+        }
+        
         if(value.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
         	/**
             this.source.getSelColumnFactor().setEnabled(true);
