@@ -443,13 +443,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         selDesignType = new Select();
         selDesignType.setImmediate(true); 
         selDesignType.setNullSelectionAllowed(true);
+        selDesignType.setNewItemsAllowed(false);
         selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
         
         checkDesignFactor();
-        selDesignType.setNullSelectionAllowed(false);
-        selDesignType.setNewItemsAllowed(false);
+        
         
         selReplicates = new Select();
         selReplicates.setImmediate(true); 
@@ -801,6 +801,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private void reset(){
     	selEnvFactor.select((Object) null);
     	selDesignType.select((Object) null);
+    	selReplicates.select((Object) null);
     	footerCheckBox.setValue(false);
     	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
     
