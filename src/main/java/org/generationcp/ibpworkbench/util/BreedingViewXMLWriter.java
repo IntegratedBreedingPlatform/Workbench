@@ -18,6 +18,8 @@ import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
@@ -186,6 +188,18 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 	public void writeProjectXMLV2() throws BreedingViewXMLWriterException {
 	
 		Traits traits = new Traits();
+		
+		SortedSet<String> keys = new TreeSet<String>(breedingViewInput.getVariatesActiveState().keySet());
+		for (String key : keys){
+			if(breedingViewInput.getVariatesActiveState().get(key)){
+				Trait trait = new Trait();
+	            trait.setName(key);
+	            trait.setActive(true);
+	            traits.add(trait);
+			}
+		}
+		
+		/**
         for ( Entry<String, Boolean> entry : breedingViewInput.getVariatesActiveState().entrySet()){
         	Trait trait = new Trait();
             trait.setName(entry.getKey());
@@ -194,7 +208,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
             	traits.add(trait);
             }
             
-        }
+        }**/
         
         //create DataFile element
         DataFile data = new DataFile();

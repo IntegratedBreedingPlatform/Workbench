@@ -549,6 +549,16 @@ public class DatasetExporter {
         List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
         HashMap<Integer, String> variateColumnsMap = new HashMap<Integer, String>();
         
+        Collections.sort(variateVariableTypes, new Comparator<VariableType>(){
+
+			@Override
+			public int compare(VariableType o1, VariableType o2) {
+				// TODO Auto-generated method stub
+				return o1.getLocalName().compareTo(o2.getLocalName());
+			}
+        	
+        });
+        
         for(VariableType variate : variateVariableTypes) {
   
             String variateName = variate.getLocalName();
