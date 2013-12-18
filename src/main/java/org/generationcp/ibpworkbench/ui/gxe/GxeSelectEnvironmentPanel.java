@@ -220,7 +220,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
         final Table factors = initializeFactorsTable();
         factors.setImmediate(true);
-        variates = initializeVariatesTable();
+        initializeVariatesTable();
         variates.setImmediate(true);
         
         
@@ -419,18 +419,19 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         return tblFactors;
     }
     
-    protected Table initializeVariatesTable() {
+    protected void initializeVariatesTable() {
         
-        final Table tblVariates = new Table();
-        tblVariates.setImmediate(true);
-        tblVariates.setWidth("100%");
-        tblVariates.setHeight("100%");
-        tblVariates.setColumnExpandRatio("", 0.5f);
-        tblVariates.setColumnExpandRatio("name", 1);
-        tblVariates.setColumnExpandRatio("description", 4);
-        tblVariates.setColumnExpandRatio("testedin", 1);
+        variates = new Table();
+        variates.setImmediate(true);
+        variates.setWidth("100%");
+        variates.setHeight("100%");
+        variates.setColumnExpandRatio("", 0.5f);
+        variates.setColumnExpandRatio("name", 1);
+        variates.setColumnExpandRatio("description", 4);
+        variates.setColumnExpandRatio("testedin", 1);
         
-        tblVariates.addGeneratedColumn("", new Table.ColumnGenerator(){
+        
+        variates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
 
 			private static final long serialVersionUID = 1L;
 
@@ -439,7 +440,28 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+					BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
+					VariateModel vm = container.getItem(itemId).getBean();
+					
+					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+					if (testedIn > 2){
+						vm.setActive(true);
+					}
+					
+					return String.format("%s of %s", testedIn, environmentNames.size());
+					
+			}});
+        
+        variates.addGeneratedColumn("", new Table.ColumnGenerator(){
+
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				
+				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
 				final VariateModel vm = container.getItem(itemId).getBean();
 				
 				final CheckBox checkBox = new CheckBox();
@@ -464,6 +486,13 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					
 					}
 				});
+				
+				int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+				if (testedIn > 2){
+					vm.setActive(true);
+				}else{
+					vm.setActive(false);
+				}
 
 				if (vm.getActive()) {
 					checkBox.setValue(true);
@@ -479,12 +508,12 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	
         });
         
-        tblVariates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
+        variates.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
 
 			private static final long serialVersionUID = 1L;
 
 				public String generateDescription(Component source, Object itemId, Object propertyId) {
-        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
         	    	 VariateModel vm = container.getItem(itemId).getBean();
         	    	 
         	    	 StringBuilder sb = new StringBuilder();
@@ -499,37 +528,19 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	});
 		
         
-        tblVariates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
 
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-				
-					BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
-					VariateModel vm = container.getItem(itemId).getBean();
-					
-					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
-					if (testedIn > 2){
-						vm.setActive(true);
-					}
-					
-					return String.format("%s of %s", testedIn, environmentNames.size());
-					
-			}});
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
-        tblVariates.setContainerDataSource(container);
+        variates.setContainerDataSource(container);
         
-        String[] columns = new String[] {"","displayName", "description","testedin"};
+        String[] columns = new String[] {"", "displayName", "description","testedin"};
         String[] columnHeaders = new String[] {"","Name", "Description","Tested In"};
-        tblVariates.setVisibleColumns(columns);
-        tblVariates.setColumnHeaders(columnHeaders);
-        tblVariates.setColumnWidth("", 18);
-        return tblVariates;
+        variates.setVisibleColumns(columns);
+        variates.setColumnHeaders(columnHeaders);
+        variates.setColumnWidth("", 18);
+        //variates.refreshRowCache();
+
     }
    
     
@@ -655,16 +666,17 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
-        variates.setContainerDataSource(container);
+        this.variates.setContainerDataSource(container);
         
         for (VariateModel v : variateList ){
      	   container.addBean(v);
         }
         
-        variates.setContainerDataSource(container);
+        this.variates.setContainerDataSource(container);
         
-        variates.setVisibleColumns(new String[]{ "", "displayName", "description","testedin"});
-        variates.setColumnHeaders(new String[]{ "", "Name", "Description", "Tested In"});
+        this.variates.setVisibleColumns(new String[]{ "","displayName", "description","testedin"});
+        this.variates.setColumnHeaders(new String[]{ "", "Name", "Description", "Tested In"});
+        //this.variates.refreshRowCache();
         
  }
 
@@ -723,23 +735,26 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 		
 		int counter = 0;
 		
-		try {
+		
 			for (String environmentName : environmentNames){
-				TrialEnvironment te = trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName);
-				if (te!=null){
-					long count = studyDataManager.countStocks(
-							meansDataSetId
-						,te.getId()
-						,variableId
-							);
-					if (count > 0) counter++;
+				try{
+					TrialEnvironment te = trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName);
+					if (te!=null){
+						long count = studyDataManager.countStocks(
+								meansDataSetId
+							,te.getId()
+							,variableId
+								);
+						if (count > 0) counter++;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
 			
 			}
 			 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		
 		return counter;
 		

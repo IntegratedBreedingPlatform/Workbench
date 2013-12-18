@@ -15,11 +15,8 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.workflow.ConventionalBreedingWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.MabcWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.ManagerWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.MarsProjectDashboard;
-import org.generationcp.ibpworkbench.ui.workflow.MasWorkflowDiagram;
+import org.generationcp.ibpworkbench.ui.workflow.*;
+import org.generationcp.ibpworkbench.ui.workflow.MarsWorkflowDiagram;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -77,7 +74,7 @@ public class WorkflowPreviewWindow extends Window implements InitializingBean {
         
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName.equals("MARS")) {
-            MarsProjectDashboard marsWorkflowDiagram = new MarsProjectDashboard(true, null,null);
+            MarsWorkflowDiagram marsWorkflowDiagram = new MarsWorkflowDiagram(true, null,null);
             setHeight(marsWorkflowDiagram.getHeight(), marsWorkflowDiagram.getHeightUnits());
             setWidth(marsWorkflowDiagram.getWidth(), marsWorkflowDiagram.getWidthUnits());
             setContent(marsWorkflowDiagram);

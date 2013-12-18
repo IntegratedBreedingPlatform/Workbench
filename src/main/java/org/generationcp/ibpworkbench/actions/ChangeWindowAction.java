@@ -19,8 +19,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.ProgramMembersView;
 import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
-import org.generationcp.ibpworkbench.ui.ProjectMembersComponentPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.ui.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
@@ -202,7 +202,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            ProjectMembersComponentPanel projectLocationPanel = new ProjectMembersComponentPanel(this.project);
+            ProgramMembersView projectLocationPanel = new ProgramMembersView(this.project);
             w.showContent(projectLocationPanel);
             NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
 

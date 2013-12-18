@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.ui.workflow;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -34,19 +35,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowConstants, InitializingBean, InternationalizableComponent {
+public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -369,18 +362,11 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
 
     protected void initializeLayout() {
     	this.setSizeFull();
-
-        Component workFlowArea = layoutWorkflowArea();
-        addComponent(workFlowArea);
-        this.setExpandRatio(workFlowArea, 1.0F);
+        this.setScrollable(true);
+        this.setContent(layoutWorkflowArea());
     }
 
-    protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
-        panel.setSizeFull();
-        panel.setScrollable(true);
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
-
+    protected ComponentContainer layoutWorkflowArea() {
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setMargin(false);
         layout.setWidth("850px");
@@ -392,19 +378,19 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         
         //the steps on the first column
         Component populationManagementArea = layoutAdministration();
-        layout.addComponent(populationManagementArea, "top:" + extraSpace + "; left:" + extraSpace);
+        layout.addComponent(populationManagementArea, "top:" + extraSpace + ";");
         
         top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
         topInPixels = top + "px";
         Component fieldTrialArea = layoutProjectPlanning();
-        layout.addComponent(fieldTrialArea, "top:" + topInPixels  + "; left:" + extraSpace);
+        layout.addComponent(fieldTrialArea, "top:" + topInPixels  + ";");
         
         //the steps on the second column   
         top = EXTRA_SPACE_BETWEEN_COMPONENTS; 
         topInPixels = top + "px";
-        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        int left = WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
         String leftInPixels = left + "px";
-        
+
         Component projectPlanningArea = layoutBreedingManagement();
         layout.addComponent(projectPlanningArea, "top:" + topInPixels + "; left:" + leftInPixels);
         
@@ -417,7 +403,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         top = EXTRA_SPACE_BETWEEN_COMPONENTS; 
         topInPixels = top + "px";
         left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
-            + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
+            + WORKFLOW_STEP_WIDTH;
         leftInPixels = left + "px";
         
         Component progenySelectionArea = layoutAnalysisPipeline();
@@ -429,9 +415,9 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         layout.addComponent(projectCompletionArea, "top:" + topInPixels  + "; left:" + leftInPixels);
 
         final VerticalLayout rootContainer = new VerticalLayout();
-        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContainer.setSpacing(false);
-
+        rootContainer.setSizeUndefined();
         if (!workflowPreview) {
             Label header = new Label();
             header.setStyleName(Bootstrap.Typography.H1.styleName());
@@ -441,9 +427,7 @@ public class ManagerWorkflowDiagram extends VerticalLayout implements WorkflowCo
         }
         rootContainer.addComponent(layout);
 
-        panel.setContent(rootContainer);
-
-        return panel;
+        return rootContainer;
     }
 
     protected Component layoutProjectPlanning() {

@@ -48,15 +48,14 @@ import com.vaadin.data.util.IndexedContainer;
 
 
 /**
- * The third tab (Project Members) in Create Project Accordion Component.
- * 
+ *
  * @author Aldrich Abrogena
  */
 @SuppressWarnings("unchecked")
 @Configurable
-public class ProjectMembersComponentPanel extends VerticalLayout implements InitializingBean{
+public class ProgramMembersView extends Panel implements InitializingBean{
     
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponentPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersView.class);
     private static final long serialVersionUID = 1L;
     
    
@@ -69,7 +68,6 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     
     private Button previousButton;
 //    private Button nextButton;
-    private Component buttonArea;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -78,7 +76,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     
     private  List<Role> inheritedRoles;
 
-    public ProjectMembersComponentPanel(Project project) {
+    public ProgramMembersView(Project project) {
     	//System.out.println("Project is " + project.getProjectName());
         this.project = project;
     }
@@ -104,11 +102,6 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
 
     protected void initializeComponents(){
 
-        final Label header = new Label("Manage Program Members");
-        header.setStyleName(Bootstrap.Typography.H1.styleName());
-        this.addComponent(header);
-
-
         select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Program Members");
@@ -117,20 +110,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);
-        
-        this.addComponent(select);
-        
-        VerticalLayout container = new VerticalLayout();
-        container.setSpacing(true);
 
-        initializeMembersTable();
-        buttonArea = layoutButtonArea();
-        
-        container.setSizeUndefined();
-        container.addComponent(tblMembers);
-        container.addComponent(buttonArea);
-        container.setComponentAlignment(buttonArea,Alignment.MIDDLE_RIGHT);
-        this.addComponent(container);
     }
     
     private List<CheckBox> createUserRolesCheckBoxList() {
@@ -207,7 +187,7 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
         return projectUserRoles;
 
     }
-    private void initializeMembersTable() {
+    private Table initializeMembersTable() {
         tblMembers = new Table();
         tblMembers.setImmediate(true);
         
@@ -268,6 +248,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
                 return null;
             }
         });
+
+        return tblMembers;
     }
 
     protected void initializeValues() {
@@ -290,9 +272,27 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(new MarginInfo(false,true,true,true));
-        //setComponentAlignment(buttonArea, Alignment.TOP_RIGHT);
+
+        final VerticalLayout root = new VerticalLayout();
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+        root.setSpacing(true);
+        root.setSizeUndefined();
+
+        final Label header = new Label("Manage Program Members");
+        header.setStyleName(Bootstrap.Typography.H1.styleName());
+
+        final ComponentContainer buttonArea = layoutButtonArea();
+
+        root.addComponent(header);
+        root.addComponent(select);
+        root.addComponent(initializeMembersTable());
+        root.addComponent(buttonArea);
+        root.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
+
+        this.setScrollable(true);
+
+        this.setSizeFull();
+        this.setContent(root);
     }
     	
     protected void initializeUsers() throws MiddlewareQueryException 
@@ -380,8 +380,8 @@ public class ProjectMembersComponentPanel extends VerticalLayout implements Init
    
 
 
-	protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
+	protected ComponentContainer layoutButtonArea() {
+        final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 

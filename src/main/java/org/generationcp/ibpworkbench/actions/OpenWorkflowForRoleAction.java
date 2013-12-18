@@ -11,29 +11,21 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.workflow.ConventionalBreedingWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.MabcWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.ManagerWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.workflow.MarsProjectDashboard;
-import org.generationcp.ibpworkbench.ui.workflow.MasWorkflowDiagram;
+import org.generationcp.ibpworkbench.ui.workflow.*;
+import org.generationcp.ibpworkbench.ui.workflow.MarsWorkflowDiagram;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
@@ -152,7 +144,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         String workflowName = role.getWorkflowTemplate().getName();
         if (workflowName != null){
             if (workflowName.equals("MARS")) {
-                MarsProjectDashboard projectDashboard = new MarsProjectDashboard(false, project,role);
+                MarsWorkflowDiagram projectDashboard = new MarsWorkflowDiagram(false, project,role);
                 contentWindow.showContent(projectDashboard);
             }
             else if (workflowName.equals("MAS")) {
