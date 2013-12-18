@@ -24,6 +24,7 @@ import java.util.Map;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
@@ -147,11 +148,13 @@ public class SaveUsersInProjectAction implements ClickListener{
             // create local database users for each workbench user
             ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
             createLocalDatabaseUsers(managerFactory, projectUserRoles, project);
-            
-            event.getComponent().getWindow().showNotification("Successfully updated this project's members list.");
+
+            MessageNotifier.showMessage(event.getComponent().getWindow(),"Success","Successfully updated this project's members list.");
+
         } catch(MiddlewareQueryException ex) {
             //do nothing because getting the User will not fail
-            event.getComponent().getWindow().showNotification("A database problem occured while updating this project's members list. Please see error logs.");
+            event.getComponent().getWindow().showNotification("");
+            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.ERROR_DATABASE),"A database problem occured while updating this project's members list. Please see error logs.");
         }
         
         try{

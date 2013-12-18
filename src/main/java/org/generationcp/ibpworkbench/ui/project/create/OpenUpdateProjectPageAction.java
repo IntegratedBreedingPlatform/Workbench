@@ -54,8 +54,6 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
 
         try {
             UpdateProjectPanel projectPanel = new UpdateProjectPanel();
-            projectPanel.setWidth("800px");
-
             w.showContent(projectPanel);
 
             NavManager.navigateApp(window, "/UpdateProject", isLinkAccessed);

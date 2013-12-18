@@ -155,7 +155,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     protected void initializeLayout() {
         this.setSizeUndefined();
         this.setMargin(new MarginInfo(false,true,true,true));
-        this.setWidth("98%");
+        this.setWidth("100%");
 
         final Label dashboardLbl = new Label(messageSource.getMessage(Message.DASHBOARD));
         dashboardLbl.setStyleName(Bootstrap.Typography.H1.styleName());

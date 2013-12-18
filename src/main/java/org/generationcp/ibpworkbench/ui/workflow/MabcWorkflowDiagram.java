@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.ui.workflow;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -28,19 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConstants, InitializingBean, InternationalizableComponent {
+public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -319,20 +312,11 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
     protected void initializeLayout() {
         this.setSizeFull();
-        this.setSpacing(true);
-
-        Component workFlowArea = layoutWorkflowArea();
-        addComponent(workFlowArea);
-        this.setExpandRatio(workFlowArea, 1.0F);
+        this.setScrollable(true);
+        this.setContent(layoutWorkflowArea());
     }
 
-    protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
-        panel.setSizeFull();
-        panel.setScrollable(true);
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
-
-
+    protected ComponentContainer layoutWorkflowArea() {
         AbsoluteLayout layout = new AbsoluteLayout();
         layout.setWidth("620px");
         layout.setHeight("1000px");
@@ -400,7 +384,7 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
         layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
 
         final VerticalLayout rootContainer = new VerticalLayout();
-        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContainer.setSpacing(false);
 
         if (!workflowPreview) {
@@ -411,12 +395,9 @@ public class MabcWorkflowDiagram extends VerticalLayout implements WorkflowConst
 
         }
         rootContainer.addComponent(layout);
+        rootContainer.setSizeUndefined();
 
-        panel.setContent(rootContainer);
-
-
-
-        return panel;
+        return rootContainer;
     }
 
     protected Component layoutProjectPlanning() {
