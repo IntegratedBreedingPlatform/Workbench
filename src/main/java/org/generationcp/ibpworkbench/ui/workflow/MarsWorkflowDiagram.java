@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.ui.workflow;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -28,19 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class MarsProjectDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MarsWorkflowDiagram extends Panel implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -129,7 +122,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     private Button metaAnalysisBtn;
     private Button metaAnalysisBtn2;
 
-    public MarsProjectDashboard(boolean workflowPreview, Project project,Role role) {
+    public MarsWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
         this.workflowPreview = workflowPreview;
         
         if (!workflowPreview) {
@@ -350,19 +343,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
 
     protected void initializeLayout() {
         this.setSizeFull();
-        this.setSpacing(true);
-
-        Component workFlowArea = layoutWorkflowArea();
-        addComponent(workFlowArea);
-        this.setExpandRatio(workFlowArea, 1.0F);
+        this.setScrollable(true);
+        this.setContent(layoutWorkflowArea());
     }
 
-    protected Component layoutWorkflowArea() {
-        Panel panel = new Panel();
-        panel.setSizeFull();
-        panel.setScrollable(true);
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
-        
+    protected ComponentContainer layoutWorkflowArea() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
         layout.setHeight("1500px");
@@ -380,7 +365,8 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(markerImplementationArea);
 
         final VerticalLayout rootContainer = new VerticalLayout();
-        rootContainer.setMargin(new MarginInfo(false,true,true,true));
+        rootContainer.setSizeUndefined();
+        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContainer.setSpacing(false);
 
         if (!workflowPreview) {
@@ -392,18 +378,13 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         }
         rootContainer.addComponent(layout);
 
-        panel.setContent(rootContainer);
-
-
-        return panel;
+        return rootContainer;
     }
 
-    protected Component layoutBreedingManagementArea() {
-        Panel panel = new Panel();
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
+    protected ComponentContainer layoutBreedingManagementArea() {
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        layout.setMargin(new MarginInfo(true,false,false,false));
+        layout.setMargin(new Layout.MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component projectPlanningArea = layoutProjectPlanning();
@@ -433,11 +414,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        panel.setContent(layout);
-        return panel;
+        return layout;
     }
 
-    protected Component layoutProjectPlanning() {
+    protected ComponentContainer layoutProjectPlanning() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -455,11 +435,6 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         //breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
-        
-        //layout.addComponent(browseGermplasmButton);
-       // browseGermplasmButton.setHeight("20px");
-        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(browseGermplasmButton, 0);
 
         layout.addComponent(browseStudiesButton);
         //browseStudiesButton.setHeight("20px");
@@ -504,7 +479,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component layoutPopulationDevelopment() {
+    protected ComponentContainer layoutPopulationDevelopment() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -538,13 +513,11 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(breedingManagerButton);
         layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingManagerButton, 0);
-        
-        
-        
+
         return layout;
     }
 
-    protected Component layoutFieldTrialManagement() {
+    protected ComponentContainer layoutFieldTrialManagement() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -565,7 +538,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component layoutGenotyping() {
+    protected ComponentContainer layoutGenotyping() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -586,13 +559,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component layoutMarkerTraitAnalysisArea() {
-        Panel panel = new Panel();
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
-
+    protected ComponentContainer layoutMarkerTraitAnalysisArea() {
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        layout.setMargin(new MarginInfo(true,false,false,false));
+        layout.setMargin(new Layout.MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component markerTraitAnalysisArea = layoutPhenotypicAnalysis();
@@ -610,11 +580,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        panel.setContent(layout);
-        return panel;
+        return layout;
     }
 
-    protected Component layoutPhenotypicAnalysis() {
+    protected ComponentContainer layoutPhenotypicAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
         //layout.setHeight("145px");
@@ -658,7 +627,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
     
-    protected Component layoutQtlAnalysis() {
+    protected ComponentContainer layoutQtlAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -679,7 +648,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
     
-    protected Component layoutSingleSiteAnalysis() {
+    protected ComponentContainer layoutSingleSiteAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -710,12 +679,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
     }
 
     protected Component layoutMarkerImplementationArea() {
-        Panel panel = new Panel();
-        panel.setStyleName(Reindeer.PANEL_LIGHT);
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
         //layout.setWidth("274px");
-        layout.setMargin(new MarginInfo(true,false,false,false));
+        layout.setMargin(new Layout.MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
         Component qtlSelectionArea = layoutQtlSelection();
@@ -739,11 +706,10 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        panel.setContent(layout);
-        return panel;
+        return layout;
     }
 
-    protected Component layoutQtlSelection() {
+    protected ComponentContainer layoutQtlSelection() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -762,7 +728,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component layoutRecombinationCycle() {
+    protected ComponentContainer layoutRecombinationCycle() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -791,7 +757,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
     
-    protected Component layoutFinalBreedingDecision() {
+    protected ComponentContainer layoutFinalBreedingDecision() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
@@ -820,7 +786,7 @@ public class MarsProjectDashboard extends VerticalLayout implements Initializing
         return layout;
     }
 
-    protected Component createPanel(String caption, String... buttonCaptions) {
+    protected ComponentContainer createPanel(String caption, String... buttonCaptions) {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
 
