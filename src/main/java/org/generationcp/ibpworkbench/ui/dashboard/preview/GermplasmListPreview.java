@@ -670,7 +670,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     .getContainerDataSource();
 
             if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Shared List");
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Program Lists");
                 return;
             }
 

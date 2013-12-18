@@ -665,7 +665,7 @@ public class NurseryListPreview extends VerticalLayout {
                     .getContainerDataSource();
 
             if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Shared Studies");
+                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Program Studies");
                 return;
             }
 
