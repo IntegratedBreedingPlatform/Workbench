@@ -68,22 +68,28 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                         List<Role> roles = manager.getRolesByProjectAndUser(IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),IBPWorkbenchApplication.get().getSessionData().getUserData());
 
                         for (Role role : roles) {
-                            categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,role.getWorkflowTemplate().getName(),role.getLabel()));
+                            //we dont include the tools anymore
+                            if(!role.getName().equalsIgnoreCase("Manager"))
+                                categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,role.getWorkflowTemplate().getName(),role.getLabel()));
                         }
                     }
                 }
                 if (category.getSidebarCategoryName().equals("admin")) {
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"member","Program Member"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Location"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Method"));
+                    
+                    
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"member","Program Members"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Locations"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Methods"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"backup_ibdb","Backup Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"restore_ibdb","Restore from Backup File"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","User Tools"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
-                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
 
+                    //add the softare_license in the tools
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
                 } else {
                     categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
                 }

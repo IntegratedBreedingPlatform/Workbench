@@ -444,7 +444,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 wrap.setStyleName(Reindeer.PANEL_LIGHT);
                 wrap.setSizeFull();
                 wrap.setScrollable(true);
-                wrap.setContent((ComponentContainer) content);
+
+                if (content instanceof  ComponentContainer)
+                    wrap.setContent((ComponentContainer) content);
+                else {
+                    VerticalLayout vl = new VerticalLayout();
+                    vl.addComponent(content);
+                    vl.setSizeUndefined();
+                    wrap.setContent(vl);
+                }
 
                 /*
 
