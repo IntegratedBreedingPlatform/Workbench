@@ -13,9 +13,14 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
@@ -129,7 +134,31 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeActions() {
         saveProjectButton.addListener(new SaveNewProjectAction(this));
-        cancelButton.addListener(new HomeAction());
+        //cancelButton.addListener(new HomeAction());
+        
+        cancelButton.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 5980254872602301350L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+               onCancel(event);
+            }
+        });
+    }
+    
+    public void onCancel(Button.ClickEvent event) {
+        
+        try {
+            new HomeAction().buttonClick(event);
+        } catch (Exception e) {
+            if(e.getCause() instanceof InternationalizableException) {
+                InternationalizableException i = (InternationalizableException) e.getCause();
+                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
+            }
+            return;
+        }
+
+        
     }
 
     protected Component layoutButtonArea() {
