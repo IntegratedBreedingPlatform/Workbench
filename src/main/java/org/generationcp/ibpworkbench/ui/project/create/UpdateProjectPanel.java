@@ -5,6 +5,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -32,6 +33,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     @Override
     protected void initializeActions() {
         super.saveProjectButton.addListener(new UpdateProjectAction(this));
+        cancelButton.addListener(new HomeAction());
+        /*
         cancelButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -55,9 +58,10 @@ public class UpdateProjectPanel extends CreateProjectPanel {
                 }
             }
         });
-
+*/
     }
 
+    
     @Override
     protected  void initializeComponents() {
         this.newProjectTitleArea = new HorizontalLayout();

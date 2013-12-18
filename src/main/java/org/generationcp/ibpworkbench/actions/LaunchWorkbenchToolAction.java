@@ -69,6 +69,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
         ,STUDY_BROWSER("study_browser")
+        ,STUDY_BROWSER_WITH_ID("study_browser_with_id")
         ,GERMPLASM_LIST_BROWSER("germplasm_list_browser")
         ,GDMS("gdms")
         ,FIELDBOOK("fieldbook")
@@ -419,11 +420,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     }
                 }
                 
-                // if the user is trying the 
-                
-                // append the list id if it was set
+                // if the user is trying to launch the List Manager or the Study Browser webapp
+                // we need to append the list id if it was set
                 if (Util.isOneOf(tool.getToolName(), ToolEnum.BM_LIST_MANAGER.getToolName()
-                                                   , ToolEnum.STUDY_BROWSER.getToolName())) {
+                                                   , ToolEnum.STUDY_BROWSER_WITH_ID.getToolName())) {
                     if (idParam != null) {
                         if (toolUrl.endsWith("/")) {
                             toolUrl = toolUrl.substring(0, toolUrl.length() - 1);

@@ -265,6 +265,7 @@ public class ToolUtil {
                                 ,ToolName.germplasm_mainheadtohead.name()
                                 ,ToolName.query_for_adapted_germplasm.name()
                                 ,ToolName.study_browser.name()
+                                ,ToolName.study_browser_with_id.name()
                                 )) {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName,
