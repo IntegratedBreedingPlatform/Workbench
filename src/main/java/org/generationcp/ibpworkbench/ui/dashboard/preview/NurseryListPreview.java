@@ -294,7 +294,7 @@ public class NurseryListPreview extends VerticalLayout {
 
         openStudyManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 4px'></span>Launch");
         openStudyManagerBtn.setHtmlContentAllowed(true);
-        openStudyManagerBtn.setDescription("Open In List Manager");
+        openStudyManagerBtn.setDescription("Open In Study Browser");
         openStudyManagerBtn.setEnabled(false);
 
         renameFolderBtn =new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
