@@ -296,7 +296,7 @@ public class GxeUtility {
 			j++;
 		}
 		
-		if (environmentGroup != null && !environmentGroup.isEmpty() && !environmentGroup.equalsIgnoreCase("analyze all")) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !environmentGroup.equalsIgnoreCase("analyze all")) {
 			traitToColNoMap.put(environmentGroup,j);
 			headerRow.add(environmentGroup);
 			j++;

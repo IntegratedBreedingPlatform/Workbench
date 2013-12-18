@@ -581,7 +581,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
             	fm.setDataType(factor.getStandardVariable().getDataType().getName());
             	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+            			&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()
+            			){
             		selectSpecifyEnvironmentGroups.addItem(fm.getName());
             		factorList.add(fm);
             	}
