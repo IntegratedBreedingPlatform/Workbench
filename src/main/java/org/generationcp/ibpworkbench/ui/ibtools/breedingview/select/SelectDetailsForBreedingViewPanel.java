@@ -248,12 +248,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 						.getValue();
 				SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
 			
-				if (val == false) { 
-					footerCheckBox.removeListener(footerCheckBoxListener);
-					footerCheckBox.setValue(false); 
-					footerCheckBox.addListener(footerCheckBoxListener);
-					return; }
-				
 				 TrialEnvironments trialEnvironments;
 					try {
 						trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
@@ -267,7 +261,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 							
 						}else{
 							
-							model.setActive(true);
+							model.setActive(val);
 							
 						}
 					} catch (ConfigException e) {
@@ -277,6 +271,12 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					if (val == false) { 
+						footerCheckBox.removeListener(footerCheckBoxListener);
+						footerCheckBox.setValue(false); 
+						footerCheckBox.addListener(footerCheckBoxListener);
+						return; }
 				
 			}
 			
