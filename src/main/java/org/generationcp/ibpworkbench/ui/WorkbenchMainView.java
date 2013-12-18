@@ -445,11 +445,16 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 mainContent.addComponent(content);
                 mainContent.setExpandRatio(content,1.0F);
             } else {
-                Panel wrap = new Panel();
+                /*Panel wrap = new Panel();
                 wrap.setStyleName(Reindeer.PANEL_LIGHT);
                 wrap.setSizeFull();
                 wrap.setScrollable(true);
                 wrap.setContent((ComponentContainer) content);
+                */
+
+                final VerticalLayout wrap = new VerticalLayout();
+                wrap.addStyleName("gcp-dashboard-main");
+                wrap.addComponent(content);
 
                 mainContent.addComponent(wrap);
                 mainContent.setExpandRatio(wrap,1.0F);
