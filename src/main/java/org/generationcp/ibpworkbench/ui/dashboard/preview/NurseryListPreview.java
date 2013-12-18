@@ -364,7 +364,7 @@ public class NurseryListPreview extends VerticalLayout {
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
                 Object value = treeView.getValue();
 
-                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER, project, ((Integer) value).intValue()).buttonClick(event);
+                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, ((Integer) value).intValue()).buttonClick(event);
             }
         });
 
