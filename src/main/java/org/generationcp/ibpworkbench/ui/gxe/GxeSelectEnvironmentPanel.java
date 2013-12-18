@@ -78,6 +78,8 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     private Property.ValueChangeListener selectAllListener;
     private CheckBox chkVariatesSelectAll;
     
+    private Boolean refreshing = false;
+    
     private Label lblEnvironmentFactorHeader;
     private Label lblEnvironmentFactorDescription;
     private Label lblEnvironmentGroupsHeader;
@@ -238,8 +240,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					variatesCheckboxState.put(entry.getKey(), val);
 				}
 				
-
+				refreshing = true;
 				variates.refreshRowCache();
+				refreshing = false;
 				//variatesCheckboxState.put(vm.getName(), val);
 				//vm.setActive(val);
 			}
@@ -430,7 +433,6 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         variates.setColumnExpandRatio("description", 4);
         variates.setColumnExpandRatio("testedin", 1);
         
-        
         variates.addGeneratedColumn("testedin", new Table.ColumnGenerator(){
 
 			private static final long serialVersionUID = 1L;
@@ -487,11 +489,13 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					}
 				});
 				
-				int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
-				if (testedIn > 2){
-					vm.setActive(true);
-				}else{
-					vm.setActive(false);
+				if (!refreshing){
+					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
+					if (testedIn > 2){
+						vm.setActive(true);
+					}else{
+						vm.setActive(false);
+					}
 				}
 
 				if (vm.getActive()) {
