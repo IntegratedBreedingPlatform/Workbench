@@ -561,6 +561,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				@Override
 				public void buttonClick(ClickEvent event) {
 					IContentWindow window = (IContentWindow) event.getComponent().getWindow();
+					selectDatasetsForMetaAnalysisPanel.setParent(null);
 					window.showContent(selectDatasetsForMetaAnalysisPanel);
 				}
 			});
