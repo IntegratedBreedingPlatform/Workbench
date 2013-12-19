@@ -54,10 +54,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
-    
-    private StudyDataManager studyDataManager;
-    private ManagerFactory managerFactory;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
@@ -122,10 +119,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
         openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(project);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
         
-        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
-        
-        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProj);
-        studyDataManager = managerFactory.getStudyDataManager();
+        final StudyDataManager studyDataManager = managerFactoryProvider.getManagerFactoryForProject(currentProj).getStudyDataManager();
         
         try {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
@@ -166,28 +160,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
             showDatabaseError(event.getComponent().getWindow());
         }
     }
-    /*
-    private void updateActivityTable(List<ProjectActivity> activityList) {
-        Object[] oldColumns = tblActivity.getVisibleColumns();
-        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
 
-        BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
-        container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
-
-        for (ProjectActivity activity : activityList) {
-            container.addBean(activity);
-        }
-
-        lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
-
-        tblActivity.setContainerDataSource(container);
-
-        tblActivity.setVisibleColumns(columns);
-    }*/
-    
-
-    
     private void showDatabaseError(Window window) {
         MessageNotifier.showError(window, 
                 messageSource.getMessage(Message.DATABASE_ERROR), 

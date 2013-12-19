@@ -66,14 +66,14 @@ public class StudyDetailsQuery implements Query{
 	}
 
 	@Override
-	public List<Item> loadItems(int arg0, int arg1) {
+	public List<Item> loadItems(int startIndex, int count) {
 		List<Item> items = new ArrayList<Item>();
         List<StudyDetails> list = new ArrayList<StudyDetails>();
         try {
         	if(studyType!=null) {
-        		list = studyDataManager.getAllStudyDetails(studyType);
+                list = studyDataManager.getStudyDetails(studyType,startIndex,count);
         	} else {
-        		list = studyDataManager.getAllNurseryAndTrialStudyDetails();
+        		list = studyDataManager.getNurseryAndTrialStudyDetails(startIndex,count);
         	}
         } catch (MiddlewareQueryException e) {
         	LOG.error("Error in getting all study details with for study type: " + studyType + "\n" + e.toString());
@@ -127,14 +127,14 @@ public class StudyDetailsQuery implements Query{
             try {
             	if(studyType!=null) {
             		Long count = studyDataManager.countAllStudyDetails(studyType);
-            		this.size = count.intValue(); 
+            		this.size = count.intValue();
             	} else {
             		Long count = studyDataManager.countAllNurseryAndTrialStudyDetails();
-            		this.size = count.intValue(); 
+            		this.size = count.intValue();
             	}
             } catch (MiddlewareQueryException ex) {
                 LOG.error("Error with getting study details for study type: " + studyType + "\n" + ex.toString());
-            
+
             }
         }
 		return size;
