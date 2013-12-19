@@ -61,6 +61,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-table-row-project-table .v-table-cell-content{cursor:pointer;line-height:26px}
 .program-table .v-button .v-button-caption,.gcp-crumbtrail .v-button-link .v-button-caption{text-transform:uppercase}
 .v-embedded-header-img{margin-top:20px;margin-bottom:10px}
+.gcp-program-table-area .v-button .v-button-caption {text-transform: uppercase;}
 
 .btn-dropdown:hover{color:white;border:1px solid #1b95b2;background:#29afcf}
 .btn-dropdown{font-size:12px;font-weight:bold;padding:0 20px;text-decoration:none;border-radius:3px;color:white;margin-right:10px;margin-bottom:10px;height:24px;line-height:24px;border:1px solid #0b748d;background:#1b95b2}

@@ -265,7 +265,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         addProgramBtn.setHtmlContentAllowed(true);
         addProgramBtn.addListener(new OpenNewProjectAction());
         addProgramBtn.addStyleName(Bootstrap.Buttons.INFO.styleName());
-        addProgramBtn.setWidth("135px");
+        addProgramBtn.setWidth("145px");
 
         programHeaderArea.addComponent(programLbl);
 
