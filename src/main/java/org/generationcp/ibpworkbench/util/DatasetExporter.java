@@ -549,7 +549,7 @@ public class DatasetExporter {
         List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
         HashMap<Integer, String> variateColumnsMap = new HashMap<Integer, String>();
         
-        Collections.sort(variateVariableTypes, new Comparator<VariableType>(){
+        /**Collections.sort(variateVariableTypes, new Comparator<VariableType>(){
 
 			@Override
 			public int compare(VariableType o1, VariableType o2) {
@@ -557,7 +557,7 @@ public class DatasetExporter {
 				return o1.getLocalName().compareTo(o2.getLocalName());
 			}
         	
-        });
+        });**/
         
         for(VariableType variate : variateVariableTypes) {
   
@@ -679,9 +679,19 @@ public class DatasetExporter {
               }
                   
               //List<Variable> variateVariables = experiment.getVariates().getVariables();
-              for( Entry<Integer, String> entry : variateColumnsMap.entrySet()){
+              List variatekeys = new ArrayList(variateColumnsMap.keySet());
+              Collections.sort(variatekeys, 
+      	  			new Comparator<Object>(){
+      	  				public int compare(Object left, Object right){
+      	  					Integer leftKey = (Integer)left;
+      	  					Integer rightKey = (Integer)right;
+      	  		
+      	  					return leftKey.compareTo(rightKey);
+      	  				}
+      	  			});
+              for(Object key : variatekeys){
             	  String variateName = "";
-            	  Variable variateVariable = experiment.getVariates().findByLocalName(entry.getValue());
+            	  Variable variateVariable = experiment.getVariates().findByLocalName(variateColumnsMap.get(key));
             	  if (variateVariable != null){
             		  variateName = variateVariable.getVariableType().getLocalName();
                       if(variateName != null){
