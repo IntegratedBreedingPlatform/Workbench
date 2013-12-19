@@ -446,7 +446,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					VariateModel vm = container.getItem(itemId).getBean();
 					
 					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
-					if (testedIn > 2){
+					if (testedIn > 3){
 						vm.setActive(true);
 					}
 					
@@ -491,7 +491,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 				
 				if (!refreshing){
 					int testedIn = getTestedIn(selectSpecifyEnvironment.getValue().toString(), environmentNames, vm.getVariableId(), getCurrentDataSetId(), trialEnvironments);
-					if (testedIn > 2){
+					if (testedIn > 3){
 						vm.setActive(true);
 					}else{
 						vm.setActive(false);
