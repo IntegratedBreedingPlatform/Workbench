@@ -49,6 +49,13 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
    
     private Project project;
 
+    public OpenProjectMethodsAction() {
+        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+
+        if (this.project == null)
+            this.project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+    }
+
     public OpenProjectMethodsAction(Project project) {
         this.project = project;
     }

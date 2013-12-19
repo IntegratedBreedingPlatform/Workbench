@@ -78,6 +78,11 @@ public class HomeAction implements ClickListener, ActionListener{
         WorkbenchDashboard workbenchDashboard = null;
         try {
             workbenchDashboard = new WorkbenchDashboard();
+
+            w.addTitle("");
+            w.getSidebar().clearLinks();
+            w.showContent(workbenchDashboard);
+
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
@@ -86,12 +91,7 @@ public class HomeAction implements ClickListener, ActionListener{
             }
             return;
         }
-        
-        w.setWorkbenchDashboard(workbenchDashboard);
-        
-        w.addTitle("");
-        w.showContent(w.getWorkbenchDashboard());
-        
+
         NavManager.navigateApp(window, "/Home", isLinkAccessed);
     }
 

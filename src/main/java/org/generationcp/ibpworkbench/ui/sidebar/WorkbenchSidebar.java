@@ -33,16 +33,13 @@ public class WorkbenchSidebar extends CssLayout {
     private WorkbenchSidebarPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
     private Tree sidebarTree;
-    private Project project;
-    private Role role;
 
 
     private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
         @Override
         public void itemClick(ItemClickEvent event) {
-            WorkbenchSidebar.this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
-            if (event.getItemId() == null || WorkbenchSidebar.this.project == null)
+            if (event.getItemId() == null)
                 return;
             else {
                 LOG.trace(event.getItemId().toString());
@@ -54,15 +51,7 @@ public class WorkbenchSidebar extends CssLayout {
 
                 presenter.updateProjectLastOpenedDate();
 
-                // Set a default role (OPTIONAL for backwards compatibility)
-                try {
-                    WorkbenchSidebar.this.role = presenter.getManager().getAllRoles().get(0);
-                } catch (MiddlewareQueryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-
-
-                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId());
+                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
                 if (listener instanceof LaunchWorkbenchToolAction) {
 
                     ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),event.getComponent().getWindow(),true);
@@ -205,35 +194,34 @@ public class WorkbenchSidebar extends CssLayout {
         }
     }
 
-    private ActionListener getLinkActions(final String toolName) {
+    private ActionListener getLinkActions(final String toolName,Project project) {
         if (toolName == null) return null;
 
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
-            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),this.project,null);
+            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),project,null);
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
-            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),this.project,null);
+            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
-            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),this.project);
+            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),project);
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
-            return new OpenProjectMethodsAction(this.project);
+            return new OpenProjectMethodsAction(project);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(this.project);
+            return new OpenProjectLocationAction(project);
         } else if (toolName.equals("delete_project")) {
-            return new DeleteProjectAction(presenter.getManager());
+            return new DeleteProjectAction();
         } else {
             try {
                 List<Role> roles = presenter.getRoleByTemplateName(toolName);
                 if (roles.size() > 0) {
                     final Role role1 = roles.get(0);
 
-                    return new OpenWorkflowForRoleAction(WorkbenchSidebar.this.project) {
+                    return new OpenWorkflowForRoleAction(project) {
                         @Override
                         public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 
                             if (role1.getWorkflowTemplate() == null) {
-                                WorkbenchSidebar.this.role = role1;
                                 LOG.warn("No workflow template assigned to role: {}", role1);
                                 return;
                             }

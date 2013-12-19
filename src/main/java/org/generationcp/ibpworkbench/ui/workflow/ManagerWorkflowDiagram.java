@@ -819,7 +819,7 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
             updateProjectButton.addListener(new OpenUpdateProjectPageAction());
             projectLocationButton.addListener(new OpenProjectLocationAction(project));
             projectMethodsButton.addListener(new OpenProjectMethodsAction(project));
-            deleteProjectButton.addListener(new DeleteProjectAction(workbenchDataManager));
+            deleteProjectButton.addListener(new DeleteProjectAction());
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
             metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,null));

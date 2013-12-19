@@ -27,18 +27,23 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class DeleteProjectAction implements ClickListener, ActionListener{
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
     private Project currentProject;
     private ClickEvent evt;
-    private WorkbenchDataManager workbenchDataManager;
 
-    public DeleteProjectAction(WorkbenchDataManager workbenchDataManager)
+
+    @Autowired
+    private WorkbenchDataManager manager;
+
+    public DeleteProjectAction()
     {
-    	this.workbenchDataManager = workbenchDataManager;
     }
     
     @Override
@@ -55,17 +60,16 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 	}
 
 	@Override
-	public void doAction(Window window, String uriFragment,
+	public void doAction(final Window window, String uriFragment,
 			boolean isLinkAccessed) {
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         if(app.getMainWindow()!= null)
         {
-            final Window myWindow = window;
             User currentUser = app.getSessionData().getUserData();
             this.currentProject = app.getSessionData().getSelectedProject();
             if(this.currentProject == null)
             {
-                MessageNotifier.showError(myWindow, "Error", "Please select a program");
+                MessageNotifier.showError(window, "Error", "Please select a program");
 
             }
             ConfirmDialog.show(app.getMainWindow(), "Delete Program",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
@@ -77,29 +81,21 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
                         try {
 
-                            workbenchDataManager.deleteProjectDependencies(currentProject);
+                            manager.deleteProjectDependencies(currentProject);
                             Project newProj = new Project();
                             newProj.setProjectId(currentProject.getProjectId());
                             newProj.setProjectName(currentProject.getProjectName());
                             newProj.setLocalDbName(currentProject.getLocalDbName());
                             newProj.setCentralDbName(currentProject.getCentralDbName());
-                            workbenchDataManager.dropLocalDatabase(newProj);
-                            workbenchDataManager.deleteProject(newProj);
+                            manager.dropLocalDatabase(newProj);
+                            manager.deleteProject(newProj);
 
                             // go back to dashboard
-                            //new HomeAction().doAction(myWindow, "/Home", true);
-
-
-                            WorkbenchMainView w = (WorkbenchMainView) myWindow;
-                            WorkbenchDashboard workbenchDashboard = null;
-                            workbenchDashboard = new WorkbenchDashboard();
-                            w.setWorkbenchDashboard(workbenchDashboard);
-                            w.addTitle("");
-                            w.showContent(w.getWorkbenchDashboard());
+                            (new HomeAction()).doAction(window, "/Home", true);
 
                         } catch (MiddlewareQueryException e) {
                             // TODO Auto-generated catch block
-                            MessageNotifier.showError(myWindow,"Error", e.getLocalizedMessage());
+                            MessageNotifier.showError(window,"Error", e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }

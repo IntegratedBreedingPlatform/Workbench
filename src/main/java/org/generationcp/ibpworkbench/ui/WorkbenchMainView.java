@@ -380,37 +380,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         return headerLayout;
     }
 
-    private Component layoutLeftArea() {
-        VerticalLayout leftLayout = new VerticalLayout();
-        //leftLayout.setSpacing(true);
-
-        //leftLayout.addComponent(actionsTitle);
-        //leftLayout.setComponentAlignment(actionsTitle, Alignment.TOP_CENTER);
-        //leftLayout.setSize;
-
-        leftLayout.addComponent(createProjectButton);
-
-        leftLayout.setExpandRatio(createProjectButton,1.0F);
-        //leftLayout.setComponentAlignment(createProjectButton, Alignment.TOP_CENTER);
-
-        // TODO: These are commented out to remove non-working elements for June
-        // milestone
-        // leftLayout.addComponent(createContactButton);
-        // leftLayout.setComponentAlignment(createContactButton,
-        // Alignment.TOP_CENTER);
-        //
-        // leftLayout.addComponent(recentTitle);
-        // leftLayout.setComponentAlignment(recentTitle, Alignment.TOP_CENTER);
-
-        //leftLayout.addComponent(usersGuideTitle);
-        //leftLayout.setComponentAlignment(usersGuideTitle, Alignment.TOP_CENTER);
-
-        //TODO update the contents of the hint to apply to the new workflow dashboard screen
-        //leftLayout.addComponent(hint1);
-
-        return leftLayout;
-    }
-
     /**
      * Show the specified {@link Component} on the right side area of the
      * Workbench's split panel.
@@ -469,15 +438,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             contentAreaSplitPanel.setSplitPosition(360,Sizeable.UNITS_PIXELS);
         else
             contentAreaSplitPanel.setSplitPosition(5,Sizeable.UNITS_PIXELS);
-    }
-
-    public WorkbenchDashboard getWorkbenchDashboard() {
-        return workbenchDashboard;
-    }
-
-    public void setWorkbenchDashboard(WorkbenchDashboard workbenchDashboard) {
-        this.workbenchDashboard = workbenchDashboard;
-        this.sidebar.clearLinks();
     }
 
     public CrumbTrail getCrumbTrail() {

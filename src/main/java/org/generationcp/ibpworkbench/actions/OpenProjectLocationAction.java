@@ -52,6 +52,13 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    public OpenProjectLocationAction() {
+        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+
+        if (this.project == null)
+            this.project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+    }
+
     public OpenProjectLocationAction(Project project) {
         this.project = project;
     }
