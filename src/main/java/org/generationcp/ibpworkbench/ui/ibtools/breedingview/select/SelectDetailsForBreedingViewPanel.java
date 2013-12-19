@@ -483,7 +483,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         selGenotypes = new Select();
         selGenotypes.setImmediate(true); 
         populateChoicesForGenotypes();
-        selGenotypes.setNullSelectionAllowed(false);
+        selGenotypes.setNullSelectionAllowed(true);
         selGenotypes.setNewItemsAllowed(false);
         
         btnRun = new Button();
@@ -802,6 +802,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	selEnvFactor.select((Object) null);
     	selDesignType.select((Object) null);
     	selReplicates.select((Object) null);
+    	selGenotypes.select((Object) null);
     	footerCheckBox.setValue(false);
     	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
     
