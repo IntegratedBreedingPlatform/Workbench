@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -103,8 +104,8 @@ public class UpdateProjectAction implements Button.ClickListener  {
             ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Project", "Updated Project - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
-            if (WorkbenchMainView.getInstance() != null)
-                WorkbenchMainView.getInstance().addTitle(projectPanel.getProject().getProjectName());
+            if (IBPWorkbenchApplication.get().getMainWindow() instanceof  WorkbenchMainView)
+                ((WorkbenchMainView)(IBPWorkbenchApplication.get().getMainWindow())).addTitle(projectPanel.getProject().getProjectName());
         }
     }
 }

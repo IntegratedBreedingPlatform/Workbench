@@ -1,18 +1,23 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,6 +46,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     public final static String HAS_CHILDREN = "Folder has child items.";
     private static final String BLANK_NAME = "Folder name cannot be blank";
     private static final String INVALID_NAME = "Please choose a different name";
+
+    @Autowired
+    private WorkbenchDataManager manager;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -371,5 +379,29 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
         view.addChildrenNode(parentId, studyChildren);
 
+    }
+
+    public void updateProjectLastOpenedDate() {
+        try {
+
+            // set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+
+            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
+            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+            if (projectUserInfo != null) {
+                projectUserInfo.setLastOpenDate(new Date());
+                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+            }
+
+            project.setLastOpenDate(new Date());
+            manager.mergeProject(project);
+
+            app.getSessionData().setLastOpenedProject(project);
+
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString(), e);
+        }
     }
 }

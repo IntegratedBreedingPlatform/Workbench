@@ -88,7 +88,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    private static WorkbenchMainView thisInstance;
     private WorkbenchSidebar sidebar;
 
     //private Button userToolsButton;
@@ -206,7 +205,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
 
-        sidebar = new WorkbenchSidebar(null,null);
+        sidebar = new WorkbenchSidebar();
         contentAreaSplitPanel.addComponent(sidebar);
         // layout the left area of the content area split panel
         //contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
@@ -274,7 +273,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
             @Override
             public void buttonClick(ClickEvent event) {
-                thisInstance.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
+                WorkbenchMainView.this.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
             }
         });
 
@@ -282,8 +281,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     }
 
     protected void assemble() throws Exception {
-        thisInstance = this;
-
         initializeComponents();
         initializeLayout();
         initializeActions();
@@ -543,7 +540,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         messageSource.setValue(hint1, Message.USER_GUIDE_1);
     }
 
-    public static WorkbenchMainView getInstance() {
-        return thisInstance;
+    public WorkbenchSidebar getSidebar() {
+        return sidebar;
     }
 }

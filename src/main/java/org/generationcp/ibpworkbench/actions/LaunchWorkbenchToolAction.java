@@ -300,24 +300,15 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     
                     updateToolConfiguration(window, webServiceTool);
                 }
-                
-                if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL)) {
-                	new OpenSelectProjectForStudyAndDatasetViewAction(project, role).doAction(window, "/breeding_view", true);
+
+                try {
+                    toolUtil.launchNativeTool(tool);
                 }
-                else if (toolName.equals(ToolEnum.BREEDING_VIEW.getToolName()) && toolConfiguration.equals(WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL)) {
-                    new OpenSelectProjectForStudyAndDatasetViewAction(project, role).doAction(window, "/breeding_view", true);
-                
-                }
-                else {
-                    try {
-                        toolUtil.launchNativeTool(tool);
-                    }
-                    catch (IOException e) {
-                        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-                        
-                        LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
-                        showLaunchError(window, absoluteToolFile.getAbsolutePath());
-                    }
+                catch (IOException e) {
+                    File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+
+                    LOG.error("Cannot launch " + absoluteToolFile.getAbsolutePath(), e);
+                    showLaunchError(window, absoluteToolFile.getAbsolutePath());
                 }
             }
             else if (tool.getToolType() == ToolType.WEB_WITH_LOGIN) {

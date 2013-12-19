@@ -76,6 +76,9 @@ public class GermplasmListPreview extends VerticalLayout {
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
+
+
+
     private Button openListManagerBtn;
     private Button addFolderBtn;
     private Button deleteFolderBtn;
@@ -199,9 +202,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
                     return;
                 }
-
-                if (WorkbenchSidebar.thisInstance != null)
-                    WorkbenchSidebar.thisInstance.updateLastOpenedProject();
+                    presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
                         (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
@@ -273,7 +274,7 @@ public class GermplasmListPreview extends VerticalLayout {
                         treeView.setItemCaption(lastItemId, name.getValue().toString());
 
                         // close popup
-                        WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
                     }
                 });
 
@@ -281,7 +282,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        WorkbenchMainView.getInstance().removeWindow(w);
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
                     }
                 });
 
@@ -294,7 +295,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 w.setContent(container);
 
                 // show window
-                WorkbenchMainView.getInstance().addWindow(w);
+                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
 
             }
         });
@@ -374,7 +375,7 @@ public class GermplasmListPreview extends VerticalLayout {
                         }
 
                         // close popup
-                        WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
                     }
                 });
 
@@ -382,7 +383,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        WorkbenchMainView.getInstance().removeWindow(w);
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
                     }
                 });
 
@@ -395,7 +396,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 w.setContent(container);
 
                 // show window
-                WorkbenchMainView.getInstance().addWindow(w);
+                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
             }
         });
 
@@ -670,12 +671,12 @@ public class GermplasmListPreview extends VerticalLayout {
                     .getContainerDataSource();
 
             if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Public Lists");
+                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder to Public Lists");
                 return;
             }
 
             if (container.hasChildren(sourceItemId)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder with child elements");
+                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder with child elements");
                 return;
             }
 

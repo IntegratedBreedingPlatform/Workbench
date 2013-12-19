@@ -15,6 +15,7 @@ import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ public class WorkbenchSidebar extends CssLayout {
     private Project project;
     private Role role;
 
-    public static WorkbenchSidebar thisInstance;
 
     private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
@@ -52,30 +52,36 @@ public class WorkbenchSidebar extends CssLayout {
                     return;
                 }
 
-                presenter.updateProjectLastOpenedDate(WorkbenchSidebar.this.project);
+                presenter.updateProjectLastOpenedDate();
 
-                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),WorkbenchSidebar.this.project);
+                // Set a default role (OPTIONAL for backwards compatibility)
+                try {
+                    WorkbenchSidebar.this.role = presenter.getManager().getAllRoles().get(0);
+                } catch (MiddlewareQueryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+
+                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId());
                 if (listener instanceof LaunchWorkbenchToolAction) {
 
-                    ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),WorkbenchMainView.getInstance(),true);
+                    ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),event.getComponent().getWindow(),true);
                 }
                 else if (listener instanceof OpenWindowAction) {
-                    ((OpenWindowAction)listener).launchWindow(WorkbenchMainView.getInstance(),treeItem.getId());
+                    ((OpenWindowAction)listener).launchWindow(event.getComponent().getWindow(),treeItem.getId());
                 }
 
                 else {
-                    listener.doAction(WorkbenchMainView.getInstance(),"/" + treeItem.getId(),true);
+                    listener.doAction(event.getComponent().getWindow(),"/" + treeItem.getId(),true);
                 }
             }
         }
     };
 
 
-    public WorkbenchSidebar(Project project,Role role) {
-        presenter = new WorkbenchSidebarPresenter(this,project);
-        thisInstance = this;
+    public WorkbenchSidebar() {
+        presenter = new WorkbenchSidebarPresenter(this);
 
-        this.project = project;
         try {
             assemble();
         } catch (Exception e) {
@@ -199,21 +205,21 @@ public class WorkbenchSidebar extends CssLayout {
         }
     }
 
-    private ActionListener getLinkActions(final String toolName,Project project) {
+    private ActionListener getLinkActions(final String toolName) {
         if (toolName == null) return null;
 
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
-            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),project,null);
+            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),this.project,null);
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
-            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,this.role,null);
+            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),this.project,this.role,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
-            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),project);
+            return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),this.project);
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
-            return new OpenProjectMethodsAction(project,this.role);
+            return new OpenProjectMethodsAction(this.project,this.role);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(project,this.role);
+            return new OpenProjectLocationAction(this.project,this.role);
         } else if (toolName.equals("delete_project")) {
             return new DeleteProjectAction(presenter.getManager());
         } else {
@@ -222,7 +228,7 @@ public class WorkbenchSidebar extends CssLayout {
                 if (roles.size() > 0) {
                     final Role role1 = roles.get(0);
 
-                    return new OpenWorkflowForRoleAction(project) {
+                    return new OpenWorkflowForRoleAction(WorkbenchSidebar.this.project) {
                         @Override
                         public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 
@@ -243,11 +249,5 @@ public class WorkbenchSidebar extends CssLayout {
         }
 
         return null;
-    }
-
-    public void updateLastOpenedProject() {
-        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
-
-        presenter.updateProjectLastOpenedDate(this.project);
     }
 }

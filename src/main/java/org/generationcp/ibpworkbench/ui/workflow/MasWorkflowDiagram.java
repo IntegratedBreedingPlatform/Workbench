@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
+import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -676,9 +677,11 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
             manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-            breedingViewSingleSiteAnalysisCentralButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL, this.role));
-            breedingViewSingleSiteAnalysisLocalButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW, project, WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL, this.role));
-            
+
+
+            breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
+            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,this.role,WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,this.role,null));
             
             fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));

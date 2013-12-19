@@ -57,7 +57,7 @@ public class ShowProjectDetailAction implements ItemClickListener {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
     private Table tblProject;
     private WorkbenchMainView workbenchDashboardwindow;
 
@@ -74,7 +74,8 @@ public class ShowProjectDetailAction implements ItemClickListener {
     
     public ShowProjectDetailAction(Table tblProject, SummaryView summaryView,
             Button selectDatasetForBreedingViewButton, OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction,
-            Project currentProject, GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects) {
+            Project currentProject, GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects
+            ) {
         this.tblProject = tblProject;
         this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
         this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
@@ -128,9 +129,16 @@ public class ShowProjectDetailAction implements ItemClickListener {
             workbenchDashboardwindow = (WorkbenchMainView) event.getComponent().getWindow();
             workbenchDashboardwindow.addTitle(project.getProjectName());
 
-            if (WorkbenchSidebar.thisInstance != null)
-                WorkbenchSidebar.thisInstance.populateLinks();
+            //if (WorkbenchSidebar.thisInstance != null)
+            //    WorkbenchSidebar.thisInstance.populateLinks();
 
+
+            // retieve sidebar instance from app
+            if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+                WorkbenchMainView main =  (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+
+                main.getSidebar().populateLinks();
+            }
             
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));
             tblProject.refreshRowCache();

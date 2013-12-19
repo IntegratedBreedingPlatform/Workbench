@@ -357,8 +357,7 @@ public class NurseryListPreview extends VerticalLayout {
                     return;
                 }*/
 
-                if (WorkbenchSidebar.thisInstance != null)
-                    WorkbenchSidebar.thisInstance.updateLastOpenedProject();
+                presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
@@ -432,7 +431,7 @@ public class NurseryListPreview extends VerticalLayout {
                         treeView.setItemCaption(treeView.getValue(), name.getValue().toString());
 
                         // close popup
-                        WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
                     }
                 });
 
@@ -440,7 +439,7 @@ public class NurseryListPreview extends VerticalLayout {
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        WorkbenchMainView.getInstance().removeWindow(w);
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
                     }
                 });
 
@@ -453,7 +452,7 @@ public class NurseryListPreview extends VerticalLayout {
                 w.setContent(container);
 
                 // show window
-                WorkbenchMainView.getInstance().addWindow(w);
+                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
 
             }
         });
@@ -533,7 +532,7 @@ public class NurseryListPreview extends VerticalLayout {
                         }
 
                         // close popup
-                        WorkbenchMainView.getInstance().removeWindow(event.getComponent().getWindow());
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
                     }
                 });
 
@@ -541,7 +540,7 @@ public class NurseryListPreview extends VerticalLayout {
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        WorkbenchMainView.getInstance().removeWindow(w);
+                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
                     }
                 });
 
@@ -554,7 +553,7 @@ public class NurseryListPreview extends VerticalLayout {
                 w.setContent(container);
 
                 // show window
-                WorkbenchMainView.getInstance().addWindow(w);
+                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
             }
         });
 
@@ -665,12 +664,12 @@ public class NurseryListPreview extends VerticalLayout {
                     .getContainerDataSource();
 
             if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder to Public Studies");
+                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder to Public Studies");
                 return;
             }
 
             if (container.hasChildren(sourceItemId)) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), "Error occurred", "Cannot move folder with child elements");
+                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder with child elements");
                 return;
             }
 
@@ -693,7 +692,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 success = presenter.moveNurseryListFolder((Integer) sourceItemId, actualTargetId);
             } catch (Error error) {
-                MessageNotifier.showError(WorkbenchMainView.getInstance(), error.getMessage(), "");
+                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), error.getMessage(), "");
                 success = false;
             }
 

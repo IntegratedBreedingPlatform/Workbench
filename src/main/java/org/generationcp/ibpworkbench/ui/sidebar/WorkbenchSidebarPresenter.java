@@ -30,18 +30,15 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
     private final WorkbenchSidebar view;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebarPresenter.class);
 
-    private Project project;
-
     @Autowired
     private WorkbenchDataManager manager;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public WorkbenchSidebarPresenter(WorkbenchSidebar view,Project project) {
+    public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
         this.view = view;
 
-        this.project = project;
     }
 
     @Override
@@ -123,16 +120,15 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
         return Collections.EMPTY_LIST;
     }
 
-
-    public void updateProjectLastOpenedDate(Project project) {
+    public void updateProjectLastOpenedDate() {
         try {
 
             // set the last opened project in the session
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
+            Project project = app.getSessionData().getSelectedProject();
 
             ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
-            ProjectUserInfo	projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
             if (projectUserInfo != null) {
                 projectUserInfo.setLastOpenDate(new Date());
                 manager.saveOrUpdateProjectUserInfo(projectUserInfo);
@@ -145,12 +141,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
-
-            /*
-            MessageNotifier.showError(window,
-                messageSource.getMessage(Message.DATABASE_ERROR),
-                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-             */
         }
     }
 }

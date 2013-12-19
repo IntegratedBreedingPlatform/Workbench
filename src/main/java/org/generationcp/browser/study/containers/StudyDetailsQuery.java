@@ -12,12 +12,15 @@
 
 package org.generationcp.browser.study.containers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,13 +70,16 @@ public class StudyDetailsQuery implements Query{
 
 	@Override
 	public List<Item> loadItems(int startIndex, int count) {
-		List<Item> items = new ArrayList<Item>();
+        final SimpleDateFormat oldFormat = new SimpleDateFormat("yyyyMMdd");
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        List<Item> items = new ArrayList<Item>();
         List<StudyDetails> list = new ArrayList<StudyDetails>();
         try {
         	if(studyType!=null) {
-                list = studyDataManager.getStudyDetails(studyType,startIndex,count);
+                list = studyDataManager.getStudyDetails(Database.LOCAL,studyType,startIndex,count);
         	} else {
-        		list = studyDataManager.getNurseryAndTrialStudyDetails(startIndex,count);
+        		list = studyDataManager.getNurseryAndTrialStudyDetails(Database.LOCAL,startIndex,count);
         	}
         } catch (MiddlewareQueryException e) {
         	LOG.error("Error in getting all study details with for study type: " + studyType + "\n" + e.toString());
@@ -93,10 +99,24 @@ public class StudyDetailsQuery implements Query{
 							break;
         			case 2: value = studyDetails.getObjective();
 							break;
-        			case 3: value = studyDetails.getStartDate();
-							break;
-        			case 4: value = studyDetails.getEndDate();
-							break;
+        			case 3:
+                        try {
+                            value = format.format(oldFormat.parse(studyDetails.getStartDate()));
+                        } catch (ParseException e) {
+                            //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+
+                            value = "N/A";
+                        }
+                        break;
+        			case 4:
+                        try {
+                            value = format.format(oldFormat.parse(studyDetails.getStartDate()));
+                        } catch (ParseException e) {
+                            //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+
+                            value = "N/A";
+                        }
+                        break;
         			case 5: value = studyDetails.getPiName();
 							break;
         			case 6: value = studyDetails.getSiteName();
@@ -126,10 +146,10 @@ public class StudyDetailsQuery implements Query{
 		if(size == -1){
             try {
             	if(studyType!=null) {
-            		Long count = studyDataManager.countAllStudyDetails(studyType);
+            		Long count = studyDataManager.countStudyDetails(Database.LOCAL,studyType);
             		this.size = count.intValue();
             	} else {
-            		Long count = studyDataManager.countAllNurseryAndTrialStudyDetails();
+            		Long count = studyDataManager.countNurseryAndTrialStudyDetails(Database.LOCAL);
             		this.size = count.intValue();
             	}
             } catch (MiddlewareQueryException ex) {

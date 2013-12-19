@@ -3,18 +3,21 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -297,6 +300,30 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+        }
+    }
+
+    public void updateProjectLastOpenedDate() {
+        try {
+
+            // set the last opened project in the session
+            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+
+            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
+            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+            if (projectUserInfo != null) {
+                projectUserInfo.setLastOpenDate(new Date());
+                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+            }
+
+            project.setLastOpenDate(new Date());
+            manager.mergeProject(project);
+
+            app.getSessionData().setLastOpenedProject(project);
+
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString(), e);
         }
     }
 

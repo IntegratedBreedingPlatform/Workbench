@@ -30,10 +30,12 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -215,6 +217,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
+
         tblProject.addListener(new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
         tblProject.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
