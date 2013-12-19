@@ -201,7 +201,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     	setVariatesCheckboxState(new HashMap<String, Boolean>());
         
         generalLayout = new VerticalLayout();
-        generalLayout.setWidth("95%");
+        generalLayout.setWidth("100%");
         
         studyTreeLayout = new VerticalLayout();
         studyTreeLayoutTableContainer = new VerticalLayout();

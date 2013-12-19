@@ -201,7 +201,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         leafResource =  new ThemeResource("images/leaf_16.png");
         
         generalLayout = new VerticalLayout();
-        generalLayout.setWidth("95%");
+        generalLayout.setWidth("100%");
         
         studyTreeLayout = new VerticalLayout();
         studyTreeLayoutTableContainer = new VerticalLayout();
