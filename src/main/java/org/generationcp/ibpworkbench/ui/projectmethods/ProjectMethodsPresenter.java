@@ -10,7 +10,6 @@ import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -30,7 +29,6 @@ import java.util.List;
 @Configurable
 public class ProjectMethodsPresenter implements InitializingBean {
     private final Project project;
-    private final Role role;
     private ProjectMethodsView view;
 
     @Autowired
@@ -41,10 +39,9 @@ public class ProjectMethodsPresenter implements InitializingBean {
     private GermplasmDataManager gdm;
 
 
-    public  ProjectMethodsPresenter(ProjectMethodsView view, Project project, Role role) {
+    public  ProjectMethodsPresenter(ProjectMethodsView view, Project project) {
         this.view = view;
         this.project = project;
-        this.role = role;
 
     }
 

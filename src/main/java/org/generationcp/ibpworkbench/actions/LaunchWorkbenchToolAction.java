@@ -128,9 +128,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private Project project;
     
     private String toolConfiguration;
-    
-    private Role role;
-    
+
     /**
      * An id passed to the tool.
      * We assume that the tool recognizes:
@@ -180,17 +178,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     }
     
     public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration) {
-        this(toolEnum, project, toolConfiguration, null);
-    }
-    
-    public LaunchWorkbenchToolAction(ToolEnum toolEnum, Project project, String toolConfiguration, Role role) {
         this.toolEnum = toolEnum;
         this.project = project;
         this.toolConfiguration = toolConfiguration;
-        this.role = role;
     }
     
-	@Override
+    @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
         

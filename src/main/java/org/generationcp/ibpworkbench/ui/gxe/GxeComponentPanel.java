@@ -11,29 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.gxe;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.commons.breedingview.xml.Genotypes;
-import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
-import org.generationcp.ibpworkbench.ui.StudiesTabCloseListener;
-import org.generationcp.ibpworkbench.util.GxeInput;
-import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -45,9 +33,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -117,14 +102,12 @@ public class GxeComponentPanel extends VerticalLayout implements
 	private ToolUtil toolUtil;
 
 	private Project project;
-	private Role role;
 	
 	private Select selectDatabase = new Select();
 
-	public GxeComponentPanel(Project project,Role role) {
+	public GxeComponentPanel(Project project) {
 		LOG.debug("Project is " + project.getProjectName());
 		this.project = project;
-		this.role = role;
 	}
 
 	@Override

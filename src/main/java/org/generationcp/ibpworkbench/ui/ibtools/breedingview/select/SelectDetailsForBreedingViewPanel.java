@@ -140,8 +140,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private List<VariableType> factorsInDataset;
     
     private Project project;
-    private Role role;
-    
+
     private VerticalLayout mainLayout;
     
     @Autowired 
@@ -156,14 +155,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Property.ValueChangeListener footerCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project, Role role) {
+            ,Project project) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
-        this.role = role;
-     
+
         setWidth("100%");
         
     }

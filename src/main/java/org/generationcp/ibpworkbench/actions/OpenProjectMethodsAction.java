@@ -48,14 +48,9 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectMethodsAction.class);
    
     private Project project;
-    private Role role;
-    
-    public OpenProjectMethodsAction() {
-      
-    }
-    public OpenProjectMethodsAction(Project project, Role role) {
+
+    public OpenProjectMethodsAction(Project project) {
         this.project = project;
-        this.role = role;
     }
     
     @Autowired
@@ -78,7 +73,7 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
         
         try {
         	//ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
-            ProjectMethodsView methodsView = new ProjectMethodsView(project,role);
+            ProjectMethodsView methodsView = new ProjectMethodsView(project);
 
 
             w.showContent(methodsView);

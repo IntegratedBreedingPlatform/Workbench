@@ -211,15 +211,15 @@ public class WorkbenchSidebar extends CssLayout {
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
             return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),this.project,null);
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
-            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),this.project,this.role,null);
+            return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),this.project,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
             return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),this.project);
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
-            return new OpenProjectMethodsAction(this.project,this.role);
+            return new OpenProjectMethodsAction(this.project);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(this.project,this.role);
+            return new OpenProjectLocationAction(this.project);
         } else if (toolName.equals("delete_project")) {
             return new DeleteProjectAction(presenter.getManager());
         } else {

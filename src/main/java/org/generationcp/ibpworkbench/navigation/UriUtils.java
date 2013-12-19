@@ -40,30 +40,36 @@ public final class UriUtils {
      */
     public static Map<String, List<String>> getUriParameters(String uriFragment) {
         Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
-        String parameters = uriFragment.split("\\?")[1];
-        
-        String[] wholeParamPair = parameters.split("\\&");
-        String[] paramPair = new String[2];
-        List<String> tempList;
-        
-        for(String currentWholeParamPair : wholeParamPair) {
-            paramPair = currentWholeParamPair.split("=");
-            if(!parameterMap.isEmpty()) {
-                tempList = parameterMap.get(paramPair[0]);
-                if(tempList == null) {
+
+        try {
+            String parameters = uriFragment.split("\\?")[1];
+
+            String[] wholeParamPair = parameters.split("\\&");
+            String[] paramPair = null;
+            List<String> tempList;
+
+            for(String currentWholeParamPair : wholeParamPair) {
+                paramPair = currentWholeParamPair.split("=");
+                if(!parameterMap.isEmpty()) {
+                    tempList = parameterMap.get(paramPair[0]);
+                    if(tempList == null) {
+                        tempList = new ArrayList<String>();
+                        tempList.add(paramPair[1]);
+                        parameterMap.put(paramPair[0], tempList);
+                    } else {
+                        tempList.add(paramPair[1]);
+                    }
+                } else {
                     tempList = new ArrayList<String>();
                     tempList.add(paramPair[1]);
                     parameterMap.put(paramPair[0], tempList);
-                } else {
-                    tempList.add(paramPair[1]);
                 }
-            } else {
-                tempList = new ArrayList<String>();
-                tempList.add(paramPair[1]);
-                parameterMap.put(paramPair[0], tempList);
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // do nothing
         }
-        
+
         return parameterMap;
+
     }
 }

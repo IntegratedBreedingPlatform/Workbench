@@ -49,7 +49,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -113,7 +112,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private Component buttonArea;
 
     private Database database;
-    private Role role;
     private HashMap<String, Boolean> variatesCheckboxState;
     
     private ThemeResource folderResource;
@@ -134,20 +132,10 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         this.currentProject = currentProject;
         this.database = database;
 
-        setWidth("100%");
-        
-    }
-    
-    public SelectDatasetsForMetaAnalysisPanel(Project currentProject, Database database, Role role) {
-    	  
-        this.currentProject = currentProject;
-        this.database = database;
-        this.role = role;
 
-        setWidth("100%");
         
     }
-    
+
     public Project getCurrentProject() {
         return currentProject;
     }
@@ -291,7 +279,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         studyTreeLayout.setSpacing(true);
         studyTreeLayout.setMargin(new MarginInfo(false,true,true,true));
         studyDetailsLayout.setWidth("100%");
-        
+
+        this.setWidth("100%");
     }
     
     protected void initialize() {
@@ -566,10 +555,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
 		return this.studyDataManager;
-	}
-
-	public Role getCurrentRole() {
-		return role;
 	}
 
 	public HashMap<String, Boolean> getVariatesCheckboxState() {

@@ -112,7 +112,6 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     private Component buttonArea;
 
     private Database database;
-    private Role role;
     private HashMap<String, Boolean> variatesCheckboxState;
     
     private ThemeResource folderResource;
@@ -136,20 +135,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         this.currentProject = currentProject;
         this.database = database;
 
-        setWidth("100%");
-        
     }
-    
-    public SelectDatasetForBreedingViewPanel(Project currentProject, Database database, Role role) {
-    	  
-        this.currentProject = currentProject;
-        this.database = database;
-        this.role = role;
 
-        setWidth("100%");
-        
-    }
-    
     public Project getCurrentProject() {
         return currentProject;
     }
@@ -303,7 +290,11 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         datasetVariablesDetailLayout.setMargin(true);
         datasetVariablesDetailLayout.setSpacing(true);
         datasetVariablesDetailLayout.setWidth("100%");
-        
+
+        this.setWidth("100%");
+
+
+
     }
     
     protected void initialize() {
@@ -316,21 +307,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				try {
-			       
-				
-	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", currentProject.getProjectId(), role.getRoleId());
-	            (new OpenWorkflowForRoleAction(currentProject)).doAction(event.getComponent().getWindow(), url, true);
-				} catch (Exception e) {
-					//LOG.error("Exception", e);
-					new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
-					
-		            if(e.getCause() instanceof InternationalizableException) {
-		                InternationalizableException i = (InternationalizableException) e.getCause();
-		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-		            }
-		            return;
-				}
+                new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
 			}
 		});
     	openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
@@ -715,10 +692,6 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
 		return this.studyDataManager;
-	}
-
-	public Role getCurrentRole() {
-		return role;
 	}
 
 	public HashMap<String, Boolean> getVariatesCheckboxState() {

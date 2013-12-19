@@ -82,8 +82,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         Integer dataSetId = selectDatasetForBreedingViewPanel.getCurrentDataSetId();
         String datasetName = selectDatasetForBreedingViewPanel.getCurrentDatasetName();
         
-        Role role = selectDatasetForBreedingViewPanel.getCurrentRole();
-        
         // study is required
         if (selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
             event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
@@ -162,7 +160,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
             w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project, role));
+                    , project));
             
             
 

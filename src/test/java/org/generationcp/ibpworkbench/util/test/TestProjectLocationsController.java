@@ -69,7 +69,7 @@ public class TestProjectLocationsController {
 		
 			managerFactoryProvider = new DefaultManagerFactoryProvider();
 			
-	        controller = new ProjectLocationsController(p,r,workbenchDataManager,managerFactoryProvider);
+	        controller = new ProjectLocationsController(p,workbenchDataManager,managerFactoryProvider);
 	        Assert.assertNotNull(controller);
 
 	        break;

@@ -18,9 +18,15 @@ import javax.xml.xpath.XPathExpressionException;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +48,6 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
  * <br>
  * <b>File Created</b>: Jun 13, 2012.
  *
- * @see NavUriFragmentChangedEvent
  */
 @Configurable
 public class NavUriFragmentChangedListener implements FragmentChangedListener {
@@ -56,7 +61,11 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
+    @Autowired
+    private WorkbenchDataManager manager;
+
+
     /**
      * Instantiates a new nav uri fragment changed listener.
      */
@@ -77,37 +86,12 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
         if(crumbTrail.isLinkAccessed()) {
             crumbTrail.setLinkAccessed(false);
         } else {
-
-            if(navXmlParser.validateUriFragmentSyntax(u.getFragment())) {
-                navXmlParser.setUriFragment(u.getFragment());
-                
-                try {
-                    Map<String, String> map = navXmlParser.getXpathDetails();
-                    ActionListener listener = (ActionListener) 
-                        Class.forName(map.get("className")).getConstructor().newInstance();
-                    listener.doAction(u.getWindow(), u.getFragment(), false);
-                }
-                catch (XPathExpressionException e) {
-                    // we will just log the exception for debug purposes
-                    // we do not need to handle this exception
-                    LOG.error("XPathExpressionException: Please check the XPathExpression/viewId used.", e);
-                    return;
-                }
-                catch (NullPointerException e) {
-                    // we will just log the exception for debug purposes
-                    // we do not need to handle this exception
-                    LOG.error(u.getFragment() + " cannot be found in nav.xml.");
-                    return;
-                }
-                catch (Exception e) {
-                    LOG.error(e.toString(), e);
-                    MessageNotifier.showError(u.getWindow(), 
-                            messageSource.getMessage(Message.CONFIG_ERROR), 
-                            messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                    return;
-                }
-            
+            try {
+                throw new UnsupportedOperationException();
+            } catch (UnsupportedOperationException e) {
+                MessageNotifier.showError(u.getWindow(),"Unsupported Feature","Navigation by browser URL and Browser history (BACK/FORWARD) is not implemented at the moment.");
             }
+
         }
     }
     

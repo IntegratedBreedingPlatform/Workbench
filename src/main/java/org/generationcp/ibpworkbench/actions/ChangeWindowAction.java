@@ -128,8 +128,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     @Autowired
     private ToolUtil toolUtil;
 
-    private Role role;
-
     public ChangeWindowAction() {
     }
 
@@ -150,14 +148,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         this.toolConfiguration = toolConfiguration;
     }
 
-    public ChangeWindowAction(WindowEnums windowEnum, Project project, Role role, String toolConfiguration) {
-        this.windowEnums = windowEnum;
-        this.project = project;
-        this.role = role;
-        this.toolConfiguration = toolConfiguration;
-    }
-
-
     @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
@@ -170,7 +160,13 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        String windowName = windowEnums.getwindowName();
+        String windowName = "";
+
+        try {
+            windowName = uriFragment.split("/")[1].split("\\?")[0];
+        } catch (Exception e) { }
+
+
         if (WindowEnums.isCorrectTool(windowName)) {
             launchWindow(window, windowName, isLinkAccessed);
         } else {
@@ -183,7 +179,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
 
-        System.out.println("ChangeWindow");
+        //System.out.println("ChangeWindow");
         if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
 
 
@@ -224,7 +220,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project, this.role);
+            GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project);
             w.showContent(gxeAnalysisPanel);
             NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
 
@@ -245,7 +241,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project, Database.LOCAL, this.role);
+            SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project, Database.LOCAL);
             w.showContent(breedingViewPanel);
             NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
 
@@ -265,7 +261,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            SelectDatasetsForMetaAnalysisPanel metaAnalyis = new SelectDatasetsForMetaAnalysisPanel(this.project, Database.LOCAL, this.role);
+            SelectDatasetsForMetaAnalysisPanel metaAnalyis = new SelectDatasetsForMetaAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(metaAnalyis);
             NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
         } else {

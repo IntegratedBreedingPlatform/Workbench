@@ -14,13 +14,11 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,8 +64,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
     private SimpleResourceBundleMessageSource messageSource;
 	private Label resultCountLbl;
 	
-	public ProjectLocationsView(Project project,Role role) {
-		this.projectLocationsController = new ProjectLocationsController(project,role);
+	public ProjectLocationsView(Project project) {
+		this.projectLocationsController = new ProjectLocationsController(project);
 		
 	}
 	

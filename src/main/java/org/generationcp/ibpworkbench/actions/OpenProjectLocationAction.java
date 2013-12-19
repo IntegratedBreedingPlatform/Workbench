@@ -48,19 +48,12 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectLocationAction.class);
    
     private Project project;
-    private Role role;
-    
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    
-    public OpenProjectLocationAction()
-    {
-    	
-    }
-    
-    public OpenProjectLocationAction(Project project, Role role) {
+
+    public OpenProjectLocationAction(Project project) {
         this.project = project;
-        this.role = role;
     }
 
     @Override
@@ -78,9 +71,6 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
         IContentWindow w = (IContentWindow) window;
         
         try {
-            ProjectLocationPanel projectLocationPanel = new ProjectLocationPanel(project, role);
-            projectLocationPanel.setWidth("730px"); 
-            
             try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
                 User user = app.getSessionData().getUserData();
@@ -94,9 +84,8 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
                                           "<br />" + "Please see error logs");
               
             }
-            
-            //w.showContent(projectLocationPanel);
-            w.showContent(new ProjectLocationsView(project,role));
+
+            w.showContent(new ProjectLocationsView(project));
             NavManager.navigateApp(window, "/ProjectLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);

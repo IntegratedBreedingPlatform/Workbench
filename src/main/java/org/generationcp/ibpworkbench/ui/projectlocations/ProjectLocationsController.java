@@ -17,7 +17,6 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -42,19 +41,15 @@ public class ProjectLocationsController implements InitializingBean {
 
 	private CropType cropType;
 
-	private Role role;
-
-	public ProjectLocationsController(Project project, Role role) {
+	public ProjectLocationsController(Project project) {
 		this.project = project;
-		this.role = role;
 		
 		newLocations = new ArrayList<Location>();
 	}
 	
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProjectLocationsController(Project project, Role role,WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
+	public ProjectLocationsController(Project project,WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
 		this.project = project;
-		this.role = role;
 		
 		newLocations = new ArrayList<Location>();
 		
@@ -66,9 +61,6 @@ public class ProjectLocationsController implements InitializingBean {
 	
 	/**
 	 * generates random results
-	 * @param countryID
-	 * @param locationID
-	 * @param locationName
 	 * @return
 	 */
 	public static List<LocationTableViewModel> getRandomResults(Integer countryID,Integer locationType,String locationName) {
@@ -274,12 +266,6 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
 		return project;
 	}
 
-	public Role getRole() {
-		// TODO Auto-generated method stub
-		return role;
-	}
-    
-    
     public GermplasmDataManager getGermplasmDataManager(){
     	return this.gdm;
     }

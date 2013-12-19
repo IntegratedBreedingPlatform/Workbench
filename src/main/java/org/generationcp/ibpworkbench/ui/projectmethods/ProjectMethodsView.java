@@ -11,12 +11,10 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -55,7 +53,6 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
     private ProjectMethodsPresenter presenter;
     private Project project;
-    private Role role;
     private Button addNewMethodBtn;
     private Select groupFilter;
     private Select typeFilter;
@@ -75,11 +72,10 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     private SimpleResourceBundleMessageSource messageSource;
 
 
-    public ProjectMethodsView(Project project,Role role) {
-        presenter = new ProjectMethodsPresenter(this,project,role);
+    public ProjectMethodsView(Project project) {
+        presenter = new ProjectMethodsPresenter(this,project);
 
         this.project = project;
-        this.role = role;
     }
 
     @Override
