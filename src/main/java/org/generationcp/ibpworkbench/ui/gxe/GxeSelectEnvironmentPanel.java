@@ -600,8 +600,14 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             			&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()
             			){
             		selectSpecifyEnvironmentGroups.addItem(fm.getName());
-            		factorList.add(fm);
+            		
             	}
+            	
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
+            		factorList.add(fm);
+            		
+            	}
+            	
             	
            		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
             	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
