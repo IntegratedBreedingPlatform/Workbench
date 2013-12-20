@@ -173,7 +173,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 
         renameFolderBtn.setEnabled(false);
-        addFolderBtn.setEnabled(true);
+        addFolderBtn.setEnabled(false);
         deleteFolderBtn.setEnabled(false);
 
         this.toolbar.addComponent(addFolderBtn);
@@ -321,9 +321,6 @@ public class GermplasmListPreview extends VerticalLayout {
                 Label l = new Label("Folder Name");
                 final TextField name = new TextField();
 
-                if (treeView.getValue() != null)
-                    name.setValue(treeView.getItemCaption(treeView.getValue()));
-
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
 
@@ -359,15 +356,16 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.setChildrenAllowed(newItem, true);
                             treeView.setItemIcon(newItem, folderResource);
 
-                            if (presenter.getGermplasmListParent(newItem) != null) {
-                                treeView.setParent(newItem, treeView.getValue());
+                            GermplasmList parent = presenter.getGermplasmListParent(newItem);
+                            if (parent != null) {
+                                treeView.setParent(newItem, parent.getId());
                             } else {
                                 treeView.setParent(newItem, MY_LIST);
                             }
 
-                            if (treeView.getValue() != null) {
-                                if (!treeView.isExpanded(treeView.getValue()))
-                                    expandTree(treeView.getValue());
+                            if (parent != null) {
+                                if (!treeView.isExpanded(parent.getId()))
+                                    expandTree(parent.getId());
                             } else
                                 treeView.expandItem(MY_LIST);
 
@@ -428,9 +426,15 @@ public class GermplasmListPreview extends VerticalLayout {
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             try {
+                            	GermplasmList parent = presenter.getGermplasmListParent(finalGpList.getId());
                                 presenter.deleteGermplasmListFolder(finalGpList);
                                 treeView.removeItem(lastItemId);
                                 treeView.select(null);
+                                if (parent == null) {
+                                    treeView.select(MY_LIST);
+                                } else {
+                                    treeView.select(parent.getId());
+                                }
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             }
@@ -450,8 +454,9 @@ public class GermplasmListPreview extends VerticalLayout {
         }
         lastItemId = itemId;
 
-        if (!treeView.isSelected(itemId))
-            treeView.select(itemId);
+        treeView.select(itemId);
+        
+        treeView.setImmediate(true);
     }
 
     protected void initializeComponents() {

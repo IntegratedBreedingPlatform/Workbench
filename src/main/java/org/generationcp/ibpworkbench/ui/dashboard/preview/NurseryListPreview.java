@@ -249,6 +249,8 @@ public class NurseryListPreview extends VerticalLayout {
             treeView.expandItem(itemId);
             treeView.select(itemId);
         }
+        
+        treeView.setImmediate(true);
     }
 
     protected void initializeLayout() {
@@ -478,10 +480,6 @@ public class NurseryListPreview extends VerticalLayout {
                 Label l = new Label("Folder Name");
                 final TextField name = new TextField();
 
-
-                if (treeView.getValue() != null)
-                    name.setValue(treeView.getItemCaption(treeView.getValue()));
-
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
 
@@ -516,15 +514,17 @@ public class NurseryListPreview extends VerticalLayout {
                             treeView.setChildrenAllowed(newItem, true);
                             treeView.setItemIcon(newItem, folderResource);
 
-                            if (presenter.getStudyNodeParent(newItem) != null) {
-                                treeView.setParent(newItem, treeView.getValue());
+                            DmsProject parent = (DmsProject) presenter.getStudyNodeParent(newItem);
+                            boolean isRoot = parent == null || parent.getProjectId().intValue()==ROOT_FOLDER;
+                            if (!isRoot) {
+                                treeView.setParent(newItem, parent.getProjectId());
                             } else {
                                 treeView.setParent(newItem, MY_STUDIES);
                             }
 
-                            if (treeView.getValue() != null) {
-                                if (!treeView.isExpanded(treeView.getValue()))
-                                    expandTree(treeView.getValue());
+                            if (!isRoot) {
+                                if (!treeView.isExpanded(parent.getProjectId()))
+                                    expandTree(parent.getProjectId());
                             } else
                                 treeView.expandItem(MY_STUDIES);
 

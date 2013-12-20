@@ -50,6 +50,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public final static String NO_PARENT = "Selected item is a root item, please choose another item on the list.";
     public final static String HAS_CHILDREN = "Folder has child items.";
     private static final String NO_SELECTION = "Please select a folder item";
+    private static final String BLANK_NAME = "Folder name cannot be blank";
+    private static final String INVALID_NAME = "Please choose a different name";
+    private static final String NAME_NOT_UNIQUE = "Name is not unique";
+
 
     private ManagerFactory managerFactory;
     
@@ -198,9 +202,28 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
      * @return ID of the newly added germplasmList, null if not successful
      */
     public Integer addGermplasmListFolder(String folderName,Integer id) throws Error {
-        GermplasmList gpList = null;
+    	if (folderName == null || folderName.trim().equals("")) {
+            throw new Error(BLANK_NAME);
+        }
+        if (folderName.equals(view.MY_LIST) || folderName.equals(view.SHARED_LIST)) {
+            throw new Error(INVALID_NAME);
+        }
+        
+    	GermplasmList gpList = null;
         GermplasmList newList = null;
         try {
+        	
+        	List<GermplasmList> centralDuplicate = this.getManagerFactory().getGermplasmListManager().
+                	getGermplasmListByName(folderName, 0, 1, null, Database.CENTRAL);
+            if(centralDuplicate!=null && !centralDuplicate.isEmpty()) {
+            	throw new Error(NAME_NOT_UNIQUE);
+            }
+            List<GermplasmList> localDuplicate = this.getManagerFactory().getGermplasmListManager().
+                	getGermplasmListByName(folderName, 0, 1, null, Database.LOCAL);
+            if(localDuplicate!=null && !localDuplicate.isEmpty()) {
+            	throw new Error(NAME_NOT_UNIQUE);
+            }
+            
 
             if (id == null) {
                 newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,null,1);
