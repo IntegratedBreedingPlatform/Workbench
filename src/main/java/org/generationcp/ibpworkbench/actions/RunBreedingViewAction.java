@@ -97,7 +97,8 @@ public class RunBreedingViewAction implements ClickListener {
             event.getComponent().getWindow().showNotification("Please enter an Analysis Name.", Notification.TYPE_ERROR_MESSAGE);
             return;
         } else{
-            breedingViewInput.setBreedingViewProjectName(analysisProjectName);
+            //breedingViewInput.setBreedingViewProjectName(analysisProjectName);
+        	breedingViewInput.setBreedingViewAnalysisName(analysisProjectName);
         }
         
         String envFactor = (String) this.source.getSelEnvFactor().getValue();
