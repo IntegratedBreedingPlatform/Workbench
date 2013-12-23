@@ -242,12 +242,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         final VerticalLayout programArea = new VerticalLayout();
         programArea.setSizeFull();
-        programArea.setMargin(new MarginInfo(true,true,false,false));
+        programArea.setMargin(new MarginInfo(false,true,false,false));
 
         final HorizontalLayout programHeaderArea = new HorizontalLayout();
         programHeaderArea.setWidth("100%");
         final Label programLbl = new Label(messageSource.getMessage(Message.PROGRAMS_LABEL));
-        programLbl.setStyleName(Bootstrap.Typography.H3.styleName());
+        programLbl.setStyleName(Bootstrap.Typography.H2.styleName());
 
         final Label programDescLbl = new Label(messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
         programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());

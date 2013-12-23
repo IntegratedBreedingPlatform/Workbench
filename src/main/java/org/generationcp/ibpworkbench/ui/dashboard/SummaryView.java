@@ -103,7 +103,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     private void initializeComponents() {
         header = new Label(messageSource.getMessage(Message.ACTIVITIES));
-        header.setStyleName(Bootstrap.Typography.H3.styleName());
+        header.setStyleName(Bootstrap.Typography.H2.styleName());
 
         final ToolsDropDown toolsDropDown = new ToolsDropDown(
                 messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES)
