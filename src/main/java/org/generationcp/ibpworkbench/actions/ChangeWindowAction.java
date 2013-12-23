@@ -166,6 +166,9 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
             windowName = uriFragment.split("/")[1].split("\\?")[0];
         } catch (Exception e) { }
 
+        if (windowName.equals("")) {
+            windowName = windowEnums.getwindowName();
+        }
 
         if (WindowEnums.isCorrectTool(windowName)) {
             launchWindow(window, windowName, isLinkAccessed);
