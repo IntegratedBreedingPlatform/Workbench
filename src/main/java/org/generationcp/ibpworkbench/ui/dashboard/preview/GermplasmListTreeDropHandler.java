@@ -9,8 +9,12 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Tree;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
 * Created with IntelliJ IDEA.
@@ -19,9 +23,13 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 * Time: 10:06 PM
 * To change this template use File | Settings | File Templates.
 */
-class GermplasmListTreeDropHandler implements DropHandler {
+@Configurable
+public class GermplasmListTreeDropHandler implements DropHandler {
     private final Tree tree;
     private final GermplasmListPreviewPresenter presenter;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public GermplasmListTreeDropHandler(Tree tree, GermplasmListPreviewPresenter presenter) {
         this.tree = tree;
@@ -78,15 +86,14 @@ class GermplasmListTreeDropHandler implements DropHandler {
                 .getContainerDataSource();
 
         if ((targetItemId instanceof String && ((String) targetItemId).equals(GermplasmListPreview.SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder to Public Lists");
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_LIST)));
             return;
         }
 
         if (container.hasChildren(sourceItemId)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder with child elements");
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
-
 
         try {
             if (targetItemId instanceof String) {

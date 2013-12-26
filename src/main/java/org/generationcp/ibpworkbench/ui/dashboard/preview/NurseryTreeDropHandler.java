@@ -9,8 +9,12 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Tree;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
 * Created with IntelliJ IDEA.
@@ -19,6 +23,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 * Time: 10:34 PM
 * To change this template use File | Settings | File Templates.
 */
+@Configurable
 class NurseryTreeDropHandler implements DropHandler {
     private final Tree tree;
     private final NurseryListPreviewPresenter presenter;
@@ -28,6 +33,8 @@ class NurseryTreeDropHandler implements DropHandler {
         this.presenter = presenter;
     }
 
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     @Override
     public void drop(DragAndDropEvent dropEvent) {
@@ -78,12 +85,12 @@ class NurseryTreeDropHandler implements DropHandler {
                 .getContainerDataSource();
 
         if ((targetItemId instanceof String && ((String) targetItemId).equals(NurseryListPreview.SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder to Public Studies");
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_STUDIES)));
             return;
         }
 
         if (container.hasChildren(sourceItemId)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder with child elements");
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
 
@@ -106,7 +113,7 @@ class NurseryTreeDropHandler implements DropHandler {
 
             success = presenter.moveNurseryListFolder((Integer) sourceItemId, actualTargetId);
         } catch (Error error) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), error.getMessage(), "");
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.ERROR), error.getMessage());
             success = false;
         }
 
