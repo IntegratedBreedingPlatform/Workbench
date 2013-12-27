@@ -14,8 +14,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -41,13 +43,15 @@ import org.generationcp.ibpworkbench.ui.projectmethods.ProjectMethodsView;
  */
 @Configurable
 public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListener, ActionListener {
-	
-	
     private static final long serialVersionUID = 1L;
-    
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectMethodsAction.class);
-   
     private Project project;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
     public OpenProjectMethodsAction() {
         this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
@@ -59,10 +63,6 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
     public OpenProjectMethodsAction(Project project) {
         this.project = project;
     }
-    
-    @Autowired
-	private WorkbenchDataManager workbenchDataManager;
-	 
 
     @Override
     public void buttonClick(ClickEvent event) {
@@ -90,7 +90,7 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
                 User user = app.getSessionData().getUserData();
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Launched Project Methods", user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_METHODS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_METHODS_LINK)), user, new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
 
@@ -100,7 +100,7 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
                 return;
             }
             
-            NavManager.navigateApp(window, "/ProjectMethods", isLinkAccessed);
+            NavManager.navigateApp(window, "/ProgramMethods", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

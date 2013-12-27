@@ -122,7 +122,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
              User user = app.getSessionData().getUserData();
 
              //TODO: internationalize this
-             ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "restore action", "Restore performed on " + project.getProjectName(), user, new Date());
+             ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(), user, new Date());
 
              workbenchDataManager.addProjectActivity(projAct);
 		

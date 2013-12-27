@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.etl.StudyDetails;
@@ -183,7 +184,11 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 export.setExportFileName(tableName + "-" + programName);
                 export.setDisplayTotals(false);
 
+                SummaryView.LOG.info("Exporting " + tableName + ": " + export.getExportFileName() + " will be downloaded in a moment.");
                 export.export();
+
+                //MessageNotifier.showMessage(IBPWorkbenchApplication.get().getMainWindow(),"Exporting " + tableName,export.getExportFileName() + " will be downloaded in a moment.");
+
             }
         });
 

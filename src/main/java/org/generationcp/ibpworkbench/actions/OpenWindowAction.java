@@ -105,15 +105,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     }
 
     private WindowEnum windowEnum;
-    
+
     private String toolConfiguration;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
@@ -121,7 +118,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     private ToolUtil toolUtil;
 
 	private Role role;
-    
+
     public OpenWindowAction() {
     }
     
@@ -266,7 +263,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
                 //TODO: internationalize this
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched "+ windowCaption, user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName,messageSource.getMessage(Message.LAUNCHED_APP,windowCaption), user, new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
 
