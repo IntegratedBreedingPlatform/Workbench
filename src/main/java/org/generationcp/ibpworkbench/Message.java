@@ -80,6 +80,7 @@ public enum Message {
     ,OK
     ,YES
     ,NO
+    ,DONE
     
     //Forgot Password
     ,FORGOT_PASSWORD
@@ -312,6 +313,8 @@ public enum Message {
     ,RESTORE_IBDB_LINK
     ,PROJECT_METHODS_LINK
     ,PROJECT_LOCATIONS_LINK
+    ,SOFTWARE_LICENSE_AGREEMENT
+    ,SOFTWARE_LICENSE_AGREEMENT_DETAILS
 
     ,RESTORE_IBDB_LINK_DESC
     ,BACKUP_IBDB_LINK_DESC

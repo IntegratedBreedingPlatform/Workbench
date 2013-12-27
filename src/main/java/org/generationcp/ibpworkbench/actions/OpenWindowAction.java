@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -66,6 +69,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,RESTORE_IBDB("restore_ibdb")
         ,CHANGE_PASSWORD("change_password")
         ,USER_TOOLS("user_tools")
+        ,SOFTWARE_LICENSING_AGREEMENT("software_license")
         ;
         
         String windowName;
@@ -174,7 +178,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         }
     }
     
-    public void launchWindow(Window window, String windowName)
+    public void launchWindow(final Window window, String windowName)
     {
     	Window mywindow = null;
     	Boolean windowLaunched = false;
@@ -223,6 +227,28 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		windowLaunched = true;
     		
+    	} else if (WindowEnum.SOFTWARE_LICENSING_AGREEMENT.getwindowName().equals(windowName))
+    	{
+    		ConfirmDialog dialog = ConfirmDialog.show(window,messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT),
+                    messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT_DETAILS,getCutOffDate()),
+                    messageSource.getMessage(Message.DONE), null, new ConfirmDialog.Listener() {
+                private static final long serialVersionUID = 1L;
+                
+				@Override
+                public void onClose(ConfirmDialog dialog) {
+
+                    if (dialog.isConfirmed()) {
+                    	window.removeWindow(dialog);
+                    }
+
+
+                }
+            });
+    		dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
+    		
+    		windowCaption = messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT);
+    		
+    		windowLaunched = true;
     	}
     	else
     	{
@@ -252,5 +278,15 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	}
     }
    
+    private String getCutOffDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, 2014);
+		cal.set(Calendar.MONTH,11);
+		cal.set(Calendar.DATE,31);//Dec 31, 2014
+		Date cutOffDate = cal.getTime();
+		DateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy");
+		return sdf.format(cutOffDate);
+		
+	}
     
 }
