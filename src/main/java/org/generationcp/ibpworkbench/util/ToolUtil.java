@@ -643,7 +643,7 @@ public class ToolUtil {
         // create the directory for each tool
         List<Tool> toolList = workbenchDataManager.getAllTools();
         for (Tool tool : toolList) {
-            File toolDir = new File(projectDir, tool.getToolName());
+            File toolDir = new File(projectDir, tool.getGroupName());
             toolDir.mkdirs();
 
             // create the input and output directories
@@ -682,7 +682,7 @@ public class ToolUtil {
             .getInstallationDirectory();
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
-        File toolDir = new File(projectDir, tool.getToolName());
+        File toolDir = new File(projectDir, tool.getGroupName());
 
         return new File(toolDir, "input").getAbsolutePath();
     }
@@ -702,7 +702,7 @@ public class ToolUtil {
             .getInstallationDirectory();
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
-        File toolDir = new File(projectDir, tool.getToolName());
+        File toolDir = new File(projectDir, tool.getGroupName());
 
         return new File(toolDir, "input").getAbsolutePath();
     }
