@@ -124,12 +124,14 @@ public class SaveUsersInProjectAction implements ClickListener{
 	        		try {
 	        			 	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 	        			 	User user = app.getSessionData().getUserData();
-	        			 	ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "member", "Added a workbench member (" + u.getName() + ") to the project", user, new Date());
-	                        workbenchDataManager.addProjectActivity(projAct);
+	        			 	ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Member", "Added a new user (" + u.getName()
+                                + ") to " + project.getProjectName(), user, new Date());
+
+                        workbenchDataManager.addProjectActivity(projAct);
 	 
 	                 }
 	                 catch (MiddlewareQueryException e) {
-	                     LOG.error("Cannot log project activity", e);
+	                     LOG.error("Cannot log program activity", e);
 	                 }
         		}
         	}

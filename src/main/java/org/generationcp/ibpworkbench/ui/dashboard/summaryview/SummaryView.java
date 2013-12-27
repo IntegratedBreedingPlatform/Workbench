@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.dashboard;
+package org.generationcp.ibpworkbench.ui.dashboard.summaryview;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -6,10 +6,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.ui.*;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -52,6 +57,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private int trialCount = 0;
     private int nurseryCount = 0;
     private int seasonCount = 0;
+    private Button exportBtn;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -67,7 +73,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     private void initializeLayout() {
         final HorizontalLayout headerArea = new HorizontalLayout();
-        headerArea.setSizeFull();
+        headerArea.setSizeUndefined();
+        headerArea.setWidth("100%");
 
         final Embedded headerImg = new Embedded(null,new ThemeResource("images/recent-activity.png"));
         headerImg.setStyleName("header-img");
@@ -80,18 +87,29 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         headerTitleWrap.addComponent(header);
 
         headerArea.addComponent(headerTitleWrap);
-        headerArea.addComponent(toolsPopup);
+
+        final HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSizeUndefined();
+
+        buttonLayout.addComponent(exportBtn);
+        buttonLayout.addComponent(toolsPopup);
+        buttonLayout.setSpacing(true);
+
+        headerArea.addComponent(buttonLayout);
+        headerArea.setComponentAlignment(buttonLayout,Alignment.MIDDLE_RIGHT);
         headerArea.setComponentAlignment(headerTitleWrap,Alignment.BOTTOM_LEFT);
-        headerArea.setComponentAlignment(toolsPopup,Alignment.BOTTOM_RIGHT);
+        headerArea.setMargin(true,false,false,false);
 
         this.addComponent(headerArea);
         this.addComponent(tblSeason);
 
         // set initial header
         this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),0,tblSeason);
+        exportBtn.setEnabled(false);
+
 
         this.setWidth("100%");
-        this.setSpacing(true);
+        this.setSpacing(false);
 
     }
 
@@ -150,6 +168,27 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                     }
 
                 }
+            }
+        });
+
+        exportBtn = new Button("<span class='glyphicon glyphicon-export' style='right: 4px'></span>EXPORT");
+        exportBtn.setHtmlContentAllowed(true);
+        exportBtn.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                String tableName = SummaryView.this.header.getValue().toString().split("\\[")[0].trim();
+                String programName = IBPWorkbenchApplication.get().getSessionData().getSelectedProject().getProjectName();
+
+                ExcelExport export = new ExcelExport((Table) SummaryView.this.getComponent(1),tableName);
+                export.setReportTitle(programName + " - " + tableName);
+                export.setExportFileName(tableName + "-" + programName);
+                export.setDisplayTotals(false);
+
+                SummaryView.LOG.info("Exporting " + tableName + ": " + export.getExportFileName() + " will be downloaded in a moment.");
+                export.export();
+
+                //MessageNotifier.showMessage(IBPWorkbenchApplication.get().getMainWindow(),"Exporting " + tableName,export.getExportFileName() + " will be downloaded in a moment.");
+
             }
         });
 
@@ -405,9 +444,15 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
             if (this.getComponentCount() > 2)
                 SummaryView.this.replaceComponent(this.getComponent(2), table.createControls());
-            else if (this.getComponentCount() == 2)
+            else if (this.getComponentCount() == 2) {
                 SummaryView.this.addComponent(table.createControls());
+            }
+
+
         }
+
+        if (IBPWorkbenchApplication.get().getSessionData().getSelectedProject() != null)
+            exportBtn.setEnabled(true);
 
         table.setPageLength(10);
     }
@@ -428,6 +473,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         @Override
         public HorizontalLayout createControls() {
             HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+
+            controls.setMargin(new MarginInfo(true,false,true,false));
 
             Iterator<Component> iterator= controls.getComponentIterator();
 

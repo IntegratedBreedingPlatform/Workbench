@@ -109,8 +109,8 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         
         try {
             if (currentProject != null) {
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added a new workbench user (" + userAccount.getUsername()
-                                                                                                                                               + ") to the system", user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member", "Added a new user (" + userAccount.getUsername()
+                                                                                                                                               + ") to " + currentProject.getProjectName(), user, new Date());
                 workbenchDataManager.addProjectActivity(projAct);
 
             }

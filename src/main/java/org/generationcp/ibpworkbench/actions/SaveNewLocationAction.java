@@ -14,7 +14,9 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Date;
 import java.util.List;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.projectlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
@@ -59,6 +61,9 @@ public class SaveNewLocationAction implements ClickListener{
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
             ProjectLocationsView projectLocationsView, ProjectLocationsController projectLocationsController) {
@@ -155,7 +160,7 @@ public class SaveNewLocationAction implements ClickListener{
 
              User user = app.getSessionData().getUserData();
              Project currentProject = app.getSessionData().getLastOpenedProject();
-             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
+             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
              try {
  				workbenchDataManager.addProjectActivity(projAct);
  			} catch (MiddlewareQueryException e) {

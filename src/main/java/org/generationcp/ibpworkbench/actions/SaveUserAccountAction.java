@@ -123,11 +123,12 @@ public class SaveUserAccountAction implements ClickListener {
             Project currentProject = app.getSessionData().getLastOpenedProject();
 
             if (currentProject != null) {
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "member", "Added new Workbench user ("+ userAccount.getUsername()  + ")", user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member", "Added a new user (" + userAccount.getUsername()
+                        + ") to " + currentProject.getProjectName(), user, new Date());
                 workbenchDataManager.addProjectActivity(projAct);
             }
         } catch (MiddlewareQueryException e) {
-            LOG.error("Cannot register project ectivity", e);
+            LOG.error("Cannot register program ectivity", e);
         }
         
         //OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();

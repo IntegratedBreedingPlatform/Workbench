@@ -31,6 +31,7 @@ import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
+import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -124,7 +125,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         tblProject.setColumnHeader(CROP_NAME_COLUMN_ID, "CROP");
         tblProject.setColumnHeader(BUTTON_LIST_MANAGER_COLUMN_ID, "");
 
-        tblProject.setColumnCollapsingAllowed(true);
+        tblProject.setColumnCollapsingAllowed(false);
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
     
     }

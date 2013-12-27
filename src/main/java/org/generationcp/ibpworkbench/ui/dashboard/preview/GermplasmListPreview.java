@@ -8,12 +8,11 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
-import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -22,14 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -56,9 +48,7 @@ public class GermplasmListPreview extends VerticalLayout {
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
 
-
     private Project project;
-
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -67,9 +57,6 @@ public class GermplasmListPreview extends VerticalLayout {
     private ThemeResource folderResource;
     private ThemeResource leafResource;
 
-    public static String MY_LIST = "Program Lists";
-    public static String SHARED_LIST = "Public Lists";
-
     private Panel panel;
     private HorizontalLayout toolbar;
 
@@ -77,7 +64,8 @@ public class GermplasmListPreview extends VerticalLayout {
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 
-
+    public static String MY_LIST = "";
+    public static String SHARED_LIST = "";
 
     private Button openListManagerBtn;
     private Button addFolderBtn;
@@ -138,22 +126,22 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.setSpacing(true);
         this.toolbar.setMargin(true);
 
-        openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 4px'></span>Launch");
+        openListManagerBtn = new Button("<span class='glyphicon glyphicon-open' style='right: 4px'></span>" + messageSource.getMessage(Message.LAUNCH));
         openListManagerBtn.setHtmlContentAllowed(true);
-        openListManagerBtn.setDescription("Open In List Manager");
+        openListManagerBtn.setDescription(messageSource.getMessage(Message.OPEN_IN_LIST_MANAGER));
         openListManagerBtn.setEnabled(false);
 
         renameFolderBtn =new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
         renameFolderBtn.setHtmlContentAllowed(true);
-        renameFolderBtn.setDescription("Rename Folder");
+        renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
 
         addFolderBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 2px'></span>");
         addFolderBtn.setHtmlContentAllowed(true);
-        addFolderBtn.setDescription("Add New Folder");
+        addFolderBtn.setDescription(messageSource.getMessage(Message.ADD_FOLDER));
 
         deleteFolderBtn = new Button("<span class='glyphicon glyphicon-trash' style='right: 2px'></span>");
         deleteFolderBtn.setHtmlContentAllowed(true);
-        deleteFolderBtn.setDescription("Delete Selected Folder");
+        deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_FOLDER));
 
         openListManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
@@ -194,12 +182,12 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null || lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select an item in the list", "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_SELECTION));
                     return;
                 }
 
                 if (presenter.isFolder((Integer)lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_IS_FOLDER,treeView.getItemCaption(lastItemId)));
                     return;
                 }
                     presenter.updateProjectLastOpenedDate();
@@ -215,21 +203,21 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
                 }
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), (String) lastItemId + " cannot br renamed", "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_RENAME_ITEM,(String) lastItemId));
                     return;
                 }
 
                 if (!presenter.isFolder((Integer) lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), "Please select a folder to be renamed", "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
                 }
 
-                final Window w = new Window("Rename a folder");
+                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER,treeView.getItemCaption(lastItemId)));
                 w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -243,7 +231,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("Folder Name");
+                Label l = new Label(messageSource.getMessage(Message.FOLDER_LIST_NAME));
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(lastItemId));
 
@@ -258,7 +246,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 btnContainer.addComponent(spacer);
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
-                Button ok = new Button("Ok");
+                Button ok = new Button(messageSource.getMessage(Message.OK));
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
                     @Override
@@ -278,7 +266,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     }
                 });
 
-                Button cancel = new Button("Cancel");
+                Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -304,7 +292,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final Window w = new Window("Add new folder");
+                final Window w = new Window(messageSource.getMessage(Message.ADD_FOLDER));
                 w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -318,7 +306,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label("Folder Name");
+                Label l = new Label(messageSource.getMessage(Message.FOLDER_LIST_NAME));
                 final TextField name = new TextField();
 
                 formContainer.addComponent(l);
@@ -332,7 +320,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 btnContainer.addComponent(spacer);
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
-                Button ok = new Button("Ok");
+                Button ok = new Button(messageSource.getMessage(Message.OK));
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
                     @Override
@@ -360,7 +348,7 @@ public class GermplasmListPreview extends VerticalLayout {
                             if (parent != null) {
                                 treeView.setParent(newItem, parent.getId());
                             } else {
-                                treeView.setParent(newItem, MY_LIST);
+                                treeView.setParent(newItem,messageSource.getMessage(Message.PROGRAM_LIST));
                             }
 
                             if (parent != null) {
@@ -377,7 +365,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     }
                 });
 
-                Button cancel = new Button("Cancel");
+                Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
                 cancel.addListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -404,7 +392,7 @@ public class GermplasmListPreview extends VerticalLayout {
             public void buttonClick(final Button.ClickEvent event) {
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), lastItemId.toString() + " cannot be deleted.", "");
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_DELETE_ITEM));
                     return;
                 }
 
@@ -413,15 +401,15 @@ public class GermplasmListPreview extends VerticalLayout {
                 try {
                     gpList = presenter.validateForDeleteGermplasmList((Integer) lastItemId);
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.ERROR),e.getMessage());
                     return;
                 }
 
                 final GermplasmList finalGpList = gpList;
                 ConfirmDialog.show(event.getComponent().getWindow(),
-                        "Delete " + treeView.getItemCaption(lastItemId),
-                        "Are you sure you want to delete " + treeView.getItemCaption(lastItemId),
-                        "Yes", "No", new ConfirmDialog.Listener() {
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER,treeView.getItemCaption(lastItemId)),
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM,treeView.getItemCaption(lastItemId)),
+                        messageSource.getMessage(Message.YES),messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                     @Override
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
@@ -467,6 +455,9 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
+        MY_LIST = messageSource.getMessage(Message.PROGRAM_LIST);
+        SHARED_LIST = messageSource.getMessage(Message.SHARED_LIST);
+
         lastItemId = null;
         treeView = new Tree();
         treeView.setContainerDataSource(new HierarchicalContainer());
@@ -573,7 +564,8 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setSelectable(true);
 
         }
-        System.out.println("add node " + itemId);
+        //System.out.println("add node " + itemId);
+        LOG.trace("Add node {0}", itemId);
         treeView.select(itemId);
         lastItemId = itemId;
         treeView.setImmediate(true);
@@ -599,8 +591,8 @@ public class GermplasmListPreview extends VerticalLayout {
 
 
     protected void assemble() throws Exception {
-        initializeComponents();
 
+        initializeComponents();
         initializeLayout();
         initializeActions();
 
@@ -617,114 +609,4 @@ public class GermplasmListPreview extends VerticalLayout {
         this.managerFactoryProvider = managerFactoryProvider;
     }
 
-    private static class GermplasmListTreeDropHandler implements DropHandler {
-        private final Tree tree;
-        private final GermplasmListPreviewPresenter presenter;
-
-        public GermplasmListTreeDropHandler(Tree tree, GermplasmListPreviewPresenter presenter) {
-            this.tree = tree;
-            this.presenter = presenter;
-        }
-
-
-        @Override
-        public void drop(DragAndDropEvent dropEvent) {
-            // Called whenever a drop occurs on the component
-
-            // Make sure the drag source is the same tree
-            Transferable t = dropEvent.getTransferable();
-
-            // see the comment in getAcceptCriterion()
-            if (t.getSourceComponent() != tree
-                    || !(t instanceof DataBoundTransferable)) {
-                return;
-            }
-
-            Tree.TreeTargetDetails dropData = ((Tree.TreeTargetDetails) dropEvent
-                    .getTargetDetails());
-
-            Object sourceItemId = ((DataBoundTransferable) t).getItemId();
-            // FIXME: Why "over", should be "targetItemId" or just
-            // "getItemId"
-            Object targetItemId = dropData.getItemIdOver();
-
-            // Location describes on which part of the node the drop took
-            // place
-            VerticalDropLocation location = dropData.getDropLocation();
-
-            moveNode(sourceItemId, targetItemId, location);
-
-        }
-
-        @Override
-        public AcceptCriterion getAcceptCriterion() {
-            return AcceptAll.get();
-        }
-
-        /**
-         * Move a node within a tree onto, above or below another node depending
-         * on the drop location.
-         *
-         * @param sourceItemId id of the item to move
-         * @param targetItemId id of the item onto which the source node should be moved
-         * @param location     VerticalDropLocation indicating where the source node was
-         *                     dropped relative to the target node
-         */
-        private void moveNode(Object sourceItemId, Object targetItemId,
-                              VerticalDropLocation location) {
-            HierarchicalContainer container = (HierarchicalContainer) tree
-                    .getContainerDataSource();
-
-            if ((targetItemId instanceof String && ((String) targetItemId).equals(SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder to Public Lists");
-                return;
-            }
-
-            if (container.hasChildren(sourceItemId)) {
-                MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), "Error occurred", "Cannot move folder with child elements");
-                return;
-            }
-
-
-            try {
-                if (targetItemId instanceof String) {
-                    presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
-                } else {
-                    presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
-                }
-
-                // Sorting goes as
-                // - If dropped ON a node, we append it as a child
-                // - If dropped on the TOP part of a node, we move/add it before
-                // the node
-                // - If dropped on the BOTTOM part of a node, we move/add it
-                // after the node
-
-                if (location == VerticalDropLocation.MIDDLE) {
-                    if (container.setParent(sourceItemId, targetItemId)
-                            && container.hasChildren(targetItemId)) {
-                        // move first in the container
-                        container.moveAfterSibling(sourceItemId, null);
-                    }
-                } else if (location == VerticalDropLocation.TOP) {
-                    Object parentId = container.getParent(targetItemId);
-                    if (container.setParent(sourceItemId, parentId)) {
-                        // reorder only the two items, moving source above target
-                        container.moveAfterSibling(sourceItemId, targetItemId);
-                        container.moveAfterSibling(targetItemId, sourceItemId);
-                    }
-                } else if (location == VerticalDropLocation.BOTTOM) {
-                    Object parentId = container.getParent(targetItemId);
-                    if (container.setParent(sourceItemId, parentId)) {
-                        container.moveAfterSibling(sourceItemId, targetItemId);
-                    }
-                }
-            } catch (Error error) {
-                error.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-
-        }
-
-    }
 }

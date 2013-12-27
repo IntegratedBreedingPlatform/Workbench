@@ -86,7 +86,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     //categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.NURSERY_TEMPLATE_WIZARD.getToolName(),messageSource.getMessage(Message.NURSERY_TEMPLATE)));
 
                     //add the softare_license in the tools
-                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
                 } else {
                     categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
                 }

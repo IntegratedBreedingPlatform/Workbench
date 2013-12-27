@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -42,6 +44,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     @Autowired
     private WorkbenchDataManager manager;
 
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
     public DeleteProjectAction()
     {
     }
@@ -69,10 +74,13 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
             this.currentProject = app.getSessionData().getSelectedProject();
             if(this.currentProject == null)
             {
-                MessageNotifier.showError(window, "Error", "Please select a program");
+                MessageNotifier.showError(window,messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
 
             }
-            ConfirmDialog.show(app.getMainWindow(), "Delete Program",  "Are you sure you want to delete "+currentProject.getProjectName()+ " ?", "Yes", "Cancel", new ConfirmDialog.Listener() {
+            ConfirmDialog.show(app.getMainWindow(),messageSource.getMessage(Message.DELETE_PROJECT_LINK),
+                    messageSource.getMessage(Message.DELETE_PROGRAM_CONFIRM,currentProject.getProjectName()),
+                    messageSource.getMessage(Message.YES),
+                    messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                 @Override
                 public void onClose(ConfirmDialog dialog) {
 
@@ -95,7 +103,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
                         } catch (MiddlewareQueryException e) {
                             // TODO Auto-generated catch block
-                            MessageNotifier.showError(window,"Error", e.getLocalizedMessage());
+                            MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }

@@ -14,8 +14,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -52,6 +54,9 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
     public OpenProjectLocationAction() {
         this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
 
@@ -83,7 +88,7 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
                 User user = app.getSessionData().getUserData();
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Locations", "Launched Project Locations", user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)), user, new Date());
                 workbenchDataManager.addProjectActivity(projAct);
 
             } catch (MiddlewareQueryException e1) {
@@ -93,7 +98,7 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
             }
 
             w.showContent(new ProjectLocationsView(project));
-            NavManager.navigateApp(window, "/ProjectLocation", isLinkAccessed);
+            NavManager.navigateApp(window, "/ProgramLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

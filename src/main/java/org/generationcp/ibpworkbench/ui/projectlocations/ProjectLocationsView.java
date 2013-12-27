@@ -250,7 +250,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onCancel(event);
+				ProjectLocationsView.this.reset();
 			}
 		});
 	}
@@ -634,5 +634,19 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			e.printStackTrace();
 		}	
 	}
+	
+	private void reset(){
+		countryFilter.select((Object) null);
+		locationTypeFilter.select((Object) null);
+		searchField.setValue("");
+		
+		try {
+			initializeValues();
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 }
