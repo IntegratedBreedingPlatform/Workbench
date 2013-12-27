@@ -191,7 +191,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 User user = app.getSessionData().getUserData();
                 Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.MEMBERS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.MEMBERS_LINK)), user, new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
 
