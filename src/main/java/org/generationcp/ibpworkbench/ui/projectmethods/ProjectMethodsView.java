@@ -5,12 +5,10 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -363,17 +361,11 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         });
 
         cancelBtn.addListener(new Button.ClickListener() {
-            @Override
+           private static final long serialVersionUID = -4479216826096826464L;
+
+			@Override
             public void buttonClick(Button.ClickEvent event) {
-                try {
-                    new HomeAction().buttonClick(event);
-                } catch (Exception e) {
-                    if(e.getCause() instanceof InternationalizableException) {
-                        InternationalizableException i = (InternationalizableException) e.getCause();
-                        MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-                    }
-                    return;
-                }
+                ProjectMethodsView.this.reset();
             }
         });
 
@@ -542,4 +534,20 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     public ManagerFactory getManagerFactory() {
         return this.presenter.getManagerFactory();
     }
+    
+    private void reset(){
+    	if(methodTypes!=null) {
+    		typeFilter.select(methodTypes[0][0]);
+    	} else {
+    		typeFilter.select((Object) null);
+    	}
+    	groupFilter.select("");
+		searchField.setValue("");
+		
+		try {
+			initializeValues();
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+	}
 }
