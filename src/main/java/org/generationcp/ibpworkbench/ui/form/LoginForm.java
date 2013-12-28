@@ -219,20 +219,22 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
     private GridLayout buildUsernamePasswordArea() {
         // email address
         lblUsername = new Label();
-        lblUsername.setWidth(null);
+        lblUsername.setSizeUndefined();
         lblUsername.setStyleName("gcp-loginform-lbl");
         txtUsername = new TextField();
         txtUsername.focus();
 
         // password
         lblPassword = new Label();
-        lblPassword.setWidth(null);
+        lblPassword.setSizeUndefined();
         lblPassword.setStyleName("gcp-loginform-lbl");
         pfPassword = new PasswordField();
         
         messageArea = buildMessageArea();
         
-        
+        txtUsername.setWidth("150px"); pfPassword.setWidth("150px");
+
+
         GridLayout gridLayout = new GridLayout(2, 3);
         gridLayout.setMargin(true, false, false, false);
         gridLayout.setWidth("250px");
