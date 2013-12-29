@@ -14,6 +14,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -250,7 +251,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.reset();
+                (new OpenProjectLocationAction()).buttonClick(event);
 			}
 		});
 	}
@@ -497,23 +498,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		}
 		LOG.debug("onSaveProjectLocations:");
 	}
-	
-	public void onCancel(Button.ClickEvent event) {
-		LOG.debug("onCancel:");
-		
-		try {
-            new HomeAction().buttonClick(event);
-        } catch (Exception e) {
-            if(e.getCause() instanceof InternationalizableException) {
-                InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-            }
-            return;
-        }
 
-		
-	}
-	
 	private int getSelectedLocationTypeIdFromFilter() {
 		UserDefinedField udf = (UserDefinedField) locationTypeFilter.getValue();
 		
@@ -634,19 +619,5 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			e.printStackTrace();
 		}	
 	}
-	
-	private void reset(){
-		countryFilter.select((Object) null);
-		locationTypeFilter.select((Object) null);
-		searchField.setValue("");
-		
-		try {
-			initializeValues();
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
 
 }
