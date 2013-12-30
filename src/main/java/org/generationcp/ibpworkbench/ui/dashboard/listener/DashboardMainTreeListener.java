@@ -64,57 +64,20 @@ public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListen
             
             Object propertyValue = event.getItemId();
             
-            boolean isSharedListNode = (propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.SHARED_LIST));
-            boolean isCentralGermplasmList = (propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0);
-            boolean isMyListNode = propertyValue instanceof  String && propertyValue.equals(GermplasmListPreview.MY_LIST);
-            boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
-            
             // expand the node
             preview.expandTree(event.getItemId());
             
-            // set the toolbar button state
-            if (isSharedListNode || isCentralGermplasmList) {
-                preview.setToolbarButtonsEnabled(false);
-            } else if (isMyListNode) {
-                preview.setToolbarButtonsEnabled(false);
-                preview.setToolbarAddButtonEnabled(true);
-            } else if (!isFolder) {
-                preview.setToolbarButtonsEnabled(false);
-                preview.setToolbarAddButtonEnabled(true);
-            } else {
-                preview.setToolbarButtonsEnabled(true);
-            }
-            
-            // set the launch button state
-            preview.setToolbarLaunchButtonEnabled(!isSharedListNode && !isMyListNode && !isFolder);
+            preview.processToolbarButtons(propertyValue);
         }
         else if (source instanceof NurseryListPreview) {
             NurseryListPreview preview = ((NurseryListPreview)source);
             
             Object propertyValue = event.getItemId();
             
-            boolean isSharedStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.SHARED_STUDIES);
-            boolean isCentralStudy = propertyValue instanceof Integer && ((Integer)propertyValue).intValue() > 0;
-            boolean isMyStudy = propertyValue instanceof  String && propertyValue.equals(NurseryListPreview.MY_STUDIES);
-            boolean isFolder = propertyValue instanceof String || preview.getPresenter().isFolder((Integer) propertyValue);
             // expand the node
             preview.expandTree(event.getItemId());
             
-            // set the toolbar button state
-            if (isSharedStudy || isCentralStudy) {
-                preview.setToolbarButtonsEnabled(false);
-            } else if (isMyStudy) {
-                preview.setToolbarButtonsEnabled(false);
-                preview.setToolbarAddButtonEnabled(true);
-            } else if (!isFolder) {
-                preview.setToolbarButtonsEnabled(false);
-                preview.setToolbarAddButtonEnabled(true);
-            } else {
-                preview.setToolbarButtonsEnabled(true);
-            } 
-
-            // set the launch button state
-            preview.setToolbarLaunchButtonEnabled(!isSharedStudy && !isMyStudy && !isFolder);
+            preview.processToolbarButtons(propertyValue);
         }
     }
 }

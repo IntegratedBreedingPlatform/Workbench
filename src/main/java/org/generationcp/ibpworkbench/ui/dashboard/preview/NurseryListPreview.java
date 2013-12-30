@@ -240,7 +240,7 @@ public class NurseryListPreview extends VerticalLayout {
             treeView.expandItem(itemId);
             treeView.select(itemId);
         }
-        
+
         treeView.setImmediate(true);
     }
 
@@ -290,7 +290,7 @@ public class NurseryListPreview extends VerticalLayout {
         openStudyManagerBtn.setDescription(messageSource.getMessage(Message.OPEN_IN_STUDY_BROWSER));
         openStudyManagerBtn.setEnabled(false);
 
-        renameFolderBtn =new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
+        renameFolderBtn = new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
         renameFolderBtn.setHtmlContentAllowed(true);
         renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
 
@@ -341,7 +341,7 @@ public class NurseryListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (treeView.getValue() == null || treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_SELECTION));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_NO_SELECTION));
                     return;
                 }
                 /*
@@ -365,21 +365,21 @@ public class NurseryListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (treeView.getValue() == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
                 }
 
                 if (treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_NO_SELECTION),messageSource.getMessage(Message.INVALID_CANNOT_RENAME_ITEM, (String) treeView.getValue()));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_NO_SELECTION), messageSource.getMessage(Message.INVALID_CANNOT_RENAME_ITEM, (String) treeView.getValue()));
                     return;
                 }
 
                 if (!presenter.isFolder((Integer) treeView.getValue())) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT), "");
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT), "");
                     return;
                 }
 
-                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER,treeView.getItemCaption(treeView.getValue())));
+                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER, treeView.getItemCaption(treeView.getValue())));
                 w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -506,7 +506,7 @@ public class NurseryListPreview extends VerticalLayout {
                             treeView.setItemIcon(newItem, folderResource);
 
                             DmsProject parent = (DmsProject) presenter.getStudyNodeParent(newItem);
-                            boolean isRoot = parent == null || parent.getProjectId().intValue()==ROOT_FOLDER;
+                            boolean isRoot = parent == null || parent.getProjectId().intValue() == ROOT_FOLDER;
                             if (!isRoot) {
                                 treeView.setParent(newItem, parent.getProjectId());
                             } else {
@@ -521,6 +521,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                             treeView.select(newItem);
                             treeView.setImmediate(true);
+                            processToolbarButtons(newItem);
                         }
 
                         // close popup
@@ -557,7 +558,7 @@ public class NurseryListPreview extends VerticalLayout {
                 LOG.info(treeView.getValue() != null ? treeView.getValue().toString() : null);
 
                 if (treeView.getValue() instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION) ,messageSource.getMessage(Message.INVALID_CANNOT_DELETE_ITEM,treeView.getValue().toString()));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_CANNOT_DELETE_ITEM, treeView.getValue().toString()));
                     return;
                 }
 
@@ -572,9 +573,9 @@ public class NurseryListPreview extends VerticalLayout {
 
                 final Integer finalId = id;
                 ConfirmDialog.show(event.getComponent().getWindow(),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER,treeView.getItemCaption(treeView.getValue())),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM,treeView.getItemCaption(treeView.getValue())),
-                        messageSource.getMessage(Message.YES),messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER, treeView.getItemCaption(treeView.getValue())),
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM, treeView.getItemCaption(treeView.getValue())),
+                        messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                     @Override
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
@@ -584,8 +585,10 @@ public class NurseryListPreview extends VerticalLayout {
                                 treeView.removeItem(treeView.getValue());
                                 if (parent.getProjectId().intValue() == ROOT_FOLDER) {
                                     treeView.select(MY_STUDIES);
+                                    processToolbarButtons(MY_STUDIES);
                                 } else {
                                     treeView.select(parent.getProjectId());
+                                    processToolbarButtons(parent.getProjectId());
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
@@ -630,6 +633,30 @@ public class NurseryListPreview extends VerticalLayout {
 
     public void setToolbarLaunchButtonEnabled(boolean enabled) {
         openStudyManagerBtn.setEnabled(enabled);
+    }
+
+    public void processToolbarButtons(Object treeItem) {
+
+        boolean isSharedStudy = treeItem instanceof String && treeItem.equals(NurseryListPreview.SHARED_STUDIES);
+        boolean isCentralStudy = treeItem instanceof Integer && ((Integer) treeItem).intValue() > 0;
+        boolean isMyStudy = treeItem instanceof String && treeItem.equals(NurseryListPreview.MY_STUDIES);
+        boolean isFolder = treeItem instanceof String || getPresenter().isFolder((Integer) treeItem);
+
+        // set the toolbar button state
+        if (isSharedStudy || isCentralStudy) {
+            setToolbarButtonsEnabled(false);
+        } else if (isMyStudy) {
+            setToolbarButtonsEnabled(false);
+            setToolbarAddButtonEnabled(true);
+        } else if (!isFolder) {
+            setToolbarButtonsEnabled(false);
+            setToolbarAddButtonEnabled(true);
+        } else {
+            setToolbarButtonsEnabled(true);
+        }
+
+        // set the launch button state
+        setToolbarLaunchButtonEnabled(!isSharedStudy && !isMyStudy && !isFolder);
     }
 
 }

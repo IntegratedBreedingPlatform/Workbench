@@ -131,7 +131,7 @@ public class GermplasmListPreview extends VerticalLayout {
         openListManagerBtn.setDescription(messageSource.getMessage(Message.OPEN_IN_LIST_MANAGER));
         openListManagerBtn.setEnabled(false);
 
-        renameFolderBtn =new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
+        renameFolderBtn = new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
         renameFolderBtn.setHtmlContentAllowed(true);
         renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
 
@@ -182,18 +182,18 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null || lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_SELECTION));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_NO_SELECTION));
                     return;
                 }
 
-                if (presenter.isFolder((Integer)lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_IS_FOLDER,treeView.getItemCaption(lastItemId)));
+                if (presenter.isFolder((Integer) lastItemId)) {
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_ITEM_IS_FOLDER, treeView.getItemCaption(lastItemId)));
                     return;
                 }
-                    presenter.updateProjectLastOpenedDate();
+                presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
-                        (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
 
             }
         });
@@ -203,21 +203,21 @@ public class GermplasmListPreview extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (lastItemId == null) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
                 }
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_RENAME_ITEM,(String) lastItemId));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_CANNOT_RENAME_ITEM, (String) lastItemId));
                     return;
                 }
 
                 if (!presenter.isFolder((Integer) lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
                 }
 
-                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER,treeView.getItemCaption(lastItemId)));
+                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER, treeView.getItemCaption(lastItemId)));
                 w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -348,7 +348,7 @@ public class GermplasmListPreview extends VerticalLayout {
                             if (parent != null) {
                                 treeView.setParent(newItem, parent.getId());
                             } else {
-                                treeView.setParent(newItem,messageSource.getMessage(Message.PROGRAM_LIST));
+                                treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
                             }
 
                             if (parent != null) {
@@ -360,6 +360,7 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.select(newItem);
                             lastItemId = newItem;
                             treeView.setImmediate(true);
+                            processToolbarButtons(newItem);
                         }
 
                         // close popup
@@ -394,7 +395,7 @@ public class GermplasmListPreview extends VerticalLayout {
             public void buttonClick(final Button.ClickEvent event) {
 
                 if (lastItemId instanceof String) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_DELETE_ITEM));
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_CANNOT_DELETE_ITEM));
                     return;
                 }
 
@@ -403,29 +404,31 @@ public class GermplasmListPreview extends VerticalLayout {
                 try {
                     gpList = presenter.validateForDeleteGermplasmList((Integer) lastItemId);
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.ERROR),e.getMessage());
+                    MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.ERROR), e.getMessage());
                     return;
                 }
 
                 final GermplasmList finalGpList = gpList;
                 ConfirmDialog.show(event.getComponent().getWindow(),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER,treeView.getItemCaption(lastItemId)),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM,treeView.getItemCaption(lastItemId)),
-                        messageSource.getMessage(Message.YES),messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER, treeView.getItemCaption(lastItemId)),
+                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM, treeView.getItemCaption(lastItemId)),
+                        messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                     @Override
                     public void onClose(ConfirmDialog dialog) {
                         if (dialog.isConfirmed()) {
                             try {
-                            	GermplasmList parent = presenter.getGermplasmListParent(finalGpList.getId());
+                                GermplasmList parent = presenter.getGermplasmListParent(finalGpList.getId());
                                 presenter.deleteGermplasmListFolder(finalGpList);
                                 treeView.removeItem(lastItemId);
                                 treeView.select(null);
                                 if (parent == null) {
                                     treeView.select(MY_LIST);
                                     lastItemId = MY_LIST;
+                                    processToolbarButtons(MY_LIST);
                                 } else {
                                     treeView.select(parent.getId());
                                     lastItemId = parent.getId();
+                                    processToolbarButtons(parent.getId());
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
@@ -448,7 +451,7 @@ public class GermplasmListPreview extends VerticalLayout {
         lastItemId = itemId;
 
         treeView.select(itemId);
-        
+
         treeView.setImmediate(true);
     }
 
@@ -592,6 +595,29 @@ public class GermplasmListPreview extends VerticalLayout {
 
     protected void initializeActions() {
 
+    }
+
+    public void processToolbarButtons(Object treeItem) {
+        boolean isSharedListNode = (treeItem instanceof String && treeItem.equals(GermplasmListPreview.SHARED_LIST));
+        boolean isCentralGermplasmList = (treeItem instanceof Integer && ((Integer) treeItem).intValue() > 0);
+        boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.MY_LIST);
+        boolean isFolder = treeItem instanceof String || getPresenter().isFolder((Integer) treeItem);
+
+        // set the toolbar button state
+        if (isSharedListNode || isCentralGermplasmList) {
+            setToolbarButtonsEnabled(false);
+        } else if (isMyListNode) {
+            setToolbarButtonsEnabled(false);
+            setToolbarAddButtonEnabled(true);
+        } else if (!isFolder) {
+            setToolbarButtonsEnabled(false);
+            setToolbarAddButtonEnabled(true);
+        } else {
+            setToolbarButtonsEnabled(true);
+        }
+
+        // set the launch button state
+        setToolbarLaunchButtonEnabled(!isSharedListNode && !isMyListNode && !isFolder);
     }
 
 
