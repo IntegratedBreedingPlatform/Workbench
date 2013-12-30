@@ -305,25 +305,6 @@ public class ToolUtil {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
-
-            String connectionUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, localDbName);
-            String mysqlUser = localUser;
-            String mysqlPassword = localPassword;
-            if (!StringUtil.isEmptyOrWhitespaceOnly(username)
-                && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
-                mysqlUser = username;
-                mysqlPassword = password;
-            }
-            
-            if (configurationChanged) {
-                try {
-                    updateGdmsConfiguration(connectionUrl, mysqlUser, mysqlPassword);
-                }
-                catch (JAXBException e) {
-                    LOG.error("Cannot update GDMS configuration file", e);
-                    throw new IOException("Cannot update GDMS configuration", e);
-                }
-            }
         } else if (Util.isOneOf(tool.getToolName(), ToolName.ibpwebservice.name())) {
             configurationChanged = updateWebServiceConfigurationForProject(project, workbenchSetting);
         }
