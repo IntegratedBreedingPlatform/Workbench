@@ -82,6 +82,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     
     private Label lblEnvironmentFactorHeader;
     private Label lblEnvironmentFactorDescription;
+    private Label lblGenotypesFactorDescription;
     private Label lblEnvironmentGroupsHeader;
     private Label lblEnvironmentGroupsDescription;
     private Label lblEnvironmentGroupsSpecify;
@@ -96,6 +97,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     private VerticalLayout generalLayout;
     
     private HorizontalLayout specifyEnvironmentFactorLayout;
+    private HorizontalLayout specifyGenotypesFactorLayout;
     private HorizontalLayout specifyEnvironmentGroupsLayout;
     
     private VerticalLayout datasetVariablesDetailLayout;
@@ -114,6 +116,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     private Button btnNext;
     private Component buttonArea;
     private Select selectSpecifyEnvironment;
+    private Select selectSpecifyGenotypes;
     private Select selectSpecifyEnvironmentGroups;
     
     private Map<String, Boolean> variatesCheckboxState;
@@ -193,6 +196,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     	lblEnvironmentFactorHeader = new Label();
     	lblEnvironmentFactorHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblEnvironmentFactorDescription = new Label();
+    	lblGenotypesFactorDescription = new Label();
     	lblEnvironmentGroupsHeader = new Label();
     	lblEnvironmentGroupsHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	lblEnvironmentGroupsDescription = new Label();
@@ -212,6 +216,8 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         specifyEnvironmentFactorLayout = new HorizontalLayout();
         specifyEnvironmentFactorLayout.setSpacing(true);
+        specifyGenotypesFactorLayout = new HorizontalLayout();
+        specifyGenotypesFactorLayout.setSpacing(true);
         specifyEnvironmentGroupsLayout = new HorizontalLayout();
         specifyEnvironmentGroupsLayout.setSpacing(true);
         datasetVariablesDetailLayout = new VerticalLayout();
@@ -286,6 +292,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			}
 		});
         
+        selectSpecifyGenotypes = new Select();
+        selectSpecifyGenotypes.setSizeFull();
+        
         selectSpecifyEnvironmentGroups = new Select();
         selectSpecifyEnvironmentGroups.setSizeFull();
         
@@ -296,6 +305,11 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	break;
         }
         
+        for (Iterator<?> i = selectSpecifyGenotypes.getItemIds().iterator(); i.hasNext();){
+        	selectSpecifyGenotypes.select(i.next());
+        	break;
+        }
+        
         buttonArea = layoutButtonArea();
        
         
@@ -303,6 +317,10 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         	specifyEnvironmentFactorLayout.addComponent(lblEnvironmentFactorDescription);
         	specifyEnvironmentFactorLayout.addComponent(selectSpecifyEnvironment);
         generalLayout.addComponent(specifyEnvironmentFactorLayout);
+        
+        	specifyGenotypesFactorLayout.addComponent(lblGenotypesFactorDescription);
+        	specifyGenotypesFactorLayout.addComponent(selectSpecifyGenotypes);
+        generalLayout.addComponent(specifyGenotypesFactorLayout);
         
         //generalLayout.addComponent(lblEnvironmentGroupsHeader);
         generalLayout.addComponent(lblEnvironmentGroupsDescription);
@@ -369,6 +387,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
 					getGxeAnalysisComponentPanel().generateTabContent(currentStudy, 
 							selectSpecifyEnvironment.getValue().toString(), 
+							selectSpecifyGenotypes.getValue().toString(), 
 							selectSpecifyEnvironmentGroups.getValue().toString(), 
 							variatesCheckboxState, GxeSelectEnvironmentPanel.this);
 				}
@@ -605,7 +624,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
             	
             	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
             		factorList.add(fm);
-            		
+            		selectSpecifyGenotypes.addItem(fm.getName());
             	}
             	
             	
@@ -718,6 +737,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblEnvironmentFactorHeader, Message.GXE_ENVIRONMENT_FACTOR_HEADER);
         messageSource.setValue(lblEnvironmentFactorDescription, Message.GXE_ENVIRONMENT_FACTOR_DESCRIPTION);
+        messageSource.setValue(lblGenotypesFactorDescription, Message.GXE_GENOTYPES_FACTOR_DESCRIPTION);
         messageSource.setValue(lblEnvironmentGroupsHeader, Message.GXE_ENVIRONMENT_GROUPS_HEADER);
         messageSource.setValue(lblEnvironmentGroupsDescription, Message.GXE_ENVIRONMENT_GROUPS_DESCRIPTION);
         messageSource.setValue(lblEnvironmentGroupsSpecify, Message.GXE_ENVIRONMENT_GROUPS_SPECIFY);

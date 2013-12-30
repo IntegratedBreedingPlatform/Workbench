@@ -276,7 +276,7 @@ public class GxeUtility {
 		}
 	}
 	
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,String genotypeName ,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 
 		// get the headers first
@@ -304,6 +304,7 @@ public class GxeUtility {
 		
 		LOG.debug(vtList.toString());
 		
+		/**
 		// find entry number storage factor and explicitly aadd it as a column
 		for (VariableType factor : vtList.getFactors().getVariableTypes()) {
 			if (factor.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
@@ -313,7 +314,11 @@ public class GxeUtility {
 				
 				break;
 			}
-		}
+		}**/
+		
+		traitToColNoMap.put(genotypeName,j);
+		headerRow.add(genotypeName);
+		j++;
 		
 		// site no or site code
 		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_STORAGE.getId());

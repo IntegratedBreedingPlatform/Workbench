@@ -113,6 +113,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 
     private String selectedEnvFactorName;
     private String selectedEnvGroupFactorName;
+    private String selectedGenotypeFactorName;
     
     private Button btnCancel;
     private Button btnRunBreedingView;
@@ -158,6 +159,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     		Study study,  
     		GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel, 
     		String selectedEnvFactorName,
+    		String selectedGenotypeFactorName,
     		String selectedEnvGroupFactorName,
     		Map<String, Boolean> variatesCheckboxState) {
     	this.studyDataManager = studyDataManager;
@@ -165,6 +167,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         this.currentStudy = study;
         this.gxeSelectEnvironmentPanel = gxeSelectEnvironmentPanel;
         this.selectedEnvFactorName = selectedEnvFactorName;
+        this.selectedGenotypeFactorName = selectedGenotypeFactorName;
         this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
         this.variatesCheckboxState = variatesCheckboxState;
         
@@ -550,7 +553,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					//if (isXLS)
 					//	datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
 					//else
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName ,gxeEnv,selectedTraits, currentProject);
+						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName , selectedGenotypeFactorName ,gxeEnv,selectedTraits, currentProject);
 					
 					
 					
@@ -572,13 +575,16 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 				
 					Genotypes genotypes = new Genotypes();
 					
-					try {
-						String strGenoType;
-						strGenoType = studyDataManager.getLocalNameByStandardVariableId(gxeTable.getMeansDataSetId(), 8230);
-						if (strGenoType != null && strGenoType != "") genotypes.setName(strGenoType);
-					} catch (MiddlewareQueryException e1) {
-						genotypes.setName("G!");
-					}
+			
+						//String strGenoType;
+						//strGenoType = studyDataManager.getLocalNameByStandardVariableId(gxeTable.getMeansDataSetId(), 8230);
+					if (selectedGenotypeFactorName != null && selectedGenotypeFactorName != "") {
+							genotypes.setName(selectedGenotypeFactorName);
+						}else{
+							genotypes.setName("G!");
+						}
+						
+				
 	
 					gxeInput.setGenotypes(genotypes);
 					gxeInput.setEnvironmentName(gxeTable.getEnvironmentName());

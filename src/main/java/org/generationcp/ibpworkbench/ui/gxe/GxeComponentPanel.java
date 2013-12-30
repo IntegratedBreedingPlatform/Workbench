@@ -237,11 +237,11 @@ public class GxeComponentPanel extends VerticalLayout implements
 		}
 	}
 
-	public void generateTabContent(Study study, String selectedEnvFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel) {
+	public void generateTabContent(Study study, String selectedEnvFactorName,String selectedGenotypeFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel) {
 	
 		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
 
-		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedEnvGroupFactorName, variatesCheckboxState);
+		GxeEnvironmentAnalysisPanel tabContainer = new GxeEnvironmentAnalysisPanel(studyDataManager, project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedGenotypeFactorName ,selectedEnvGroupFactorName, variatesCheckboxState);
 		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
 		tabContainer.setVisible(true);
 
