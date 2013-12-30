@@ -34,7 +34,7 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
 
         // update basicDetailsTabUI
         basicDetailsTab.updateProjectDetailsFormField(createProjectPanel.getProject());
-
+        basicDetailsTab.removeNextBtn();
         layoutBasicDetails.addComponent(basicDetailsTab);
 
         layoutBasicDetails.setComponentAlignment(basicDetailsTab,VerticalLayout.ALIGNMENT_HORIZONTAL_CENTER,VerticalLayout.ALIGNMENT_VERTICAL_CENTER);
@@ -42,11 +42,11 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
         layoutBasicDetails.setSpacing(true);
         layoutBasicDetails.setMargin(true);
 
-        layoutUserRoles = new VerticalLayout();
-        layoutUserRoles.setData(SECOND_TAB_USER_ROLES);
+        //layoutUserRoles = new VerticalLayout();
+        //layoutUserRoles.setData(SECOND_TAB_USER_ROLES);
 
         this.addTab(layoutBasicDetails, messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
-        this.addTab(layoutUserRoles, messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL));
+        //this.addTab(layoutUserRoles, messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL));
 
         this.addListener(new WorkbenchSelectedTabChangeListener(this));
 
@@ -81,24 +81,24 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
             case FIRST_TAB_BASIC_DETAILS:
                 createProjectPanel.setTitle(messageSource.getMessage(Message.BASIC_DETAILS_LABEL),"Update the name or date for this program.");
                 break;
-            case SECOND_TAB_USER_ROLES:
-                createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this program will be using.");
-                break;
+            //case SECOND_TAB_USER_ROLES:
+            //    createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this program will be using.");
+            //    break;
         }
     }
 
     @Override
     public boolean validate() {
         if (basicDetailsTab.validateAndSave()) {
-            if (userRolesTab != null) {
-                return userRolesTab.validateAndSave();
-            }
+            //if (userRolesTab != null) {
+            //    return userRolesTab.validateAndSave();
+            //}
             return true;
         }
 
         return false;
     }
-
+    /*
     @Override
     public List<ProjectUserRole> getProjectUserRoles() {
         if (userRolesTab != null) {
@@ -125,5 +125,6 @@ public class UpdateProjectAccordion extends CreateProjectAccordion {
 
         return projectUserRoles;
     }
+    */
 
 }
