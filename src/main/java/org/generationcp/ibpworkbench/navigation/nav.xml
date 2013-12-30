@@ -126,7 +126,7 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />
 
-    <view path="/UpdateProject"
+    <view path="/UpdateProgram"
           label="Update Program"
           level="1"
           class="org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction" />
