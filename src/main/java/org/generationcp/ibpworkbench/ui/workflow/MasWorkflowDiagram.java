@@ -475,10 +475,10 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        layout.addComponent(germplasmImportButton);
-        germplasmImportButton.setHeight("20px");
-        layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(germplasmImportButton, 0);
+        //layout.addComponent(germplasmImportButton);
+        //germplasmImportButton.setHeight("20px");
+        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(germplasmImportButton, 0);
 
         layout.addComponent(germplasmImportButton2);
         germplasmImportButton2.setHeight("20px");

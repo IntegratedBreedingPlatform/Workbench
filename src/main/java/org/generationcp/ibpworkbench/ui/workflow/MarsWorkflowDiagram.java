@@ -495,9 +495,9 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        layout.addComponent(germplasmImportButton);
-        layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(germplasmImportButton, 0);
+        //layout.addComponent(germplasmImportButton);
+        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(germplasmImportButton, 0);
         
         layout.addComponent(germplasmImportButton2);
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
