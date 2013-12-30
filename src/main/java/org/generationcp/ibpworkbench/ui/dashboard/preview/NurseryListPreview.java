@@ -520,6 +520,7 @@ public class NurseryListPreview extends VerticalLayout {
                                 treeView.expandItem(MY_STUDIES);
 
                             treeView.select(newItem);
+                            treeView.setImmediate(true);
                         }
 
                         // close popup
@@ -586,6 +587,7 @@ public class NurseryListPreview extends VerticalLayout {
                                 } else {
                                     treeView.select(parent.getProjectId());
                                 }
+                                treeView.setImmediate(true);
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             }

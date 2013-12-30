@@ -358,6 +358,8 @@ public class GermplasmListPreview extends VerticalLayout {
                                 treeView.expandItem(MY_LIST);
 
                             treeView.select(newItem);
+                            lastItemId = newItem;
+                            treeView.setImmediate(true);
                         }
 
                         // close popup
@@ -420,9 +422,12 @@ public class GermplasmListPreview extends VerticalLayout {
                                 treeView.select(null);
                                 if (parent == null) {
                                     treeView.select(MY_LIST);
+                                    lastItemId = MY_LIST;
                                 } else {
                                     treeView.select(parent.getId());
+                                    lastItemId = parent.getId();
                                 }
+                                treeView.setImmediate(true);
                             } catch (Error e) {
                                 MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
                             }
