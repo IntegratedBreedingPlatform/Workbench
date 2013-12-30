@@ -101,7 +101,7 @@ public class UpdateProjectAction implements Button.ClickListener  {
 
             MessageNotifier.showMessage(projectPanel.getWindow(),String.format("Successfully updated %s",projectPanel.getProject().getProjectName()),"");
 
-            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Project", "Updated Project - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
+            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Updated Program - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
             if (IBPWorkbenchApplication.get().getMainWindow() instanceof  WorkbenchMainView)
