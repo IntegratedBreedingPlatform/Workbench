@@ -96,12 +96,12 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
-    <view path="/ProjectLocation"
+    <view path="/ProgramLocation"
           label="Program Locations"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProjectLocationAction" />
     
-    <view path="/ProjectMethods"
+    <view path="/ProgramMethods"
           label="Program Methods"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction" />
@@ -126,7 +126,7 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />
 
-    <view path="/UpdateProject"
+    <view path="/UpdateProgram"
           label="Update Program"
           level="1"
           class="org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction" />

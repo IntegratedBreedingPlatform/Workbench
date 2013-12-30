@@ -9,6 +9,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -50,7 +51,6 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     }
 
     private ProjectMethodsPresenter presenter;
-    private Project project;
     private Button addNewMethodBtn;
     private Select groupFilter;
     private Select typeFilter;
@@ -72,8 +72,6 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
     public ProjectMethodsView(Project project) {
         presenter = new ProjectMethodsPresenter(this,project);
-
-        this.project = project;
     }
 
     @Override
@@ -365,7 +363,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
 			@Override
             public void buttonClick(Button.ClickEvent event) {
-                ProjectMethodsView.this.reset();
+                (new OpenProjectMethodsAction()).buttonClick(event);
             }
         });
 
@@ -449,8 +447,6 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         Object itemId = null;
         IndexedContainer itemContainer = null;
 
-
-
         if (isAvailableTable)
             itemContainer = (IndexedContainer) availableMethodsTable.getContainerDataSource();
         else
@@ -521,33 +517,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         btn.setData(itemId);
     }
 
-    public void addToAvailableMethods(Method method) {
-        try {
-            addRow(method,true,0);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-
     /** TODO: The Following methods are only for compatibility to old Classes depentent on old Project Breeding Methods Panel UI **/
     public ManagerFactory getManagerFactory() {
         return this.presenter.getManagerFactory();
     }
-    
-    private void reset(){
-    	if(methodTypes!=null) {
-    		typeFilter.select(methodTypes[0][0]);
-    	} else {
-    		typeFilter.select((Object) null);
-    	}
-    	groupFilter.select("");
-		searchField.setValue("");
-		
-		try {
-			initializeValues();
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
-	}
 }

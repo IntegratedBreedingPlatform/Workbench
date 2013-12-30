@@ -432,10 +432,10 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
 
-        layout.addComponent(germplasmImportButton);
-        germplasmImportButton.setHeight("20px");
-        layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(germplasmImportButton, 0);
+        //layout.addComponent(germplasmImportButton);
+        //germplasmImportButton.setHeight("20px");
+        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
+        //layout.setExpandRatio(germplasmImportButton, 0);
 
 
         layout.addComponent(germplasmImportButton2);

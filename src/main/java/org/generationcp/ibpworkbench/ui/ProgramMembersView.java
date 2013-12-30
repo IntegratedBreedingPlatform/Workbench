@@ -285,7 +285,8 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
         root.addComponent(header);
         root.addComponent(select);
-        root.addComponent(initializeMembersTable());
+        //root.addComponent(initializeMembersTable());
+        initializeMembersTable();
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
 
@@ -327,7 +328,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     }
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        saveButton.addListener(new SaveUsersInProjectAction(this.project, tblMembers ));
+        saveButton.addListener(new SaveUsersInProjectAction(this.project, select ));
         
         
         select.addListener(new ValueChangeListener() {

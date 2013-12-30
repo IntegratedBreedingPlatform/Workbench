@@ -220,30 +220,17 @@ public class SaveNewProjectAction implements ClickListener{
                   
 
                     List<ProjectUserRole> projectUserRoles = createProjectPanel.getProjectUserRoles();
-                    ProjectUserRole currentLoggedUser = new ProjectUserRole();
-                    
-                    
-                   
+
                     if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
                         saveProjectUserRoles(projectUserRoles, project);
                     }
+
+
+
+
                     
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
-                    
-                    try{
-                    	WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-                    	Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
-                    	
-                        currentLoggedUser.setUserId(currentUser.getUserid());
-                    
-                        currentLoggedUser.setRole(managerRole);
-                       
-                    }catch(Exception e)
-                    {
-                    	e.printStackTrace();
-                    }
-                   // projectMembers.add(currentLoggedUser);
-                   
+
                     if ((projectMembers != null) && (!projectMembers.isEmpty())) {
                         saveProjectMembers(managerFactory, projectMembers, project);
                     }
@@ -418,6 +405,7 @@ public class SaveNewProjectAction implements ClickListener{
         for (ProjectUserRole projectUserRole : projectUserRoles){
             projectUserRole.setProject(projectSaved);
             projectUserRole.setUserId(userId);
+
             workbenchDataManager.addProjectUserRole(projectUserRole);
         }
 

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.ui.TwinColSelect;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -63,12 +64,13 @@ public class SaveUsersInProjectAction implements ClickListener{
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
-    
+    private final TwinColSelect select;
+
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
     private Project project;
     
-    private Table tblMembers;
+    //private Table tblMembers;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -82,9 +84,9 @@ public class SaveUsersInProjectAction implements ClickListener{
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    public SaveUsersInProjectAction(Project project,  Table tblMembers ) {
+    public SaveUsersInProjectAction(Project project,  TwinColSelect select ) {
         this.project = project;
-        this.tblMembers = tblMembers;
+        this.select = select;
     }
 
     public boolean validate(){
@@ -98,58 +100,32 @@ public class SaveUsersInProjectAction implements ClickListener{
             return;
         }
         
-        Container container = tblMembers.getContainerDataSource();
-        
         @SuppressWarnings("unchecked")
-        Collection<User> userList = (Collection<User>) container.getItemIds();
+        Collection<User> userList = (Collection<User>) select.getValue();
         
         try {
-        	
-        	//get the members/user_roles who are not yet added in the database
-        	for (User u : userList){
-        		List<ProjectUserRole> list = workbenchDataManager.getProjectUserRolesByProject(project);
-        		Boolean urole_exists = false;
-        		for (ProjectUserRole urole : list){
-        			if (urole.getUserId().equals(u.getUserid())) urole_exists = true;	
-        		}
-        		 
-        		if (!urole_exists
-        				&& ((Boolean) container.getItem(u).getItemProperty("role_1").getValue()
-        				|| (Boolean) container.getItem(u).getItemProperty("role_2").getValue()
-        				|| (Boolean) container.getItem(u).getItemProperty("role_3").getValue()
-        				|| (Boolean) container.getItem(u).getItemProperty("role_4").getValue()
-        				|| (Boolean) container.getItem(u).getItemProperty("role_5").getValue())
-        				
-        				){
-	        		try {
-	        			 	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-	        			 	User user = app.getSessionData().getUserData();
-	        			 	ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Member", "Added a new user (" + u.getName()
-                                + ") to " + project.getProjectName(), user, new Date());
+            //delete existing project user roles on this project
+            for (ProjectUserRole oldProjectUserRole : workbenchDataManager.getProjectUserRolesByProject(project)) {
+                workbenchDataManager.deleteProjectUserRole(oldProjectUserRole);
+            }
 
-                        workbenchDataManager.addProjectActivity(projAct);
-	 
-	                 }
-	                 catch (MiddlewareQueryException e) {
-	                     LOG.error("Cannot log program activity", e);
-	                 }
-        		}
-        	}
-        			
-        	
-            List<ProjectUserRole> projectUserRoles = getProjectMembers();
-            
-            // update the project user roles
-            this.workbenchDataManager.updateProjectsRolesForProject(this.project, projectUserRoles);
-            
+            List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
+
+            // add project user roles
+            for (User u : userList) {
+                for (Role role : workbenchDataManager.getAllRoles()) {
+                    this.workbenchDataManager.addProjectUserRole(project,u,role);
+                }
+            }
+
             // create the MySQL users for each project member
             // TODO: why do we need to create a MySQL for each project member?
             // why not create a MySQL user for the Workbench user when the account is created?
-            createMySQLUsers(projectUserRoles);
+            createMySQLUsers(projectUserRoleList);
             
             // create local database users for each workbench user
             ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(project);
-            createLocalDatabaseUsers(managerFactory, projectUserRoles, project);
+            createLocalDatabaseUsers(managerFactory, projectUserRoleList, project);
 
             MessageNotifier.showMessage(event.getComponent().getWindow(),"Success","Successfully updated this project's members list.");
 
@@ -296,68 +272,5 @@ public class SaveUsersInProjectAction implements ClickListener{
         String dateNowStr = formatter.format(now.getTime());
         Integer dateNowInt = Integer.valueOf(dateNowStr);
         return dateNowInt;
-    }
-    
-    protected List<ProjectUserRole> getProjectMembers() {
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        
-        Container container = tblMembers.getContainerDataSource();
-        
-        @SuppressWarnings("unchecked")
-        Collection<User> userList = (Collection<User>) container.getItemIds();
-        
-        List<Role> roleList = null;
-        try {
-            roleList = workbenchDataManager.getAllRoles();
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-        
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        User currentUser = app.getSessionData().getUserData();
-        
-        
-        try {
-            List<Role> roles = null;
-            roles = workbenchDataManager.getAllRolesOrderedByLabel();
-            
-            for (Role role : roles) {
-                CheckBox cb = new CheckBox(role.getName());
-                cb.setData(role.getRoleId());
-                if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
-                    //set default checked value
-                    ProjectUserRole currentProjectUserRole = new ProjectUserRole();
-                    currentProjectUserRole.setUserId(currentUser.getUserid());
-                    currentProjectUserRole.setRole(role);
-                }
-                
-            }
-        } catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-
-        for (User user : userList) {
-            Item item = container.getItem(user);
-            
-            for (Role role : roleList) {
-                String propertyId = "role_" + role.getRoleId();
-                Property property = item.getItemProperty(propertyId);
-                Boolean value = (Boolean) property.getValue();
-                
-                if (value != null && value.booleanValue()) {
-                    ProjectUserRole projectUserRole = new ProjectUserRole();
-                    projectUserRole.setUserId(user.getUserid());
-                    projectUserRole.setRole(role);
-                    
-                    projectUserRoles.add(projectUserRole);
-                }
-            }
-        }
-        
-        return projectUserRoles;
     }
 }

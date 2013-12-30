@@ -73,6 +73,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    private HorizontalLayout buttonLayout;
 
     public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
         super();
@@ -153,7 +154,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     }
 
     protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
@@ -161,6 +162,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         //nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
+    }
+
+    public void removeNextBtn() {
+        buttonLayout.removeComponent(nextButton);
     }
 
     public void setCropType(CropType cropType) {
@@ -304,7 +309,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
             if (validate()){
                 setCropType((CropType) cropTypeCombo.getValue());
-                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.SECOND_TAB_USER_ROLES);
+                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
             }
         }
     }
