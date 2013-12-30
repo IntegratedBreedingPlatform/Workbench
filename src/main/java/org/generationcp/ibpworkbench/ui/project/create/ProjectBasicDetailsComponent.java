@@ -304,7 +304,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
             if (validate()){
                 setCropType((CropType) cropTypeCombo.getValue());
-                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.SECOND_TAB_USER_ROLES);
+                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
             }
         }
     }

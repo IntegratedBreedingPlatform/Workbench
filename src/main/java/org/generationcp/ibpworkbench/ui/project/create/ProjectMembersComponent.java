@@ -151,7 +151,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         addComponent(currentUserLbl);
         
 
-        addComponent(tblMembers);
+        //addComponent(tblMembers);
         
         
         buttonArea = layoutButtonArea();
@@ -215,7 +215,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
                 int columnIndex = columnIds.indexOf(propertyId);
                 if (columnIndex >= 1) {
-                    return new CheckBox();
+                    CheckBox cb = new CheckBox();
+                    cb.setValue(true);
+                    return cb;
                 }
                 return null;
             }
@@ -364,7 +366,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
         @Override
         public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.SECOND_TAB_USER_ROLES);
+            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FIRST_TAB_BASIC_DETAILS);
         }
     }
     
@@ -483,7 +485,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                         String propertyId = "role_" + role.getRoleId();
                         Property property = currentItem.getItemProperty(propertyId);
                         if (property.getType() == Boolean.class){
-                            property.setValue(Boolean.FALSE);
+                            property.setValue(Boolean.TRUE);
                         }
                     }
 

@@ -139,11 +139,11 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                             layoutUserRoles.setSpacing(true);
                             layoutUserRoles.setMargin(true);
                         } else {
-                            if (basicDetailsTab.validate()) {
-                                setFocusToTab(SECOND_TAB_USER_ROLES);
-                            } else {
+                            //if (basicDetailsTab.validate()) {
+                            //    setFocusToTab(SECOND_TAB_USER_ROLES);
+                            //} else {
                                 setFocusToTab(FIRST_TAB_BASIC_DETAILS);
-                            }
+                            //}
                         }
                     } else {
                         //MessageNotifier.showError(getWindow(), "Error",
@@ -168,6 +168,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                     	
                     	 if (basicDetailsTab.validate()) {
                             // setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
+                             /*
                              if (userRolesTab.validate()) {
                             	 if (basicDetailsTab.validate()) {
                             		 setFocusToTab(THIRD_TAB_PROJECT_MEMBERS);
@@ -178,6 +179,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                              } else {
                                  setFocusToTab(SECOND_TAB_USER_ROLES);
                              }
+                             */
                          } else {
                              setFocusToTab(FIRST_TAB_BASIC_DETAILS);
                          }
@@ -291,15 +293,15 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
             	this.setSelectedTab(layoutBasicDetails);
                 previousTabOnFocus = FIRST_TAB_BASIC_DETAILS;
                 break;
-            case SECOND_TAB_USER_ROLES:
-            	//TODO: internationalize this
-            	//createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
-            	
-            	
-                userRolesEnabled = true;
-                previousTabOnFocus = SECOND_TAB_USER_ROLES;
-                this.setSelectedTab(layoutUserRoles);
-                break;
+            //case SECOND_TAB_USER_ROLES:
+            //	//TODO: internationalize this
+            //	//createProjectPanel.setTitle(messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL),"Mark the breeding workflow checkboxes that this project will be using.");
+            //
+            //
+            //    userRolesEnabled = true;
+            //    previousTabOnFocus = SECOND_TAB_USER_ROLES;
+            //    this.setSelectedTab(layoutUserRoles);
+            //    break;
             case THIRD_TAB_PROJECT_MEMBERS:
             	//TODO: internationalize this
             	//createProjectPanel.setTitle(messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL),"Include project members by adding them to the \"Selected Project Members\" area. You can then give each member specific breeder access.");
@@ -336,11 +338,11 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
 
         success = basicDetailsTab.validateAndSave();
         
-        if (success) {
-            if (userRolesTab != null) {
-                success = userRolesTab.validateAndSave();
-            }
-        }
+        //if (success) {
+        //    if (userRolesTab != null) {
+        //        success = userRolesTab.validateAndSave();
+        //    }
+        //}
 
         if (success) {
             if (membersTab != null) {
@@ -393,7 +395,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         //        layoutLocations.setData(FIFTH_TAB_LOCATIONS);
 
         this.addTab(layoutBasicDetails, messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
-        this.addTab(layoutUserRoles, messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL));
+        //this.addTab(layoutUserRoles, messageSource.getMessage(Message.BREEDING_WORKFLOWS_LABEL));
         this.addTab(layoutProjectMembers, messageSource.getMessage(Message.PROJECT_MEMBERS_LABEL));
         //        this.addTab(layoutBreedingMethods, messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
         //        this.addTab(layoutLocations, messageSource.getMessage(Message.LOCATIONS_LABEL));
