@@ -56,8 +56,8 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
             UpdateProjectPanel projectPanel = new UpdateProjectPanel();
             w.showContent(projectPanel);
 
-            NavManager.navigateApp(window, "/UpdateProject", isLinkAccessed);
-            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Project", "Launched Update Project", projectPanel.getCurrentUser(), new Date());
+            NavManager.navigateApp(window, "/UpdateProgram", isLinkAccessed);
+            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Launched Update Program", projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
         } catch (Exception e) {
