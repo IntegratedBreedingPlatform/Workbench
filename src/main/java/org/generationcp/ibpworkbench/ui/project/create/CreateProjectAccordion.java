@@ -416,11 +416,16 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         try {
             WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-        	Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
+        	//Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
 
-            ProjectUserRole projectUserRole = new ProjectUserRole();
-            projectUserRole.setRole(managerRole);
-            projectUserRoles.add(projectUserRole);
+            // BY DEFAULT, current user has all the roles
+            for (Role role : workbenchDataManager.getAllRoles()) {
+                ProjectUserRole projectUserRole = new ProjectUserRole();
+                projectUserRole.setRole(role);
+                projectUserRoles.add(projectUserRole);
+
+            }
+
         } catch (MiddlewareQueryException e) {
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
