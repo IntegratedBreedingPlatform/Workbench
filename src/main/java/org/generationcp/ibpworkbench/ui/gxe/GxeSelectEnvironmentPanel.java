@@ -384,7 +384,8 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (selectSpecifyEnvironment.getValue().toString() != "" && selectSpecifyEnvironment.getValue() != null ){
+				if (selectSpecifyEnvironment.getValue() != null 
+						&& selectSpecifyGenotypes.getValue() != null ){
 					getGxeAnalysisComponentPanel().generateTabContent(currentStudy, 
 							selectSpecifyEnvironment.getValue().toString(), 
 							selectSpecifyGenotypes.getValue().toString(), 
