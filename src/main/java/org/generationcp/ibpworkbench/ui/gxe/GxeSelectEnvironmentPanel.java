@@ -275,6 +275,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					factors.removeAllItems();
 					variates.removeAllItems();
 					environmentNames.clear();
+					
+					if (selectSpecifyEnvironment.getValue() == null) return;
+					
 				}catch(Exception e){}
 					
 				 try {
@@ -369,6 +372,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     }
 
     protected void initializeActions() {
+    	btnCancel.setImmediate(true);
         btnCancel.addListener(new Button.ClickListener() {
 	
 			private static final long serialVersionUID = 4719456133687409089L;
@@ -376,6 +380,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 			@Override
 			public void buttonClick(ClickEvent event) {
 				//SelectEnvironmentForGxePanel.this.getParent().removeWindow(SelectEnvironmentForGxePanel.this);
+				selectSpecifyEnvironment.setValue((Object) null);
+				selectSpecifyGenotypes.setValue((Object) null);
+				selectSpecifyEnvironmentGroups.select((Object) "Analyze All");
 			}
 		});
         btnNext.addListener(new Button.ClickListener() {
@@ -734,7 +741,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     
     @Override
     public void updateLabels() {
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnCancel, Message.RESET);
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblEnvironmentFactorHeader, Message.GXE_ENVIRONMENT_FACTOR_HEADER);
         messageSource.setValue(lblEnvironmentFactorDescription, Message.GXE_ENVIRONMENT_FACTOR_DESCRIPTION);
