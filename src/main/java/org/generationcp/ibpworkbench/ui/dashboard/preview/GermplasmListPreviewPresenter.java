@@ -184,6 +184,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             if (!gpList.isFolder())
                 throw new Error(NOT_FOLDER);
 
+            checkIfUnique(newName);
             gpList.setName(newName);
 
             this.getManagerFactory().getGermplasmListManager().updateGermplasmList(gpList);
@@ -213,16 +214,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         GermplasmList newList = null;
         try {
         	
-        	List<GermplasmList> centralDuplicate = this.getManagerFactory().getGermplasmListManager().
-                	getGermplasmListByName(folderName, 0, 1, null, Database.CENTRAL);
-            if(centralDuplicate!=null && !centralDuplicate.isEmpty()) {
-            	throw new Error(NAME_NOT_UNIQUE);
-            }
-            List<GermplasmList> localDuplicate = this.getManagerFactory().getGermplasmListManager().
-                	getGermplasmListByName(folderName, 0, 1, null, Database.LOCAL);
-            if(localDuplicate!=null && !localDuplicate.isEmpty()) {
-            	throw new Error(NAME_NOT_UNIQUE);
-            }
+        	checkIfUnique(folderName);
             
 
             if (id == null) {
@@ -256,7 +248,20 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public GermplasmList validateForDeleteGermplasmList(Integer id) throws Error {
+    private void checkIfUnique(String folderName) throws MiddlewareQueryException, Error {
+    	List<GermplasmList> centralDuplicate = this.getManagerFactory().getGermplasmListManager().
+            	getGermplasmListByName(folderName, 0, 1, null, Database.CENTRAL);
+        if(centralDuplicate!=null && !centralDuplicate.isEmpty()) {
+        	throw new Error(NAME_NOT_UNIQUE);
+        }
+        List<GermplasmList> localDuplicate = this.getManagerFactory().getGermplasmListManager().
+            	getGermplasmListByName(folderName, 0, 1, null, Database.LOCAL);
+        if(localDuplicate!=null && !localDuplicate.isEmpty()) {
+        	throw new Error(NAME_NOT_UNIQUE);
+        }
+	}
+
+	public GermplasmList validateForDeleteGermplasmList(Integer id) throws Error {
         if (id == null) {
             throw new Error(NO_SELECTION);
         }
