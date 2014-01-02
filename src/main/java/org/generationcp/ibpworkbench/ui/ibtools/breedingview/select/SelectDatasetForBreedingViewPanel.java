@@ -193,7 +193,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         studyTreeLayout = new VerticalLayout();
         studyTreeLayoutTableContainer = new VerticalLayout();
         
-        studyDetailsLayout = new GridLayout(10, 2);
+        studyDetailsLayout = new GridLayout(10, 3);
         
         datasetVariablesDetailLayout = new HorizontalLayout();
         
@@ -220,7 +220,29 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         datasetVariablesDetailLayout.addComponent(factors);
         datasetVariablesDetailLayout.addComponent(variates);     
     
-        studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 0, 0, 9, 0);
+        VerticalLayout vContainer1 = new VerticalLayout();
+        VerticalLayout vContainer2 = new VerticalLayout();
+        vContainer1.setWidth("100%");
+        vContainer2.setWidth("100%");
+        
+        Label lblFactors = new Label("FACTORS");
+        lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
+        lblFactors.setWidth("100%");
+        Label lblVariates = new Label("VARIATES");
+        lblVariates.setWidth("100%");
+        lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
+        HorizontalLayout datasetVariablesDetailHeaderLayout = new HorizontalLayout();
+        datasetVariablesDetailHeaderLayout.setMargin(false, false, false, true);
+        datasetVariablesDetailHeaderLayout.setWidth("100%");
+        vContainer1.addComponent(lblFactors);
+        vContainer2.addComponent(lblVariates);
+        datasetVariablesDetailHeaderLayout.addComponent(vContainer1);
+        datasetVariablesDetailHeaderLayout.addComponent(vContainer2);
+        datasetVariablesDetailHeaderLayout.setExpandRatio(vContainer1, 1.0F);
+        datasetVariablesDetailHeaderLayout.setExpandRatio(vContainer2, 1.0F);
+        studyDetailsLayout.addComponent(datasetVariablesDetailHeaderLayout, 0, 0, 9, 0);
+        
+        studyDetailsLayout.addComponent(datasetVariablesDetailLayout, 0, 1, 9, 1);
         
         
         selectAllListener = new Property.ValueChangeListener(){
@@ -254,7 +276,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
         chkVariatesSelectAll.setCaption("Select All");
         
-        studyDetailsLayout.addComponent(chkVariatesSelectAll, 6, 1, 9, 1);
+        studyDetailsLayout.addComponent(chkVariatesSelectAll, 6, 2, 9, 2);
         
         
          
@@ -318,7 +340,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     protected Table initializeFactorsTable() {
         
-        final Table tblFactors = new Table("FACTORS");
+        final Table tblFactors = new Table();
         tblFactors.setImmediate(true);
         tblFactors.setWidth("100%");
         tblFactors.setHeight("450px");
@@ -358,7 +380,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
     	variatesCheckboxState.clear();
     	
-        final Table tblVariates = new Table("VARIATES");
+        final Table tblVariates = new Table();
         tblVariates.setImmediate(true);
         tblVariates.setWidth("100%");
         tblVariates.setHeight("450px");
