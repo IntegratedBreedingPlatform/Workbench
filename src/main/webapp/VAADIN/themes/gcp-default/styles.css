@@ -43,7 +43,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 /* Workbench Main */
 .gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin-left:20px;color:#dde5ec}
 .gcp-window-title H1{text-transform:uppercase;font-size:20px;display:inline-block;color:#dde5ec;font-weight:100}
-.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#02385a}
+.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE}
 .gcp-window-title{font-size:20px;color:#dde5ec}
 .gcp-dashboard-main>div{overflow-y:auto !important}
 
