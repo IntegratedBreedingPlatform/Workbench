@@ -307,7 +307,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-                new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
+                //new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
+				SelectDatasetForBreedingViewPanel.this.refreshStudyTreeTable(Database.LOCAL);
 			}
 		});
     	openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
@@ -678,7 +679,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
     
     @Override
     public void updateLabels() {
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnCancel, Message.RESET);
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
         messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
