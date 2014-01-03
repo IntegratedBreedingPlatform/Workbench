@@ -105,18 +105,25 @@ public class SaveUsersInProjectAction implements ClickListener{
         
         try {
             //delete existing project user roles on this project
-            for (ProjectUserRole oldProjectUserRole : workbenchDataManager.getProjectUserRolesByProject(project)) {
-                workbenchDataManager.deleteProjectUserRole(oldProjectUserRole);
-            }
+            //for (ProjectUserRole oldProjectUserRole : workbenchDataManager.getProjectUserRolesByProject(project)) {
+            //    workbenchDataManager.deleteProjectUserRole(oldProjectUserRole);
+            //}
 
             List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
 
-            // add project user roles
+            // add project user roles to the list
             for (User u : userList) {
                 for (Role role : workbenchDataManager.getAllRoles()) {
-                    this.workbenchDataManager.addProjectUserRole(project,u,role);
+                    ProjectUserRole projUsrRole = new ProjectUserRole();
+                    projUsrRole.setUserId(u.getUserid());
+                    projUsrRole.setRole(role);
+
+                    projectUserRoleList.add(projUsrRole);
                 }
             }
+
+            // UPDATE workbench DB with the project user roles
+            workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
 
             // create the MySQL users for each project member
             // TODO: why do we need to create a MySQL for each project member?
@@ -141,13 +148,12 @@ public class SaveUsersInProjectAction implements ClickListener{
          	  if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(), u.getUserid()) == null) {
          		  ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(),u.getUserid());
          		  workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo); 
-                 
+
          	  }
             }
      
 	     }catch(Exception e){
-	     	System.out.println(e.getMessage());
-	     	
+	     	e.printStackTrace();
 	     }
     }
     
