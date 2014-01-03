@@ -281,11 +281,11 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId) throws Error {
+    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws Error {
 
 
         try {
-            return getManagerFactory().getStudyDataManager().moveFolder(sourceId, targetId);
+            return getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             throw new Error(e.getMessage());

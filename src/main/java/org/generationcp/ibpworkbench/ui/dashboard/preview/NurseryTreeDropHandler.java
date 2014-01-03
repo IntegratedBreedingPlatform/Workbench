@@ -111,7 +111,9 @@ class NurseryTreeDropHandler implements DropHandler {
                 actualTargetId = (Integer)targetItemId;
             }
 
-            success = presenter.moveNurseryListFolder((Integer) sourceItemId, actualTargetId);
+            Integer source = (Integer)sourceItemId;
+
+            success = presenter.moveNurseryListFolder(source, actualTargetId, !presenter.isFolder(source));
         } catch (Error error) {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.ERROR), error.getMessage());
             success = false;
