@@ -897,7 +897,21 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			try {
 				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
 			
-				List<Variable> variables = envs.getVariablesByLocalName(environmentFactorName);
+				List<Variable> variables;
+				variables = envs.getVariablesByLocalName(environmentFactorName);
+				
+				for (Variable var : variables){
+					TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+					if (env == null && environmentFactorName != trialInstanceFactorName){
+						environmentFactorName = trialInstanceFactorName;
+					}
+					break;
+				}
+				
+				if (environmentFactorName == trialInstanceFactorName){
+					variables = envs.getVariablesByLocalName(environmentFactorName);
+				}
+					
 				for (Variable var : variables){
 					if (var != null){
 						if (var.getValue() != ""){

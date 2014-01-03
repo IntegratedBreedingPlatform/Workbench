@@ -181,7 +181,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
                 ExcelExport export = new ExcelExport((Table) SummaryView.this.getComponent(1),tableName);
                 export.setReportTitle(programName + " - " + tableName);
-                export.setExportFileName(tableName + "-" + programName + ".xls");
+                export.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ","_"));
                 export.setDisplayTotals(false);
 
                 SummaryView.LOG.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
