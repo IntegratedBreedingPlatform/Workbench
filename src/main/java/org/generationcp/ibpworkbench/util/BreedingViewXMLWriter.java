@@ -223,7 +223,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
         Environments environments = new Environments();
         environments.setName(breedingViewInput.getEnvironment().getName());
-        environments.setTrialName(breedingViewInput.getTrialInstanceName());
+        //environments.setTrialName(breedingViewInput.getTrialInstanceName());
         
         for( SeaEnvironmentModel s : breedingViewInput.getSelectedEnvironments()){
         	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
