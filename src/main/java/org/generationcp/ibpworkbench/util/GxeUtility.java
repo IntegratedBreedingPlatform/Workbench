@@ -369,7 +369,7 @@ public class GxeUtility {
 					if (!gxeEnvLabels.contains(var.getValue())) {
 						continue;						
 					}					
-					row[traitToColNoMap.get(environmentName)] = var.getValue();
+					row[traitToColNoMap.get(environmentName)] = var.getValue().replace(",", ";");
 				}
 			}
 			
@@ -383,7 +383,7 @@ public class GxeUtility {
 				}
 				
 				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)"))
-					row[traitMapEntry.getValue()] = var.getValue();
+					row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
 				
 			}
 			

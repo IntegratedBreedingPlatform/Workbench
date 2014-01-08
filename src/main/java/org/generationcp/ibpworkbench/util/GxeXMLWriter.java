@@ -34,6 +34,7 @@ import org.generationcp.commons.sea.xml.BreedingViewSession;
 import org.generationcp.commons.sea.xml.DataConfiguration;
 import org.generationcp.commons.sea.xml.DataFile;
 import org.generationcp.commons.sea.xml.Design;
+import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.MegaEnvironment;
 import org.generationcp.commons.sea.xml.MegaEnvironments;
@@ -153,6 +154,10 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         Environments environments = new Environments();
         environments.setName(gxeInput.getEnvironmentName());
         environments.setEnvironments(gxeInput.getSelectedEnvironments());
+        
+        for (Environment e : environments.getEnvironments()){
+        	e.setName(e.getName().replace(",", ";"));
+        }
         
         //create the DataConfiguration element
         DataConfiguration dataConfiguration = new DataConfiguration();

@@ -670,7 +670,13 @@ public class DatasetExporter {
                           } else{
                               String value = factorVariable.getValue();
                               if(value != null) {
-                                  value = value.trim();
+                            	  if (value.contains(",")){
+                            		  value = value.trim().replace(",", ";");
+                            	  }else{
+                            		  value = value.trim();
+                            	  }
+                                  
+                                 
                               }
                               row.add(value);
                           }
@@ -748,7 +754,7 @@ public class DatasetExporter {
 
   			File csvFile = new File(filename);
 
-  			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+  			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , '\0', "\r\n");
   			csvWriter.writeAll(tableItems);
   			csvWriter.flush();
   			csvWriter.close();
