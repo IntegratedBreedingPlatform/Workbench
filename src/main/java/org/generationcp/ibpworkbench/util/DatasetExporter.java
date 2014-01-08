@@ -670,7 +670,7 @@ public class DatasetExporter {
                           } else{
                               String value = factorVariable.getValue();
                               if(value != null) {
-                            	  if (value.contains(",")){
+                                  if (factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
                             		  value = value.trim().replace(",", ";");
                             	  }else{
                             		  value = value.trim();
@@ -754,7 +754,7 @@ public class DatasetExporter {
 
   			File csvFile = new File(filename);
 
-  			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , '\0', "\r\n");
+              CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
   			csvWriter.writeAll(tableItems);
   			csvWriter.flush();
   			csvWriter.close();
