@@ -101,7 +101,11 @@ public class StudyDetailsQuery implements Query{
 							break;
         			case 3:
                         try {
-                            value = format.format(oldFormat.parse(studyDetails.getStartDate()));
+                        	if(studyDetails.getStartDate()==null) {
+                        		value = "";
+                        	} else {
+                        		value = format.format(oldFormat.parse(studyDetails.getStartDate()));
+                        	}
                         } catch (ParseException e) {
                             //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 
@@ -110,7 +114,11 @@ public class StudyDetailsQuery implements Query{
                         break;
         			case 4:
                         try {
-                            value = format.format(oldFormat.parse(studyDetails.getStartDate()));
+                        	if(studyDetails.getEndDate()==null) {
+                        		value = "";
+                        	} else {
+                        		value = format.format(oldFormat.parse(studyDetails.getEndDate()));
+                        	}
                         } catch (ParseException e) {
                             //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 
