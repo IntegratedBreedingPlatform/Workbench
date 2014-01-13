@@ -121,7 +121,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
             methodSelectGroup.addItem("O");
             methodSelectGroup.setItemCaption("O", "Cross Pollinating");
             methodSelectGroup.addItem("C");
-            methodSelectGroup.setItemCaption("C", "Clonolly Propogating");
+            methodSelectGroup.setItemCaption("C", "Clonally Propagating");
             methodSelectGroup.addItem("G");
             methodSelectGroup.setItemCaption("G", "All System");
             methodSelectGroup.select("");
