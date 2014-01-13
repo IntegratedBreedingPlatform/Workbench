@@ -136,7 +136,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
         selectedMethodTitleContainer.setMargin(true,true,false,false);
 
-        final Label selectedMethodsTitle = new Label("Program Methods");
+        final Label selectedMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
         selectedMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);

@@ -103,7 +103,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
         final HorizontalLayout selectedLocationsTitleContainer = new HorizontalLayout();
         selectedLocationsTitleContainer.setMargin(true,true,false,false);
 
-        final Label selectedLocationsTitle = new Label("Program Locations");
+        final Label selectedLocationsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_LOCATIONS));
         selectedLocationsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
         selectedLocationsTitleContainer.addComponent(selectedLocationsTitle);
