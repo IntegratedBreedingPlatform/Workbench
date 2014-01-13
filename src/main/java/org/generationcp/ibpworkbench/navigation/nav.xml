@@ -172,7 +172,7 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
 
     <view path="/bv_meta_analysis"
-          label="Meta Analysis of Field Trials"
+          label="Multi-year/Multi-site Analysis"
           level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
 
