@@ -358,7 +358,6 @@ public class NurseryListPreview extends VerticalLayout {
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
                 Object value = treeView.getValue();
 
-                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, ((Integer) value).intValue()).buttonClick(event);
 
                 //update sidebar selection
                 LOG.trace("selecting sidebar");
@@ -366,6 +365,9 @@ public class NurseryListPreview extends VerticalLayout {
 
                 if (null != WorkbenchSidebar.sidebarTreeMap.get("study_browser"))
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("study_browser"));
+
+                // launch tool
+                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, ((Integer) value).intValue()).buttonClick(event);
 
             }
         });
