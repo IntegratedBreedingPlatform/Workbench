@@ -19,6 +19,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.pojos.Location;
@@ -168,7 +169,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     public void setTitle(String label, String description) {
     	newProjectTitleArea.removeAllComponents();
 
-        Label heading = new Label("Create A Program");
+        Label heading = new Label(messageSource.getMessage(Message.ADD_A_PROGRAM));
         heading.setStyleName(Bootstrap.Typography.H1.styleName());
 
     	Label title = new Label(label);

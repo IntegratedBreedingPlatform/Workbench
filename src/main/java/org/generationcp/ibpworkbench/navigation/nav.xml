@@ -122,7 +122,7 @@
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />      
     
     <view path="/CreateProject"
-          label="Create New Program"
+          label="Add New Program"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenNewProjectAction" />
 
