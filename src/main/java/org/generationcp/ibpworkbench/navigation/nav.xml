@@ -44,7 +44,12 @@
           label="Browse Studies and Datasets"
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
-          
+
+    <view path="/study_browser_with_id"
+          label="Browse Studies and Datasets"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" />
+
     <view path="/crossing_manager"
           label="Crossing Manager"
           level="1"

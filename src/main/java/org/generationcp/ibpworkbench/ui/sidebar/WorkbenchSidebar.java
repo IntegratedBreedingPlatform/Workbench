@@ -20,6 +20,7 @@ import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
@@ -34,6 +35,7 @@ public class WorkbenchSidebar extends CssLayout {
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
     private Tree sidebarTree;
 
+    public static Map<String,TreeItem> sidebarTreeMap = new HashMap<String, TreeItem>();
 
     private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
@@ -108,12 +110,17 @@ public class WorkbenchSidebar extends CssLayout {
         for (WorkbenchSidebarCategory category : links.keySet()) {
             TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(),category.getSidebarCategorylabel(),null);
 
+            sidebarTreeMap.put(category.getSidebarCategoryName(),parentItem);
+
             Item parent = sidebarTree.addItem(parentItem);
 
             sidebarTree.setChildrenAllowed(parent, true);
             sidebarTree.setItemCaption(parentItem,parentItem.getCaption());
             for (WorkbenchSidebarCategoryLink link : links.get(category)) {
                 TreeItem item = new TreeItem(link.getTool().getToolName(),link.getSidebarLinkTitle(),link);
+
+                sidebarTreeMap.put(link.getSidebarLinkName(),item);
+
                 sidebarTree.addItem(item);
                 sidebarTree.setParent(item, parentItem);
                 sidebarTree.setChildrenAllowed(item,false);
@@ -127,6 +134,7 @@ public class WorkbenchSidebar extends CssLayout {
 
         }
 
+        sidebarTree.setSelectable(true);
         sidebarTree.addListener(treeClickListener);
         sidebarTree.addListener(new Property.ValueChangeListener() {
 
@@ -134,12 +142,23 @@ public class WorkbenchSidebar extends CssLayout {
             public void valueChange(Property.ValueChangeEvent event) {
                 LOG.trace("valueChange");
 
+                // expand category if not yet expanded
+
+                Object parentItem = sidebarTree.getParent(event.getProperty().getValue());
+
+                if (parentItem != null && !sidebarTree.isExpanded(parentItem)) {
+                    sidebarTree.expandItem(sidebarTree.getParent(event.getProperty().getValue()));
+
+                }
+
+                // item is category, expand or collapse this
                 if (event.getProperty() != null || event.getProperty().getValue() != null) {
                     if (sidebarTree.isExpanded(event.getProperty().getValue()))
                         sidebarTree.collapseItem(event.getProperty().getValue());
                     else
                         sidebarTree.expandItem(event.getProperty().getValue());
                 }
+
 
             }
         });
@@ -157,11 +176,14 @@ public class WorkbenchSidebar extends CssLayout {
             sidebarTree.setContainerDataSource(new HierarchicalContainer());
     }
 
-    private class TreeItem {
+    public void selectItem(TreeItem item) {
+        sidebarTree.setValue(item);
+    }
+
+    public class TreeItem {
         private String id;
         private Object value;
         private String caption;
-
 
         public TreeItem(String id,String caption, Object action) {
             this.id = id;

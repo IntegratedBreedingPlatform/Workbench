@@ -10,8 +10,10 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -357,6 +359,14 @@ public class NurseryListPreview extends VerticalLayout {
                 Object value = treeView.getValue();
 
                 new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, ((Integer) value).intValue()).buttonClick(event);
+
+                //update sidebar selection
+                LOG.trace("selecting sidebar");
+                WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+
+                if (null != WorkbenchSidebar.sidebarTreeMap.get("study_browser"))
+                    mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("study_browser"));
+
             }
         });
 
