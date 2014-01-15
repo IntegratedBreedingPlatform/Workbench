@@ -16,7 +16,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -69,6 +71,14 @@ public class DashboardMainClickListener implements ClickListener{
                 // lets update last opened project
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
                 this.updateProjectLastOpenedDate(project);
+
+                //update sidebar selection
+                LOG.trace("selecting sidebar");
+                WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+
+                if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list"))
+                    mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+
 
                 // page change to list manager, with parameter passed
                 (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
