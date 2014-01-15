@@ -24,6 +24,7 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
@@ -35,6 +36,8 @@ import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -45,6 +48,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -148,6 +152,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     
     private ManagerFactory managerFactory;
     
+    private StudyDataManager studyDataManager;
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
@@ -155,12 +161,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Property.ValueChangeListener footerCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project) {
+            ,Project project, StudyDataManager studyDataManager) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
+        this.studyDataManager = studyDataManager;
 
         setWidth("100%");
         
@@ -834,7 +841,64 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 			}
 		});
        
-       btnRun.addListener(new RunBreedingViewAction(this, project));
+       Button.ClickListener runBreedingView = new Button.ClickListener() {
+		
+		@Override
+		public void buttonClick(final ClickEvent event) {
+			
+			List<DataSet> dataSets;
+			try {
+				
+				dataSets = studyDataManager.getDataSetsByType(breedingViewInput.getStudyId(), DataSetType.MEANS_DATA);
+				if (dataSets.size() > 0){
+					
+					DataSet meansDataSet = dataSets.get(0);
+					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSet.getId());
+					
+					Boolean environmentExists = false;
+					for (SeaEnvironmentModel model : getSelectedEnvironments()){
+						
+						TrialEnvironment env = envs.findOnlyOneByLocalName(breedingViewInput.getTrialInstanceName(), model.getTrialno());
+						if (env != null){
+							environmentExists = true;
+							break;
+						}
+						
+					}
+					
+					if (environmentExists){
+						ConfirmDialog.show(event.getComponent().getWindow(), 
+								"", 
+								"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.", 
+								"OK", 
+								"Cancel", new Runnable(){
+
+									@Override
+									public void run() {
+										
+										new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
+									}
+							
+									});
+					}else{
+						new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
+					}
+					
+				}
+				
+			} catch (MiddlewareQueryException e) {
+				new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
+				e.printStackTrace();
+			} catch (Exception e){
+				new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
+				e.printStackTrace();
+			}
+			
+			
+		}
+       };
+       
+       btnRun.addListener(runBreedingView);
        
        btnRun.setClickShortcut(KeyCode.ENTER);
        btnRun.addStyleName("primary");

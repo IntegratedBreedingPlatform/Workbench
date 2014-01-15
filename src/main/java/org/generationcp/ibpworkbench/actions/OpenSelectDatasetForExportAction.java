@@ -160,7 +160,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
             w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project));
+                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager()));
             
             
 
