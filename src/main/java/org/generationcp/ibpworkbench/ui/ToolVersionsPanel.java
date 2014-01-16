@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -66,9 +67,13 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
             Properties props = PropertiesLoaderUtils.loadProperties(resource);
         	Long toolId = 0L;
             List<Tool> tools = workbenchDataManager.getAllTools();
+            List<String> addedToolNames = new ArrayList<String>();
             for (Tool tool : tools) {
 
-                if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))) {
+                if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))
+                    && !addedToolNames.contains(tool.getTitle())) {
+                    addedToolNames.add(tool.getTitle());
+                    
                     toolContainer.addBean(tool);
                     //System.out.println(tool);
                     toolId++;
