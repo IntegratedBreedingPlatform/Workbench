@@ -884,6 +884,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 						new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
 					}
 					
+				}else{
+					new RunBreedingViewAction(SelectDetailsForBreedingViewPanel.this, project).buttonClick(event);
 				}
 				
 			} catch (MiddlewareQueryException e) {
