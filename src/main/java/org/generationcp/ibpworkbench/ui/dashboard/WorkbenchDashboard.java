@@ -13,8 +13,7 @@
 package org.generationcp.ibpworkbench.ui.dashboard;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
@@ -48,6 +47,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.themes.Reindeer;
+
 
 @Configurable
 public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -217,7 +217,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(null);
         selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
 
-        tblProject.addListener(new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
         tblProject.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
@@ -232,11 +231,21 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 if (selectedButton instanceof Button && selectedButton != null) {
                     ((Button)selectedButton).setEnabled(true);
                     WorkbenchDashboard.this.lasSelectedProjectButton = (Button) selectedButton;
+
+                    if (event.isDoubleClick()) {
+
+                        // hack manual trigger button
+                        Map vars = new HashMap();
+                        vars.put("state",true);
+                        ((Button)selectedButton).changeVariables(this, vars);
+
+                    }
                 }
-
-
             }
         });
+
+        tblProject.addListener(new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, openSelectDatasetForBreedingViewAction,currentProject, germplasmListPreview, nurseryListPreview, previewTab, projects));
+
     }
 
     protected void assemble() {
