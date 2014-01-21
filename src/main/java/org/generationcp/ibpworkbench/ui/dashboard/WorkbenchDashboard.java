@@ -115,6 +115,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             }
         };
         tblProject.setImmediate(true); // react at once when something is selected
+        tblProject.setSelectable(true);
         tblProject.setStyleName("gcp-tblproject");
 
         tblProject.addContainerProperty(PROGRAM_NAME_COLUMN_ID, String.class, null);
@@ -195,9 +196,18 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
 
+            if (lastOpenedProject.getProjectId() == project.getProjectId()) {
+                WorkbenchDashboard.this.lasSelectedProjectButton = button;
+
+                button.setEnabled(true);
+            }
+
             // capitalization done on CSS
             tblProject.addItem(new Object[]{project.getProjectName(),project.getCropType().getCropName(), button}, project.getProjectId());
         }
+
+        if (lastOpenedProject != null)
+            tblProject.select(lastOpenedProject.getProjectId());
     }
 
     private Button lasSelectedProjectButton = null;

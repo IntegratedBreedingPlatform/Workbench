@@ -55,9 +55,9 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .gcp-crumb-active .v-button-caption{font-weight:bold}
 
 /* Dashboard program */
-.v-table-row-gcp-highlight,.v-table-cell-content-gcp-highlight{cursor:pointer;color:#615d5e;background-color:#f6f6f6;line-height:26px}
-.v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project:first-child{border-left:3px solid olivedrab;padding-left:3px}
-.v-table-row-gcp-selected-project .v-table-cell-content-gcp-selected-project{cursor:pointer;color:olivedrab;background-color:#bed6b2;line-height:26px}
+/*.v-table-row-gcp-highlight,.v-table-cell-content-gcp-highlight{cursor:pointer;color:#615d5e;background-color:#f6f6f6;line-height:26px}*/
+.v-table-program-tab .v-selected.v-table-row .v-table-cell-content:first-child{border-left:3px solid olivedrab;padding-left:3px}
+.v-table-program-tab .v-selected.v-table-row .v-table-cell-content{cursor:pointer;color:olivedrab;background-color:#bed6b2;line-height:26px}
 .v-table-row-project-table .v-table-cell-content{cursor:pointer;line-height:26px}
 .program-table .v-button .v-button-caption,.gcp-crumbtrail .v-button-link .v-button-caption{text-transform:uppercase}
 .v-embedded-header-img{margin-top:10px;margin-bottom:5px;height:18px}
