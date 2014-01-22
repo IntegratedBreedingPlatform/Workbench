@@ -18,7 +18,9 @@ import java.util.*;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -196,7 +198,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
 
-            if (lastOpenedProject.getProjectId() == project.getProjectId()) {
+            Long lastOpenedProjectId = lastOpenedProject == null ? null : lastOpenedProject.getProjectId();
+            boolean sameProject = lastOpenedProjectId == null ? project.getProjectId() == null : lastOpenedProjectId.equals(project.getProjectId());
+            
+            if (sameProject) {
                 WorkbenchDashboard.this.lasSelectedProjectButton = button;
 
                 button.setEnabled(true);
