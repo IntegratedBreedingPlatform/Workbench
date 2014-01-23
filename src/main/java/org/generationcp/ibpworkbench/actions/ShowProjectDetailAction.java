@@ -94,18 +94,24 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        @SuppressWarnings("unchecked")
         //BeanItem<Project> item = (BeanItem<Project>) event.getItem();
 
-                Project project = null; //item.getBean();
-        Long projectId = (Long)event.getProperty().getValue();
-        for(Project tempProject : projects){
-            if(tempProject.getProjectId().longValue()  == projectId.longValue()){
-                project = tempProject;
-                break;
-            }
-        }
+        this.doAction((Long) event.getProperty().getValue(),tblProject.getWindow());
 
+    }
+
+    public void doAction(Long projectId,Window workbenchDashboardWin) {
+        Project project = null; //item.getBean();
+        if (projectId != null)
+            for(Project tempProject : projects){
+                if(tempProject.getProjectId().longValue()  == projectId.longValue()){
+                    project = tempProject;
+                    break;
+                }
+            }
+        else {
+            project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+        }
 
         if (project == null) {
             return;
@@ -129,18 +135,21 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
             long projectActivitiesCount = workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
             List<ProjectActivity> activityList = workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 
-            workbenchDashboardwindow = (WorkbenchMainView) tblProject.getWindow();
-            workbenchDashboardwindow.addTitle(project.getProjectName());
+
+            workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
+            if (workbenchDashboardwindow != null)
+                workbenchDashboardwindow.addTitle(project.getProjectName());
 
             //if (WorkbenchSidebar.thisInstance != null)
             //    WorkbenchSidebar.thisInstance.populateLinks();
 
 
             // retieve sidebar instance from app
-            if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-                WorkbenchMainView main =  (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+            if (workbenchDashboardWin instanceof WorkbenchMainView) {
+                WorkbenchMainView main =  (WorkbenchMainView) workbenchDashboardWin;
 
-                main.getSidebar().populateLinks();
+                if (main.getSidebar() != null)
+                    main.getSidebar().populateLinks();
             }
 
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));

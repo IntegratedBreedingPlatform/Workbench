@@ -177,6 +177,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         }
 
         app.getSessionData().setLastOpenedProject(lastOpenedProject);
+
+        if (currentProject == null) currentProject = lastOpenedProject;
+
         app.getSessionData().setSelectedProject(currentProject);
 
         // set the Project Table data source
@@ -208,6 +211,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         if (lastOpenedProject != null)
             tblProject.select(lastOpenedProject.getProjectId());
+
     }
 
     private Button lasSelectedProjectButton = null;
@@ -361,4 +365,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
      }
+
+    //hacky hack hack
+    public ShowProjectDetailAction initializeDashboardContents() {
+        // update other pards
+        return new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, new OpenSelectProjectForStudyAndDatasetViewAction(null),lastOpenedProject, germplasmListPreview, nurseryListPreview, previewTab, projects);
+
+    }
 }
