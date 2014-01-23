@@ -70,6 +70,7 @@ public class DashboardMainClickListener implements ClickListener{
 
                 // lets update last opened project
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+
                 this.updateProjectLastOpenedDate(project);
 
                 //update sidebar selection

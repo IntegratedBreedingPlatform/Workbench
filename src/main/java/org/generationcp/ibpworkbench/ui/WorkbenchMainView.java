@@ -139,9 +139,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
 
-
-
-
         createProjectButton = new Button("Create Project");
         createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
         createProjectButton.setWidth("100%");
@@ -161,6 +158,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         hint1.setSizeUndefined();
 
         workbenchDashboard = new WorkbenchDashboard();
+
 
         verticalSplitPanel = new VerticalSplitPanel();
         contentAreaSplitPanel = new HorizontalSplitPanel();
@@ -316,6 +314,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         catch (MiddlewareQueryException e) {
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
+
+
+        if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
+            workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),this);
+
     }
 
     private Component layoutWorkbenchHeader() {
@@ -478,9 +481,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     @Override
     public void updateLabels() {
-        String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
-        workbenchTitle.setValue(title);
-        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+        //String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
+        //workbenchTitle.setValue(title);
+        //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
         messageSource.setCaption(homeButton, Message.HOME);
         messageSource.setCaption(signOutButton, Message.SIGNOUT);
