@@ -31,6 +31,7 @@ import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -246,7 +247,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
             @Override
             public void buttonClick(ClickEvent event) {
-                WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
+                //WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
+                thisWindow.addWindow(new HelpWindow());
             }
         });
 
