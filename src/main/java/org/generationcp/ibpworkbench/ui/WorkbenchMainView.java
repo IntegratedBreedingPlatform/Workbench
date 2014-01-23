@@ -315,7 +315,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
 
-        workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),this);
+
+        if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
+            workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),this);
 
     }
 

@@ -85,7 +85,8 @@ public class HomeAction implements ClickListener, ActionListener{
             w.showContent(workbenchDashboard);
 
             // reinitialize dashboard with default values
-            workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+            if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
+                workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
 
         } catch (Exception e) {
             LOG.error("Exception", e);
