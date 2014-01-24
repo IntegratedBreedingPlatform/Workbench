@@ -305,6 +305,7 @@
 									<copy todir="src/test/resources" overwrite="true">
 										<fileset dir="pipeline/config/${envConfig}" id="fromDir">
 											<include name="testDatabaseConfig.properties" />
+                                            <include name="test.properties"/>
 										</fileset>
 									</copy>
 								</tasks>

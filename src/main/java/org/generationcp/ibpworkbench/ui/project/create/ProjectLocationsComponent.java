@@ -80,6 +80,8 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 	private TwoColumnSelect selectLocation;
 	private ManagerFactory managerFactory;
 	private CropType cropType;
+    
+    private final static Logger LOG = LoggerFactory.getLogger(ProjectLocationsComponent.class);
 	
     public ProjectLocationsComponent(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
@@ -337,7 +339,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
         public CheckButtonClickListener(
 				ProjectLocationsComponent projectLocationsComponent) {
 			// TODO Auto-generated constructor stub
-        	System.out.println("projectLocationsComponent "+projectLocationsComponent);
+        	LOG.debug("projectLocationsComponent "+projectLocationsComponent);
 		}
 
 	
@@ -345,7 +347,7 @@ public class ProjectLocationsComponent extends VerticalLayout implements Initial
 		@Override
 		public void containerPropertySetChange(PropertySetChangeEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println("Event "+event);
+			LOG.debug("Event "+event);
 			
 		}
     }

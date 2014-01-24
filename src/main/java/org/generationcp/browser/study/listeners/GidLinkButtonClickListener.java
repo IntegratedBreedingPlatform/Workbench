@@ -29,14 +29,21 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import java.util.Properties;
+
 @Configurable
 public class GidLinkButtonClickListener implements Button.ClickListener {
 
     private static final long serialVersionUID = -6751894969990825730L;
     private final static Logger LOG = LoggerFactory.getLogger(GidLinkButtonClickListener.class);
+
+    public static final String GERMPLASM_URL_PROPERTY = "germplasm.browser.default.url";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private Properties workbenchProperties;
     
     private String gid;
 
@@ -65,7 +72,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
         
         ExternalResource germplasmBrowserLink = null;
         if (tool == null) {
-            germplasmBrowserLink = new ExternalResource("http://localhost:18080/GermplasmStudyBrowser/main/germplasm-" + gid);
+            germplasmBrowserLink = new ExternalResource(workbenchProperties.getProperty(GERMPLASM_URL_PROPERTY) + "-" + gid);
         } else {
             germplasmBrowserLink = new ExternalResource(tool.getPath().replace("germplasm/", "germplasm-") + gid);
         }

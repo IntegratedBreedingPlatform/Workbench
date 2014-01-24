@@ -6,6 +6,7 @@ import java.util.List;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatus;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
+import org.junit.Test;
 
 public class TomcatUtilTest {
 
@@ -29,5 +30,11 @@ public class TomcatUtilTest {
         else {
             tomcatUtil.startWebApp(contextPath);
         }
+    }
+
+    @Test
+    public void test() {
+        // THIS IS A BLANK METHOD USED TO PROVIDE A TEST METHOD FOR THIS CLASS
+        // TODO : IMPLEMENT AN ACTUAL TEST!
     }
 }

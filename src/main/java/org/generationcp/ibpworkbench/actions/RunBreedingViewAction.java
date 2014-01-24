@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -68,6 +69,11 @@ public class RunBreedingViewAction implements ClickListener {
     private SelectDetailsForBreedingViewPanel source;
     
     private Project project;
+
+    public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
+
+    @Autowired
+    private Properties workbenchProperties;
     
     @Autowired
     private ToolUtil toolUtil;
@@ -248,7 +254,7 @@ public class RunBreedingViewAction implements ClickListener {
              // when launching BreedingView, update the web service tool first
              Tool webServiceTool = new Tool();
              webServiceTool.setToolName("ibpwebservice");
-             webServiceTool.setPath("http://localhost:18080/IBPWebService/");
+             webServiceTool.setPath(workbenchProperties.getProperty(WEB_SERVICE_URL_PROPERTY));
              webServiceTool.setToolType(ToolType.WEB);
              updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
              

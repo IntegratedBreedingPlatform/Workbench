@@ -8,6 +8,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.customfield.CustomField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -34,6 +36,8 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	private FilesystemContainer fsContainer;
 	private TreeTable treetable;
 	private Window parentWin;
+    
+    private final static Logger LOG = LoggerFactory.getLogger(ServerFilePicker.class);
 	
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -137,7 +141,7 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 			@Override
 			public void valueChange(
 					com.vaadin.data.Property.ValueChangeEvent event) {
-				System.out.println(event.getProperty().getValue().toString());
+				LOG.debug(event.getProperty().getValue().toString());
 				
 				String filePath = event.getProperty().getValue().toString();
 				

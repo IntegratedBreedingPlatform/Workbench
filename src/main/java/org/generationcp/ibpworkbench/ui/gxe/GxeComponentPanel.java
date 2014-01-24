@@ -104,6 +104,8 @@ public class GxeComponentPanel extends VerticalLayout implements
 	private Project project;
 	
 	private Select selectDatabase = new Select();
+    
+    private final static Logger LOG = LoggerFactory.getLogger(GxeComponentPanel.class);
 
 	public GxeComponentPanel(Project project) {
 		LOG.debug("Project is " + project.getProjectName());
@@ -365,14 +367,14 @@ public class GxeComponentPanel extends VerticalLayout implements
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			
-			System.out.println(event);
-			System.out.println(event.getProperty().getValue());
-			
+			LOG.debug(event.toString());
+			LOG.debug(event.getProperty().getValue().toString());
+
 			Property p = event.getProperty();
 			if (p.getValue() == null) return;
 			Container container = studiesTree.getContainerDataSource();
 			Property p2 = container.getContainerProperty(new Integer(p.toString()), "id");
-			
+
 				for ( Iterator<Component> tabs = getStudiesTabsheet().getComponentIterator(); tabs.hasNext();){
 					Component tab = tabs.next();
 					Study tabStudyData = (Study)((VerticalLayout) tab).getData();
@@ -382,15 +384,15 @@ public class GxeComponentPanel extends VerticalLayout implements
 							return;
 						}
 					}
-					
+
 				}
-			
-			
+
+
 			try {
 				Study study = studyDataManager.getStudy(Integer.parseInt(p2.toString()));
-				
+
 				if (study==null) return;
-				System.out.println("selected from folder tree:" + study.toString());
+				LOG.debug("selected from folder tree:" + study.toString());
 			
 				if (study.getName() != null && studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).size() > 0){
 					

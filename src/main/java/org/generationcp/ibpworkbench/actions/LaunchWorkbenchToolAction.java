@@ -13,12 +13,10 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -65,6 +63,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     private static final long serialVersionUID = 1L;
     
     private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
+
+    public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
     
     public static enum ToolEnum {
          GERMPLASM_BROWSER("germplasm_browser")
@@ -154,6 +154,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     
     @Autowired
     private TomcatUtil tomcatUtil;
+
+    @Autowired
+    private Properties workbenchProperties;
     
     public LaunchWorkbenchToolAction() {
     }
@@ -288,7 +291,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     // when launching BreedingView, update the web service tool first
                     Tool webServiceTool = new Tool();
                     webServiceTool.setToolName("ibpwebservice");
-                    webServiceTool.setPath("http://localhost:18080/IBPWebService/");
+                    webServiceTool.setPath(workbenchProperties.getProperty(WEB_SERVICE_URL_PROPERTY));
                     webServiceTool.setToolType(ToolType.WEB);
                     
                     updateToolConfiguration(window, webServiceTool);
@@ -536,5 +539,13 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         }
         
         return currentProject;
+    }
+
+    public Properties getWorkbenchProperties() {
+        return workbenchProperties;
+    }
+
+    public void setWorkbenchProperties(Properties workbenchProperties) {
+        this.workbenchProperties = workbenchProperties;
     }
 }

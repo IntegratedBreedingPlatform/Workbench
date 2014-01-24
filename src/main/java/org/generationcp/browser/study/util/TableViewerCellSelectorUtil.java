@@ -17,6 +17,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableViewerCellSelectorUtil {
 
@@ -39,6 +41,9 @@ public class TableViewerCellSelectorUtil {
 	private ArrayList<CellCoordinateColorAssignment> cellCoordinateColorAssigments;
 	
 	private Object source;
+
+    private final static Logger LOG = LoggerFactory.getLogger(TableViewerCellSelectorUtil.class);
+
 	/**
 	* Utility used to allow a user to select cell/s
 	* by clicking, clicking + alt, clicking + shift
@@ -404,7 +409,7 @@ public class TableViewerCellSelectorUtil {
 	public XSSFColor getColor(String itemId, String propertyId){
 		for(int i=0;i<cellCoordinateColorAssigments.size();i++){
 			if(cellCoordinateColorAssigments.get(i).getCellCoordinate().getX().equals(propertyId) && cellCoordinateColorAssigments.get(i).getCellCoordinate().getY().equals(itemId.toString())){
-				System.out.println("R:"+cellCoordinateColorAssigments.get(i).getRedValue()+" G:"+cellCoordinateColorAssigments.get(i).getGreenValue()+" B:"+cellCoordinateColorAssigments.get(i).getBlueValue());
+				LOG.debug("R:"+cellCoordinateColorAssigments.get(i).getRedValue()+" G:"+cellCoordinateColorAssigments.get(i).getGreenValue()+" B:"+cellCoordinateColorAssigments.get(i).getBlueValue());
 				return new XSSFColor(new java.awt.Color(cellCoordinateColorAssigments.get(i).getRedValue(), cellCoordinateColorAssigments.get(i).getGreenValue(), cellCoordinateColorAssigments.get(i).getBlueValue()));
 			}
 		}
