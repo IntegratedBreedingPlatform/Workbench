@@ -69,8 +69,6 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     private Button previousButton;
 //    private Button nextButton;
     
-    private final static Logger LOG = LoggerFactory.getLogger(ProgramMembersView.class);
-
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     

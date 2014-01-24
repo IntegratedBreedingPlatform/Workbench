@@ -60,7 +60,6 @@ import com.vaadin.ui.VerticalLayout;
 @Configurable
 public class ProjectLocationsComponent extends VerticalLayout implements InitializingBean{
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationsComponent.class);
     private static final long serialVersionUID = 1L;
 
     private CreateProjectPanel createProjectPanel;

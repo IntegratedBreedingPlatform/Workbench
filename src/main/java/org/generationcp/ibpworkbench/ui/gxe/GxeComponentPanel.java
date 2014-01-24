@@ -68,8 +68,6 @@ import com.vaadin.ui.Window;
 public class GxeComponentPanel extends VerticalLayout implements
 		InitializingBean {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(GxeComponentPanel.class);
 	private static final long serialVersionUID = 1L;
 
 	// private TwinColSelect select;
