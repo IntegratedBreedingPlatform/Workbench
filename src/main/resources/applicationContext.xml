@@ -23,8 +23,11 @@
     <context:load-time-weaver />
 
     <!-- The application class. -->
-    <bean id="application" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
-        scope="prototype" />
+    <bean id="workbenchMain" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
+        scope="session" />
+
+    <bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
+          scope="session" />
 
     <!-- Reuseable UI components can be declared here, but don't do it just 
         so you can have auto-wiring. Add @Configurable annotation to your class if 
