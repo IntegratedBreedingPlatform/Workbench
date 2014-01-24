@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -82,6 +83,10 @@ public class HomeAction implements ClickListener, ActionListener{
             w.addTitle("");
             w.getSidebar().clearLinks();
             w.showContent(workbenchDashboard);
+
+            // reinitialize dashboard with default values
+            if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
+                workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
 
         } catch (Exception e) {
             LOG.error("Exception", e);
