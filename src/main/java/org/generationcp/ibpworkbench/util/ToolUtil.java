@@ -545,8 +545,9 @@ public class ToolUtil {
         
         // if we are instructed to include workbench configuration, add it
         if (includeWorkbenchConfig) {
+            String url = "jdbc:mysql://" + jdbcHost + ":" + String.valueOf(jdbcPort) + "/" + workbenchDbName;
             newPropertyValues.put("workbench.driver", "com.mysql.jdbc.Driver");
-            newPropertyValues.put("workbench.url", "jdbc:mysql://localhost:13306/workbench");
+            newPropertyValues.put("workbench.url", url);
             newPropertyValues.put("workbench.host", jdbcHost);
             newPropertyValues.put("workbench.port", String.valueOf(jdbcPort));
             newPropertyValues.put("workbench.dbname", workbenchDbName);

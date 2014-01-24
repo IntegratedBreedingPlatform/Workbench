@@ -19,6 +19,8 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -52,6 +54,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     private Table tblFactors;
     
     private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel;
+
+    private final static Logger LOG = LoggerFactory.getLogger(ShowDatasetVariablesDetailAction.class);
 
     public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
         this.tblFactors = tblFactors;
@@ -126,7 +130,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             		vm.setActive(true);
             	}
             	
-            	System.out.println(variate.toString());
+            	LOG.debug(variate.toString());
             	variateList.add(vm);
             	
             }

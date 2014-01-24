@@ -21,7 +21,7 @@ public class CookieUtils {
     		LOG.debug("Setting up cookie [" + cookie.getName() + "] = [" + cookie.getValue() + "]" );
         	
     		cookie.setMaxAge(3600 * 1000 * 24 * 365 * 10);
-        	cookie.setPath(IBPWorkbenchApplication.get().getURL().getPath());
+        	cookie.setPath("/ibpworkbench/");
         	
         	IBPWorkbenchApplication.get().getResponse().addCookie(cookie);
     	}

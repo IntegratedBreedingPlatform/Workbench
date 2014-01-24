@@ -49,6 +49,8 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -116,6 +118,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     
     private ThemeResource folderResource;
     private ThemeResource leafResource;
+    
+    private final static Logger LOG = LoggerFactory.getLogger(SelectDatasetsForMetaAnalysisPanel.class);
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -430,8 +434,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
              cells[1] = (s != null) ? s.getTitle() : "" ;
              cells[2] = r.getDescription();
              
-             if (r instanceof FolderReference) System.out.println("r is FolderReference");
-             if (r instanceof StudyReference) System.out.println("r is StudyReference");
+             if (r instanceof FolderReference) LOG.debug("r is FolderReference");
+             if (r instanceof StudyReference) LOG.debug("r is StudyReference");
 
 				
         	 tr.addItem(cells, r);
@@ -473,7 +477,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
              cells[1] = "";
              cells[2] = r.getDescription();
              
-             if (r instanceof DatasetReference) System.out.println("r is DatasetReference");
+             if (r instanceof DatasetReference) LOG.debug("r is DatasetReference");
 				
         	 tr.addItem(cells, r);
         	 tr.setParent(r, parentFolderReference);
