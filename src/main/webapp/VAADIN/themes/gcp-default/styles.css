@@ -143,4 +143,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-window-gcp-help-window .v-panel-deco { border: none; background: none; }
 .v-window-gcp-help-window .v-link-gcp-pdf-link, .v-window-gcp-help-window .v-link-gcp-html-link { display: inline-block;}
 .v-window-gcp-help-window .v-link-gcp-pdf-link span, .v-window-gcp-help-window .v-link-gcp-html-link span { text-decoration: none; display: block;}
+.v-window-gcp-help-window .v-window-closebox{top:12px;right:10px;width:20px;height:20px;background:transparent;background-image:none;color:#fafafa;font-family:'Glyphicons Halflings';font-style:normal;font-size:14px;font-weight:normal;line-height:21px;padding:2px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding-left:8px;padding-top:5px;padding-bottom:5px}
+.v-window-gcp-help-window .v-window-closebox:hover{background:transparent;background-image:none;color:#f0f0f0}
+.v-window-gcp-help-window .v-window-closebox:active{background:transparent;background-image:none;color:#f0f0f0}
+.v-window-gcp-help-window .v-window-closebox:before{content:"\e014"}
 
