@@ -130,3 +130,21 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .gcp-highlight{background:#dfffcf !important}
 .panel-border{display:block;border-color:#357ebd;border-radius:0}
 .label-bold{font-weight: bold}
+
+
+/* Help Window */
+.v-window-gcp-help-window .v-window-wrap2 { background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent; }
+.v-window-gcp-help-window .v-window-outerheader, .v-window-gcp-help-window .v-window-contents { background: none; }
+.v-window-gcp-help-window .v-panel-content { border: none; }
+.v-window-gcp-help-window .v-panel-nocaption { border: none; }
+.v-window-gcp-help-window .v-customlayout { background: none; border: none; }
+.v-window-gcp-help-window .v-window-header { text-transform: uppercase; font-size: 20px; font-weight: 100; color: white; margin: 15px 10px 0px 100px; }
+.v-window-gcp-help-window .v-label-gcp-version { position: relative; left: 518px; color: white; }
+.v-window-gcp-help-window .v-panel-deco { border: none; background: none; }
+.v-window-gcp-help-window .v-link-gcp-pdf-link, .v-window-gcp-help-window .v-link-gcp-html-link { display: inline-block;}
+.v-window-gcp-help-window .v-link-gcp-pdf-link span, .v-window-gcp-help-window .v-link-gcp-html-link span { text-decoration: none; display: block;}
+.v-window-gcp-help-window .v-window-closebox{top:12px;right:10px;width:20px;height:20px;background:transparent;background-image:none;color:#fafafa;font-family:'Glyphicons Halflings';font-style:normal;font-size:14px;font-weight:normal;line-height:21px;padding:2px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding-left:8px;padding-top:5px;padding-bottom:5px}
+.v-window-gcp-help-window .v-window-closebox:hover{background:transparent;background-image:none;color:#f0f0f0}
+.v-window-gcp-help-window .v-window-closebox:active{background:transparent;background-image:none;color:#f0f0f0}
+.v-window-gcp-help-window .v-window-closebox:before{content:"\e014"}
+
