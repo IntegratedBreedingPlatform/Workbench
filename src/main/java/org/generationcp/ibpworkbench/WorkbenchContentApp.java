@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by cyrus on 1/24/14.
  */
-public class WorkbenchContentApp extends SpringContextApplication {
+public class WorkbenchContentApp extends SpringContextApplication implements IWorkbenchSession {
 
     private final static Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
 
@@ -26,6 +26,8 @@ public class WorkbenchContentApp extends SpringContextApplication {
 
     private UpdateComponentLabelsAction messageSourceListener;
 
+    @Autowired
+    private IWorkbenchSession workbenchMain;
 
     @Override
     public void close() {
@@ -48,5 +50,14 @@ public class WorkbenchContentApp extends SpringContextApplication {
         this.setMainWindow(new ContentWindow());
 
 
+    }
+
+    @Override
+    public SessionData getSessionData() {
+        return workbenchMain.getSessionData();
+    }
+
+    public static WorkbenchContentApp get() {
+        return get(WorkbenchContentApp.class);
     }
 }

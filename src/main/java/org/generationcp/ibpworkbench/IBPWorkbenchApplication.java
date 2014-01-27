@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-public class IBPWorkbenchApplication extends SpringContextApplication {
+public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
     private static final long serialVersionUID = 1L;
     private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
@@ -57,6 +57,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
         LOG.error("Encountered error", event.getThrowable());
     }
 
+    @Override
     public SessionData getSessionData() {
         return sessionData;
     }
