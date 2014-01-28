@@ -179,7 +179,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     	    			htmlFilename, getApplication());
     	    	htmlResource.getStream().setParameter(
     	    			"Content-Disposition", "attachment;filename=\"" + htmlFilename + "\"");
-    	    	htmlResource.setMIMEType("text/html");
+    	    	htmlResource.setMIMEType("application/x-chm");
     	    	htmlResource.setCacheTime(0);
     	    	setResource(htmlResource);
         	}
