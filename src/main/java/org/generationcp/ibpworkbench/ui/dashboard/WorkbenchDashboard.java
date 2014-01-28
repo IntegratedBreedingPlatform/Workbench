@@ -126,7 +126,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         tblProject.setColumnHeader(PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
         tblProject.setColumnHeader(CROP_NAME_COLUMN_ID, "CROP");
-        tblProject.setColumnHeader(BUTTON_LIST_MANAGER_COLUMN_ID, "OPEN");
+        tblProject.setColumnHeader(BUTTON_LIST_MANAGER_COLUMN_ID, "LAUNCH");
 
         tblProject.setColumnCollapsingAllowed(false);
         tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, null));
