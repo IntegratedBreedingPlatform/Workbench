@@ -18,6 +18,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -45,6 +46,8 @@ import org.generationcp.ibpworkbench.ui.projectmethods.ProjectMethodsView;
 public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListener, ActionListener {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectMethodsAction.class);
+
+    private User user;
     private Project project;
 
     @Autowired
@@ -53,15 +56,20 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
     @Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-    public OpenProjectMethodsAction() {
-        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+    @Autowired
+    private SessionProvider sessionProvider;
 
-        if (this.project == null)
-            this.project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+    public OpenProjectMethodsAction() {
     }
 
     public OpenProjectMethodsAction(Project project) {
         this.project = project;
+
+    }
+
+    public OpenProjectMethodsAction(Project project,User user) {
+        this.project = project;
+        this.user = user;
     }
 
     @Override
@@ -77,30 +85,37 @@ public class OpenProjectMethodsAction implements WorkflowConstants,  ClickListen
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
-        
+
+        if (project == null) {
+            project = sessionProvider.getSessionData().getLastOpenedProject() != null ? sessionProvider.getSessionData().getLastOpenedProject() : sessionProvider.getSessionData().getSelectedProject();
+        }
+
+        if (user == null)
+            user = sessionProvider.getSessionData().getUserData();
+
+
         try {
         	//ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
             ProjectMethodsView methodsView = new ProjectMethodsView(project);
 
-
             w.showContent(methodsView);
             
-            try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
+                if (user != null) {
+                    try {
+                        // only log activity if there's a user
+                        Project currentProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+                        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_METHODS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_METHODS_LINK)), user, new Date());
+                        workbenchDataManager.addProjectActivity(projAct);
+                    } catch (MiddlewareQueryException e1) {
+                        MessageNotifier.showError(window, "Database Error",
+                                "<br />" + "Please see error logs");
+                        return;
+                    }
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_METHODS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_METHODS_LINK)), user, new Date());
+                }
 
-                workbenchDataManager.addProjectActivity(projAct);
-
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, "Database Error",
-                                          "<br />" + "Please see error logs");
-                return;
-            }
-            
-            NavManager.navigateApp(window, "/ProgramMethods", isLinkAccessed);
+            if (user != null)
+                NavManager.navigateApp(window, "/ProgramMethods", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

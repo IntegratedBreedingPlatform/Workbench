@@ -18,6 +18,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.actions.CreateContactAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -66,6 +67,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    @Autowired
+    private SessionProvider sessionProvider;
+
     private Label actionsTitle;
     private Button createProjectButton;
 
@@ -102,6 +106,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     @Override
     public void afterPropertiesSet() throws Exception {
+        //this.sessionProvider.setSessionData(IBPWorkbenchApplication.get().getSessionData());
+
         assemble();
     }
 

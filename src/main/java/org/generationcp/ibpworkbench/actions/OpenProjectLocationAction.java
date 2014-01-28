@@ -18,6 +18,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.ui.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -48,8 +50,8 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectLocationAction.class);
-    private final User user;
 
+    private User user;
     private Project project;
 
     @Autowired
@@ -58,13 +60,13 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public OpenProjectLocationAction() {
-        this(null != IBPWorkbenchApplication.get().getSessionData().getSelectedProject() ? IBPWorkbenchApplication.get().getSessionData().getSelectedProject() : IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject(),
-                IBPWorkbenchApplication.get().getSessionData().getUserData());
-    }
+    @Autowired
+    private SessionProvider sessionProvider;
+
+    public OpenProjectLocationAction() {}
 
     public OpenProjectLocationAction(Project project) {
-        this(project,IBPWorkbenchApplication.get().getSessionData().getUserData());
+        this(project,null);
     }
 
     public OpenProjectLocationAction(Project project, User user) {
@@ -85,7 +87,7 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
-        
+
         try {
 
             if (user != null) {

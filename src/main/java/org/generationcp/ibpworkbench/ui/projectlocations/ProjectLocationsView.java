@@ -13,6 +13,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -63,6 +64,11 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionProvider sessionProvider;
+
+
 	private Label resultCountLbl;
 	
 	public ProjectLocationsView(Project project) {
@@ -251,7 +257,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-                (new OpenProjectLocationAction()).buttonClick(event);
+                (new OpenProjectLocationAction(sessionProvider.getSessionData().getLastOpenedProject(),sessionProvider.getSessionData().getUserData())).buttonClick(event);
 			}
 		});
 	}

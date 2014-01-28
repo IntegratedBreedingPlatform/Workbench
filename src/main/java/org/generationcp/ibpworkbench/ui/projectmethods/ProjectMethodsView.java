@@ -9,6 +9,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -69,6 +70,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionProvider sessionProvider;
 
     public ProjectMethodsView(Project project) {
         presenter = new ProjectMethodsPresenter(this,project);
@@ -363,7 +366,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
 			@Override
             public void buttonClick(Button.ClickEvent event) {
-                (new OpenProjectMethodsAction()).buttonClick(event);
+                (new OpenProjectMethodsAction(sessionProvider.getSessionData().getLastOpenedProject(),sessionProvider.getSessionData().getUserData())).buttonClick(event);
             }
         });
 

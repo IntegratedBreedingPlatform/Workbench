@@ -6,6 +6,7 @@ import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
+import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -27,6 +28,10 @@ import java.util.Map;
 public class ContentWindow extends Window implements IContentWindow, InitializingBean, URIHandler, ParameterHandler {
     private final static Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
     private Map<String, String[]> queryMap;
+
+    @Autowired
+    public SessionProvider sessionProvider;
+    private String errorMessage;
 
     @Override
     public void showContent(Component content) {
@@ -65,25 +70,52 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
     @Override
     public DownloadStream handleURI(URL url, String s) {
-
+        errorMessage = null;
         LOG.debug("path: " + s);
+
+        //setup correct session data
+        sessionProvider.setSessionData(WorkbenchContentApp.get().getSessionData());
+
         // perform navigation here
+        try {
 
-        if (s != null && s.equals("ProjectLocations")) {
-            try {
-                Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("projectId")[0]));
+            if (s != null) {
+                if (s.equals("ProjectLocations")) {
+                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("projectId")[0])));
+                    sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
 
-                if (project == null) throw new Exception("Project does not exists");
+                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("Project does not exists");
 
-                    new OpenProjectLocationAction(project,null).doAction(this,"/" + s,false);   // execute
-            } catch (Exception e) {
-                e.printStackTrace();
+                    new OpenProjectLocationAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);   // execute
 
-                MessageNotifier.showError(this,"Oops Something went wrong :(",e.getMessage());
+                    return null;
+                }
+
+                else if (s.equals("ProjectMethods") ) {
+                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("projectId")[0])));
+                    sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
+
+                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("Project does not exists");
+
+                    new OpenProjectMethodsAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);
+
+                    return null;
+                }
+
             }
 
-        } else {
-            this.showContent(new Label("Wrong URI"));
+            //MessageNotifier.showError(this,"Oops Something went wrong :(","Wrong URI");
+            //this.errorMessage = "Wrong URI";
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+
+            // error happened
+            //this.errorMessage = e.getMessage();
+
+            //MessageNotifier.showError(this,"Oops Something went wrong :(",e.getMessage());
         }
 
 
@@ -97,5 +129,9 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
     public void afterPropertiesSet() throws Exception {
         this.addURIHandler(this);
         this.addParameterHandler(this);
+    }
+
+    public void initializeProjectSession() throws Exception {
+
     }
 }

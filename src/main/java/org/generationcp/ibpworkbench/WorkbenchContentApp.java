@@ -27,7 +27,8 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
     private UpdateComponentLabelsAction messageSourceListener;
 
     @Autowired
-    private IWorkbenchSession workbenchMain;
+    private SessionProvider sessionProvider;
+    private SessionData sessionData = new SessionData();
 
     @Override
     public void close() {
@@ -44,17 +45,17 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
     protected void initSpringApplication(ConfigurableWebApplicationContext configurableWebApplicationContext) {
         setTheme("gcp-default");
 
+        this.sessionProvider.setSessionData(sessionData);
+
         messageSourceListener = new UpdateComponentLabelsAction(this);
         messageSource.addListener(messageSourceListener);
 
         this.setMainWindow(new ContentWindow());
-
-
     }
 
     @Override
     public SessionData getSessionData() {
-        return workbenchMain.getSessionData();
+        return sessionData;
     }
 
     public static WorkbenchContentApp get() {

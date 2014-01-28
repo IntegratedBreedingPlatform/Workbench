@@ -7,6 +7,7 @@ import java.util.List;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -34,6 +35,9 @@ public class ProjectLocationsController implements InitializingBean {
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionProvider sessionProvider;
 
     private GermplasmDataManager gdm;
 	private Project project;
@@ -87,22 +91,17 @@ public class ProjectLocationsController implements InitializingBean {
 		return results;
 	}
 
-    @Autowired
-    private IBPWorkbenchApplication workbenchMain;
-
     // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
 	@Override
 	public void afterPropertiesSet() throws Exception {
         this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
 
-        /*  TODO: TEMPORARILY DISABLED, RE-ENABLE THIS WHEN GDM IS PROPERLY INITIALIZED WHEN CHANGING PROJECTS
-
-    	//Get all Local locations
+        //Get all Local locations
     	List<Location> allLocalLocations = gdm.getAllLocalLocations(0,Integer.MAX_VALUE);
     	
     	// Initialize IBPWorkbench.app session
         for (Location loc : allLocalLocations) {
-        	if (loc.getLocid()<0 && !workbenchMain.getSessionData().getUniqueLocations().contains(loc.getLname())) {
+        	if (loc.getLocid()<0 && !sessionProvider.getSessionData().getUniqueLocations().contains(loc.getLname())) {
         		LocationModel locModel = new LocationModel();
             	locModel.setCntryid(loc.getCntryid());
             	locModel.setLocationAbbreviation(loc.getLabbr());
@@ -110,15 +109,14 @@ public class ProjectLocationsController implements InitializingBean {
             	locModel.setLocationName(loc.getLname());
             	locModel.setLtype(loc.getLtype());
 
-                workbenchMain.getSessionData().getUniqueLocations().add(locModel.getLocationName());
+                sessionProvider.getSessionData().getUniqueLocations().add(locModel.getLocationName());
 
                 //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
                 //nextKey = nextKey * -1;
                 //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
-                workbenchMain.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
+                sessionProvider.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
             }
         }
-        */
 	}
 	
 	public List<LocationTableViewModel> getSavedProjectLocations() throws MiddlewareQueryException  {

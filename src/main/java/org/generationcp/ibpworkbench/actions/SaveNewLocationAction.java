@@ -17,6 +17,7 @@ import java.util.List;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.projectlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
@@ -58,9 +59,12 @@ public class SaveNewLocationAction implements ClickListener{
 
     private final ProjectLocationsView projectLocationsView;
     private final ProjectLocationsController projectLocationsController;
-    
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionProvider sessionProvider;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -115,15 +119,13 @@ public class SaveNewLocationAction implements ClickListener{
          BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
          LocationModel location = locationBean.getBean();
 
-         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
          // TODO: (BUG) there's a problem getting the nextKey of the locations when there's already existing locations
          // in the local database. Always starts at -1 for new sessions
          //if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
 
-             app.getSessionData().getUniqueLocations().add(location.getLocationName());
+             sessionProvider.getSessionData().getUniqueLocations().add(location.getLocationName());
 
-             Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+             Integer nextKey = sessionProvider.getSessionData().getProjectLocationData().keySet().size() + 1;
 
              nextKey = nextKey * -1;
 
@@ -135,10 +137,10 @@ public class SaveNewLocationAction implements ClickListener{
              
              newLocation.setLtype(location.getLtype() != null ? location.getLtype() : 0);
              newLocation.setCntryid(location.getCntryid() != null ? location.getCntryid() : 0);
-             
-             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
 
-             LOG.info(app.getSessionData().getProjectLocationData().toString());
+             sessionProvider.getSessionData().getProjectLocationData().put(nextKey, newLocation);
+
+             LOG.info(sessionProvider.getSessionData().getProjectLocationData().toString());
 
              newLocationForm.commit();
 
@@ -158,8 +160,8 @@ public class SaveNewLocationAction implements ClickListener{
  				e1.printStackTrace();
  			}
 
-             User user = app.getSessionData().getUserData();
-             Project currentProject = app.getSessionData().getLastOpenedProject();
+             User user = sessionProvider.getSessionData().getUserData();
+             Project currentProject = sessionProvider.getSessionData().getLastOpenedProject();
              ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
              try {
  				workbenchDataManager.addProjectActivity(projAct);

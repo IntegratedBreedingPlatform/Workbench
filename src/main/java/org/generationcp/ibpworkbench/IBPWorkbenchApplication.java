@@ -36,8 +36,12 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     private SimpleResourceBundleMessageSource messageSource;
 
     private UpdateComponentLabelsAction messageSourceListener;
-    
-    private SessionData sessionData = new SessionData();
+
+    @Autowired
+    private  SessionProvider sessionProvider;
+    private  SessionData sessionData = new SessionData();
+
+
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -92,6 +96,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
         //IBPWorkbenchApplication.response = response;	// get a reference of the response
         //IBPWorkbenchApplication.request = request;
+
+        sessionProvider.setSessionData(this.getSessionData());
+
     }
 
     @Override
@@ -112,7 +119,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
     protected void initialize() {
         setTheme("gcp-default");
-           
+
+        sessionProvider.setSessionData(sessionData);
+
     }
 
     protected void initializeComponents() {

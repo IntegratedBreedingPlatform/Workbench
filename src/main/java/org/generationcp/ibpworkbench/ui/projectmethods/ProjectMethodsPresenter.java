@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.projectmethods;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionProvider;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -36,6 +37,10 @@ public class ProjectMethodsPresenter implements InitializingBean {
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionProvider sessionProvider;
+
     private GermplasmDataManager gdm;
 
 
@@ -135,7 +140,7 @@ public class ProjectMethodsPresenter implements InitializingBean {
                 }
 
                 if (!m_exists) {
-                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), IBPWorkbenchApplication.get().getSessionData().getUserData(),new Date()));
+                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionProvider.getSessionData().getUserData(),new Date()));
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 

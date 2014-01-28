@@ -230,7 +230,7 @@ public class WorkbenchSidebar extends CssLayout {
         } else if (toolName.equals("project_method")) {
             return new OpenProjectMethodsAction(project);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(project);
+            return new OpenProjectLocationAction(project,IBPWorkbenchApplication.get().getSessionData().getUserData());
         } else if (toolName.equals("delete_project")) {
             return new DeleteProjectAction();
         } else {
