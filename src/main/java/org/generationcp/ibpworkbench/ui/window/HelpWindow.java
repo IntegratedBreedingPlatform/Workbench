@@ -118,7 +118,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
         panel.setContent(helpLayout);
         
         final String pdfFilename = "BMS_User_Manual.pdf";
-        final String htmlFilename = "BMS_User_Manual_Web_Version[help files].html";
+        final String htmlFilename = "BMS_User_Manual_Web_Version.chm";
         final String pdfFilepath = docsDirectory+pdfFilename;
         final String htmlFilepath = docsDirectory+htmlFilename;
         
