@@ -84,7 +84,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
         try {
 
             if (s != null) {
-                if (s.equals("ProjectLocations")) {
+                if (s.equals("ProgramLocations")) {
 
                     if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
 
@@ -98,7 +98,10 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
                     return null;
                 }
 
-                else if (s.equals("ProjectMethods") ) {
+                else if (s.equals("ProgramMethods") ) {
+
+                    if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
+
                     sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0])));
                     sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
 
