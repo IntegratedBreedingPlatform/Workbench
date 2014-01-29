@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -48,6 +50,9 @@ public class DashboardMainClickListener implements ClickListener{
 
     @Autowired
     private WorkbenchDataManager manager;
+    
+    @Autowired
+    private ToolUtil toolUtil;
 
     //@Autowired
     //private SimpleResourceBundleMessageSource messageSource;
@@ -70,6 +75,13 @@ public class DashboardMainClickListener implements ClickListener{
 
                 // lets update last opened project
                 Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                
+                try {
+					toolUtil.createWorkspaceDirectoriesForProject(project);
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
                 this.updateProjectLastOpenedDate(project);
 
