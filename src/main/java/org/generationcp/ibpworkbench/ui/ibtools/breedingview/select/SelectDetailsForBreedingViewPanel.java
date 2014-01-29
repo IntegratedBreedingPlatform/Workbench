@@ -510,6 +510,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     		}
     	}
     	
+    	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
+    	
         
         if (this.selEnvFactor.getItemIds().size() < 1) {
         	this.selEnvFactor.setEnabled(false);
@@ -622,6 +624,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     			 this.selGenotypes.setValue(factor.getLocalName());
     		}
     	}
+    	
+    	selGenotypes.select(selGenotypes.getItemIds().iterator().next());
     	
     }
     
@@ -804,10 +808,18 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     private void reset(){
+    	/**
     	selEnvFactor.select((Object) null);
     	selDesignType.select((Object) null);
     	selReplicates.select((Object) null);
     	selGenotypes.select((Object) null);
+    	footerCheckBox.setValue(false);
+    	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
+    	**/
+    	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
+    	selDesignType.select((Object) null);
+    	selReplicates.select(selReplicates.getItemIds().iterator().next());
+    	selGenotypes.select(selGenotypes.getItemIds().iterator().next());
     	footerCheckBox.setValue(false);
     	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
     

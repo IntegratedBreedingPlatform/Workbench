@@ -379,10 +379,11 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				//SelectEnvironmentForGxePanel.this.getParent().removeWindow(SelectEnvironmentForGxePanel.this);
-				selectSpecifyEnvironment.setValue((Object) null);
-				selectSpecifyGenotypes.setValue((Object) null);
+				selectSpecifyEnvironment.select((Object) null);
+				selectSpecifyEnvironment.select(selectSpecifyEnvironment.getItemIds().iterator().next());
+				selectSpecifyGenotypes.select(selectSpecifyGenotypes.getItemIds().iterator().next());
 				selectSpecifyEnvironmentGroups.select((Object) "Analyze All");
+				
 			}
 		});
         btnNext.addListener(new Button.ClickListener() {
