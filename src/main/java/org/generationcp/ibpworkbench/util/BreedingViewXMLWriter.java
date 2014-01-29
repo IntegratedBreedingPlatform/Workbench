@@ -176,7 +176,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         	
         	new File(new File(breedingViewInput.getDestXMLFilePath()).getParent()).mkdirs();
             FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
-            System.out.println(breedingViewInput.getDestXMLFilePath());
+            LOG.debug(breedingViewInput.getDestXMLFilePath());
             marshaller.marshal(project, fileWriter);
             fileWriter.flush();
             fileWriter.close();
@@ -297,7 +297,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         	
         	new File(new File(filePath).getParent()).mkdirs();
             FileWriter fileWriter = new FileWriter(filePath);
-            System.out.println(filePath);
+            LOG.debug(filePath);
             marshaller.marshal(bvSession, fileWriter);
             fileWriter.flush();
             fileWriter.close();

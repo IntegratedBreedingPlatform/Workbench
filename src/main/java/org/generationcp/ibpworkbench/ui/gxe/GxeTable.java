@@ -39,8 +39,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GxeTable extends Table {
+
+    private final static Logger LOG = LoggerFactory.getLogger(GxeTable.class);
 	
 	static <K,V extends Comparable<? super V>>
 	SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
@@ -346,7 +350,7 @@ public class GxeTable extends Table {
 								}
 								
 							}catch(Exception e){
-								System.out.println("Error in getting the means data.");
+								LOG.debug("Error in getting the means data.");
 								e.printStackTrace();
 							}
 							

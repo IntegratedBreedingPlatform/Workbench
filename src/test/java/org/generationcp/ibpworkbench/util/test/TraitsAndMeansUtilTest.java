@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ public class TraitsAndMeansUtilTest {
     @Test
     public void csvToList() throws Exception {
         List<TraitsAndMeans> traitsAndMeansList = traitsAndMeansCSVUtil.csvToList("Burkina_trait_means.csv");
-        System.out.println(traitsAndMeansList);
+        assertNotNull(traitsAndMeansList);
+        assertTrue(traitsAndMeansList.size() > 0);
     }
 }

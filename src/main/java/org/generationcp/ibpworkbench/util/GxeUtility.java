@@ -55,7 +55,7 @@ public class GxeUtility {
 				obj[c2] = createObjectCaption(arr.get(c2), "Data" + c, c2);
 			}
 		
-			System.out.println(table.addItem(obj, new Integer(c)));
+			LOG.debug(table.addItem(obj, new Integer(c)).toString());
 					
 		}
 		

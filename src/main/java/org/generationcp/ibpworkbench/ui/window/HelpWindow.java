@@ -4,16 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.ThemeResource;
@@ -41,6 +45,9 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    @Autowired
+    private WorkbenchDataManager workbenchDataManager;
 
 	public HelpWindow() {    	
     }
@@ -81,15 +88,37 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
         panel.setSizeUndefined();
         rootLayout.addComponent(panel);
         
-        CustomLayout helpLayout = new CustomLayout("help");
-        panel.setContent(helpLayout);
+        
         
         //TODO 1. replace with the correct value from installation directory
         //TODO 2. detect if docs are installed - 
         //if not, show a message prompting them to download and install it first
-        final String docsDirectory = "C:/IBWorkflowSystem/Documents/";
+        WorkbenchSetting setting = null;
+        try {
+            setting = workbenchDataManager.getWorkbenchSetting();
+        }
+        catch (MiddlewareQueryException e) {
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+        }
+        
+        String installationDirectory = "";
+        if (setting != null) {
+            installationDirectory = setting.getInstallationDirectory();
+        }
+        
+        final String docsDirectory = installationDirectory + File.separator + "Documents" + File.separator;
+        File docsDiretoryFile = new File(docsDirectory);
+
+        CustomLayout helpLayout = new CustomLayout("help");
+        if (!docsDiretoryFile.exists() || !docsDiretoryFile.isDirectory()) {
+            // if the document directory does not exist,
+            // it means that the BMS Documentation has not been installed
+            helpLayout = new CustomLayout("help_not_installed");
+        }
+        panel.setContent(helpLayout);
+        
         final String pdfFilename = "BMS_User_Manual.pdf";
-        final String htmlFilename = "BMS_User_Manual_Web_Version[help files].html";
+        final String htmlFilename = "BMS_User_Manual_Web_Version.chm";
         final String pdfFilepath = docsDirectory+pdfFilename;
         final String htmlFilepath = docsDirectory+htmlFilename;
         
@@ -150,7 +179,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     	    			htmlFilename, getApplication());
     	    	htmlResource.getStream().setParameter(
     	    			"Content-Disposition", "attachment;filename=\"" + htmlFilename + "\"");
-    	    	htmlResource.setMIMEType("text/html");
+    	    	htmlResource.setMIMEType("application/x-chm");
     	    	htmlResource.setCacheTime(0);
     	    	setResource(htmlResource);
         	}

@@ -14,6 +14,8 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -47,6 +49,8 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     private Table tblVariates;
     
     private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
+
+    private final static Logger LOG = LoggerFactory.getLogger(ShowStudyDatasetDetailAction.class);
     
 
     public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
@@ -64,10 +68,10 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
         Study study = null;
 		try {
 			if (event.getItemId() instanceof StudyReference){
-				System.out.println("Item is Study");
+				LOG.debug("Item is Study");
 				study = studyDataManager.getStudy(((StudyReference)event.getItemId()).getId());
 			}else if (event.getItemId() instanceof FolderReference){
-				System.out.println("Item is FolderReference");
+				LOG.debug("Item is FolderReference");
 				study = studyDataManager.getStudy(((FolderReference)event.getItemId()).getId());
 			}
 			

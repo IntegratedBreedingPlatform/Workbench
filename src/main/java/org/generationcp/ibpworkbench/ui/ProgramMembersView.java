@@ -68,7 +68,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     
     private Button previousButton;
 //    private Button nextButton;
-
+    
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -77,7 +77,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     private  List<Role> inheritedRoles;
 
     public ProgramMembersView(Project project) {
-    	//System.out.println("Project is " + project.getProjectName());
+    	//LOG.debug("Project is " + project.getProjectName());
         this.project = project;
     }
 
@@ -117,7 +117,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
         List<Role> roles = null;
         List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
         
-        System.out.println("createUserRolesCheckBoxList");
+        LOG.debug("createUserRolesCheckBoxList");
         
         try {
             roles = workbenchDataManager.getAllRolesOrderedByLabel();
@@ -144,7 +144,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
     public List<Role> getRolesForProjectMembers(){
         List<Role> roles = new ArrayList<Role>();
-        System.out.println("getRolesForProjectMembers");
+        LOG.debug("getRolesForProjectMembers");
         for (CheckBox cb : createUserRolesCheckBoxList()) {
             
         	
@@ -153,8 +153,8 @@ public class ProgramMembersView extends Panel implements InitializingBean{
                 try {
                     Role role = workbenchDataManager.getRoleById((Integer) cb.getData());
                     //if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
-                    System.out.println("getRolesForProjectMembers id : "+cb.getData());
-                    System.out.println("getRolesForProjectMembers name : "+role.getName());
+                    LOG.debug("getRolesForProjectMembers id : "+cb.getData());
+                    LOG.debug("getRolesForProjectMembers name : "+role.getName());
                         roles.add(role);
                     //}
                 } catch (MiddlewareQueryException e) {
@@ -168,7 +168,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     
     public List<ProjectUserRole> getProjectUserRoles() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        System.out.println("getProjectUserRoles");
+        LOG.debug("getProjectUserRoles");
         for (CheckBox cb : createUserRolesCheckBoxList()) {
             if ((Boolean) cb.getValue() == true) {
                 Role role;
@@ -339,7 +339,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
             try{   
             	Property property = event.getProperty();
                 Set<User> selectedItems = (Set<User>) property.getValue();
-                System.out.println("valueChange");
+                LOG.debug("valueChange");
                 Container container = tblMembers.getContainerDataSource();
 
                 // remove non-selected items
@@ -348,7 +348,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
                 for (Object itemId : itemIds) {
                     if (!selectedItems.contains(itemId)) {
                         deleteTargets.add(itemId);
-                        System.out.println("deleteTargets " +itemId );
+                        LOG.debug("deleteTargets " +itemId );
                     }
                 }
                 for (Object itemId : deleteTargets) {
@@ -456,7 +456,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
-        System.out.println("getProjectMembers");
+        LOG.debug("getProjectMembers");
         
         Container container = tblMembers.getContainerDataSource();
         Collection<User> userList = (Collection<User>) container.getItemIds();
@@ -483,7 +483,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
-                    System.out.println("getProjectMembers name "+ user.getName());
+                    LOG.debug("getProjectMembers name "+ user.getName());
                     projectUserRoles.add(projectUserRole);
                 }
             }
@@ -570,8 +570,8 @@ public class ProgramMembersView extends Panel implements InitializingBean{
                   
                     for (Role inheritedRole : myinheritedRoles) {
                         String propertyId = "role_" + inheritedRole.getRoleId();
-                        System.out.println("inheritedRole " + inheritedRole);
-                        System.out.println("currentItem " + currentItem);
+                        LOG.debug("inheritedRole " + inheritedRole);
+                        LOG.debug("currentItem " + currentItem);
                         Property property = currentItem.getItemProperty(propertyId);
                         if (property.getType() == Boolean.class)
                             property.setValue(Boolean.TRUE);
