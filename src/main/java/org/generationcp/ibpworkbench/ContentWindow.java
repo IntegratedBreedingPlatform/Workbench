@@ -131,11 +131,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
         }
 
-        CustomLayout errorPage = new CustomLayout("error");
-        errorPage.setSizeFull();
-        errorPage.setStyleName("error-page");
 
-        errorPage.addComponent(new Label(errorMessage,Label.CONTENT_XHTML),"error_message");
+
+        CustomLayout errorPage = new CustomLayout("error");
+        errorPage.setSizeUndefined();
+        errorPage.setWidth("100%");
+        errorPage.setStyleName("error-page");
+        errorPage.addComponent(new Label(errorMessage, Label.CONTENT_XHTML), "error_message");
 
         this.showContent(errorPage);
 

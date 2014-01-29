@@ -131,10 +131,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .panel-border{display:block;border-color:#357ebd;border-radius:0}
 .label-bold{font-weight: bold}
 
-/* ERROR page for workbench content uri's */
-.error-page{background:#EE8033 url("/ibpworkbench/VAADIN/themes/gcp-default/images/ibp_logo2.jpg") no-repeat}
-
-
 /* Help Window */
 .v-window-gcp-help-window .v-window-wrap2 { background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent; }
 .v-window-gcp-help-window .v-window-outerheader, .v-window-gcp-help-window .v-window-contents { background: none; }
