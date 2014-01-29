@@ -31,7 +31,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
     @Autowired
     public SessionProvider sessionProvider;
-    private String errorMessage;
 
 
     public ContentWindow() {
@@ -75,7 +74,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
     @Override
     public DownloadStream handleURI(URL url, String s) {
-        errorMessage = null;
+        String errorMessage = "";
         LOG.debug("path: " + s);
 
         //setup correct session data
@@ -86,10 +85,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
             if (s != null) {
                 if (s.equals("ProjectLocations")) {
-                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("projectId")[0])));
+
+                    if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
+
+                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0])));
                     sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
 
-                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("Project does not exists");
+                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
 
                     new OpenProjectLocationAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);   // execute
 
@@ -97,10 +99,10 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
                 }
 
                 else if (s.equals("ProjectMethods") ) {
-                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("projectId")[0])));
+                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0])));
                     sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
 
-                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("Project does not exists");
+                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
 
                     new OpenProjectMethodsAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);
 
@@ -110,18 +112,33 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
             }
 
             //MessageNotifier.showError(this,"Oops Something went wrong :(","Wrong URI");
-            //this.errorMessage = "Wrong URI";
+            errorMessage = "Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProjectLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProjectMethods?programId=[ID]</strong>";
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (NumberFormatException e) {
+            errorMessage = "The value you entered for programId is not a number.";
+        }
+
+        catch (Exception e) {
 
 
             // error happened
-            //this.errorMessage = e.getMessage();
+            errorMessage = e.getMessage();
 
             //MessageNotifier.showError(this,"Oops Something went wrong :(",e.getMessage());
+            e.printStackTrace();
+
         }
+
+        CustomLayout errorPage = new CustomLayout("error");
+        errorPage.setSizeFull();
+        errorPage.setStyleName("error-page");
+
+        errorPage.addComponent(new Label(errorMessage,Label.CONTENT_XHTML),"error_message");
+
+        this.showContent(errorPage);
+
 
 
         return null;
