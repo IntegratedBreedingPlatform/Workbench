@@ -26,7 +26,7 @@ public class LoginWindow extends Window{
     private LoginForm loginForm;
 
     public LoginWindow() {
-    	super("Integrated Breeding Platform | Workbench");
+    	super("Breeding Management System");
         loginForm = new LoginForm();
         loginForm.setSizeUndefined();
 
