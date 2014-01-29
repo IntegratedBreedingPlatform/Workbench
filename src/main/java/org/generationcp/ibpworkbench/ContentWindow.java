@@ -33,6 +33,11 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
     public SessionProvider sessionProvider;
     private String errorMessage;
 
+
+    public ContentWindow() {
+        super("Breeding Management System");
+    }
+
     @Override
     public void showContent(Component content) {
 

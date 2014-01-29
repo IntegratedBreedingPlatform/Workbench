@@ -35,7 +35,7 @@ public class UserPasswordValidator extends AbstractValidator{
     private Field passwordConfirmation;
     
     public UserPasswordValidator(Field password, Field passwordConfirmation) {
-        super("The passwords enetered do not match. Please try again.");
+        super("The passwords entered do not match. Please try again.");
         this.password = password;
         this.passwordConfirmation = passwordConfirmation;
     }
