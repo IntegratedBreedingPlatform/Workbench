@@ -60,15 +60,6 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
         assemble();
     }
     
-    protected void initializeData() {
-    	
-    	//check if the user already installed the doc installer
-    }
-    
-    protected void initializeComponents() throws Exception {
-		
-    }
-
     @SuppressWarnings("serial")
 	protected void initializeLayout() {
         this.setWidth(WINDOW_WIDTH);
@@ -85,13 +76,10 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
 		rootLayout.addComponent(version);
         
         Panel panel = new Panel();
-        panel.setSizeUndefined();
+        panel.setWidth("600px");//fix for IE
         rootLayout.addComponent(panel);
         
-        
-        
-        //TODO 1. replace with the correct value from installation directory
-        //TODO 2. detect if docs are installed - 
+        //detect if docs are installed 
         //if not, show a message prompting them to download and install it first
         WorkbenchSetting setting = null;
         try {
@@ -194,9 +182,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     }
 
     protected void assemble() throws Exception {
-        initializeComponents();
         initializeLayout();
-        initializeData();
     }
 
     @Override
