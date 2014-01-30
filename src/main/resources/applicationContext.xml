@@ -25,10 +25,10 @@
 
     <!-- The application class. -->
     <bean id="workbenchMain" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
-        scope="session" />
+        scope="prototype" />
 
     <bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
-          scope="session" />
+          scope="prototype" />
 
     <bean id="sessionProvider" class="org.generationcp.ibpworkbench.SessionProvider" scope="session" />
 
