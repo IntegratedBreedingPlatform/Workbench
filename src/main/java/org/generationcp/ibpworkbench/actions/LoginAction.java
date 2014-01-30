@@ -102,6 +102,7 @@ public class LoginAction implements ClickListener{
         try {
             // set the session's current user
             user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+            user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
             application.getSessionData().setUserData(user);
 
             // set the cookie if remember me option is enabled

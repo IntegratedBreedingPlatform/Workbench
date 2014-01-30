@@ -280,7 +280,7 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         messageSource.setValue(lblTitle, Message.LOGIN_TITLE);
         messageSource.setValue(lblSubTitle, Message.LOGIN_SUBTITLE);
         
-        messageSource.setCaption(btnLogin, Message.LOGIN);
+        messageSource.setCaption(btnLogin, Message.SIGNIN);
         messageSource.setValue(lblUsername, Message.USERNAME);
         messageSource.setValue(lblPassword, Message.PASSWORD);
         messageSource.setValue(lblMessage, Message.ERROR_LOGIN_INVALID);

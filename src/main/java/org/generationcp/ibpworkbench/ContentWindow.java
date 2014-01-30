@@ -115,7 +115,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
             }
 
             //MessageNotifier.showError(this,"Oops Something went wrong :(","Wrong URI");
-            errorMessage = "Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProjectLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProjectMethods?programId=[ID]</strong>";
+            errorMessage = "Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProgramLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProgramMethods?programId=[ID]</strong>";
 
 
 

@@ -494,7 +494,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
         messageSource.setCaption(homeButton, Message.HOME);
-        messageSource.setCaption(signOutButton, Message.SIGNOUT);
+        //messageSource.setCaption(signOutButton, Message.SIGNOUT);
+        signOutButton.setCaption(sessionProvider.getSessionData().getUserData().getPerson().getFirstName() + " - " + messageSource.getMessage(Message.SIGNOUT));
+
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
         //messageSource.setCaption(userToolsButton,Message.TOOL_USERS);
