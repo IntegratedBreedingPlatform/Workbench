@@ -34,7 +34,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
 
     public ContentWindow() {
-        super("Breeding Management System");
+        super("Breeding Management System | Workbench");
     }
 
     @Override

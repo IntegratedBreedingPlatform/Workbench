@@ -98,7 +98,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     //private Button userToolsButton;
 
     public WorkbenchMainView() {
-        super("Breeding Management System");
+        super("Breeding Management System | Workbench");
     }
 
     /**
