@@ -147,3 +147,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-window-gcp-help-window .v-window-closebox:active{background:transparent;background-image:none;color:#f0f0f0}
 .v-window-gcp-help-window .v-window-closebox:before{content:"\e014"}
 
+.helpPopup { margin-top: 50px; }
+.helpPopup #help_download_section { text-align: center; }
+.helpPopup #help_pdf_link, .helpPopup #help_html_link  { display: inline-block; margin: 20px; text-align: center; }
+.helpPopup #help_mail { text-decoration: none; } 
+
