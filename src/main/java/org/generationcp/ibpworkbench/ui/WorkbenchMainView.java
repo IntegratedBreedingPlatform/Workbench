@@ -70,10 +70,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     @Autowired
     private SessionProvider sessionProvider;
 
-    private Label actionsTitle;
-    private Button createProjectButton;
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
-    private Button createContactButton;
+    private Label actionsTitle;
+    //private Button createProjectButton;
+
+    //private Button createContactButton;
     private Label recentTitle;
     private Label usersGuideTitle;
     private Label hint1;
@@ -89,9 +92,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     private UriFragmentUtility uriFragUtil;
     private NavUriFragmentChangedListener uriChangeListener;
-
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
 
     private WorkbenchSidebar sidebar;
 
@@ -116,6 +116,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
+
+        addTitle("");
 
         homeButton = new Button();
         homeButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -146,11 +148,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         actionsTitle.setStyleName("gcp-section-title");
         actionsTitle.setSizeUndefined();
 
-        createProjectButton = new Button("Create Project");
-        createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
-        createProjectButton.setWidth("100%");
-        createContactButton = new Button("Create Contact");
-        createContactButton.setWidth("120px");
+        //createProjectButton = new Button("Create Project");
+        //createProjectButton.setStyleName(Reindeer.BUTTON_LINK + " gcp-createproject-btn");
+        //createProjectButton.setWidth("100%");
+        //createContactButton = new Button("Create Contact");
+        //createContactButton.setWidth("120px");
 
         recentTitle = new Label();
         recentTitle.setStyleName("gcp-section-title");
@@ -272,7 +274,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         toolVersionsButton.addListener(new OpenToolVersionsAction());
 
 
-
+        /*
         createProjectButton.addListener(new OpenNewProjectAction());
         createProjectButton.addListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -284,6 +286,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         });
 
         createContactButton.addListener(new CreateContactAction());
+        */
     }
 
     protected void assemble() throws Exception {
@@ -504,8 +507,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         messageSource.setCaption(actionsTitle, Message.ACTIONS);
 
-        messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
-        messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
+        //messageSource.setCaption(createProjectButton, Message.PROJECT_CREATE);
+        //messageSource.setCaption(createContactButton, Message.CONTACT_CREATE);
 
         messageSource.setValue(recentTitle, Message.RECENT);
         messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
