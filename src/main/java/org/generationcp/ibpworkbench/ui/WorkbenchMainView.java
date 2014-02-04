@@ -12,6 +12,7 @@
 
 package org.generationcp.ibpworkbench.ui;
 
+import com.vaadin.terminal.Paintable;
 import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -273,6 +274,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         toolVersionsButton.addListener(new OpenToolVersionsAction());
 
+        this.addListener(new CloseListener() {
+            @Override
+            public void windowClose(CloseEvent closeEvent) {
+                IBPWorkbenchApplication.get().toggleJira();
+            }
+        });
 
         /*
         createProjectButton.addListener(new OpenNewProjectAction());
@@ -287,6 +294,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         createContactButton.addListener(new CreateContactAction());
         */
+
     }
 
     protected void assemble() throws Exception {
@@ -474,6 +482,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     }
 
 
+
+
     public void addTitle(String myTitle)
     {
 
@@ -519,4 +529,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public WorkbenchSidebar getSidebar() {
         return sidebar;
     }
+
+
 }

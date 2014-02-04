@@ -46,6 +46,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private boolean jiraSetupDone = false;
 
     @Override
     public void close() {
@@ -150,11 +151,15 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         setMainWindow(loginWindow);
     }
 
+    public void toggleJira() {
+        jiraSetupDone = !jiraSetupDone;
+    }
+
     @Override
     public Window getWindow(String name) {
         Window w = super.getWindow(name);
 
-        if (w instanceof WorkbenchMainView) {
+        if (w instanceof WorkbenchMainView && !jiraSetupDone) {
             // do script injection
             // attempt to add feedback js
             final String jiraRatingsJSSrc ="http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=3bcb8466";
@@ -163,6 +168,8 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
             String script = "try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
             w.executeJavaScript(String.format(script, jiraRatingsJSSrc) + String.format(script, jiraSupportJSSrc));
+
+            this.jiraSetupDone = true;
         }
 
 
