@@ -1,6 +1,8 @@
 @import url(../vaadin-retro/styles-min.css);
 .v-app-IBPWorkbenchApplication{background:#f9f9f9}
 .v-app-IBPWorkbenchApplication *{outline:none !important}
+.v-app-IBPWorkbenchApplication > .v-scrollable { overflow:hidden; }
+
 
 /* Generic components */
 span.v-checkbox-hidecheckbox input{display:none !important}
