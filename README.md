@@ -8,9 +8,9 @@ This contains the UI thats provides access to various tools and applications (bo
 
 ### Submodules under IBPWorkbench contains the following:
 
-#### Dashboard and Program Summary
+##### 1. Dashboard and Program Summary
 
-#### Administration/Program Management tools
+##### 2. Administration/Program Management tools
 
 - Program Locations
 - Program Methods
@@ -18,13 +18,13 @@ This contains the UI thats provides access to various tools and applications (bo
 - Local Databases backup and restore
 - Custom Tools (Alpha)
 
-#### Statistical Analysis Tools frontend for Breeding View
+##### 3. Statistical Analysis Tools frontend for Breeding View
 
 - Single Site Analysis
 - Multi Site Analysis
 - Meta Analysis for multi-variate
 
-#### Workflows
+##### 4. Workflows
 
 - Marker Assisted Recurring Selection (MARS)
 - Conventional Breeding (CB)
@@ -35,7 +35,7 @@ Checkout this project
 -----------------------
 The project is stored in the GIT repository hosted at github.com.  The URL for the repository is: 
 <pre>
-    https://github.com/digitalabs/IBPCommons   
+    [https://github.com/digitalabs/IBPWorkbench][https://github.com/digitalabs/IBPWorkbench]   
 </pre>
 An anonymous account may be used to checkout the project.  
 
