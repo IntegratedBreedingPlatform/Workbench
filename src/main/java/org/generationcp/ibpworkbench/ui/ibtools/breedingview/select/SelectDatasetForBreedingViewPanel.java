@@ -556,6 +556,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         this.studyTreeLayout.removeAllComponents();
         TreeTable tr = createStudyTreeTable(database, variables[0], variables[1]);
         this.studyTreeLayout.addComponent(tr);
+        
+        managerFactory.close();
     }
     
     

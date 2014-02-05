@@ -15,8 +15,6 @@ package org.generationcp.ibpworkbench.ui.gxe;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,35 +25,21 @@ import java.util.TreeSet;
 
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.sea.xml.Environment;
-import org.generationcp.commons.sea.xml.Heritabilities;
-import org.generationcp.commons.sea.xml.Heritability;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
-import org.generationcp.ibpworkbench.model.FactorModel;
-import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.ibpworkbench.ui.StudiesTabCloseListener;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -69,9 +53,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -79,10 +61,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -425,18 +405,6 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		 
 		}
 		
-		/**for (Entry<String, Boolean> trait : getVariatesCheckboxState().entrySet()){
-			if (trait.getValue()){
-				container.addContainerProperty(trait.getKey(), CheckBox.class, null);
-				columnNames.add(trait.getKey().replace("_Means", ""));
-				CheckBox chk = new CheckBox("", true);
-				chk.setImmediate(true);
-				chk.addListener(traitCheckBoxListener);
-				cells.add(chk);
-				
-			}
-		}**/
-		
 		selectTraitsTable.setContainerDataSource(container);
 		selectTraitsTable.addItem(cells.toArray(new Object[0]), 1);
 		selectTraitsTable.setHeight("80px");
@@ -508,7 +476,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					
 					List<Trait> selectedTraits = new ArrayList<Trait>();
 					Iterator<?> itr = selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
-					int counter = 1;
+					
 					while (itr.hasNext()){
 						Object propertyId = itr.next();
 						CheckBox cb = (CheckBox)selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
@@ -524,39 +492,11 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					
 					List<Environment> selectedEnnvironments = gxeTable.getSelectedEnvironments();
 					
-					
-					/**Map<String, Map<String, String>> heritabilityValues = gxeTable.getHeritabilityValues();
-					Heritabilities heritabilities = new Heritabilities();
-					
-					for (Environment env : selectedEnnvironments){
-						for (Trait t : selectedTraits){
-								Heritability h2 = new Heritability();
-								h2.setEnvironmentName(env.getName());
-								h2.setTraitName(t.getName());
-								try{
-									if (heritabilityValues.get(env.getTrialno()).get(t.getName()) != null){
-											h2.setValue(heritabilityValues.get(env.getTrialno()).get(t.getName()));
-											h2.setTraitId(String.valueOf(t.getId()));
-											h2.setEnvironmentId(String.valueOf(env.getId()));
-											heritabilities.add(h2);
-									}
-								}catch(Exception e){}
-								
-						}
-						
-					}
-					gxeInput.setHeritabilities(heritabilities);
-					**/
+
 					
 					File datasetExportFile = null;
 					
-					//if (isXLS)
-					//	datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewXls(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(),gxeEnv,selectedTraits, currentProject);
-					//else
-						datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName , selectedGenotypeFactorName ,gxeEnv,selectedTraits, currentProject);
-					
-					
-					
+					datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName , selectedGenotypeFactorName ,gxeEnv,selectedTraits, currentProject);
 					
 					if (isXLS)
 						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
@@ -569,15 +509,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					gxeInput.setSelectedEnvironments(selectedEnnvironments);
 					gxeInput.setEnvironmentGroup(selectedEnvGroupFactorName);
 					
-					
-					
-					
 				
 					Genotypes genotypes = new Genotypes();
-					
-			
-						//String strGenoType;
-						//strGenoType = studyDataManager.getLocalNameByStandardVariableId(gxeTable.getMeansDataSetId(), 8230);
 					if (selectedGenotypeFactorName != null && selectedGenotypeFactorName != "") {
 							genotypes.setName(selectedGenotypeFactorName);
 						}else{
@@ -614,6 +547,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 								"But it successfully created GxE Excel and XML input file for the breeding_view!");
 					}
 				}
+				
+				managerFactory.close();
 			}
 		});
 		

@@ -786,14 +786,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     private void reset(){
-    	/**
-    	selEnvFactor.select((Object) null);
-    	selDesignType.select((Object) null);
-    	selReplicates.select((Object) null);
-    	selGenotypes.select((Object) null);
-    	footerCheckBox.setValue(false);
-    	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
-    	**/
+    
     	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
     	selDesignType.select((Object) null);
     	selReplicates.select(selReplicates.getItemIds().iterator().next());
@@ -897,6 +890,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     @Override
     public void afterPropertiesSet() {        
         assemble();
+        managerFactory.close();
     }
     
     @Override

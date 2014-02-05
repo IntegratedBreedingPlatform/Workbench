@@ -561,7 +561,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
-		return this.studyDataManager;
+    	return this.studyDataManager;
+		
 	}
 
 	public HashMap<String, Boolean> getVariatesCheckboxState() {
@@ -658,6 +659,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			setHeight("100%");
 			
 			initializeComponents();
+			
+			managerFactory.close();
 			
 		}
 		
@@ -967,6 +970,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				
 				e.printStackTrace();
 			}
+			
+			managerFactory.close();
 		}
 		
 	}

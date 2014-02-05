@@ -2,7 +2,6 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -146,6 +144,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         catch (MiddlewareQueryException e) {
             showDatabaseError(event.getComponent().getWindow());
         }
+        
+        selectDatasetForBreedingViewPanel.getManagerFactory().close();
     }
     
     private void updateFactorsTable(List<FactorModel> factorList){
@@ -167,8 +167,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     
     private void updateVariatesTable(List<VariateModel> variateList){
- 	    //Object[] oldColumns = tblFactors.getVisibleColumns();
-        //String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+ 	   
     	selectDatasetForBreedingViewPanel.getVariatesCheckboxState().clear();
         
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
