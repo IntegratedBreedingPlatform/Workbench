@@ -35,7 +35,7 @@ Checkout this project
 -----------------------
 The project is stored in the GIT repository hosted at github.com.  The URL for the repository is: 
 <pre>
-    [https://github.com/digitalabs/IBPWorkbench][https://github.com/digitalabs/IBPWorkbench]   
+    [https://github.com/digitalabs/IBPWorkbench][workbench_git_link]   
 </pre>
 An anonymous account may be used to checkout the project.  
 
@@ -88,6 +88,7 @@ The following are links to developer guides and eclipse setup guide. (Note the l
 
 [ibpcommons_git_link]: https://github.com/digitalabs/IBPCommons
 [ibpmiddleware_git_link]: https://github.com/digitalabs/IBPMiddleware
+[workbench_git_link]: https://github.com/digitalabs/IBPWorkbench
 [configuration_link]: https://github.com/digitalabs/IBPWorkbench/tree/master/pipeline/config
 [dev_guide_link]: http://confluence.efficio.us.com/x/FYAt
 [dev_eclipse_link]: http://confluence.efficio.us.com/x/1IA2
