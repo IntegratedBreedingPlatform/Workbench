@@ -84,7 +84,7 @@ The following are links to developer guides and eclipse setup guide. (Note the l
 - [Developer Guide][dev_guide_link]
 - [Eclipse Setup][dev_eclipse_link]
 
-##Other relevant Workbench documentation can be found [here][wokbench_conf_link]
+##Other relevant Workbench documentation can be found [here][workbench_conf_link]
 
 [ibpcommons_git_link]: https://github.com/digitalabs/IBPCommons
 [ibpmiddleware_git_link]: https://github.com/digitalabs/IBPMiddleware
