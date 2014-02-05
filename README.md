@@ -7,18 +7,25 @@ IBPWorkbench is the forntend for the Breeding Management System developed by Eff
 This contains the UI thats provides access to various tools and applications (both native Windows and browser based apps).
 
 ### Submodules under IBPWorkbench contains the following:
-1. Dashboard and Program Summary
-2. Administration/Program Management tools
+
+#### Dashboard and Program Summary
+
+#### Administration/Program Management tools
+
 - Program Locations
 - Program Methods
 - Program Creation and Deletion
 - Local Databases backup and restore
 - Custom Tools (Alpha)
-3. Statistical Analysis Tools frontend for Breeding View
+
+#### Statistical Analysis Tools frontend for Breeding View
+
 - Single Site Analysis
 - Multi Site Analysis
 - Meta Analysis for multi-variate
-4. Workflows
+
+#### Workflows
+
 - Marker Assisted Recurring Selection (MARS)
 - Conventional Breeding (CB)
 - Marker Assisted Selection (MAS)
