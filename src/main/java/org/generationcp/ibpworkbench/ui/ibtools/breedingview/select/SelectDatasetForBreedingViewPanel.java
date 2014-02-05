@@ -14,11 +14,8 @@ package org.generationcp.ibpworkbench.ui.ibtools.breedingview.select;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-
-import javax.jws.WebParam.Mode;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -27,14 +24,11 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -45,7 +39,6 @@ import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -60,7 +53,6 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -250,10 +242,13 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         
         
         selectAllListener = new Property.ValueChangeListener(){
+        	
+			private static final long serialVersionUID = 344514045768824046L;
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
+			
 				Boolean val = (Boolean) event.getProperty().getValue();
 				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
 				for (Object itemId : container.getItemIds()){
@@ -263,10 +258,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 					variatesCheckboxState.put(entry.getKey(), val);
 				}
 				
-
 				variates.refreshRowCache();
-				//variatesCheckboxState.put(vm.getName(), val);
-				//vm.setActive(val);
+
 			}
         	
         };
@@ -692,15 +685,13 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
-        
+    	managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
         assemble();
     }
     
     @Override
     public void attach() {
         super.attach();
-        
         updateLabels();
     }
     
@@ -713,13 +704,15 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(lblStudyTreeDetailDescription, Message.BV_STUDY_TREE_DESCRIPTION);
         messageSource.setValue(lblDatasetDetailTitle,  Message.BV_DATASET_DETAIL_TITLE);
         messageSource.setValue(lblDatasetDetailDescription, Message.BV_DATASET_DETAIL_DESCRIPTION);
-        
-        
     }
 
     public StudyDataManager getStudyDataManager() {
-    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+    	if (this.studyDataManager == null) this.studyDataManager = getManagerFactory().getNewStudyDataManager();
 		return this.studyDataManager;
+	}
+
+	public ManagerFactory getManagerFactory() {
+		return managerFactory;
 	}
 
 	public HashMap<String, Boolean> getVariatesCheckboxState() {

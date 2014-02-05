@@ -107,9 +107,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             String defaultFilePath = "";
             String inputDir = "";
 
-            
-            //DatasetExporter datasetExporter = new DatasetExporter(selectDatasetForBreedingViewWindow.getStudyDataManager(), studyId, dataSetId);
-
             Tool breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
             LOG.info(breedingViewTool + "");
 
@@ -128,8 +125,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             String sourceCSVFile = inputDir + defaultFilePath + ".csv";
 
             LOG.info("Source CSV File Path: " + sourceCSVFile);
-
-            //datasetExporter.exportToFieldBookCSVUsingIBDBv2(sourceXLSFilePath, "URRC");
 
             String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 
 
@@ -159,8 +154,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
            
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
-            w.showContent( new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager()));
+
+            w.showContent(new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
+                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory()));
             
             
 

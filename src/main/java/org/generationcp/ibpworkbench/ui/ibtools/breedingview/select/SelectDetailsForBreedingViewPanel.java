@@ -16,25 +16,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -50,7 +42,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,9 +138,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 
     private VerticalLayout mainLayout;
     
-    @Autowired 
-    private ManagerFactoryProvider managerFactoryProvider;
-    
     private ManagerFactory managerFactory;
     
     private StudyDataManager studyDataManager;
@@ -161,13 +149,14 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Property.ValueChangeListener footerCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project, StudyDataManager studyDataManager) {
+            ,Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
         this.project = project;
         this.studyDataManager = studyDataManager;
+        this.managerFactory = managerFactory;
 
         setWidth("100%");
         
@@ -255,7 +244,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 			
 				 TrialEnvironments trialEnvironments;
 					try {
-						trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+						trialEnvironments = studyDataManager.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
 						TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
 						
 						if (trialEnv == null){
@@ -289,6 +278,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 		
 		
 		tblEnvironmentSelection.addGeneratedColumn("select", new ColumnGenerator(){
+
+			private static final long serialVersionUID = 8164025367842219781L;
 
 			@Override
 			public Object generateCell(Table source, Object itemId,
@@ -534,7 +525,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     public void populateChoicesForEnvForAnalysis(){
     	
     	footerCheckBox.setValue(false);
-    	Map<String, Integer> factorLocalNames = new HashMap<String, Integer>();
     	String trialInstanceFactor = "";
 
     	
@@ -551,11 +541,11 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         	
 			try {
 
-				///////////////////////////////////////////////////////////////////////////////
+				
 				BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
 				tblEnvironmentSelection.setContainerDataSource(container);
 				
-				VariableTypeList trialEnvFactors = getManagerFactory().getNewStudyDataManager().getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
+				VariableTypeList trialEnvFactors = studyDataManager.getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
 				
 				for(VariableType f : trialEnvFactors.getVariableTypes()){
 					
@@ -568,7 +558,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				
 				
 				TrialEnvironments trialEnvironments;	
-				trialEnvironments = getManagerFactory().getNewStudyDataManager().getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+				trialEnvironments = studyDataManager.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
 				
 				
 				for (TrialEnvironment env : trialEnvironments.getTrialEnvironments()){
@@ -606,10 +596,10 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				
 				
 			} catch (ConfigException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 
@@ -664,12 +654,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
           	}
          }
         
-    	/**
-        if (this.selRowFactor.getItemIds().size() < 1) {
-        	this.selRowFactor.setEnabled(false);
-        }else{
-        	this.selRowFactor.setEnabled(true);
-        }**/
     }
     
     private void populateChoicesForColumnFactor(){
@@ -681,12 +665,6 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
            	}
           }
         
-    	 /**
-        if (this.selColumnFactor.getItemIds().size() < 1) {
-        	this.selColumnFactor.setEnabled(false);
-        }else{
-        	this.selColumnFactor.setEnabled(true);
-        }**/
     }
     
     private void refineChoicesForBlocksReplicationRowAndColumnFactos(){
@@ -828,33 +806,20 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     protected void initializeActions() {
        btnCancel.addListener(new Button.ClickListener() {
 			
+		private static final long serialVersionUID = 3878612968330447329L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				
 				reset();
-				/**try {
-			       
 				
-	            String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
-	            (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
-				} catch (Exception e) {
-					//LOG.error("Exception", e);
-					
-					new HomeAction().doAction(event.getComponent().getWindow(), "/Home", true);
-					
-		            if(e.getCause() instanceof InternationalizableException) {
-		                InternationalizableException i = (InternationalizableException) e.getCause();
-		                MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-		            }
-		            
-		            
-		            return;
-				}**/
 			}
 		});
        
        Button.ClickListener runBreedingView = new Button.ClickListener() {
 		
+		private static final long serialVersionUID = -6682011023617457906L;
+
 		@Override
 		public void buttonClick(final ClickEvent event) {
 			
@@ -930,9 +895,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
     
     @Override
-    public void afterPropertiesSet() {
-        setManagerFactory(managerFactoryProvider.getManagerFactoryForProject(this.project));
-        
+    public void afterPropertiesSet() {        
         assemble();
     }
     
@@ -975,22 +938,13 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(lblSpecifyGenotypesHeader, Message.BV_SPECIFY_GENOTYPES_HEADER);
     }
 
-
-
-
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
 		this.breedingViewInput = breedingViewInput;
 	}
 
-
-
-
 	public ManagerFactory getManagerFactory() {
 		return managerFactory;
 	}
-
-
-
 
 	public void setManagerFactory(ManagerFactory managerFactory) {
 		this.managerFactory = managerFactory;
