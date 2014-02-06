@@ -226,10 +226,11 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	
     	tblEnvironmentLayout = new VerticalLayout();
     	tblEnvironmentLayout.setSizeUndefined();
-    	tblEnvironmentLayout.setWidth("60%");
+    	tblEnvironmentLayout.setWidth("80%");
     	
     	tblEnvironmentSelection = new Table();
     	tblEnvironmentSelection.setHeight("200px");
+    	tblEnvironmentSelection.setWidth("100%");
     	
     	envCheckBoxListener = new Property.ValueChangeListener(){
 
