@@ -428,7 +428,7 @@ public class NurseryListPreview extends VerticalLayout {
                         try {
                             presenter.renameNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -506,7 +506,7 @@ public class NurseryListPreview extends VerticalLayout {
                             else
                                 newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -579,7 +579,7 @@ public class NurseryListPreview extends VerticalLayout {
                 try {
                     id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
 
@@ -604,7 +604,7 @@ public class NurseryListPreview extends VerticalLayout {
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
                         }
                     }

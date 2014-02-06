@@ -256,8 +256,13 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         return false;
     }
 
-    public void renameNurseryListFolder(String newFolderName, Integer folderId) {
+    public void renameNurseryListFolder(String newFolderName, Integer folderId) throws Error {
         try {
+
+            if (newFolderName == null || newFolderName.isEmpty()) {
+                throw new Error(messageSource.getMessage(Message.INVALID_CANNOT_RENAME_EMPTY_STRING));
+            }
+
             this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());

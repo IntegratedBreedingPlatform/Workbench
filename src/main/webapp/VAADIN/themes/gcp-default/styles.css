@@ -32,9 +32,11 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-root>.v-tree-node-caption.v-tree-node-selected span{padding:0 !important;margin-left:3px !important;background:0}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-selected span{display:block;color:#fff;background-color:#026ec2;border-radius:0;text-shadow:none;padding-left:34px !important;padding-top:5px !important;padding-bottom:5px !important}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout{margin-top:20px}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div div div div.v-horizontallayout div div div div.v-label-undef-w{position:relative;bottom:3px;color:#dde5ec !important}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption:hover{text-decoration:underline}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption{text-transform:uppercase;text-decoration:none;margin-left:5px;margin-right:5px;color:#dde5ec}
+.main-header-right-container div div div div.v-label-undef-w{position:relative;bottom:3px;color:#dde5ec !important}
+.main-header-right-container div.v-button span.v-button-wrap span.v-button-caption:hover{text-decoration:underline}
+.main-header-right-container div.v-button span.v-button-wrap span.v-button-caption, .main-header-right-container .v-label{text-transform:uppercase;text-decoration:none;margin-left:5px;margin-right:5px;color:#dde5ec}
+
+
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel{background-color:#225591}
 .v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked{width:0 !important}
 .v-splitpanel-hsplitter-small{width:0;background:transparent}

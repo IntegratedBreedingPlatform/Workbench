@@ -263,7 +263,7 @@ public class GermplasmListPreview extends VerticalLayout {
                         try {
                             presenter.renameGermplasmListFolder(name.getValue().toString(), (Integer) lastItemId);
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -342,7 +342,7 @@ public class GermplasmListPreview extends VerticalLayout {
                             else
                                 newItem = presenter.addGermplasmListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -441,7 +441,7 @@ public class GermplasmListPreview extends VerticalLayout {
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
                         }
                     }

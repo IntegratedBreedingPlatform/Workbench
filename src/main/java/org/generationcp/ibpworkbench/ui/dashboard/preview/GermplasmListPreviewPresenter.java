@@ -179,6 +179,11 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
     public boolean renameGermplasmListFolder(String newName,Integer id) throws Error {
         try {
+
+            if (newName == null || newName.isEmpty()) {
+                throw new Error(messageSource.getMessage(Message.INVALID_CANNOT_RENAME_EMPTY_STRING));
+            }
+
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
             if (!gpList.isFolder())
