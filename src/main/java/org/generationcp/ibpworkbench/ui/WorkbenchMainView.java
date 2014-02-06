@@ -361,43 +361,55 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         headerLayout.addComponent(uriFragUtil);
 
         // right side button area
-        HorizontalLayout headerRightLayout = new HorizontalLayout();
-        headerRightLayout.setSizeUndefined();
-        headerRightLayout.setMargin(false);
-        headerRightLayout.setSpacing(true);
+        VerticalLayout headerRightContainer = new VerticalLayout();
+        headerRightContainer.setSizeUndefined();
+        headerLayout.setHeight("100%");
+        headerLayout.setMargin(false);
+        headerRightContainer.setSpacing(true);
+        headerRightContainer.addStyleName("main-header-right-container");
 
-        headerRightLayout.addComponent(homeButton);
-        headerRightLayout.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
+        Label loginUserLbl = new Label(messageSource.getMessage(Message.LOGGED_IN) + " " + sessionProvider.getSessionData().getUserData().getPerson().getFirstName() + " " + sessionProvider.getSessionData().getUserData().getPerson().getLastName() );
 
-        headerRightLayout.addComponent(new Label("|"));
+        HorizontalLayout headerRightLinks = new HorizontalLayout();
+        headerRightLinks.setSizeUndefined();
+        headerRightLinks.setMargin(false);
+        headerRightLinks.setSpacing(true);
 
-        headerRightLayout.addComponent(signOutButton);
-        headerRightLayout.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
+        headerRightLinks.addComponent(homeButton);
+        headerRightLinks.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
 
-        headerRightLayout.addComponent(new Label("|"));
+        headerRightLinks.addComponent(new Label("|"));
 
-        //headerRightLayout.addComponent(accountButton);
-        //headerRightLayout.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
+        headerRightLinks.addComponent(signOutButton);
+        headerRightLinks.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
 
-        //headerRightLayout.addComponent(new Label("|"));
+        headerRightLinks.addComponent(new Label("|"));
 
-        //headerRightLayout.addComponent(userToolsButton);
-        //headerRightLayout.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
+        //headerRightLinks.addComponent(accountButton);
+        //headerRightLinks.setComponentAlignment(accountButton, Alignment.TOP_LEFT);
+
+        //headerRightLinks.addComponent(new Label("|"));
+
+        //headerRightLinks.addComponent(userToolsButton);
+        //headerRightLinks.setComponentAlignment(userToolsButton, Alignment.TOP_LEFT);
 
 
-        //headerRightLayout.addComponent(new Label("|"));
+        //headerRightLinks.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(toolVersionsButton);
-        headerRightLayout.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
+        headerRightLinks.addComponent(toolVersionsButton);
+        headerRightLinks.setComponentAlignment(toolVersionsButton, Alignment.TOP_LEFT);
 
-        headerRightLayout.addComponent(new Label("|"));
+        headerRightLinks.addComponent(new Label("|"));
 
-        headerRightLayout.addComponent(helpButton);
-        headerRightLayout.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
+        headerRightLinks.addComponent(helpButton);
+        headerRightLinks.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
 
-        headerLayout.addComponent(headerRightLayout);
-        headerLayout.setComponentAlignment(headerRightLayout, Alignment.MIDDLE_RIGHT);
-        headerLayout.setExpandRatio(headerRightLayout, 0.0f);
+        headerRightContainer.addComponent(headerRightLinks);
+        headerRightContainer.addComponent(loginUserLbl);
+
+        headerLayout.addComponent(headerRightContainer);
+        headerLayout.setComponentAlignment(headerRightContainer, Alignment.MIDDLE_RIGHT);
+        headerLayout.setExpandRatio(headerRightContainer, 0.0f);
 
         return headerLayout;
     }
@@ -508,7 +520,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         messageSource.setCaption(homeButton, Message.HOME);
         //messageSource.setCaption(signOutButton, Message.SIGNOUT);
-        signOutButton.setCaption(sessionProvider.getSessionData().getUserData().getPerson().getFirstName() + " - " + messageSource.getMessage(Message.SIGNOUT));
+        signOutButton.setCaption(messageSource.getMessage(Message.SIGNOUT));
 
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
