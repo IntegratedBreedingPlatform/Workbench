@@ -278,7 +278,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		
 		countryFilter.setNullSelectionAllowed(true);
 		locationTypeFilter.select(String.valueOf(410));
-		locationTypeFilter.setNullSelectionAllowed(true);
+		locationTypeFilter.setWidth("220px");
+        locationTypeFilter.setNullSelectionAllowed(true);
 
 		
 		final Label spacer = new Label();
