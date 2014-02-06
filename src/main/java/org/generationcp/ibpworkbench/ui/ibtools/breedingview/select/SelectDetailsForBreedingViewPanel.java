@@ -226,7 +226,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	
     	tblEnvironmentLayout = new VerticalLayout();
     	tblEnvironmentLayout.setSizeUndefined();
-    	tblEnvironmentLayout.setWidth("80%");
+    	tblEnvironmentLayout.setWidth("60%");
     	
     	tblEnvironmentSelection = new Table();
     	tblEnvironmentSelection.setHeight("200px");
