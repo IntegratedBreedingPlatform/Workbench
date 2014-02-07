@@ -283,9 +283,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
+        /**
         if (!gpList.isFolder()) {
             throw new Error(NOT_FOLDER);
-        }
+        }**/
 
         try {
             if (hasChildren(gpList.getId())) {

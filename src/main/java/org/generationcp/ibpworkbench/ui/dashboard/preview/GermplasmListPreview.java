@@ -547,6 +547,15 @@ public class GermplasmListPreview extends VerticalLayout {
     public void setToolbarAddButtonEnabled(boolean enabled) {
         addFolderBtn.setEnabled(enabled);
     }
+    
+    /**
+     * Set the Delete button's enabled state.
+     *
+     * @param enabled
+     */
+    public void setToolbarDeleteButtonEnabled(boolean enabled) {
+    	deleteFolderBtn.setEnabled(enabled);
+    }
 
     /**
      * Set the Launch button's enabled state.
@@ -621,6 +630,7 @@ public class GermplasmListPreview extends VerticalLayout {
         } else if (!isFolder) {
             setToolbarButtonsEnabled(false);
             setToolbarAddButtonEnabled(true);
+            setToolbarDeleteButtonEnabled(true);
         } else {
             setToolbarButtonsEnabled(true);
         }
