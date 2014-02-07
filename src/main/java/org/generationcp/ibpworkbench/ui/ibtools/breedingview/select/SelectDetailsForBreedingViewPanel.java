@@ -226,7 +226,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     	
     	tblEnvironmentLayout = new VerticalLayout();
     	tblEnvironmentLayout.setSizeUndefined();
-    	tblEnvironmentLayout.setWidth("60%");
+    	tblEnvironmentLayout.setWidth("100%");
     	
     	tblEnvironmentSelection = new Table();
     	tblEnvironmentSelection.setHeight("200px");
@@ -588,13 +588,19 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 				if (trialInstanceFactor.equalsIgnoreCase(envFactorName)){
 					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno" });
 					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",trialInstanceFactor});
+					tblEnvironmentSelection.setColumnWidth("select", 45);
+					tblEnvironmentSelection.setColumnWidth("trialno", -1);
 					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
 				}else{
 					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno", "environmentName"});
 					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",trialInstanceFactor, envFactorName});
+					tblEnvironmentSelection.setColumnWidth("select", 45);
+					tblEnvironmentSelection.setColumnWidth("trialno", 60);
+					tblEnvironmentSelection.setColumnWidth("environmentName", 500);
+					
+					
 					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
 				}
-				
 				
 			} catch (ConfigException e) {
 				
