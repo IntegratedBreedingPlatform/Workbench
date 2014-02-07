@@ -54,7 +54,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
 
-    public static final String VERSION = "2.0.5";
+    public static final String VERSION = "2.0.6";
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
