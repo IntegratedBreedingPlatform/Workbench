@@ -20,8 +20,8 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction" />
     
-    <view path="/ToolVersions"
-          label="Tool Versions"
+    <view path="/ToolsVersion"
+          label="Tools Version"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenToolVersionsAction" />
     
