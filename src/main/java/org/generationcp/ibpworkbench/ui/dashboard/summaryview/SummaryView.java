@@ -16,6 +16,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -43,8 +44,13 @@ import com.vaadin.ui.themes.Reindeer;
 public class SummaryView extends VerticalLayout implements InitializingBean {
 
 	private final static Logger LOG = LoggerFactory.getLogger(SummaryView.class);
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
+
     private Label header;
     private PopupView toolsPopup;
 
@@ -177,7 +183,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 String tableName = SummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-                String programName = IBPWorkbenchApplication.get().getSessionData().getSelectedProject().getProjectName();
+                String programName = sessionData.getSelectedProject().getProjectName();
 
                 ExcelExport export = new ExcelExport((Table) SummaryView.this.getComponent(1),tableName);
                 export.setReportTitle(programName + " - " + tableName);
@@ -451,7 +457,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         }
 
-        if (IBPWorkbenchApplication.get().getSessionData().getSelectedProject() != null)
+        if (sessionData.getSelectedProject() != null)
             exportBtn.setEnabled(true);
 
         table.setPageLength(10);

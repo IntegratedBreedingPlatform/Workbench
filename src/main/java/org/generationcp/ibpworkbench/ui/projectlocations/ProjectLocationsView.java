@@ -8,13 +8,11 @@ import java.util.List;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.*;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionProvider;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
@@ -65,16 +63,18 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    @Autowired
-    private SessionProvider sessionProvider;
-
-
 	private Label resultCountLbl;
 	
 	public ProjectLocationsView(Project project) {
-		this.projectLocationsController = new ProjectLocationsController(project);
-		
+        this.projectLocationsController = new ProjectLocationsController(project);
 	}
+
+    @Override
+    public void attach() {
+        super.attach();
+
+        this.projectLocationsController.onAttachInitialize((IWorkbenchSession) this.getApplication());
+    }
 	
 	protected void initializeComponents() {
 		final VerticalLayout root = new VerticalLayout();
@@ -257,16 +257,16 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-                (new OpenProjectLocationAction(sessionProvider.getSessionData().getLastOpenedProject(),sessionProvider.getSessionData().getUserData())).buttonClick(event);
+
+                IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
+
+                (new OpenProjectLocationAction(appSession.getSessionData().getLastOpenedProject(),appSession.getSessionData().getUserData())).buttonClick(event);
 			}
 		});
 	}
 
 	
 	public Component buildLocationFilterForm() {
-
-		final HorizontalLayout root = new HorizontalLayout();
-		final HorizontalLayout container = new HorizontalLayout();		
 
 		countryFilter = new Select();
         countryFilter.setImmediate(true);
@@ -281,44 +281,59 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		locationTypeFilter.setWidth("220px");
         locationTypeFilter.setNullSelectionAllowed(true);
 
-		
-		final Label spacer = new Label();
-		spacer.setWidth("100%");
-
-        container.setMargin(new Layout.MarginInfo(false,false,true,false));
-		container.setSpacing(true);
-		
-		
 		final Label countryLbl = new Label("Country");
 		final Label ltypeLbl = new Label("Location Type");
 		final Label searchLbl = new Label("Search Locations");
-		
-		countryLbl.setSizeFull();
-		ltypeLbl.setSizeFull();
-		searchLbl.setSizeFull();
-		
+
+		countryLbl.setSizeUndefined();
+		ltypeLbl.setSizeUndefined();
+		searchLbl.setSizeUndefined();
+
 		countryLbl.setStyleName("loc-filterlbl");
 		ltypeLbl.setStyleName("loc-filterlbl");
 		searchLbl.setStyleName("loc-filterlbl");
 
+        final CssLayout container = new CssLayout();
+        container.addStyleName("loc-filter-bar");
+        container.setSizeUndefined();
+        container.setWidth("100%");
 
-        container.addComponent(searchLbl);
-        container.addComponent(searchField);
-		container.addComponent(countryLbl);
-		container.addComponent(countryFilter);
-		container.addComponent(ltypeLbl);
-		container.addComponent(locationTypeFilter);
+
+        final HorizontalLayout field1 = new HorizontalLayout();
+        field1.addStyleName("field");
+        field1.setSpacing(true);
+        field1.setSizeUndefined();
+        field1.addComponent(searchLbl);
+        field1.addComponent(searchField);
+
+        container.addComponent(field1);
+
+        final HorizontalLayout field2 = new HorizontalLayout();
+        field2.addStyleName("field");
+        field2.setSpacing(true);
+        field2.setSizeUndefined();
+        field2.addComponent(countryLbl);
+        field2.addComponent(countryFilter);
+
+        container.addComponent(field2);
+
+        final HorizontalLayout field3 = new HorizontalLayout();
+        field3.addStyleName("field");
+        field3.setSpacing(true);
+        field3.setSizeUndefined();
+        field3.addComponent(ltypeLbl);
+        field3.addComponent(locationTypeFilter);
+
+        container.addComponent(field3);
+
 		//container.addComponent(doFilterBtn);
-		
-		root.addComponent(container);
 		
 		resultCountLbl = new Label("");
 		resultCountLbl.setStyleName("loc-resultcnt");
 		//root.addComponent(resultCountLbl);
 		//root.setExpandRatio(resultCountLbl,1.0f);
-		
-		root.setSizeFull();
-		return root;
+
+		return container;
 	}
 	
 	private Table buildCustomTable() {

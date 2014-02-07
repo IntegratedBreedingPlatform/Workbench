@@ -73,7 +73,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     @Deprecated
     public void writeProjectXML() throws GxeXMLWriterException{
        
-    	//final Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+    	//final Project workbenchProject = sessionData.getLastOpenedProject();
   
         //final ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(workbenchProject);
         

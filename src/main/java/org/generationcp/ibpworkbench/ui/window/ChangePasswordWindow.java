@@ -17,9 +17,11 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
 import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -27,6 +29,9 @@ import com.vaadin.ui.Button.ClickListener;
 
 @Configurable
 public class ChangePasswordWindow extends Window implements InitializingBean, InternationalizableComponent {
+    @Autowired
+    private SessionData sessionData;
+
     private static final long serialVersionUID = 1L;
 
     private Label passwordLabel;
@@ -104,7 +109,7 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
     }
 
     protected void initializeActions() {
-        User user = IBPWorkbenchApplication.get().getSessionData().getUserData();
+        User user = sessionData.getUserData();
         
         saveButton.addListener(new ChangePasswordAction(user.getName(),password, confirm_password));
         cancelButton.addListener(new RemoveWindowListener());

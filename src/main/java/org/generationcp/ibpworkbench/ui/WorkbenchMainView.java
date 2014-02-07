@@ -18,11 +18,10 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionProvider;
-import org.generationcp.ibpworkbench.actions.CreateContactAction;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
@@ -69,10 +68,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
-    private SessionProvider sessionProvider;
+    private SimpleResourceBundleMessageSource messageSource;
 
     @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+    private SessionData sessionData;
 
     private Label actionsTitle;
     //private Button createProjectButton;
@@ -95,6 +94,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private NavUriFragmentChangedListener uriChangeListener;
 
     private WorkbenchSidebar sidebar;
+    private Label loginUserLbl;
 
     //private Button userToolsButton;
 
@@ -107,7 +107,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        //this.sessionProvider.setSessionData(IBPWorkbenchApplication.get().getSessionData());
+        //this.sessionProvider.setSessionData(sessionData);
 
         assemble();
     }
@@ -305,7 +305,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     }
 
     protected void onLoadOperations() {
-        User user = IBPWorkbenchApplication.get().getSessionData().getUserData();
+        User user = sessionData.getUserData();
         String username = user.getName();
 
         if (username == null) {
@@ -335,8 +335,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
 
-        if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
-            workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),this);
+        if (sessionData.getLastOpenedProject() != null)
+            workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),this);
 
     }
 
@@ -368,7 +368,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         headerRightContainer.setSpacing(true);
         headerRightContainer.addStyleName("main-header-right-container");
 
-        Label loginUserLbl = new Label(messageSource.getMessage(Message.LOGGED_IN) + " " + sessionProvider.getSessionData().getUserData().getPerson().getFirstName() + " " + sessionProvider.getSessionData().getUserData().getPerson().getLastName() );
+        loginUserLbl = new Label();
 
         HorizontalLayout headerRightLinks = new HorizontalLayout();
         headerRightLinks.setSizeUndefined();
@@ -514,6 +514,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     @Override
     public void updateLabels() {
+        IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
+
         //String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
         //workbenchTitle.setValue(title);
         //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
@@ -536,6 +538,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         messageSource.setValue(usersGuideTitle, Message.USER_GUIDE);
 
         messageSource.setValue(hint1, Message.USER_GUIDE_1);
+
+        loginUserLbl.setValue(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName() );
     }
 
     public WorkbenchSidebar getSidebar() {

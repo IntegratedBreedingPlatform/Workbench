@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -65,6 +66,9 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
 	private List<Project> projects;
 
 	private Table table;
@@ -86,7 +90,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
     }
     
     protected void initializeData() {
-    	User currentUser = IBPWorkbenchApplication.get().getSessionData().getUserData();
+    	User currentUser = sessionData.getUserData();
     	
     	try {
 			projects = workbenchDataManager.getProjectsByUser(currentUser);
@@ -119,7 +123,7 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 	        table.setColumnHeader("backupPath","Backup Path");
 	        
 	        // init table contents
-	        Project p = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+	        Project p = sessionData.getSelectedProject();
 	        for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
 	        	projectBackupContainer.addBean(pb);
 	        }

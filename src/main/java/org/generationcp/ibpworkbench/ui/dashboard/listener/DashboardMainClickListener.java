@@ -15,6 +15,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
@@ -54,6 +55,9 @@ public class DashboardMainClickListener implements ClickListener{
     @Autowired
     private ToolUtil toolUtil;
 
+    @Autowired
+    private SessionData sessionData;
+
     //@Autowired
     //private SimpleResourceBundleMessageSource messageSource;
 
@@ -74,7 +78,7 @@ public class DashboardMainClickListener implements ClickListener{
             try {
 
                 // lets update last opened project
-                Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                Project project = sessionData.getSelectedProject();
                 
                 try {
 					toolUtil.createWorkspaceDirectoriesForProject(project);

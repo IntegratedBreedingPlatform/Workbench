@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -24,6 +25,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * <b>Description</b>: Listener class for generating the home page view.
@@ -35,7 +38,10 @@ import com.vaadin.ui.Window;
  * <br>
  * <b>File Created</b>: Jun 11, 2012.
  */
+@Configurable
 public class HomeAction implements ClickListener, ActionListener{
+    @Autowired
+    private SessionData sessionData;
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 5592156945270416052L;
@@ -85,8 +91,8 @@ public class HomeAction implements ClickListener, ActionListener{
             w.showContent(workbenchDashboard);
 
             // reinitialize dashboard with default values
-            if (IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject() != null)
-                workbenchDashboard.initializeDashboardContents().doAction(IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+            if (sessionData.getLastOpenedProject() != null)
+                workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
 
         } catch (Exception e) {
             LOG.error("Exception", e);

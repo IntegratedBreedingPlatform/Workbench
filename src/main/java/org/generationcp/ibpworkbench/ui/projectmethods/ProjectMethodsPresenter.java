@@ -1,8 +1,7 @@
 package org.generationcp.ibpworkbench.ui.projectmethods;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionProvider;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -38,10 +37,9 @@ public class ProjectMethodsPresenter implements InitializingBean {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
-    @Autowired
-    private SessionProvider sessionProvider;
-
     private GermplasmDataManager gdm;
+
+    IWorkbenchSession appSession;
 
 
     public  ProjectMethodsPresenter(ProjectMethodsView view, Project project) {
@@ -119,7 +117,7 @@ public class ProjectMethodsPresenter implements InitializingBean {
         return new ArrayList<Method>();
     }
 
-    public boolean saveProjectLocation(ArrayList<Integer> selectedMethodIds) {
+    public boolean saveProjectMethod(ArrayList<Integer> selectedMethodIds) {
         List<Method> selectedMethods = new ArrayList<Method>();
 
         List<ProjectMethod> projectMethods = null;
@@ -140,7 +138,8 @@ public class ProjectMethodsPresenter implements InitializingBean {
                 }
 
                 if (!m_exists) {
-                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionProvider.getSessionData().getUserData(),new Date()));
+                        if (appSession.getSessionData().getUserData() != null)
+                            workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), appSession.getSessionData().getUserData(),new Date()));
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 
@@ -182,6 +181,10 @@ public class ProjectMethodsPresenter implements InitializingBean {
         }
 
         return true;
+    }
+
+    public void onAttachInitialize(IWorkbenchSession appSession) {
+        this.appSession = appSession;
     }
 
 }

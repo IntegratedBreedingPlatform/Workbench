@@ -82,6 +82,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionData sessionData;
     
     private  List<Role> inheritedRoles;
 
@@ -122,7 +125,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         
         /*        
-        int personUID = IBPWorkbenchApplication.get().getSessionData().getUserData().getPersonid();
+        int personUID = sessionData.getUserData().getPersonid();
 
 		
 			String loggedinUserStr = ""; 
@@ -320,9 +323,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
     private Container createUsersContainer() throws MiddlewareQueryException {
         List<User> validUserList = new ArrayList<User>();
-        
-        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
-        
+
         // TODO: This can be improved once we implement proper User-Person mapping
         List<User> userList = workbenchDataManager.getAllUsersSorted();
         for (User user : userList) {

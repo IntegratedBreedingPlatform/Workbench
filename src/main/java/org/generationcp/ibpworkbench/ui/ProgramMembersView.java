@@ -71,6 +71,9 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionData sessionData;
     
     private Project project;
     
@@ -401,9 +404,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
     private Container createUsersContainer() throws MiddlewareQueryException {
         List<User> validUserList = new ArrayList<User>();
-        
-        SessionData sessionData = IBPWorkbenchApplication.get().getSessionData();
-        
+
         // TODO: This can be improved once we implement proper User-Person mapping
         List<User> userList = workbenchDataManager.getAllUsersSorted();
         for (User user : userList) {

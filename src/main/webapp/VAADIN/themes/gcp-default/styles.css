@@ -154,5 +154,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .helpPopup { margin-top: 50px; }
 .helpPopup #help_download_section { text-align: center; }
 .helpPopup #help_pdf_link, .helpPopup #help_html_link  { display: inline-block; margin: 20px; text-align: center; }
-.helpPopup #help_mail { text-decoration: none; } 
-
+.helpPopup #help_mail { text-decoration: none; }
+.loc-filter-bar { margin-bottom: 6px }
+.loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }

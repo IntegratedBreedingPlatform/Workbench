@@ -4,13 +4,10 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.*;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +25,9 @@ import java.util.Map;
 public class ContentWindow extends Window implements IContentWindow, InitializingBean, URIHandler, ParameterHandler {
     private final static Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
     private Map<String, String[]> queryMap;
-
-    @Autowired
-    public SessionProvider sessionProvider;
-
+    private String path;
+    private URL url;
+    private IWorkbenchSession appSession;
 
     public ContentWindow() {
         super("Breeding Management System | Workbench");
@@ -56,6 +52,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
     }
 
     @Override
+    public void attach() {
+        super.attach();
+
+        appSession = (IWorkbenchSession) this.getApplication();
+    }
+
+    @Override
     public void handleParameters(Map<String, String[]> stringMap) {
         for (String key : stringMap.keySet()) {
 
@@ -68,46 +71,54 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
         }
 
         this.queryMap = stringMap;
-
-        // store values here
     }
 
     @Override
     public DownloadStream handleURI(URL url, String s) {
-        String errorMessage = "";
-        LOG.debug("path: " + s);
+       this.path = s;
+       this.url = url;
 
-        //setup correct session data
-        sessionProvider.setSessionData(WorkbenchContentApp.get().getSessionData());
+        String errorMessage = "";
+        LOG.debug("path: " + path);
 
         // perform navigation here
         try {
 
-            if (s != null) {
-                if (s.equals("ProgramLocations")) {
+            if (path != null) {
+                if (path.equals("ProgramLocations")) {
 
                     if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
 
-                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0])));
-                    sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
+                    Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
 
-                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    if (project == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
 
-                    new OpenProjectLocationAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);   // execute
+                    if (appSession.getSessionData().getLastOpenedProject() == null)
+                        appSession.getSessionData().setLastOpenedProject(project);
+
+                    if (appSession.getSessionData().getSelectedProject() == null)
+                        appSession.getSessionData().setSelectedProject(project);
+
+                    new OpenProjectLocationAction(project ,null).doAction(this,"/" + path,false);   // execute
 
                     return null;
                 }
 
-                else if (s.equals("ProgramMethods") ) {
+                else if (path.equals("ProgramMethods") ) {
 
                     if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
 
-                    sessionProvider.getSessionData().setLastOpenedProject(workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0])));
-                    sessionProvider.getSessionData().setSelectedProject(sessionProvider.getSessionData().getLastOpenedProject());
+                    Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
 
-                    if (sessionProvider.getSessionData().getLastOpenedProject() == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    if (project == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
 
-                    new OpenProjectMethodsAction(sessionProvider.getSessionData().getLastOpenedProject(),null).doAction(this,"/" + s,false);
+                    if (appSession.getSessionData().getLastOpenedProject() == null)
+                        appSession.getSessionData().setLastOpenedProject(project);
+
+                    if (appSession.getSessionData().getSelectedProject() == null)
+                        appSession.getSessionData().setSelectedProject(project);
+
+                    new OpenProjectMethodsAction(project ,null).doAction(this,"/" + path,false);
 
                     return null;
                 }
@@ -144,9 +155,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
         this.showContent(errorPage);
 
-
-
-        return null;
+       return null;
     }
 
     @Autowired

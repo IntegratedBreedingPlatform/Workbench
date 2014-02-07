@@ -24,11 +24,10 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    private UpdateComponentLabelsAction messageSourceListener;
-
     @Autowired
-    private SessionProvider sessionProvider;
-    private SessionData sessionData = new SessionData();
+    private SessionData sessionData;
+
+    private UpdateComponentLabelsAction messageSourceListener;
 
     @Override
     public void close() {
@@ -44,8 +43,6 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
     @Override
     protected void initSpringApplication(ConfigurableWebApplicationContext configurableWebApplicationContext) {
         setTheme("gcp-default");
-
-        this.sessionProvider.setSessionData(sessionData);
 
         messageSourceListener = new UpdateComponentLabelsAction(this);
         messageSource.addListener(messageSourceListener);

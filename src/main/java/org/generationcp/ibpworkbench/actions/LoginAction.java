@@ -17,14 +17,13 @@ import javax.servlet.http.Cookie;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.form.LoginForm;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.generationcp.ibpworkbench.util.CookieUtils;
 import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -54,10 +53,7 @@ public class LoginAction implements ClickListener{
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    @Autowired
-    private ToolUtil toolUtil;
-    
+
     private static LoginAction self = null;
 
     public LoginAction(LoginWindow loginWindow) {
@@ -95,15 +91,16 @@ public class LoginAction implements ClickListener{
                     "<br />" + messageSource.getMessage(Message.ERROR_LOGIN_INVALID));
             return;
         }
-        
-        IBPWorkbenchApplication application = (IBPWorkbenchApplication) event.getComponent().getApplication();
+
         
         User user = null;
         try {
+            IWorkbenchSession appsession = (IWorkbenchSession) event.getComponent().getApplication();
+
             // set the session's current user
             user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
             user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
-            application.getSessionData().setUserData(user);
+            appsession.getSessionData().setUserData(user);
 
             // set the cookie if remember me option is enabled
             
@@ -147,11 +144,11 @@ public class LoginAction implements ClickListener{
         try {
             newWindow = new WorkbenchMainView();
             //application.removeWindow(application.getMainWindow());
-            
-            
-            application.getMainWindow().open(new ExternalResource(application.getURL()));
-            
-            application.setMainWindow(newWindow);
+
+
+            event.getComponent().getApplication().getMainWindow().open(new ExternalResource(event.getComponent().getApplication().getURL()));
+
+            event.getComponent().getApplication().setMainWindow(newWindow);
             
             // we used to update the tool configurations here
             // but we don't need it anymore
@@ -159,7 +156,7 @@ public class LoginAction implements ClickListener{
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
                 InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(application.getMainWindow(),
+                MessageNotifier.showError(event.getComponent().getApplication().getMainWindow(),
                         i.getCaption(), i.getDescription());
             }
             return;

@@ -16,11 +16,7 @@ import java.util.Date;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.SessionProvider;
-import org.generationcp.ibpworkbench.ui.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -59,9 +55,6 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-
-    @Autowired
-    private SessionProvider sessionProvider;
 
     public OpenProjectLocationAction() {}
 

@@ -43,6 +43,7 @@ import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
@@ -70,8 +71,13 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionData sessionData;
+
     @Value("${web.api.url}")
     private String webApiUrl;
 
@@ -132,7 +138,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
         ssaParameters.setOutputDataSetId(breedingViewInput.getOutputDatasetId());
 
-        Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+        Project workbenchProject = sessionData.getLastOpenedProject();
         if(workbenchProject != null) {
             ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
         }
@@ -247,7 +253,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
         ssaParameters.setOutputDataSetId(breedingViewInput.getOutputDatasetId());
 
-        Project workbenchProject = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+        Project workbenchProject = sessionData.getLastOpenedProject();
         if(workbenchProject != null) {
             ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
         }
