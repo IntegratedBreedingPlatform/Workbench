@@ -49,7 +49,7 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
             
             w.showContent(toolVersionsPanel);
             
-            NavManager.navigateApp(window, "/ToolVersions", isLinkAccessed);
+            NavManager.navigateApp(window, "/ToolsVersion", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
