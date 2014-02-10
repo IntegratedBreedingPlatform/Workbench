@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -103,7 +102,7 @@ public class RunBreedingViewAction implements ClickListener {
             event.getComponent().getWindow().showNotification("Please enter an Analysis Name.", Notification.TYPE_ERROR_MESSAGE);
             return;
         } else{
-            //breedingViewInput.setBreedingViewProjectName(analysisProjectName);
+
         	breedingViewInput.setBreedingViewAnalysisName(analysisProjectName);
         }
         
@@ -211,10 +210,10 @@ public class RunBreedingViewAction implements ClickListener {
 			try {
 				entry = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), 8230);
 			} catch (ConfigException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} 
 			
@@ -228,14 +227,14 @@ public class RunBreedingViewAction implements ClickListener {
         DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
         
         try {
-			//HashMap<Integer, String> variateColumns = datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), (String) this.source.getSelEnvForAnalysis().getValue());
+			
         	List<String> selectedEnvironments = new ArrayList<String>();
         	for (SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()){
         		selectedEnvironments.add(m.getEnvironmentName());
         	}
         	
         	datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
-        	//breedingViewInput.setVariateColumns(variateColumns);
+        	
         } catch (DatasetExporterException e1) {
 			e1.printStackTrace();
 		}
@@ -278,6 +277,9 @@ public class RunBreedingViewAction implements ClickListener {
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
+         
+         
+         source.getManagerFactory().close();
             	
     	
     }

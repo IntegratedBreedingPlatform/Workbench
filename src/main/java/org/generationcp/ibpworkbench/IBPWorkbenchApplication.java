@@ -15,17 +15,19 @@ package org.generationcp.ibpworkbench;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LoginAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-public class IBPWorkbenchApplication extends SpringContextApplication {
+public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
     private static final long serialVersionUID = 1L;
     private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
@@ -35,11 +37,14 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
     private UpdateComponentLabelsAction messageSourceListener;
-    
-    private SessionData sessionData = new SessionData();
+
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private boolean jiraSetupDone = false;
 
     @Override
     public void close() {
@@ -57,6 +62,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
         LOG.error("Encountered error", event.getThrowable());
     }
 
+    @Override
     public SessionData getSessionData() {
         return sessionData;
     }
@@ -111,7 +117,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
     protected void initialize() {
         setTheme("gcp-default");
-           
     }
 
     protected void initializeComponents() {
@@ -136,5 +141,30 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
         initializeActions();
 
         setMainWindow(loginWindow);
+    }
+
+    public void toggleJira() {
+        jiraSetupDone = !jiraSetupDone;
+    }
+
+    @Override
+    public Window getWindow(String name) {
+        Window w = super.getWindow(name);
+
+        if (w instanceof WorkbenchMainView && !jiraSetupDone) {
+            // do script injection
+            // attempt to add feedback js
+            final String jiraRatingsJSSrc ="http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=3bcb8466";
+            final String jiraSupportJSSrc = "http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=65ebc55b";
+
+            String script = "try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
+
+            w.executeJavaScript(String.format(script, jiraRatingsJSSrc) + String.format(script, jiraSupportJSSrc));
+
+            this.jiraSetupDone = true;
+        }
+
+
+        return w;
     }
 }

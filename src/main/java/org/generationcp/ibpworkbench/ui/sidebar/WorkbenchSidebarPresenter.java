@@ -4,6 +4,7 @@ import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -36,6 +37,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
     public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
         this.view = view;
 
@@ -61,8 +65,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
             for (WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
                 if (category.getSidebarCategoryName().equals("workflows")) {
 
-                    if (IBPWorkbenchApplication.get().getSessionData().getSelectedProject() != null) {
-                        List<Role> roles = manager.getRolesByProjectAndUser(IBPWorkbenchApplication.get().getSessionData().getSelectedProject(),IBPWorkbenchApplication.get().getSessionData().getUserData());
+                    if (sessionData.getSelectedProject() != null) {
+                        List<Role> roles = manager.getRolesByProjectAndUser(sessionData.getSelectedProject(),sessionData.getUserData());
 
                         for (Role role : roles) {
                             //we dont include the tools anymore

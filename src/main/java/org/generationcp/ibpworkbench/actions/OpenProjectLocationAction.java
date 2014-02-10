@@ -16,9 +16,7 @@ import java.util.Date;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.ProjectLocationPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -48,7 +46,8 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenProjectLocationAction.class);
-   
+
+    private User user;
     private Project project;
 
     @Autowired
@@ -57,18 +56,18 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public OpenProjectLocationAction() {
-        this.project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
-
-        if (this.project == null)
-            this.project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
-    }
+    public OpenProjectLocationAction() {}
 
     public OpenProjectLocationAction(Project project) {
-        this.project = project;
+        this(project,null);
     }
 
-    @Override
+    public OpenProjectLocationAction(Project project, User user) {
+        this.project = project; this.user = user;
+    }
+
+
+        @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
     }
@@ -81,24 +80,24 @@ public class OpenProjectLocationAction implements WorkflowConstants, ClickListen
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
-        
+
         try {
-            try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
 
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)), user, new Date());
-                workbenchDataManager.addProjectActivity(projAct);
+            if (user != null) {
+                try {
+                    ProjectActivity projAct = new ProjectActivity(new Integer(this.project.getProjectId().intValue()), this.project,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)), user, new Date());
+                    workbenchDataManager.addProjectActivity(projAct);
 
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, "Database Error",
-                                          "<br />" + "Please see error logs");
-              
+                } catch (MiddlewareQueryException e1) {
+                    MessageNotifier.showError(window, "Database Error",
+                            "<br />" + "Please see error logs");
+                }
             }
 
-            w.showContent(new ProjectLocationsView(project));
-            NavManager.navigateApp(window, "/ProgramLocation", isLinkAccessed);
+            w.showContent(new ProjectLocationsView(this.project));
+
+            if (user != null)
+                NavManager.navigateApp(window, "/ProgramLocation", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

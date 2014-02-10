@@ -15,14 +15,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.vaadin.ui.Component;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +50,6 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     
     private Component projectBreedingMethodsPanel;
     
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
-    
     public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
@@ -72,16 +64,18 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         @SuppressWarnings("unchecked")
         BeanItem<BreedingMethodModel> breedingMethodBean = (BeanItem<BreedingMethodModel>) newBreedingMethodForm.getItemDataSource();
         BreedingMethodModel breedingMethod = breedingMethodBean.getBean();
-        
+
         newBreedingMethodForm.commit();
+
+        //IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
+
+
+        if (!appSession.getSessionData().getUniqueBreedingMethods().contains(breedingMethod.getMethodName())){
+
+            appSession.getSessionData().getUniqueBreedingMethods().add(breedingMethod.getMethodName());
         
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
-        if (!app.getSessionData().getUniqueBreedingMethods().contains(breedingMethod.getMethodName())){
-        
-            app.getSessionData().getUniqueBreedingMethods().add(breedingMethod.getMethodName());
-        
-            Integer nextKey = app.getSessionData().getProjectBreedingMethodData().keySet().size() + 1;
+            Integer nextKey = appSession.getSessionData().getProjectBreedingMethodData().keySet().size() + 1;
             
             nextKey = nextKey*-1;
         
@@ -94,10 +88,10 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newBreedingMethod.setMethodType(breedingMethod.getMethodType());
         
             newBreedingMethod.setMethodId(nextKey);
-        
-            app.getSessionData().getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
+
+            appSession.getSessionData().getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
             
-            LOG.info(app.getSessionData().getProjectBreedingMethodData().toString());
+            LOG.info(appSession.getSessionData().getProjectBreedingMethodData().toString());
             
             newBreedingMethodForm.commit();
             
@@ -108,7 +102,10 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMcode(newBreedingMethod.getMethodCode());
             newMethod.setMgrp(newBreedingMethod.getMethodGroup());
             newMethod.setMtype(newBreedingMethod.getMethodType());
-            newMethod.setUser(app.getSessionData().getUserData().getUserid());
+
+            if (appSession.getSessionData().getUserData() != null)
+                newMethod.setUser(appSession.getSessionData().getUserData().getUserid());
+
             newMethod.setLmid(newBreedingMethod.getMethodId());
             newMethod.setGeneq(newBreedingMethod.getMethodId());
             newMethod.setMattr(0);

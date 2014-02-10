@@ -1,6 +1,8 @@
 @import url(../vaadin-retro/styles-min.css);
 .v-app-IBPWorkbenchApplication{background:#f9f9f9}
 .v-app-IBPWorkbenchApplication *{outline:none !important}
+.v-app-IBPWorkbenchApplication > .v-scrollable { overflow:hidden; }
+
 
 /* Generic components */
 span.v-checkbox-hidecheckbox input{display:none !important}
@@ -30,9 +32,11 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-root>.v-tree-node-caption.v-tree-node-selected span{padding:0 !important;margin-left:3px !important;background:0}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-selected span{display:block;color:#fff;background-color:#026ec2;border-radius:0;text-shadow:none;padding-left:34px !important;padding-top:5px !important;padding-bottom:5px !important}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout{margin-top:20px}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div div div div.v-horizontallayout div div div div.v-label-undef-w{position:relative;bottom:3px;color:#dde5ec !important}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption:hover{text-decoration:underline}
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel div.v-horizontallayout div.v-button span.v-button-wrap span.v-button-caption{text-transform:uppercase;text-decoration:none;margin-left:5px;margin-right:5px;color:#dde5ec}
+.main-header-right-container div div div div.v-label-undef-w{position:relative;bottom:3px;color:#dde5ec !important}
+.main-header-right-container div.v-button span.v-button-wrap span.v-button-caption:hover{text-decoration:underline}
+.main-header-right-container div.v-button span.v-button-wrap span.v-button-caption, .main-header-right-container .v-label{text-transform:uppercase;text-decoration:none;margin-left:5px;margin-right:5px;color:#dde5ec}
+
+
 .v-splitpanel-first-container-gcp-workbench-vsplit-panel{background-color:#225591}
 .v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked{width:0 !important}
 .v-splitpanel-hsplitter-small{width:0;background:transparent}
@@ -131,7 +135,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .panel-border{display:block;border-color:#357ebd;border-radius:0}
 .label-bold{font-weight: bold}
 
-
 /* Help Window */
 .v-window-gcp-help-window .v-window-wrap2 { background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent; }
 .v-window-gcp-help-window .v-window-outerheader, .v-window-gcp-help-window .v-window-contents { background: none; }
@@ -148,3 +151,9 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-window-gcp-help-window .v-window-closebox:active{background:transparent;background-image:none;color:#f0f0f0}
 .v-window-gcp-help-window .v-window-closebox:before{content:"\e014"}
 
+.helpPopup { margin-top: 50px; }
+.helpPopup #help_download_section { text-align: center; }
+.helpPopup #help_pdf_link, .helpPopup #help_html_link  { display: inline-block; margin: 20px; text-align: center; }
+.helpPopup #help_mail { text-decoration: none; }
+.loc-filter-bar { margin-bottom: 6px }
+.loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }

@@ -304,6 +304,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     	
         btnNext.addListener(new Button.ClickListener() {
 			
+			private static final long serialVersionUID = 3367191648910396919L;
+
+			@SuppressWarnings("unchecked")
 			@Override
 			public void buttonClick(ClickEvent event) {
 					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
@@ -314,7 +317,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 					
 					if (metaEnvironments.size() > 0){
 						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
-						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, SelectDatasetsForMetaAnalysisPanel.this));
+						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, SelectDatasetsForMetaAnalysisPanel.this, managerFactory));
 					}
 					
 			}
@@ -361,7 +364,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         try {
 			folderRef = getStudyDataManager().getRootFolders(database);
         } catch (MiddlewareQueryException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 	            if (getWindow() != null){
 	                MessageNotifier.showWarning(getWindow(), 
@@ -558,7 +561,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
-		return this.studyDataManager;
+    	return this.studyDataManager;
+		
 	}
 
 	public HashMap<String, Boolean> getVariatesCheckboxState() {
@@ -656,6 +660,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			
 			initializeComponents();
 			
+			managerFactory.close();
+			
 		}
 		
 		public int getDataSetId(){
@@ -667,7 +673,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			try {
 				studyName = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
 			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 
@@ -686,6 +692,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			linkSaveToList.setHtmlContentAllowed(true);
 			
 			linkSaveToList.addListener(new Button.ClickListener() {
+			
+				private static final long serialVersionUID = -91508239632267095L;
+
 				@Override
 				public void buttonClick(ClickEvent event) {
 						addDataSetToTable();
@@ -694,6 +703,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			});
 			
 			linkFullStudyDetails.addListener(new Button.ClickListener() {
+			
+				private static final long serialVersionUID = 1425892265723948423L;
+
 				@Override
 				public void buttonClick(ClickEvent event) {
 						
@@ -767,6 +779,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 	        	
 				private static final long serialVersionUID = 1L;
 
+					@SuppressWarnings("unchecked")
 					public String generateDescription(Component source, Object itemId, Object propertyId) {
 	        	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
 	        	    	 VariateModel vm = container.getItem(itemId).getBean();
@@ -853,6 +866,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
 					private static final long serialVersionUID = 1L;
 
+						@SuppressWarnings("unchecked")
 						public String generateDescription(Component source, Object itemId, Object propertyId) {
 		        	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
 		        	    	 FactorModel fm = container.getItem(itemId).getBean();
@@ -872,6 +886,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		    }  
 		
 		
+		@SuppressWarnings("unchecked")
 		private void addDataSetToTable(){
 			
 			BeanItemContainer<MetaEnvironmentModel> container  = (BeanItemContainer<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
@@ -949,12 +964,14 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				}
 				
 			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (Exception e){
 				
 				e.printStackTrace();
 			}
+			
+			managerFactory.close();
 		}
 		
 	}

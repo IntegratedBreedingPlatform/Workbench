@@ -22,6 +22,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
@@ -56,6 +57,9 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
 
     private Table tblProject;
     private WorkbenchMainView workbenchDashboardwindow;
@@ -111,7 +115,7 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
                 }
             }
         else {
-            project = IBPWorkbenchApplication.get().getSessionData().getLastOpenedProject();
+            project = sessionData.getLastOpenedProject();
         }
 
         if (project == null) {

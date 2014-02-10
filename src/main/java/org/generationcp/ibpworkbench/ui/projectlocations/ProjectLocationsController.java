@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -14,7 +14,6 @@ import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
 import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.slf4j.Logger;
@@ -34,25 +33,19 @@ public class ProjectLocationsController implements InitializingBean {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    //@Autowired
+    //private SessionProvider sessionProvider;
     private GermplasmDataManager gdm;
 	private Project project;
 
-	private List<Location> newLocations;
-
-	private CropType cropType;
-
-	public ProjectLocationsController(Project project) {
+    public ProjectLocationsController(Project project) {
 		this.project = project;
-		
-		newLocations = new ArrayList<Location>();
 	}
 	
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
 	public ProjectLocationsController(Project project,WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
 		this.project = project;
-		
-		newLocations = new ArrayList<Location>();
-		
+
 		this.workbenchDataManager = workbenchDataManager;
 		this.managerFactoryProvider = managerFactoryProvider;
 		
@@ -86,34 +79,37 @@ public class ProjectLocationsController implements InitializingBean {
 		return results;
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();	
+    // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
+	public void onAttachInitialize(IWorkbenchSession appSession) {
+        try {
+            //Get all Local locations
+            List<Location> allLocalLocations = null;
 
-    	//Get all Local locations
-    	List<Location> allLocalLocations = gdm.getAllLocalLocations(0,Integer.MAX_VALUE);
-    	
-    	// Initialize IBPWorkbench.app session
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
-        for (Location loc : allLocalLocations) {
-        	if (loc.getLocid()<0 && !app.getSessionData().getUniqueLocations().contains(loc.getLname())) {
-        		LocationModel locModel = new LocationModel();
-            	locModel.setCntryid(loc.getCntryid());
-            	locModel.setLocationAbbreviation(loc.getLabbr());
-            	locModel.setLocationId(loc.getLocid());
-            	locModel.setLocationName(loc.getLname());
-            	locModel.setLtype(loc.getLtype());
-            	
-                app.getSessionData().getUniqueLocations().add(locModel.getLocationName());
+            allLocalLocations = gdm.getAllLocalLocations(0,Integer.MAX_VALUE);
 
-                //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
-                //nextKey = nextKey * -1;
-                //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
-                app.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
+            // Initialize IBPWorkbench.app session
+            for (Location loc : allLocalLocations) {
+                if (loc.getLocid()<0 && !appSession.getSessionData().getUniqueLocations().contains(loc.getLname())) {
+                    LocationModel locModel = new LocationModel();
+                    locModel.setCntryid(loc.getCntryid());
+                    locModel.setLocationAbbreviation(loc.getLabbr());
+                    locModel.setLocationId(loc.getLocid());
+                    locModel.setLocationName(loc.getLname());
+                    locModel.setLtype(loc.getLtype());
+
+                    appSession.getSessionData().getUniqueLocations().add(locModel.getLocationName());
+
+                    //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+                    //nextKey = nextKey * -1;
+                    //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
+                    appSession.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
+                }
             }
+
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();
         }
-	}
+    }
 	
 	public List<LocationTableViewModel> getSavedProjectLocations() throws MiddlewareQueryException  {
 		List<LocationTableViewModel> result = new ArrayList<LocationTableViewModel>();
@@ -231,8 +227,6 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
 	
 	
     public List<Country> getCountryList() throws MiddlewareQueryException {
-        cropType = project.getCropType();
-        
         List<Country> countryList = gdm.getAllCountry();
         Collections.sort(countryList,new Comparator<Country>() {
 			@Override
@@ -269,5 +263,9 @@ public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws Mid
     public GermplasmDataManager getGermplasmDataManager(){
     	return this.gdm;
     }
-    
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+    }
 }

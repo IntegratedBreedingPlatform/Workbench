@@ -16,7 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -90,9 +89,6 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	private Label lblSelectFactors;
 	
 	private Project currentProject;
-	
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 	    
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -104,10 +100,11 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	private SelectDatasetsForMetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
 	
 
-	public SelectTraitsForMetaAnalysisPanel(Project project,List<MetaEnvironmentModel> metaEnvironments, SelectDatasetsForMetaAnalysisPanel selectDatasetsForMetaAnalysisPanel) {
+	public SelectTraitsForMetaAnalysisPanel(Project project,List<MetaEnvironmentModel> metaEnvironments, SelectDatasetsForMetaAnalysisPanel selectDatasetsForMetaAnalysisPanel, ManagerFactory managerFactory) {
 		this.metaEnvironments = metaEnvironments;
 		this.currentProject = project;
 		this.selectDatasetsForMetaAnalysisPanel = selectDatasetsForMetaAnalysisPanel;
+		this.managerFactory = managerFactory;
 	}
 	
 
@@ -247,7 +244,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 					}
 					
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (Exception e){
 					e.printStackTrace();
@@ -280,6 +277,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 			 
 			 final Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener(){
 
+				private static final long serialVersionUID = 6946721935764963485L;
+
 					@Override
 					public void valueChange(ValueChangeEvent event) {
 						Boolean val = (Boolean) event.getProperty().getValue();
@@ -296,6 +295,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 				};	 
 		
 	     environmentsTable.addGeneratedColumn("", new ColumnGenerator(){
+
+			private static final long serialVersionUID = -850728728803335183L;
 
 			@Override
 			public Object generateCell(Table source, Object itemId,
@@ -349,7 +350,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 					
 					
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 				
@@ -403,6 +404,9 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 factorsAnalysisTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 		 
 		 Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
+			
+			private static final long serialVersionUID = 1572419094504976594L;
+
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					Boolean val = (Boolean) event.getProperty().getValue();
@@ -440,6 +444,9 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 		 variatesSelectionTable.addItem(vCheckBoxes.toArray(), 1);
 		
 		 Property.ValueChangeListener factorCheckBoxListener = new Property.ValueChangeListener(){
+				
+			private static final long serialVersionUID = 456441415676960629L;
+
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					Boolean val = (Boolean) event.getProperty().getValue();
@@ -568,6 +575,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	    	
 	        btnNext.addListener(new Button.ClickListener() {
 				
+				private static final long serialVersionUID = -4809085840378185820L;
+
 				@Override
 				public void buttonClick(ClickEvent event) {
 						if (variatesCheckBoxState.size() == 0 
@@ -576,6 +585,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 								) { return;}
 						
 						final File file = exportData();
+						
+						managerFactory.close();
 						
 						if (file == null) return;
 						
@@ -714,7 +725,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 						
 					}
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 				
@@ -743,7 +754,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 
 	@Override
 	public void updateLabels() {
-		// TODO Auto-generated method stub
+		
 		messageSource.setCaption(btnCancel, Message.BACK);
         messageSource.setCaption(btnNext, Message.EXPORT_DATA);
         messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
@@ -764,9 +775,7 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
-		assemble();
-		
+		assemble();	
 	}
 	
 	 @Override
@@ -777,8 +786,14 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	    }
 	
 	public StudyDataManager getStudyDataManager() {
-	    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+	    	if (this.studyDataManager == null) this.studyDataManager = getManagerFactory().getNewStudyDataManager();
 			return this.studyDataManager;
 	}
+
+
+	public ManagerFactory getManagerFactory() {
+		return managerFactory;
+	}
+
 
 }

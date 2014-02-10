@@ -8,6 +8,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -70,6 +71,10 @@ public class NurseryListPreview extends VerticalLayout {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
+
     private HorizontalLayout toolbar;
     private Button openStudyManagerBtn;
     private Button renameFolderBtn;
@@ -355,7 +360,7 @@ public class NurseryListPreview extends VerticalLayout {
                 presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
-                Project project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+                Project project = sessionData.getSelectedProject();
                 Object value = treeView.getValue();
 
 
@@ -428,7 +433,7 @@ public class NurseryListPreview extends VerticalLayout {
                         try {
                             presenter.renameNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -506,7 +511,7 @@ public class NurseryListPreview extends VerticalLayout {
                             else
                                 newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -579,7 +584,7 @@ public class NurseryListPreview extends VerticalLayout {
                 try {
                     id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
                 } catch (Error e) {
-                    MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                    MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
 
@@ -604,7 +609,7 @@ public class NurseryListPreview extends VerticalLayout {
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
                         }
                     }

@@ -5,6 +5,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -13,6 +14,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,9 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Time: 10:59 AM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class UpdateProjectPanel extends CreateProjectPanel {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionData sessionData;
+
     private String oldProjectName;
 
     public UpdateProjectPanel() {
@@ -92,8 +99,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     public void afterPropertiesSet() {
         try {
             // initialize state
-            currentUser = workbenchDataManager.getUserById(IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid());   // get hibernate managed version of user
-            project = IBPWorkbenchApplication.get().getSessionData().getSelectedProject();
+            currentUser = workbenchDataManager.getUserById(sessionData.getUserData().getUserid());   // get hibernate managed version of user
+            project = sessionData.getSelectedProject();
             oldProjectName = new String(project.getProjectName());
 
 

@@ -25,7 +25,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -38,7 +37,6 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -46,7 +44,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
@@ -56,13 +53,11 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * 
@@ -234,6 +229,9 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
         
         selectAllListener = new Property.ValueChangeListener(){
 
+			private static final long serialVersionUID = -6750267436054378894L;
+
+			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
@@ -291,6 +289,8 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 					}
 			
 				populateFactorsVariatesByDataSetId(currentStudy, factors, variates);
+				
+				managerFactory.close();
 				
 			}
 		});
@@ -379,10 +379,11 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				//SelectEnvironmentForGxePanel.this.getParent().removeWindow(SelectEnvironmentForGxePanel.this);
-				selectSpecifyEnvironment.setValue((Object) null);
-				selectSpecifyGenotypes.setValue((Object) null);
+				selectSpecifyEnvironment.select((Object) null);
+				selectSpecifyEnvironment.select(selectSpecifyEnvironment.getItemIds().iterator().next());
+				selectSpecifyGenotypes.select(selectSpecifyGenotypes.getItemIds().iterator().next());
 				selectSpecifyEnvironmentGroups.select((Object) "Analyze All");
+				
 			}
 		});
         btnNext.addListener(new Button.ClickListener() {
@@ -431,6 +432,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 			private static final long serialVersionUID = 1L;
 
+				@SuppressWarnings("unchecked")
 				public String generateDescription(Component source, Object itemId, Object propertyId) {
         	    	 BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
         	    	 FactorModel fm = container.getItem(itemId).getBean();
@@ -543,6 +545,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 
 			private static final long serialVersionUID = 1L;
 
+				@SuppressWarnings("unchecked")
 				public String generateDescription(Component source, Object itemId, Object propertyId) {
         	    	 BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) variates.getContainerDataSource();
         	    	 VariateModel vm = container.getItem(itemId).getBean();

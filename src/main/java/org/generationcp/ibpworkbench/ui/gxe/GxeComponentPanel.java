@@ -168,6 +168,8 @@ public class GxeComponentPanel extends VerticalLayout implements
 		if (children.size() == 0) {
 			// The planet has no moons so make it a leaf.
 			// studiesTree.setChildrenAllowed(folderParent.getName(), false);
+			studiesTree.setItemIcon(folderParentItem, leafResource);
+			studiesTree.setChildrenAllowed(folderParentItem, false);
 		} else {
 			// Add children (moons) under the planets.
 			for (Reference childStudy : children) {
@@ -287,13 +289,15 @@ public class GxeComponentPanel extends VerticalLayout implements
 		selectDatabase.select(Database.LOCAL);
 		selectDatabase.addListener(new Property.ValueChangeListener(){
 
+			private static final long serialVersionUID = 8493174817016048284L;
+
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
+				
 				try {
 					refreshStudies();
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}
@@ -322,7 +326,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 		horizontal.addComponent(getStudiesTabsheet());
 
 		horizontal.setWidth("100%");
-		//horizontal.setHeight("530px");
+		
 		horizontal.setExpandRatio(getStudiesTabsheet(), 1.0F);
 
 		this.addComponent(horizontal);
@@ -333,16 +337,13 @@ public class GxeComponentPanel extends VerticalLayout implements
 	protected void initializeLayout() {
 		this.setSpacing(true);
 		this.setMargin(new MarginInfo(false,true,true,true));
-
         this.setSizeUndefined();
         this.setWidth("100%");
 	}
 
 	protected void initializeActions() {
-		// newMemberButton.addListener(new
-		// OpenNewProjectAddUserWindowAction(select));
+	
 		studiesTree.addListener(new StudiesTreeAction(this));
-		// studiesTabsheet.addListener(new StudiesTabFocusListener());
 
 	}
 
@@ -358,7 +359,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 		public StudiesTreeAction(
 				GxeComponentPanel gxeAnalysisComponentPanel) {
-			// TODO Auto-generated constructor stub
+			
 			this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
 		}
 
@@ -400,8 +401,6 @@ public class GxeComponentPanel extends VerticalLayout implements
 					getStudiesTabsheet().addTab(selectEnvironmentPanel);
 					getStudiesTabsheet().getTab(selectEnvironmentPanel).setClosable(true);
 					
-					//gxeAnalysisComponentPanel.getWindow().addWindow(win);
-					//studiesTabsheet.setImmediate(true);	
 				}
 				
 				

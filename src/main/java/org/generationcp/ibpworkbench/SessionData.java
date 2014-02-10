@@ -8,12 +8,14 @@ import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * This class contains all session data needed by the workbench application.
  * 
  * @author Glenn Marintes
  */
+@Configurable
 public class SessionData {
     private Project lastOpenedProject;
     private Project selectedProject;

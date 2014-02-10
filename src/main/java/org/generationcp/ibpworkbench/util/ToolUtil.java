@@ -620,6 +620,9 @@ public class ToolUtil {
         String projectDirName = String.format("%d", project.getProjectId());
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
+        
+        if (projectDir.exists()) return;
+        
         projectDir.mkdirs();
 
         // create the directory for each tool

@@ -8,6 +8,7 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -69,9 +70,15 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-
     public ProjectMethodsView(Project project) {
         presenter = new ProjectMethodsPresenter(this,project);
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+
+        presenter.onAttachInitialize((IWorkbenchSession) this.getApplication());
     }
 
     @Override
@@ -204,12 +211,32 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         typeLbl.setStyleName("loc-filterlbl");
         searchLbl.setStyleName("loc-filterlbl");
 
-        container.addComponent(searchLbl);
-        container.addComponent(searchField);
-        container.addComponent(groupLbl);
-        container.addComponent(groupFilter);
-        container.addComponent(typeLbl);
-        container.addComponent(typeFilter);
+        final HorizontalLayout field1 = new HorizontalLayout();
+        field1.addStyleName("field");
+        field1.setSizeUndefined();
+        field1.setSpacing(true);
+        field1.addComponent(searchLbl);
+        field1.addComponent(searchField);
+
+        container.addComponent(field1);
+
+        final HorizontalLayout field2 = new HorizontalLayout();
+        field2.addStyleName("field");
+        field2.setSpacing(true);
+        field2.setSizeUndefined();
+        field2.addComponent(groupLbl);
+        field2.addComponent(groupFilter);
+
+        container.addComponent(field2);
+
+        final HorizontalLayout field3 = new HorizontalLayout();
+        field3.addStyleName("field");
+        field3.setSpacing(true);
+        field3.setSizeUndefined();
+        field3.addComponent(typeLbl);
+        field3.addComponent(typeFilter);
+
+        container.addComponent(field3);
 
         root.addComponent(container);
 
@@ -350,7 +377,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         saveBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (ProjectMethodsView.this.presenter.saveProjectLocation(selectedMethodIds)) {
+                if (ProjectMethodsView.this.presenter.saveProjectMethod(selectedMethodIds)) {
                     MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
                 } else {    // should never happen
 
@@ -363,7 +390,9 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
 			@Override
             public void buttonClick(Button.ClickEvent event) {
-                (new OpenProjectMethodsAction()).buttonClick(event);
+                IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
+
+                (new OpenProjectMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
             }
         });
 

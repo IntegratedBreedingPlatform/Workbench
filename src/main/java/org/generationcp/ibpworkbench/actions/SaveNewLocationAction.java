@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.projectlocations.AddLocationsWindow;
@@ -58,7 +58,7 @@ public class SaveNewLocationAction implements ClickListener{
 
     private final ProjectLocationsView projectLocationsView;
     private final ProjectLocationsController projectLocationsController;
-    
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
@@ -93,12 +93,12 @@ public class SaveNewLocationAction implements ClickListener{
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						saveLocation();
+						saveLocation((IWorkbenchSession) event.getComponent().getApplication());
 					}
 				} ).show();
     			
     		}else{
-    			saveLocation();
+    			saveLocation((IWorkbenchSession) event.getComponent().getApplication());
     		}
     		
     	} catch (MiddlewareQueryException e) {
@@ -109,21 +109,19 @@ public class SaveNewLocationAction implements ClickListener{
 
     }
     
-    private void saveLocation(){
+    private void saveLocation(IWorkbenchSession appSession){
     	
          @SuppressWarnings("unchecked")
          BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
          LocationModel location = locationBean.getBean();
 
-         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
          // TODO: (BUG) there's a problem getting the nextKey of the locations when there's already existing locations
          // in the local database. Always starts at -1 for new sessions
          //if (!app.getSessionData().getUniqueLocations().contains(location.getLocationName())) {
 
-             app.getSessionData().getUniqueLocations().add(location.getLocationName());
+            appSession.getSessionData().getUniqueLocations().add(location.getLocationName());
 
-             Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
+             Integer nextKey = appSession.getSessionData().getProjectLocationData().keySet().size() + 1;
 
              nextKey = nextKey * -1;
 
@@ -135,14 +133,14 @@ public class SaveNewLocationAction implements ClickListener{
              
              newLocation.setLtype(location.getLtype() != null ? location.getLtype() : 0);
              newLocation.setCntryid(location.getCntryid() != null ? location.getCntryid() : 0);
-             
-             app.getSessionData().getProjectLocationData().put(nextKey, newLocation);
 
-             LOG.info(app.getSessionData().getProjectLocationData().toString());
+            appSession.getSessionData().getProjectLocationData().put(nextKey, newLocation);
+
+             LOG.info(appSession.getSessionData().getProjectLocationData().toString());
 
              newLocationForm.commit();
 
-             Location newLoc = this.initiliazeLocation(new Location());
+             Location newLoc = this.initializeLocation(new Location());
              newLoc.setLocid(newLocation.getLocationId());
              newLoc.setLname(newLocation.getLocationName());
              newLoc.setLabbr(newLocation.getLocationAbbreviation());
@@ -158,22 +156,23 @@ public class SaveNewLocationAction implements ClickListener{
  				e1.printStackTrace();
  			}
 
-             User user = app.getSessionData().getUserData();
-             Project currentProject = app.getSessionData().getLastOpenedProject();
-             ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
-             try {
- 				workbenchDataManager.addProjectActivity(projAct);
- 			} catch (MiddlewareQueryException e) {
- 				e.printStackTrace();
- 			}
+            User user = appSession.getSessionData().getUserData();
 
-             newLocation = null;
-             window.getParent().removeWindow(window);
+            if (user != null) {
+                Project currentProject = appSession.getSessionData().getLastOpenedProject();
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ newLocation.getLocationName() + ")", user, new Date());
+                try {
+                    workbenchDataManager.addProjectActivity(projAct);
+                } catch (MiddlewareQueryException e) {
+                    e.printStackTrace();
+                }
+            }
 
-         //}
+            window.getParent().removeWindow(window);
+
     }
     
-    private Location initiliazeLocation(Location l) {
+    private Location initializeLocation(Location l) {
         Location location = new Location();
         location.setLocid(l.getLocid());
         location.setLabbr(l.getLabbr());

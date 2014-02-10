@@ -9,6 +9,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -53,6 +54,9 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
 	private List<Project> projects;
 
     
@@ -72,7 +76,7 @@ public class BackupIBDBWindow extends Window implements InitializingBean, Intern
     }
     
     protected void initializeData() {
-    	User currentUser = IBPWorkbenchApplication.get().getSessionData().getUserData();
+    	User currentUser = sessionData.getUserData();
     	
     	try {
 			projects = workbenchDataManager.getProjectsByUser(currentUser);

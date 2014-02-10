@@ -8,22 +8,22 @@ This contains the UI thats provides access to various tools and applications (bo
 
 ### Submodules under IBPWorkbench contains the following:
 
-###### 1. Dashboard and Program Summary
-###### 2. Administration/Program Management tools
-- Program Locations
-- Program Methods
-- Program Creation and Deletion
-- Local Databases backup and restore
-- Custom Tools (Alpha)
-###### 3. Statistical Analysis Tools frontend for Breeding View
-- Single Site Analysis
-- Multi Site Analysis
-- Meta Analysis for multi-variate
-###### 4. Workflows
-- Marker Assisted Recurring Selection (MARS)
-- Conventional Breeding (CB)
-- Marker Assisted Selection (MAS)
-- Marker Assisted Backcrossing (MABC)
+1. Dashboard and Program Summary
+2. Administration/Program Management tools
+ - Program Locations
+ - Program Methods
+ - Program Creation and Deletion
+ - Local Databases backup and restore
+ - Custom Tools (Alpha)
+3. Statistical Analysis Tools frontend for Breeding View
+ - Single Site Analysis
+ - Multi Site Analysis
+ - Meta Analysis for multi-variate
+4. Workflows
+ - Marker Assisted Recurring Selection (MARS)
+ - Conventional Breeding (CB)
+ - Marker Assisted Selection (MAS)
+ - Marker Assisted Backcrossing (MABC)
 
 Checkout this project
 -----------------------
@@ -52,7 +52,7 @@ where `dev-config-dir` is the configuration specific to your build.
 
 The `package` option tells maven to create a packaged .war file you can drop in the IBPWorkflow installation tomcat web-apps directory 
 
-`-DskipTests` is optional, if you want to run unit-tests see To Run Tests section.
+`-DskipTests` is optional, if you want to run unit-tests see [To Run Tests](#to-run-tests) section.
 
 To Run Tests
 --------------

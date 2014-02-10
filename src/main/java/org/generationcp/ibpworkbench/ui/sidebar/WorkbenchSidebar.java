@@ -10,6 +10,7 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.treetable.HierarchicalContainerOrderedWrapper;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -19,6 +20,8 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +33,11 @@ import java.util.Map;
  * Time: 7:22 PM
  * To change this template use File | Settings | File Templates.
  */
+@Configurable
 public class WorkbenchSidebar extends CssLayout {
+    @Autowired
+    private SessionData sessionData;
+
     private WorkbenchSidebarPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
     private Tree sidebarTree;
@@ -53,7 +60,7 @@ public class WorkbenchSidebar extends CssLayout {
 
                 presenter.updateProjectLastOpenedDate();
 
-                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
+                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),sessionData.getSelectedProject());
                 if (listener instanceof LaunchWorkbenchToolAction) {
 
                     ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),event.getComponent().getWindow(),true);
@@ -230,7 +237,7 @@ public class WorkbenchSidebar extends CssLayout {
         } else if (toolName.equals("project_method")) {
             return new OpenProjectMethodsAction(project);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(project);
+            return new OpenProjectLocationAction(project,sessionData.getUserData());
         } else if (toolName.equals("delete_project")) {
             return new DeleteProjectAction();
         } else {

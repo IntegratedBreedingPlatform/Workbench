@@ -10,6 +10,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -44,6 +45,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
 
     // TODO, move to message source
     public final static String NOT_FOLDER = "Selected item is not a folder.";
@@ -179,6 +183,11 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
     public boolean renameGermplasmListFolder(String newName,Integer id) throws Error {
         try {
+
+            if (newName == null || newName.isEmpty()) {
+                throw new Error(messageSource.getMessage(Message.INVALID_CANNOT_RENAME_EMPTY_STRING));
+            }
+
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
             if (!gpList.isFolder())
@@ -218,7 +227,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             
 
             if (id == null) {
-                newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,null,1);
+                newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,null,0);
             }
             else {
                 gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
@@ -229,12 +238,12 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
                     parent = gpList.getParent();
 
                     if (parent == null) {
-                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,null,1);
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,null,0);
                     } else {
-                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,parent,1);
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,parent,0);
                     }
                 } else {
-                    newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",IBPWorkbenchApplication.get().getSessionData().getUserData().getUserid(),folderName,gpList,1);
+                    newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,gpList,0);
                 }
 
             }
@@ -278,9 +287,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
+        /**
         if (!gpList.isFolder()) {
             throw new Error(NOT_FOLDER);
-        }
+        }**/
 
         try {
             if (hasChildren(gpList.getId())) {

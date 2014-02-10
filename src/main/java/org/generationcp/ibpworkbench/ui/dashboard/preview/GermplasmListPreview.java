@@ -9,6 +9,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -46,14 +47,20 @@ import com.vaadin.ui.themes.Reindeer;
  */
 @Configurable
 public class GermplasmListPreview extends VerticalLayout {
+    @Autowired
+    private SessionData sessionData;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
+
     private GermplasmListPreviewPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
     private Tree treeView;
 
     private Project project;
-
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
 
 
     private ThemeResource folderResource;
@@ -63,8 +70,6 @@ public class GermplasmListPreview extends VerticalLayout {
     private HorizontalLayout toolbar;
 
 
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
 
     public static String MY_LIST = "";
     public static String SHARED_LIST = "";
@@ -202,7 +207,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
 
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, IBPWorkbenchApplication.get().getSessionData().getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, sessionData.getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
 
             }
         });
@@ -263,7 +268,7 @@ public class GermplasmListPreview extends VerticalLayout {
                         try {
                             presenter.renameGermplasmListFolder(name.getValue().toString(), (Integer) lastItemId);
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -342,7 +347,7 @@ public class GermplasmListPreview extends VerticalLayout {
                             else
                                 newItem = presenter.addGermplasmListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
@@ -441,7 +446,7 @@ public class GermplasmListPreview extends VerticalLayout {
                                 }
                                 treeView.setImmediate(true);
                             } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
                         }
                     }
@@ -547,6 +552,15 @@ public class GermplasmListPreview extends VerticalLayout {
     public void setToolbarAddButtonEnabled(boolean enabled) {
         addFolderBtn.setEnabled(enabled);
     }
+    
+    /**
+     * Set the Delete button's enabled state.
+     *
+     * @param enabled
+     */
+    public void setToolbarDeleteButtonEnabled(boolean enabled) {
+    	deleteFolderBtn.setEnabled(enabled);
+    }
 
     /**
      * Set the Launch button's enabled state.
@@ -621,6 +635,7 @@ public class GermplasmListPreview extends VerticalLayout {
         } else if (!isFolder) {
             setToolbarButtonsEnabled(false);
             setToolbarAddButtonEnabled(true);
+            setToolbarDeleteButtonEnabled(true);
         } else {
             setToolbarButtonsEnabled(true);
         }
