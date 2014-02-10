@@ -225,12 +225,21 @@ public class SaveUsersInProjectAction implements ClickListener{
             localUser.setAdate(getCurrentDate());
             userId = userDataManager.addUser(localUser);      
 
-            // add a workbench user to ibdb user mapping
+            // add or update a workbench user to ibdb user mapping
             User ibdbUser = userDataManager.getUserById(userId);
-            IbdbUserMap ibdbUserMap = new IbdbUserMap();
-            ibdbUserMap.setWorkbenchUserId(workbenchUser.getUserid());
-            ibdbUserMap.setProjectId(project.getProjectId());
-            ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
+            
+            
+            IbdbUserMap ibdbUserMap;
+            ibdbUserMap = workbenchDataManager.getIbdbUserMap(workbenchUser.getUserid(), project.getProjectId());
+         
+            if (ibdbUserMap != null){
+            	 ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
+            }else{
+            	 ibdbUserMap = new IbdbUserMap();
+                 ibdbUserMap.setWorkbenchUserId(workbenchUser.getUserid());
+                 ibdbUserMap.setProjectId(project.getProjectId());
+                 ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
+            }
             workbenchDataManager.addIbdbUserMap(ibdbUserMap);
             
             usersAccountedFor.put(projectUserRole.getUserId(), localUser.getName());
