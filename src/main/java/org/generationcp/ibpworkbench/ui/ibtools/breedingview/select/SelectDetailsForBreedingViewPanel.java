@@ -590,6 +590,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",trialInstanceFactor});
 					tblEnvironmentSelection.setColumnWidth("select", 45);
 					tblEnvironmentSelection.setColumnWidth("trialno", -1);
+					tblEnvironmentSelection.setWidth("45%");
 					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
 				}else{
 					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno", "environmentName"});
@@ -597,6 +598,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
 					tblEnvironmentSelection.setColumnWidth("select", 45);
 					tblEnvironmentSelection.setColumnWidth("trialno", 60);
 					tblEnvironmentSelection.setColumnWidth("environmentName", 500);
+					tblEnvironmentSelection.setWidth("90%");
 					
 					
 					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
