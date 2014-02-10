@@ -94,7 +94,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private NavUriFragmentChangedListener uriChangeListener;
 
     private WorkbenchSidebar sidebar;
-    private Label loginUserLbl;
+    //private Label loginUserLbl;
 
     //private Button userToolsButton;
 
@@ -368,7 +368,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         headerRightContainer.setSpacing(true);
         headerRightContainer.addStyleName("main-header-right-container");
 
-        loginUserLbl = new Label();
+        //loginUserLbl = new Label();
 
         HorizontalLayout headerRightLinks = new HorizontalLayout();
         headerRightLinks.setSizeUndefined();
@@ -377,11 +377,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         headerRightLinks.addComponent(homeButton);
         headerRightLinks.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
-
-        headerRightLinks.addComponent(new Label("|"));
-
-        headerRightLinks.addComponent(signOutButton);
-        headerRightLinks.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
 
         headerRightLinks.addComponent(new Label("|"));
 
@@ -404,8 +399,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         headerRightLinks.addComponent(helpButton);
         headerRightLinks.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
 
+        headerRightLinks.addComponent(new Label("|"));
+
+        headerRightLinks.addComponent(signOutButton);
+        headerRightLinks.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
+
         headerRightContainer.addComponent(headerRightLinks);
-        headerRightContainer.addComponent(loginUserLbl);
+        //headerRightContainer.addComponent(loginUserLbl);
 
         headerLayout.addComponent(headerRightContainer);
         headerLayout.setComponentAlignment(headerRightContainer, Alignment.MIDDLE_RIGHT);
@@ -522,7 +522,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         messageSource.setCaption(homeButton, Message.HOME);
         //messageSource.setCaption(signOutButton, Message.SIGNOUT);
-        signOutButton.setCaption(messageSource.getMessage(Message.SIGNOUT));
+
+        String signoutName = appSession.getSessionData().getUserData().getPerson().getFirstName();
+        if (signoutName.length() > 10)
+            signoutName = signoutName.substring(0,9) + "...";
+
+        signOutButton.setCaption(messageSource.getMessage(Message.SIGNOUT) + " (" + signoutName + ")");
+        signOutButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
 
         messageSource.setCaption(accountButton, Message.ACCOUNT);
         messageSource.setCaption(toolVersionsButton, Message.TOOL_VERSIONS);
@@ -539,7 +545,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         messageSource.setValue(hint1, Message.USER_GUIDE_1);
 
-        loginUserLbl.setValue(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName() );
+        //loginUserLbl.setValue(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName() );
     }
 
     public WorkbenchSidebar getSidebar() {
