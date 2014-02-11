@@ -14,8 +14,12 @@ package org.generationcp.ibpworkbench.actions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.vaadin.data.Validator;
 import com.vaadin.ui.Component;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
@@ -49,7 +53,10 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     private AddBreedingMethodsWindow window;
     
     private Component projectBreedingMethodsPanel;
-    
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
     public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
@@ -59,13 +66,17 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     
     @Override
     public void buttonClick(ClickEvent event) {
-        newBreedingMethodForm.commit();
+
+        try {
+            newBreedingMethodForm.commit();
+        } catch (Validator.EmptyValueException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),e.getLocalizedMessage());
+            return;
+        }
 
         @SuppressWarnings("unchecked")
         BeanItem<BreedingMethodModel> breedingMethodBean = (BeanItem<BreedingMethodModel>) newBreedingMethodForm.getItemDataSource();
         BreedingMethodModel breedingMethod = breedingMethodBean.getBean();
-
-        newBreedingMethodForm.commit();
 
         //IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
@@ -93,7 +104,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             
             LOG.info(appSession.getSessionData().getProjectBreedingMethodData().toString());
             
-            newBreedingMethodForm.commit();
+            //newBreedingMethodForm.commit();
             
             Method newMethod=new Method();
             newMethod.setMid(newBreedingMethod.getMethodId());
@@ -111,6 +122,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMattr(0);
             newMethod.setMprgn(0);
             newMethod.setReference(0);
+
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             

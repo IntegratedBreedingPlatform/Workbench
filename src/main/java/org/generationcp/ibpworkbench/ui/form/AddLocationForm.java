@@ -73,6 +73,7 @@ public class AddLocationForm extends Form {
         
         locationBean = new BeanItem<LocationModel>(location);
         setItemDataSource(locationBean);
+
         setComponentError(null);
         setFormFieldFactory(new LocationFormFieldFactory(gdm));
         setVisibleItemProperties(Arrays.asList(
@@ -80,6 +81,7 @@ public class AddLocationForm extends Form {
         
         setWriteThrough(false);
         setInvalidCommitted(false);
+        setValidationVisibleOnCommit(false);
     }
     
     @Override

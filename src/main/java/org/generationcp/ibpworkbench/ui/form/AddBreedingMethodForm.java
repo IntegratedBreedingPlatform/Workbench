@@ -70,15 +70,17 @@ public class AddBreedingMethodForm extends Form{
         setLayout(grid);
         
         breedingMethodBean = new BeanItem<BreedingMethodModel>(method);
-        
         setItemDataSource(breedingMethodBean);
+
         setComponentError(null);
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
+
         setVisibleItemProperties(Arrays.asList(
                 new String[] { "methodName", "methodDescription", "methodType", "methodGroup", "methodCode" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
+        setValidationVisibleOnCommit(false);
     }
     
     @Override

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model;
 
+import org.generationcp.middleware.pojos.Location;
+
 import java.io.Serializable;
 
 
@@ -83,15 +85,33 @@ public class LocationModel implements Serializable{
 	}
 
 	public void setCntryid(Integer cntryid) {
-		this.cntryid = cntryid;
-	}
+		this.cntryid = (cntryid != null) ? cntryid : 0;
+    }
 
 	public Integer getLtype() {
 		return ltype;
 	}
 
 	public void setLtype(Integer ltype) {
-		this.ltype = ltype;
-	}
+        this.ltype  = (ltype != null) ? ltype : 0;
+    }
 
+    public Location toLocation() {
+        Location location = new Location();
+        location.setLrplce(0);
+
+        location.setLocid(this.getLocationId());
+        location.setLname(this.getLocationName());
+        location.setLabbr(this.getLocationAbbreviation());
+        location.setLtype(this.getLtype());
+        location.setCntryid(this.getCntryid());
+
+        // defaults
+        location.setNllp(0);
+        location.setSnl1id(0);
+        location.setSnl2id(0);
+        location.setSnl3id(0);
+
+        return location;
+    }
 }
