@@ -4,19 +4,14 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.treetable.HierarchicalContainerOrderedWrapper;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.navigation.NavManager;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,9 +230,9 @@ public class WorkbenchSidebar extends CssLayout {
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
-            return new OpenProjectMethodsAction(project);
+            return new OpenProgramMethodsAction(project);
         } else if (toolName.equals("project_location")) {
-            return new OpenProjectLocationAction(project,sessionData.getUserData());
+            return new OpenProgramLocationsAction(project,sessionData.getUserData());
         } else if (toolName.equals("delete_project")) {
             return new DeleteProjectAction();
         } else {

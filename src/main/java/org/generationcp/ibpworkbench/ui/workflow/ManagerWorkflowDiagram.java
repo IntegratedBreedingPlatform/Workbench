@@ -17,14 +17,10 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
+import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
-import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
-import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
-import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
@@ -36,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, InitializingBean, InternationalizableComponent {
@@ -817,8 +812,8 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
             userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
 
             updateProjectButton.addListener(new OpenUpdateProjectPageAction());
-            projectLocationButton.addListener(new OpenProjectLocationAction(project));
-            projectMethodsButton.addListener(new OpenProjectMethodsAction(project));
+            projectLocationButton.addListener(new OpenProgramLocationsAction(project));
+            projectMethodsButton.addListener(new OpenProgramMethodsAction(project));
             deleteProjectButton.addListener(new DeleteProjectAction());
 
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));

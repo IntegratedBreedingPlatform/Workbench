@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectmethods;
+package org.generationcp.ibpworkbench.ui.programmethods;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
@@ -27,9 +27,9 @@ import java.util.List;
  */
 
 @Configurable
-public class ProjectMethodsPresenter implements InitializingBean {
+public class ProgramMethodsPresenter implements InitializingBean {
     private final Project project;
-    private ProjectMethodsView view;
+    private ProgramMethodsView view;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -42,7 +42,7 @@ public class ProjectMethodsPresenter implements InitializingBean {
     IWorkbenchSession appSession;
 
 
-    public  ProjectMethodsPresenter(ProjectMethodsView view, Project project) {
+    public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
         this.view = view;
         this.project = project;
 
@@ -87,7 +87,7 @@ public class ProjectMethodsPresenter implements InitializingBean {
 
     }
 
-    public List<Method> getSavedProjectMethods() {
+    public List<Method> getSavedProgramMethods() {
         List<Method> result = new ArrayList<Method>();
         try {
            List<Integer> projectMethodsIds = workbenchDataManager.getMethodIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
@@ -117,7 +117,7 @@ public class ProjectMethodsPresenter implements InitializingBean {
         return new ArrayList<Method>();
     }
 
-    public boolean saveProjectMethod(ArrayList<Integer> selectedMethodIds) {
+    public boolean saveProgramMethod(ArrayList<Integer> selectedMethodIds) {
         List<Method> selectedMethods = new ArrayList<Method>();
 
         List<ProjectMethod> projectMethods = null;

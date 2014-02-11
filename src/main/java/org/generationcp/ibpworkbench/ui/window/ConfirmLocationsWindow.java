@@ -15,8 +15,8 @@ import java.util.List;
 
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.ui.projectlocations.LocationTableViewModel;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationTableViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Location;
 
@@ -57,12 +57,12 @@ public class ConfirmLocationsWindow extends Window{
     
     private Table locationsTable;
 
-    private ProjectLocationsController projectLocationsController;
+    private ProgramLocationsPresenter programLocationsPresenter;
     
-    public ConfirmLocationsWindow(Window window, List<Location> existingLocations ,ProjectLocationsController projectLocationsController, ClickListener okButtonListener) {
+    public ConfirmLocationsWindow(Window window, List<Location> existingLocations ,ProgramLocationsPresenter programLocationsPresenter, ClickListener okButtonListener) {
         this.window = window;
         this.existingLocations = existingLocations;
-    	this.projectLocationsController = projectLocationsController;
+    	this.programLocationsPresenter = programLocationsPresenter;
     	this.okButtonListener = okButtonListener;
 
         this.addStyleName(Reindeer.WINDOW_LIGHT);
@@ -122,7 +122,7 @@ public class ConfirmLocationsWindow extends Window{
         BeanItemContainer<LocationTableViewModel> container = new BeanItemContainer<LocationTableViewModel>(LocationTableViewModel.class);
         try {
 			for (Location loc : existingLocations){
-				LocationTableViewModel l = projectLocationsController.getLocationDetailsByLocId(loc.getLocid());
+				LocationTableViewModel l = programLocationsPresenter.getLocationDetailsByLocId(loc.getLocid());
 				container.addItem(l);
 			}
         } catch (MiddlewareQueryException e) {

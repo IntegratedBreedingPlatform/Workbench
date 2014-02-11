@@ -104,12 +104,12 @@
     <view path="/ProgramLocation"
           label="Program Locations"
           level="1"
-          class="org.generationcp.ibpworkbench.actions.OpenProjectLocationAction" />
+          class="org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction" />
     
     <view path="/ProgramMethods"
           label="Program Methods"
           level="1"
-          class="org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction" />
+          class="org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction" />
     
     <view path="/ProjectMembers"
           label="Program Members"

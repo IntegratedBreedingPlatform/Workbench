@@ -13,7 +13,7 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
-import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

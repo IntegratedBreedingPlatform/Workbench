@@ -22,8 +22,9 @@ import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
-import org.generationcp.ibpworkbench.ui.projectmethods.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
+import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
@@ -34,7 +35,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import org.generationcp.ibpworkbench.ui.projectmethods.ProjectMethodsView;
 
 /**
  * 
@@ -133,8 +133,8 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             //TODO: UPDATE THIS CODE
             if (projectBreedingMethodsPanel instanceof  ProjectBreedingMethodsPanel)  {
                 managerFactory = ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getManagerFactory();
-            } else if (projectBreedingMethodsPanel instanceof ProjectMethodsView) {
-                managerFactory = ((ProjectMethodsView)projectBreedingMethodsPanel).getManagerFactory();
+            } else if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
+                managerFactory = ((ProgramMethodsView)projectBreedingMethodsPanel).getManagerFactory();
             }
 
             try {
@@ -156,8 +156,8 @@ public class SaveNewBreedingMethodAction implements ClickListener {
                 ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().setValue(newMethod);
             }
 
-            if (projectBreedingMethodsPanel instanceof  ProjectMethodsView) {
-                ProjectMethodsView pv = (ProjectMethodsView)projectBreedingMethodsPanel;
+            if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
+                ProgramMethodsView pv = (ProgramMethodsView)projectBreedingMethodsPanel;
 
                 try {
                     pv.addRow(newMethod,false,0);

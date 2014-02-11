@@ -13,15 +13,11 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
 
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;

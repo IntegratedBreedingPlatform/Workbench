@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectlocations;
+package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class ProjectLocationsController implements InitializingBean {
+public class ProgramLocationsPresenter implements InitializingBean {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationsController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsPresenter.class);
 	
 	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -38,12 +38,12 @@ public class ProjectLocationsController implements InitializingBean {
     private GermplasmDataManager gdm;
 	private Project project;
 
-    public ProjectLocationsController(Project project) {
+    public ProgramLocationsPresenter(Project project) {
 		this.project = project;
 	}
 	
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProjectLocationsController(Project project,WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
+	public ProgramLocationsPresenter(Project project, WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
 		this.project = project;
 
 		this.workbenchDataManager = workbenchDataManager;
@@ -111,7 +111,7 @@ public class ProjectLocationsController implements InitializingBean {
         }
     }
 	
-	public List<LocationTableViewModel> getSavedProjectLocations() throws MiddlewareQueryException  {
+	public List<LocationTableViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
 		List<LocationTableViewModel> result = new ArrayList<LocationTableViewModel>();
 		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
 		
@@ -165,7 +165,7 @@ public class ProjectLocationsController implements InitializingBean {
         return location;
     }
 		
-public boolean saveProjectLocation(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
+public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(

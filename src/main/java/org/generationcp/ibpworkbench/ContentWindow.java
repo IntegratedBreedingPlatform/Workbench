@@ -4,8 +4,9 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.*;
-import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
-import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
+import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -44,6 +45,11 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
         }
 
         if (content instanceof ComponentContainer) {
+
+            if (content instanceof IContainerFittable) {
+                ((IContainerFittable)content).fitToContainer();
+            }
+
             this.setContent((ComponentContainer)content);
         } else {
             this.addComponent(content);
@@ -99,7 +105,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
                     if (appSession.getSessionData().getSelectedProject() == null)
                         appSession.getSessionData().setSelectedProject(project);
 
-                    new OpenProjectLocationAction(project ,null).doAction(this,"/" + path,false);   // execute
+                    new OpenProgramLocationsAction(project ,null).doAction(this,"/" + path,false);   // execute
 
                     return null;
                 }
@@ -118,7 +124,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
                     if (appSession.getSessionData().getSelectedProject() == null)
                         appSession.getSessionData().setSelectedProject(project);
 
-                    new OpenProjectMethodsAction(project ,null).doAction(this,"/" + path,false);
+                    new OpenProgramMethodsAction(project ,null).doAction(this,"/" + path,false);
 
                     return null;
                 }

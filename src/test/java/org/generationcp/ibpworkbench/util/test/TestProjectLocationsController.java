@@ -1,8 +1,8 @@
 package org.generationcp.ibpworkbench.util.test;
 
 import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
-import org.generationcp.ibpworkbench.ui.projectlocations.LocationTableViewModel;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationTableViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
 import org.generationcp.middleware.hibernate.HibernateSessionProvider;
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class TestProjectLocationsController {
 
-	private static ProjectLocationsController controller;
+	private static ProgramLocationsPresenter controller;
 	
     private static WorkbenchDataManager workbenchDataManager;
 
@@ -69,7 +69,7 @@ public class TestProjectLocationsController {
 		
 			managerFactoryProvider = new DefaultManagerFactoryProvider();
 			
-	        controller = new ProjectLocationsController(p,workbenchDataManager,managerFactoryProvider);
+	        controller = new ProgramLocationsPresenter(p,workbenchDataManager,managerFactoryProvider);
 	        Assert.assertNotNull(controller);
 
 	        break;
@@ -129,7 +129,7 @@ public class TestProjectLocationsController {
 	public void testSaveLocation() {
 		
 		// simualate saving location, you can manually add selected location id's to be saved
-		// controller.saveProjectLocation(selectedLocationIds);
+		// controller.saveProgramLocation(selectedLocationIds);
 	}
 	
 	

@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectlocations;
+package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,15 +17,14 @@ import java.util.List;
 import com.vaadin.data.Validator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
-import org.generationcp.ibpworkbench.ui.projectlocations.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -59,8 +58,8 @@ public class SaveNewLocationAction implements ClickListener{
 
     private AddLocationsWindow window;
 
-    private final ProjectLocationsView projectLocationsView;
-    private final ProjectLocationsController projectLocationsController;
+    private final ProgramLocationsView programLocationsView;
+    private final ProgramLocationsPresenter programLocationsPresenter;
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -72,11 +71,11 @@ public class SaveNewLocationAction implements ClickListener{
     private SessionData sessionData;
 
     public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
-            ProjectLocationsView projectLocationsView, ProjectLocationsController projectLocationsController) {
+            ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
         this.newLocationForm = newLocationForm;
         this.window = window;
-        this.projectLocationsView = projectLocationsView;
-        this.projectLocationsController = projectLocationsController;
+        this.programLocationsView = programLocationsView;
+        this.programLocationsPresenter = programLocationsPresenter;
         
     }
 
@@ -90,11 +89,11 @@ public class SaveNewLocationAction implements ClickListener{
             BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
             LocationModel location = locationBean.getBean();
 
-            List<Location> existingLocations = projectLocationsController.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
+            List<Location> existingLocations = programLocationsPresenter.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
 
             // there exists a location with the same name?
     		if (existingLocations.size() > 0){
-    			new ConfirmLocationsWindow(window, existingLocations ,projectLocationsController, new Button.ClickListener() {
+    			new ConfirmLocationsWindow(window, existingLocations , programLocationsPresenter, new Button.ClickListener() {
 				
 					private static final long serialVersionUID = 1L;
 
@@ -140,8 +139,8 @@ public class SaveNewLocationAction implements ClickListener{
         try {
             Location loc = location.toLocation();
 
-            projectLocationsController.getGermplasmDataManager().addLocation(loc);
- 			projectLocationsView.addToAvailableLocation(loc);
+            programLocationsPresenter.getGermplasmDataManager().addLocation(loc);
+ 			programLocationsView.addToAvailableLocation(loc);
  		} catch (MiddlewareQueryException e1) {
  			e1.printStackTrace();
  		    return;

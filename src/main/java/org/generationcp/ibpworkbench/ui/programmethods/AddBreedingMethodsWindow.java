@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectmethods;
+package org.generationcp.ibpworkbench.ui.programmethods;
 
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -8,8 +8,6 @@ import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
-
-import org.generationcp.ibpworkbench.ui.projectmethods.ProjectMethodsView;
 
 public class AddBreedingMethodsWindow extends Window {
     
@@ -36,7 +34,7 @@ public class AddBreedingMethodsWindow extends Window {
     
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
 
-    public AddBreedingMethodsWindow(ProjectMethodsView projectBreedingMethodsPanel) {
+    public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel) {
         /*
          * Make the window modal, which will disable all other components while
          * it is visible

@@ -9,7 +9,7 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.ui.projectlocations;
+package org.generationcp.ibpworkbench.ui.programlocations;
 
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -18,8 +18,6 @@ import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsController;
-import org.generationcp.ibpworkbench.ui.projectlocations.ProjectLocationsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 
 /**
@@ -42,16 +40,16 @@ public class AddLocationsWindow extends Window{
 
     private VerticalLayout layout;
 
-    private ProjectLocationsController projectLocationsController;
-    private ProjectLocationsView projectLocationsView;
+    private ProgramLocationsPresenter programLocationsPresenter;
+    private ProgramLocationsView programLocationsView;
 
     private GermplasmDataManager gdm;
   
 
-    public AddLocationsWindow(ProjectLocationsView projectLocationsView, ProjectLocationsController projectLocationsController) {
-        this.projectLocationsView = projectLocationsView;
-        this.projectLocationsController = projectLocationsController;
-        this.gdm = projectLocationsController.getGermplasmDataManager();
+    public AddLocationsWindow(ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
+        this.programLocationsView = programLocationsView;
+        this.programLocationsPresenter = programLocationsPresenter;
+        this.gdm = programLocationsPresenter.getGermplasmDataManager();
 
         this.addStyleName(Reindeer.WINDOW_LIGHT);
 
@@ -112,7 +110,7 @@ public class AddLocationsWindow extends Window{
     protected void initializeActions() {
 
        
-        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, projectLocationsView, projectLocationsController));
+        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, programLocationsView, programLocationsPresenter));
         cancelButton.addListener(new CancelLocationAction(this));
         
     }

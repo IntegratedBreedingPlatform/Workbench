@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectlocations;
+package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,7 +13,8 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenProjectLocationAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
+import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -36,7 +37,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class ProjectLocationsView extends CustomComponent implements InitializingBean {
+public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {
 
 	/**
 	 * 
@@ -55,8 +56,8 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	private Button saveBtn;
 	private Button cancelBtn;
 	
-	private ProjectLocationsController projectLocationsController;
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectLocationsView.class);
+	private ProgramLocationsPresenter programLocationsPresenter;
+	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
 	private Field[] fields;
 	private ArrayList<Integer> selectedProjectLocationIds = new ArrayList<Integer>();
 	
@@ -64,32 +65,34 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
     private SimpleResourceBundleMessageSource messageSource;
 
 	private Label resultCountLbl;
-	
-	public ProjectLocationsView(Project project) {
-        this.projectLocationsController = new ProjectLocationsController(project);
+    private  VerticalLayout root;
+    private Table availTable;
+    private Table selTable;
+
+    public ProgramLocationsView(Project project) {
+        this.programLocationsPresenter = new ProgramLocationsPresenter(project);
 	}
 
     @Override
     public void attach() {
         super.attach();
 
-        this.projectLocationsController.onAttachInitialize((IWorkbenchSession) this.getApplication());
+        this.programLocationsPresenter.onAttachInitialize((IWorkbenchSession) this.getApplication());
     }
 	
 	protected void initializeComponents() {
-		final VerticalLayout root = new VerticalLayout();
+        root = new VerticalLayout();
 		root.setSpacing(false);
         root.setMargin(new Layout.MarginInfo(false,true,true,true));
-		
-		final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
 
+        final HorizontalLayout availableLocationsTitleContainer = new HorizontalLayout();
         final Label heading = new Label("Manage Program Locations");
         heading.setStyleName(Bootstrap.Typography.H1.styleName());
-        root.addComponent(heading);
 
         final Label availableLocationsTitle = new Label("Available Locations");
 		availableLocationsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
-		addNewLocationsBtn = new Button("Add New Location");
+
+        addNewLocationsBtn = new Button("Add New Location");
 		addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
         availableLocationsTitleContainer.addComponent(availableLocationsTitle);
@@ -100,12 +103,6 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
         availableLocationsTitleContainer.setWidth("100%");
 		availableLocationsTitleContainer.setMargin(false,true,true,false);	// move this to css
 
-
-		root.addComponent(availableLocationsTitleContainer);
-		root.addComponent(this.buildLocationFilterForm());
-		root.addComponent(this.buildAvailableLocationsTable());
-
-
         final HorizontalLayout selectedLocationsTitleContainer = new HorizontalLayout();
         selectedLocationsTitleContainer.setMargin(true,true,false,false);
 
@@ -114,24 +111,43 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
         selectedLocationsTitleContainer.addComponent(selectedLocationsTitle);
 
+        availTable = this.buildAvailableLocationsTable();
+        availTable.setHeight("250px");
+        selTable = this.buildSelectedLocationsTable();
+        selTable.setHeight("250px");
 
+        root.addComponent(heading);
+        root.addComponent(availableLocationsTitleContainer);
+        root.addComponent(this.buildLocationFilterForm());
+        root.addComponent(availTable);
         root.addComponent(selectedLocationsTitleContainer);
-
-		root.addComponent(this.buildSelectedLocationsTable());
+		root.addComponent(selTable);
 		root.addComponent(this.buildActionButtons());
 
-		this.setCompositionRoot(root);
-	}
+        this.setCompositionRoot(root);
+    }
+
+    @Override
+    public void fitToContainer() {
+        availTable.setHeight("100%");
+        selTable.setHeight("100%");
+
+        root.setExpandRatio(availTable,1.0f);
+        root.setExpandRatio(selTable,1.0f);
+        root.setSizeFull();
+
+        this.setSizeFull();
+    }
 	
 	protected void initializeValues() throws MiddlewareQueryException {
 		/* INITIALIZE FILTER CONTROLS DATA */
 		BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
-		countryContainer.addAll(projectLocationsController.getCountryList());
+		countryContainer.addAll(programLocationsPresenter.getCountryList());
 		countryFilter.setContainerDataSource(countryContainer);
 		countryFilter.setItemCaptionPropertyId("isoabbr");
 		
 		BeanItemContainer<UserDefinedField> locationTypeContainer = new BeanItemContainer<UserDefinedField>(UserDefinedField.class);
-		locationTypeContainer.addAll(projectLocationsController.getLocationTypeList());
+		locationTypeContainer.addAll(programLocationsPresenter.getLocationTypeList());
 		locationTypeFilter.setContainerDataSource(locationTypeContainer);
 		locationTypeFilter.setItemCaptionPropertyId("fname");
 		locationTypeFilter.select(locationTypeFilter.getItemIds().iterator().next());	// select first item
@@ -166,10 +182,10 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		itemContainer2.addContainerProperty("removeBtn",Button.class,null);		
 		try {
 			// add all items to selected table first
-			this.generateRows(projectLocationsController.getSavedProjectLocations(), itemContainer2, false);
+			this.generateRows(programLocationsPresenter.getSavedProgramLocations(), itemContainer2, false);
 			
 			// add all items for available locations table
-			this.generateRows(projectLocationsController.getFilteredResults(null,this.getSelectedLocationTypeIdFromFilter() ,""), itemContainer, true);
+			this.generateRows(programLocationsPresenter.getFilteredResults(null,this.getSelectedLocationTypeIdFromFilter() ,""), itemContainer, true);
 			
 			resultCountLbl.setValue("Result: " + itemContainer.getItemIds().size() + " items");
 			
@@ -199,28 +215,28 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onAddLocationWindowAction(event);
+				ProgramLocationsView.this.onAddLocationWindowAction(event);
 			}
 		});
 
         searchField.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+                ProgramLocationsView.this.onUpdateAvailableTableOnFilter(event);
             }
         });
 
         countryFilter.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+                ProgramLocationsView.this.onUpdateAvailableTableOnFilter(event);
             }
         });
 
         locationTypeFilter.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                ProjectLocationsView.this.onUpdateAvailableTableOnFilter(event);
+                ProgramLocationsView.this.onUpdateAvailableTableOnFilter(event);
             }
         });
 
@@ -230,7 +246,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onSelectAvailableLocation(event);
+				ProgramLocationsView.this.onSelectAvailableLocation(event);
 			}
 		};
 		
@@ -239,7 +255,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onRemoveSavedLocation(event);
+				ProgramLocationsView.this.onRemoveSavedLocation(event);
 			}
 		};
 		
@@ -248,7 +264,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ProjectLocationsView.this.onSaveProjectLocations(event);
+				ProgramLocationsView.this.onSaveProgramLocations(event);
 			}
 		});
 		
@@ -260,7 +276,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 
                 IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
 
-                (new OpenProjectLocationAction(appSession.getSessionData().getLastOpenedProject(),appSession.getSessionData().getUserData())).buttonClick(event);
+                (new OpenProgramLocationsAction(appSession.getSessionData().getLastOpenedProject(),appSession.getSessionData().getUserData())).buttonClick(event);
 			}
 		});
 	}
@@ -380,7 +396,6 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		table.setSelectable(true);
 		table.setMultiSelect(false);
 		
-		table.setHeight("250px");
 		return table;
 	}
 	
@@ -420,7 +435,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	}
 	
 	public void onAddLocationWindowAction(Button.ClickEvent event) {
-		 event.getComponent().getWindow().addWindow(new AddLocationsWindow(this, projectLocationsController));
+		 event.getComponent().getWindow().addWindow(new AddLocationsWindow(this, programLocationsPresenter));
 		
 		LOG.debug("onAddLocationWindowAction:");
 	}
@@ -436,7 +451,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 		Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
 
 		try {
-			List<LocationTableViewModel> results = projectLocationsController.getFilteredResults(cntryId, locationTypeId, locationName);
+			List<LocationTableViewModel> results = programLocationsPresenter.getFilteredResults(cntryId, locationTypeId, locationName);
 			Container container = availableLocationsTable.getContainerDataSource();
 			container.removeAllItems();
 			
@@ -506,11 +521,11 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void onSaveProjectLocations(Button.ClickEvent event) {
+	public void onSaveProgramLocations(Button.ClickEvent event) {
 		try {
-			//projectLocationsController.saveProjectLocation(selectedLocationsTable.getContainerDataSource(), event);
+			//programLocationsPresenter.saveProgramLocation(selectedLocationsTable.getContainerDataSource(), event);
 			
-			if (projectLocationsController.saveProjectLocation(selectedProjectLocationIds) )
+			if (programLocationsPresenter.saveProgramLocation(selectedProjectLocationIds) )
 				MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
 	        
 			
@@ -518,7 +533,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LOG.debug("onSaveProjectLocations:");
+		LOG.debug("onSaveProgramLocations:");
 	}
 
 	private int getSelectedLocationTypeIdFromFilter() {
@@ -610,7 +625,7 @@ public class ProjectLocationsView extends CustomComponent implements Initializin
 	public void addToAvailableLocation(Location loc){
 		
 		try {
-			LocationTableViewModel location = projectLocationsController.getLocationDetailsByLocId(loc.getLocid());
+			LocationTableViewModel location = programLocationsPresenter.getLocationDetailsByLocId(loc.getLocid());
 			addRow(location, (IndexedContainer) selectedLocationsTable.getContainerDataSource(), false);
 		} catch (MiddlewareQueryException e) {
 			// TODO Auto-generated catch block

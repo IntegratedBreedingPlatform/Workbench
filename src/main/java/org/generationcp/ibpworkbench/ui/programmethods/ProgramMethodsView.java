@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.projectmethods;
+package org.generationcp.ibpworkbench.ui.programmethods;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -10,7 +10,8 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenProjectMethodsAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
+import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -34,7 +35,7 @@ import java.util.*;
  */
 
 @Configurable
-public class ProjectMethodsView extends CustomComponent implements InitializingBean {
+public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
     public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 
@@ -51,7 +52,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         columnWidthsMap.put("removeBtn",60);
     }
 
-    private ProjectMethodsPresenter presenter;
+    private ProgramMethodsPresenter presenter;
     private Button addNewMethodBtn;
     private Select groupFilter;
     private Select typeFilter;
@@ -69,9 +70,12 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    private VerticalLayout root;
+    private Table availTbl;
+    private Table selTbl;
 
-    public ProjectMethodsView(Project project) {
-        presenter = new ProjectMethodsPresenter(this,project);
+    public ProgramMethodsView(Project project) {
+        presenter = new ProgramMethodsPresenter(this,project);
     }
 
     @Override
@@ -113,15 +117,14 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     }
 
     private void initalizeComponents() {
-        final VerticalLayout root = new VerticalLayout();
+        root = new VerticalLayout();
         root.setSpacing(false);
         root.setMargin(new Layout.MarginInfo(false,true,true,true));
 
+        final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label heading = new Label("Manage Program Methods");
         heading.setStyleName(Bootstrap.Typography.H1.styleName());
-        root.addComponent(heading);
 
-        final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
         final Label availableMethodsTitle = new Label("Available Methods");
         availableMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
 
@@ -136,10 +139,6 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         availableMethodsTitleContainer.setWidth("100%");
         availableMethodsTitleContainer.setMargin(false,true,true,false);	// move this to css
 
-        root.addComponent(availableMethodsTitleContainer);
-        root.addComponent(this.buildMethodFilterForm());
-        root.addComponent(this.buildAvailableMethodsTable());
-
         final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
         selectedMethodTitleContainer.setMargin(true,true,false,false);
 
@@ -148,11 +147,33 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
 
+        availTbl = this.buildAvailableMethodsTable();
+        selTbl = this.buildSelectedMethodsTable();
+
+        availTbl.setHeight("250px");
+        selTbl.setHeight("250px");
+
+        root.addComponent(heading);
+        root.addComponent(availableMethodsTitleContainer);
+        root.addComponent(this.buildMethodFilterForm());
+        root.addComponent(availTbl);
         root.addComponent(selectedMethodTitleContainer);
-        root.addComponent(this.buildSelectedMethodsTable());
+        root.addComponent(selTbl);
         root.addComponent(this.buildActionButtons());
 
         this.setCompositionRoot(root);
+    }
+
+    @Override
+    public void fitToContainer() {
+        availTbl.setHeight("100%");
+        selTbl.setHeight("100%");
+
+        root.setExpandRatio(availTbl,1.0f);
+        root.setExpandRatio(selTbl,1.0f);
+        root.setSizeFull();
+
+        this.setSizeFull();
     }
 
     private Component buildActionButtons() {
@@ -177,10 +198,11 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
     }
 
     private Component buildMethodFilterForm() {
-        final HorizontalLayout root = new HorizontalLayout();
-        final HorizontalLayout container = new HorizontalLayout();
+        final CssLayout container = new CssLayout();
+        container.addStyleName("loc-filter-bar");
+        container.setSizeUndefined();
+        container.setWidth("100%");
 
-        container.setSpacing(true);
         container.setMargin(new Layout.MarginInfo(false,false,true,false));
 
         groupFilter = new Select();
@@ -203,9 +225,9 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         final Label typeLbl = new Label("Method Type");
         final Label searchLbl = new Label("Search Methods");
 
-        groupLbl.setSizeFull();
-        typeLbl.setSizeFull();
-        searchLbl.setSizeFull();
+        groupLbl.setSizeUndefined();
+        typeLbl.setSizeUndefined();
+        searchLbl.setSizeUndefined();
 
         groupLbl.setStyleName("loc-filterlbl");
         typeLbl.setStyleName("loc-filterlbl");
@@ -238,17 +260,10 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
         container.addComponent(field3);
 
-        root.addComponent(container);
-
         resultCountLbl = new Label("");
         resultCountLbl.setStyleName("loc-resultcnt");
-        //root.addComponent(resultCountLbl);
-        //root.setExpandRatio(resultCountLbl,1.0f);
 
-        root.setSizeFull();
-
-
-        return root;
+        return container;
     }
 
     private Table buildCustomTable(Map<String,Integer> columnWidthMap) {
@@ -318,8 +333,8 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         addNewMethodBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                   //ProjectMethodsView.this.presenter.doAddMethodAction();
-                   event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProjectMethodsView.this));
+                   //ProgramMethodsView.this.presenter.doAddMethodAction();
+                   event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 
             }
         });
@@ -331,7 +346,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
                 availableMethodsTable.getContainerDataSource().removeAllItems();
 
                 try {
-                    ProjectMethodsView.this.generateRows(results,true);
+                    ProgramMethodsView.this.generateRows(results,true);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -351,7 +366,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
                 Item selectedItem = availableMethodsTable.getItem(event.getButton().getData());
 
-                ProjectMethodsView.this.presenter.doMoveToSelectedMethod(Integer.parseInt(selectedItem.getItemProperty("mid").getValue().toString()));
+                ProgramMethodsView.this.presenter.doMoveToSelectedMethod(Integer.parseInt(selectedItem.getItemProperty("mid").getValue().toString()));
 
                 availableMethodsTable.removeItem(selectedItem);
 
@@ -367,7 +382,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
                 Item item = (Item)selectedMethodsTable.getItem(event.getButton().getData());
                 Integer locId = (Integer) item.getItemProperty("mid").getValue();
 
-                ProjectMethodsView.this.presenter.doRemoveSelectedMethod(locId);
+                ProgramMethodsView.this.presenter.doRemoveSelectedMethod(locId);
 
                 selectedMethodsTable.removeItem(event.getButton().getData());
                 selectedMethodIds.remove(locId);
@@ -377,7 +392,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
         saveBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (ProjectMethodsView.this.presenter.saveProjectMethod(selectedMethodIds)) {
+                if (ProgramMethodsView.this.presenter.saveProgramMethod(selectedMethodIds)) {
                     MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
                 } else {    // should never happen
 
@@ -392,7 +407,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
             public void buttonClick(Button.ClickEvent event) {
                 IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
 
-                (new OpenProjectMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
+                (new OpenProgramMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
             }
         });
 
@@ -444,7 +459,7 @@ public class ProjectMethodsView extends CustomComponent implements InitializingB
 
         try {
             // add all items to selected table first
-            this.generateRows(presenter.getSavedProjectMethods(), false);
+            this.generateRows(presenter.getSavedProgramMethods(), false);
 
             // add all items for available locations table
             this.generateRows(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), ""), true);

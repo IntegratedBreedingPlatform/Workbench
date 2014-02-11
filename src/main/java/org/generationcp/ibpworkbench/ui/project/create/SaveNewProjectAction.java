@@ -313,7 +313,7 @@ public class SaveNewProjectAction implements ClickListener{
 //                    //add a project location to workbench
 //                    Set<Location> locations = project.getLocations();
 //                    if ((locations != null) && (!locations.isEmpty())) {
-//                        saveProjectLocation(locations, projectSaved);
+//                        saveProgramLocation(locations, projectSaved);
 //                    }
 
                 } catch (MiddlewareQueryException e) {
