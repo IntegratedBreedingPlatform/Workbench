@@ -33,17 +33,14 @@ An anonymous account may be used to checkout the project.
 
 No username and password is required.  You can also browse the content of the repository using the same URL.  
 
-Prerequisites
-----------------
-
-
-
 Build Dependencies to other projects
 -------------------------------
-
 IBPWorkbench is dependent on Middleware and IBPCommons. See [IBPCommons][ibpcommons_git_link], [IBPMiddleware][ibpmiddleware_git_link] for build instructions on those modules.
-You may also need to install the tools via BMS installers if you need integration with native desktop tools and web apps.
-(See [IBPWorkbenchLauncher][workbench_launcher_git_link] for instructions on building the installers.)
+
+Prerequisites
+----------------
+For successful integration with the native tools and the apps, you need to have an infrastructure, crop-databases and the BMS application installers already configured in your machines.
+See [IBPWorkbenchLauncher][workbench_launcher_git_link] for instructions on obtaining or building the installers.
 
 To Build
 ----------
