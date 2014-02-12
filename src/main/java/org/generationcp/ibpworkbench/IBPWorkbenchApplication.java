@@ -154,12 +154,13 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         if (w instanceof WorkbenchMainView && !jiraSetupDone) {
             // do script injection
             // attempt to add feedback js
-            final String jiraRatingsJSSrc ="http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=3bcb8466";
-            final String jiraSupportJSSrc = "http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=65ebc55b";
+            //final String jiraRatingsJSSrc ="http://jira.efficio.us.com/s/d41d8cd98f00b204e9800998ecf8427e/en_US-4nkfpc-1988229788/6144/3/1.4.0-m6/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=3bcb8466";
+            final String jiraSupportJSSrc = "https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";
 
             String script = "try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
-            w.executeJavaScript(String.format(script, jiraRatingsJSSrc) + String.format(script, jiraSupportJSSrc));
+            //w.executeJavaScript(String.format(script, jiraRatingsJSSrc) + String.format(script, jiraSupportJSSrc));
+            w.executeJavaScript(String.format(script, jiraSupportJSSrc));
 
             this.jiraSetupDone = true;
         }
