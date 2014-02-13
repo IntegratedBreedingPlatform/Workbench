@@ -113,7 +113,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
             messageSource.setCaption(field, Message.USER_ACC_MIDNAME);
             field.setRequired(false);
             //field.setRequiredError("Please enter a Middle Initial.");
-            field.addValidator(new StringLengthValidator("Middle Initial must be 1-15 characters.", 1, 15, false));
+            field.addValidator(new StringLengthValidator("Middle Name must be 1-15 characters.", 1, 15, false));
         } else if ("email".equals(propertyId)) {
             messageSource.setCaption(field, Message.USER_ACC_EMAIL);
             field.setRequired(true);
