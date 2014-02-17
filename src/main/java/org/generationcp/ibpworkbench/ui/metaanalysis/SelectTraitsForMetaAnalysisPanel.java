@@ -76,7 +76,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	private Property.ValueChangeListener selectAllFactorsListener;
 	private Property.ValueChangeListener selectAllTraitsListener;
 	
-    private Button btnCancel;
+    private Button btnBack;
+    private Button btnReset;
     private Button btnNext;
     private Component buttonArea;
 	
@@ -549,19 +550,21 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	        buttonLayout.setSpacing(true);
 	        buttonLayout.setMargin(true);
 	        
-	        btnCancel = new Button();
+	        btnBack = new Button();
+	        btnReset = new Button();
 	        btnNext = new Button();
 	        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 	   
-	        buttonLayout.addComponent(btnCancel);
+	        buttonLayout.addComponent(btnBack);
+	        buttonLayout.addComponent(btnReset);
 	        buttonLayout.addComponent(btnNext);
-	        buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+	        buttonLayout.setComponentAlignment(btnBack, Alignment.TOP_CENTER);
 	        buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
 	        return buttonLayout;
 	    }
 	 
 	 protected void initializeActions() {
-	    	btnCancel.addListener(new Button.ClickListener() {
+	    	btnBack.addListener(new Button.ClickListener() {
 				
 				private static final long serialVersionUID = 1L;
 
@@ -570,6 +573,18 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 					IContentWindow window = (IContentWindow) event.getComponent().getWindow();
 					selectDatasetsForMetaAnalysisPanel.setParent(null);
 					window.showContent(selectDatasetsForMetaAnalysisPanel);
+				}
+			});
+	    	
+	    	btnReset.addListener(new Button.ClickListener() {
+				
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					chkSelectAllVariates.setValue(false);
+					chkSelectAllFactors.setValue(false);
+					chkSelectAllEnvironments.setValue(true);
 				}
 			});
 	    	
@@ -755,7 +770,8 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	@Override
 	public void updateLabels() {
 		
-		messageSource.setCaption(btnCancel, Message.BACK);
+		messageSource.setCaption(btnBack, Message.BACK);
+		messageSource.setCaption(btnReset, Message.RESET);
         messageSource.setCaption(btnNext, Message.EXPORT_DATA);
         messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
 		messageSource.setValue(lblSelectEnvVarForAnalysis, Message.META_SELECT_ENV_VAR_FOR_ANALYSIS);
