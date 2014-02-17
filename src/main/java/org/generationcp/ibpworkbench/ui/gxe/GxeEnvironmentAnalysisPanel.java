@@ -44,7 +44,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.springframework.beans.factory.InitializingBean;
@@ -88,14 +87,13 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     private Integer currentDataSetId;
     
     private String currentDatasetName;
-    
-    private Role role;
 
     private String selectedEnvFactorName;
     private String selectedEnvGroupFactorName;
     private String selectedGenotypeFactorName;
     
-    private Button btnCancel;
+    private Button btnBack;
+    private Button btnReset;
     private Button btnRunBreedingView;
     private Map<String, Boolean> variatesCheckboxState;
     private GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel;
@@ -295,7 +293,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     	
     	
     	btnRunBreedingView = new Button();
-		btnCancel = new Button();    	
+		btnBack = new Button();  
+		btnReset = new Button(); 
         
     }
 
@@ -339,6 +338,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 			txtSelectedEnvironmentGroupFactor.setValue(getSelectedEnvGroupFactorName());
 			
 			Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener(){
+				
+				private static final long serialVersionUID = 1L;
 
 				@Override
 				public void valueChange(ValueChangeEvent event) {
@@ -373,6 +374,9 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		IndexedContainer container = new IndexedContainer();
 		
 		Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
+		
+			private static final long serialVersionUID = -1109780465477901066L;
+
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				Boolean val = (Boolean) event.getProperty().getValue();
@@ -539,7 +543,6 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 								"GxE files saved",
 								"Successfully generated the means dataset and xml input files for breeding view.");
 		            } catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						MessageNotifier
 						.showMessage(windowSource,
@@ -553,7 +556,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		});
 		
 		
-		btnCancel.addListener(new Button.ClickListener() {
+		btnBack.addListener(new Button.ClickListener() {
 			
 			private static final long serialVersionUID = 1L;
 
@@ -564,6 +567,18 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					.getStudiesTabsheet();
 				tabSheet.replaceComponent(tabSheet.getSelectedTab(), gxeSelectEnvironmentPanel);
 					
+			}
+		});
+		
+		btnReset.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				
+				chkSelectAllTraits.setValue(true);
+				chkSelectAllEnvironments.setValue(true);
 			}
 		});
 		
@@ -588,7 +603,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
         
         buttonLayout.addComponent(spacer);
         buttonLayout.setExpandRatio(spacer,1.0F);
-        buttonLayout.addComponent(btnCancel);
+        buttonLayout.addComponent(btnBack);
+        buttonLayout.addComponent(btnReset);
         buttonLayout.addComponent(btnRunBreedingView);
 
         return buttonLayout;
@@ -622,7 +638,8 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     
     @Override
     public void updateLabels() {
-        messageSource.setCaption(btnCancel, Message.CANCEL);
+        messageSource.setCaption(btnBack, Message.BACK);
+        messageSource.setCaption(btnReset, Message.RESET);
         messageSource.setCaption(btnRunBreedingView, Message.LAUNCH_BREEDING_VIEW);
         messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.GXE_SELECTED_INFO);
         messageSource.setValue(lblDatasetName , Message.BV_DATASET_NAME);

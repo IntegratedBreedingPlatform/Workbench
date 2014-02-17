@@ -156,7 +156,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             
 
             w.showContent(new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory()));
+                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory(), selectDatasetForBreedingViewPanel));
             
             
 
