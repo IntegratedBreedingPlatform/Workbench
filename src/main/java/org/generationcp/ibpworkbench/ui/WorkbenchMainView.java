@@ -236,9 +236,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         crumbTrailContainer.setWidth("100%");
         crumbTrailContainer.setHeight("28px");
 
-
+        collapseButton.setHeight("100%");
         crumbTrailContainer.addComponent(collapseButton);
-        crumbTrailContainer.setComponentAlignment(collapseButton,Alignment.MIDDLE_CENTER);
+        //crumbTrailContainer.setComponentAlignment(collapseButton,Alignment.MIDDLE_CENTER);
         crumbTrailContainer.addComponent(crumbTrail);
         crumbTrailContainer.setExpandRatio(crumbTrail,1.0F);
         crumbTrailContainer.setComponentAlignment(crumbTrail,Alignment.MIDDLE_LEFT);

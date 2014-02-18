@@ -159,5 +159,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .loc-filter-bar { margin-bottom: 6px }
 .loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }
 
-.v-button-collapse-btn {margin-left:10px}
+
+.v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 5px; padding-right: 5px}
 .v-button-collapse-btn .v-button-caption {font-size:18px}
+.v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3}
+.v-button-collapse-btn .v-button-wrap {margin-top:3px}
