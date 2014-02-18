@@ -500,12 +500,12 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setParent(parentList.getId(), MY_LIST);
             boolean hasChildList = getPresenter().hasChildList(parentList.getId());
 
-            if (!hasChildList && !parentList.isFolder()) {
-                treeView.setChildrenAllowed(parentList.getId(), false);
-                treeView.setItemIcon(parentList.getId(), leafResource);
+            treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+            
+            if (parentList.isFolder()) {
+            	treeView.setItemIcon(parentList.getId(), folderResource);
             } else {
-                treeView.setChildrenAllowed(parentList.getId(), true);
-                treeView.setItemIcon(parentList.getId(), folderResource);
+                treeView.setItemIcon(parentList.getId(), leafResource);
             }
 
             treeView.setSelectable(true);
@@ -516,12 +516,12 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setParent(parentList.getId(), SHARED_LIST);
             boolean hasChildList = getPresenter().hasChildList(parentList.getId());
 
-            if (!hasChildList && !parentList.isFolder()) {
-                treeView.setChildrenAllowed(parentList.getId(), false);
-                treeView.setItemIcon(parentList.getId(), leafResource);
+            treeView.setChildrenAllowed(parentList.getId(), hasChildList);
+            
+            if (parentList.isFolder()) {
+            	treeView.setItemIcon(parentList.getId(), folderResource);
             } else {
-                treeView.setChildrenAllowed(parentList.getId(), true);
-                treeView.setItemIcon(parentList.getId(), folderResource);
+                treeView.setItemIcon(parentList.getId(), leafResource);
             }
 
             treeView.setSelectable(true);
@@ -582,15 +582,12 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setParent(listChild.getId(), parentGermplasmListId);
             // allow children if list has sub-lists
 
-            ThemeResource resource = folderResource;
-            if (!hasChildList && !listChild.isFolder()) {
-                resource = leafResource;
-                treeView.setChildrenAllowed(listChild.getId(), false);
-            } else {
-                treeView.setChildrenAllowed(listChild.getId(), true);
+            treeView.setChildrenAllowed(listChild.getId(), hasChildList);
+            
+            ThemeResource resource = leafResource;
+            if (listChild.isFolder()) {
+                resource = folderResource;
             }
-
-
             treeView.setItemIcon(listChild.getId(), resource);
             treeView.setSelectable(true);
 
