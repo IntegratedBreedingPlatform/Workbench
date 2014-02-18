@@ -158,3 +158,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .helpPopup #help_mail { text-decoration: none; }
 .loc-filter-bar { margin-bottom: 6px }
 .loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }
+
+.v-button-collapse-btn {margin-left:10px}
+.v-button-collapse-btn .v-button-caption {font-size:18px}

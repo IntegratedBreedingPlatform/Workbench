@@ -17,6 +17,7 @@ import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
@@ -94,6 +95,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private NavUriFragmentChangedListener uriChangeListener;
 
     private WorkbenchSidebar sidebar;
+    private Button collapseButton;
     //private Label loginUserLbl;
 
     //private Button userToolsButton;
@@ -175,6 +177,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
+
+        collapseButton = new Button("<span class='glyphicon icon-menu'></span>");
+        collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " collapse-btn");
+        collapseButton.setHtmlContentAllowed(true);
+        collapseButton.setDescription("Collapse Sidebar");
+
         crumbTrail = new CrumbTrail();
         //crumbTrail.setMargin(true, true, true, true);
         crumbTrail.setSpacing(false);
@@ -222,14 +230,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
 
-
-
+        // Breadcrumb Tinapay
         final HorizontalLayout crumbTrailContainer = new HorizontalLayout();
         crumbTrailContainer.setStyleName("gcp-crumbtrail");
         crumbTrailContainer.setWidth("100%");
         crumbTrailContainer.setHeight("28px");
+
+
+        crumbTrailContainer.addComponent(collapseButton);
+        crumbTrailContainer.setComponentAlignment(collapseButton,Alignment.MIDDLE_CENTER);
         crumbTrailContainer.addComponent(crumbTrail);
+        crumbTrailContainer.setExpandRatio(crumbTrail,1.0F);
         crumbTrailContainer.setComponentAlignment(crumbTrail,Alignment.MIDDLE_LEFT);
+
 
         mainContent.addComponent(crumbTrailContainer);
 
@@ -278,6 +291,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             @Override
             public void windowClose(CloseEvent closeEvent) {
                 IBPWorkbenchApplication.get().toggleJira();
+            }
+        });
+
+        collapseButton.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent clickEvent) {
+                if ( contentAreaSplitPanel.getSplitPosition() > 0)
+                    contentAreaSplitPanel.setSplitPosition(0);
+                else
+                    contentAreaSplitPanel.setSplitPosition(360);
             }
         });
 
@@ -471,7 +495,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
             contentAreaSplitPanel.setSplitPosition(360,Sizeable.UNITS_PIXELS);
         else
-            contentAreaSplitPanel.setSplitPosition(5,Sizeable.UNITS_PIXELS);
+            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
     }
 
     public CrumbTrail getCrumbTrail() {
@@ -492,9 +516,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         updateLabels();
     }
-
-
-
 
     public void addTitle(String myTitle)
     {
