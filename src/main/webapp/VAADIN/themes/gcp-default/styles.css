@@ -45,9 +45,10 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked{height:0 !important}
 
 /* Workbench Main */
-.gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin-left:20px;color:#dde5ec}
+.gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin:16px 0px 0px 20px;color:#dde5ec}
 .gcp-window-title H1{text-transform:uppercase;font-size:20px;display:inline-block;color:#dde5ec;font-weight:100}
-.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE}
+.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE;margin:16px 0px 0px 0px;}
+.gcp-window-title H3{text-transform:uppercase;font-size:20px;display:block;color:#dde5ec;font-weight:100;margin:0px 0px 0px 20px;}
 .gcp-window-title{font-size:20px;color:#dde5ec}
 .gcp-dashboard-main>div{overflow-y:auto !important}
 

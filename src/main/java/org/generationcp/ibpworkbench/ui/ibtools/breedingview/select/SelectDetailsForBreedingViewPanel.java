@@ -16,17 +16,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.ContentWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -81,6 +84,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private static final String ROW_FACTOR = "row in layout";
     private static final String COLUMN_FACTOR = "column in layout";
     
+    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel;
+    
     private Label lblPageTitle;
     private Label lblTitle;
     private Label lblDatasetName;
@@ -108,7 +113,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Label lblSpecifyDesignDetailsHeader;
     private Label lblSpecifyGenotypesHeader;
     private Button btnRun;
-    private Button btnCancel;
+    private Button btnReset;
+    private Button btnBack;
     private TextField txtVersion;
     private TextField txtProjectType;
     private TextField txtAnalysisName;
@@ -149,7 +155,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     private Property.ValueChangeListener footerCheckBoxListener;
 
     public SelectDetailsForBreedingViewPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory) {
+            ,Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
@@ -157,6 +163,7 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         this.project = project;
         this.studyDataManager = studyDataManager;
         this.managerFactory = managerFactory;
+        this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewPanel;
 
         setWidth("100%");
         
@@ -485,7 +492,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         
         btnRun = new Button();
         btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        btnCancel = new Button();
+        btnReset = new Button();
+        btnBack = new Button();
     }
 
     
@@ -782,9 +790,10 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
        
         HorizontalLayout combineLayout2 = new HorizontalLayout();
         combineLayout2.setSpacing(true);
-        combineLayout2.addComponent(btnCancel);
+        combineLayout2.addComponent(btnBack);
+        combineLayout2.addComponent(btnReset);
         combineLayout2.addComponent(btnRun);
-        combineLayout2.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+        combineLayout2.setComponentAlignment(btnReset, Alignment.TOP_CENTER);
         combineLayout2.setComponentAlignment(btnRun, Alignment.TOP_CENTER);
         mainLayout.addComponent(combineLayout2);
         mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
@@ -806,7 +815,23 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
     }
 
     protected void initializeActions() {
-       btnCancel.addListener(new Button.ClickListener() {
+    	
+    	btnBack.addListener(new Button.ClickListener() {
+ 			
+    			private static final long serialVersionUID = 3878612968330447329L;
+
+    				@Override
+    				public void buttonClick(ClickEvent event) {
+    					
+    				IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+    				selectDatasetForBreedingViewPanel.setParent(null);
+    				w.showContent(selectDatasetForBreedingViewPanel);
+    				
+    					
+    				}
+    			});
+    	
+       btnReset.addListener(new Button.ClickListener() {
 			
 		private static final long serialVersionUID = 3878612968330447329L;
 
@@ -926,7 +951,8 @@ public class SelectDetailsForBreedingViewPanel extends VerticalLayout implements
         messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
         messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
-        messageSource.setCaption(btnCancel, Message.RESET);
+        messageSource.setCaption(btnReset, Message.RESET);
+        messageSource.setCaption(btnBack, Message.BACK);
         
         messageSource.setValue(lblTitle, Message.BV_TITLE);
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
