@@ -582,8 +582,14 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 
 				@Override
 				public void buttonClick(ClickEvent event) {
+		
+					chkSelectAllVariates.setValue(true);
 					chkSelectAllVariates.setValue(false);
+					
+					chkSelectAllFactors.setValue(true);
 					chkSelectAllFactors.setValue(false);
+					
+					
 					chkSelectAllEnvironments.setValue(true);
 				}
 			});
