@@ -521,7 +521,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     {
 
         if (myTitle != null && !myTitle.isEmpty()) {
-            myTitle = ": <h3>" + myTitle +"</h3>";
+            myTitle = "<h3>" + myTitle +"</h3>";
         } else {
             myTitle = "";
         }
