@@ -98,14 +98,14 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
 
-                            // go back to dashboard
-                            (new HomeAction()).doAction(window, "/Home", true);
-
                         } catch (MiddlewareQueryException e) {
-                            // TODO Auto-generated catch block
-                            MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
+                            //MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
                             e.printStackTrace();
                         }
+
+                        // go back to dashboard
+                        (new HomeAction()).doAction(window, "/Home", true);
+
                     }
 
 
