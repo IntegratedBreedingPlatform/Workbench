@@ -148,6 +148,7 @@ public class NurseryListPreview extends VerticalLayout {
         treeView.addListener(new NurseryListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
         treeView.setImmediate(true);
+        treeView.setNullSelectionAllowed(false);
 
     }
 
