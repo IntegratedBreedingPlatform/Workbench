@@ -168,18 +168,20 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     private void updateVariatesTable(List<VariateModel> variateList){
  	   
+    	//reset
     	selectDatasetForBreedingViewPanel.getVariatesCheckboxState().clear();
-        
+    	selectDatasetForBreedingViewPanel.setNumOfSelectedVariates(0);
+    	selectDatasetForBreedingViewPanel.toggleNextButton(false);
+    	
+    	//load data
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
         container.setBeanIdProperty("id");
         
         for (VariateModel v : variateList ){
       	   container.addBean(v);
       	   selectDatasetForBreedingViewPanel.getVariatesCheckboxState().put(v.getName(), v.getActive());
-         }
-        
+        }
         tblVariates.setContainerDataSource(container);
-        
         tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
         tblVariates.setColumnHeaders(new String[]{"","Name", "Description", "Scale"});
     }

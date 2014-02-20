@@ -45,10 +45,10 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked{height:0 !important}
 
 /* Workbench Main */
-.gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin:16px 0px 0px 20px;color:#dde5ec}
+.gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin:0px 0px 0px 20px;color:#dde5ec}
 .gcp-window-title H1{text-transform:uppercase;font-size:20px;display:inline-block;color:#dde5ec;font-weight:100}
-.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE;margin:16px 0px 0px 0px;}
-.gcp-window-title H3{text-transform:uppercase;font-size:20px;display:block;color:#dde5ec;font-weight:100;margin:0px 0px 0px 20px;}
+.gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE;margin:0px 0px 0px 0px;}
+.gcp-window-title H3{text-transform:uppercase;font-size:18px;display:block;color:#dde5ec;font-weight:100;margin:0px 0px 0px 20px;}
 .gcp-window-title{font-size:20px;color:#dde5ec}
 .gcp-dashboard-main>div{overflow-y:auto !important}
 
@@ -158,3 +158,9 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .helpPopup #help_mail { text-decoration: none; }
 .loc-filter-bar { margin-bottom: 6px }
 .loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }
+
+
+.v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 5px; padding-right: 5px}
+.v-button-collapse-btn .v-button-caption {font-size:18px}
+.v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3}
+.v-button-collapse-btn .v-button-wrap {margin-top:3px}

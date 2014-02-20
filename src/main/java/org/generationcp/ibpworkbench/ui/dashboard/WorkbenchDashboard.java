@@ -266,7 +266,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
     private Component layoutProjectTableArea() {
         final HorizontalSplitPanel root = new HorizontalSplitPanel();
-        root.setSplitPosition(529,UNITS_PIXELS,true);
+        root.setSplitPosition(450,UNITS_PIXELS,true);
         root.setStyleName(Reindeer.SPLITPANEL_SMALL + " gcp-program-table-area");
 
         final VerticalLayout programArea = new VerticalLayout();

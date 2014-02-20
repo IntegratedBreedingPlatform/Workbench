@@ -225,9 +225,11 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         	
         	checkIfUnique(folderName);
             
+        	Integer userId = manager.getLocalIbdbUserId(sessionData.getUserData().getUserid(),
+        								sessionData.getSelectedProject().getProjectId());
 
             if (id == null) {
-                newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,null,0);
+                newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",userId,folderName,null,0);
             }
             else {
                 gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
@@ -238,12 +240,12 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
                     parent = gpList.getParent();
 
                     if (parent == null) {
-                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,null,0);
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",userId,folderName,null,0);
                     } else {
-                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,parent,0);
+                        newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",userId,folderName,parent,0);
                     }
                 } else {
-                    newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",sessionData.getUserData().getUserid(),folderName,gpList,0);
+                    newList = new GermplasmList(null,folderName,Long.valueOf((new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime())),"FOLDER",userId,folderName,gpList,0);
                 }
 
             }
