@@ -176,8 +176,6 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 		table.setHeight("200px");
 		
 		upload = new Upload("Or upload an IB local backup file here:",null);
-		
-		
     }
 
     protected void initializeLayout() {

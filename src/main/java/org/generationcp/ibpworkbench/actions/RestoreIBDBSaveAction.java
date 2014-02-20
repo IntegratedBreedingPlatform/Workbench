@@ -41,7 +41,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 	
 	private Window sourceWindow;
 	//private Select select;
-	private Table table;
+    private ProjectBackup pb;
 	
 	
 	@Autowired
@@ -59,11 +59,18 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 	private static final String BACKUP_DIR = "backup";
 	
 	public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
-		//this.select = select;
-		this.table = table;
+        pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
+
 		this.sourceWindow = sourceWindow;
 		this.project = project;
 	}
+
+    public RestoreIBDBSaveAction(Project project, ProjectBackup pb,Window sourceWindow) {
+        //this.select = select;
+        this.pb = pb;
+        this.sourceWindow = sourceWindow;
+        this.project = project;
+    }
 		
 	@Override
 	public void onClose(ConfirmDialog dialog) {
@@ -73,13 +80,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 			//sourceWindow = event.getButton().getWindow();
 
 			try {
-				ProjectBackup pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
-			
+
 				mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
 				
 				MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 				
-				sourceWindow.getParent().removeWindow(sourceWindow);
+				//sourceWindow.getParent().removeWindow(sourceWindow);
 				
 				LOG.debug("selected backup: " + pb.getProjectBackupId());
 			
@@ -143,7 +149,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 		MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 		
 		// close the window
-		sourceWindow.getParent().removeWindow(sourceWindow);
+		//sourceWindow.getParent().removeWindow(sourceWindow);
 	}
 
 	

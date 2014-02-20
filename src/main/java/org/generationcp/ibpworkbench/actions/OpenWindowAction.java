@@ -190,6 +190,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		windowCaption = mywindow.getCaption();
     	}
+        /*
     	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
     	{
     		//LOG.debug("Add Backup IBDB Window");
@@ -216,6 +217,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		windowLaunched = true;
     		
     	}
+    	*/
     	else if (WindowEnum.USER_TOOLS.getwindowName().equals(windowName)) {
     		mywindow = new UserToolsManagerWindow();
     		window.addWindow(mywindow);

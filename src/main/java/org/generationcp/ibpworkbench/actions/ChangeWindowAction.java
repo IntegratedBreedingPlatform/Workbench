@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.ui.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -65,6 +66,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,BV_META_ANALYSIS("bv_meta_analysis")
         ,MBDT("mbdt")
         ,MEMBER("member")
+        ,RECOVERY("recovery")
         ;
 
         String windowName;
@@ -205,7 +207,11 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
             w.showContent(projectLocationPanel);
             NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
 
-        } else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
+        } else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
+            w.showContent(new BackupAndRestoreView());
+            NavManager.navigateApp(window,"/recovery",isLinkAccessed);
+        }
+        else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 
 
             try {
