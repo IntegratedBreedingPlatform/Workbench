@@ -334,6 +334,7 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 				// "/Home", true);
 				SelectDatasetForBreedingViewPanel.this
 						.refreshStudyTreeTable(Database.LOCAL);
+				toggleNextButton(false);
 			}
 		});
 		openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(
