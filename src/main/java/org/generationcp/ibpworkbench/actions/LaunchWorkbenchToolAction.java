@@ -389,7 +389,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 // we need to reconfigure and deploy the GermplasmBrowser webapp too
                 if (Util.isOneOf(tool.getToolName()
                                  ,ToolName.bm_list_manager.name()
-                                 ,ToolName.bm_list_manager_main.name()
+                                 //,ToolName.bm_list_manager_main.name()
                                  ,ToolName.crossing_manager.name()
                                  ,ToolName.germplasm_import.name()
                                  ,ToolName.list_manager.name()
@@ -510,7 +510,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     }
                     else if (running) {
                         // reload the webapp
-                        tomcatUtil.reloadWebApp(contextPath);
+                        //tomcatUtil.reloadWebApp(contextPath);
                     }
                     else {
                         // start the webapp
