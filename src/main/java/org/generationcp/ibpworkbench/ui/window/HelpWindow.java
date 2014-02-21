@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Properties;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -47,6 +49,10 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     private SimpleResourceBundleMessageSource messageSource;
     
     @Autowired
+    @Qualifier("workbenchProperties")
+    private Properties workbenchProperties;
+    
+    @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
 	public HelpWindow() {    	
@@ -71,7 +77,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
 		
 		rootLayout = this.getContent();
 		
-		Label version = new Label(WorkbenchMainView.VERSION);
+		Label version = new Label(workbenchProperties.getProperty("workbench.version", ""));
 		version.setStyleName("gcp-version");
 		rootLayout.addComponent(version);
         
