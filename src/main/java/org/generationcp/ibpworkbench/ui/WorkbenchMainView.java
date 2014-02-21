@@ -12,8 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import com.vaadin.terminal.Paintable;
-import com.vaadin.ui.*;
+import java.util.Properties;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -27,9 +27,9 @@ import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.navigation.CrumbTrail;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -43,11 +43,24 @@ import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -56,7 +69,6 @@ import com.vaadin.ui.themes.Reindeer;
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
 
-    public static final String VERSION = "2.0.7";
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
@@ -73,6 +85,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     @Autowired
     private SessionData sessionData;
+    
+    @Autowired
+    @Qualifier("workbenchProperties")
+    private Properties workbenchProperties;
 
     private Label actionsTitle;
     //private Button createProjectButton;
@@ -527,7 +543,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
 
-        String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION+ "</h2> " + myTitle;
+        String version = workbenchProperties.getProperty("workbench.version", "");
+        String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + version + "</h2> " + myTitle;
         workbenchTitle.setValue(title);
         workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
