@@ -1,24 +1,25 @@
 package org.generationcp.ibpworkbench.ui.recovery;
 
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 
 /**
@@ -37,6 +38,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     private SimpleResourceBundleMessageSource messageSource;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    @Autowired
+    private ToolUtil toolUtil;
 
     private final Panel root = new Panel();
 
@@ -86,7 +89,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             restoreBtn.setEnabled(false);
     }
 
-
+    /**
+     * If possible, move to a controller class in the future
+     */
     public void initializeActions() {
         final BackupIBDBSaveAction backupAction = new BackupIBDBSaveAction(sessionData.getLastOpenedProject(),this.getWindow()) {
             @Override
@@ -112,19 +117,70 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             @Override
             public void onClose(ConfirmDialog dialog) {
                 super.onClose(dialog);
-                BackupAndRestoreView.this.populateRestoreList();
+
+                if (dialog.isConfirmed()) {
+                    BackupAndRestoreView.this.populateRestoreList();
+                    // attempt to close native apps
+                    try {
+                        toolUtil.closeAllNativeTools();
+                    } catch (IOException e) {
+                        e.printStackTrace();    // internal error, something happend
+                    }
+                }
             }
+
+            /*
+            @Override
+            public void uploadSucceeded(final Upload.SucceededEvent event) {
+                try {
+                    doFileUploadAndValidate();
+
+                    String restoreDescMessageFormat = "%s<br/><br/><b style='color:red'>%s</b>";
+                    ConfirmDialog dialog = ConfirmDialog.show(event.getComponent().getWindow(),
+                            messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
+                            String.format(restoreDescMessageFormat,
+                                    messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
+                                    messageSource.getMessage("RESTORE_BMS_WARN")),
+                            messageSource.getMessage(Message.RESTORE),
+                            messageSource.getMessage(Message.CANCEL),
+                            new ConfirmDialog.Listener() {
+                                @Override
+                                public void onClose(ConfirmDialog dialog) {
+                                    // do upload scenario
+                                    if (dialog.isConfirmed()) {
+                                        try {
+                                            doSQLFileRestore();
+                                        } catch (MiddlewareQueryException e) {
+                                            MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), e.getMessage());
+                                        }
+                                    }
+                                }
+                            });
+                    dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
+
+                } catch (IOException e) {
+                    MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
+                }
+
+                // notify user of success
+                MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
+            }  */
         };
 
         restoreBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                ConfirmDialog.show(clickEvent.getComponent().getWindow(),
+                String restoreDescMessageFormat = "%s<br/><br/><b style='color:red'>%s</b>";
+                ConfirmDialog dialog = ConfirmDialog.show(clickEvent.getComponent().getWindow(),
                         messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
-                        messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
+                        String.format(restoreDescMessageFormat,
+                                messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
+                                messageSource.getMessage("RESTORE_BMS_WARN")),
                         messageSource.getMessage(Message.RESTORE),
                         messageSource.getMessage(Message.CANCEL),
                         restoreAction);
+                dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
+
             }
         });
 
@@ -135,6 +191,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     public void initializeLayout() {
         backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        uploadFrm.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         restoreList.setWidth("350px");
 
         final Label backupTitle = new Label(messageSource.getMessage("BACKUP_BMS_TITLE"));

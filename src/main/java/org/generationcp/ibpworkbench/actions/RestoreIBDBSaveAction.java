@@ -39,7 +39,7 @@ import com.vaadin.ui.Window;
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, SucceededListener, InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 	
-	private Window sourceWindow;
+	protected Window sourceWindow;
 	//private Select select;
     private ProjectBackup pb;
 	
@@ -120,9 +120,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 		ProjectBackup pb;
 		try {
 			FileUtils.copyFile(tmpFile,destFile);
-			pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
+			//pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
 		
-			mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));			
+			//mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
 		
 			 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
              User user = app.getSessionData().getUserData();
@@ -139,10 +139,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 			MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		} catch (SQLException e) {
+		} /*catch (SQLException e) {
 			LOG.error(e.getMessage());
 			MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		}
+		}   */
 		
 
 		// notify user of success
@@ -159,23 +159,27 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
 	    
-		FileOutputStream fos = null;
-		
-		try {
-			
-			new File("tmp/uploads").mkdirs();	// create the directories if not exist
-			
-			file = new File("tmp/uploads/" + filename);
-			fos = new FileOutputStream(file);
-		
-		} catch (FileNotFoundException e) {
-			LOG.error(e.getLocalizedMessage());
-			
-			return null;
-		}
-        
-        return fos;
+		return doRecieveUpload(filename,mimeType);
 	}
+
+    protected OutputStream doRecieveUpload(String filename,String mimeType) {
+        FileOutputStream fos = null;
+
+        try {
+
+            new File("tmp/uploads").mkdirs();	// create the directories if not exist
+
+            file = new File("tmp/uploads/" + filename);
+            fos = new FileOutputStream(file);
+
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getLocalizedMessage());
+
+            return null;
+        }
+
+        return fos;
+    }
 	
 	/**
 	 * Get filename Extension
