@@ -15,12 +15,15 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
+import org.generationcp.middleware.pojos.workbench.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +41,7 @@ import com.vaadin.ui.Window;
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, SucceededListener, InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
-	
+
 	protected Window sourceWindow;
 	//private Select select;
     private ProjectBackup pb;
@@ -49,21 +52,33 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 	
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-	
+
     @Autowired
     private MySQLUtil mysqlUtil;
+
+    @Autowired
+    private ToolUtil toolUtil;
+
+    @Autowired
+    private SessionData sessionData;
 	
     private Project project;
 
 	private File file;
-	private static final String BACKUP_DIR = "backup";
-	
-	public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
+    private File destFile;
+    private static final String BACKUP_DIR = "backup";
+
+
+    public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
         pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
 
 		this.sourceWindow = sourceWindow;
 		this.project = project;
 	}
+
+    public void setProjectBackup(ProjectBackup pb) {
+        this.pb = pb;
+    }
 
     public RestoreIBDBSaveAction(Project project, ProjectBackup pb,Window sourceWindow) {
         //this.select = select;
@@ -71,26 +86,32 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
         this.sourceWindow = sourceWindow;
         this.project = project;
     }
-		
+
+    public void setSourceWindow(Window sourceWindow) {
+        this.sourceWindow = sourceWindow;
+    }
+
 	@Override
 	public void onClose(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
-			LOG.debug("onClick > do Restore IBDB");
-			
-			//sourceWindow = event.getButton().getWindow();
+            LOG.debug("onClick > do Restore IBDB");
 
 			try {
+                // attempt to close all native apps first
+                toolUtil.closeAllNativeTools();
 
-				mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
-				
-				MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
-				
-				//sourceWindow.getParent().removeWindow(sourceWindow);
-				
+                mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
+
+				MessageNotifier.showMessage(sourceWindow,messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
+
 				LOG.debug("selected backup: " + pb.getProjectBackupId());
 			
-			} catch(Exception e) {
-				sourceWindow.showNotification("No project backup is selected");
+			} catch(IOException ex) {
+                MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
+            }
+
+            catch(Exception e) {
+                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "No project backup is selected");
 			}		
 		}
 	}
@@ -100,60 +121,57 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 		mysqlUtil.setBackupDir(BACKUP_DIR);
 	}
 
+    protected void doFileUploadAndValidate() throws IOException {
+        FileResource fileResource = new FileResource(file,sourceWindow.getApplication());
+        File tmpFile = fileResource.getSourceFile();
+
+        // validate file
+
+        if (!getExtension(tmpFile).toLowerCase().contains("sql")) {
+            MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD),messageSource.getMessage(Message.ERROR_INVALID_FILE));
+
+            tmpFile.delete();
+
+            return;
+        }
+
+        destFile = new File(BACKUP_DIR + File.separator + tmpFile.getName());
+        // write to backup databases if not exists else update
+        FileUtils.copyFile(tmpFile,destFile);
+
+    }
+
 	@Override
 	public void uploadSucceeded(SucceededEvent event) {
-		FileResource fileResource = new FileResource(file,sourceWindow.getApplication());
-		File tmpFile = fileResource.getSourceFile();
-		
-		// validate file
-		
-		if (!getExtension(tmpFile).toLowerCase().contains("sql")) {
-			MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD),messageSource.getMessage(Message.ERROR_INVALID_FILE));
-		
-			tmpFile.delete();
-			
-			return;
-		}
-			
-		File destFile = new File(BACKUP_DIR + File.separator + tmpFile.getName());
-		// write to backup databases if not exists else update
-		ProjectBackup pb;
 		try {
-			FileUtils.copyFile(tmpFile,destFile);
-			//pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
-		
-			//mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
-		
-			 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-             User user = app.getSessionData().getUserData();
+		     doFileUploadAndValidate();
+             doSQLFileRestore();
 
-             //TODO: internationalize this
-             ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(), user, new Date());
+            // notify user of success
+            MessageNotifier.showMessage(sourceWindow,messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
 
-             workbenchDataManager.addProjectActivity(projAct);
-		
-		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage());
-			
-			MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		} catch (IOException e) {
+        } catch (Exception e) {
 			LOG.error(e.getMessage());
 			MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		} /*catch (SQLException e) {
-			LOG.error(e.getMessage());
-			MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		}   */
-		
+		}
+    }
 
-		// notify user of success
-		MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
-		
-		// close the window
-		//sourceWindow.getParent().removeWindow(sourceWindow);
-	}
+    protected void doSQLFileRestore() throws MiddlewareQueryException,IOException,SQLException {
 
-	
-	/**
+        toolUtil.closeAllNativeTools();
+
+        ProjectBackup pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
+
+        mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
+
+        //TODO: internationalize this
+        ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(),sessionData.getUserData(), new Date());
+        workbenchDataManager.addProjectActivity(projAct);
+
+    }
+
+
+    /**
 	 * Will return null if error
 	 */
 	@Override

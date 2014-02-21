@@ -50,8 +50,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     @Override
     public void afterPropertiesSet() throws Exception {
         this.initializeComponents();
-        this.initializeActions();
         this.initializeLayout();
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        this.initializeActions();
     }
 
     public void initializeComponents() {
@@ -73,6 +78,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     public void populateRestoreList() {
         restoreList.removeAllItems();
 
+
+
         try {
             for(ProjectBackup pb : workbenchDataManager.getProjectBackups(sessionData.getLastOpenedProject())) {
                 restoreList.addItem(pb);
@@ -80,6 +87,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                 String dateStr = (new SimpleDateFormat("MMMM DD yyyy")).format(pb.getBackupTime());
 
                 restoreList.setItemCaption(pb,dateStr + " - " + pb.getBackupPath());
+                restoreList.setValue(pb);
             }
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
@@ -87,6 +95,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
         if (restoreList.getItemIds().isEmpty())
             restoreBtn.setEnabled(false);
+
     }
 
     /**
@@ -113,30 +122,37 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             }
         });
 
-        final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(sessionData.getLastOpenedProject(),(ProjectBackup)restoreList.getValue(),this.getWindow()) {
+        final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(sessionData.getLastOpenedProject(),(ProjectBackup)null,this.getWindow()) {
             @Override
             public void onClose(ConfirmDialog dialog) {
-                super.onClose(dialog);
 
                 if (dialog.isConfirmed()) {
-                    BackupAndRestoreView.this.populateRestoreList();
-                    // attempt to close native apps
+                    ProjectBackup pb = (ProjectBackup) restoreList.getValue();
+                    this.setProjectBackup(pb);
+
                     try {
                         toolUtil.closeAllNativeTools();
                     } catch (IOException e) {
                         e.printStackTrace();    // internal error, something happend
                     }
+
+                    super.onClose(dialog);
+
+                    BackupAndRestoreView.this.populateRestoreList();
+                    // attempt to close native apps
+
                 }
             }
 
-            /*
             @Override
             public void uploadSucceeded(final Upload.SucceededEvent event) {
                 try {
+                    //this.setProjectBackup((ProjectBackup) restoreList.getValue());
+
                     doFileUploadAndValidate();
 
                     String restoreDescMessageFormat = "%s<br/><br/><b style='color:red'>%s</b>";
-                    ConfirmDialog dialog = ConfirmDialog.show(event.getComponent().getWindow(),
+                    ConfirmDialog dialog = ConfirmDialog.show(sourceWindow,
                             messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
                             String.format(restoreDescMessageFormat,
                                     messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
@@ -150,9 +166,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                                     if (dialog.isConfirmed()) {
                                         try {
                                             doSQLFileRestore();
-                                        } catch (MiddlewareQueryException e) {
+                                        } catch (Exception e) {
                                             MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), e.getMessage());
                                         }
+
+                                        // notify user of success
+                                        MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
                                     }
                                 }
                             });
@@ -162,15 +181,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                     MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
                 }
 
-                // notify user of success
-                MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
-            }  */
+            }
         };
 
         restoreBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 String restoreDescMessageFormat = "%s<br/><br/><b style='color:red'>%s</b>";
+
                 ConfirmDialog dialog = ConfirmDialog.show(clickEvent.getComponent().getWindow(),
                         messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
                         String.format(restoreDescMessageFormat,
