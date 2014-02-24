@@ -180,5 +180,8 @@
           label="Multi-year/Multi-site Analysis"
           level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
-
+    <view path="/recovery"
+          label="Backup and Restore Program"
+          level="1"
+          class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />
 </viewList>

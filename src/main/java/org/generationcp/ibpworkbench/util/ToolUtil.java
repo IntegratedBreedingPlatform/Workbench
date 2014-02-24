@@ -174,6 +174,20 @@ public class ToolUtil {
         return pb.start();
     }
 
+    public void closeAllNativeTools() throws IOException {
+        try {
+            List<Tool> nativeTools = workbenchDataManager.getToolsWithType(ToolType.NATIVE);
+
+            for (Tool tool : nativeTools) {
+                this.closeNativeTool(tool);
+            }
+
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Close the specified native tool.
      * 

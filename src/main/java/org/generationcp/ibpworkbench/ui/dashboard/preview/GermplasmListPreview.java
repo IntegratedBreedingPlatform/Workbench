@@ -494,6 +494,8 @@ public class GermplasmListPreview extends VerticalLayout {
         treeView.setItemCaption(SHARED_LIST, SHARED_LIST);
         treeView.setItemIcon(SHARED_LIST, folderResource);
 
+        treeView.setNullSelectionAllowed(false);
+
         for (GermplasmList parentList : germplasmListParentLocal) {
             treeView.addItem(parentList.getId());
             treeView.setItemCaption(parentList.getId(), parentList.getName());
@@ -589,6 +591,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 resource = folderResource;
             }
             treeView.setItemIcon(listChild.getId(), resource);
+
             treeView.setSelectable(true);
 
         }
