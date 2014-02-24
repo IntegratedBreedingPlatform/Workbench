@@ -238,7 +238,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         rootContent.addComponent(backupTitle);
         rootContent.addComponent(new Label(messageSource.getMessage("BACKUP_BMS_DESCRIPTION",sessionData.getLastOpenedProject().getProjectName())));
         rootContent.addComponent(backupBtn);
-        rootContent.addComponent(new Label("<hr/>",Label.CONTENT_XHTML));
+        rootContent.addComponent(new Label("<div style='height: 60px'></div><hr/><div style='height: 20px'></div>",Label.CONTENT_XHTML));
         rootContent.addComponent(restoreTitle);
         rootContent.addComponent(new Label(messageSource.getMessage("RESTORE_BMS_DESCRIPTION",sessionData.getLastOpenedProject().getProjectName())));
         rootContent.addComponent(restoreForm);
