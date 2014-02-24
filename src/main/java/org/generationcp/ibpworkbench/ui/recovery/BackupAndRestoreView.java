@@ -84,7 +84,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             for(ProjectBackup pb : workbenchDataManager.getProjectBackups(sessionData.getLastOpenedProject())) {
                 restoreList.addItem(pb);
 
-                String dateStr = (new SimpleDateFormat("MMMM DD yyyy")).format(pb.getBackupTime());
+                String dateStr = (new SimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
+
+
 
                 restoreList.setItemCaption(pb,dateStr + " - " + pb.getBackupPath());
                 restoreList.setValue(pb);
