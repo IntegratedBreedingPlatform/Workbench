@@ -17,7 +17,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 /* Login Form */
 .v-panel-content-gcp-login>div{background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent}
 .gcp-login-subtitle{line-height:16px;font-size:16px;color:#02385a;margin-top:100px;font-weight:normal;text-align:center;text-transform:uppercase}
-.gcp-login-title{line-height:24px;font-size:21px;color:#dde5ec;margin-left:104px;margin-top:17px;text-transform:uppercase;font-weight:100}
+.gcp-login-title{color:#dde5ec;margin-left:104px;margin-top:17px;text-transform:uppercase;font-size:21px;font-weight:400;line-height:24px;}
 .gcp-loginform-lbl{text-transform:uppercase;position:relative;top:4px;color:#02385a}
 
 /* Workbench split panel + sidebar */
@@ -45,10 +45,10 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked{height:0 !important}
 
 /* Workbench Main */
-.gcp-window-title H1:first-child{text-transform:uppercase;font-weight:normal;font-size:24px;font-weight:100;margin:0px 0px 0px 20px;color:#dde5ec}
+.gcp-window-title H1:first-child{text-transform:uppercase;font-size:24px;font-weight:400;margin:0px 0px 0px 20px;color:#dde5ec}
 .gcp-window-title H1{text-transform:uppercase;font-size:20px;display:inline-block;color:#dde5ec;font-weight:100}
 .gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE;margin:0px 0px 0px 0px;}
-.gcp-window-title H3{text-transform:uppercase;font-size:18px;display:block;color:#dde5ec;font-weight:100;margin:0px 0px 0px 20px;}
+.gcp-window-title H3{text-transform:uppercase;font-size:16px;display:block;color:#dde5ec;font-weight:300;margin:0px 0px 0px 20px;}
 .gcp-window-title{font-size:20px;color:#dde5ec}
 .gcp-dashboard-main>div{overflow-y:auto !important}
 
@@ -160,7 +160,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }
 
 
-.v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 5px; padding-right: 5px}
-.v-button-collapse-btn .v-button-caption {font-size:18px}
+.v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 0px; padding-right: 5px}
+.v-button-collapse-btn .v-button-caption {font-size:25px}
 .v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3}
-.v-button-collapse-btn .v-button-wrap {margin-top:3px}
+.v-button-collapse-btn .v-button-wrap {margin-top:0px}
