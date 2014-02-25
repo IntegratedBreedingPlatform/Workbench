@@ -194,7 +194,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
 
-        collapseButton = new Button("<span class='glyphicon icon-menu'></span>");
+        collapseButton = new Button("<span class='glyphicon icon-list'></span>");
         collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " collapse-btn");
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
