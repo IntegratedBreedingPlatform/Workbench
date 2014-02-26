@@ -383,6 +383,8 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 				selectSpecifyEnvironment.select(selectSpecifyEnvironment.getItemIds().iterator().next());
 				selectSpecifyGenotypes.select(selectSpecifyGenotypes.getItemIds().iterator().next());
 				selectSpecifyEnvironmentGroups.select((Object) "Analyze All");
+				chkVariatesSelectAll.setValue(false);
+				
 				
 			}
 		});

@@ -173,7 +173,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                                         }
 
                                         // notify user of success
-                                        MessageNotifier.showMessage(sourceWindow.getParent(),messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
+                                        MessageNotifier.showMessage(sourceWindow,messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
                                     }
                                 }
                             });
