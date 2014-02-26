@@ -510,7 +510,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     }
                     else if (running) {
                         // reload the webapp
-                        //tomcatUtil.reloadWebApp(contextPath);
+                    	// reloading only applies to GDMS
+                    	if (tool.getToolName() == ToolName.gdms.name()){
+                    		LOG.trace("Reloading the GDMS app...");
+                    		tomcatUtil.reloadWebApp(contextPath);
+                    	}
+                        
                     }
                     else {
                         // start the webapp

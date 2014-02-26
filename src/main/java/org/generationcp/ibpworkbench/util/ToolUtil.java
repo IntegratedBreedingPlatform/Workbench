@@ -265,8 +265,17 @@ public class ToolUtil {
         }
         
         WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-
+      
         boolean configurationChanged = false;
+        
+        
+        if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
+            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
+            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
+                                                                             password, true);
+        }
+        
+        /****
         if (Util.isOneOf(tool.getToolName()
                          ,ToolName.breeding_manager.name()
                          ,ToolName.fieldbook.name()
@@ -321,7 +330,7 @@ public class ToolUtil {
                                                                              password, true);
         } else if (Util.isOneOf(tool.getToolName(), ToolName.ibpwebservice.name())) {
             configurationChanged = updateWebServiceConfigurationForProject(project, workbenchSetting);
-        }
+        }**/
         
         return configurationChanged;
     }
