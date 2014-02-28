@@ -252,10 +252,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
         rootContent.setSizeUndefined();
         rootContent.setWidth("100%");
-        rootContent.setMargin(true);
+        rootContent.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContent.setSpacing(true);
 
         rootContent.addComponent(pageTitle);
+        rootContent.addComponent(new Label("<div style='height: 10px'></div>",Label.CONTENT_XHTML));
         rootContent.addComponent(backupTitle);
         rootContent.addComponent(new Label(messageSource.getMessage("BACKUP_BMS_DESCRIPTION",sessionData.getLastOpenedProject().getProjectName()),Label.CONTENT_XHTML));
         rootContent.addComponent(backupBtn);
