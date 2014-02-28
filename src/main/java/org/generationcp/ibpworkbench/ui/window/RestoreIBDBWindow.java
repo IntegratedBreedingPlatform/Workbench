@@ -302,8 +302,8 @@ public class RestoreIBDBWindow extends Window implements InitializingBean, Inter
 			}
     	});
     	
-    	upload.setReceiver(restoreAction);
-    	upload.addListener(restoreAction);
+    	//upload.setReceiver(restoreAction);
+    	//upload.addListener(restoreAction);
     }
 
     protected void assemble() throws Exception {

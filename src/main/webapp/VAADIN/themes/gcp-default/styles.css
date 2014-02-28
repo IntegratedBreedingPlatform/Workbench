@@ -161,6 +161,14 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 
 .v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 0px; padding-right: 5px}
-.v-button-collapse-btn .v-button-caption {font-size:28px}
+.v-button-collapse-btn .v-button-caption {font-size:28px; line-height:28px}
 .v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3}
 .v-button-collapse-btn .v-button-wrap {margin-top:0px}
+
+.bms-upload-container .v-upload,
+.bms-upload-container .v-upload div,
+.bms-upload-container .v-csslayout-container div
+{float: left; }
+.bms-upload-container .v-progressindicator-wrapper { width: 200px; margin-left: 20px;}
+.bms-upload-container .v-label { width: inherit !important; margin: 4px 20px}
+.bms-upload-container .v-label em { display: none;}

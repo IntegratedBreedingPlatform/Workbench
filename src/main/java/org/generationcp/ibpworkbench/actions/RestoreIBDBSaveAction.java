@@ -37,10 +37,11 @@ import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.Window;
+import org.vaadin.easyuploads.FileFactory;
 
 @Configurable
-public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, SucceededListener, InitializingBean {
-	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
+public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
+	protected static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 
 	protected Window sourceWindow;
 	//private Select select;
@@ -61,12 +62,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 
     @Autowired
     private SessionData sessionData;
-	
+
     private Project project;
 
 	private File file;
-    private File destFile;
+
     private static final String BACKUP_DIR = "backup";
+
+    private boolean isUpload = false;
 
 
     public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
@@ -93,26 +96,40 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 
 	@Override
 	public void onClose(ConfirmDialog dialog) {
-		if (dialog.isConfirmed()) {
+
+        if (pb != null)
+            LOG.debug("selected backup: " + pb.getProjectBackupId());
+
+        if (dialog.isConfirmed()) {
             LOG.debug("onClick > do Restore IBDB");
 
-			try {
-                // attempt to close all native apps first
+            try {
                 toolUtil.closeAllNativeTools();
 
-                mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
+                File restoreFile = file;
 
-				MessageNotifier.showMessage(sourceWindow,messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
+                if (!this.isUpload())
+                    restoreFile = new File(pb.getBackupPath());
 
-				LOG.debug("selected backup: " + pb.getProjectBackupId());
-			
-			} catch(IOException ex) {
+                // DO UPLOAD
+                mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
+
+                MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
+
+                // LOG to project activity
+                //TODO: internationalize this
+                ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(),sessionData.getUserData(), new Date());
+                workbenchDataManager.addProjectActivity(projAct);
+
+
+            }  catch(IOException ex) {
                 MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
+            } catch(Exception e) {
+                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "No project backup is selected");
             }
 
-            catch(Exception e) {
-                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "No project backup is selected");
-			}		
+
+
 		}
 	}
 
@@ -121,101 +138,17 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Receiver, 
 		mysqlUtil.setBackupDir(BACKUP_DIR);
 	}
 
-    protected void doFileUploadAndValidate() throws IOException {
-        FileResource fileResource = new FileResource(file,sourceWindow.getApplication());
-        File tmpFile = fileResource.getSourceFile();
-
-        // validate file
-
-        if (!getExtension(tmpFile).toLowerCase().contains("sql")) {
-            MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD),messageSource.getMessage(Message.ERROR_INVALID_FILE));
-
-            tmpFile.delete();
-
-            return;
-        }
-
-        destFile = new File(BACKUP_DIR + File.separator + tmpFile.getName());
-        // write to backup databases if not exists else update
-        FileUtils.copyFile(tmpFile,destFile);
-
+    @Override
+    public File createFile(String fileName, String mimeType) {
+        this.file = new File(BACKUP_DIR + File.separator + fileName);
+        return this.file;
     }
 
-	@Override
-	public void uploadSucceeded(SucceededEvent event) {
-		try {
-		     doFileUploadAndValidate();
-             doSQLFileRestore();
-
-            // notify user of success
-            MessageNotifier.showMessage(sourceWindow,messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE),"");
-
-        } catch (Exception e) {
-			LOG.error(e.getMessage());
-			MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD),e.getMessage());
-		}
+    public boolean isUpload() {
+        return isUpload;
     }
 
-    protected void doSQLFileRestore() throws MiddlewareQueryException,IOException,SQLException {
-
-        toolUtil.closeAllNativeTools();
-
-        ProjectBackup pb = workbenchDataManager.saveOrUpdateProjectBackup(new ProjectBackup(null, project.getProjectId(),new Date(),destFile.getAbsolutePath()));
-
-        mysqlUtil.restoreDatabase(project.getLocalDbName(),new File(pb.getBackupPath()));
-
-        //TODO: internationalize this
-        ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(),sessionData.getUserData(), new Date());
-        workbenchDataManager.addProjectActivity(projAct);
-
+    public void setIsUpload(boolean value) {
+        isUpload = value;
     }
-
-
-    /**
-	 * Will return null if error
-	 */
-	@Override
-	public OutputStream receiveUpload(String filename, String mimeType) {
-	    
-		return doRecieveUpload(filename,mimeType);
-	}
-
-    protected OutputStream doRecieveUpload(String filename,String mimeType) {
-        FileOutputStream fos = null;
-
-        try {
-
-            new File("tmp/uploads").mkdirs();	// create the directories if not exist
-
-            file = new File("tmp/uploads/" + filename);
-            fos = new FileOutputStream(file);
-
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getLocalizedMessage());
-
-            return null;
-        }
-
-        return fos;
-    }
-	
-	/**
-	 * Get filename Extension
-	 * @param f
-	 * @return
-	 */
-	private static String getExtension(File f)
-	{
-	String ext = null;
-	String s = f.getName();
-	int i = s.lastIndexOf('.');
-
-	if (i > 0 && i < s.length() - 1)
-	ext = s.substring(i+1).toLowerCase();
-
-	if(ext == null)
-	return "";
-	return ext;
-	}
-
 }
