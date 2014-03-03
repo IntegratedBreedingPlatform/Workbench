@@ -47,7 +47,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
         if (content instanceof ComponentContainer) {
 
             if (content instanceof IContainerFittable) {
-                ((IContainerFittable)content).fitToContainer();
+                ((IContainerFittable)content).fitToContainer(this);
             }
 
             this.setContent((ComponentContainer)content);

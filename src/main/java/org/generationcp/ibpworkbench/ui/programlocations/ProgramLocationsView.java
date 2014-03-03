@@ -128,7 +128,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
     }
 
     @Override
-    public void fitToContainer() {
+    public void fitToContainer(final Window parentWindow) {
         availTable.setHeight("100%");
         selTable.setHeight("100%");
 
@@ -137,6 +137,18 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
         root.setSizeFull();
 
         this.setSizeFull();
+
+        // special actions added to save and cancel btns
+        final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                parentWindow.executeJavaScript("window.parent.closeFrame();");
+            }
+        };
+
+        saveBtn.addListener(execCloseFrameJS);
+        cancelBtn.addListener(execCloseFrameJS);
+
     }
 	
 	protected void initializeValues() throws MiddlewareQueryException {

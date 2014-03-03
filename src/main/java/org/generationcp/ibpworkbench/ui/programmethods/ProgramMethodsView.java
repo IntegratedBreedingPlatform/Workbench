@@ -165,7 +165,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     }
 
     @Override
-    public void fitToContainer() {
+    public void fitToContainer(final Window parentWindow) {
         availTbl.setHeight("100%");
         selTbl.setHeight("100%");
 
@@ -174,6 +174,18 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         root.setSizeFull();
 
         this.setSizeFull();
+
+        // special actions added to save and cancel btns
+        final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                parentWindow.executeJavaScript("window.parent.closeFrame();");
+            }
+        };
+
+        saveBtn.addListener(execCloseFrameJS);
+        cancelBtn.addListener(execCloseFrameJS);
+
     }
 
     private Component buildActionButtons() {
@@ -397,6 +409,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 } else {    // should never happen
 
                 }
+
+
             }
         });
 
