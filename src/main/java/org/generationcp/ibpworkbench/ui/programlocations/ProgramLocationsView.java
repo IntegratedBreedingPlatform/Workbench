@@ -142,7 +142,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
         final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                parentWindow.executeJavaScript("window.parent.closeFrame();");
+                parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
             }
         };
 

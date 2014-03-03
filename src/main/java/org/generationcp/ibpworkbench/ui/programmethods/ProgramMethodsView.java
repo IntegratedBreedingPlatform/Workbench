@@ -179,7 +179,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                parentWindow.executeJavaScript("window.parent.closeFrame();");
+                parentWindow.executeJavaScript("window.parent.closeMethodFrame();");
             }
         };
 
