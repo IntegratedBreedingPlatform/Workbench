@@ -67,7 +67,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
             w.showContent(newProjectPanel);
 
             if (w instanceof WorkbenchMainView) {
-                ((WorkbenchMainView)w).addTitle(null);
+                ((WorkbenchMainView)w).addTitle("");
             }
             
             NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
