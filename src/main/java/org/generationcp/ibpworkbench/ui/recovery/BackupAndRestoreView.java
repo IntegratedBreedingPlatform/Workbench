@@ -70,6 +70,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     public void initializeComponents() {
         backupBtn = new Button(messageSource.getMessage("BACKUP_BMS_BUTTON"));
         uploadFrm = new UploadField() {
+            @Override
+            public void uploadFinished(Upload.FinishedEvent event) {
+                super.uploadFinished(event);
+
+                restoreBtn.setEnabled(true);
+            }
 
             @Override
             public void validate() throws Validator.InvalidValueException {

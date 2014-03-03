@@ -108,7 +108,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         projectNameField.setImmediate(true);
         projectNameField.setRequired(true);
         projectNameField.setRequiredError("Please enter a Program Name.");
-        projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-255 characters.", 3, 255, false));
+        projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-70 characters.", 3, 70, false));
         projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
         projectNameField.addShortcutListener(new Button.ClickShortcut(nextButton,KeyCode.ENTER));
         

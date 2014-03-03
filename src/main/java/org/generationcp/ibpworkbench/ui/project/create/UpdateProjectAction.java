@@ -1,7 +1,9 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.Button;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -99,7 +101,8 @@ public class UpdateProjectAction implements Button.ClickListener  {
                 workbenchDataManager.addProjectUserRole(projectPanel.getProject(),projectPanel.getCurrentUser(),projectUserRole.getRole());
             }
 
-            MessageNotifier.showMessage(projectPanel.getWindow(),String.format("Successfully updated %s",projectPanel.getProject().getProjectName()),"");
+            //MessageNotifier.showMessage(projectPanel.getWindow(),String.format("Successfully updated %s",projectPanel.getProject().getProjectName()),"");
+            MessageNotifier.showMessage(projectPanel.getWindow(),"Program update is successful",String.format("%s is updated.", StringUtils.abbreviate(projectPanel.getProject().getProjectName(),50)));
 
             ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Updated Program - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);

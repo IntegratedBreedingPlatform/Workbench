@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -135,6 +136,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
+        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
         addTitle("");
 
@@ -536,17 +538,20 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public void addTitle(String myTitle)
     {
 
+        if (myTitle.length() > 50)
+            workbenchTitle.setDescription(myTitle);
+        else
+            workbenchTitle.setDescription("");
+
         if (myTitle != null && !myTitle.isEmpty()) {
-            myTitle = "<h3>" + myTitle +"</h3>";
+            myTitle = String.format("<h3>%s</h3>", StringUtils.abbreviate(myTitle,50));
         } else {
             myTitle = "";
         }
 
-
         String version = workbenchProperties.getProperty("workbench.version", "");
-        String title = "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + version + "</h2> " + myTitle;
-        workbenchTitle.setValue(title);
-        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+        workbenchTitle.setValue(String.format("<h1>%s</h1><h2>%s</h2>%s",messageSource.getMessage(Message.WORKBENCH_TITLE),version,myTitle));
+
 
     }
 
