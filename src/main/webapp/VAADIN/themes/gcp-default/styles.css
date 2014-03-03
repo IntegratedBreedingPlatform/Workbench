@@ -161,7 +161,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 
 .v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 0px; padding-right: 5px}
-.v-button-collapse-btn .v-button-caption {font-size:28px; line-height:28px}
+.v-button-collapse-btn .v-button-caption {font-size:26px;}
 .v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3}
 .v-button-collapse-btn .v-button-wrap {margin-top:0px}
 
