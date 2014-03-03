@@ -549,8 +549,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             myTitle = "";
         }
 
-        String version = workbenchProperties.getProperty("workbench.version", "");
-        workbenchTitle.setValue(String.format("<h1>%s</h1><h2>%s</h2>%s",messageSource.getMessage(Message.WORKBENCH_TITLE),version,myTitle));
+        workbenchTitle.setValue(String.format("<h1>%s</h1><h2>%s</h2>%s",messageSource.getMessage(Message.WORKBENCH_TITLE),"&nbsp;" + workbenchProperties.getProperty("workbench.version", ""),myTitle));
 
 
     }
