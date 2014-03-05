@@ -113,6 +113,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 // DO UPLOAD
                 mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
+                
+                new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
 
                 MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
