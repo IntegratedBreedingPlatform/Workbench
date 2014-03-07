@@ -142,7 +142,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
     @Override
     public File createFile(String fileName, String mimeType) {
-        this.file = new File(BACKUP_DIR + File.separator + fileName);
+        File saveDir = new File(BACKUP_DIR);
+        if (!saveDir.exists() || !saveDir.isDirectory()) {
+            saveDir.mkdirs();
+        }
+        
+        this.file = new File(saveDir, fileName);
         return this.file;
     }
 
