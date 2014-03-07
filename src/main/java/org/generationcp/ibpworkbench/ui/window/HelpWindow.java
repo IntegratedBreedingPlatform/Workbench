@@ -2,14 +2,19 @@ package org.generationcp.ibpworkbench.ui.window;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
@@ -20,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.ThemeResource;
@@ -54,6 +60,10 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    
+    @Autowired
+    private TomcatUtil tomcatUtil;
 
 	public HelpWindow() {    	
     }
@@ -74,6 +84,9 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
 		this.setModal(true);
 		this.setCaption("BREEDING MANAGEMENT SYSTEM | WORKBENCH");
 		this.setStyleName("gcp-help-window");
+		
+		
+				
 		
 		rootLayout = this.getContent();
 		
@@ -109,12 +122,32 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
             // it means that the BMS Documentation has not been installed
             helpLayout = new CustomLayout("help_not_installed");
         }
+        
+      
+        
         panel.setContent(helpLayout);
         
         final String pdfFilename = "BMS_User_Manual.pdf";
-        final String htmlFilename = "BMS_User_Manual_Web_Version.chm";
         final String pdfFilepath = docsDirectory+pdfFilename;
-        final String htmlFilepath = docsDirectory+htmlFilename;
+        final String htmlDocUrl = "http://localhost:18080/BMS_HTML/index.html";
+        
+        
+        String copyTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/BMS_HTML";
+		
+      		try {
+      			FileUtils.deleteDirectory(new File(copyTargetPath));
+      			FileUtils.copyDirectory(new File(getHtmlFilesLocation(docsDirectory)), new File(copyTargetPath));
+      			
+      			String contextPath = TomcatUtil.getContextPathFromUrl(htmlDocUrl);
+                String localWarPath = TomcatUtil.getLocalWarPathFromUrl(htmlDocUrl);
+      			
+      			tomcatUtil.deployLocalWar(contextPath, localWarPath);
+      			
+      		} catch (IOException e) {
+      			// TODO Auto-generated catch block
+      			e.printStackTrace();
+      		}
+        
         
         Link pdfLink = new Link() {
         	@Override
@@ -150,34 +183,9 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
         helpLayout.addComponent(pdfLink, "pdf_link");
         
         Link htmlLink = new Link() {
-        	@Override
-        	public void attach() {
-        		super.attach();
-        		
-        		StreamSource htmlSource = new StreamResource.StreamSource() {
-                	public InputStream getStream() {
-            			try {
-        					File f = new File(htmlFilepath);
-        					FileInputStream fis = new FileInputStream(f);
-        					return fis;
-            			} catch (Exception e) {
-            				e.printStackTrace();
-            				LOG.error(e.getMessage());
-            				return null;
-            			}
-            		}
-            	};
-        		
-    	    	
-    	    	StreamResource htmlResource = new StreamResource(htmlSource, 
-    	    			htmlFilename, getApplication());
-    	    	htmlResource.getStream().setParameter(
-    	    			"Content-Disposition", "attachment;filename=\"" + htmlFilename + "\"");
-    	    	htmlResource.setMIMEType("application/x-chm");
-    	    	htmlResource.setCacheTime(0);
-    	    	setResource(htmlResource);
-        	}
+        	
         };
+        htmlLink.setResource(new ExternalResource(htmlDocUrl));
         htmlLink.setCaption("BMS Manual HTML Version");
         htmlLink.setTargetName("_blank");
         htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));
@@ -199,5 +207,22 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
 	@Override
 	public void updateLabels() {
 		
+	}	
+	
+	private String getHtmlFilesLocation(String baseDir){
+		
+		Collection<File> files = FileUtils.listFiles(new File(baseDir), new RegexFileFilter("index.html$"), 
+				  DirectoryFileFilter.DIRECTORY);
+		
+		
+		if (files.size() == 0) return "";
+		
+		for (File f : files ){
+			return f.getParent();
+		}
+		
+		return "";
+		
 	}
+	
 }
