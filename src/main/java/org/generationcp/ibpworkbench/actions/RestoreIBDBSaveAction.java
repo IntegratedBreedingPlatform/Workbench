@@ -24,6 +24,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -111,8 +112,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
 
-                // DO UPLOAD
+                // restore the database
                 mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
+                
+                // the restored database may be old
+                // and needs to be upgraded for it to be usable
+                WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
+                File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
+                mysqlUtil.upgradeDatabase(project.getLocalDbName(), schemaDir);
                 
                 new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
 
