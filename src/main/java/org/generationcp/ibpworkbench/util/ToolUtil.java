@@ -273,6 +273,9 @@ public class ToolUtil {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
+        }else if(Util.isOneOf(tool.getToolName()                
+                ,ToolName.fieldbook.name())){
+        	configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
         }
         
         /****
