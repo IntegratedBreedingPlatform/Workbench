@@ -26,6 +26,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
@@ -44,6 +45,7 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,6 +159,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
     @Autowired
     private Properties workbenchProperties;
+
+    @Autowired
+    private SessionData sessionData;
     
     public LaunchWorkbenchToolAction() {
     }
@@ -214,9 +219,17 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     	
         if(this.toolEnum != null) {
         	
-        	Long projectId = Long.parseLong(params.get("projectId").get(0));
-        	String dataset = params.get("dataset").get(0);
-        	
+        	Long projectId = null;
+            String dataset;
+            try {
+                projectId = Long.parseLong(params.get("projectId").get(0));
+                dataset = params.get("dataset").get(0);
+            } catch (NullPointerException e) {
+                projectId = sessionData.getLastOpenedProject().getProjectId();
+                dataset = "local";
+            }
+
+
         	try {
         		if (ToolEnum.BREEDING_VIEW == this.toolEnum && (dataset != null && !dataset.isEmpty())) {
         			if (dataset.equals("local")) {
