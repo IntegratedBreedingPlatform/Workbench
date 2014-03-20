@@ -220,13 +220,12 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         if(this.toolEnum != null) {
         	
         	Long projectId = null;
-            String dataset;
+            String dataset = "";
             try {
                 projectId = Long.parseLong(params.get("projectId").get(0));
                 dataset = params.get("dataset").get(0);
             } catch (NullPointerException e) {
                 projectId = sessionData.getLastOpenedProject().getProjectId();
-                dataset = "local";
             }
 
 
