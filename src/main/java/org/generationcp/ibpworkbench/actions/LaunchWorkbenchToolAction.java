@@ -209,9 +209,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     	String a = uriFragment.split("/")[1];
     	
     	String toolName = (a).split("\\?")[0];
-    	
-    	
-    	
+
     	Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
     	
     	
@@ -226,28 +224,29 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 dataset = params.get("dataset").get(0);
             } catch (NullPointerException e) {
                 projectId = sessionData.getLastOpenedProject().getProjectId();
+            } finally {
+
+                try {
+                    if (ToolEnum.BREEDING_VIEW == this.toolEnum && (dataset != null && !dataset.isEmpty())) {
+                        if (dataset.equals("local")) {
+                            this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL;
+                        } else if (dataset.equals("central")) {
+                            this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL;
+                        }
+
+                        this.project = workbenchDataManager.getProjectById(projectId);
+                    }
+
+                    launchTool(toolEnum.getToolName(),window,isLinkAccessed);
+
+                } catch (MiddlewareQueryException e) {
+                    LOG.error("QueryException", e);
+                    MessageNotifier.showError(window,
+                            messageSource.getMessage(Message.DATABASE_ERROR),
+                            "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+                }
+
             }
-
-
-        	try {
-        		if (ToolEnum.BREEDING_VIEW == this.toolEnum && (dataset != null && !dataset.isEmpty())) {
-        			if (dataset.equals("local")) {
-    	        		this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL;
-    	        	} else if (dataset.equals("central")) {
-    					this.toolConfiguration = WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL;
-    				}	
-        		
-        			this.project = workbenchDataManager.getProjectById(projectId);
-        		}
-        		
-        		launchTool(toolEnum.getToolName(),window,isLinkAccessed);
-        		
-        	} catch (MiddlewareQueryException e) {
-                LOG.error("QueryException", e);
-                MessageNotifier.showError(window, 
-                        messageSource.getMessage(Message.DATABASE_ERROR), 
-                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-			}
         } else {
             LOG.debug("Cannot launch tool due to invalid tool: {}", uriFragment.split("/")[1]);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
