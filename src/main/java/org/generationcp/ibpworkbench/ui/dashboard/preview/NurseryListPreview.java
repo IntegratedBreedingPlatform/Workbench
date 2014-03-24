@@ -298,27 +298,27 @@ public class NurseryListPreview extends VerticalLayout {
         openStudyManagerBtn.setDescription(messageSource.getMessage(Message.OPEN_IN_STUDY_BROWSER));
         openStudyManagerBtn.setEnabled(false);
 
-        renameFolderBtn = new Button("<span class='glyphicon glyphicon-pencil' style='right: 2px'></span>");
+        renameFolderBtn = new Button("<span class='glyphicon glyphicon-pencil'></span>");
         renameFolderBtn.setHtmlContentAllowed(true);
         renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
 
-        addFolderBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 2px'></span>");
+        addFolderBtn = new Button("<span class='glyphicon glyphicon-plus-sign'></span>");
         addFolderBtn.setHtmlContentAllowed(true);
         addFolderBtn.setDescription(messageSource.getMessage(Message.ADD_FOLDER));
 
-        deleteFolderBtn = new Button("<span class='glyphicon glyphicon-trash' style='right: 2px'></span>");
+        deleteFolderBtn = new Button("<span class='glyphicon glyphicon-trash'></span>");
         deleteFolderBtn.setHtmlContentAllowed(true);
         deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_FOLDER));
 
         openStudyManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        addFolderBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.DANGER.styleName());
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
+        addFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
 
         openStudyManagerBtn.setWidth("100px");
-        renameFolderBtn.setWidth("40px");
-        addFolderBtn.setWidth("40px");
-        deleteFolderBtn.setWidth("40px");
+        renameFolderBtn.setWidth("26px");
+        addFolderBtn.setWidth("26px");
+        deleteFolderBtn.setWidth("26px");
 
         this.toolbar.addComponent(openStudyManagerBtn);
 

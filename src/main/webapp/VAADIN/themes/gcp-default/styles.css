@@ -13,6 +13,11 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-select-optiongroup-horizontal,.v-select-option.v-radiobutton{align-bottom:10px}
 .v-select-optiongroup-horizontal,.v-select-option{display:inline-block}
 .v-select-optiongroup-horizontal{white-space:nowrap}
+.v-button-action .v-button-caption { color: #7C7C7C; font-size: 20px; line-height:26px}
+.v-button-action:hover .v-button-caption,
+.v-button-action:active .v-button-caption,
+.v-button-action:focus .v-button-caption { color: #8f868b; border:none}
+
 
 /* Login Form */
 .v-panel-content-gcp-login>div{background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent}
