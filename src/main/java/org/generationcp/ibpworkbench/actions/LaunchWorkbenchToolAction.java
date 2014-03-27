@@ -215,6 +215,22 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
     	
     	this.toolEnum = ToolEnum.equivalentToolEnum(toolName);
     	
+    	
+    	if (uriFragment.equals("/breeding_view")){
+    		new ChangeWindowAction().doAction(window, "breeding_view", isLinkAccessed);
+    		return;
+    	}
+    	if (uriFragment.equals("/BreedingGxE")){
+    		new ChangeWindowAction().doAction(window, "BreedingGxE", isLinkAccessed);
+    		return;
+    	}
+    	if (uriFragment.equals("/ProjectMembers")){
+    		new ChangeWindowAction().doAction(window, "ProjectMembers", isLinkAccessed);
+    		return;
+    	}
+    	
+    	
+    	
         if(this.toolEnum != null) {
         	
         	Long projectId = null;
@@ -237,7 +253,10 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         this.project = workbenchDataManager.getProjectById(projectId);
                     }
 
-                    launchTool(toolEnum.getToolName(),window,isLinkAccessed);
+                    
+                		launchTool(toolEnum.getToolName(),window,isLinkAccessed);
+                
+                    
 
                 } catch (MiddlewareQueryException e) {
                     LOG.error("QueryException", e);
