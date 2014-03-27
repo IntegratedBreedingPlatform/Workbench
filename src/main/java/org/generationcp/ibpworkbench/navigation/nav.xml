@@ -101,17 +101,17 @@
           level="1"
           class="org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction" /> 
 
-    <view path="/ProgramLocation"
+    <view path="/program_locations"
           label="Program Locations"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction" />
     
-    <view path="/ProgramMethods"
+    <view path="/program_methods"
           label="Program Methods"
           level="1"
           class="org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction" />
     
-    <view path="/ProjectMembers"
+    <view path="/program_member"
           label="Program Members"
           level="1"
           class="org.generationcp.ibpworkbench.actions.ChangeWindowAction" />

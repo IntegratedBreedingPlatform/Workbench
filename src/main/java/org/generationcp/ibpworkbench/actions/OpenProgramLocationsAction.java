@@ -17,6 +17,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -55,6 +56,9 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
     public OpenProgramLocationsAction() {}
 
     public OpenProgramLocationsAction(Project project) {
@@ -63,10 +67,10 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
 
     public OpenProgramLocationsAction(Project project, User user) {
         this.project = project; this.user = user;
+
     }
 
-
-        @Override
+    @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
     }
@@ -79,6 +83,13 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
+
+        if (project == null) {
+            project = sessionData.getLastOpenedProject();
+        }
+
+        if (user == null)
+            user = sessionData.getUserData();
 
         try {
 
@@ -96,7 +107,7 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
             w.showContent(new ProgramLocationsView(this.project));
 
             if (user != null)
-                NavManager.navigateApp(window, "/ProgramLocation", isLinkAccessed);
+                NavManager.navigateApp(window, "/program_locations", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

@@ -84,14 +84,13 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
     @Override
     public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
-        IWorkbenchSession appSession = (IWorkbenchSession) window.getApplication();
 
         if (project == null) {
-            project = appSession.getSessionData().getLastOpenedProject() != null ? appSession.getSessionData().getLastOpenedProject() : appSession.getSessionData().getSelectedProject();
+            project = sessionData.getLastOpenedProject();
         }
 
         if (user == null)
-            user = appSession.getSessionData().getUserData();
+            user = sessionData.getUserData();
 
 
         try {
@@ -115,7 +114,7 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
                 }
 
             if (user != null)
-                NavManager.navigateApp(window, "/ProgramMethods", isLinkAccessed);
+                NavManager.navigateApp(window, "/program_methods", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {
