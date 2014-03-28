@@ -19,6 +19,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.ProgramMembersView;
 import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
@@ -65,7 +66,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,BREEDING_GXE("breeding_gxe")
         ,BV_META_ANALYSIS("bv_meta_analysis")
         ,MBDT("mbdt")
-        ,MEMBER("member")
+        ,MEMBER("program_member")
         ,RECOVERY("recovery")
         ;
 
@@ -120,6 +121,9 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+    @Autowired
+    private SessionData sessionData;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -186,14 +190,8 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
         //System.out.println("ChangeWindow");
         if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
-
-
             try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.MEMBERS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.MEMBERS_LINK)), user, new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getLastOpenedProject().getProjectId().intValue()), sessionData.getLastOpenedProject(),messageSource.getMessage(Message.MEMBERS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.MEMBERS_LINK)), sessionData.getUserData(), new Date());
 
                 workbenchDataManager.addProjectActivity(projAct);
 
@@ -205,11 +203,11 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             ProgramMembersView projectLocationPanel = new ProgramMembersView(this.project);
             w.showContent(projectLocationPanel);
-            NavManager.navigateApp(window, "/ProjectMembers", isLinkAccessed);
+            NavManager.navigateApp(window, "/"+windowName, isLinkAccessed);
 
         } else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
             w.showContent(new BackupAndRestoreView());
-            NavManager.navigateApp(window,"/recovery",isLinkAccessed);
+            NavManager.navigateApp(window,"/"+windowName,isLinkAccessed);
         }
         else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 

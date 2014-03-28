@@ -78,7 +78,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                 if (category.getSidebarCategoryName().equals("admin")) {
                     
                     
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"member","Program Members"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"program_member","Program Members"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Locations"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Methods"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program"));
