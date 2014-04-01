@@ -245,6 +245,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         };
 
         saveBtn.addListener(execCloseFrameJS);
+        cancelBtn.setCaption("Reset");
         cancelBtn.addListener(execCloseFrameJS);
 
     }
@@ -422,6 +423,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                     Integer itemId =  sourceItemsIterator.previous();
                     Item item = t.getSourceContainer().getItem(itemId);
 
+                    if (item == null)
+                        continue;
+
                     try {
                         addRow(presenter.getMethodByID((Integer)item.getItemProperty("mid").getValue()),destinationTbl,0);
                         t.getSourceContainer().removeItem(itemId);
@@ -524,9 +528,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         selectAllAvailable.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                selectedMethodsTable.setValue(null);
-                availableMethodsTable.setValue(availableMethodsTable.getItemIds());
-                selectAllFav.setValue(false);
+
+                if (true ==valueChangeEvent.getProperty().getValue())
+                    availableMethodsTable.setValue(availableMethodsTable.getItemIds());
+                else {
+                    availableMethodsTable.setValue(null);
+                    prevSelectedItems.clear();
+                }
+
+                //selectAllFav.setValue(false);
 
             }
         });
@@ -534,9 +544,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         selectAllFav.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                availableMethodsTable.setValue(null);
-                selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
-                selectAllAvailable.setValue(false);
+
+                if (true ==valueChangeEvent.getProperty().getValue())
+                    selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
+                else {
+                    selectedMethodsTable.setValue(null);
+                    prevSelectedItems.clear();
+
+                }
+
+                //selectAllAvailable.setValue(false);
             }
         });
 
