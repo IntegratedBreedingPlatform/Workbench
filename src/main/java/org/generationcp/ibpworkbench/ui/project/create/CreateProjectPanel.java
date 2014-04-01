@@ -122,7 +122,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         root.addComponent(newProjectTitleArea);
         root.addComponent(createProjectAccordion);
         root.addComponent(buttonArea);
-        root.setComponentAlignment(buttonArea,Alignment.TOP_RIGHT);
+        root.setComponentAlignment(buttonArea,Alignment.TOP_CENTER);
 
         this.setScrollable(true);
         this.setSizeFull();
@@ -142,7 +142,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        saveProjectButton = new Button("Save");
+        saveProjectButton = new Button("Finish");
         saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         buttonLayout.addComponent(cancelButton);

@@ -159,7 +159,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         buttonLayout.setMargin(true, false, false, false);
 
         nextButton = new Button("Next");
-        //nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }
