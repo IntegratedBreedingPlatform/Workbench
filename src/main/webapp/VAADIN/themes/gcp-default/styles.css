@@ -163,7 +163,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .helpPopup #help_mail { text-decoration: none; }
 .loc-filter-bar { margin-bottom: 6px }
 .loc-filter-bar .v-csslayout-container > div { display: inline-block; margin-right: 6px }
-
+.align-select-all {position: relative; top: 6px}
 
 .v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 0px; padding-right: 5px}
 .v-button-collapse-btn .v-button-caption {font-size:26px;}
@@ -177,3 +177,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .bms-upload-container .v-progressindicator-wrapper { width: 200px; margin-left: 20px;}
 .bms-upload-container .v-label { width: inherit !important; margin: 4px 20px}
 .bms-upload-container .v-label em { display: none;}
+
+/* common */
+.pull-right { float: right }

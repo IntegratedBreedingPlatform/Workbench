@@ -68,6 +68,16 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
     }
 
+    public Method getMethodByID(Integer id) {
+        try {
+            return gdm.getMethodByID(id);
+
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
+    }
+
     public void doRemoveSelectedMethod(Integer id) {
         Method selectedMethod = null;
         try {

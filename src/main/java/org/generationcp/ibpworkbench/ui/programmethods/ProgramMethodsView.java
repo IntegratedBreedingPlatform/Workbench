@@ -3,8 +3,11 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -43,13 +46,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
     static {
         columnWidthsMap = new HashMap<String, Integer>();
+        columnWidthsMap.put("select",20);
         columnWidthsMap.put("mname",210);
-        columnWidthsMap.put("mgrp",128);
-        columnWidthsMap.put("mcode",120);
-        columnWidthsMap.put("mtype",115);
-        columnWidthsMap.put("fmdate",115);
-        columnWidthsMap.put("selectBtn",60);
-        columnWidthsMap.put("removeBtn",60);
+        columnWidthsMap.put("mgrp",45);
+        columnWidthsMap.put("mcode",40);
+        columnWidthsMap.put("mtype",40);
+        columnWidthsMap.put("fmdate",70);
     }
 
     private ProgramMethodsPresenter presenter;
@@ -62,8 +64,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     private Table selectedMethodsTable;
     private Button saveBtn;
     private Button cancelBtn;
-    private Button.ClickListener onAddToSelectedMethodAction;
-    private Button.ClickListener onRemoveSelectedMethodAction;
     private java.lang.reflect.Field[] fields;
 
     private ArrayList<Integer> selectedMethodIds = new ArrayList<Integer>();
@@ -73,6 +73,20 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     private VerticalLayout root;
     private Table availTbl;
     private Table selTbl;
+    private CheckBox selectAllAvailable;
+    private Button addToFavoriteBtn;
+    private CheckBox selectAllFav;
+    private Button removeToFavoriteBtn;
+
+    class _CheckBox extends CheckBox {
+        public void setValueNoValueChangeTrigger(boolean value) {
+            this.setInternalValue(value);
+            requestRepaint();
+        }
+    }
+
+    private Map<Integer,_CheckBox> allCheckBoxMap = new HashMap<Integer, _CheckBox>();
+    private Set<Integer> prevSelectedMId = new HashSet<Integer>();
 
     public ProgramMethodsView(Project project) {
         presenter = new ProgramMethodsPresenter(this,project);
@@ -88,23 +102,27 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     @Override
     public void afterPropertiesSet() throws Exception {
          try {
-            initalizeComponents();
+            initializeComponents();
 
              // Preinit components
              typeFilter.addItem("");
+             typeFilter.setItemCaption("","All Method Types");
              for (String[] methodType : methodTypes) {
                  typeFilter.addItem(methodType[0]);
                  typeFilter.setItemCaption(methodType[0], methodType[1]);
              }
 
+             typeFilter.setNullSelectionItemId("Method Type");
              typeFilter.setNullSelectionAllowed(false);
              typeFilter.select(methodTypes[0][0]);
 
              groupFilter.addItem("");
+             groupFilter.setItemCaption("", "All Method Groups");
              for(String[] methodGroup : methodGroups) {
                  groupFilter.addItem(methodGroup[0]);
                  groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
              }
+             groupFilter.setNullSelectionItemId("Method Group");
              groupFilter.select("");
              groupFilter.setNullSelectionAllowed(false);
 
@@ -116,34 +134,36 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
          }
     }
 
-    private void initalizeComponents() {
+    private void initializeComponents() {
         root = new VerticalLayout();
         root.setSpacing(false);
         root.setMargin(new Layout.MarginInfo(false,true,true,true));
 
-        final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
-        final Label heading = new Label("Manage Program Methods");
-        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+        final HorizontalLayout titleContainer = new HorizontalLayout();
+        final Label heading = new Label("<span class='glyphicon glyphicon-th-large'></span>&nbsp;Breeding Methods",Label.CONTENT_XHTML);
+        final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
 
-        final Label availableMethodsTitle = new Label("Available Methods");
-        availableMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+        final Label availableMethodsTitle = new Label("Available Breeding Methods");
+        availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
         addNewMethodBtn = new Button("Add new Method");
-        addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() +  " loc-add-btn");
+        addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
-        availableMethodsTitleContainer.addComponent(availableMethodsTitle);
-        availableMethodsTitleContainer.addComponent(addNewMethodBtn);
+        titleContainer.addComponent(heading);
+        titleContainer.addComponent(addNewMethodBtn);
 
-        availableMethodsTitleContainer.setComponentAlignment(addNewMethodBtn,Alignment.MIDDLE_RIGHT);
-        availableMethodsTitleContainer.setSizeUndefined();
-        availableMethodsTitleContainer.setWidth("100%");
-        availableMethodsTitleContainer.setMargin(false,true,true,false);	// move this to css
+        titleContainer.setComponentAlignment(addNewMethodBtn, Alignment.MIDDLE_RIGHT);
+        titleContainer.setSizeUndefined();
+        titleContainer.setWidth("100%");
+        titleContainer.setMargin(true, true, true, false);	// move this to css
 
         final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
-        selectedMethodTitleContainer.setMargin(true,true,false,false);
+        selectedMethodTitleContainer.setMargin(false,true,false,false);
 
         final Label selectedMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
-        selectedMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        selectedMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
 
@@ -153,12 +173,59 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         availTbl.setHeight("250px");
         selTbl.setHeight("250px");
 
-        root.addComponent(heading);
-        root.addComponent(availableMethodsTitleContainer);
+        /* AVAILABLE SELECT ALL BAR */
+        final CssLayout availableSelectAllContainer = new CssLayout();
+        availableSelectAllContainer.addStyleName("loc-filter-bar");
+        availableSelectAllContainer.setMargin(new Layout.MarginInfo(false,false,true,false));
+        availableSelectAllContainer.setSizeUndefined();
+        availableSelectAllContainer.setWidth("100%");
+
+        selectAllAvailable = new CheckBox();
+        selectAllAvailable.setImmediate(true);
+        final Label selectAllLbl = new Label("&nbsp;&nbsp;Select All&nbsp;&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
+        addToFavoriteBtn = new Button("Add selected to favorite breeding methods");
+        addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+
+        final HorizontalLayout selectAllContainer1 = new HorizontalLayout();
+        selectAllContainer1.addStyleName("align-select-all");
+        selectAllContainer1.addComponent(selectAllAvailable);
+        selectAllContainer1.addComponent(selectAllLbl);
+
+        availableSelectAllContainer.addComponent(selectAllContainer1);
+        availableSelectAllContainer.addComponent(addToFavoriteBtn);
+
+        /* FAVORITES SELECT ALL BAR */
+        final CssLayout favoriteSelectAllContainer = new CssLayout();
+        favoriteSelectAllContainer.addStyleName("loc-filter-bar");
+        favoriteSelectAllContainer.setMargin(new Layout.MarginInfo(false,false,true,false));
+        favoriteSelectAllContainer.setSizeUndefined();
+        favoriteSelectAllContainer.setWidth("100%");
+
+
+        selectAllFav = new CheckBox();
+        selectAllFav.setImmediate(true);
+        final Label selectAllFavLbl = new Label("&nbsp;&nbsp;Select All&nbsp;&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
+        removeToFavoriteBtn = new Button("Remove selected favorite breeding methods");
+        removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+
+        final HorizontalLayout selectAllContainer2 = new HorizontalLayout();
+        selectAllContainer2.addStyleName("align-select-all");
+        selectAllContainer2.addComponent(selectAllFav);
+        selectAllContainer2.addComponent(selectAllFavLbl);
+
+        favoriteSelectAllContainer.addComponent(selectAllContainer2);
+        favoriteSelectAllContainer.addComponent(removeToFavoriteBtn);
+
+        /* BUILD ALL COMPONENTS TO THE ROOT/PAGE */
+        root.addComponent(titleContainer);
+        root.addComponent(headingDesc);
+        root.addComponent(availableMethodsTitle);
         root.addComponent(this.buildMethodFilterForm());
         root.addComponent(availTbl);
+        root.addComponent(availableSelectAllContainer);
         root.addComponent(selectedMethodTitleContainer);
         root.addComponent(selTbl);
+        root.addComponent(favoriteSelectAllContainer);
         root.addComponent(this.buildActionButtons());
 
         this.setCompositionRoot(root);
@@ -195,16 +262,18 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
         cancelBtn = new Button("Cancel");
 
-        final Label spacer = new Label("");
-        spacer.setWidth("100%");
+        final HorizontalLayout innerContainer = new HorizontalLayout();
+        innerContainer.setSpacing(true);
+        innerContainer.setSizeUndefined();
 
-        root.addComponent(spacer);
-        root.addComponent(cancelBtn);
-        root.addComponent(saveBtn);
+        innerContainer.addComponent(cancelBtn);
+        innerContainer.addComponent(saveBtn);
 
-        root.setExpandRatio(spacer, 1.0f);
+        root.addComponent(innerContainer);
+        root.setComponentAlignment(innerContainer,Alignment.MIDDLE_CENTER);
+
         root.setSpacing(true);
-        root.setMargin(true);
+        root.setMargin(new Layout.MarginInfo(false,true,true,true));
         root.setWidth("100%");
         return root;
     }
@@ -215,15 +284,13 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         container.setSizeUndefined();
         container.setWidth("100%");
 
-        container.setMargin(new Layout.MarginInfo(false,false,true,false));
+        container.setMargin(new Layout.MarginInfo(true,false,true,false));
 
         groupFilter = new Select();
         groupFilter.setImmediate(true);
-        groupFilter.setNullSelectionAllowed(false);
 
         typeFilter = new Select();
         typeFilter.setImmediate(true);
-        typeFilter.setNullSelectionAllowed(false);
 
         searchField = new TextField();
         searchField.setImmediate(true);
@@ -233,16 +300,10 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         final Label spacer = new Label();
         spacer.setWidth("100%");
 
-        final Label groupLbl = new Label("Method Group");
-        final Label typeLbl = new Label("Method Type");
-        final Label searchLbl = new Label("Search Methods");
+        final Label searchLbl = new Label("<b>Search for:&nbsp;&nbsp;&nbsp;</b>",Label.CONTENT_XHTML);
 
-        groupLbl.setSizeUndefined();
-        typeLbl.setSizeUndefined();
         searchLbl.setSizeUndefined();
 
-        groupLbl.setStyleName("loc-filterlbl");
-        typeLbl.setStyleName("loc-filterlbl");
         searchLbl.setStyleName("loc-filterlbl");
 
         final HorizontalLayout field1 = new HorizontalLayout();
@@ -252,25 +313,30 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         field1.addComponent(searchLbl);
         field1.addComponent(searchField);
 
-        container.addComponent(field1);
+        HorizontalLayout filterContainer = new HorizontalLayout();
+        filterContainer.setSpacing(true);
+        filterContainer.setStyleName("pull-right");
+        filterContainer.setSizeUndefined();
 
         final HorizontalLayout field2 = new HorizontalLayout();
         field2.addStyleName("field");
         field2.setSpacing(true);
         field2.setSizeUndefined();
-        field2.addComponent(groupLbl);
         field2.addComponent(groupFilter);
 
-        container.addComponent(field2);
 
         final HorizontalLayout field3 = new HorizontalLayout();
         field3.addStyleName("field");
         field3.setSpacing(true);
         field3.setSizeUndefined();
-        field3.addComponent(typeLbl);
         field3.addComponent(typeFilter);
 
-        container.addComponent(field3);
+        filterContainer.addComponent(new Label("<b>Filter By:&nbsp;&nbsp;&nbsp;</b>",Label.CONTENT_XHTML));
+        filterContainer.addComponent(field2);
+        filterContainer.addComponent(field3);
+
+        container.addComponent(field1);
+        container.addComponent(filterContainer);
 
         resultCountLbl = new Label("");
         resultCountLbl.setStyleName("loc-resultcnt");
@@ -279,7 +345,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     }
 
     private Table buildCustomTable(Map<String,Integer> columnWidthMap) {
-        Table table = new Table() {
+        final Table table = new Table() {
             private static final long serialVersionUID = -14085524627550290L;
 
             @Override
@@ -293,8 +359,80 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 else
                     return Table.ALIGN_CENTER;
             }
-
         };
+
+        table.setSelectable(true);
+        table.setMultiSelect(true);
+        table.setImmediate(true);
+        table.setNullSelectionAllowed(false);
+        table.setDragMode(Table.TableDragMode.MULTIROW);
+        table.setStyleName("loc-table");
+        table.setHeight("250px");
+
+        table.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                Set<Integer> currentSelectedMIds = new HashSet<Integer>();
+
+                for (Object itemId : ((Collection) table.getValue())) {
+                    Item item = table.getItem(itemId);
+                    Integer mId = (Integer) item.getItemProperty("mid").getValue();
+                    allCheckBoxMap.get(mId).setValueNoValueChangeTrigger(true);
+
+                    currentSelectedMIds.add(mId);
+
+                }
+
+                prevSelectedMId.removeAll(currentSelectedMIds);
+
+                for (Integer mId : prevSelectedMId) {
+                    allCheckBoxMap.get(mId).setValueNoValueChangeTrigger(false);
+                }
+
+                prevSelectedMId.clear();
+                prevSelectedMId.addAll(currentSelectedMIds);
+
+
+            }
+        });
+
+        table.setDropHandler(new DropHandler() {
+            @Override
+            public void drop(DragAndDropEvent dragAndDropEvent) {
+                // criteria verify that this is safe
+                final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent
+                        .getTransferable();
+
+                if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
+                    return;
+
+                LinkedList<Integer> sourceItems = new LinkedList<Integer>(((Collection) ((Table)t.getSourceComponent()).getValue()));
+
+                ListIterator<Integer> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+                Table destinationTbl = (Table) dragAndDropEvent.getTargetDetails().getTarget();
+
+                while (sourceItemsIterator.hasPrevious()) {
+                    Integer itemId =  sourceItemsIterator.previous();
+                    Item item = t.getSourceContainer().getItem(itemId);
+
+                    try {
+                        addRow(presenter.getMethodByID((Integer)item.getItemProperty("mid").getValue()),destinationTbl,0);
+                        t.getSourceContainer().removeItem(itemId);
+
+                    } catch (IllegalAccessException e) {
+                        // cannot move
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public AcceptCriterion getAcceptCriterion() {
+                return AbstractSelect.AcceptItem.ALL;
+            }
+        });
 
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
@@ -310,6 +448,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             }
         });
 
+
         //table.setColumnWidth("locationName",310);
         //table.setColumnWidth("locationAbbreviation",130);
         //table.setColumnWidth("removeBtn",60);
@@ -319,11 +458,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             table.setColumnWidth(columnName,columnWidthMap.get(columnName));
         }
 
-        table.setStyleName("loc-table");
-        table.setSelectable(true);
-        table.setMultiSelect(false);
-
-        table.setHeight("250px");
         return table;
     }
 
@@ -342,6 +476,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     }
 
     private void initializeActions() {
+
         addNewMethodBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -372,34 +507,44 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         groupFilter.addListener(filterAction);
         typeFilter.addListener(filterAction);
 
-        onAddToSelectedMethodAction = new Button.ClickListener() {
+        /*
+        * private CheckBox selectAllAvailable;
+            private Button addToFavoriteBtn;
+            private CheckBox selectAllFav;
+            private Button removeToFavoriteBtn;
+
+        * */
+        selectAllAvailable.addListener(new Property.ValueChangeListener() {
             @Override
-            public void buttonClick(Button.ClickEvent event) {
-
-                Item selectedItem = availableMethodsTable.getItem(event.getButton().getData());
-
-                ProgramMethodsView.this.presenter.doMoveToSelectedMethod(Integer.parseInt(selectedItem.getItemProperty("mid").getValue().toString()));
-
-                availableMethodsTable.removeItem(selectedItem);
-
-                availableMethodsTable.removeItem(event.getButton().getData());
-
-
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                for (Object itemId : availableMethodsTable.getItemIds())  {
+                    allCheckBoxMap.get(availableMethodsTable.getItem(itemId).getItemProperty("mid").getValue()).setValue(valueChangeEvent.getProperty().getValue());
+                }
             }
-        };
+        });
 
-        onRemoveSelectedMethodAction = new Button.ClickListener() {
+        selectAllFav.addListener(new Property.ValueChangeListener() {
             @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Item item = (Item)selectedMethodsTable.getItem(event.getButton().getData());
-                Integer locId = (Integer) item.getItemProperty("mid").getValue();
-
-                ProgramMethodsView.this.presenter.doRemoveSelectedMethod(locId);
-
-                selectedMethodsTable.removeItem(event.getButton().getData());
-                selectedMethodIds.remove(locId);
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                for (Object itemId : selectedMethodsTable.getItemIds())  {
+                    allCheckBoxMap.get(selectedMethodsTable.getItem(itemId).getItemProperty("mid").getValue()).setValue(valueChangeEvent.getProperty().getValue());
+                }
             }
-        };
+        });
+
+        addToFavoriteBtn.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                moveSelectedItems(availableMethodsTable,selectedMethodsTable);
+            }
+        });
+
+        removeToFavoriteBtn.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                moveSelectedItems(selectedMethodsTable,availableMethodsTable);
+            }
+        });
 
         saveBtn.addListener(new Button.ClickListener() {
             @Override
@@ -415,9 +560,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         });
 
         cancelBtn.addListener(new Button.ClickListener() {
-           private static final long serialVersionUID = -4479216826096826464L;
+            private static final long serialVersionUID = -4479216826096826464L;
 
-			@Override
+            @Override
             public void buttonClick(Button.ClickEvent event) {
                 IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
 
@@ -440,17 +585,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         fields = Method.class.getDeclaredFields();
 
         HashMap<String,String> visibleFieldsMap = new LinkedHashMap<String, String>();
+        visibleFieldsMap.put("select","<span class='glyphicon glyphicon-ok'></span>");
         visibleFieldsMap.put("mname","Method Name");
-        visibleFieldsMap.put("fmdesc","Method Description");
-        visibleFieldsMap.put("mgrp","Method Group");
-        visibleFieldsMap.put("mcode","Method Code");
-        visibleFieldsMap.put("mtype","Method Type");
-        visibleFieldsMap.put("fmdate","Method Date");
+        visibleFieldsMap.put("fmdesc","Description");
+        visibleFieldsMap.put("mgrp","Group");
+        visibleFieldsMap.put("mcode","Code");
+        visibleFieldsMap.put("mtype","Type");
+        visibleFieldsMap.put("fmdate","Date");
 
-        HashMap<String,String> visibleFieldsMap2 = new LinkedHashMap<String, String>(visibleFieldsMap);
-        visibleFieldsMap2.put("removeBtn","Remove");
-        visibleFieldsMap.put("selectBtn","Select");
-
+       
         for (Field field : fields) {
             field.setAccessible(true);
 
@@ -462,8 +605,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
         }
 
-        availableMethodsTable.getContainerDataSource().addContainerProperty("selectBtn", Button.class, null);
-        selectedMethodsTable.getContainerDataSource().addContainerProperty("removeBtn", Button.class, null);
+        availableMethodsTable.getContainerDataSource().addContainerProperty("select", _CheckBox.class, false);
+        selectedMethodsTable.getContainerDataSource().addContainerProperty("select", _CheckBox.class, false);
 
         availableMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
         selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
@@ -487,8 +630,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         availableMethodsTable.setVisibleColumns(visibleFieldsMap.keySet().toArray(new String[visibleFieldsMap.size()]));
         availableMethodsTable.setColumnHeaders(visibleFieldsMap.values().toArray(new String[visibleFieldsMap.size()]));
 
-        selectedMethodsTable.setVisibleColumns(visibleFieldsMap2.keySet().toArray(new String[visibleFieldsMap2.size()]));
-        selectedMethodsTable.setColumnHeaders(visibleFieldsMap2.values().toArray(new String[visibleFieldsMap2.size()]));
+        selectedMethodsTable.setVisibleColumns(visibleFieldsMap.keySet().toArray(new String[visibleFieldsMap.size()]));
+        selectedMethodsTable.setColumnHeaders(visibleFieldsMap.values().toArray(new String[visibleFieldsMap.size()]));
 
     }
 
@@ -501,7 +644,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
            }
     }
 
-    public void addRow(Method method, boolean isAvailableTable,Integer index) throws IllegalAccessException {
+    public void addRow(Method method, final Table isAvailableTable,Integer index) throws IllegalAccessException {
+        if (isAvailableTable == availableMethodsTable)
+            addRow(method,true,index);
+        else
+            addRow(method,false,index);
+
+    }
+
+    public void addRow(Method method, final boolean isAvailableTable,Integer index) throws IllegalAccessException {
         Object itemId = null;
         IndexedContainer itemContainer = null;
 
@@ -559,18 +710,43 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         btn.setWidth("16px");
         btn.setHeight("16px");
 
-        if (isAvailableTable) {
-            btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
-            btn.addListener(onAddToSelectedMethodAction);
-            newItem.getItemProperty("selectBtn").setValue(btn);
-        } else {
-            btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
-            btn.addListener(onRemoveSelectedMethodAction);
-            newItem.getItemProperty("removeBtn").setValue(btn);
 
+        if (!isAvailableTable) {
             if (!selectedMethodIds.contains(method.getMid()))
                 selectedMethodIds.add(method.getMid());
         }
+
+        _CheckBox select = new _CheckBox();
+        select.setImmediate(true);
+        final Object finalItemId = itemId;
+        select.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                if (true == valueChangeEvent.getProperty().getValue()) {
+                    if (isAvailableTable)
+                        availableMethodsTable.select(finalItemId);
+                    else
+                        selectedMethodsTable.select(finalItemId);
+                } else {
+                    if (isAvailableTable)
+                        availableMethodsTable.unselect(finalItemId);
+                    else
+                        selectedMethodsTable.unselect(finalItemId);
+
+                }
+
+            }
+        });
+
+        newItem.getItemProperty("select").setValue(select);
+
+        Integer mId = (Integer) newItem.getItemProperty("mid").getValue();
+
+        if (allCheckBoxMap.containsKey(mId))
+            allCheckBoxMap.remove(mId);
+
+        allCheckBoxMap.put(mId,select);
+
 
         btn.setData(itemId);
     }
@@ -578,5 +754,26 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     /** TODO: The Following methods are only for compatibility to old Classes depentent on old Project Breeding Methods Panel UI **/
     public ManagerFactory getManagerFactory() {
         return this.presenter.getManagerFactory();
+    }
+
+    public void moveSelectedItems(Table source,Table destination) {
+        LinkedList<Integer> sourceItems = new LinkedList<Integer>(((Collection) source.getValue()));
+        ListIterator<Integer> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+
+
+        while (sourceItemsIterator.hasPrevious()) {
+            Integer itemId =  sourceItemsIterator.previous();
+            Item item = source.getItem(itemId);
+
+            try {
+                addRow(presenter.getMethodByID((Integer)item.getItemProperty("mid").getValue()),destination,0);
+                source.removeItem(itemId);
+
+            } catch (IllegalAccessException e) {
+                // cannot move
+                e.printStackTrace();
+            }
+
+        }
     }
 }
