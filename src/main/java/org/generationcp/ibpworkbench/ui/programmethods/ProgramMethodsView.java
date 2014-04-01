@@ -4,6 +4,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
@@ -78,15 +79,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
     private CheckBox selectAllFav;
     private Button removeToFavoriteBtn;
 
-    class _CheckBox extends CheckBox {
-        public void setValueNoValueChangeTrigger(boolean value) {
-            this.setInternalValue(value);
-            requestRepaint();
-        }
-    }
-
-    private Map<Integer,_CheckBox> allCheckBoxMap = new HashMap<Integer, _CheckBox>();
-    private Set<Integer> prevSelectedMId = new HashSet<Integer>();
+    private Map<Integer,CheckBox> allCheckBoxMap = new HashMap<Integer, CheckBox>();
+    private Map<Integer,Integer> prevSelectedItems = new HashMap<Integer,Integer>();
 
     public ProgramMethodsView(Project project) {
         presenter = new ProgramMethodsPresenter(this,project);
@@ -369,32 +363,45 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         table.setStyleName("loc-table");
         table.setHeight("250px");
 
+        table.addListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent itemClickEvent) {
+                for (Integer mId : prevSelectedItems.keySet()) {
+                    if (itemClickEvent.getComponent() != availableMethodsTable) {
+                        availableMethodsTable.unselect(prevSelectedItems.get(mId));
+                    } else {
+                        selectedMethodsTable.unselect(prevSelectedItems.get(mId));
+                    }
+
+                    allCheckBoxMap.get(mId).setValue(false);
+                }
+                prevSelectedItems.clear();
+            }
+        });
+
         table.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                Set<Integer> currentSelectedMIds = new HashSet<Integer>();
+                Set<Integer> difference = new HashSet<Integer>(prevSelectedItems.keySet());
 
-                for (Object itemId : ((Collection) table.getValue())) {
-                    Item item = table.getItem(itemId);
-                    Integer mId = (Integer) item.getItemProperty("mid").getValue();
-                    allCheckBoxMap.get(mId).setValueNoValueChangeTrigger(true);
 
-                    currentSelectedMIds.add(mId);
+                for (Object itemId : ((Collection)table.getValue())) {
+                    Integer mId = (Integer) table.getItem(itemId).getItemProperty("mid").getValue();
 
+                    if (!prevSelectedItems.containsKey(mId))
+                        prevSelectedItems.put(mId, (Integer) itemId);
+
+                    allCheckBoxMap.get(mId).setValue(true);
+
+                    difference.remove(mId);
                 }
 
-                prevSelectedMId.removeAll(currentSelectedMIds);
-
-                for (Integer mId : prevSelectedMId) {
-                    allCheckBoxMap.get(mId).setValueNoValueChangeTrigger(false);
+                for (Integer mId : difference) {
+                    allCheckBoxMap.get(mId).setValue(false);
                 }
-
-                prevSelectedMId.clear();
-                prevSelectedMId.addAll(currentSelectedMIds);
-
-
             }
         });
+
 
         table.setDropHandler(new DropHandler() {
             @Override
@@ -517,18 +524,19 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         selectAllAvailable.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                for (Object itemId : availableMethodsTable.getItemIds())  {
-                    allCheckBoxMap.get(availableMethodsTable.getItem(itemId).getItemProperty("mid").getValue()).setValue(valueChangeEvent.getProperty().getValue());
-                }
+                selectedMethodsTable.setValue(null);
+                availableMethodsTable.setValue(availableMethodsTable.getItemIds());
+                selectAllFav.setValue(false);
+
             }
         });
 
         selectAllFav.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                for (Object itemId : selectedMethodsTable.getItemIds())  {
-                    allCheckBoxMap.get(selectedMethodsTable.getItem(itemId).getItemProperty("mid").getValue()).setValue(valueChangeEvent.getProperty().getValue());
-                }
+                availableMethodsTable.setValue(null);
+                selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
+                selectAllAvailable.setValue(false);
             }
         });
 
@@ -605,8 +613,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
         }
 
-        availableMethodsTable.getContainerDataSource().addContainerProperty("select", _CheckBox.class, false);
-        selectedMethodsTable.getContainerDataSource().addContainerProperty("select", _CheckBox.class, false);
+        availableMethodsTable.getContainerDataSource().addContainerProperty("select", CheckBox.class, false);
+        selectedMethodsTable.getContainerDataSource().addContainerProperty("select", CheckBox.class, false);
 
         availableMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
         selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
@@ -716,17 +724,32 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 selectedMethodIds.add(method.getMid());
         }
 
-        _CheckBox select = new _CheckBox();
+        final CheckBox select = new CheckBox();
         select.setImmediate(true);
         final Object finalItemId = itemId;
-        select.addListener(new Property.ValueChangeListener() {
+
+        select.addListener(new Button.ClickListener() {
             @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                if (true == valueChangeEvent.getProperty().getValue()) {
-                    if (isAvailableTable)
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                for (Integer mId : prevSelectedItems.keySet()) {
+                    if (select.getParent() != availableMethodsTable) {
+                        availableMethodsTable.unselect(prevSelectedItems.get(mId));
+                    } else {
+                        selectedMethodsTable.unselect(prevSelectedItems.get(mId));
+                    }
+
+                    allCheckBoxMap.get(mId).setValue(false);
+                }
+                prevSelectedItems.clear();
+
+                if (true == ((CheckBox)clickEvent.getComponent()).getValue()) {
+                    if (isAvailableTable)  {
                         availableMethodsTable.select(finalItemId);
-                    else
+                    }
+                    else {
                         selectedMethodsTable.select(finalItemId);
+
+                    }
                 } else {
                     if (isAvailableTable)
                         availableMethodsTable.unselect(finalItemId);
@@ -734,6 +757,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                         selectedMethodsTable.unselect(finalItemId);
 
                 }
+
 
             }
         });
