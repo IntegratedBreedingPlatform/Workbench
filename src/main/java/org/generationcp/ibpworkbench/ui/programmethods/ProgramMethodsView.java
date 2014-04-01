@@ -387,6 +387,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 
                 for (Object itemId : ((Collection)table.getValue())) {
+                    if (table.getItem(itemId) == null)
+                        continue;
+
                     Integer mId = (Integer) table.getItem(itemId).getItemProperty("mid").getValue();
 
                     if (!prevSelectedItems.containsKey(mId))
