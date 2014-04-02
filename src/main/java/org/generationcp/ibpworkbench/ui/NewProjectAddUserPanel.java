@@ -83,9 +83,10 @@ public class NewProjectAddUserPanel extends Panel {
         saveButton = new Button();
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
-        buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
+        buttonLayout.addComponent(saveButton);
         vl.addComponent(buttonLayout);
+
     }
     
     protected void initializeValues() {
@@ -103,7 +104,7 @@ public class NewProjectAddUserPanel extends Panel {
         vl.setMargin(new Layout.MarginInfo(false,true,true,true));
         vl.setSpacing(true);
         vl.setComponentAlignment(userForm, Alignment.MIDDLE_CENTER);
-        vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
+        vl.setComponentAlignment(buttonLayout, Alignment.TOP_CENTER);
         
         buttonLayout.setWidth("140px");
     }

@@ -98,8 +98,8 @@ public class UserAccountPanel extends Panel {
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
-        buttonLayout.addComponent(saveButton);
         buttonLayout.addComponent(cancelButton);
+        buttonLayout.addComponent(saveButton);
         vl.addComponent(buttonLayout);
         vl.setStyleName("v-panel-content-gcp-createuser");
     }
