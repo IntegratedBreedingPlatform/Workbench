@@ -99,7 +99,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             newProj.setProjectName(currentProject.getProjectName());
                             newProj.setLocalDbName(currentProject.getLocalDbName());
                             newProj.setCentralDbName(currentProject.getCentralDbName());
-                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId().intValue());
+                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId());
                             manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
                             
