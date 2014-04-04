@@ -532,7 +532,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
 
-                if (true ==valueChangeEvent.getProperty().getValue())
+                if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
                     availableMethodsTable.setValue(availableMethodsTable.getItemIds());
                 else {
                     availableMethodsTable.setValue(null);
@@ -548,7 +548,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
 
-                if (true ==valueChangeEvent.getProperty().getValue())
+                if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
                     selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
                 else {
                     selectedMethodsTable.setValue(null);
@@ -762,7 +762,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 }
                 prevSelectedItems.clear();
 
-                if (true == ((CheckBox)clickEvent.getComponent()).getValue()) {
+                if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                     if (isAvailableTable)  {
                         availableMethodsTable.select(finalItemId);
                     }

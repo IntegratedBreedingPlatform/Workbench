@@ -9,7 +9,7 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.ui;
+package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,9 +18,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
@@ -43,31 +44,29 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 
 
 /**
  *
- * @author Aldrich Abrogena
+ * @author Aldrin Batac
  */
 @SuppressWarnings("unchecked")
 @Configurable
-public class ProgramMembersView extends Panel implements InitializingBean{
+public class ProgramMembersView extends Panel implements InitializingBean {
     
     private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersView.class);
     private static final long serialVersionUID = 1L;
     
-   
-    private TwinColSelect select;
+    private TwinTableSelect<User> select;
     
     private Button newMemberButton;
     private Button saveButton;
     
     private Table tblMembers;
     
-    private Button previousButton;
-//    private Button nextButton;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -105,14 +104,54 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
     protected void initializeComponents(){
 
-        select = new TwinColSelect();
+        
+        
+        select = new TwinTableSelect<User>(User.class);
+        
+        Table.ColumnGenerator generator1 = new Table.ColumnGenerator(){
+
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				Person person = ((User) itemId).getPerson();
+				return person.getDisplayName();
+			}
+        	
+        	
+        };
+        Table.ColumnGenerator generator2 = new Table.ColumnGenerator(){
+
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				Person person = ((User) itemId).getPerson();
+				return person.getDisplayName();
+			}
+        	
+        	
+        };
+        
+        select.getTableLeft().addGeneratedColumn("userName", generator1);
+        select.getTableRight().addGeneratedColumn("userName", generator2);
+        
+        select.setVisibleColumns(new Object[] {"select","userName"});
+        select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>","USER NAME"});
+        
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Program Members");
-        select.setRows(10);
-        select.setWidth("400px");
-        select.setMultiSelect(true);
-        select.setNullSelectionAllowed(true);
-        select.setImmediate(true);
+        
+        select.setLeftLinkCaption("");
+        select.setRightLinkCaption("Remove Selected Members");
+        select.addRightLinkListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				select.removeAllSelectedItems();
+			}
+		});
+        
+       
+     
 
     }
     
@@ -190,6 +229,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
         return projectUserRoles;
 
     }
+    
     private Table initializeMembersTable() {
         tblMembers = new Table();
         tblMembers.setImmediate(true);
@@ -257,14 +297,10 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
     protected void initializeValues() {
         try {
-            Container container = createUsersContainer();
             
+            Container container = createUsersContainer();
             select.setContainerDataSource(container);
-            	
-            for (Object itemId : container.getItemIds()) {
-                User user = (User) itemId;
-                select.setItemCaption(itemId, user.getPerson().getDisplayName());
-            }
+            
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting workbench users", e);
@@ -288,8 +324,9 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
         root.addComponent(header);
         root.addComponent(select);
-        //root.addComponent(initializeMembersTable());
+      
         initializeMembersTable();
+        
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
 
@@ -304,9 +341,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
     	 Container container = tblMembers.getContainerDataSource();
     	 
     	 List<ProjectUserRole> projectUserRoles = workbenchDataManager.getProjectUserRolesByProject(this.project);
-         // remove non-selected items
-         Collection<?> itemIds = container.getItemIds();
-         List<Object> deleteTargets = new ArrayList<Object>();
+     
          Set<User> selectedItems = new HashSet();
          
          for (ProjectUserRole projrole : projectUserRoles) {
@@ -330,11 +365,11 @@ public class ProgramMembersView extends Panel implements InitializingBean{
         
     }
     protected void initializeActions() {
-        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        //newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         saveButton.addListener(new SaveUsersInProjectAction(this.project, select ));
         
         
-        select.addListener(new ValueChangeListener() {
+        /**select.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -378,7 +413,7 @@ public class ProgramMembersView extends Panel implements InitializingBean{
             	
             }
             }
-        }); 
+        }); **/
     }
     
    
@@ -394,10 +429,9 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-//        nextButton = new Button("Next");
         buttonLayout.addComponent(newMemberButton);
         buttonLayout.addComponent(saveButton);
-//        buttonLayout.addComponent(nextButton);
+
         return buttonLayout;
     }
     
@@ -407,6 +441,9 @@ public class ProgramMembersView extends Panel implements InitializingBean{
 
         // TODO: This can be improved once we implement proper User-Person mapping
         List<User> userList = workbenchDataManager.getAllUsersSorted();
+        
+       
+        
         for (User user : userList) {
             Person person = workbenchDataManager.getPersonById(user.getPersonid());
             user.setPerson(person);
@@ -422,13 +459,15 @@ public class ProgramMembersView extends Panel implements InitializingBean{
               //  continue;
             }
             
+            
+            
             beanItemContainer.addBean(user);
         }
+ 
         
         return beanItemContainer;
     }
-
-
+   
     public boolean validate(){
         return true;
     }

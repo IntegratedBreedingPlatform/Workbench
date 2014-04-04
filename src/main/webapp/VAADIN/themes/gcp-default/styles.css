@@ -180,3 +180,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 /* common */
 .pull-right { float: right }
+
+
+.v-gridlayout-cell-style > div > div > div {
+	 padding-right:  50px;
+}
