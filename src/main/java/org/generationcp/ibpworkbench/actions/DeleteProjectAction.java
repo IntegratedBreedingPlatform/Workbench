@@ -71,7 +71,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 	@Override
 	public void doAction(final Window window, String uriFragment,
 			boolean isLinkAccessed) {
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         if(app.getMainWindow()!= null)
         {
             User currentUser = app.getSessionData().getUserData();
@@ -92,6 +92,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                     if (dialog.isConfirmed()) {
 
                         try {
+                        	
+                        	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
 
                             manager.deleteProjectDependencies(currentProject);
                             Project newProj = new Project();
@@ -102,7 +104,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
                             
-                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId().intValue());
+                       
+                            app.getSessionData().setSelectedProject(manager.getLastOpenedProject(app.getSessionData().getUserData().getUserid()));
+                            
 
                         } catch (MiddlewareQueryException e) {
                             //MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
