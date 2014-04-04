@@ -322,10 +322,13 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	
 	public void setContainerDataSource(Container container){
 		getTableLeft().setContainerDataSource(container);
+		getTableRight().removeAllItems();
 		if (visibleColumns!=null)
 			setVisibleColumns(this.visibleColumns);
 		if (columnHeaders!=null)
 			setColumnHeaders(this.columnHeaders);
+		chkSelectAllLeft.setValue(false);
+		chkSelectAllRight.setValue(false);
 	}
 	
 	public void setVisibleColumns(Object[] visibleColumns){

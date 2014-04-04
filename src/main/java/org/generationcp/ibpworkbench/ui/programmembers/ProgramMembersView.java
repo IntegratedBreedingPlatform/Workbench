@@ -63,6 +63,7 @@ public class ProgramMembersView extends Panel implements InitializingBean {
     private TwinTableSelect<User> select;
     
     private Button newMemberButton;
+    private Button cancelButton;
     private Button saveButton;
     
     private Table tblMembers;
@@ -311,24 +312,42 @@ public class ProgramMembersView extends Panel implements InitializingBean {
     }
 
     protected void initializeLayout() {
+    	
+    	 final HorizontalLayout titleContainer = new HorizontalLayout();
+         final Label heading = new Label("<span class='glyphicon glyphicon-th-large'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
+         final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+
+         heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+         newMemberButton = new Button("Add New User");
+         newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
+         titleContainer.addComponent(heading);
+         titleContainer.addComponent(newMemberButton);
+
+         titleContainer.setComponentAlignment(newMemberButton, Alignment.MIDDLE_RIGHT);
+         titleContainer.setSizeUndefined();
+         titleContainer.setWidth("100%");
+         titleContainer.setMargin(true, false, true, false);	// move this to css
+    	
+    	
 
         final VerticalLayout root = new VerticalLayout();
         root.setMargin(new Layout.MarginInfo(false,true,true,true));
         root.setSpacing(true);
         root.setSizeUndefined();
-
-        final Label header = new Label("Manage Program Members");
-        header.setStyleName(Bootstrap.Typography.H1.styleName());
+        
+        root.addComponent(titleContainer);
+        root.addComponent(headingDesc);
 
         final ComponentContainer buttonArea = layoutButtonArea();
 
-        root.addComponent(header);
         root.addComponent(select);
       
         initializeMembersTable();
         
         root.addComponent(buttonArea);
-        root.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
+        root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
 
         this.setScrollable(true);
 
@@ -367,53 +386,22 @@ public class ProgramMembersView extends Panel implements InitializingBean {
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         saveButton.addListener(new SaveUsersInProjectAction(this.project, select ));
+        cancelButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				initializeValues();
+				try {
+					initializeUsers();
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
         
-        
-        /**select.addListener(new ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-            try{   
-            	Property property = event.getProperty();
-                Set<User> selectedItems = (Set<User>) property.getValue();
-                LOG.debug("valueChange");
-                Container container = tblMembers.getContainerDataSource();
-
-                // remove non-selected items
-                Collection<?> itemIds = container.getItemIds();
-                List<Object> deleteTargets = new ArrayList<Object>();
-                for (Object itemId : itemIds) {
-                    if (!selectedItems.contains(itemId)) {
-                        deleteTargets.add(itemId);
-                        LOG.debug("deleteTargets " +itemId );
-                    }
-                }
-                for (Object itemId : deleteTargets) {
-                    container.removeItem(itemId);
-                }
-                
-                // add newly selected items
-                itemIds = container.getItemIds();
-                for (User user : selectedItems) {
-                    if (!itemIds.contains(user)) {
-                        Item item = container.addItem(user);
-                        item.getItemProperty("userId").setValue(1);
-                        item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
-                        //item.getItemProperty("")
-                        List<Role> projroles = workbenchDataManager.getRolesByProjectAndUser(project, user);
-                        setInheritedRoles(item,projroles);
-                      
-                    }
-                }
-               
-            
-            }catch(MiddlewareQueryException e)
-            {
-            	
-            }
-            }
-        }); **/
     }
     
    
@@ -424,12 +412,12 @@ public class ProgramMembersView extends Panel implements InitializingBean {
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        newMemberButton = new Button("Add New Member");
+        cancelButton = new Button("Cancel");
         saveButton = new Button("Save");
 
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-        buttonLayout.addComponent(newMemberButton);
+        buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
 
         return buttonLayout;
