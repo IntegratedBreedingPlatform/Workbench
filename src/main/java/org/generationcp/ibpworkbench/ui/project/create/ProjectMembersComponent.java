@@ -431,8 +431,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
-        Container container = tblMembers.getContainerDataSource();
-        Collection<User> userList = (Collection<User>) container.getItemIds();
+        Set<User> userList = (Set<User>) select.getValue();
         
         List<Role> roleList = null;
         try {
@@ -445,21 +444,16 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         }
         
         for (User user : userList) {
-            Item item = container.getItem(user);
             
             for (Role role : roleList) {
-                String propertyId = "role_" + role.getRoleId();
-                Property property = item.getItemProperty(propertyId);
-                Boolean value = (Boolean) property.getValue();
-                
-                if (value != null && value.booleanValue()) {
+  
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
                     
                     projectUserRoles.add(projectUserRole);
                 }
-            }
+            
         }
         return projectUserRoles;
     }
