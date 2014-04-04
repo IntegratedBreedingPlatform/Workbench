@@ -375,6 +375,7 @@ import java.util.*;
 
          //Field[] fields = LocationTableViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
            /*
            for (String col : tableColumnSizes.keySet())
            {
