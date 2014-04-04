@@ -353,6 +353,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
      
      public void addItem(Object itemId){
     	 getTableLeft().addItem(itemId);
+    	 select(itemId);
      }
      
      
