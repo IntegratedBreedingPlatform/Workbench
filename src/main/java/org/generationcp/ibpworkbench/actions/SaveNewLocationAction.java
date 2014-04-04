@@ -89,7 +89,7 @@ public class SaveNewLocationAction implements ClickListener{
             BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
             LocationModel location = locationBean.getBean();
 
-            List<Location> existingLocations = programLocationsPresenter.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
+            List<Location> existingLocations = programLocationsPresenter.getExistingLocations(location.getLocationName());
 
             // there exists a location with the same name?
     		if (existingLocations.size() > 0){
@@ -139,8 +139,7 @@ public class SaveNewLocationAction implements ClickListener{
         try {
             Location loc = location.toLocation();
 
-            programLocationsPresenter.getGermplasmDataManager().addLocation(loc);
- 			programLocationsView.addToAvailableLocation(loc);
+            programLocationsPresenter.addLocation(loc);
  		} catch (MiddlewareQueryException e1) {
  			e1.printStackTrace();
  		    return;

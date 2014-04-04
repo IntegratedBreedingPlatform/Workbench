@@ -3,16 +3,18 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.middleware.pojos.BeanFormState;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-public class LocationTableViewModel {
+public class LocationTableViewModel implements BeanFormState {
 	private Integer locationId;
 	private String locationName;
 	public String locationAbbreviation;
 	public String ltype;
 
 	private String cntryFullName;
+    private Boolean isSelected = false;
 	
 	/*
 	private String latitude;
@@ -133,7 +135,15 @@ public class LocationTableViewModel {
 	public String toString() {
 		return "LocationTableViewModel: [locationId="+ locationId + ", locationName="+ locationName + ", locationAbbreviation="+ locationAbbreviation +", ltype="+ ltype + ", cntryFullName=" + cntryFullName +"]";
 	}
-	
-	
-	
+
+
+    @Override
+    public boolean getActive() {
+        return this.isSelected;
+    }
+
+    @Override
+    public void setActive(Boolean val) {
+        this.isSelected = val;
+    }
 }

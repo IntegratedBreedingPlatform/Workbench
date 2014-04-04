@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro
@@ -43,13 +44,11 @@ public class AddLocationsWindow extends Window{
     private ProgramLocationsPresenter programLocationsPresenter;
     private ProgramLocationsView programLocationsView;
 
-    private GermplasmDataManager gdm;
-  
+    private LocationDataManager ldm;
 
     public AddLocationsWindow(ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
         this.programLocationsView = programLocationsView;
         this.programLocationsPresenter = programLocationsPresenter;
-        this.gdm = programLocationsPresenter.getGermplasmDataManager();
 
         this.addStyleName(Reindeer.WINDOW_LIGHT);
 
@@ -88,7 +87,7 @@ public class AddLocationsWindow extends Window{
 
         //layout.addComponent(newLocationTitle);
 
-        addLocationForm = new AddLocationForm(new LocationModel(),gdm);
+        addLocationForm = new AddLocationForm(new LocationModel(),programLocationsPresenter);
         layout.addComponent(addLocationForm);
 
         cancelButton = new Button("Cancel");

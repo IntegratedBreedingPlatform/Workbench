@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 
 import com.vaadin.data.util.BeanItem;
@@ -43,12 +44,11 @@ public class AddLocationForm extends Form {
     
     private GridLayout grid;
     
-	private GermplasmDataManager gdm;
+	private ProgramLocationsPresenter presenter;
     
-    public AddLocationForm(LocationModel location,GermplasmDataManager gdm) {
+    public AddLocationForm(LocationModel location,ProgramLocationsPresenter presenter) {
         this.location = location;
-
-        this.gdm = gdm;
+        this.presenter = presenter;
         
         assemble();
     }
@@ -75,7 +75,7 @@ public class AddLocationForm extends Form {
         setItemDataSource(locationBean);
 
         setComponentError(null);
-        setFormFieldFactory(new LocationFormFieldFactory(gdm));
+        setFormFieldFactory(new LocationFormFieldFactory(presenter));
         setVisibleItemProperties(Arrays.asList(
                 new String[] { "locationName", "locationAbbreviation","ltype","cntryid" }));
         

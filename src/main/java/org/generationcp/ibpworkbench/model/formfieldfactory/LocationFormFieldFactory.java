@@ -18,6 +18,7 @@ import java.util.List;
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Country;
@@ -59,10 +60,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    public LocationFormFieldFactory(GermplasmDataManager gdm) {
+    public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
     	
     	try {
-			initFields(gdm.getUserDefinedFieldByFieldTableNameAndType("LOCATION","LTYPE"),gdm.getAllCountry());
+			initFields(presenter.getUDFByLocationAndLType(),presenter.getCountryList());
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
