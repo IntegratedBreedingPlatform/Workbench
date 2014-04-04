@@ -365,7 +365,7 @@ public class ProgramMembersView extends Panel implements InitializingBean {
         
     }
     protected void initializeActions() {
-        //newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         saveButton.addListener(new SaveUsersInProjectAction(this.project, select ));
         
         

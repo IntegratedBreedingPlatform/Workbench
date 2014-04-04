@@ -66,6 +66,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.setImmediate(true);
 		this.setHeight("400px");
 		this.setWidth("700px");
+		this.setSpacing(true);
 		
 		this.lblLeftColumnCaption = new Label();
 		lblLeftColumnCaption.setSizeFull();
@@ -170,7 +171,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.setColumnExpandRatio(0, 1.0f);
 		this.setColumnExpandRatio(1, 1.0f);
 		this.setRowExpandRatio(0, 1f);
-		this.setRowExpandRatio(1, 12f);
+		this.setRowExpandRatio(1, 10f);
 		this.setRowExpandRatio(2, 1f);
 		
 		this.setStyleName("cell-style");
@@ -350,12 +351,25 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
     	 getTableLeft().addItem(itemId);
      }
      
+     public void addItem(Object itemId){
+    	 getTableLeft().addItem(itemId);
+     }
+     
+     
      public Set<T> getValue(){
     	 Set ret = new HashSet<T>();
     	 for (Object itemId : getTableRight().getItemIds()){
     		 ret.add((T) itemId);
     	 }
     	 return (ret); 
+     }
+     
+     public void setValue(Set<T> values){
+    	 getTableRight().removeAllItems();
+    	 for (T itemId : values){
+    		 getTableRight().addItem(itemId);
+    	 }
+    	 
      }
 
 	public Label getLeftColumnCaption() {
@@ -401,9 +415,10 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	
 	public void removeAllSelectedItems(){
 		
-		 for (Object itemId : getTableRight().getItemIds()){
-			 unselect(itemId);
+		 for (Object itemId : getTableRight().getItemIds()){			 
+	    	 getTableLeft().addItem(itemId);
     	 }
+		 getTableRight().removeAllItems();
 		
 	}
 	

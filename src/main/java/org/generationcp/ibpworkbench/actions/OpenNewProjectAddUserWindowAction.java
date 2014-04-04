@@ -12,7 +12,9 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.ibpworkbench.ui.programmembers.TwinTableSelect;
 import org.generationcp.ibpworkbench.ui.window.NewProjectAddUserWindow;
+import org.generationcp.middleware.pojos.User;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -22,10 +24,10 @@ public class OpenNewProjectAddUserWindowAction implements ClickListener{
     
     private static final long serialVersionUID = 1L;
     
-    private TwinColSelect membersSelect;
+    private TwinTableSelect<User> membersSelect;
 
-    public OpenNewProjectAddUserWindowAction(TwinColSelect membersSelect) {
-        this.membersSelect = membersSelect;
+    public OpenNewProjectAddUserWindowAction(TwinTableSelect<User> select) {
+        this.membersSelect = select;
     }
 
     @Override
