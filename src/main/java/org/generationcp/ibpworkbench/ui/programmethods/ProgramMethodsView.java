@@ -100,23 +100,21 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
              // Preinit components
              typeFilter.addItem("");
-             typeFilter.setItemCaption("","All Method Types");
+             typeFilter.setItemCaption("","Generation Advancement Types");
              for (String[] methodType : methodTypes) {
                  typeFilter.addItem(methodType[0]);
                  typeFilter.setItemCaption(methodType[0], methodType[1]);
              }
 
-             typeFilter.setNullSelectionItemId("Method Type");
              typeFilter.setNullSelectionAllowed(false);
              typeFilter.select(methodTypes[0][0]);
 
              groupFilter.addItem("");
-             groupFilter.setItemCaption("", "All Method Groups");
+             groupFilter.setItemCaption("", "Crop Reproductive Systems");
              for(String[] methodGroup : methodGroups) {
                  groupFilter.addItem(methodGroup[0]);
                  groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
              }
-             groupFilter.setNullSelectionItemId("Method Group");
              groupFilter.select("");
              groupFilter.setNullSelectionAllowed(false);
 
@@ -151,15 +149,22 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         titleContainer.setComponentAlignment(addNewMethodBtn, Alignment.MIDDLE_RIGHT);
         titleContainer.setSizeUndefined();
         titleContainer.setWidth("100%");
-        titleContainer.setMargin(true, true, true, false);	// move this to css
+        titleContainer.setMargin(true, false, true, false);	// move this to css
 
         final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
-        selectedMethodTitleContainer.setMargin(false,true,false,false);
+        selectedMethodTitleContainer.setWidth("100%");
+        selectedMethodTitleContainer.setMargin(false,false,true,false);
 
         final Label selectedMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
         selectedMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
+        saveBtn = new Button("Save Favorites");
+        saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+
+
         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
+        selectedMethodTitleContainer.addComponent(saveBtn);
+        selectedMethodTitleContainer.setComponentAlignment(saveBtn,Alignment.MIDDLE_RIGHT);
 
         availTbl = this.buildAvailableMethodsTable();
         selTbl = this.buildSelectedMethodsTable();
@@ -220,7 +225,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         root.addComponent(selectedMethodTitleContainer);
         root.addComponent(selTbl);
         root.addComponent(favoriteSelectAllContainer);
-        root.addComponent(this.buildActionButtons());
+        //root.addComponent(this.buildActionButtons());
 
         this.setCompositionRoot(root);
     }
@@ -245,14 +250,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
         };
 
         saveBtn.addListener(execCloseFrameJS);
-        cancelBtn.setCaption("Reset");
-        cancelBtn.addListener(execCloseFrameJS);
+        //cancelBtn.setCaption("Reset");
+        //cancelBtn.addListener(execCloseFrameJS);
 
     }
 
     private Component buildActionButtons() {
         final HorizontalLayout root = new HorizontalLayout();
-        saveBtn = new Button("Save");
+        saveBtn = new Button("Save Favorites");
         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         cancelBtn = new Button("Cancel");
@@ -532,7 +537,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
 
-                if (true ==valueChangeEvent.getProperty().getValue())
+                if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
                     availableMethodsTable.setValue(availableMethodsTable.getItemIds());
                 else {
                     availableMethodsTable.setValue(null);
@@ -548,7 +553,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
 
-                if (true ==valueChangeEvent.getProperty().getValue())
+                if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
                     selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
                 else {
                     selectedMethodsTable.setValue(null);
@@ -587,6 +592,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
             }
         });
 
+        /*
         cancelBtn.addListener(new Button.ClickListener() {
             private static final long serialVersionUID = -4479216826096826464L;
 
@@ -597,6 +603,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 (new OpenProgramMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
             }
         });
+        */
 
     }
 
@@ -762,7 +769,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
                 }
                 prevSelectedItems.clear();
 
-                if (true == ((CheckBox)clickEvent.getComponent()).getValue()) {
+                if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                     if (isAvailableTable)  {
                         availableMethodsTable.select(finalItemId);
                     }

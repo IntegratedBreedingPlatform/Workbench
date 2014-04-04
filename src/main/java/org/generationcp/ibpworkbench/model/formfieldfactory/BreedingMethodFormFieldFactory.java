@@ -76,7 +76,6 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         methodCode.setRequiredError("Please enter a Breeding Method Code.");
         methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
         methodCode.setWidth("60px");
-        
 
     }
     
@@ -109,7 +108,10 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
             methodSelectType.setItemCaption("MAN", "Maintenance");
             methodSelectType.select("GEN");
             methodSelectType.setNullSelectionAllowed(false);
-                
+            methodSelectType.setRequired(true);
+            methodDescription.setRequiredError("Please select a Generation Advancement Type");
+
+
             return methodSelectType;
         } else if ("methodGroup".equals(propertyId)) {
             
