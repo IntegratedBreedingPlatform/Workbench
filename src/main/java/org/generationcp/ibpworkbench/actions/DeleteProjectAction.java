@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -46,7 +47,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-
+    
+    @Autowired
+    private DefaultManagerFactoryProvider managerFactoryProvider;
+    
     public DeleteProjectAction()
     {
     }
@@ -97,6 +101,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             newProj.setCentralDbName(currentProject.getCentralDbName());
                             manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
+                            
+                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId().intValue());
 
                         } catch (MiddlewareQueryException e) {
                             //MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
