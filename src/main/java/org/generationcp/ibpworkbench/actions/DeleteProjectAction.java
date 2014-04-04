@@ -99,11 +99,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             newProj.setProjectName(currentProject.getProjectName());
                             newProj.setLocalDbName(currentProject.getLocalDbName());
                             newProj.setCentralDbName(currentProject.getCentralDbName());
+                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId().intValue());
                             manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
                             
-                            managerFactoryProvider.removeProjectFromLocalSession(newProj.getProjectId().intValue());
-
                         } catch (MiddlewareQueryException e) {
                             //MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
                             e.printStackTrace();
