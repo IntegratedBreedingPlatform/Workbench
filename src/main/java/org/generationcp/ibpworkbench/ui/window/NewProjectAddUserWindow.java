@@ -3,10 +3,9 @@ package org.generationcp.ibpworkbench.ui.window;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.ibpworkbench.ui.NewProjectAddUserPanel;
-import org.generationcp.ibpworkbench.ui.programmembers.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.pojos.User;
 
-import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 

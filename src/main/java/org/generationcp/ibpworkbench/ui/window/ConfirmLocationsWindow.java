@@ -15,7 +15,7 @@ import java.util.List;
 
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationTableViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Location;
@@ -119,10 +119,10 @@ public class ConfirmLocationsWindow extends Window{
         locationsTable.setImmediate(true);
         locationsTable.setWidth("100%");
         locationsTable.setColumnReorderingAllowed(true);
-        BeanItemContainer<LocationTableViewModel> container = new BeanItemContainer<LocationTableViewModel>(LocationTableViewModel.class);
+        BeanItemContainer<LocationViewModel> container = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
         try {
 			for (Location loc : existingLocations){
-				LocationTableViewModel l = programLocationsPresenter.getLocationDetailsByLocId(loc.getLocid());
+				LocationViewModel l = programLocationsPresenter.getLocationDetailsByLocId(loc.getLocid());
 				container.addItem(l);
 			}
         } catch (MiddlewareQueryException e) {
@@ -133,7 +133,7 @@ public class ConfirmLocationsWindow extends Window{
         locationsTable.setContainerDataSource(container);
         layout.addComponent(locationsTable);
         locationsTable.setVisibleColumns(new String[]{
-        		"locationName","cntryFullName","locationAbbreviation", "ltype"
+        		"locationName","cntryFullName","locationAbbreviation", "ltypeStr"
         });
         locationsTable.setColumnHeaders(new String[]{
         		"LOCATION NAME","COUNTRY FULL NAME", "LOCATION ABBREVIATION","LOCATION TYPE"

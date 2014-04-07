@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -47,7 +48,7 @@ public class SessionData {
 		this.namevalidation_counter = namevalidation_counter;
 	}
 
-	private HashMap<Integer, LocationModel> locationMaps = new HashMap<Integer, LocationModel>();
+	private HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
     private Set<String> uniqueLocations = new HashSet<String>();
     private HashMap<Integer, BreedingMethodModel> breedingMethodMaps = new HashMap<Integer, BreedingMethodModel>();
     private Set<String> uniqueBreedingMethods = new HashSet<String>();
@@ -77,11 +78,12 @@ public class SessionData {
     public void setUserData(User userData) {
         this.userData = userData;
     }
-    
-    public HashMap<Integer, LocationModel> getProjectLocationData() {
+
+    public HashMap<Integer, LocationViewModel> getProjectLocationData() {
         return this.locationMaps;
     }
-    
+
+    @Deprecated
     public Set<String> getUniqueLocations() {
         return this.uniqueLocations;
     }

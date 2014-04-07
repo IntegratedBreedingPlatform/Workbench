@@ -22,7 +22,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CloseWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
 import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
-import org.generationcp.ibpworkbench.ui.programmembers.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -22,7 +22,7 @@ import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.ibpworkbench.ui.programmembers.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -41,7 +41,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
-import com.vaadin.ui.TwinColSelect;
 
 
 /**

@@ -3,12 +3,9 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import java.util.*;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
@@ -60,17 +57,17 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	 * generates random results
 	 * @return
 	 */
-	public static List<LocationTableViewModel> getRandomResults(Integer countryID,Integer locationType,String locationName) {
+	public static List<LocationViewModel> getRandomResults(Integer countryID,Integer locationType,String locationName) {
 		// for now lets random generate the results
 		
-		return LocationTableViewModel.generateRandomData(2);
+		return LocationViewModel.generateRandomData(2);
 	}
 	
-	public Collection<LocationTableViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName) throws MiddlewareQueryException {
+	public Collection<LocationViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName) throws MiddlewareQueryException {
 		List<Location> locationList = null;
 
-        Map<Integer,LocationTableViewModel> resultsMap = new HashMap<Integer, LocationTableViewModel>();
-        List<LocationTableViewModel> favorites = this.getSavedProgramLocations();
+        Map<Integer,LocationViewModel> resultsMap = new HashMap<Integer, LocationViewModel>();
+        List<LocationViewModel> favorites = this.getSavedProgramLocations();
         locationName = (locationName != null) ? locationName : "";
 		
 		Country country = ldm.getCountryById(countryId);
@@ -83,7 +80,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
 
         // remove items already in favorites
-        for (LocationTableViewModel item : favorites) {
+        for (LocationViewModel item : favorites) {
             if (resultsMap.containsKey(item.getLocationId()))
                 resultsMap.remove(item);
         }
@@ -91,53 +88,21 @@ public class ProgramLocationsPresenter implements InitializingBean {
         return resultsMap.values();
 	}
 
-
-
-    public List<LocationTableViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName,List<Integer> favIds) throws MiddlewareQueryException {
-        List<Location> locationList = null;
-        List<LocationTableViewModel> results = new ArrayList<LocationTableViewModel>();
-        locationName = (locationName != null) ? locationName : "";
-
-        Country country = ldm.getCountryById(countryId);
-        locationList = ldm.getLocationsByNameCountryAndType(locationName,country,locationType);
-
-        Collections.sort(locationList, Location.LocationNameComparator);
-
-        for (Location location : locationList) {
-            Boolean isDupe = false;
-            for (Integer id : favIds) {
-
-                Location loc = ldm.getLocationByID(id);
-
-                if ((location.getLname()+location.getLabbr()).equals(loc.getLname()+loc.getLabbr())) {
-                    isDupe = true;
-                    break;
-                }
-            }
-
-            if (!isDupe)
-                results.add(this.getLocationDetailsByLocId(location.getLocid()));
-
-        }
-
-        return results;
-    }
-
     // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
 	public void onAttachInitialize() {
         try {
             LOG.debug(">BAD Routine start!");
 
             for (Location loc : ldm.getAllLocalLocations(0,Integer.MAX_VALUE)) {
-                if (loc.getLocid()<0 && !sessionData.getUniqueLocations().contains(loc.getLname())) {
-                    LocationModel locModel = new LocationModel();
+                if (loc.getLocid()<0 && !sessionData.getProjectLocationData().containsKey(loc.getLocid())) {
+                    LocationViewModel locModel = new LocationViewModel();
                     locModel.setCntryid(loc.getCntryid());
                     locModel.setLocationAbbreviation(loc.getLabbr());
                     locModel.setLocationId(loc.getLocid());
                     locModel.setLocationName(loc.getLname());
                     locModel.setLtype(loc.getLtype());
 
-                    sessionData.getUniqueLocations().add(locModel.getLocationName());
+                    //sessionData.getUniqueLocations().add(locModel.getLocationName());
 
                     //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
                     //nextKey = nextKey * -1;
@@ -151,8 +116,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
     }
 	
-	public List<LocationTableViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
-		List<LocationTableViewModel> result = new ArrayList<LocationTableViewModel>();
+	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
+		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
 		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
 		
 		for (Long locationId : locationIds) {
@@ -162,7 +127,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 	
-	public LocationTableViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
+	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
 			
 			List<LocationDetails> locList = ldm.getLocationDetailsByLocId(locationId,0,1);
@@ -205,7 +170,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         return location;
     }
 		
-public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
+    public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
@@ -233,24 +198,56 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
               
         return true;
     }
+
+    public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+
+        // Delete existing project locations in the database
+        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
+                project.getProjectId(), 0,Integer.MAX_VALUE);
+
+        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
+            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
+        }
+        projectLocationMapList.removeAll(projectLocationMapList);
+
+             /*
+            * add selected location to local db location table if it does not yet exist
+            * add location in workbench_project_loc_map in workbench db
+            */
+        for (LocationViewModel l : selectedLocations) {
+            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
+            projectLocationMap.setLocationId(l.getLocationId().longValue());
+            projectLocationMap.setProject(getProject());
+            projectLocationMapList.add(projectLocationMap);
+        }
+
+
+        // Add the new set of project locations
+        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+
+        return true;
+    }
 	
-	private LocationTableViewModel convertFrom(LocationDetails location) {
-		LocationTableViewModel viewModel = new LocationTableViewModel();
+	private LocationViewModel convertFrom(LocationDetails location) {
+		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLocation_name());
 		viewModel.setLocationAbbreviation(location.getLocation_abbreviation());
 		viewModel.setCntryFullName(location.getCountry_full_name());
-		viewModel.setLtype(location.getLocation_type());
-		
+		viewModel.setLtypeStr(location.getLocation_type());
+		viewModel.setCntryid(location.getCntryid());
+        viewModel.setLtype(location.getLtype());
+
 		return viewModel;
 	}
 	
-	private LocationTableViewModel convertFrom(Location location) throws MiddlewareQueryException {
-		LocationTableViewModel viewModel = new LocationTableViewModel();
+	private LocationViewModel convertFrom(Location location) throws MiddlewareQueryException {
+		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
-		
+		viewModel.setLtype(location.getLtype());
+        viewModel.setCntryid(location.getCntryid());
 		
 		
 		Country country = ldm.getCountryById(location.getCntryid());
@@ -258,8 +255,11 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
 	
 		if (country != null)
 			viewModel.setCntryFullName(country.getIsofull());
-		if (udf!=null) 	
-			viewModel.setLtype(udf.getFname());
+		if (udf!=null) {
+            viewModel.setLtypeStr(udf.getFname());
+            viewModel.setLtype(udf.getLfldno());
+        }
+
 		
 		
 		return viewModel;
@@ -320,5 +320,24 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
         return ldm.getLocationsByName(locationName, Operation.EQUAL);
+    }
+
+    public Location convertLocationViewToLocation(LocationViewModel lvm) {
+        Location location = new Location();
+        location.setLrplce(0);
+
+        location.setLocid(lvm.getLocationId());
+        location.setLname(lvm.getLocationName());
+        location.setLabbr(lvm.getLocationAbbreviation());
+        location.setLtype(lvm.getLtype());
+        location.setCntryid(lvm.getCntryid());
+
+        // defaults
+        location.setNllp(0);
+        location.setSnl1id(0);
+        location.setSnl2id(0);
+        location.setSnl3id(0);
+
+        return location;
     }
 }

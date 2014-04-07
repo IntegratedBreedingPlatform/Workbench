@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.actions.CancelLocationAction;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.model.LocationModel;
@@ -87,7 +86,7 @@ public class AddLocationsWindow extends Window{
 
         //layout.addComponent(newLocationTitle);
 
-        addLocationForm = new AddLocationForm(new LocationModel(),programLocationsPresenter);
+        addLocationForm = new AddLocationForm(new LocationViewModel(),programLocationsPresenter);
         layout.addComponent(addLocationForm);
 
         cancelButton = new Button("Cancel");
@@ -109,8 +108,13 @@ public class AddLocationsWindow extends Window{
     protected void initializeActions() {
 
        
-        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, programLocationsView, programLocationsPresenter));
-        cancelButton.addListener(new CancelLocationAction(this));
+        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, programLocationsPresenter));
+        cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                AddLocationsWindow.this.getParent().removeWindow(AddLocationsWindow.this);
+            }
+        });
         
     }
 

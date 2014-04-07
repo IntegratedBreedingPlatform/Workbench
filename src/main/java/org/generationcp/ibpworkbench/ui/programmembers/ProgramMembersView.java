@@ -26,6 +26,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveUsersInProjectAction;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -42,9 +43,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 
@@ -314,7 +312,7 @@ public class ProgramMembersView extends Panel implements InitializingBean {
     protected void initializeLayout() {
     	
     	 final HorizontalLayout titleContainer = new HorizontalLayout();
-         final Label heading = new Label("<span class='glyphicon glyphicon-th-large'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
+         final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
          final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
 
          heading.setStyleName(Bootstrap.Typography.H4.styleName());

@@ -10,13 +10,15 @@ import java.util.*;
  import com.vaadin.ui.*;
  import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
  import org.generationcp.commons.vaadin.theme.Bootstrap;
+ import org.generationcp.commons.vaadin.util.MessageNotifier;
  import org.generationcp.ibpworkbench.Message;
- import org.generationcp.ibpworkbench.SessionData;
  import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
  import org.generationcp.middleware.exceptions.MiddlewareQueryException;
  import org.generationcp.middleware.pojos.Country;
  import org.generationcp.middleware.pojos.UserDefinedField;
  import org.generationcp.middleware.pojos.workbench.Project;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
  import org.springframework.beans.factory.InitializingBean;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Configurable;
@@ -29,11 +31,7 @@ import java.util.*;
      @Autowired
      private SimpleResourceBundleMessageSource messageSource;
 
-     @Autowired
-     private SessionData sessionData;
-
-     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-     public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
+     private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
 
      public final static Map<String,String> tableColumns;
      public final static Map<String,Integer> tableColumnSizes;
@@ -43,12 +41,12 @@ import java.util.*;
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
          tableColumns.put("locationName","Name");
          tableColumns.put("locationAbbreviation","abbr.");
-         tableColumns.put("ltype","Type");
+         tableColumns.put("ltypeStr","Type");
 
          tableColumnSizes = new HashMap<String, Integer>();
          tableColumnSizes.put("select",20);
          tableColumnSizes.put("locationAbbreviation",80);
-         tableColumnSizes.put("ltype",240);
+         tableColumnSizes.put("ltypeStr",240);
 
      }
 
@@ -63,8 +61,8 @@ import java.util.*;
      private Select locationTypeFilter;
      private TextField searchField;
      private Label resultCountLbl;
-     private BeanItemContainer<LocationTableViewModel> availableTableContainer;
-     private BeanItemContainer<LocationTableViewModel> favoritesTableContainer;
+     private BeanItemContainer<LocationViewModel> availableTableContainer;
+     private BeanItemContainer<LocationViewModel> favoritesTableContainer;
      private Button addToFavoriteBtn;
      private Button removeToFavoriteBtn;
 
@@ -178,7 +176,21 @@ import java.util.*;
              }
          });
 
+         saveBtn.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(ClickEvent clickEvent) {
+                 try {
+                     if (presenter.saveProgramLocation(favoritesTableContainer.getItemIds())) {
+                         MessageNotifier.showMessage(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
+                     }
 
+                 } catch (MiddlewareQueryException e) {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                 }
+                 LOG.debug("onSaveProgramLocations:");
+             }
+         });
 
      }
 
@@ -187,8 +199,9 @@ import java.util.*;
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
          while (sourceItemsIterator.hasPrevious()) {
-             Object itemId =  sourceItemsIterator.previous();
-             ((BeanItemContainer<LocationTableViewModel>) target.getContainerDataSource()).addItemAt(0, itemId);
+             LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
+             itemId.setActive(false);
+             ((BeanItemContainer<LocationViewModel>) target.getContainerDataSource()).addItemAt(0, itemId);
              source.removeItem(itemId);
          }
      }
@@ -209,13 +222,19 @@ import java.util.*;
          final HorizontalLayout availableTableBar = new HorizontalLayout();
          final HorizontalLayout favoritesTableBar = new HorizontalLayout();
 
-         availableTableBar.setWidth("100%");
-         favoritesTableBar.setWidth("100%");
+         availableSelectAll.setWidth("100px");
+         favoriteSelectAll.setWidth("100px");
+
+         availableTableBar.setSizeUndefined();
+         favoritesTableBar.setSizeUndefined();
          availableTableBar.setSpacing(true);
          favoritesTableBar.setSpacing(true);
 
          availableTableBar.addComponent(availableSelectAll);
+         availableTableBar.addComponent(addToFavoriteBtn);
          favoritesTableBar.addComponent(favoriteSelectAll);
+         favoritesTableBar.addComponent(removeToFavoriteBtn);
+
 
          root.addComponent(buildPageTitle());
          root.addComponent(availableLocationsTitle);
@@ -239,7 +258,7 @@ import java.util.*;
          titleContainer.setWidth("100%");
          titleContainer.setMargin(true, false, false, false);	// move this to css
 
-         final Label heading = new Label("<span class='glyphicon bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations",Label.CONTENT_XHTML);
+         final Label heading = new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations",Label.CONTENT_XHTML);
          heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
          titleContainer.addComponent(heading);
@@ -272,7 +291,7 @@ import java.util.*;
 
      private void initializeValues() throws MiddlewareQueryException {
 
-            /* INITIALIZE FILTER CONTROLS DATA */
+              /* INITIALIZE FILTER CONTROLS DATA */
          countryFilter.setContainerDataSource(new BeanItemContainer<Country>(Country.class,presenter.getCountryList()));
          countryFilter.setItemCaptionPropertyId("isoabbr");
 
@@ -281,16 +300,16 @@ import java.util.*;
          locationTypeFilter.setItemCaptionPropertyId("fname");
          locationTypeFilter.select(locationTypes.get(0));
 
-            /* INITIALIZE TABLE DATA */
-         favoritesTableContainer = new BeanItemContainer<LocationTableViewModel>(LocationTableViewModel.class,presenter.getSavedProgramLocations());
-         availableTableContainer= new BeanItemContainer<LocationTableViewModel>(LocationTableViewModel.class, presenter.getFilteredResults(null, this.getSelectedLocationTypeIdFromFilter(), ""));
+              /* INITIALIZE TABLE DATA */
+         favoritesTableContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class,presenter.getSavedProgramLocations());
+         availableTableContainer= new BeanItemContainer<LocationViewModel>(LocationViewModel.class, presenter.getFilteredResults(null, this.getSelectedLocationTypeIdFromFilter(), ""));
 
          resultCountLbl.setValue("Result: " + availableTableContainer.size());
 
          availableTable.setContainerDataSource(availableTableContainer);
          favoritesTable.setContainerDataSource(favoritesTableContainer);
 
-            /* SETUP TABLE FIELDS */
+              /* SETUP TABLE FIELDS */
          this.setupTableFields(availableTable);
          this.setupTableFields(favoritesTable);
      }
@@ -373,14 +392,14 @@ import java.util.*;
          table.setVisibleColumns(tableColumns.keySet().toArray());
          table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
 
-         //Field[] fields = LocationTableViewModel.class.getDeclaredFields();
+         //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
          table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
-           /*
-           for (String col : tableColumnSizes.keySet())
-           {
-               table.setColumnWidth(col,tableColumnSizes.get(col));
-           }*/
+             /*
+             for (String col : tableColumnSizes.keySet())
+             {
+                 table.setColumnWidth(col,tableColumnSizes.get(col));
+             }*/
      }
 
      private Table buildCustomTable(final CheckBox assocSelectAll) {
@@ -394,7 +413,7 @@ import java.util.*;
          table.addGeneratedColumn("select", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final LocationTableViewModel beanItem = ((BeanItemContainer<LocationTableViewModel>) source.getContainerDataSource()).getItem(itemId).getBean();
+                 final LocationViewModel beanItem = ((BeanItemContainer<LocationViewModel>) source.getContainerDataSource()).getItem(itemId).getBean();
 
                  final CheckBox select = new CheckBox();
                  select.setImmediate(true);
@@ -414,7 +433,7 @@ import java.util.*;
                      }
                  });
 
-                 if (beanItem.getActive())
+                 if (beanItem.isActive())
                      select.setValue(true);
                  else
                      select.setValue(false);
@@ -429,15 +448,15 @@ import java.util.*;
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
-                 BeanItemContainer<LocationTableViewModel> container = (BeanItemContainer<LocationTableViewModel>) source.getContainerDataSource();
+                 BeanItemContainer<LocationViewModel> container = (BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
 
                  // disable previously selected items
-                 for (LocationTableViewModel beanItem : container.getItemIds()) {
+                 for (LocationViewModel beanItem : container.getItemIds()) {
                      beanItem.setActive(false);
                  }
 
                  // set current selection to true
-                 for (LocationTableViewModel selectedItem : (Collection < LocationTableViewModel >) source.getValue() ) {
+                 for (LocationViewModel selectedItem : (Collection <LocationViewModel>) source.getValue() ) {
                      selectedItem.setActive(true);
                  }
 
@@ -469,7 +488,7 @@ import java.util.*;
      }
 
 
-     public void addRow(LocationTableViewModel item,boolean atAvailableTable,Integer index) {
+     public void addRow(LocationViewModel item,boolean atAvailableTable,Integer index) {
          if (index != null) {
              if (atAvailableTable) {
                  availableTableContainer.addItemAt(index,item);
@@ -502,13 +521,13 @@ import java.util.*;
          this.setSizeFull();
 
          // special actions added to save and cancel btns
-            /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
-                          @Override
-                          public void buttonClick(Button.ClickEvent clickEvent) {
-                              parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
-                          }
-                      };
-            */
+              /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
+                            @Override
+                            public void buttonClick(Button.ClickEvent clickEvent) {
+                                parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
+                            }
+                        };
+              */
          //saveBtn.addListener(execCloseFrameJS);
      }
 
