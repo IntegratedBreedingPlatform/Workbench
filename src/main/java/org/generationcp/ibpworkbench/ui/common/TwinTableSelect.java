@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.programmembers;
+package org.generationcp.ibpworkbench.ui.common;
 
 import java.util.Collection;
 import java.util.HashSet;

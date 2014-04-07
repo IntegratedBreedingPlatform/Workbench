@@ -168,12 +168,28 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .align-select-all {position: relative; top: 6px}
 
 .v-button.v-button-link.link.v-button-collapse-btn.collapse-btn{margin-left:10px; padding-left: 0px; padding-right: 5px}
-.v-button-collapse-btn .v-button-caption {font-size:26px; text-decoration: none !important}
+.v-button-collapse-btn .v-button-caption {
+    font-size: 21px;
+    display: inline-block;
+}
+.v-button-collapse-btn {
+    height: 28px;
+}
+
 .v-button-collapse-btn .v-button-caption:hover {color:#E3E3E3; text-decoration:none !important}
-.v-button-collapse-btn .v-button-wrap {margin-top:0px}
-.v-button-collapse-btn .collapse-menu-lbl { font-size: 14px; font-weight: bold; display: inline-block;
-    position: relative;
-    bottom: 5px; text-decoration:none !important}
+.v-button-collapse-btn .v-button-wrap {height: 28px}
+.v-button-collapse-btn .collapse-menu-lbl {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none !important;
+    display: inline-block;
+    padding-left: 5px;
+}
+
+.v-button-collapse-btn .v-button-caption span {
+    vertical-align: middle;
+    line-height: 28px;
+}
 
 .bms-upload-container .v-upload,
 .bms-upload-container .v-upload div,

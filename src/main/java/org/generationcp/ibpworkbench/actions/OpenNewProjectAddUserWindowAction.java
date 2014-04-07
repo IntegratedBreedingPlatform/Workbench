@@ -12,13 +12,12 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.ui.programmembers.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.ui.window.NewProjectAddUserWindow;
 import org.generationcp.middleware.pojos.User;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.TwinColSelect;
 
 public class OpenNewProjectAddUserWindowAction implements ClickListener{
     

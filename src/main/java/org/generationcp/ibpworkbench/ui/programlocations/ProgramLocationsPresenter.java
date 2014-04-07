@@ -1,14 +1,12 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
-import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -26,20 +24,24 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ProgramLocationsPresenter implements InitializingBean {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsPresenter.class);
-	
-	@Autowired
+    private ProgramLocationsView view;
+
+    @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
-    //@Autowired
-    //private SessionProvider sessionProvider;
-    private GermplasmDataManager gdm;
+    @Autowired
+    private SessionData sessionData;
+
+    private LocationDataManager ldm;
+
 	private Project project;
 
-    public ProgramLocationsPresenter(Project project) {
-		this.project = project;
+    public ProgramLocationsPresenter(ProgramLocationsView view,Project project) {
+		this.view = view;
+        this.project = project;
 	}
 	
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
@@ -47,62 +49,65 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.project = project;
 
 		this.workbenchDataManager = workbenchDataManager;
-		this.managerFactoryProvider = managerFactoryProvider;
-		
-		this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+
+        managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
 	}
 	
 	/**
 	 * generates random results
 	 * @return
 	 */
-	public static List<LocationTableViewModel> getRandomResults(Integer countryID,Integer locationType,String locationName) {
+	public static List<LocationViewModel> getRandomResults(Integer countryID,Integer locationType,String locationName) {
 		// for now lets random generate the results
 		
-		return LocationTableViewModel.generateRandomData(2);
+		return LocationViewModel.generateRandomData(2);
 	}
 	
-	public List<LocationTableViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName) throws MiddlewareQueryException {
+	public Collection<LocationViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName) throws MiddlewareQueryException {
 		List<Location> locationList = null;
-        List<LocationTableViewModel> results = new ArrayList<LocationTableViewModel>();
-		locationName = (locationName != null) ? locationName : "";
+
+        Map<Integer,LocationViewModel> resultsMap = new HashMap<Integer, LocationViewModel>();
+        List<LocationViewModel> favorites = this.getSavedProgramLocations();
+        locationName = (locationName != null) ? locationName : "";
 		
-		Country country = gdm.getCountryById(countryId);
-        locationList =gdm.getLocationsByNameCountryAndType(locationName,country,locationType);
+		Country country = ldm.getCountryById(countryId);
+        locationList =ldm.getLocationsByNameCountryAndType(locationName,country,locationType);
         
         Collections.sort(locationList, Location.LocationNameComparator);
 
         for (Location location : locationList) {
-        	results.add(this.getLocationDetailsByLocId(location.getLocid()));
+            resultsMap.put(location.getLocid(),this.getLocationDetailsByLocId(location.getLocid()));
         }
-        
-		return results;
+
+        // remove items already in favorites
+        for (LocationViewModel item : favorites) {
+            if (resultsMap.containsKey(item.getLocationId()))
+                resultsMap.remove(item);
+        }
+
+        return resultsMap.values();
 	}
 
     // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
-	public void onAttachInitialize(IWorkbenchSession appSession) {
+	public void onAttachInitialize() {
         try {
-            //Get all Local locations
-            List<Location> allLocalLocations = null;
+            LOG.debug(">BAD Routine start!");
 
-            allLocalLocations = gdm.getAllLocalLocations(0,Integer.MAX_VALUE);
-
-            // Initialize IBPWorkbench.app session
-            for (Location loc : allLocalLocations) {
-                if (loc.getLocid()<0 && !appSession.getSessionData().getUniqueLocations().contains(loc.getLname())) {
-                    LocationModel locModel = new LocationModel();
+            for (Location loc : ldm.getAllLocalLocations(0,Integer.MAX_VALUE)) {
+                if (loc.getLocid()<0 && !sessionData.getProjectLocationData().containsKey(loc.getLocid())) {
+                    LocationViewModel locModel = new LocationViewModel();
                     locModel.setCntryid(loc.getCntryid());
                     locModel.setLocationAbbreviation(loc.getLabbr());
                     locModel.setLocationId(loc.getLocid());
                     locModel.setLocationName(loc.getLname());
                     locModel.setLtype(loc.getLtype());
 
-                    appSession.getSessionData().getUniqueLocations().add(locModel.getLocationName());
+                    //sessionData.getUniqueLocations().add(locModel.getLocationName());
 
                     //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
                     //nextKey = nextKey * -1;
                     //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
-                    appSession.getSessionData().getProjectLocationData().put(locModel.getLocationId(), locModel);
+                    sessionData.getProjectLocationData().put(locModel.getLocationId(), locModel);
                 }
             }
 
@@ -111,8 +116,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
     }
 	
-	public List<LocationTableViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
-		List<LocationTableViewModel> result = new ArrayList<LocationTableViewModel>();
+	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
+		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
 		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
 		
 		for (Long locationId : locationIds) {
@@ -122,14 +127,14 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 	
-	public LocationTableViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
+	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
 			
-			List<LocationDetails> locList = gdm.getLocationDetailsByLocId(locationId,0,1);
+			List<LocationDetails> locList = ldm.getLocationDetailsByLocId(locationId,0,1);
 			
 			
 			if (locationId < 0) {
-				Location location = gdm.getLocationByID(locationId);
+				Location location = ldm.getLocationByID(locationId);
 				
 				return convertFrom(location);
 			}
@@ -165,7 +170,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         return location;
     }
 		
-public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
+    public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
@@ -193,33 +198,68 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
               
         return true;
     }
+
+    public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+
+        // Delete existing project locations in the database
+        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
+                project.getProjectId(), 0,Integer.MAX_VALUE);
+
+        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
+            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
+        }
+        projectLocationMapList.removeAll(projectLocationMapList);
+
+             /*
+            * add selected location to local db location table if it does not yet exist
+            * add location in workbench_project_loc_map in workbench db
+            */
+        for (LocationViewModel l : selectedLocations) {
+            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
+            projectLocationMap.setLocationId(l.getLocationId().longValue());
+            projectLocationMap.setProject(getProject());
+            projectLocationMapList.add(projectLocationMap);
+        }
+
+
+        // Add the new set of project locations
+        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+
+        return true;
+    }
 	
-	private LocationTableViewModel convertFrom(LocationDetails location) {
-		LocationTableViewModel viewModel = new LocationTableViewModel();
+	private LocationViewModel convertFrom(LocationDetails location) {
+		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLocation_name());
 		viewModel.setLocationAbbreviation(location.getLocation_abbreviation());
 		viewModel.setCntryFullName(location.getCountry_full_name());
-		viewModel.setLtype(location.getLocation_type());
-		
+		viewModel.setLtypeStr(location.getLocation_type());
+		viewModel.setCntryid(location.getCntryid());
+        viewModel.setLtype(location.getLtype());
+
 		return viewModel;
 	}
 	
-	private LocationTableViewModel convertFrom(Location location) throws MiddlewareQueryException {
-		LocationTableViewModel viewModel = new LocationTableViewModel();
+	private LocationViewModel convertFrom(Location location) throws MiddlewareQueryException {
+		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
+		viewModel.setLtype(location.getLtype());
+        viewModel.setCntryid(location.getCntryid());
 		
 		
-		
-		Country country = gdm.getCountryById(location.getCntryid());
-		UserDefinedField udf = gdm.getUserDefinedFieldByID(location.getLtype());
+		Country country = ldm.getCountryById(location.getCntryid());
+		UserDefinedField udf = ldm.getUserDefinedFieldByID(location.getLtype());
 	
 		if (country != null)
 			viewModel.setCntryFullName(country.getIsofull());
-		if (udf!=null) 	
-			viewModel.setLtype(udf.getFname());
+		if (udf!=null) {
+            viewModel.setLtypeStr(udf.getFname());
+            viewModel.setLtype(udf.getLfldno());
+        }
+
 		
 		
 		return viewModel;
@@ -227,7 +267,7 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
 	
 	
     public List<Country> getCountryList() throws MiddlewareQueryException {
-        List<Country> countryList = gdm.getAllCountry();
+        List<Country> countryList = ldm.getAllCountry();
         Collections.sort(countryList,new Comparator<Country>() {
 			@Override
 			public int compare(Country o1, Country o2) {
@@ -246,7 +286,7 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
     
     public List<UserDefinedField> getLocationTypeList() throws MiddlewareQueryException {
 
-       return this.gdm.getUserDefinedFieldByFieldTableNameAndType(
+       return this.ldm.getUserDefinedFieldByFieldTableNameAndType(
                 "LOCATION", "LTYPE");
         
         /*for (UserDefinedField u : userDefineField) {
@@ -260,12 +300,44 @@ public boolean saveProgramLocation(List<Integer> selectedLocationIds) throws Mid
 		return project;
 	}
 
-    public GermplasmDataManager getGermplasmDataManager(){
-    	return this.gdm;
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        this.ldm = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
+        this.onAttachInitialize();
+    }
+
+    public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {
+        return ldm.getUserDefinedFieldByFieldTableNameAndType("LOCATION","LTYPE");
+    }
+
+    public void addLocation(Location loc) throws MiddlewareQueryException {
+        ldm.addLocation(loc);
+
+        this.getLocationDetailsByLocId(loc.getLocid());
+
+        view.addRow(this.getLocationDetailsByLocId(loc.getLocid()),true,0);
+    }
+
+    public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
+        return ldm.getLocationsByName(locationName, Operation.EQUAL);
+    }
+
+    public Location convertLocationViewToLocation(LocationViewModel lvm) {
+        Location location = new Location();
+        location.setLrplce(0);
+
+        location.setLocid(lvm.getLocationId());
+        location.setLname(lvm.getLocationName());
+        location.setLabbr(lvm.getLocationAbbreviation());
+        location.setLtype(lvm.getLtype());
+        location.setCntryid(lvm.getCntryid());
+
+        // defaults
+        location.setNllp(0);
+        location.setSnl1id(0);
+        location.setSnl2id(0);
+        location.setSnl3id(0);
+
+        return location;
     }
 }

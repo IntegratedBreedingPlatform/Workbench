@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.util.test;
 
 import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationTableViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
@@ -103,20 +103,20 @@ public class TestProjectLocationsController {
 			System.out.println("testGetFilteredResults(): TEST 1 GET FILTERED RESULTS WITH NULL COUNTRY and NULL NAME ");
 			
 			
-			for (LocationTableViewModel item : controller.getFilteredResults(null, ltype.getFldno(),null))
+			for (LocationViewModel item : controller.getFilteredResults(null, ltype.getFldno(),null))
 				System.out.println("> RESULT= " + item);
 			
 			// TEST 2 GET FILTERED RESULTS WITH COUNTRY and NULL NAME 
 			System.out.println("testGetFilteredResults(): TEST 2 GET FILTERED RESULTS WITH COUNTRY: " +  c.getIsoabbr()+ " and NULL NAME ");
 						
-			for (LocationTableViewModel item : controller.getFilteredResults(c.getCntryid(), controller.getLocationTypeList().iterator().next().getFldno(),null))
+			for (LocationViewModel item : controller.getFilteredResults(c.getCntryid(), controller.getLocationTypeList().iterator().next().getFldno(),null))
 				System.out.println("> RESULT= " + item);
 			
 
 			// TEST 3 GET FILTERED LOCATION NAME
 			System.out.println("testGetFilteredResults(): TEST 3 with filtered name, TEST DATA: IRRI");
 						
-			for (LocationTableViewModel item : controller.getFilteredResults(null,null,"IRRI"))
+			for (LocationViewModel item : controller.getFilteredResults(null,null,"IRRI"))
 				System.out.println("> RESULT= " + item);
 
 		} catch (MiddlewareQueryException e) {

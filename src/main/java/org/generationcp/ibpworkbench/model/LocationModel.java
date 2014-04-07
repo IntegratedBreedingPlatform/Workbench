@@ -17,6 +17,7 @@ import java.io.Serializable;
 
 
 /**
+ * <b>Deprecated: Use LocationViewModel instead</b>
  * <b>Description</b>: A Refined Location POJO for Workbench use.
  * 
  * <br>
@@ -26,6 +27,7 @@ import java.io.Serializable;
  * <br>
  * <b>File Created</b>: August 30, 2012
  */
+@Deprecated
 public class LocationModel implements Serializable{
 
     
@@ -97,21 +99,21 @@ public class LocationModel implements Serializable{
     }
 
     public Location toLocation() {
-        Location location = new Location();
-        location.setLrplce(0);
+             Location location = new Location();
+             location.setLrplce(0);
 
-        location.setLocid(this.getLocationId());
-        location.setLname(this.getLocationName());
-        location.setLabbr(this.getLocationAbbreviation());
-        location.setLtype(this.getLtype());
-        location.setCntryid(this.getCntryid());
+             location.setLocid(this.getLocationId());
+             location.setLname(this.getLocationName());
+             location.setLabbr(this.getLocationAbbreviation());
+             location.setLtype(this.getLtype());
+             location.setCntryid(this.getCntryid());
 
-        // defaults
-        location.setNllp(0);
-        location.setSnl1id(0);
-        location.setSnl2id(0);
-        location.setSnl3id(0);
+             // defaults
+             location.setNllp(0);
+             location.setSnl1id(0);
+             location.setSnl2id(0);
+             location.setSnl3id(0);
 
-        return location;
-    }
+             return location;
+         }
 }

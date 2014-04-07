@@ -15,6 +15,8 @@ import java.util.Arrays;
 
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 
 import com.vaadin.data.util.BeanItem;
@@ -37,18 +39,17 @@ public class AddLocationForm extends Form {
     
 	private static final long serialVersionUID = 865075321914843448L;
 
-	private BeanItem<LocationModel> locationBean;
+	//private BeanItem<LocationModel> locationBean;
     
-    private LocationModel location;
+    private LocationViewModel location;
     
     private GridLayout grid;
     
-	private GermplasmDataManager gdm;
+	private ProgramLocationsPresenter presenter;
     
-    public AddLocationForm(LocationModel location,GermplasmDataManager gdm) {
+    public AddLocationForm(LocationViewModel location,ProgramLocationsPresenter presenter) {
         this.location = location;
-
-        this.gdm = gdm;
+        this.presenter = presenter;
         
         assemble();
     }
@@ -71,11 +72,10 @@ public class AddLocationForm extends Form {
         
         setLayout(grid);
         
-        locationBean = new BeanItem<LocationModel>(location);
-        setItemDataSource(locationBean);
+        setItemDataSource(new BeanItem<LocationViewModel>(location));
 
         setComponentError(null);
-        setFormFieldFactory(new LocationFormFieldFactory(gdm));
+        setFormFieldFactory(new LocationFormFieldFactory(presenter));
         setVisibleItemProperties(Arrays.asList(
                 new String[] { "locationName", "locationAbbreviation","ltype","cntryid" }));
         
