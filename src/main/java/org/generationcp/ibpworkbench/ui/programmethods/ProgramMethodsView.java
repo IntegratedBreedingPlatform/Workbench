@@ -1,10 +1,8 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import com.vaadin.data.Item;
- import com.vaadin.data.Property;
- import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.Property;
+ import com.vaadin.data.util.BeanItemContainer;
  import com.vaadin.event.DataBoundTransferable;
- import com.vaadin.event.ItemClickEvent;
  import com.vaadin.event.dd.DragAndDropEvent;
  import com.vaadin.event.dd.DropHandler;
  import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
@@ -12,19 +10,16 @@ import com.vaadin.data.Item;
  import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
  import org.generationcp.commons.vaadin.theme.Bootstrap;
  import org.generationcp.commons.vaadin.util.MessageNotifier;
- import org.generationcp.ibpworkbench.IWorkbenchSession;
  import org.generationcp.ibpworkbench.Message;
- import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
  import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
+ import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;;
  import org.generationcp.middleware.exceptions.MiddlewareQueryException;
- import org.generationcp.middleware.manager.ManagerFactory;
  import org.generationcp.middleware.pojos.Method;
  import org.generationcp.middleware.pojos.workbench.Project;
  import org.springframework.beans.factory.InitializingBean;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Configurable;
 
- import java.lang.reflect.Field;
  import java.text.DateFormat;
  import java.text.ParseException;
  import java.text.SimpleDateFormat;
@@ -40,413 +35,253 @@ import com.vaadin.data.Item;
 
  @Configurable
  public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
+     private ProgramMethodsPresenter presenter;
+     @Autowired
+     private SimpleResourceBundleMessageSource messageSource;
+
+
      public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
      public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 
-     public final static Map<String,Integer> columnWidthsMap;
+     public final static Map<String,String> tableColumns;
+     public final static Map<String,Integer> tableColumnSizes;
+
+         /*
+               *
+               * columnWidthsMap.put("mname",210);
+                  columnWidthsMap.put("mgrp",45);
+                  columnWidthsMap.put("mcode",40);
+                  columnWidthsMap.put("mtype",40);
+                  columnWidthsMap.put("fmdate",70);
+               * */
 
      static {
-         columnWidthsMap = new HashMap<String, Integer>();
-         columnWidthsMap.put("select",20);
-         columnWidthsMap.put("mname",210);
-         columnWidthsMap.put("mgrp",45);
-         columnWidthsMap.put("mcode",40);
-         columnWidthsMap.put("mtype",40);
-         columnWidthsMap.put("fmdate",70);
+         tableColumns = new LinkedHashMap<String,String>();
+         tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
+         tableColumns.put("mname","Method Name");
+         tableColumns.put("desc","Description");
+         tableColumns.put("mgrp","Group");
+         tableColumns.put("mcode","Code");
+         tableColumns.put("mtype","Type");
+         tableColumns.put("date","Date");
+
+         tableColumnSizes = new HashMap<String, Integer>();
+         tableColumnSizes.put("select",20);
+         tableColumnSizes.put("mname",210);
+         tableColumnSizes.put("mgrp",45);
+         tableColumnSizes.put("mcode",40);
+         tableColumnSizes.put("mtype",40);
+         tableColumnSizes.put("date",70);
+
      }
 
-     private ProgramMethodsPresenter presenter;
-     private Button addNewMethodBtn;
+
+     private Button addNewMethodsBtn;
+     private VerticalLayout root;
+     private Button saveBtn;
+     private Table availableTable;
+     private Table favoritesTable;
+     private CheckBox availableSelectAll;
+     private CheckBox favoriteSelectAll;
      private Select groupFilter;
      private Select typeFilter;
      private TextField searchField;
      private Label resultCountLbl;
-     private Table availableMethodsTable;
-     private Table selectedMethodsTable;
-     private Button saveBtn;
-     private Button cancelBtn;
-     private java.lang.reflect.Field[] fields;
-
-     private ArrayList<Integer> selectedMethodIds = new ArrayList<Integer>();
-
-     @Autowired
-     private SimpleResourceBundleMessageSource messageSource;
-     private VerticalLayout root;
-     private Table availTbl;
-     private Table selTbl;
-     private CheckBox selectAllAvailable;
+     private BeanItemContainer<MethodView> availableTableContainer;
+     private BeanItemContainer<MethodView> favoritesTableContainer;
      private Button addToFavoriteBtn;
-     private CheckBox selectAllFav;
      private Button removeToFavoriteBtn;
 
-     private Map<Integer,CheckBox> allCheckBoxMap = new HashMap<Integer, CheckBox>();
-     private Map<Integer,Integer> prevSelectedItems = new HashMap<Integer,Integer>();
 
      public ProgramMethodsView(Project project) {
          presenter = new ProgramMethodsPresenter(this,project);
      }
 
-     @Override
-     public void attach() {
-         super.attach();
-
-         presenter.onAttachInitialize((IWorkbenchSession) this.getApplication());
-     }
 
      @Override
-     public void afterPropertiesSet() throws Exception {
-          try {
-             initializeComponents();
+     public void fitToContainer(Window parentWindow) {
+         availableTable.setHeight("100%");
+         favoritesTable.setHeight("100%");
 
-              // Preinit components
-              typeFilter.addItem("");
-              typeFilter.setItemCaption("","Generation Advancement Types");
-              for (String[] methodType : methodTypes) {
-                  typeFilter.addItem(methodType[0]);
-                  typeFilter.setItemCaption(methodType[0], methodType[1]);
-              }
-
-              typeFilter.setNullSelectionAllowed(false);
-              typeFilter.select(methodTypes[0][0]);
-
-              groupFilter.addItem("");
-              groupFilter.setItemCaption("", "Crop Reproductive Systems");
-              for(String[] methodGroup : methodGroups) {
-                  groupFilter.addItem(methodGroup[0]);
-                  groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
-              }
-              groupFilter.select("");
-              groupFilter.setNullSelectionAllowed(false);
-
-
-              initializeActions();
-             initializeValues();
-          } catch (MiddlewareQueryException e) {
-              e.printStackTrace();
-          }
-     }
-
-     private void initializeComponents() {
-         root = new VerticalLayout();
-         root.setSpacing(false);
-         root.setMargin(new Layout.MarginInfo(false,true,true,true));
-
-         final HorizontalLayout titleContainer = new HorizontalLayout();
-         final Label heading = new Label("<span class='bms-methods' style='color: #B8D432; font-size: 23px'></span>&nbsp;<span>Breeding Methods</span>",Label.CONTENT_XHTML);
-         final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
-
-         heading.setStyleName(Bootstrap.Typography.H4.styleName());
-
-         final Label availableMethodsTitle = new Label("Available Breeding Methods");
-         availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
-
-         addNewMethodBtn = new Button("Add new Method");
-         addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
-
-         titleContainer.addComponent(heading);
-         titleContainer.addComponent(addNewMethodBtn);
-
-         titleContainer.setComponentAlignment(addNewMethodBtn, Alignment.MIDDLE_RIGHT);
-         titleContainer.setSizeUndefined();
-         titleContainer.setWidth("100%");
-         titleContainer.setMargin(true, false,false, false);	// move this to css
-
-         final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
-         selectedMethodTitleContainer.setWidth("100%");
-         selectedMethodTitleContainer.setMargin(false,false,true,false);
-
-         final Label selectedMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
-         selectedMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
-
-         saveBtn = new Button("Save Favorites");
-         saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-
-
-         selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
-         selectedMethodTitleContainer.addComponent(saveBtn);
-         selectedMethodTitleContainer.setComponentAlignment(saveBtn,Alignment.MIDDLE_RIGHT);
-
-         availTbl = this.buildAvailableMethodsTable();
-         selTbl = this.buildSelectedMethodsTable();
-
-         availTbl.setHeight("250px");
-         selTbl.setHeight("250px");
-
-         /* AVAILABLE SELECT ALL BAR */
-         final CssLayout availableSelectAllContainer = new CssLayout();
-         availableSelectAllContainer.addStyleName("loc-filter-bar");
-         availableSelectAllContainer.setMargin(new Layout.MarginInfo(false,false,true,false));
-         availableSelectAllContainer.setSizeUndefined();
-         availableSelectAllContainer.setWidth("100%");
-
-         selectAllAvailable = new CheckBox();
-         selectAllAvailable.setImmediate(true);
-         final Label selectAllLbl = new Label("&nbsp;&nbsp;Select All&nbsp;&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
-         addToFavoriteBtn = new Button("Add selected to favorite breeding methods");
-         addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-
-         final HorizontalLayout selectAllContainer1 = new HorizontalLayout();
-         selectAllContainer1.addStyleName("align-select-all");
-         selectAllContainer1.addComponent(selectAllAvailable);
-         selectAllContainer1.addComponent(selectAllLbl);
-
-         availableSelectAllContainer.addComponent(selectAllContainer1);
-         availableSelectAllContainer.addComponent(addToFavoriteBtn);
-
-         /* FAVORITES SELECT ALL BAR */
-         final CssLayout favoriteSelectAllContainer = new CssLayout();
-         favoriteSelectAllContainer.addStyleName("loc-filter-bar");
-         favoriteSelectAllContainer.setMargin(new Layout.MarginInfo(false,false,true,false));
-         favoriteSelectAllContainer.setSizeUndefined();
-         favoriteSelectAllContainer.setWidth("100%");
-
-
-         selectAllFav = new CheckBox();
-         selectAllFav.setImmediate(true);
-         final Label selectAllFavLbl = new Label("&nbsp;&nbsp;Select All&nbsp;&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
-         removeToFavoriteBtn = new Button("Remove selected favorite breeding methods");
-         removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-
-         final HorizontalLayout selectAllContainer2 = new HorizontalLayout();
-         selectAllContainer2.addStyleName("align-select-all");
-         selectAllContainer2.addComponent(selectAllFav);
-         selectAllContainer2.addComponent(selectAllFavLbl);
-
-         favoriteSelectAllContainer.addComponent(selectAllContainer2);
-         favoriteSelectAllContainer.addComponent(removeToFavoriteBtn);
-
-         /* BUILD ALL COMPONENTS TO THE ROOT/PAGE */
-         root.addComponent(titleContainer);
-         root.addComponent(headingDesc);
-         root.addComponent(availableMethodsTitle);
-         root.addComponent(this.buildMethodFilterForm());
-         root.addComponent(availTbl);
-         root.addComponent(availableSelectAllContainer);
-         root.addComponent(selectedMethodTitleContainer);
-         root.addComponent(selTbl);
-         root.addComponent(favoriteSelectAllContainer);
-         //root.addComponent(this.buildActionButtons());
-
-         this.setCompositionRoot(root);
-     }
-
-     @Override
-     public void fitToContainer(final Window parentWindow) {
-         availTbl.setHeight("100%");
-         selTbl.setHeight("100%");
-
-         root.setExpandRatio(availTbl,1.0f);
-         root.setExpandRatio(selTbl,1.0f);
+         root.setExpandRatio(availableTable,1.0f);
+         root.setExpandRatio(favoritesTable,1.0f);
          root.setSizeFull();
 
          this.setSizeFull();
 
          // special actions added to save and cancel btns
-         final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
-             @Override
-             public void buttonClick(Button.ClickEvent clickEvent) {
-                 parentWindow.executeJavaScript("window.parent.closeMethodFrame();");
-             }
-         };
-
+                      /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
+                                                                  @Override
+                                                                  public void buttonClick(Button.ClickEvent clickEvent) {
+                                                                      parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
+                                                                  }
+                                                              };
+                                                    */
          //saveBtn.addListener(execCloseFrameJS);
-         //cancelBtn.setCaption("Reset");
-         //cancelBtn.addListener(execCloseFrameJS);
-
      }
 
-     private Component buildActionButtons() {
-         final HorizontalLayout root = new HorizontalLayout();
+     @Override
+     public void afterPropertiesSet() throws Exception {
+         initializeComponents();
+         initializeValues();
+         initializeLayout();
+         initializeActions();
+     }
+
+     private void initializeComponents() {
+         resultCountLbl = new Label();
+
+         addNewMethodsBtn = new Button("Add New Method");
+         addNewMethodsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
          saveBtn = new Button("Save Favorites");
-         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+         saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
-         cancelBtn = new Button("Cancel");
+         availableSelectAll = new CheckBox("Select All");
+         availableSelectAll.setImmediate(true);
+         favoriteSelectAll = new CheckBox("Select All");
+         favoriteSelectAll.setImmediate(true);
 
-         final HorizontalLayout innerContainer = new HorizontalLayout();
-         innerContainer.setSpacing(true);
-         innerContainer.setSizeUndefined();
+         // TABLES!
+         availableTable = buildCustomTable(availableSelectAll);
 
-         innerContainer.addComponent(cancelBtn);
-         innerContainer.addComponent(saveBtn);
+         favoritesTable = buildCustomTable(favoriteSelectAll);
 
-         root.addComponent(innerContainer);
-         root.setComponentAlignment(innerContainer,Alignment.MIDDLE_CENTER);
+         addToFavoriteBtn = new Button("Add to Favorite Methods");
+         addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         root.setSpacing(true);
-         root.setMargin(new Layout.MarginInfo(false,true,true,true));
-         root.setWidth("100%");
-         return root;
+         removeToFavoriteBtn = new Button("Remove to Favorite Locations");
+         removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+
+         // filter form
+         this.initializeFilterForm();
      }
 
-     private Component buildMethodFilterForm() {
-         final CssLayout container = new CssLayout();
-         container.addStyleName("loc-filter-bar");
-         container.setSizeUndefined();
-         container.setWidth("100%");
-
-         container.setMargin(new Layout.MarginInfo(true,false,true,false));
+     private void initializeFilterForm() {
+         typeFilter = new Select();
+         typeFilter.setImmediate(true);
+         typeFilter.setNullSelectionItemId(false);
 
          groupFilter = new Select();
          groupFilter.setImmediate(true);
-
-         typeFilter = new Select();
-         typeFilter.setImmediate(true);
+         groupFilter.setNullSelectionAllowed(false);
 
          searchField = new TextField();
          searchField.setImmediate(true);
-         searchField.setNullRepresentation("");
 
-
-         final Label spacer = new Label();
-         spacer.setWidth("100%");
-
-         final Label searchLbl = new Label("<b>Search for:&nbsp;&nbsp;&nbsp;</b>",Label.CONTENT_XHTML);
-
-         searchLbl.setSizeUndefined();
-
-         searchLbl.setStyleName("loc-filterlbl");
-
-         final HorizontalLayout field1 = new HorizontalLayout();
-         field1.addStyleName("field");
-         field1.setSizeUndefined();
-         field1.setSpacing(true);
-         field1.addComponent(searchLbl);
-         field1.addComponent(searchField);
-
-         HorizontalLayout filterContainer = new HorizontalLayout();
-         filterContainer.setSpacing(true);
-         filterContainer.setStyleName("pull-right");
-         filterContainer.setSizeUndefined();
-
-         final HorizontalLayout field2 = new HorizontalLayout();
-         field2.addStyleName("field");
-         field2.setSpacing(true);
-         field2.setSizeUndefined();
-         field2.addComponent(groupFilter);
-
-
-         final HorizontalLayout field3 = new HorizontalLayout();
-         field3.addStyleName("field");
-         field3.setSpacing(true);
-         field3.setSizeUndefined();
-         field3.addComponent(typeFilter);
-
-         filterContainer.addComponent(new Label("<b>Filter By:&nbsp;&nbsp;&nbsp;</b>",Label.CONTENT_XHTML));
-         filterContainer.addComponent(field2);
-         filterContainer.addComponent(field3);
-
-         container.addComponent(field1);
-         container.addComponent(filterContainer);
-
-         resultCountLbl = new Label("");
-         resultCountLbl.setStyleName("loc-resultcnt");
-
-         return container;
      }
 
+     private Table buildCustomTable(final CheckBox assocSelectAll) {
+         Table table = new Table();
 
-
-     private Table buildCustomTable(Map<String,Integer> columnWidthMap) {
-         final Table table = new Table() {
-             private static final long serialVersionUID = -14085524627550290L;
-
-             @Override
-             public String getColumnAlignment(Object propertyId) {
-                 Class<?> t = getContainerDataSource().getType(propertyId);
-
-                 if (t == Integer.class || t == Long.class || t == Double.class || t == Float.class) {
-                     return Table.ALIGN_RIGHT;
-                 } if (t == Label.class || t == String.class)
-                     return Table.ALIGN_LEFT;
-                 else
-                     return Table.ALIGN_CENTER;
-             }
-         };
-
+         table.setImmediate(true);
          table.setSelectable(true);
          table.setMultiSelect(true);
-         table.setImmediate(true);
-         table.setNullSelectionAllowed(false);
          table.setDragMode(Table.TableDragMode.MULTIROW);
-         table.setStyleName("loc-table");
-         table.setHeight("250px");
 
-         table.addListener(new ItemClickEvent.ItemClickListener() {
+         table.addGeneratedColumn("select", new Table.ColumnGenerator() {
              @Override
-             public void itemClick(ItemClickEvent itemClickEvent) {
-                 for (Integer mId : prevSelectedItems.keySet()) {
-                     if (itemClickEvent.getComponent() != availableMethodsTable) {
-                         availableMethodsTable.unselect(prevSelectedItems.get(mId));
-                     } else {
-                         selectedMethodsTable.unselect(prevSelectedItems.get(mId));
-                     }
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
 
-                     allCheckBoxMap.get(mId).setValue(false);
-                 }
-                 prevSelectedItems.clear();
+                 final CheckBox select = new CheckBox();
+                 select.setImmediate(true);
+                 select.addListener(new Button.ClickListener() {
+                     @Override
+                     public void buttonClick(Button.ClickEvent clickEvent) {
+                         Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
+                                 .getValue();
+
+                         beanItem.setActive(val);
+                         if (val)
+                             source.select(itemId);
+                         else {
+                             source.unselect(itemId);
+                             assocSelectAll.setValue(val);
+                         }
+                     }
+                 });
+
+                 if (beanItem.isActive())
+                     select.setValue(true);
+                 else
+                     select.setValue(false);
+
+
+                 return select;
              }
          });
 
+         table.addGeneratedColumn("date",new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                 DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
+
+                 if (beanItem.getMdate().toString().length() > 1) {
+                     try {
+                         return newDf.format(df.parse(beanItem.getMdate().toString()));
+                     } catch (ParseException e) {
+                         return "N/A";
+                         //e.printStackTrace();
+                     }
+                 } else
+                     return "N/A";
+             }
+         });
+
+         table.addGeneratedColumn("desc", new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colI) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 Label l = new Label();
+                 l.setDescription(beanItem.getMdesc());
+                 l.setValue(beanItem.getMdesc());
+
+                 if (beanItem.getMdesc().length() > 90) {
+                     l.setValue(beanItem.getMdesc().substring(0,90-3).trim().concat("..."));
+                 }
+
+                 return l;
+             }
+         });
+
+         // Add behavior to table when selected/has new Value (must be immediate)
          table.addListener(new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 Set<Integer> difference = new HashSet<Integer>(prevSelectedItems.keySet());
+                 Table source = ((Table) valueChangeEvent.getProperty());
+                 BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
 
-
-                 for (Object itemId : ((Collection)table.getValue())) {
-                     if (table.getItem(itemId) == null)
-                         continue;
-
-                     Integer mId = (Integer) table.getItem(itemId).getItemProperty("mid").getValue();
-
-                     if (!prevSelectedItems.containsKey(mId))
-                         prevSelectedItems.put(mId, (Integer) itemId);
-
-                     allCheckBoxMap.get(mId).setValue(true);
-
-                     difference.remove(mId);
+                 // disable previously selected items
+                 for (MethodView beanItem : container.getItemIds()) {
+                     beanItem.setActive(false);
                  }
 
-                 for (Integer mId : difference) {
-                     allCheckBoxMap.get(mId).setValue(false);
+                 // set current selection to true
+                 for (MethodView selectedItem : (Collection <MethodView>) source.getValue() ) {
+                     selectedItem.setActive(true);
                  }
+
+                 // do table repaint
+                 source.requestRepaint();
+                 source.refreshRowCache();
              }
          });
 
-
+         // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
              @Override
              public void drop(DragAndDropEvent dragAndDropEvent) {
-                 // criteria verify that this is safe
-                 final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent
-                         .getTransferable();
+                 DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
                  if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
                      return;
 
-                 LinkedList<Integer> sourceItems = new LinkedList<Integer>(((Collection) ((Table)t.getSourceComponent()).getValue()));
-
-                 ListIterator<Integer> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
-                 Table destinationTbl = (Table) dragAndDropEvent.getTargetDetails().getTarget();
-
-                 while (sourceItemsIterator.hasPrevious()) {
-                     Integer itemId =  sourceItemsIterator.previous();
-                     Item item = t.getSourceContainer().getItem(itemId);
-
-                     if (item == null)
-                         continue;
-
-                     try {
-                         addRow(presenter.getMethodByID((Integer)item.getItemProperty("mid").getValue()),destinationTbl,0);
-                         t.getSourceContainer().removeItem(itemId);
-
-                     } catch (IllegalAccessException e) {
-                         // cannot move
-                         e.printStackTrace();
-                     }
-
-                 }
-
+                 moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
              }
 
              @Override
@@ -455,54 +290,253 @@ import com.vaadin.data.Item;
              }
          });
 
-
-         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-
-             private static final long serialVersionUID = -2457435122226402123L;
-
-             public String getStyle(Object itemId, Object propertyId) {
-
-                 if (propertyId != null && propertyId.toString().equals("mname"))
-                     return propertyId.toString();
-
-                 return null;
-             }
-         });
-
-
-         //table.setColumnWidth("locationName",310);
-         //table.setColumnWidth("locationAbbreviation",130);
-         //table.setColumnWidth("removeBtn",60);
-         //table.setColumnWidth("selectBtn",60);
-
-         for (String columnName : columnWidthMap.keySet()) {
-             table.setColumnWidth(columnName,columnWidthMap.get(columnName));
-         }
-
          return table;
      }
 
-     private Table buildAvailableMethodsTable() {
-         availableMethodsTable = buildCustomTable(columnWidthsMap);
-         availableMethodsTable.setWidth("100%");
+     private void moveSelectedItems(Table source, Table target) {
+         LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
+         ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
-         return availableMethodsTable;
+         while (sourceItemsIterator.hasPrevious()) {
+             MethodView itemId = (MethodView) sourceItemsIterator.previous();
+             itemId.setActive(false);
+             ((BeanItemContainer<MethodView>) target.getContainerDataSource()).addItemAt(0, itemId);
+             source.removeItem(itemId);
+         }
      }
 
-     private Table buildSelectedMethodsTable() {
-         selectedMethodsTable = buildCustomTable(columnWidthsMap);
-         selectedMethodsTable.setWidth("100%");
+     private void initializeValues() {
 
-         return selectedMethodsTable;
+             /* INITIALIZE FILTER CONTROLS DATA */
+         typeFilter.addItem("");
+         typeFilter.setItemCaption("","Generation Advancement Types");
+
+         for (String[] methodType : methodTypes) {
+             typeFilter.addItem(methodType[0]);
+             typeFilter.setItemCaption(methodType[0], methodType[1]);
+         }
+
+         typeFilter.select(methodTypes[0][0]);
+
+         groupFilter.addItem("");
+         groupFilter.setItemCaption("", "Crop Reproductive Systems");
+         for(String[] methodGroup : methodGroups) {
+             groupFilter.addItem(methodGroup[0]);
+             groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
+         }
+         groupFilter.select("");
+
+
+             /* INITIALIZE TABLE DATA */
+         favoritesTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getSavedProgramMethods());
+         availableTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),""));
+
+         resultCountLbl.setValue("Result: " + availableTableContainer.size());
+
+         availableTable.setContainerDataSource(availableTableContainer);
+         favoritesTable.setContainerDataSource(favoritesTableContainer);
+
+             /* SETUP TABLE FIELDS */
+         this.setupTableFields(availableTable);
+         this.setupTableFields(favoritesTable);
+     }
+
+     private void setupTableFields(Table table) {
+         table.setVisibleColumns(tableColumns.keySet().toArray());
+         table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
+
+         //Field[] fields = LocationViewModel.class.getDeclaredFields();
+         //table.setColumnWidth("select",20);
+         //table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
+
+         for (String col : tableColumnSizes.keySet())
+         {
+             table.setColumnWidth(col,tableColumnSizes.get(col));
+         }
+     }
+
+     private void initializeLayout() {
+         root = new VerticalLayout();
+         root.setSpacing(false);
+         root.setMargin(new Layout.MarginInfo(false,true,true,true));
+
+         final Label availableMethodsTitle = new Label("Available Methods");
+         availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
+
+         availableTable.setWidth("100%");
+         favoritesTable.setWidth("100%");
+         availableTable.setHeight("250px");
+         favoritesTable.setHeight("250px");
+
+         final HorizontalLayout availableTableBar = new HorizontalLayout();
+         final HorizontalLayout favoritesTableBar = new HorizontalLayout();
+
+         availableSelectAll.setWidth("100px");
+         favoriteSelectAll.setWidth("100px");
+
+         availableTableBar.setSizeUndefined();
+         favoritesTableBar.setSizeUndefined();
+         availableTableBar.setSpacing(true);
+         favoritesTableBar.setSpacing(true);
+
+         availableTableBar.addComponent(availableSelectAll);
+         availableTableBar.addComponent(addToFavoriteBtn);
+         favoritesTableBar.addComponent(favoriteSelectAll);
+         favoritesTableBar.addComponent(removeToFavoriteBtn);
+
+
+         root.addComponent(buildPageTitle());
+         root.addComponent(availableMethodsTitle);
+         root.addComponent(buildFilterForm());
+         root.addComponent(availableTable);
+         root.addComponent(availableTableBar);
+         root.addComponent(buildFavoriteTableTitle());
+         root.addComponent(favoritesTable);
+         root.addComponent(favoritesTableBar);
+
+         this.setCompositionRoot(root);
+     }
+
+     private Component buildFavoriteTableTitle() {
+         final HorizontalLayout root = new HorizontalLayout();
+         root.setWidth("100%");
+         root.setMargin(true, false, false, false);
+
+         final Label favoriteMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
+         favoriteMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
+
+         root.addComponent(favoriteMethodsTitle);
+         root.addComponent(saveBtn);
+         root.setExpandRatio(favoriteMethodsTitle,1.0F);
+
+         return root;
+     }
+
+     private Component buildFilterForm() {
+         final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;",Label.CONTENT_XHTML);
+         final Label searchLbl = new Label("<b>Search For:</b>&nbsp;",Label.CONTENT_XHTML);
+
+         filterLbl.setSizeUndefined();
+         searchLbl.setSizeUndefined();
+
+         filterLbl.setStyleName("loc-filterlbl");
+         searchLbl.setStyleName("loc-filterlbl");
+
+         final CssLayout container = new CssLayout();
+         container.addStyleName("loc-filter-bar");
+         container.setSizeUndefined();
+         container.setWidth("100%");
+
+
+         final HorizontalLayout field1 = new HorizontalLayout();
+         field1.addStyleName("field");
+         field1.setSpacing(true);
+         field1.setSizeUndefined();
+         field1.addComponent(searchLbl);
+         field1.addComponent(searchField);
+
+         container.addComponent(field1);
+
+         final HorizontalLayout field2 = new HorizontalLayout();
+         field2.addStyleName("field");
+         field2.setSpacing(true);
+         field2.setSizeUndefined();
+         field2.addComponent(filterLbl);
+         field2.addComponent(typeFilter);
+
+
+         final HorizontalLayout field3 = new HorizontalLayout();
+         field3.addStyleName("field");
+         field3.setSpacing(true);
+         field3.setSizeUndefined();
+         field3.addComponent(groupFilter);
+
+         HorizontalLayout filterContainer = new HorizontalLayout();
+         filterContainer.setSpacing(true);
+         filterContainer.setStyleName("pull-right");
+         filterContainer.setSizeUndefined();
+
+         filterContainer.addComponent(field2);
+         filterContainer.addComponent(field3);
+
+         container.addComponent(filterContainer);
+
+
+         resultCountLbl = new Label("");
+         resultCountLbl.setStyleName("loc-resultcnt");
+         //root.addComponent(resultCountLbl);
+         //root.setExpandRatio(resultCountLbl,1.0f);
+
+         return container;
+     }
+
+     private Component buildPageTitle() {
+         final VerticalLayout root = new VerticalLayout();
+         root.setMargin(new Layout.MarginInfo(false,false,true,false));
+         root.setWidth("100%");
+
+         final HorizontalLayout titleContainer = new HorizontalLayout();
+         titleContainer.setSizeUndefined();
+         titleContainer.setWidth("100%");
+         titleContainer.setMargin(true, false, false, false);	// move this to css
+
+         final Label heading = new Label("<span class='bms-methods' style='color: #B8D432; font-size: 23px'></span>&nbsp;Breeding Methods",Label.CONTENT_XHTML);
+         heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+         titleContainer.addComponent(heading);
+         titleContainer.addComponent(addNewMethodsBtn);
+         titleContainer.setComponentAlignment(addNewMethodsBtn, Alignment.MIDDLE_RIGHT);
+
+         final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
+
+         root.addComponent(titleContainer);
+         root.addComponent(headingDesc);
+
+         return root;
+     }
+
+     public void addRow(MethodView item,boolean atAvailableTable,Integer index) {
+         if (index != null) {
+             if (atAvailableTable) {
+                 availableTableContainer.addItemAt(index,item);
+
+             } else {
+                 favoritesTableContainer.addItemAt(index,item);
+             }
+         } else {
+             if (atAvailableTable) {
+                 availableTableContainer.addItem(item);
+
+             } else {
+                 favoritesTableContainer.addItem(item);
+             }
+         }
+     }
+
+     public void addRow(Method item,boolean atAvailableTable,Integer index) {
+         if (index != null) {
+             if (atAvailableTable) {
+                 availableTableContainer.addItemAt(index,presenter.convertMethod(item));
+
+             } else {
+                 favoritesTableContainer.addItemAt(index,presenter.convertMethod(item));
+             }
+         } else {
+             if (atAvailableTable) {
+                 availableTableContainer.addItem(presenter.convertMethod(item));
+
+             } else {
+                 favoritesTableContainer.addItem(presenter.convertMethod(item));
+             }
+         }
      }
 
      private void initializeActions() {
-
-         addNewMethodBtn.addListener(new Button.ClickListener() {
+         addNewMethodsBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent event) {
-                    //ProgramMethodsView.this.presenter.doAddMethodAction();
-                    event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+                 //ProgramMethodsView.this.presenter.doAddMethodAction();
+                 event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 
              }
          });
@@ -510,17 +544,10 @@ import com.vaadin.data.Item;
          Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent event) {
-                 List<Method> results = presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),searchField.getValue().toString());
-                 availableMethodsTable.getContainerDataSource().removeAllItems();
+                 availableTableContainer.removeAllItems();
+                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
 
-                 try {
-                     ProgramMethodsView.this.generateRows(results,true);
-                 } catch (IllegalAccessException e) {
-                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                 }
-
-                 resultCountLbl.setValue("Results: " + availableMethodsTable.getContainerDataSource().getItemIds().size() + " items");
-
+                 resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
              }
          };
 
@@ -528,301 +555,55 @@ import com.vaadin.data.Item;
          groupFilter.addListener(filterAction);
          typeFilter.addListener(filterAction);
 
-         /*
-         * private CheckBox selectAllAvailable;
-             private Button addToFavoriteBtn;
-             private CheckBox selectAllFav;
-             private Button removeToFavoriteBtn;
-
-         * */
-         selectAllAvailable.addListener(new Property.ValueChangeListener() {
+         availableSelectAll.addListener(new Button.ClickListener() {
              @Override
-             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-
-                 if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
-                     availableMethodsTable.setValue(availableMethodsTable.getItemIds());
-                 else {
-                     availableMethodsTable.setValue(null);
-                     prevSelectedItems.clear();
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 for (Object itemId :availableTable.getItemIds()) {
+                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                         availableTable.select(itemId);
+                     else
+                         availableTable.unselect(itemId);
                  }
-
-                 //selectAllFav.setValue(false);
-
              }
          });
 
-         selectAllFav.addListener(new Property.ValueChangeListener() {
+
+         favoriteSelectAll.addListener(new Button.ClickListener() {
              @Override
-             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-
-                 if (true ==(Boolean) valueChangeEvent.getProperty().getValue())
-                     selectedMethodsTable.setValue(selectedMethodsTable.getItemIds());
-                 else {
-                     selectedMethodsTable.setValue(null);
-                     prevSelectedItems.clear();
-
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 for (Object itemId : favoritesTable.getItemIds()) {
+                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                         favoritesTable.select(itemId);
+                     else
+                         favoritesTable.unselect(itemId);
                  }
-
-                 //selectAllAvailable.setValue(false);
              }
          });
 
          addToFavoriteBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 moveSelectedItems(availableMethodsTable,selectedMethodsTable);
+                 moveSelectedItems(availableTable,favoritesTable);
              }
          });
 
          removeToFavoriteBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 moveSelectedItems(selectedMethodsTable,availableMethodsTable);
+                 moveSelectedItems(favoritesTable,availableTable);
              }
          });
 
          saveBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent event) {
-                 if (ProgramMethodsView.this.presenter.saveProgramMethod(selectedMethodIds)) {
+                 if (ProgramMethodsView.this.presenter.saveProgramMethod(favoritesTableContainer.getItemIds())) {
                      MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
                  } else {    // should never happen
 
                  }
-
-
              }
          });
-
-         /*
-         cancelBtn.addListener(new Button.ClickListener() {
-             private static final long serialVersionUID = -4479216826096826464L;
-
-             @Override
-             public void buttonClick(Button.ClickEvent event) {
-                 IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
-
-                 (new OpenProgramMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
-             }
-         });
-         */
-
      }
 
-     private void initializeValues() throws MiddlewareQueryException {
-         /* INITIALIZE TABLE DATA */
-
-         selectedMethodsTable.setContainerDataSource(new IndexedContainer());
-         availableMethodsTable.setContainerDataSource(new IndexedContainer());
-
-
-         IndexedContainer itemContainer = (IndexedContainer) selectedMethodsTable.getContainerDataSource();
-         IndexedContainer itemContainer2 = (IndexedContainer) availableMethodsTable.getContainerDataSource();
-
-         fields = Method.class.getDeclaredFields();
-
-         HashMap<String,String> visibleFieldsMap = new LinkedHashMap<String, String>();
-         visibleFieldsMap.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         visibleFieldsMap.put("mname","Method Name");
-         visibleFieldsMap.put("fmdesc","Description");
-         visibleFieldsMap.put("mgrp","Group");
-         visibleFieldsMap.put("mcode","Code");
-         visibleFieldsMap.put("mtype","Type");
-         visibleFieldsMap.put("fmdate","Date");
-
-
-         for (Field field : fields) {
-             field.setAccessible(true);
-
-             if (field.getName().equals("serialVersionUID"))
-                 continue;
-
-             itemContainer.addContainerProperty(field.getName(),field.getType(),null);
-             itemContainer2.addContainerProperty(field.getName(),field.getType(),null);
-
-         }
-
-         availableMethodsTable.getContainerDataSource().addContainerProperty("select", CheckBox.class, false);
-         selectedMethodsTable.getContainerDataSource().addContainerProperty("select", CheckBox.class, false);
-
-         availableMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
-         selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
-
-         availableMethodsTable.getContainerDataSource().addContainerProperty("fmdate", String.class, null);
-         selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdate", String.class, null);
-
-         try {
-             // add all items to selected table first
-             this.generateRows(presenter.getSavedProgramMethods(), false);
-
-             // add all items for available locations table
-             this.generateRows(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), ""), true);
-
-             resultCountLbl.setValue("Result: " + itemContainer.getItemIds().size() + " items");
-
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
-
-         availableMethodsTable.setVisibleColumns(visibleFieldsMap.keySet().toArray(new String[visibleFieldsMap.size()]));
-         availableMethodsTable.setColumnHeaders(visibleFieldsMap.values().toArray(new String[visibleFieldsMap.size()]));
-
-         selectedMethodsTable.setVisibleColumns(visibleFieldsMap.keySet().toArray(new String[visibleFieldsMap.size()]));
-         selectedMethodsTable.setColumnHeaders(visibleFieldsMap.values().toArray(new String[visibleFieldsMap.size()]));
-
-     }
-
-     private void generateRows(List<Method> methodList, boolean isAvailableTable) throws IllegalAccessException {
-            for (Method method : methodList) {
-                if (selectedMethodIds.contains(method.getMid()))
-                    continue;
-
-                addRow(method,isAvailableTable,null);
-            }
-     }
-
-     public void addRow(Method method, final Table isAvailableTable,Integer index) throws IllegalAccessException {
-         if (isAvailableTable == availableMethodsTable)
-             addRow(method,true,index);
-         else
-             addRow(method,false,index);
-
-     }
-
-     public void addRow(Method method, final boolean isAvailableTable,Integer index) throws IllegalAccessException {
-         Object itemId = null;
-         IndexedContainer itemContainer = null;
-
-         if (isAvailableTable)
-             itemContainer = (IndexedContainer) availableMethodsTable.getContainerDataSource();
-         else
-             itemContainer = (IndexedContainer) selectedMethodsTable.getContainerDataSource();
-
-         if (index != null)
-             itemId = itemContainer.addItemAt(0);
-         else
-             itemId = itemContainer.addItem();
-
-         Item newItem = itemContainer.getItem(itemId);
-
-         for (Field field : fields) {
-             if (field.getName().equals("serialVersionUID"))
-                 continue;
-
-             if (field.getName().equals("mdesc")) {
-                 String val = field.get(method).toString();
-                 Label l = new Label();
-                 l.setDescription(val);
-                 if (val.length() > 90) {
-                     val = val.substring(0,90 -3).trim().concat("...");
-                 }
-                 l.setValue(val);
-
-                 newItem.getItemProperty("fmdesc").setValue(l);
-             }
-
-             if (field.getName().equals("mdate")) {
-                 String date = field.get(method).toString();
-
-                 DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                 DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
-
-                 if (date.length() > 1) {
-                     try {
-                         date = newDf.format(df.parse(date));
-                     } catch (ParseException e) {
-                         date = "N/A";
-                         //e.printStackTrace();
-                     }
-                 } else
-                     date = "N/A";
-
-                 newItem.getItemProperty("fmdate").setValue(date);
-             }
-
-             newItem.getItemProperty(field.getName()).setValue(field.get(method));
-         }
-
-         if (!isAvailableTable) {
-             if (!selectedMethodIds.contains(method.getMid()))
-                 selectedMethodIds.add(method.getMid());
-         }
-
-         final CheckBox select = new CheckBox();
-         select.setImmediate(true);
-         final Object finalItemId = itemId;
-
-         select.addListener(new Button.ClickListener() {
-             @Override
-             public void buttonClick(Button.ClickEvent clickEvent) {
-                 for (Integer mId : prevSelectedItems.keySet()) {
-                     if (select.getParent() != availableMethodsTable) {
-                         availableMethodsTable.unselect(prevSelectedItems.get(mId));
-                     } else {
-                         selectedMethodsTable.unselect(prevSelectedItems.get(mId));
-                     }
-
-                     allCheckBoxMap.get(mId).setValue(false);
-                 }
-                 prevSelectedItems.clear();
-
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
-                     if (isAvailableTable)  {
-                         availableMethodsTable.select(finalItemId);
-                     }
-                     else {
-                         selectedMethodsTable.select(finalItemId);
-
-                     }
-                 } else {
-                     if (isAvailableTable)
-                         availableMethodsTable.unselect(finalItemId);
-                     else
-                         selectedMethodsTable.unselect(finalItemId);
-
-                 }
-
-
-             }
-         });
-
-         if (!isAvailableTable && !selectedMethodIds.contains(method.getMid()))
-             selectedMethodIds.add(method.getMid());
-
-         newItem.getItemProperty("select").setValue(select);
-
-         Integer mId = (Integer) newItem.getItemProperty("mid").getValue();
-
-         if (allCheckBoxMap.containsKey(mId))
-             allCheckBoxMap.remove(mId);
-
-         allCheckBoxMap.put(mId,select);
-
-     }
-
-     /** TODO: The Following methods are only for compatibility to old Classes depentent on old Project Breeding Methods Panel UI **/
-     public ManagerFactory getManagerFactory() {
-         return this.presenter.getManagerFactory();
-     }
-
-     public void moveSelectedItems(Table source,Table destination) {
-         LinkedList<Integer> sourceItems = new LinkedList<Integer>(((Collection) source.getValue()));
-         ListIterator<Integer> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
-
-
-         while (sourceItemsIterator.hasPrevious()) {
-             Integer itemId =  sourceItemsIterator.previous();
-             Item item = source.getItem(itemId);
-
-             try {
-                 addRow(presenter.getMethodByID((Integer)item.getItemProperty("mid").getValue()),destination,0);
-                 source.removeItem(itemId);
-
-             } catch (IllegalAccessException e) {
-                 // cannot move
-                 e.printStackTrace();
-             }
-
-         }
-     }
  }
