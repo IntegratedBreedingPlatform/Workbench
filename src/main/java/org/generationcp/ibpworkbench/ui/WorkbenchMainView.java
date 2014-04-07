@@ -196,7 +196,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
 
-        collapseButton = new Button("<span class='glyphicon icon-list'></span>");
+        collapseButton = new Button("<span class='fa fa-bars'></span><span class='collapse-menu-lbl'>MENU</span>");
         collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " collapse-btn");
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
@@ -234,7 +234,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(5, Sizeable.UNITS_PIXELS);
+        contentAreaSplitPanel.setSplitPosition(0, Sizeable.UNITS_PIXELS);
         contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
         contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
 
@@ -319,7 +319,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 if ( contentAreaSplitPanel.getSplitPosition() > 0)
                     contentAreaSplitPanel.setSplitPosition(0);
                 else
-                    contentAreaSplitPanel.setSplitPosition(360);
+                    contentAreaSplitPanel.setSplitPosition(240);
             }
         });
 
@@ -510,9 +510,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             }
         }
 
-        if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
-            contentAreaSplitPanel.setSplitPosition(360,Sizeable.UNITS_PIXELS);
-        else
+        //if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
+        //    contentAreaSplitPanel.setSplitPosition(240,Sizeable.UNITS_PIXELS);
+        //else
             contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
     }
 

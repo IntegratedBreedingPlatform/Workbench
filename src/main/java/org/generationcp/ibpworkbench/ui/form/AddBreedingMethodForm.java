@@ -13,13 +13,11 @@ package org.generationcp.ibpworkbench.ui.form;
 
 import java.util.Arrays;
 
+import com.vaadin.ui.*;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.BreedingMethodFormFieldFactory;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.GridLayout;
 
 
 /**
@@ -42,9 +40,7 @@ public class AddBreedingMethodForm extends Form{
     private BeanItem<BreedingMethodModel> breedingMethodBean;
     
     private BreedingMethodModel method;
-    
-    private GridLayout grid;
-    
+
     public AddBreedingMethodForm(BreedingMethodModel method) {
         this.method = method;
         
@@ -62,13 +58,10 @@ public class AddBreedingMethodForm extends Form{
     }
     
     protected void initializeComponents() { 
-        
-        grid = new GridLayout(5, 1);
-        grid.setSpacing(true);
-        grid.setMargin(true);
-        
-        setLayout(grid);
-        
+        final FormLayout fl = new FormLayout();
+
+        fl.setSpacing(true);
+
         breedingMethodBean = new BeanItem<BreedingMethodModel>(method);
         setItemDataSource(breedingMethodBean);
 
@@ -76,27 +69,32 @@ public class AddBreedingMethodForm extends Form{
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
 
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "methodName", "methodDescription", "methodType", "methodGroup", "methodCode" }));
+                new String[] { "methodName", "methodCode", "methodDescription", "methodType", "methodGroup" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
         setValidationVisibleOnCommit(false);
+
+
+        this.setLayout(fl);
     }
     
     @Override
-    protected void attachField(Object propertyId, Field field) {
-        
-        if("methodName".equals(propertyId)) {
-            grid.addComponent(field, 0, 0);
-        } else if ("methodDescription".equals(propertyId)) {
-            grid.addComponent(field, 1, 0);
-        } else if ("methodType".equals(propertyId)) {
-            grid.addComponent(field, 2, 0);
-        } else if ("methodGroup".equals(propertyId)) {
-            grid.addComponent(field, 3, 0);
-        } else if ("methodCode".equals(propertyId)) {
-            grid.addComponent(field, 4, 0);
-        }
-    }
+         protected void attachField(Object propertyId, Field field) {
+             /*
+                           if("methodName".equals(propertyId)) {
+                               grid.addComponent(field, 0, 1);
+                           } else if ("methodDescription".equals(propertyId)) {
+                               grid.addComponent(field, 0, 2);
+                           } else if ("methodType".equals(propertyId)) {
+                               grid.addComponent(field, 0, 3);
+                           } else if ("methodGroup".equals(propertyId)) {
+                               grid.addComponent(field, 0, 4);
+                           } else if ("methodCode".equals(propertyId)) {
+                               grid.addComponent(field, 0, 5);
+                           } */
+
+             super.attachField(propertyId,field);
+         }
     
 }

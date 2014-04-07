@@ -18,10 +18,10 @@ import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -38,12 +38,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -52,7 +51,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 
 
@@ -70,7 +68,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     
     private CreateProjectPanel createProjectPanel;
    
-    private TwinColSelect select;
+    private TwinTableSelect<User> select;
     
     private Button newMemberButton;
     
@@ -110,14 +108,59 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         setSpacing(true);
         setMargin(true);
         
-        select = new TwinColSelect();
+        /**
+         * select = new TwinColSelect();
         select.setLeftColumnCaption("Available Users");
         select.setRightColumnCaption("Selected Program Members");
         select.setRows(10);
         select.setWidth("500px");
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
-        select.setImmediate(true);
+        select.setImmediate(true);**/
+        
+        select = new TwinTableSelect<User>(User.class);
+        
+        Table.ColumnGenerator generator1 = new Table.ColumnGenerator(){
+
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				Person person = ((User) itemId).getPerson();
+				return person.getDisplayName();
+			}
+        	
+        	
+        };
+        Table.ColumnGenerator generator2 = new Table.ColumnGenerator(){
+
+			@Override
+			public Object generateCell(Table source, Object itemId,
+					Object columnId) {
+				Person person = ((User) itemId).getPerson();
+				return person.getDisplayName();
+			}
+        	
+        	
+        };
+        
+        select.getTableLeft().addGeneratedColumn("userName", generator1);
+        select.getTableRight().addGeneratedColumn("userName", generator2);
+        
+        select.setVisibleColumns(new Object[] {"select","userName"});
+        select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>","USER NAME"});
+        
+        select.setLeftColumnCaption("Available Users");
+        select.setRightColumnCaption("Selected Program Members");
+        
+        select.setLeftLinkCaption("");
+        select.setRightLinkCaption("Remove Selected Members");
+        select.addRightLinkListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				select.removeAllSelectedItems();
+			}
+		});
         
         addComponent(select);
         
@@ -234,7 +277,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
             for (Object itemId : container.getItemIds()) {
                 User user = (User) itemId;
-                select.setItemCaption(itemId, user.getPerson().getDisplayName());
+                //select.setItemCaption(itemId, user.getPerson().getDisplayName());
             }
         }
         catch (MiddlewareQueryException e) {
@@ -249,8 +292,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         setSpacing(true);
         setMargin(true);
         
-        select.setHeight("100px");
-        tblMembers.setHeight("140px");
+        select.setWidth("100%");
+        select.setHeight("300px");
         
         setComponentAlignment(select,Alignment.TOP_CENTER);
         //setComponentAlignment(tblMembers,Alignment.TOP_CENTER);
@@ -263,6 +306,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         previousButton.addListener(new PreviousButtonClickListener());
 //        nextButton.addListener(new NextButtonClickListener());
         
+        /**
         select.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
 
@@ -299,7 +343,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                 }
                
             }
-        });
+        });**/
     }
     
     protected Component layoutButtonArea() {
@@ -383,8 +427,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
-        Container container = tblMembers.getContainerDataSource();
-        Collection<User> userList = (Collection<User>) container.getItemIds();
+        Set<User> userList = (Set<User>) select.getValue();
         
         List<Role> roleList = null;
         try {
@@ -397,21 +440,16 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         }
         
         for (User user : userList) {
-            Item item = container.getItem(user);
             
             for (Role role : roleList) {
-                String propertyId = "role_" + role.getRoleId();
-                Property property = item.getItemProperty(propertyId);
-                Boolean value = (Boolean) property.getValue();
-                
-                if (value != null && value.booleanValue()) {
+  
                     ProjectUserRole projectUserRole = new ProjectUserRole();
                     projectUserRole.setUserId(user.getUserid());
                     projectUserRole.setRole(role);
                     
                     projectUserRoles.add(projectUserRole);
                 }
-            }
+            
         }
         return projectUserRoles;
     }

@@ -162,6 +162,7 @@ public class CreateProjectAccordion extends Accordion implements InitializingBea
                         layoutProjectMembers.addComponent(membersTab);
                         layoutProjectMembers.setSpacing(true);
                         layoutProjectMembers.setMargin(true);
+                        //layoutProjectMembers.setHeight("600px");
                        
                     } else {
                     	//added the validate for this item. -- aabr

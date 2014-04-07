@@ -3,22 +3,43 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.middleware.pojos.BeanFormState;
+import org.generationcp.middleware.pojos.Location;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-public class LocationTableViewModel {
+public class LocationViewModel implements BeanFormState {
 	private Integer locationId;
 	private String locationName;
 	public String locationAbbreviation;
-	public String ltype;
 
-	private String cntryFullName;
-	
+    public Integer getLtype() {
+        return ltype;
+    }
+
+    public void setLtype(Integer ltype) {
+        this.ltype = ltype;
+    }
+
+    public Integer ltype;
+    public String ltypeStr;
+
+	private Integer cntryid;
+    private String cntryFullName;
+    private Boolean isSelected = false;
+
+
 	/*
 	private String latitude;
 	private String longtitude;
 	private String altitude;
 	*/
+
+    public LocationViewModel() {}
+    public LocationViewModel(Location location) {
+
+    }
+
 	
 
 	public Integer getLocationId() {
@@ -57,14 +78,14 @@ public class LocationTableViewModel {
 
 
 
-	public String getLtype() {
-		return ltype;
+	public String getLtypeStr() {
+		return ltypeStr;
 	}
 
 
 
-	public void setLtype(String ltype) {
-		this.ltype = ltype;
+	public void setLtypeStr(String ltypeStr) {
+		this.ltypeStr = ltypeStr;
 	}
 
 
@@ -117,13 +138,13 @@ public class LocationTableViewModel {
 
 	*/
 
-	public static List<LocationTableViewModel> generateRandomData(int itemCount) {
-		List<LocationTableViewModel> list = new ArrayList<LocationTableViewModel>();
+	public static List<LocationViewModel> generateRandomData(int itemCount) {
+		List<LocationViewModel> list = new ArrayList<LocationViewModel>();
 		
 		PodamFactory factory = new PodamFactoryImpl();
 		
 		for (int i = 0; i < itemCount; i++) {
-			list.add(factory.manufacturePojo(LocationTableViewModel.class));
+			list.add(factory.manufacturePojo(LocationViewModel.class));
 		}
 
 		return list;
@@ -131,9 +152,25 @@ public class LocationTableViewModel {
 
 	@Override
 	public String toString() {
-		return "LocationTableViewModel: [locationId="+ locationId + ", locationName="+ locationName + ", locationAbbreviation="+ locationAbbreviation +", ltype="+ ltype + ", cntryFullName=" + cntryFullName +"]";
+		return "LocationViewModel: [locationId="+ locationId + ", locationName="+ locationName + ", locationAbbreviation="+ locationAbbreviation +", ltypeStr="+ ltypeStr + ", cntryFullName=" + cntryFullName +"]";
 	}
-	
-	
-	
+
+
+    @Override
+    public boolean isActive() {
+        return this.isSelected;
+    }
+
+    @Override
+    public void setActive(Boolean val) {
+        this.isSelected = val;
+    }
+
+    public Integer getCntryid() {
+        return cntryid;
+    }
+
+    public void setCntryid(Integer cntryid) {
+        this.cntryid = cntryid;
+    }
 }

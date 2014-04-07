@@ -1,11 +1,15 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
+import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -14,9 +18,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,9 +40,11 @@ public class ProgramMethodsPresenter implements InitializingBean {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    @Autowired
+    private SessionData sessionData;
+
     private GermplasmDataManager gdm;
 
-    IWorkbenchSession appSession;
 
 
     public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
@@ -58,14 +63,22 @@ public class ProgramMethodsPresenter implements InitializingBean {
         try {
             selectedMethod = gdm.getMethodByID(id);
 
-            view.addRow(selectedMethod,false,0);
+            view.addRow(convertMethod(selectedMethod),false,0);
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
+    }
+
+    public Method getMethodByID(Integer id) {
+        try {
+            return gdm.getMethodByID(id);
+
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     public void doRemoveSelectedMethod(Integer id) {
@@ -73,11 +86,9 @@ public class ProgramMethodsPresenter implements InitializingBean {
         try {
             selectedMethod = gdm.getMethodByID(id);
 
-            view.addRow(selectedMethod,true,0);
+            view.addRow(convertMethod(selectedMethod),true,0);
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IllegalAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
@@ -87,7 +98,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
     }
 
-    public List<Method> getSavedProgramMethods() {
+    public List<MethodView> getSavedProgramMethods() {
         List<Method> result = new ArrayList<Method>();
         try {
            List<Integer> projectMethodsIds = workbenchDataManager.getMethodIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
@@ -103,34 +114,51 @@ public class ProgramMethodsPresenter implements InitializingBean {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        return result;
+        return convertFrom(result);
     }
 
-    public List<Method> getFilteredResults(String mgroup,String mtype,String mname) {
+    public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname) {
+        Map<Integer,MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
+
         try {
-            return gdm.getMethodsByGroupAndTypeAndName(mgroup,mtype,mname);
-            //return gdm.getMethodsByGroupAndType(mgroup,mtype);
+            List<MethodView> result = convertFrom(gdm.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
+
+            for (MethodView method : result) {
+                resultsMap.put(method.getMid(),method);
+            }
+
+            // remove items already in favorites
+            for (MethodView method : this.getSavedProgramMethods()) {
+                if (resultsMap.containsKey(method.getMid())) {
+                    resultsMap.remove(method.getMid());
+                }
+            }
+
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
         }
 
-        return new ArrayList<Method>();
+        /*
+        ArrayList sorted =  new ArrayList<MethodView>(resultsMap.values());
+
+        Collections.sort(sorted,new Comparator<MethodView>() {
+            @Override
+            public int compare(MethodView o1, MethodView o2) {
+                return o1.getMname().toUpperCase().compareTo(o2.getMname().toUpperCase());
+            }
+        });
+        */
+        return resultsMap.values();
     }
 
-    public boolean saveProgramMethod(ArrayList<Integer> selectedMethodIds) {
-        List<Method> selectedMethods = new ArrayList<Method>();
-
+    public boolean saveProgramMethod(Collection<MethodView> selectedMethodIds) {
         List<ProjectMethod> projectMethods = null;
         try {
-            for (Integer i : selectedMethodIds) {
-                selectedMethods.add(gdm.getMethodByID(i));
-            }
-
             projectMethods = workbenchDataManager.getProjectMethodByProject(project,0,Integer.MAX_VALUE);
 
             //TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
-            for (Method m : selectedMethods) {
+            for (Method m : selectedMethodIds) {
                 boolean m_exists = false;
 
                 for (ProjectMethod pmethod : projectMethods) {
@@ -138,8 +166,8 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 }
 
                 if (!m_exists) {
-                        if (appSession.getSessionData().getUserData() != null)
-                            workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), appSession.getSessionData().getUserData(),new Date()));
+                        if (sessionData.getUserData() != null)
+                            workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionData.getUserData(),new Date()));
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 
@@ -152,7 +180,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
             List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
             int mID = 0;
 
-            for (Method m : selectedMethods)   {
+            for (Method m : selectedMethodIds)   {
                 ProjectMethod projectMethod = new ProjectMethod();
                 if (m.getMid() < 1) {
                     Method m2 = gdm.getMethodByID(m.getMid());
@@ -183,8 +211,34 @@ public class ProgramMethodsPresenter implements InitializingBean {
         return true;
     }
 
-    public void onAttachInitialize(IWorkbenchSession appSession) {
-        this.appSession = appSession;
+    public MethodView convertMethod(Method method) {
+        PropertyUtilsBean pub = new PropertyUtilsBean();
+        MethodView methodView = new MethodView();
+        try {
+            pub.copyProperties(methodView,method);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return methodView;
+    }
+
+    public List<MethodView> convertFrom(List<Method> list) {
+        List<MethodView> result = new ArrayList<MethodView>();
+        for (Method method: list) {
+            MethodView methodView = new MethodView();
+
+            PropertyUtilsBean pub = new PropertyUtilsBean();
+            try {
+                pub.copyProperties(methodView,method);
+
+                result.add(methodView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+            return result;
     }
 
 }

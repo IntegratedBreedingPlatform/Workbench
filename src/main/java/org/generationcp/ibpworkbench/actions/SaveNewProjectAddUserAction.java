@@ -22,6 +22,7 @@ import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -40,7 +41,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
-import com.vaadin.ui.TwinColSelect;
 
 
 /**
@@ -62,7 +62,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
     private static final long serialVersionUID = 5386242653138617919L;
 
     private Form userAccountForm;
-    private TwinColSelect membersSelect;
+    private TwinTableSelect<User> membersSelect;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
@@ -70,7 +70,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    public SaveNewProjectAddUserAction(Form userAccountForm, TwinColSelect membersSelect) {
+    public SaveNewProjectAddUserAction(Form userAccountForm, TwinTableSelect<User> membersSelect) {
         this.userAccountForm = userAccountForm;
         this.membersSelect = membersSelect;
     }
@@ -124,7 +124,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         
     }
 
-    private void saveUserAccount(UserAccountModel userAccount, TwinColSelect membersSelect) throws MiddlewareQueryException {
+    private void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
         userAccount.trimAll();
         
         Person person = new Person();
@@ -171,7 +171,6 @@ public class SaveNewProjectAddUserAction implements ClickListener {
         
         // add new user to the TwinColumnSelect
         membersSelect.addItem(user);
-        membersSelect.setItemCaption(user, person.getDisplayName());
         
         // get currently selected users and add the new user
         @SuppressWarnings("unchecked")

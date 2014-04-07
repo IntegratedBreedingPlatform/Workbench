@@ -384,7 +384,7 @@ public class SaveNewProjectAction implements ClickListener{
                 location.setSnl2id(0);
                 location.setSnl3id(0);
                 
-                locID= managerFactory.getGermplasmDataManager().addLocation(location);
+                locID= managerFactory.getLocationDataManager().addLocation(location);
             }else{
                 locID=l.getLocid();
             }

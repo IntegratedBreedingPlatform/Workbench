@@ -1,582 +1,609 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
-import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.pojos.Method;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+ import com.vaadin.data.util.BeanItemContainer;
+ import com.vaadin.event.DataBoundTransferable;
+ import com.vaadin.event.dd.DragAndDropEvent;
+ import com.vaadin.event.dd.DropHandler;
+ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+ import com.vaadin.ui.*;
+ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+ import org.generationcp.commons.vaadin.theme.Bootstrap;
+ import org.generationcp.commons.vaadin.util.MessageNotifier;
+ import org.generationcp.ibpworkbench.Message;
+ import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
+ import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;;
+ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+ import org.generationcp.middleware.pojos.Method;
+ import org.generationcp.middleware.pojos.workbench.Project;
+ import org.springframework.beans.factory.InitializingBean;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Configurable;
 
-import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+ import java.text.DateFormat;
+ import java.text.ParseException;
+ import java.text.SimpleDateFormat;
+ import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: cyrus
- * Date: 11/11/13
- * Time: 9:48 AM
- * To change this template use File | Settings | File Templates.
- */
+  * Created with IntelliJ IDEA.
+  * User: cyrus
+  * Date: 11/11/13
+  * Time: 9:48 AM
+  * To change this template use File | Settings | File Templates.
+  */
 
-@Configurable
-public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
-    public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-    public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
+ @Configurable
+ public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
+     private ProgramMethodsPresenter presenter;
+     @Autowired
+     private SimpleResourceBundleMessageSource messageSource;
 
-    public final static Map<String,Integer> columnWidthsMap;
 
-    static {
-        columnWidthsMap = new HashMap<String, Integer>();
-        columnWidthsMap.put("mname",210);
-        columnWidthsMap.put("mgrp",128);
-        columnWidthsMap.put("mcode",120);
-        columnWidthsMap.put("mtype",115);
-        columnWidthsMap.put("fmdate",115);
-        columnWidthsMap.put("selectBtn",60);
-        columnWidthsMap.put("removeBtn",60);
-    }
+     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
+     public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 
-    private ProgramMethodsPresenter presenter;
-    private Button addNewMethodBtn;
-    private Select groupFilter;
-    private Select typeFilter;
-    private TextField searchField;
-    private Label resultCountLbl;
-    private Table availableMethodsTable;
-    private Table selectedMethodsTable;
-    private Button saveBtn;
-    private Button cancelBtn;
-    private Button.ClickListener onAddToSelectedMethodAction;
-    private Button.ClickListener onRemoveSelectedMethodAction;
-    private java.lang.reflect.Field[] fields;
+     public final static Map<String,String> tableColumns;
+     public final static Map<String,Integer> tableColumnSizes;
 
-    private ArrayList<Integer> selectedMethodIds = new ArrayList<Integer>();
+         /*
+               *
+               * columnWidthsMap.put("mname",210);
+                  columnWidthsMap.put("mgrp",45);
+                  columnWidthsMap.put("mcode",40);
+                  columnWidthsMap.put("mtype",40);
+                  columnWidthsMap.put("fmdate",70);
+               * */
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-    private VerticalLayout root;
-    private Table availTbl;
-    private Table selTbl;
+     static {
+         tableColumns = new LinkedHashMap<String,String>();
+         tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
+         tableColumns.put("mname","Method Name");
+         tableColumns.put("desc","Description");
+         tableColumns.put("mgrp","Group");
+         tableColumns.put("mcode","Code");
+         tableColumns.put("mtype","Type");
+         tableColumns.put("date","Date");
 
-    public ProgramMethodsView(Project project) {
-        presenter = new ProgramMethodsPresenter(this,project);
-    }
+         tableColumnSizes = new HashMap<String, Integer>();
+         tableColumnSizes.put("select",20);
+         tableColumnSizes.put("mname",210);
+         tableColumnSizes.put("mgrp",45);
+         tableColumnSizes.put("mcode",40);
+         tableColumnSizes.put("mtype",40);
+         tableColumnSizes.put("date",70);
 
-    @Override
-    public void attach() {
-        super.attach();
+     }
 
-        presenter.onAttachInitialize((IWorkbenchSession) this.getApplication());
-    }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-         try {
-            initalizeComponents();
+     private Button addNewMethodsBtn;
+     private VerticalLayout root;
+     private Button saveBtn;
+     private Table availableTable;
+     private Table favoritesTable;
+     private CheckBox availableSelectAll;
+     private CheckBox favoriteSelectAll;
+     private Select groupFilter;
+     private Select typeFilter;
+     private TextField searchField;
+     private Label resultCountLbl;
+     private BeanItemContainer<MethodView> availableTableContainer;
+     private BeanItemContainer<MethodView> favoritesTableContainer;
+     private Button addToFavoriteBtn;
+     private Button removeToFavoriteBtn;
 
-             // Preinit components
-             typeFilter.addItem("");
-             for (String[] methodType : methodTypes) {
-                 typeFilter.addItem(methodType[0]);
-                 typeFilter.setItemCaption(methodType[0], methodType[1]);
+
+     public ProgramMethodsView(Project project) {
+         presenter = new ProgramMethodsPresenter(this,project);
+     }
+
+
+     @Override
+     public void fitToContainer(Window parentWindow) {
+         availableTable.setHeight("100%");
+         favoritesTable.setHeight("100%");
+
+         root.setExpandRatio(availableTable,1.0f);
+         root.setExpandRatio(favoritesTable,1.0f);
+         root.setSizeFull();
+
+         this.setSizeFull();
+
+         // special actions added to save and cancel btns
+                      /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
+                                                                  @Override
+                                                                  public void buttonClick(Button.ClickEvent clickEvent) {
+                                                                      parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
+                                                                  }
+                                                              };
+                                                    */
+         //saveBtn.addListener(execCloseFrameJS);
+     }
+
+     @Override
+     public void afterPropertiesSet() throws Exception {
+         initializeComponents();
+         initializeValues();
+         initializeLayout();
+         initializeActions();
+     }
+
+     private void initializeComponents() {
+         resultCountLbl = new Label();
+
+         addNewMethodsBtn = new Button("Add New Method");
+         addNewMethodsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
+         saveBtn = new Button("Save Favorites");
+         saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+
+         availableSelectAll = new CheckBox("Select All");
+         availableSelectAll.setImmediate(true);
+         favoriteSelectAll = new CheckBox("Select All");
+         favoriteSelectAll.setImmediate(true);
+
+         // TABLES!
+         availableTable = buildCustomTable(availableSelectAll);
+
+         favoritesTable = buildCustomTable(favoriteSelectAll);
+
+         addToFavoriteBtn = new Button("Add to Favorite Methods");
+         addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+
+         removeToFavoriteBtn = new Button("Remove to Favorite Locations");
+         removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+
+         // filter form
+         this.initializeFilterForm();
+     }
+
+     private void initializeFilterForm() {
+         typeFilter = new Select();
+         typeFilter.setImmediate(true);
+         typeFilter.setNullSelectionItemId(false);
+
+         groupFilter = new Select();
+         groupFilter.setImmediate(true);
+         groupFilter.setNullSelectionAllowed(false);
+
+         searchField = new TextField();
+         searchField.setImmediate(true);
+
+     }
+
+     private Table buildCustomTable(final CheckBox assocSelectAll) {
+         Table table = new Table();
+
+         table.setImmediate(true);
+         table.setSelectable(true);
+         table.setMultiSelect(true);
+         table.setDragMode(Table.TableDragMode.MULTIROW);
+
+         table.addGeneratedColumn("select", new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 final CheckBox select = new CheckBox();
+                 select.setImmediate(true);
+                 select.addListener(new Button.ClickListener() {
+                     @Override
+                     public void buttonClick(Button.ClickEvent clickEvent) {
+                         Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
+                                 .getValue();
+
+                         beanItem.setActive(val);
+                         if (val)
+                             source.select(itemId);
+                         else {
+                             source.unselect(itemId);
+                             assocSelectAll.setValue(val);
+                         }
+                     }
+                 });
+
+                 if (beanItem.isActive())
+                     select.setValue(true);
+                 else
+                     select.setValue(false);
+
+
+                 return select;
+             }
+         });
+
+         table.addGeneratedColumn("date",new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                 DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
+
+                 if (beanItem.getMdate().toString().length() > 1) {
+                     try {
+                         return newDf.format(df.parse(beanItem.getMdate().toString()));
+                     } catch (ParseException e) {
+                         return "N/A";
+                         //e.printStackTrace();
+                     }
+                 } else
+                     return "N/A";
+             }
+         });
+
+         table.addGeneratedColumn("desc", new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colI) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 Label l = new Label();
+                 l.setDescription(beanItem.getMdesc());
+                 l.setValue(beanItem.getMdesc());
+
+                 if (beanItem.getMdesc().length() > 90) {
+                     l.setValue(beanItem.getMdesc().substring(0,90-3).trim().concat("..."));
+                 }
+
+                 return l;
+             }
+         });
+
+         // Add behavior to table when selected/has new Value (must be immediate)
+         table.addListener(new Property.ValueChangeListener() {
+             @Override
+             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                 Table source = ((Table) valueChangeEvent.getProperty());
+                 BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
+
+                 // disable previously selected items
+                 for (MethodView beanItem : container.getItemIds()) {
+                     beanItem.setActive(false);
+                 }
+
+                 // set current selection to true
+                 for (MethodView selectedItem : (Collection <MethodView>) source.getValue() ) {
+                     selectedItem.setActive(true);
+                 }
+
+                 // do table repaint
+                 source.requestRepaint();
+                 source.refreshRowCache();
+             }
+         });
+
+         // Add Drag+Drop behavior
+         table.setDropHandler(new DropHandler() {
+             @Override
+             public void drop(DragAndDropEvent dragAndDropEvent) {
+                 DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+
+                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
+                     return;
+
+                 moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
              }
 
-             typeFilter.setNullSelectionAllowed(false);
-             typeFilter.select(methodTypes[0][0]);
-
-             groupFilter.addItem("");
-             for(String[] methodGroup : methodGroups) {
-                 groupFilter.addItem(methodGroup[0]);
-                 groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
+             @Override
+             public AcceptCriterion getAcceptCriterion() {
+                 return AbstractSelect.AcceptItem.ALL;
              }
-             groupFilter.select("");
-             groupFilter.setNullSelectionAllowed(false);
+         });
 
+         return table;
+     }
 
-             initializeActions();
-            initializeValues();
-         } catch (MiddlewareQueryException e) {
-             e.printStackTrace();
+     private void moveSelectedItems(Table source, Table target) {
+         LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
+         ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+
+         while (sourceItemsIterator.hasPrevious()) {
+             MethodView itemId = (MethodView) sourceItemsIterator.previous();
+             itemId.setActive(false);
+             ((BeanItemContainer<MethodView>) target.getContainerDataSource()).addItemAt(0, itemId);
+             source.removeItem(itemId);
          }
-    }
+     }
+
+     private void initializeValues() {
 
-    private void initalizeComponents() {
-        root = new VerticalLayout();
-        root.setSpacing(false);
-        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+             /* INITIALIZE FILTER CONTROLS DATA */
+         typeFilter.addItem("");
+         typeFilter.setItemCaption("","Generation Advancement Types");
 
-        final HorizontalLayout availableMethodsTitleContainer = new HorizontalLayout();
-        final Label heading = new Label("Manage Program Methods");
-        heading.setStyleName(Bootstrap.Typography.H1.styleName());
+         for (String[] methodType : methodTypes) {
+             typeFilter.addItem(methodType[0]);
+             typeFilter.setItemCaption(methodType[0], methodType[1]);
+         }
 
-        final Label availableMethodsTitle = new Label("Available Methods");
-        availableMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+         typeFilter.select(methodTypes[0][0]);
 
-        addNewMethodBtn = new Button("Add new Method");
-        addNewMethodBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() +  " loc-add-btn");
+         groupFilter.addItem("");
+         groupFilter.setItemCaption("", "Crop Reproductive Systems");
+         for(String[] methodGroup : methodGroups) {
+             groupFilter.addItem(methodGroup[0]);
+             groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
+         }
+         groupFilter.select("");
 
-        availableMethodsTitleContainer.addComponent(availableMethodsTitle);
-        availableMethodsTitleContainer.addComponent(addNewMethodBtn);
 
-        availableMethodsTitleContainer.setComponentAlignment(addNewMethodBtn,Alignment.MIDDLE_RIGHT);
-        availableMethodsTitleContainer.setSizeUndefined();
-        availableMethodsTitleContainer.setWidth("100%");
-        availableMethodsTitleContainer.setMargin(false,true,true,false);	// move this to css
+             /* INITIALIZE TABLE DATA */
+         favoritesTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getSavedProgramMethods());
+         availableTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),""));
 
-        final HorizontalLayout selectedMethodTitleContainer = new HorizontalLayout();
-        selectedMethodTitleContainer.setMargin(true,true,false,false);
+         resultCountLbl.setValue("Result: " + availableTableContainer.size());
 
-        final Label selectedMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
-        selectedMethodsTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+         availableTable.setContainerDataSource(availableTableContainer);
+         favoritesTable.setContainerDataSource(favoritesTableContainer);
 
-        selectedMethodTitleContainer.addComponent(selectedMethodsTitle);
+             /* SETUP TABLE FIELDS */
+         this.setupTableFields(availableTable);
+         this.setupTableFields(favoritesTable);
+     }
 
-        availTbl = this.buildAvailableMethodsTable();
-        selTbl = this.buildSelectedMethodsTable();
+     private void setupTableFields(Table table) {
+         table.setVisibleColumns(tableColumns.keySet().toArray());
+         table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
 
-        availTbl.setHeight("250px");
-        selTbl.setHeight("250px");
+         //Field[] fields = LocationViewModel.class.getDeclaredFields();
+         //table.setColumnWidth("select",20);
+         //table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
 
-        root.addComponent(heading);
-        root.addComponent(availableMethodsTitleContainer);
-        root.addComponent(this.buildMethodFilterForm());
-        root.addComponent(availTbl);
-        root.addComponent(selectedMethodTitleContainer);
-        root.addComponent(selTbl);
-        root.addComponent(this.buildActionButtons());
+         for (String col : tableColumnSizes.keySet())
+         {
+             table.setColumnWidth(col,tableColumnSizes.get(col));
+         }
+     }
 
-        this.setCompositionRoot(root);
-    }
+     private void initializeLayout() {
+         root = new VerticalLayout();
+         root.setSpacing(false);
+         root.setMargin(new Layout.MarginInfo(false,true,true,true));
 
-    @Override
-    public void fitToContainer(final Window parentWindow) {
-        availTbl.setHeight("100%");
-        selTbl.setHeight("100%");
+         final Label availableMethodsTitle = new Label("Available Methods");
+         availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
-        root.setExpandRatio(availTbl,1.0f);
-        root.setExpandRatio(selTbl,1.0f);
-        root.setSizeFull();
+         availableTable.setWidth("100%");
+         favoritesTable.setWidth("100%");
+         availableTable.setHeight("250px");
+         favoritesTable.setHeight("250px");
 
-        this.setSizeFull();
+         final HorizontalLayout availableTableBar = new HorizontalLayout();
+         final HorizontalLayout favoritesTableBar = new HorizontalLayout();
 
-        // special actions added to save and cancel btns
-        final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                parentWindow.executeJavaScript("window.parent.closeMethodFrame();");
-            }
-        };
+         availableSelectAll.setWidth("100px");
+         favoriteSelectAll.setWidth("100px");
 
-        saveBtn.addListener(execCloseFrameJS);
-        cancelBtn.addListener(execCloseFrameJS);
+         availableTableBar.setSizeUndefined();
+         favoritesTableBar.setSizeUndefined();
+         availableTableBar.setSpacing(true);
+         favoritesTableBar.setSpacing(true);
 
-    }
+         availableTableBar.addComponent(availableSelectAll);
+         availableTableBar.addComponent(addToFavoriteBtn);
+         favoritesTableBar.addComponent(favoriteSelectAll);
+         favoritesTableBar.addComponent(removeToFavoriteBtn);
 
-    private Component buildActionButtons() {
-        final HorizontalLayout root = new HorizontalLayout();
-        saveBtn = new Button("Save");
-        saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-        cancelBtn = new Button("Cancel");
+         root.addComponent(buildPageTitle());
+         root.addComponent(availableMethodsTitle);
+         root.addComponent(buildFilterForm());
+         root.addComponent(availableTable);
+         root.addComponent(availableTableBar);
+         root.addComponent(buildFavoriteTableTitle());
+         root.addComponent(favoritesTable);
+         root.addComponent(favoritesTableBar);
 
-        final Label spacer = new Label("");
-        spacer.setWidth("100%");
+         this.setCompositionRoot(root);
+     }
 
-        root.addComponent(spacer);
-        root.addComponent(cancelBtn);
-        root.addComponent(saveBtn);
+     private Component buildFavoriteTableTitle() {
+         final HorizontalLayout root = new HorizontalLayout();
+         root.setWidth("100%");
+         root.setMargin(true, false, false, false);
 
-        root.setExpandRatio(spacer, 1.0f);
-        root.setSpacing(true);
-        root.setMargin(true);
-        root.setWidth("100%");
-        return root;
-    }
+         final Label favoriteMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
+         favoriteMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
-    private Component buildMethodFilterForm() {
-        final CssLayout container = new CssLayout();
-        container.addStyleName("loc-filter-bar");
-        container.setSizeUndefined();
-        container.setWidth("100%");
+         root.addComponent(favoriteMethodsTitle);
+         root.addComponent(saveBtn);
+         root.setExpandRatio(favoriteMethodsTitle,1.0F);
 
-        container.setMargin(new Layout.MarginInfo(false,false,true,false));
+         return root;
+     }
 
-        groupFilter = new Select();
-        groupFilter.setImmediate(true);
-        groupFilter.setNullSelectionAllowed(false);
+     private Component buildFilterForm() {
+         final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;",Label.CONTENT_XHTML);
+         final Label searchLbl = new Label("<b>Search For:</b>&nbsp;",Label.CONTENT_XHTML);
 
-        typeFilter = new Select();
-        typeFilter.setImmediate(true);
-        typeFilter.setNullSelectionAllowed(false);
+         filterLbl.setSizeUndefined();
+         searchLbl.setSizeUndefined();
 
-        searchField = new TextField();
-        searchField.setImmediate(true);
-        searchField.setNullRepresentation("");
+         filterLbl.setStyleName("loc-filterlbl");
+         searchLbl.setStyleName("loc-filterlbl");
 
+         final CssLayout container = new CssLayout();
+         container.addStyleName("loc-filter-bar");
+         container.setSizeUndefined();
+         container.setWidth("100%");
 
-        final Label spacer = new Label();
-        spacer.setWidth("100%");
 
-        final Label groupLbl = new Label("Method Group");
-        final Label typeLbl = new Label("Method Type");
-        final Label searchLbl = new Label("Search Methods");
-
-        groupLbl.setSizeUndefined();
-        typeLbl.setSizeUndefined();
-        searchLbl.setSizeUndefined();
-
-        groupLbl.setStyleName("loc-filterlbl");
-        typeLbl.setStyleName("loc-filterlbl");
-        searchLbl.setStyleName("loc-filterlbl");
-
-        final HorizontalLayout field1 = new HorizontalLayout();
-        field1.addStyleName("field");
-        field1.setSizeUndefined();
-        field1.setSpacing(true);
-        field1.addComponent(searchLbl);
-        field1.addComponent(searchField);
-
-        container.addComponent(field1);
-
-        final HorizontalLayout field2 = new HorizontalLayout();
-        field2.addStyleName("field");
-        field2.setSpacing(true);
-        field2.setSizeUndefined();
-        field2.addComponent(groupLbl);
-        field2.addComponent(groupFilter);
-
-        container.addComponent(field2);
-
-        final HorizontalLayout field3 = new HorizontalLayout();
-        field3.addStyleName("field");
-        field3.setSpacing(true);
-        field3.setSizeUndefined();
-        field3.addComponent(typeLbl);
-        field3.addComponent(typeFilter);
-
-        container.addComponent(field3);
-
-        resultCountLbl = new Label("");
-        resultCountLbl.setStyleName("loc-resultcnt");
-
-        return container;
-    }
-
-    private Table buildCustomTable(Map<String,Integer> columnWidthMap) {
-        Table table = new Table() {
-            private static final long serialVersionUID = -14085524627550290L;
-
-            @Override
-            public String getColumnAlignment(Object propertyId) {
-                Class<?> t = getContainerDataSource().getType(propertyId);
-
-                if (t == Integer.class || t == Long.class || t == Double.class || t == Float.class) {
-                    return Table.ALIGN_RIGHT;
-                } if (t == Label.class || t == String.class)
-                    return Table.ALIGN_LEFT;
-                else
-                    return Table.ALIGN_CENTER;
-            }
-
-        };
-
-
-        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-
-            private static final long serialVersionUID = -2457435122226402123L;
-
-            public String getStyle(Object itemId, Object propertyId) {
-
-                if (propertyId != null && propertyId.toString().equals("mname"))
-                    return propertyId.toString();
-
-                return null;
-            }
-        });
-
-        //table.setColumnWidth("locationName",310);
-        //table.setColumnWidth("locationAbbreviation",130);
-        //table.setColumnWidth("removeBtn",60);
-        //table.setColumnWidth("selectBtn",60);
-
-        for (String columnName : columnWidthMap.keySet()) {
-            table.setColumnWidth(columnName,columnWidthMap.get(columnName));
-        }
-
-        table.setStyleName("loc-table");
-        table.setSelectable(true);
-        table.setMultiSelect(false);
-
-        table.setHeight("250px");
-        return table;
-    }
-
-    private Table buildAvailableMethodsTable() {
-        availableMethodsTable = buildCustomTable(columnWidthsMap);
-        availableMethodsTable.setWidth("100%");
-
-        return availableMethodsTable;
-    }
-
-    private Table buildSelectedMethodsTable() {
-        selectedMethodsTable = buildCustomTable(columnWidthsMap);
-        selectedMethodsTable.setWidth("100%");
-
-        return selectedMethodsTable;
-    }
-
-    private void initializeActions() {
-        addNewMethodBtn.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                   //ProgramMethodsView.this.presenter.doAddMethodAction();
-                   event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
-
-            }
-        });
-
-        Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                List<Method> results = presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),searchField.getValue().toString());
-                availableMethodsTable.getContainerDataSource().removeAllItems();
-
-                try {
-                    ProgramMethodsView.this.generateRows(results,true);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-
-                resultCountLbl.setValue("Results: " + availableMethodsTable.getContainerDataSource().getItemIds().size() + " items");
-
-            }
-        };
-
-        searchField.addListener(filterAction);
-        groupFilter.addListener(filterAction);
-        typeFilter.addListener(filterAction);
-
-        onAddToSelectedMethodAction = new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-
-                Item selectedItem = availableMethodsTable.getItem(event.getButton().getData());
-
-                ProgramMethodsView.this.presenter.doMoveToSelectedMethod(Integer.parseInt(selectedItem.getItemProperty("mid").getValue().toString()));
-
-                availableMethodsTable.removeItem(selectedItem);
-
-                availableMethodsTable.removeItem(event.getButton().getData());
-
-
-            }
-        };
-
-        onRemoveSelectedMethodAction = new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Item item = (Item)selectedMethodsTable.getItem(event.getButton().getData());
-                Integer locId = (Integer) item.getItemProperty("mid").getValue();
-
-                ProgramMethodsView.this.presenter.doRemoveSelectedMethod(locId);
-
-                selectedMethodsTable.removeItem(event.getButton().getData());
-                selectedMethodIds.remove(locId);
-            }
-        };
-
-        saveBtn.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                if (ProgramMethodsView.this.presenter.saveProgramMethod(selectedMethodIds)) {
-                    MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
-                } else {    // should never happen
-
-                }
-
-
-            }
-        });
-
-        cancelBtn.addListener(new Button.ClickListener() {
-           private static final long serialVersionUID = -4479216826096826464L;
-
-			@Override
-            public void buttonClick(Button.ClickEvent event) {
-                IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
-
-                (new OpenProgramMethodsAction(appSession.getSessionData().getLastOpenedProject(), appSession.getSessionData().getUserData())).buttonClick(event);
-            }
-        });
-
-    }
-
-    private void initializeValues() throws MiddlewareQueryException {
-        /* INITIALIZE TABLE DATA */
-
-        selectedMethodsTable.setContainerDataSource(new IndexedContainer());
-        availableMethodsTable.setContainerDataSource(new IndexedContainer());
-
-
-        IndexedContainer itemContainer = (IndexedContainer) selectedMethodsTable.getContainerDataSource();
-        IndexedContainer itemContainer2 = (IndexedContainer) availableMethodsTable.getContainerDataSource();
-
-        fields = Method.class.getDeclaredFields();
-
-        HashMap<String,String> visibleFieldsMap = new LinkedHashMap<String, String>();
-        visibleFieldsMap.put("mname","Method Name");
-        visibleFieldsMap.put("fmdesc","Method Description");
-        visibleFieldsMap.put("mgrp","Method Group");
-        visibleFieldsMap.put("mcode","Method Code");
-        visibleFieldsMap.put("mtype","Method Type");
-        visibleFieldsMap.put("fmdate","Method Date");
-
-        HashMap<String,String> visibleFieldsMap2 = new LinkedHashMap<String, String>(visibleFieldsMap);
-        visibleFieldsMap2.put("removeBtn","Remove");
-        visibleFieldsMap.put("selectBtn","Select");
-
-        for (Field field : fields) {
-            field.setAccessible(true);
-
-            if (field.getName().equals("serialVersionUID"))
-                continue;
-
-            itemContainer.addContainerProperty(field.getName(),field.getType(),null);
-            itemContainer2.addContainerProperty(field.getName(),field.getType(),null);
-
-        }
-
-        availableMethodsTable.getContainerDataSource().addContainerProperty("selectBtn", Button.class, null);
-        selectedMethodsTable.getContainerDataSource().addContainerProperty("removeBtn", Button.class, null);
-
-        availableMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
-        selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdesc", Label.class, null);
-
-        availableMethodsTable.getContainerDataSource().addContainerProperty("fmdate", String.class, null);
-        selectedMethodsTable.getContainerDataSource().addContainerProperty("fmdate", String.class, null);
-
-        try {
-            // add all items to selected table first
-            this.generateRows(presenter.getSavedProgramMethods(), false);
-
-            // add all items for available locations table
-            this.generateRows(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), ""), true);
-
-            resultCountLbl.setValue("Result: " + itemContainer.getItemIds().size() + " items");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        availableMethodsTable.setVisibleColumns(visibleFieldsMap.keySet().toArray(new String[visibleFieldsMap.size()]));
-        availableMethodsTable.setColumnHeaders(visibleFieldsMap.values().toArray(new String[visibleFieldsMap.size()]));
-
-        selectedMethodsTable.setVisibleColumns(visibleFieldsMap2.keySet().toArray(new String[visibleFieldsMap2.size()]));
-        selectedMethodsTable.setColumnHeaders(visibleFieldsMap2.values().toArray(new String[visibleFieldsMap2.size()]));
-
-    }
-
-    private void generateRows(List<Method> methodList, boolean isAvailableTable) throws IllegalAccessException {
-           for (Method method : methodList) {
-               if (selectedMethodIds.contains(method.getMid()))
-                   continue;
-
-               addRow(method,isAvailableTable,null);
-           }
-    }
-
-    public void addRow(Method method, boolean isAvailableTable,Integer index) throws IllegalAccessException {
-        Object itemId = null;
-        IndexedContainer itemContainer = null;
-
-        if (isAvailableTable)
-            itemContainer = (IndexedContainer) availableMethodsTable.getContainerDataSource();
-        else
-            itemContainer = (IndexedContainer) selectedMethodsTable.getContainerDataSource();
-
-        if (index != null)
-            itemId = itemContainer.addItemAt(0);
-        else
-            itemId = itemContainer.addItem();
-
-        Item newItem = itemContainer.getItem(itemId);
-
-        for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID"))
-                continue;
-
-            if (field.getName().equals("mdesc")) {
-                String val = field.get(method).toString();
-                Label l = new Label();
-                l.setDescription(val);
-                if (val.length() > 90) {
-                    val = val.substring(0,90 -3).trim().concat("...");
-                }
-                l.setValue(val);
-
-                newItem.getItemProperty("fmdesc").setValue(l);
-            }
-
-            if (field.getName().equals("mdate")) {
-                String date = field.get(method).toString();
-
-                DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
-
-                if (date.length() > 1) {
-                    try {
-                        date = newDf.format(df.parse(date));
-                    } catch (ParseException e) {
-                        date = "N/A";
-                        //e.printStackTrace();
-                    }
-                } else
-                    date = "N/A";
-
-                newItem.getItemProperty("fmdate").setValue(date);
-            }
-
-            newItem.getItemProperty(field.getName()).setValue(field.get(method));
-        }
-
-        Button btn = new Button();
-        btn.setWidth("16px");
-        btn.setHeight("16px");
-
-        if (isAvailableTable) {
-            btn.setStyleName(Reindeer.BUTTON_LINK + " loc-select-btn");
-            btn.addListener(onAddToSelectedMethodAction);
-            newItem.getItemProperty("selectBtn").setValue(btn);
-        } else {
-            btn.setStyleName(Reindeer.BUTTON_LINK + " loc-remove-btn");
-            btn.addListener(onRemoveSelectedMethodAction);
-            newItem.getItemProperty("removeBtn").setValue(btn);
-
-            if (!selectedMethodIds.contains(method.getMid()))
-                selectedMethodIds.add(method.getMid());
-        }
-
-        btn.setData(itemId);
-    }
-
-    /** TODO: The Following methods are only for compatibility to old Classes depentent on old Project Breeding Methods Panel UI **/
-    public ManagerFactory getManagerFactory() {
-        return this.presenter.getManagerFactory();
-    }
-}
+         final HorizontalLayout field1 = new HorizontalLayout();
+         field1.addStyleName("field");
+         field1.setSpacing(true);
+         field1.setSizeUndefined();
+         field1.addComponent(searchLbl);
+         field1.addComponent(searchField);
+
+         container.addComponent(field1);
+
+         final HorizontalLayout field2 = new HorizontalLayout();
+         field2.addStyleName("field");
+         field2.setSpacing(true);
+         field2.setSizeUndefined();
+         field2.addComponent(filterLbl);
+         field2.addComponent(typeFilter);
+
+
+         final HorizontalLayout field3 = new HorizontalLayout();
+         field3.addStyleName("field");
+         field3.setSpacing(true);
+         field3.setSizeUndefined();
+         field3.addComponent(groupFilter);
+
+         HorizontalLayout filterContainer = new HorizontalLayout();
+         filterContainer.setSpacing(true);
+         filterContainer.setStyleName("pull-right");
+         filterContainer.setSizeUndefined();
+
+         filterContainer.addComponent(field2);
+         filterContainer.addComponent(field3);
+
+         container.addComponent(filterContainer);
+
+
+         resultCountLbl = new Label("");
+         resultCountLbl.setStyleName("loc-resultcnt");
+         //root.addComponent(resultCountLbl);
+         //root.setExpandRatio(resultCountLbl,1.0f);
+
+         return container;
+     }
+
+     private Component buildPageTitle() {
+         final VerticalLayout root = new VerticalLayout();
+         root.setMargin(new Layout.MarginInfo(false,false,true,false));
+         root.setWidth("100%");
+
+         final HorizontalLayout titleContainer = new HorizontalLayout();
+         titleContainer.setSizeUndefined();
+         titleContainer.setWidth("100%");
+         titleContainer.setMargin(true, false, false, false);	// move this to css
+
+         final Label heading = new Label("<span class='bms-methods' style='color: #B8D432; font-size: 23px'></span>&nbsp;Breeding Methods",Label.CONTENT_XHTML);
+         heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+         titleContainer.addComponent(heading);
+         titleContainer.addComponent(addNewMethodsBtn);
+         titleContainer.setComponentAlignment(addNewMethodsBtn, Alignment.MIDDLE_RIGHT);
+
+         final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
+
+         root.addComponent(titleContainer);
+         root.addComponent(headingDesc);
+
+         return root;
+     }
+
+     public void addRow(MethodView item,boolean atAvailableTable,Integer index) {
+         if (index != null) {
+             if (atAvailableTable) {
+                 availableTableContainer.addItemAt(index,item);
+
+             } else {
+                 favoritesTableContainer.addItemAt(index,item);
+             }
+         } else {
+             if (atAvailableTable) {
+                 availableTableContainer.addItem(item);
+
+             } else {
+                 favoritesTableContainer.addItem(item);
+             }
+         }
+     }
+
+     public void addRow(Method item,boolean atAvailableTable,Integer index) {
+         if (index != null) {
+             if (atAvailableTable) {
+                 availableTableContainer.addItemAt(index,presenter.convertMethod(item));
+
+             } else {
+                 favoritesTableContainer.addItemAt(index,presenter.convertMethod(item));
+             }
+         } else {
+             if (atAvailableTable) {
+                 availableTableContainer.addItem(presenter.convertMethod(item));
+
+             } else {
+                 favoritesTableContainer.addItem(presenter.convertMethod(item));
+             }
+         }
+     }
+
+     private void initializeActions() {
+         addNewMethodsBtn.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent event) {
+                 //ProgramMethodsView.this.presenter.doAddMethodAction();
+                 event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+
+             }
+         });
+
+         Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
+             @Override
+             public void valueChange(Property.ValueChangeEvent event) {
+                 availableTableContainer.removeAllItems();
+                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
+
+                 resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
+             }
+         };
+
+         searchField.addListener(filterAction);
+         groupFilter.addListener(filterAction);
+         typeFilter.addListener(filterAction);
+
+         availableSelectAll.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 for (Object itemId :availableTable.getItemIds()) {
+                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                         availableTable.select(itemId);
+                     else
+                         availableTable.unselect(itemId);
+                 }
+             }
+         });
+
+
+         favoriteSelectAll.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 for (Object itemId : favoritesTable.getItemIds()) {
+                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                         favoritesTable.select(itemId);
+                     else
+                         favoritesTable.unselect(itemId);
+                 }
+             }
+         });
+
+         addToFavoriteBtn.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 moveSelectedItems(availableTable,favoritesTable);
+             }
+         });
+
+         removeToFavoriteBtn.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 moveSelectedItems(favoritesTable,availableTable);
+             }
+         });
+
+         saveBtn.addListener(new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent event) {
+                 if (ProgramMethodsView.this.presenter.saveProgramMethod(favoritesTableContainer.getItemIds())) {
+                     MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
+                 } else {    // should never happen
+
+                 }
+             }
+         });
+     }
+
+ }

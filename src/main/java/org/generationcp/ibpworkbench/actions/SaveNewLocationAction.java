@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
@@ -58,7 +59,6 @@ public class SaveNewLocationAction implements ClickListener{
 
     private AddLocationsWindow window;
 
-    private final ProgramLocationsView programLocationsView;
     private final ProgramLocationsPresenter programLocationsPresenter;
 
     @Autowired
@@ -70,11 +70,9 @@ public class SaveNewLocationAction implements ClickListener{
     @Autowired
     private SessionData sessionData;
 
-    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
-            ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
+    public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,ProgramLocationsPresenter programLocationsPresenter) {
         this.newLocationForm = newLocationForm;
         this.window = window;
-        this.programLocationsView = programLocationsView;
         this.programLocationsPresenter = programLocationsPresenter;
         
     }
@@ -86,10 +84,10 @@ public class SaveNewLocationAction implements ClickListener{
     	try {
             newLocationForm.commit();
             @SuppressWarnings("unchecked")
-            BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
-            LocationModel location = locationBean.getBean();
+            BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) newLocationForm.getItemDataSource();
+            LocationViewModel location = locationBean.getBean();
 
-            List<Location> existingLocations = programLocationsPresenter.getGermplasmDataManager().getLocationsByName(location.getLocationName(), Operation.EQUAL);
+            List<Location> existingLocations = programLocationsPresenter.getExistingLocations(location.getLocationName());
 
             // there exists a location with the same name?
     		if (existingLocations.size() > 0){
@@ -120,27 +118,25 @@ public class SaveNewLocationAction implements ClickListener{
     
     private void saveLocation() {
         @SuppressWarnings("unchecked")
-        BeanItem<LocationModel> locationBean = (BeanItem<LocationModel>) newLocationForm.getItemDataSource();
-        LocationModel location = locationBean.getBean();
+        BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) newLocationForm.getItemDataSource();
+        LocationViewModel locModel = locationBean.getBean();
 
         // increment key from the session's list of locations (correct id from local db)
-        sessionData.getUniqueLocations().add(location.getLocationName());
         Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
         nextKey = nextKey * -1;
 
-        location.setLocationId(nextKey);
+        locModel.setLocationId(nextKey);
 
         // add new location to session list
-        sessionData.getProjectLocationData().put(nextKey, location);
+        sessionData.getProjectLocationData().put(nextKey, locModel);
 
         LOG.info(sessionData.getProjectLocationData().toString());
 
         // save to middleware
         try {
-            Location loc = location.toLocation();
+            Location loc = programLocationsPresenter.convertLocationViewToLocation(locModel);
 
-            programLocationsPresenter.getGermplasmDataManager().addLocation(loc);
- 			programLocationsView.addToAvailableLocation(loc);
+            programLocationsPresenter.addLocation(loc);
  		} catch (MiddlewareQueryException e1) {
  			e1.printStackTrace();
  		    return;
@@ -150,7 +146,7 @@ public class SaveNewLocationAction implements ClickListener{
         User user = sessionData.getUserData();
         if (user != null) {
             Project currentProject = sessionData.getLastOpenedProject();
-            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ location.getLocationName() + ")", user, new Date());
+            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ locModel.getLocationName() + ")", user, new Date());
             try {
                 workbenchDataManager.addProjectActivity(projAct);
             } catch (MiddlewareQueryException e) {
