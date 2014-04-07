@@ -239,7 +239,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				});
 				
 
-				if (bean.getActive()) {
+				if (bean.isActive()) {
 					checkBox.setValue(true);
 				} else {
 					checkBox.setValue(false); 
