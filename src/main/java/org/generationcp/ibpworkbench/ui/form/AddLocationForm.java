@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui.form;
 
 import java.util.Arrays;
 
+import com.vaadin.ui.FormLayout;
 import org.generationcp.ibpworkbench.model.LocationModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -39,16 +40,11 @@ public class AddLocationForm extends Form {
     
 	private static final long serialVersionUID = 865075321914843448L;
 
-	//private BeanItem<LocationModel> locationBean;
-    
-    private LocationViewModel location;
-    
     private GridLayout grid;
     
 	private ProgramLocationsPresenter presenter;
     
-    public AddLocationForm(LocationViewModel location,ProgramLocationsPresenter presenter) {
-        this.location = location;
+    public AddLocationForm(ProgramLocationsPresenter presenter) {
         this.presenter = presenter;
         
         assemble();
@@ -65,25 +61,34 @@ public class AddLocationForm extends Form {
     }
 
     protected void initializeComponents() { 
-        
+        /*
         grid = new GridLayout(1, 5);
         grid.setSpacing(true);
         grid.setMargin(true);
         
         setLayout(grid);
-        
-        setItemDataSource(new BeanItem<LocationViewModel>(location));
+        */
+
+        final FormLayout formLayout = new FormLayout();
+        formLayout.setSpacing(true);
+
+        setItemDataSource(new BeanItem<LocationViewModel>(new LocationViewModel()));
 
         setComponentError(null);
         setFormFieldFactory(new LocationFormFieldFactory(presenter));
+
         setVisibleItemProperties(Arrays.asList(
                 new String[] { "locationName", "locationAbbreviation","ltype","cntryid", "provinceId" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
         setValidationVisibleOnCommit(false);
+
+        this.setLayout(formLayout);
+
     }
-    
+
+    /*
     @Override
     protected void attachField(Object propertyId, Field field) {
         
@@ -99,5 +104,6 @@ public class AddLocationForm extends Form {
             grid.addComponent(field, 0,4);
         }
     }
+    */
     
 }

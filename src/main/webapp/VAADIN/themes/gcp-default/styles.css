@@ -213,6 +213,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 .form-panel .v-formlayout-captioncell {
     font-weight: bold;
+    text-align: left;
 }
 
 .v-caption-hide-caption {
