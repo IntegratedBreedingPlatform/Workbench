@@ -10,8 +10,8 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 public class LocationViewModel implements BeanFormState {
 	private Integer locationId;
-	private String locationName;
-	public String locationAbbreviation;
+	private String locationName = "";
+	public String locationAbbreviation = "";
 
     public Integer getLtype() {
         return ltype;

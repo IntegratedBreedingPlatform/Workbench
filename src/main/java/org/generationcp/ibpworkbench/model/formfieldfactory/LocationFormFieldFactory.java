@@ -87,11 +87,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 		});
     	
         locationName = new TextField();
+        locationName.setWidth("250px");
         locationName.setRequired(true);
         locationName.setRequiredError("Please enter a Location Name.");
         locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
         
         locationAbbreviation = new TextField();
+        locationAbbreviation.setWidth("70px");
         locationAbbreviation.setRequired(true);
         locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
         locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
@@ -111,19 +113,19 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 
 		        
         lType = new ComboBox();
-        lType.setWidth("230px");
+        lType.setWidth("250px");
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
 
         country = new ComboBox();
-        country.setWidth("230px");
+        country.setWidth("250px");
         country.setContainerDataSource(countryBeanContainer);
         country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         country.setItemCaptionPropertyId("isoabbr");
 
         province = new ComboBox();
-        province.setWidth("230px");
+        province.setWidth("250px");
         province.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         province.setItemCaptionPropertyId("lname");
 
@@ -132,20 +134,20 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
         if ("locationName".equals(propertyId)) {
-            /*messageSource.setCaption(locationName, Message.LOC_NAME);*/
+            messageSource.setCaption(locationName, Message.LOC_NAME);
             return locationName;
             
         } else if ("locationAbbreviation".equals(propertyId)) {
-            /*messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);*/
+            messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
             return locationAbbreviation;
         } else if ("ltype".equals(propertyId)) {
-            /*messageSource.setCaption(lType, Message.LOC_TYPE);*/
+            messageSource.setCaption(lType, Message.LOC_TYPE);
             return lType;
         } else if ("cntryid".equals(propertyId)) {
-        	/*messageSource.setCaption(country, Message.LOC_COUNTRY);*/
+        	messageSource.setCaption(country, Message.LOC_COUNTRY);
         	return country;
         } else if ("provinceId".equals(propertyId)) {
-            /*messageSource.setCaption(province, Message.LOC_PROVINCE);*/
+            messageSource.setCaption(province, Message.LOC_PROVINCE);
             return province;
         }
         

@@ -35,54 +35,14 @@ public class AddBreedingMethodsWindow extends Window {
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
 
     public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel) {
-        /*
-         * Make the window modal, which will disable all other components while
-         * it is visible
-         */
-
         this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
-        setModal(true);
-
-       /* Make the sub window 50% the size of the browser window */
-        setWidth("700px");
-        setResizable(false);
-        /*
-       * Center the window both horizontally and vertically in the browser
-       * window
-       */
-        center();
-
         assemble();
-
-        setCaption("Add New Breeding Method");
-
     }
 
 
     public AddBreedingMethodsWindow(ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
-        /*
-         * Make the window modal, which will disable all other components while
-         * it is visible
-         */
-
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
-
         this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
-        setModal(true);
-
-       /* Make the sub window 50% the size of the browser window */
-        setWidth("500px");
-        setResizable(false);
-        /*
-         * Center the window both horizontally and vertically in the browser
-         * window
-         */
-        center();
-
         assemble();
-
-        setCaption("Add Breeding Method");
-
     }
 
     protected void initializeComponents() {
@@ -91,17 +51,23 @@ public class AddBreedingMethodsWindow extends Window {
 
         //layout.addComponent(newBreedingMethodTitle);
 
-        addBreedingMethodForm = new AddBreedingMethodForm(new BreedingMethodModel());
+        addBreedingMethodForm = new AddBreedingMethodForm();
 
         cancelButton = new Button("Cancel");
         addBreedingMethodButton = new Button("Save");
         addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonArea = layoutButtonArea();
-
-
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+        this.setModal(true);
+        this.setWidth("500px");
+        this.setResizable(false);
+        this.center();
+        this.setCaption("Add Breeding Method");
+
+
         this.addStyleName(Reindeer.WINDOW_LIGHT);
 
         layout = new VerticalLayout();

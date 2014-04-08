@@ -49,61 +49,58 @@ public class AddLocationsWindow extends Window{
         this.programLocationsView = programLocationsView;
         this.programLocationsPresenter = programLocationsPresenter;
 
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
-
-
-        initialize();
-    }
-
-    private void initialize() {
-        /*
-         * Make the window modal, which will disable all other components while
-         * it is visible
-         */
-        setModal(true);
-
-        /* Make the sub window 50% the size of the browser window */
-        setWidth("500px");
-
-        // dmv : change the height to accomodate vertical layout
-        setHeight("500px");
-        /*
-         * Center the window both horizontally and vertically in the browser
-         * window
-         */
-        center();
-
         assemble();
-
-        setCaption("Add New Location");
-
     }
 
     protected void initializeComponents() {
-
-        layout = new VerticalLayout();
-        setContent(layout);
 
         //newLocationTitle = new Label("Add Location");
         //newLocationTitle.setStyleName("gcp-content-title");
 
         //layout.addComponent(newLocationTitle);
 
-        addLocationForm = new AddLocationForm(new LocationViewModel(),programLocationsPresenter);
-        layout.addComponent(addLocationForm);
+        addLocationForm = new AddLocationForm(programLocationsPresenter);
 
         cancelButton = new Button("Cancel");
         addLocationButton = new Button("Save");
         addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
         buttonArea = layoutButtonArea();
-        layout.addComponent(buttonArea);
-        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
     }
 
     protected void initializeLayout() {
+        this.addStyleName(Reindeer.WINDOW_LIGHT);
+        this.setModal(true);
+        this.setWidth("600px");
+        this.setResizable(false);
+        this.center();
+        this.setCaption("Add New Location");
+
+
+        layout = new VerticalLayout();
+        layout.setWidth("100%");
+        layout.setHeight("350px");
+
+        final Panel p = new Panel();
+        p.setStyleName("form-panel");
+        p.setSizeFull();
+
+        final VerticalLayout vl = new VerticalLayout();
+        vl.setSizeFull();
+        vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
+        vl.addComponent(addLocationForm);
+        vl.setExpandRatio(addLocationForm,1.0F);
+
+        p.addComponent(vl);
+        layout.addComponent(p);
+        layout.addComponent(buttonArea);
+
+        layout.setExpandRatio(p,1.0F);
+        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
+
         layout.setSpacing(true);
         layout.setMargin(true);
+
+        setContent(layout);
     }
 
     protected void initializeActions() {

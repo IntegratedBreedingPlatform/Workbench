@@ -47,11 +47,15 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
     
     private Field firstName;
     private Field lastName;
+    private Field middleName;
+    private Field email;
+    private Field username;
     
     private PasswordField password;
     private PasswordField passwordConfirmation;
     
     private ComboBox securityQuestion;
+    private Field securityAnswer;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -61,31 +65,28 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
     }
     
     private void initFields() {
-        firstName = new TextField();
-        firstName.setRequired(true);
-        firstName.setRequiredError("Please enter a First Name.");
-        firstName.addValidator(new StringLengthValidator("First Name must be 1-20 characters.", 1, 20, false));
-        
+        firstName = new TextField();  
         lastName = new TextField();
-        lastName.setRequired(true);
-        lastName.setRequiredError("Please enter a Last Name.");
-        lastName.addValidator(new StringLengthValidator("Last Name must be 1-50 characters.", 1, 50, false));
-        
         firstName.addValidator(new PersonNameValidator(firstName, lastName));
-        
+        middleName = new TextField();
+        email = new TextField();
+        username = new TextField();
         password = new PasswordField();
-        password.setRequired(true);
-        password.setRequiredError("Please enter a Password.");
-        password.addValidator(new StringLengthValidator("Password must be 1-30 characters.", 1, 30, false));
-        
         passwordConfirmation = new PasswordField();
-        passwordConfirmation.setRequired(true);
-        passwordConfirmation.setRequiredError("Please re-type your password for confirmation.");
-        passwordConfirmation.addValidator(new StringLengthValidator("Password confirmation must be 1-30 characters.", 1, 30, false));
-        
         password.addValidator(new UserPasswordValidator(password, passwordConfirmation));
-        
         securityQuestion = new ComboBox();
+        securityAnswer = new TextField();
+        
+        
+        firstName.setStyleName("hide-caption");
+        lastName.setStyleName("hide-caption");
+        middleName.setStyleName("hide-caption");
+        email.setStyleName("hide-caption");
+        username.setStyleName("hide-caption");
+        password.setStyleName("hide-caption");
+        passwordConfirmation.setStyleName("hide-caption");
+        securityQuestion.setStyleName("hide-caption");
+        securityAnswer.setStyleName("hide-caption");
     }
 
     @Override
@@ -93,47 +94,45 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
          
         Field field = super.createField(item, propertyId, uiContext);
         
-        /*if("positionTitle".equals(propertyId)) {
-            messageSource.setCaption(field, Message.USER_ACC_POS_TITLE);
-            field.setRequired(false);
-            field.setRequiredError("Please enter a Position Title.");
-            field.addValidator(new StringLengthValidator("Position Title must be 2-25 characters.", 2, 25, false));
-        } else */
         if ("firstName".equals(propertyId)) {
-            messageSource.setCaption(firstName, Message.USER_ACC_FNAME);
-            firstName.setRequired(true);
-            lastName.setRequiredError("Please enter First Name.");
+        	firstName.setRequired(true);
+            firstName.setRequiredError("Please enter a First Name.");
+            firstName.addValidator(new StringLengthValidator("First Name must be 1-20 characters.", 1, 20, false));
             return firstName;
         } else if ("lastName".equals(propertyId)) {
-            messageSource.setCaption(lastName, Message.USER_ACC_LNAME);
-            lastName.setRequired(true);
-            lastName.setRequiredError("Please enter Last Name.");
+        	lastName.setRequired(true);
+            lastName.setRequiredError("Please enter a Last Name.");
+            lastName.addValidator(new StringLengthValidator("Last Name must be 1-50 characters.", 1, 50, false));
             return lastName;
         } else if ("middleName".equals(propertyId)) {
-            messageSource.setCaption(field, Message.USER_ACC_MIDNAME);
-            field.setRequired(false);
-            //field.setRequiredError("Please enter a Middle Initial.");
-            field.addValidator(new StringLengthValidator("Middle Name must be 1-15 characters.", 1, 15, false));
+            middleName.setRequired(false);
+            middleName.addValidator(new StringLengthValidator("Middle Name must be 1-15 characters.", 1, 15, false));
+           return middleName;
         } else if ("email".equals(propertyId)) {
-            messageSource.setCaption(field, Message.USER_ACC_EMAIL);
-            field.setRequired(true);
-            field.setRequiredError("Please enter an Email Address.");
-            field.addValidator(new StringLengthValidator("Email Address must be 5-40 characters.", 5, 40, false));
-            field.addValidator(new EmailValidator("Please enter a valid Email Address."));
+        	email.setRequired(true);
+        	email.setRequiredError("Please enter an Email Address.");
+        	email.setWidth("80%");
+        	email.addValidator(new StringLengthValidator("Email Address must be 5-40 characters.", 5, 40, false));
+        	email.addValidator(new EmailValidator("Please enter a valid Email Address."));
+        	return email;
         } else if ("username".equals(propertyId)) {
-            messageSource.setCaption(field, Message.USERNAME);
-            field.setRequired(true);
-            field.setRequiredError("Please enter a Username.");
-            field.addValidator(new StringLengthValidator("Username must be 1-30 characters.", 1, 30, false));
-            field.addValidator(new UsernameValidator());
+        	username.setRequired(true);
+        	username.setRequiredError("Please enter a Username.");
+        	username.setWidth("80%");
+        	username.addValidator(new StringLengthValidator("Username must be 1-30 characters.", 1, 30, false));
+        	username.addValidator(new UsernameValidator());
+        	return username;
         } else if ("password".equals(propertyId)) {
-            messageSource.setCaption(password, Message.USER_ACC_PASSWORD);
+            password.setRequired(true);
+            password.setRequiredError("Please enter a Password.");
+            password.addValidator(new StringLengthValidator("Password must be 1-30 characters.", 1, 30, false));
             return password;
         } else if ("passwordConfirmation".equals(propertyId)) {
-            messageSource.setCaption(passwordConfirmation, Message.USER_ACC_PASSWORD_CONFIRM);
+        	passwordConfirmation.setRequired(true);
+            passwordConfirmation.setRequiredError("Please re-type your password for confirmation.");
+            passwordConfirmation.addValidator(new StringLengthValidator("Password confirmation must be 1-30 characters.", 1, 30, false));
             return passwordConfirmation;
         } else if ("securityQuestion".equals(propertyId)) {
-            messageSource.setCaption(securityQuestion, Message.SECURITY_QUESTION);
             securityQuestion.setWidth("100%");
             securityQuestion.setNullSelectionAllowed(false);
             securityQuestion.setRequired(true);
@@ -146,13 +145,15 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
             
             return securityQuestion;
         } else if ("securityAnswer".equals(propertyId)) {
-            messageSource.setCaption(field, Message.SECURITY_ANSWER);
-            field.setWidth("100%");
-            field.setRequired(true);
-            field.setRequiredError("Please enter the answer to your security question.");
-            field.addValidator(new StringLengthValidator("Security Answer must be 1-255 characters.", 1, 255, false));
+        	securityAnswer.setWidth("100%");
+        	securityAnswer.setRequired(true);
+        	securityAnswer.setRequiredError("Please enter the answer to your security question.");
+            securityAnswer.addValidator(new StringLengthValidator("Security Answer must be 1-255 characters.", 1, 255, false));
+            return securityAnswer;
         } 
         
         return field;
     }
+    
+    
 }

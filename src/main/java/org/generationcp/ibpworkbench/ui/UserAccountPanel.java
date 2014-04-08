@@ -28,6 +28,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
@@ -48,8 +49,8 @@ public class UserAccountPanel extends Panel {
     private static final long serialVersionUID = 1013885188470873112L;
 
     private VerticalLayout vl;
-    
-    private UserAccountForm form;
+    private VerticalLayout rootLayout;
+    private UserAccountForm userForm;
     
     private Button saveButton;
     private Button cancelButton;
@@ -74,59 +75,62 @@ public class UserAccountPanel extends Panel {
 
 
     protected void initializeComponents() {
+        
+        rootLayout = new VerticalLayout();
         vl = new VerticalLayout();
-        setContent(vl);
-
-        // login panel layout
-        VerticalLayout loginPanelLayout = new VerticalLayout();
-        loginPanelLayout.setImmediate(false);
-        loginPanelLayout.setStyleName("gcp-login");
-        loginPanelLayout.setHeight("87px");
-        loginPanelLayout.setMargin(true, false, true, false);
-        vl.addComponent(loginPanelLayout);
-
-        lblTitle = new Label();
-        lblTitle.setWidth("100%");
-        lblTitle.setStyleName("gcp-login-title gcp-user-account-title");
-        loginPanelLayout.addComponent(lblTitle);
-
-        form = new UserAccountForm(new UserAccountModel());
-
-        vl.addComponent(form);
-       
+        
+        final Panel p = new Panel();
+        p.setStyleName("form-panel");
+        p.setSizeFull();
+        
+        userForm = new UserAccountForm(new UserAccountModel());
+      
+        vl.setSizeFull();
+        vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
+        vl.addComponent(userForm);
+        //vl.setMargin(new Layout.MarginInfo(false,true,true,true));
+        vl.setSpacing(true);
+        vl.setMargin(false);
+        
+        p.addComponent(vl);
+      
         saveButton = new Button();
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
-        vl.addComponent(buttonLayout);
-        vl.setStyleName("v-panel-content-gcp-createuser");
+        buttonLayout.setWidth("140px");
+      
+        rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootLayout.setSpacing(true);
+        lblTitle = new Label("Register a New User Account");
+        lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+        rootLayout.addComponent(lblTitle);
+        rootLayout.addComponent(p);
+        rootLayout.addComponent(buttonLayout);
+        rootLayout.setComponentAlignment(p, Alignment.MIDDLE_CENTER);
+        rootLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
+       
+        setContent(rootLayout);
+        
     }
     
     protected void initializeValues() {
     	//set default value for Security Question
-        ComboBox questionField = (ComboBox) form.getField("securityQuestion");
+        ComboBox questionField = (ComboBox) userForm.getField("securityQuestion");
         Collection<?> itemIds = questionField.getItemIds();
         questionField.setValue(itemIds.iterator().next());
     }
 
     protected void initializeLayout() {
         setImmediate(false);
-        setWidth("680px");
+        setWidth("820px");
         setHeight("620px");
-
-        vl.setMargin(false);
-        vl.setSpacing(true);
-
-        vl.setComponentAlignment(form, Alignment.MIDDLE_CENTER);
-        vl.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
-        
-        buttonLayout.setWidth("140px");
     }
 
     protected void initializeActions() {
-        saveButton.addListener(new SaveUserAccountAction(form));
+        saveButton.addListener(new SaveUserAccountAction(userForm));
         cancelButton.addListener(new OpenLoginWindowAction());
     }
     
@@ -138,9 +142,9 @@ public class UserAccountPanel extends Panel {
     }
 
     public void updateLabels() {
-    	messageSource.setValue(lblTitle,Message.LOGIN_TITLE);
+    	//messageSource.setValue(lblTitle,Message.LOGIN_TITLE);
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
-        messageSource.setCaption(form, Message.REGISTER_USER_ACCOUNT_FORM);
+        //messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
     }
 }
