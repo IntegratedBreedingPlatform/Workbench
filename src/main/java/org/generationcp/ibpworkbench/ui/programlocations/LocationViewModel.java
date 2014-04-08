@@ -25,7 +25,10 @@ public class LocationViewModel implements BeanFormState {
     public String ltypeStr;
 
 	private Integer cntryid;
+    private Integer provinceId;
+
     private String cntryFullName;
+    private String provinceFullName;
     private Boolean isSelected = false;
 
 
@@ -172,5 +175,21 @@ public class LocationViewModel implements BeanFormState {
 
     public void setCntryid(Integer cntryid) {
         this.cntryid = cntryid;
+    }
+
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
     }
 }

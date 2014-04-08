@@ -63,7 +63,10 @@ public class AddLocationsWindow extends Window{
         setModal(true);
 
         /* Make the sub window 50% the size of the browser window */
-        setWidth("900px");
+        setWidth("500px");
+
+        // dmv : change the height to accomodate vertical layout
+        setHeight("500px");
         /*
          * Center the window both horizontally and vertically in the browser
          * window
@@ -95,9 +98,7 @@ public class AddLocationsWindow extends Window{
 
         buttonArea = layoutButtonArea();
         layout.addComponent(buttonArea);
-        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_RIGHT);
-
-
+        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
     }
 
     protected void initializeLayout() {

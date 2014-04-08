@@ -150,7 +150,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	}
 	
-	private Location initiliazeLocation(Location l) {
+	private Location initializeLocation(Location l) {
         Location location = new Location();
         location.setLocid(l.getLocid());
         location.setLabbr(l.getLabbr());
@@ -166,7 +166,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         location.setNllp(0);
         location.setSnl1id(0);
         location.setSnl2id(0);
-        location.setSnl3id(0);
+        location.setSnl3id(l.getSnl3id());
         return location;
     }
 		
@@ -248,6 +248,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
         viewModel.setCntryid(location.getCntryid());
+        viewModel.setProvinceId(location.getSnl3id());
 		
 		
 		Country country = ldm.getCountryById(location.getCntryid());
@@ -282,6 +283,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }*/
 
         return countryList;
+    }
+
+    public List<Location> getProvinceList() throws MiddlewareQueryException {
+        return ldm.getAllProvinces();
     }
     
     public List<UserDefinedField> getLocationTypeList() throws MiddlewareQueryException {
@@ -336,7 +341,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         location.setNllp(0);
         location.setSnl1id(0);
         location.setSnl2id(0);
-        location.setSnl3id(0);
+        location.setSnl3id(lvm.getProvinceId());
 
         return location;
     }

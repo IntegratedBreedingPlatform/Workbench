@@ -66,7 +66,7 @@ public class AddLocationForm extends Form {
 
     protected void initializeComponents() { 
         
-        grid = new GridLayout(4, 1);
+        grid = new GridLayout(1, 5);
         grid.setSpacing(true);
         grid.setMargin(true);
         
@@ -77,7 +77,7 @@ public class AddLocationForm extends Form {
         setComponentError(null);
         setFormFieldFactory(new LocationFormFieldFactory(presenter));
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "locationName", "locationAbbreviation","ltype","cntryid" }));
+                new String[] { "locationName", "locationAbbreviation","ltype","cntryid", "provinceId" }));
         
         setWriteThrough(false);
         setInvalidCommitted(false);
@@ -90,11 +90,13 @@ public class AddLocationForm extends Form {
         if("locationName".equals(propertyId)) {
             grid.addComponent(field, 0, 0);
         } else if ("locationAbbreviation".equals(propertyId)) {
-            grid.addComponent(field, 1, 0);
+            grid.addComponent(field, 0, 1);
         } else if ("ltype".equals(propertyId)) {
-        	grid.addComponent(field,2,0);
+        	grid.addComponent(field,0,2);
         } else if ("cntryid".equals(propertyId)) {
-        	grid.addComponent(field,3,0);
+        	grid.addComponent(field,0,3);
+        } else if ("provinceId".equals(propertyId)) {
+            grid.addComponent(field, 0,4);
         }
     }
     

@@ -22,6 +22,7 @@ import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresent
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +51,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     
     private Field locationName;
     private Field locationAbbreviation;
+
     
     private ComboBox lType;
     private ComboBox country;
+    private ComboBox province;
     
     private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
     
@@ -63,13 +66,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
     	
     	try {
-			initFields(presenter.getUDFByLocationAndLType(),presenter.getCountryList());
+			initFields(presenter.getUDFByLocationAndLType(),presenter.getCountryList(), presenter.getProvinceList());
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
     }
     
-    private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
+    private void initFields(List<UserDefinedField> udfList, List<Country> countryList, List<Location> provinceList) {
     	Collections.sort(countryList,new Comparator<Country>() {
 			@Override
 			public int compare(Country o1, Country o2) {
@@ -94,12 +97,16 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         
         BeanContainer<String,UserDefinedField> udfBeanContainer = new BeanContainer<String, UserDefinedField>(UserDefinedField.class);        
         BeanContainer<String,Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
+        BeanContainer<String, Location> provinceBeanContainer = new BeanContainer<String, Location>(Location.class);
 
     	udfBeanContainer.setBeanIdProperty("fldno");
 		udfBeanContainer.addAll(udfList);
 
 		countryBeanContainer.setBeanIdProperty("cntryid");
 		countryBeanContainer.addAll(countryList);
+
+        provinceBeanContainer.setBeanIdProperty("locid");
+        provinceBeanContainer.addAll(provinceList);
 
 		        
         lType = new ComboBox();
@@ -113,23 +120,32 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
         country.setContainerDataSource(countryBeanContainer);
         country.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         country.setItemCaptionPropertyId("isoabbr");
+
+        province = new ComboBox();
+        province.setWidth("230px");
+        province.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
+        province.setItemCaptionPropertyId("lname");
+
     }
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
         if ("locationName".equals(propertyId)) {
-            messageSource.setCaption(locationName, Message.LOC_NAME);
+            /*messageSource.setCaption(locationName, Message.LOC_NAME);*/
             return locationName;
             
         } else if ("locationAbbreviation".equals(propertyId)) {
-            messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
+            /*messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);*/
             return locationAbbreviation;
         } else if ("ltype".equals(propertyId)) {
-            messageSource.setCaption(lType, Message.LOC_TYPE);
+            /*messageSource.setCaption(lType, Message.LOC_TYPE);*/
             return lType;
         } else if ("cntryid".equals(propertyId)) {
-        	messageSource.setCaption(country, Message.LOC_COUNTRY);
+        	/*messageSource.setCaption(country, Message.LOC_COUNTRY);*/
         	return country;
+        } else if ("provinceId".equals(propertyId)) {
+            /*messageSource.setCaption(province, Message.LOC_PROVINCE);*/
+            return province;
         }
         
         return super.createField(item, propertyId, uiContext);
