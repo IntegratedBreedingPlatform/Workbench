@@ -141,7 +141,7 @@ import java.util.*;
              @Override
              public void buttonClick(ClickEvent clickEvent) {
                  for (Object itemId :availableTable.getItemIds()) {
-                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
                          availableTable.select(itemId);
                      else
                          availableTable.unselect(itemId);
@@ -154,7 +154,7 @@ import java.util.*;
              @Override
              public void buttonClick(ClickEvent clickEvent) {
                  for (Object itemId : favoritesTable.getItemIds()) {
-                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
                          favoritesTable.select(itemId);
                      else
                          favoritesTable.unselect(itemId);

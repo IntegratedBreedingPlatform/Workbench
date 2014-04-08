@@ -298,15 +298,15 @@ public class NurseryListPreview extends VerticalLayout {
         openStudyManagerBtn.setDescription(messageSource.getMessage(Message.OPEN_IN_STUDY_BROWSER));
         openStudyManagerBtn.setEnabled(false);
 
-        renameFolderBtn = new Button("<span class='glyphicon glyphicon-pencil'></span>");
+        renameFolderBtn = new Button("<span class='bms-edit' style='color:#0082CB'><span>");
         renameFolderBtn.setHtmlContentAllowed(true);
         renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
 
-        addFolderBtn = new Button("<span class='glyphicon glyphicon-plus-sign'></span>");
+        addFolderBtn = new Button("<span class='bms-add' style='color:#00AF40'></span>");
         addFolderBtn.setHtmlContentAllowed(true);
         addFolderBtn.setDescription(messageSource.getMessage(Message.ADD_FOLDER));
 
-        deleteFolderBtn = new Button("<span class='glyphicon glyphicon-trash'></span>");
+        deleteFolderBtn = new Button("<span class='bms-delete' style='color:#F4A41C'></span>");
         deleteFolderBtn.setHtmlContentAllowed(true);
         deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_FOLDER));
 

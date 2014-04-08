@@ -1,29 +1,29 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
 import com.vaadin.data.Property;
- import com.vaadin.data.util.BeanItemContainer;
- import com.vaadin.event.DataBoundTransferable;
- import com.vaadin.event.dd.DragAndDropEvent;
- import com.vaadin.event.dd.DropHandler;
- import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
- import com.vaadin.ui.*;
- import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
- import org.generationcp.commons.vaadin.theme.Bootstrap;
- import org.generationcp.commons.vaadin.util.MessageNotifier;
- import org.generationcp.ibpworkbench.Message;
- import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
- import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;;
- import org.generationcp.middleware.exceptions.MiddlewareQueryException;
- import org.generationcp.middleware.pojos.Method;
- import org.generationcp.middleware.pojos.workbench.Project;
- import org.springframework.beans.factory.InitializingBean;
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.beans.factory.annotation.Configurable;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.*;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
  import java.text.DateFormat;
- import java.text.ParseException;
- import java.text.SimpleDateFormat;
- import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
   * Created with IntelliJ IDEA.
@@ -559,7 +559,7 @@ import com.vaadin.data.Property;
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  for (Object itemId :availableTable.getItemIds()) {
-                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
                          availableTable.select(itemId);
                      else
                          availableTable.unselect(itemId);
@@ -572,7 +572,7 @@ import com.vaadin.data.Property;
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  for (Object itemId : favoritesTable.getItemIds()) {
-                     if (true ==  ((CheckBox)clickEvent.getComponent()).getValue())
+                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
                          favoritesTable.select(itemId);
                      else
                          favoritesTable.unselect(itemId);
