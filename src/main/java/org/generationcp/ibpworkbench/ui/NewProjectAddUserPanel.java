@@ -55,7 +55,7 @@ public class NewProjectAddUserPanel extends Panel {
     
     private TwinTableSelect<User> membersSelect;
     
-    private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { 
+    private final static Object[] VISIBLE_ITEM_PROPERTIES = new Object[] { 
         "firstName", "middleName", "lastName", "email", 
         "username", "securityQuestion",  "securityAnswer"};
     
@@ -79,8 +79,8 @@ public class NewProjectAddUserPanel extends Panel {
         vl = new VerticalLayout();
         setContent(vl);
         
-        userForm = new UserAccountForm(new UserAccountModel());
-        userForm.setVisibleItemProperties(VISIBLE_ITEM_PROPERTIES);
+        userForm = new UserAccountForm(new UserAccountModel(), VISIBLE_ITEM_PROPERTIES);
+      
         vl.addComponent(userForm);
         
         saveButton = new Button();
@@ -102,7 +102,7 @@ public class NewProjectAddUserPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setStyleName(Reindeer.PANEL_LIGHT);
-        setWidth("675px");
+        setWidth("850px");
         
         vl.setMargin(new Layout.MarginInfo(false,true,true,true));
         vl.setSpacing(true);
@@ -129,7 +129,7 @@ public class NewProjectAddUserPanel extends Panel {
     public void updateLabels() {
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
-        messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
+        //messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
     }
     
     public UserAccountForm getForm() {

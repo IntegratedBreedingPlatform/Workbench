@@ -206,3 +206,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-gridlayout-cell-style > div > div > div {
 	 padding-right:  50px;
 }
+
+.v-caption-hide-caption {
+	display: none;
+}
