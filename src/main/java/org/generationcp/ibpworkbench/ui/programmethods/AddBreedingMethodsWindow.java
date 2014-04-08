@@ -62,7 +62,7 @@ public class AddBreedingMethodsWindow extends Window {
     protected void initializeLayout() {
         this.addStyleName(Reindeer.WINDOW_LIGHT);
         this.setModal(true);
-        this.setWidth("500px");
+        this.setWidth("700px");
         this.setResizable(false);
         this.center();
         this.setCaption("Add Breeding Method");

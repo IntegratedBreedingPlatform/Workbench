@@ -100,6 +100,7 @@ public class NewProjectAddUserPanel extends Panel {
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
         buttonLayout.setWidth("140px");
+        buttonLayout.setMargin(true, false, false, false);
       
         rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootLayout.setSpacing(true);

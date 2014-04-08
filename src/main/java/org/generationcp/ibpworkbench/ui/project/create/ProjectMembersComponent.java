@@ -70,7 +70,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
    
     private TwinTableSelect<User> select;
     
-    private Button newMemberButton;
+    private Button newUserButton;
     
     private Table tblMembers;
     
@@ -301,7 +301,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     }
 
     protected void initializeActions() {
-        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        newUserButton.addListener(new OpenNewProjectAddUserWindowAction(select));
         
         previousButton.addListener(new PreviousButtonClickListener());
 //        nextButton.addListener(new NextButtonClickListener());
@@ -351,15 +351,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        newMemberButton = new Button("Add New Member");
-        newMemberButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        newUserButton = new Button("Add New User");
+        newUserButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         previousButton = new Button("Previous");
         //previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 //        nextButton = new Button("Next");
         buttonLayout.addComponent(previousButton);
-        buttonLayout.addComponent(newMemberButton);
+        buttonLayout.addComponent(newUserButton);
 //        buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }

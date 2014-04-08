@@ -3,7 +3,8 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import java.util.*;
 
  import com.vaadin.data.Property;
- import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.DataBoundTransferable;
  import com.vaadin.event.dd.DragAndDropEvent;
  import com.vaadin.event.dd.DropHandler;
  import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
@@ -290,15 +291,35 @@ import java.util.*;
 
 
      private void initializeValues() throws MiddlewareQueryException {
+        BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
+        Country nullItem = new Country();
+        nullItem.setCntryid(0);
+        nullItem.setIsoabbr("All Countries");
+        countryContainer.addItem(nullItem);
+        countryContainer.addAll(presenter.getCountryList());
+
 
               /* INITIALIZE FILTER CONTROLS DATA */
-         countryFilter.setContainerDataSource(new BeanItemContainer<Country>(Country.class,presenter.getCountryList()));
+         countryFilter.setContainerDataSource(countryContainer);
          countryFilter.setItemCaptionPropertyId("isoabbr");
+         countryFilter.setNullSelectionItemId(nullItem);
+         countryFilter.setNullSelectionAllowed(true);
 
-         List<UserDefinedField> locationTypes = presenter.getLocationTypeList();
-         locationTypeFilter.setContainerDataSource(new BeanItemContainer<UserDefinedField>(UserDefinedField.class,locationTypes));
+         List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
+         UserDefinedField nullUdf = new UserDefinedField();
+         nullUdf.setFname("All Location Types");
+         nullUdf.setFldno(0);
+         locationTypes.add(nullUdf);
+         locationTypes.addAll(presenter.getLocationTypeList());
+
+         BeanItemContainer<UserDefinedField> udfContainer = new BeanItemContainer<UserDefinedField>(UserDefinedField.class,locationTypes);
+         udfContainer.addAll(locationTypes);
+
+         locationTypeFilter.setContainerDataSource(udfContainer);
          locationTypeFilter.setItemCaptionPropertyId("fname");
-         locationTypeFilter.select(locationTypes.get(0));
+         locationTypeFilter.select(locationTypes.get(1));
+         locationTypeFilter.setNullSelectionItemId(nullUdf);
+         locationTypeFilter.setNullSelectionAllowed(true);
 
               /* INITIALIZE TABLE DATA */
          favoritesTableContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class,presenter.getSavedProgramLocations());
@@ -323,9 +344,6 @@ import java.util.*;
 
          searchField = new TextField();
          searchField.setImmediate(true);
-
-         countryFilter.setNullSelectionAllowed(true);
-         locationTypeFilter.setNullSelectionAllowed(true);
      }
 
      private Component buildFilterForm() {

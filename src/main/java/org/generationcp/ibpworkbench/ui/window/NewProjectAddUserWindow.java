@@ -33,7 +33,7 @@ public class NewProjectAddUserWindow extends Window {
 
         // define window size, set as not resizable
         setWidth("850px");
-        setHeight("525px");
+        setHeight("535px");
         setResizable(false);
         
         // center window within the browser
@@ -41,7 +41,7 @@ public class NewProjectAddUserWindow extends Window {
         
         assemble();
         
-        setCaption("Add New Workbench User");
+        setCaption("Add a New Workbench User");
     }
     
     protected void initializeComponents() {
