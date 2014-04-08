@@ -65,6 +65,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         methodDescription.setRequiredError("Please enter a Breeding Method Description.");
         methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255, false));
         methodDescription.setWidth("375px");
+        methodDescription.setHeight("100px");
         
         methodCode = new TextField();
         methodCode.setRequired(true);
