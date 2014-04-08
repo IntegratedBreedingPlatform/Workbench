@@ -249,8 +249,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLtype(location.getLtype());
         viewModel.setCntryid(location.getCntryid());
         viewModel.setProvinceId(location.getSnl3id());
-		
-		
+
+
 		Country country = ldm.getCountryById(location.getCntryid());
 		UserDefinedField udf = ldm.getUserDefinedFieldByID(location.getLtype());
 	
@@ -346,6 +346,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
         location.setSnl1id(0);
         location.setSnl2id(0);
         location.setSnl3id(lvm.getProvinceId());
+        if (location.getSnl3id() == null) {
+            location.setSnl3id(0);
+        }
 
         return location;
     }
