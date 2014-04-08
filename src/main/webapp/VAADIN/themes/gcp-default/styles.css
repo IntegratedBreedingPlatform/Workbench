@@ -204,9 +204,18 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 
 .v-gridlayout-cell-style > div > div > div {
-	 padding-right:  50px;
+    padding-right:  50px;
+}
+
+.form-panel .v-verticallayout {
+    background: #F2F2F2;
+}
+
+.form-panel .v-formlayout-captioncell {
+    font-weight: bold;
 }
 
 .v-caption-hide-caption {
 	display: none;
 }
+

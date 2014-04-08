@@ -16,16 +16,19 @@ import java.util.Date;
 
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Component;
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +59,12 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
+
+    @Autowired
+    private ManagerFactoryProvider managerFactoryProvider;
 
     public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
@@ -129,16 +138,11 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newMethod.setMfprg(0);
 
-            ManagerFactory managerFactory = null;
             //TODO: UPDATE THIS CODE
-            if (projectBreedingMethodsPanel instanceof  ProjectBreedingMethodsPanel)  {
-                managerFactory = ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getManagerFactory();
-            } else if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
-                managerFactory = ((ProgramMethodsView)projectBreedingMethodsPanel).getManagerFactory();
-            }
+            GermplasmDataManager gdm = managerFactoryProvider.getManagerFactoryForProject(sessionData.getLastOpenedProject()).getGermplasmDataManager();
 
             try {
-            	 Integer newMethodId = managerFactory.getGermplasmDataManager().addMethod(newMethod);
+            	 Integer newMethodId =gdm.addMethod(newMethod);
 
                  newMethod.setMid(newMethodId);
 
@@ -159,11 +163,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
                 ProgramMethodsView pv = (ProgramMethodsView)projectBreedingMethodsPanel;
 
-                try {
-                    pv.addRow(newMethod,false,0);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                pv.addRow(newMethod,false,0);
             }
 
             /*

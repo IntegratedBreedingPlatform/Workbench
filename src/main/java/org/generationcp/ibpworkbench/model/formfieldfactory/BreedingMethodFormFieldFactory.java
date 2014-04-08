@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.TextField;
 
 
 /**
@@ -62,20 +58,20 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         methodName.setRequired(true);
         methodName.setRequiredError("Please enter a Breeding Method Name.");
         methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
-        methodName.setWidth("180px");
-        
-        
-        methodDescription = new TextField();
+        methodName.setWidth("250px");
+
+        methodDescription = new TextArea();
+        methodDescription.setHeight("100px");
         methodDescription.setRequired(true);
         methodDescription.setRequiredError("Please enter a Breeding Method Description.");
         methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255, false));
-        methodDescription.setWidth("180px");
+        methodDescription.setWidth("375px");
         
         methodCode = new TextField();
         methodCode.setRequired(true);
         methodCode.setRequiredError("Please enter a Breeding Method Code.");
         methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
-        methodCode.setWidth("60px");
+        methodCode.setWidth("70px");
 
     }
     
@@ -98,7 +94,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
         } else if ("methodType".equals(propertyId)) {
             
             methodSelectType = new Select();
-            
+            methodSelectType.setWidth("250px");
             messageSource.setCaption(methodSelectType, Message.BREED_METH_TYPE);
             methodSelectType.addItem("GEN");
             methodSelectType.setItemCaption("GEN", "Generative");
@@ -109,14 +105,14 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory{
             methodSelectType.select("GEN");
             methodSelectType.setNullSelectionAllowed(false);
             methodSelectType.setRequired(true);
-            methodDescription.setRequiredError("Please select a Generation Advancement Type");
+            methodSelectType.setRequiredError("Please select a Generation Advancement Type");
 
 
             return methodSelectType;
         } else if ("methodGroup".equals(propertyId)) {
             
             methodSelectGroup = new Select();
-            
+            methodSelectGroup.setWidth("250px");
             messageSource.setCaption(methodSelectGroup, Message.BREED_METH_GRP);
             methodSelectGroup.addItem("S");
             methodSelectGroup.setItemCaption("S", "Self Fertilizing");

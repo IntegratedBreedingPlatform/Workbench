@@ -45,6 +45,7 @@ public class NewProjectAddUserPanel extends Panel {
     private static final long serialVersionUID = 2187912990347713234L;
 
     private VerticalLayout vl;
+    private VerticalLayout rootLayout;
     
     private UserAccountForm userForm;
     
@@ -76,20 +77,42 @@ public class NewProjectAddUserPanel extends Panel {
     }
 
     protected void initializeComponents() {
+    	rootLayout = new VerticalLayout();
         vl = new VerticalLayout();
-        setContent(vl);
+        
+        final Panel p = new Panel();
+        p.setStyleName("form-panel");
+        p.setSizeFull();
         
         userForm = new UserAccountForm(new UserAccountModel(), VISIBLE_ITEM_PROPERTIES);
       
+        vl.setSizeFull();
+        vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
         vl.addComponent(userForm);
+        //vl.setMargin(new Layout.MarginInfo(false,true,true,true));
+        vl.setSpacing(true);
         
+        p.addComponent(vl);
+      
         saveButton = new Button();
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
-        vl.addComponent(buttonLayout);
-
+        buttonLayout.setWidth("140px");
+      
+        rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootLayout.setSpacing(true);
+        Label lblTitle = new Label("Register a New User Account");
+        lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+        rootLayout.addComponent(lblTitle);
+        rootLayout.addComponent(p);
+        rootLayout.addComponent(buttonLayout);
+        rootLayout.setComponentAlignment(p, Alignment.MIDDLE_CENTER);
+        rootLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
+       
+        setContent(rootLayout);
+       
     }
     
     protected void initializeValues() {
@@ -102,14 +125,10 @@ public class NewProjectAddUserPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setStyleName(Reindeer.PANEL_LIGHT);
-        setWidth("850px");
+        setWidth("100%");
         
-        vl.setMargin(new Layout.MarginInfo(false,true,true,true));
-        vl.setSpacing(true);
-        vl.setComponentAlignment(userForm, Alignment.MIDDLE_CENTER);
-        vl.setComponentAlignment(buttonLayout, Alignment.TOP_CENTER);
         
-        buttonLayout.setWidth("140px");
+      
     }
 
     protected void initializeActions() {

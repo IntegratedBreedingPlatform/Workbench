@@ -32,8 +32,8 @@ public class NewProjectAddUserWindow extends Window {
         setModal(true);
 
         // define window size, set as not resizable
-        setWidth("680px");
-        setHeight("520px");
+        setWidth("850px");
+        setHeight("525px");
         setResizable(false);
         
         // center window within the browser

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
@@ -57,6 +58,10 @@ public class UserAccountForm extends Form {
     private Object[] visibleProperties;
     
     private Label lblName;
+    private Label lblFirstName;
+    private Label lblMiddleName;
+    private Label lblLastName;
+    
     private Label lblEmail;
     private Label lblUserName;
     private Label lblPassword;
@@ -96,7 +101,7 @@ public class UserAccountForm extends Form {
     protected void initializeComponents() {
         
     	setImmediate(false);
-        grid = new GridLayout(5, 7);
+        grid = new GridLayout(5, 8);
         grid.setSpacing(true);
         grid.setMargin(new Layout.MarginInfo(true,true,true,true));
         grid.setWidth("100%");
@@ -130,17 +135,17 @@ public class UserAccountForm extends Form {
         } else if ("lastName".equals(propertyId)) {
             grid.addComponent(field, 3, 0);
         } else if ("email".equals(propertyId)) {
-            grid.addComponent(field, 1, 1, 2, 1);
-        } else if ("username".equals(propertyId)) {
             grid.addComponent(field, 1, 2, 2, 2);
+        } else if ("username".equals(propertyId)) {
+            grid.addComponent(field, 1, 3, 2, 3);
         } else if ("password".equals(propertyId)) {
-            grid.addComponent(field, 1, 3);
-        } else if ("passwordConfirmation".equals(propertyId)) {
             grid.addComponent(field, 1, 4);
+        } else if ("passwordConfirmation".equals(propertyId)) {
+            grid.addComponent(field, 1, 5);
         } else if ("securityQuestion".equals(propertyId)) {
-            grid.addComponent(field, 1, 5, 3, 5);
-        } else if ("securityAnswer".equals(propertyId)) {
             grid.addComponent(field, 1, 6, 3, 6);
+        } else if ("securityAnswer".equals(propertyId)) {
+            grid.addComponent(field, 1, 7, 3, 7);
         } 
     }
     
@@ -151,6 +156,14 @@ public class UserAccountForm extends Form {
     	
     	lblName = createLabel();
     	lblName.setValue(messageSource.getMessage(Message.USER_ACC_NAME));
+    	
+    	lblFirstName = createLabel();
+    	lblFirstName.setValue(messageSource.getMessage(Message.USER_ACC_FNAME));
+    	lblMiddleName = createLabel();
+    	lblMiddleName.setValue(messageSource.getMessage(Message.USER_ACC_MIDNAME));
+    	lblLastName = createLabel();
+    	lblLastName.setValue(messageSource.getMessage(Message.USER_ACC_LNAME));
+    	
         lblEmail = createLabel();
         lblEmail.setValue(messageSource.getMessage(Message.USER_ACC_EMAIL));
         lblUserName = createLabel();
@@ -165,16 +178,24 @@ public class UserAccountForm extends Form {
         lblSecurityAnswer.setValue(messageSource.getMessage(Message.SECURITY_ANSWER));
         
         if (grid.getComponent(0, 0) == null) grid.addComponent(lblName, 0, 0);
-        if (grid.getComponent(0, 1) == null) grid.addComponent(lblEmail, 0, 1);
-        if (grid.getComponent(0, 2) == null) grid.addComponent(lblUserName, 0, 2);
+        if (grid.getComponent(1, 1) == null) grid.addComponent(lblFirstName, 1, 1);
+        grid.setComponentAlignment(lblFirstName, Alignment.TOP_LEFT);
+        if (grid.getComponent(2, 1) == null) grid.addComponent(lblMiddleName, 2, 1);
+        grid.setComponentAlignment(lblMiddleName, Alignment.TOP_LEFT);
+        if (grid.getComponent(3, 1) == null) grid.addComponent(lblLastName, 3, 1);
+        grid.setComponentAlignment(lblLastName, Alignment.TOP_LEFT);
+        
+        
+        if (grid.getComponent(0, 2) == null) grid.addComponent(lblEmail, 0, 2);
+        if (grid.getComponent(0, 3) == null) grid.addComponent(lblUserName, 0, 3);
         if (this.getVisibleItemProperties().contains("password")){
-    		if (grid.getComponent(0, 3) == null) grid.addComponent(lblPassword, 0, 3);
+    		if (grid.getComponent(0, 4) == null) grid.addComponent(lblPassword, 0, 4);
     	}
         if (this.getVisibleItemProperties().contains("passwordConfirmation")){
-    		if (grid.getComponent(0, 4) == null) grid.addComponent(lblPasswordConfirmation, 0, 4);
+    		if (grid.getComponent(0, 5) == null) grid.addComponent(lblPasswordConfirmation, 0, 5);
     	}
-        if (grid.getComponent(0, 5) == null) grid.addComponent(lblSecurityQuestion, 0, 5);
-        if (grid.getComponent(0, 6) == null) grid.addComponent(lblSecurityAnswer, 0, 6);
+        if (grid.getComponent(0, 6) == null) grid.addComponent(lblSecurityQuestion, 0, 6);
+        if (grid.getComponent(0, 7) == null) grid.addComponent(lblSecurityAnswer, 0, 7);
     	
     
         //grid.setColumnExpandRatio(0, 2f);

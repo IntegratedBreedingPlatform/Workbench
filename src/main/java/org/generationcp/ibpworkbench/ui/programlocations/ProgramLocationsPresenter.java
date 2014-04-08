@@ -66,7 +66,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName) throws MiddlewareQueryException {
 		List<Location> locationList = null;
 
-        Map<Integer,LocationViewModel> resultsMap = new HashMap<Integer, LocationViewModel>();
+        Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
         List<LocationViewModel> favorites = this.getSavedProgramLocations();
         locationName = (locationName != null) ? locationName : "";
 		
