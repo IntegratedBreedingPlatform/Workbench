@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -66,13 +67,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
     public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
     	
     	try {
-			initFields(presenter.getUDFByLocationAndLType(),presenter.getCountryList(), presenter.getProvinceList());
+			initFields(presenter.getUDFByLocationAndLType(),presenter.getCountryList());
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
     }
     
-    private void initFields(List<UserDefinedField> udfList, List<Country> countryList, List<Location> provinceList) {
+    private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
     	Collections.sort(countryList,new Comparator<Country>() {
 			@Override
 			public int compare(Country o1, Country o2) {
@@ -106,7 +107,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory{
 		countryBeanContainer.addAll(countryList);
 
         provinceBeanContainer.setBeanIdProperty("locid");
-        provinceBeanContainer.addAll(provinceList);
+        provinceBeanContainer.addAll(new ArrayList<Location>());
 
 		        
         lType = new ComboBox();
