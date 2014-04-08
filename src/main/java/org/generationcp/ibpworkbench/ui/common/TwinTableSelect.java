@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.common;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.vaadin.data.Container;
@@ -426,6 +427,18 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		
 	}
 	
+	public void removeCheckedSelectedItems(){
+		 
+		 for (Object itemId : (Set<Object>) getTableRight().getValue()){	
+			 if (((T)itemId).isActive()){
+				 getTableLeft().addItem(itemId);
+				 getTableRight().removeItem(itemId);
+				
+			 }
+    	 }
+		 
+		 
+	}
 	
 	public void addAllToSelectedItems(){
 		

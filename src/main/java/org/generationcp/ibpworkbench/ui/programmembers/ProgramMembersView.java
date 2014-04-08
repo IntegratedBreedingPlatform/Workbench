@@ -145,7 +145,8 @@ public class ProgramMembersView extends Panel implements InitializingBean {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				select.removeAllSelectedItems();
+				//select.removeAllSelectedItems();
+				select.removeCheckedSelectedItems();
 			}
 		});
         
