@@ -285,7 +285,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
         return countryList;
     }
 
-    public List<Location> getProvinceListByCountry(Integer countryId) throws MiddlewareQueryException {
+    public List<Location> getAllProvinces() throws MiddlewareQueryException {
+        return ldm.getAllProvinces();
+    }
+
+    public List<Location> getAllProvincesByCountry(Integer countryId) throws MiddlewareQueryException {
         return ldm.getAllProvincesByCountry(countryId);
     }
     
