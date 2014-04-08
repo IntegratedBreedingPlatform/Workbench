@@ -13,7 +13,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-select-optiongroup-horizontal,.v-select-option.v-radiobutton{align-bottom:10px}
 .v-select-optiongroup-horizontal,.v-select-option{display:inline-block}
 .v-select-optiongroup-horizontal{white-space:nowrap}
-.v-button-action .v-button-caption { color: #7C7C7C; font-size: 20px; line-height:26px}
+.v-button-action .v-button-caption { color: #7C7C7C; font-size: 20px;}
 .v-button-action:hover .v-button-caption,
 .v-button-action:active .v-button-caption,
 .v-button-action:focus .v-button-caption { color: #8f868b; border:none}
@@ -208,8 +208,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 }
 
 .form-panel .v-verticallayout {
-    background: #F2F2F2;
-}
+     background: #F2F2F2;
+ }
 
 .form-panel .v-formlayout-captioncell {
     font-weight: bold;
