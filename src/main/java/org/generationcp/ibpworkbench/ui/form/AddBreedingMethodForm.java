@@ -37,13 +37,7 @@ public class AddBreedingMethodForm extends Form{
      */
     private static final long serialVersionUID = -3649453194910730855L;
 
-    private BeanItem<BreedingMethodModel> breedingMethodBean;
-
-    private BreedingMethodModel method;
-
-    public AddBreedingMethodForm(BreedingMethodModel method) {
-        this.method = method;
-
+    public AddBreedingMethodForm() {
         assemble();
     }
 
@@ -62,8 +56,7 @@ public class AddBreedingMethodForm extends Form{
 
         fl.setSpacing(true);
 
-        breedingMethodBean = new BeanItem<BreedingMethodModel>(method);
-        setItemDataSource(breedingMethodBean);
+        setItemDataSource(new BeanItem<BreedingMethodModel>(new BreedingMethodModel()));
 
         setComponentError(null);
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
@@ -77,9 +70,6 @@ public class AddBreedingMethodForm extends Form{
 
 
         this.setLayout(fl);
-
-
-        this.getLayout();
     }
 
     /*
