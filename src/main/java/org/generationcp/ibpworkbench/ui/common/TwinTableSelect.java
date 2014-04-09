@@ -8,6 +8,7 @@ import java.util.Set;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -199,6 +200,35 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	
 	private Table buildCustomTable() {
 		final Table table = new Table();
+		final Property.ValueChangeListener tableValueChangeListener = new Property.ValueChangeListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				
+				Table source = ((Table) event.getProperty());
+            	
+				for (Object itemId : source.getItemIds()){
+            		T bean = (T) itemId;
+            		bean.setActive(false);
+            	}
+        
+            	 Collection<T> sourceItemIds = (Collection<T>) source.getValue();
+                 for (T itemId : sourceItemIds){
+                	 itemId.setActive(true);
+                 }
+                
+                 ((Table)event.getProperty()).requestRepaint();
+                 ((Table)event.getProperty()).refreshRowCache();
+                
+				
+			}
+			
+			
+		};
+		
+		table.addListener(tableValueChangeListener);
 		
 		table.addGeneratedColumn("select", new Table.ColumnGenerator(){
 
@@ -253,34 +283,6 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
         	
         });
 		
-		table.addListener(new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				
-				Table source = ((Table) event.getProperty());
-            	
-				for (Object itemId : source.getItemIds()){
-            		T bean = (T) itemId;
-            		bean.setActive(false);
-            	}
-        
-            	 Collection<T> sourceItemIds = (Collection<T>) source.getValue();
-                 for (T itemId : sourceItemIds){
-                	 itemId.setActive(true);
-                 }
-                
-                 ((Table)event.getProperty()).requestRepaint();
-                 ((Table)event.getProperty()).refreshRowCache();
-                
-				
-			}
-			
-			
-		});
-		
 		
 		table.setDragMode(TableDragMode.MULTIROW);
 		table.setDropHandler(new DropHandler() {
@@ -288,6 +290,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 			private static final long serialVersionUID = 1L;
 
 			public void drop(DragAndDropEvent dropEvent) {
+				
                 DataBoundTransferable t = (DataBoundTransferable) dropEvent.getTransferable();
                 
                 if (t.getSourceComponent() == dropEvent.getTargetDetails().getTarget())
@@ -296,11 +299,16 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 Table source =  ((Table)t.getSourceComponent());
                 Table target =  ((Table)dropEvent.getTargetDetails().getTarget());
                 
+                //temporarily disable the value change listener to avoid conflict
+                target.removeListener(tableValueChangeListener);
+                
                 Collection<Object> sourceItemIds = (Collection<Object>) source.getValue();
                 for (Object itemId : sourceItemIds){
                 	source.removeItem(itemId);
                 	target.addItem(itemId);
                 }
+                
+                target.addListener(tableValueChangeListener);
                 
         }
 
@@ -431,6 +439,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		 
 		 for (Object itemId : (Set<Object>) getTableRight().getValue()){	
 			 if (((T)itemId).isActive()){
+				 ((T)itemId).setActive(false);
 				 getTableLeft().addItem(itemId);
 				 getTableRight().removeItem(itemId);
 				
