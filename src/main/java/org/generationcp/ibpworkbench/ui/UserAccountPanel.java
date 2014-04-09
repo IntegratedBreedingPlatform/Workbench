@@ -84,7 +84,7 @@ public class UserAccountPanel extends Panel {
 
         lblBanner = new Label();
         lblBanner.setWidth("100%");
-        lblBanner.setStyleName("gcp-login-title gcp-user-account-title");
+        lblBanner.setStyleName("gcp-login-user-account-title");
         
         loginPanelLayout.addComponent(lblBanner);
         
