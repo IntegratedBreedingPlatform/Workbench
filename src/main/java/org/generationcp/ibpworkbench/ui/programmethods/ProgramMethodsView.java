@@ -12,8 +12,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -150,7 +148,7 @@ import java.util.*;
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         removeToFavoriteBtn = new Button("Remove to Favorite Locations");
+         removeToFavoriteBtn = new Button("Remove to Favorite Methods");
          removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
          // filter form
