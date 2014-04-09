@@ -412,7 +412,9 @@ import com.vaadin.event.DataBoundTransferable;
 
          //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],0.3F);
+
              /*
              for (String col : tableColumnSizes.keySet())
              {

@@ -359,6 +359,8 @@ import java.util.*;
          {
              table.setColumnWidth(col,tableColumnSizes.get(col));
          }
+
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],1.0F);
      }
 
      private void initializeLayout() {
