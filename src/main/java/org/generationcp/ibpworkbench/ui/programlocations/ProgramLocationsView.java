@@ -226,6 +226,9 @@ import com.vaadin.event.DataBoundTransferable;
          availableSelectAll.setWidth("100px");
          favoriteSelectAll.setWidth("100px");
 
+         availableTableBar.setStyleName("select-all-bar");
+         favoritesTableBar.setStyleName("select-all-bar");
+
          availableTableBar.setSizeUndefined();
          favoritesTableBar.setSizeUndefined();
          availableTableBar.setSpacing(true);
