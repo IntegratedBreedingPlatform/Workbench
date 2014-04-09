@@ -462,7 +462,7 @@ import com.vaadin.event.DataBoundTransferable;
          });
 
          // Add behavior to table when selected/has new Value (must be immediate)
-         table.addListener(new Property.ValueChangeListener() {
+         final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
@@ -482,7 +482,9 @@ import com.vaadin.event.DataBoundTransferable;
                  source.requestRepaint();
                  source.refreshRowCache();
              }
-         });
+         };
+
+         table.addListener(vcl);
 
          // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
@@ -493,7 +495,12 @@ import com.vaadin.event.DataBoundTransferable;
                  if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
                      return;
 
-                 moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
+
+                 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
+
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
+
              }
 
              @Override

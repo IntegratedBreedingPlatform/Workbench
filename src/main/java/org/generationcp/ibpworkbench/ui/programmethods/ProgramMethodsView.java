@@ -250,7 +250,7 @@ import java.util.*;
          });
 
          // Add behavior to table when selected/has new Value (must be immediate)
-         table.addListener(new Property.ValueChangeListener() {
+         final Property.ValueChangeListener vcl = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
@@ -270,7 +270,9 @@ import java.util.*;
                  source.requestRepaint();
                  source.refreshRowCache();
              }
-         });
+         };
+
+         table.addListener(vcl);
 
          // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
@@ -281,7 +283,11 @@ import java.util.*;
                  if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
                      return;
 
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
+
                  moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
+
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
              }
 
              @Override
