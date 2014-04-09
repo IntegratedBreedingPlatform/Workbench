@@ -12,8 +12,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -150,7 +148,7 @@ import java.util.*;
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         removeToFavoriteBtn = new Button("Remove to Favorite Locations");
+         removeToFavoriteBtn = new Button("Remove to Favorite Methods");
          removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
          // filter form
@@ -250,7 +248,7 @@ import java.util.*;
          });
 
          // Add behavior to table when selected/has new Value (must be immediate)
-         table.addListener(new Property.ValueChangeListener() {
+         final Property.ValueChangeListener vcl = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
@@ -270,7 +268,9 @@ import java.util.*;
                  source.requestRepaint();
                  source.refreshRowCache();
              }
-         });
+         };
+
+         table.addListener(vcl);
 
          // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
@@ -281,7 +281,11 @@ import java.util.*;
                  if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
                      return;
 
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
+
                  moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
+
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
              }
 
              @Override
@@ -353,6 +357,8 @@ import java.util.*;
          {
              table.setColumnWidth(col,tableColumnSizes.get(col));
          }
+
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],1.0F);
      }
 
      private void initializeLayout() {
@@ -373,6 +379,9 @@ import java.util.*;
 
          availableSelectAll.setWidth("100px");
          favoriteSelectAll.setWidth("100px");
+
+         availableTableBar.setStyleName("select-all-bar");
+         favoritesTableBar.setStyleName("select-all-bar");
 
          availableTableBar.setSizeUndefined();
          favoritesTableBar.setSizeUndefined();

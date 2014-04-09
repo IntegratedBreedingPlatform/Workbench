@@ -221,3 +221,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 	display: none;
 }
 
+.select-all-bar {
+    margin-left: 7px;
+}
