@@ -133,8 +133,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
             }  catch(IOException ex) {
                 MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
+                LOG.error("Error during restore", ex);
             } catch(Exception e) {
-                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "No project backup is selected");
+                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
+                LOG.error("Error during restore", e);
             }
 
 
