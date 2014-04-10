@@ -5,10 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
-import com.vaadin.ui.Button;
+import org.generationcp.commons.util.FileUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.service.BackupIBDBService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Window;
 
 @Configurable
@@ -68,7 +69,11 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
         File backupFile;
         try {
             backupFile = backupIBDBService.backupIBDB(selectedProject.getProjectId().toString(),selectedProject.getLocalDbName());
-
+            
+            // TODO: remove test code
+            byte[] contents = FileUtils.contentsOfFile(backupFile);
+            FileUtils.writeToFile(new File(backupFile.getAbsoluteFile() + ".bak"), contents);
+            
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
 

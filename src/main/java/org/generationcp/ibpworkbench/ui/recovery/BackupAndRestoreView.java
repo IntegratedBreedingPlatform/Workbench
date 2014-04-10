@@ -1,8 +1,7 @@
 package org.generationcp.ibpworkbench.ui.recovery;
 
-import com.vaadin.data.Validator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
+import java.text.SimpleDateFormat;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -11,30 +10,34 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
+import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.easyuploads.FileFactory;
-import org.vaadin.easyuploads.UploadField;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
+import com.vaadin.data.Validator;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Created by cyrus on 2/20/14.
  */
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
+    private static final long serialVersionUID = 1L;
+    
     private ListSelect restoreList;
     private Button backupBtn;
     private UploadField uploadFrm;
@@ -75,6 +78,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                 super.uploadFinished(event);
 
                 restoreBtn.setEnabled(true);
+                
+                restoreList.setEnabled(false);
             }
 
             @Override
@@ -104,6 +109,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             }
         };
 
+        uploadFrm.setNoFileSelectedText(messageSource.getMessage("NO_FILE_SELECTED"));
+        uploadFrm.setSelectedFileText(messageSource.getMessage("SELECTED_BACKUP_FILE"));
         uploadFrm.setDeleteCaption(messageSource.getMessage("CLEAR"));
         uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
@@ -223,17 +230,27 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         });
 
         uploadFrm.setFileFactory(restoreAction);
+        
+        uploadFrm.setDeleteButtonListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
+            @Override
+            public void buttonClick(ClickEvent event) {
+                restoreList.setEnabled(true);
+            }
+        });
     }
 
     public void initializeLayout() {
         backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        backupBtn.addStyleName("marginTop10");
+        
         restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
+        restoreBtn.addStyleName("marginTop10");
+        
         uploadFrm.getRootLayout().setStyleName("bms-upload-container");
         uploadFrm.getRootLayout().setWidth("100%");
         uploadFrm.setButtonCaption("Browse");
-
 
         restoreList.setWidth("400px");
 
@@ -261,7 +278,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
         rootContent.setSizeUndefined();
         rootContent.setWidth("100%");
-        rootContent.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootContent.setMargin(new Layout.MarginInfo(true,true,true,true));
         rootContent.setSpacing(true);
 
         rootContent.addComponent(pageTitle);
