@@ -554,7 +554,7 @@ import java.util.*;
              @Override
              public void valueChange(Property.ValueChangeEvent event) {
                  availableTableContainer.removeAllItems();
-                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
+                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
 
                  resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
              }
