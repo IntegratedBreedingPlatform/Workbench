@@ -148,7 +148,7 @@ import java.util.*;
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         removeToFavoriteBtn = new Button("Remove to Favorite Methods");
+         removeToFavoriteBtn = new Button("Remove from Favorite Methods");
          removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
          // filter form
