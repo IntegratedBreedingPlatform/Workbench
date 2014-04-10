@@ -324,7 +324,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
         this.getLocationDetailsByLocId(loc.getLocid());
 
-        view.addRow(this.getLocationDetailsByLocId(loc.getLocid()),true,0);
+        view.addRow(this.getLocationDetailsByLocId(loc.getLocid()),false,0);
     }
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
