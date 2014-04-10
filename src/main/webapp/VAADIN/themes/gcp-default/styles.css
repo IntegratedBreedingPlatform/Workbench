@@ -197,7 +197,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .bms-upload-container .v-csslayout-container div
 {float: left; }
 .bms-upload-container .v-progressindicator-wrapper { width: 200px; margin-left: 20px;}
-.bms-upload-container .v-label { width: inherit !important; margin: 4px 20px}
+.bms-upload-container .v-label { width: inherit !important; margin: 4px 20px 4px 0px}
 .bms-upload-container .v-label em { display: none;}
 
 /* common */
@@ -223,4 +223,12 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 .select-all-bar {
     margin-left: 7px;
+}
+
+.marginTop10 {
+    margin-top: 10px;
+}
+
+.restoreUploadButton {
+    margin-right: 20px;
 }
