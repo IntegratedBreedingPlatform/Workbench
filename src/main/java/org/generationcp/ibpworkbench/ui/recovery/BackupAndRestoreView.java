@@ -140,8 +140,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             e.printStackTrace();
         }
 
-        if (restoreList.getItemIds().isEmpty())
+        if (restoreList.getItemIds().isEmpty()) {
             restoreBtn.setEnabled(false);
+        } else {
+        	restoreBtn.setEnabled(true);
+        }
 
     }
 
