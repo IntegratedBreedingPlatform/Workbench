@@ -82,7 +82,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         // remove items already in favorites
         for (LocationViewModel item : favorites) {
             if (resultsMap.containsKey(item.getLocationId()))
-                resultsMap.remove(item);
+                resultsMap.remove(item.getLocationId());
         }
 
         return resultsMap.values();
