@@ -88,6 +88,30 @@ public class ProgramLocationsPresenter implements InitializingBean {
         return resultsMap.values();
 	}
 
+    public Collection<LocationViewModel> getFilteredResults(Integer countryId,Integer locationType,String locationName,Collection<LocationViewModel> existingItems) throws MiddlewareQueryException {
+        List<Location> locationList = null;
+
+        Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
+        locationName = (locationName != null) ? locationName : "";
+
+        Country country = ldm.getCountryById(countryId);
+        locationList =ldm.getLocationsByNameCountryAndType(locationName,country,locationType);
+
+        Collections.sort(locationList, Location.LocationNameComparator);
+
+        for (Location location : locationList) {
+            resultsMap.put(location.getLocid(),this.getLocationDetailsByLocId(location.getLocid()));
+        }
+
+        // remove items already in favorites
+        for (LocationViewModel item : existingItems) {
+            if (resultsMap.containsKey(item.getLocationId()))
+                resultsMap.remove(item.getLocationId());
+        }
+
+        return resultsMap.values();
+    }
+
     // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
 	public void onAttachInitialize() {
         try {

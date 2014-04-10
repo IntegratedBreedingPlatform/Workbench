@@ -148,7 +148,7 @@ import java.util.*;
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         removeToFavoriteBtn = new Button("Remove to Favorite Methods");
+         removeToFavoriteBtn = new Button("Remove from Favorite Methods");
          removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
          // filter form
@@ -554,7 +554,7 @@ import java.util.*;
              @Override
              public void valueChange(Property.ValueChangeEvent event) {
                  availableTableContainer.removeAllItems();
-                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
+                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
 
                  resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
              }

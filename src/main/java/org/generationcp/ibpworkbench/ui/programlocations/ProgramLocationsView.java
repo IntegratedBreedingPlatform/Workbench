@@ -94,7 +94,7 @@ import com.vaadin.event.DataBoundTransferable;
          addToFavoriteBtn = new Button("Add to Favorite Locations");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         removeToFavoriteBtn = new Button("Remove to Favorite Locations");
+         removeToFavoriteBtn = new Button("Remove from Favorite Locations");
          removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
          // filter form
@@ -123,7 +123,7 @@ import com.vaadin.event.DataBoundTransferable;
 
                  try {
                      availableTableContainer.removeAllItems();
-                     availableTableContainer.addAll(presenter.getFilteredResults(cntryId, locationTypeId, locationName));
+                     availableTableContainer.addAll(presenter.getFilteredResults(cntryId, locationTypeId, locationName,favoritesTableContainer.getItemIds()));
 
                      resultCountLbl.setValue("Results: " + availableTableContainer.getItemIds().size() + " items");
 
