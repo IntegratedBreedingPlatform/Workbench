@@ -117,6 +117,40 @@ public class ProgramMethodsPresenter implements InitializingBean {
         return convertFrom(result);
     }
 
+    public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname,Collection<MethodView> existingItems) {
+        Map<Integer,MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
+
+        try {
+            List<MethodView> result = convertFrom(gdm.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
+
+            for (MethodView method : result) {
+                resultsMap.put(method.getMid(),method);
+            }
+
+            // remove items already in favorites
+            for (MethodView method : existingItems) {
+                if (resultsMap.containsKey(method.getMid())) {
+                    resultsMap.remove(method.getMid());
+                }
+            }
+
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();
+        }
+
+        /*
+        ArrayList sorted =  new ArrayList<MethodView>(resultsMap.values());
+
+        Collections.sort(sorted,new Comparator<MethodView>() {
+            @Override
+            public int compare(MethodView o1, MethodView o2) {
+                return o1.getMname().toUpperCase().compareTo(o2.getMname().toUpperCase());
+            }
+        });
+        */
+        return resultsMap.values();
+    }
+
     public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname) {
         Map<Integer,MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
 
