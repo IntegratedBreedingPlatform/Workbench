@@ -158,7 +158,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				select.removeAllSelectedItems();
+				select.removeCheckedSelectedItems();
 			}
 		});
         

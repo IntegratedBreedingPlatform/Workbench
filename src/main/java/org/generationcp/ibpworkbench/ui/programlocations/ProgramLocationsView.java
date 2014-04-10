@@ -226,6 +226,9 @@ import com.vaadin.event.DataBoundTransferable;
          availableSelectAll.setWidth("100px");
          favoriteSelectAll.setWidth("100px");
 
+         availableTableBar.setStyleName("select-all-bar");
+         favoritesTableBar.setStyleName("select-all-bar");
+
          availableTableBar.setSizeUndefined();
          favoritesTableBar.setSizeUndefined();
          availableTableBar.setSpacing(true);
@@ -412,7 +415,9 @@ import com.vaadin.event.DataBoundTransferable;
 
          //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],0.3F);
+
              /*
              for (String col : tableColumnSizes.keySet())
              {
@@ -462,7 +467,7 @@ import com.vaadin.event.DataBoundTransferable;
          });
 
          // Add behavior to table when selected/has new Value (must be immediate)
-         table.addListener(new Property.ValueChangeListener() {
+         final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
@@ -482,7 +487,9 @@ import com.vaadin.event.DataBoundTransferable;
                  source.requestRepaint();
                  source.refreshRowCache();
              }
-         });
+         };
+
+         table.addListener(vcl);
 
          // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
@@ -493,7 +500,12 @@ import com.vaadin.event.DataBoundTransferable;
                  if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
                      return;
 
-                 moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
+
+                 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
+
+                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
+
              }
 
              @Override

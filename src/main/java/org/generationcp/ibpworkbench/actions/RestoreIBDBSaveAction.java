@@ -114,14 +114,18 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 // restore the database
                 mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
-                
+                Integer userId = workbenchDataManager.
+                		getLocalIbdbUserId(sessionData.getUserData().getUserid(),
+                				project.getProjectId());
+                mysqlUtil.updateOwnerships(project.getLocalDbName(),userId);
                 // the restored database may be old
                 // and needs to be upgraded for it to be usable
                 WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
                 File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
                 mysqlUtil.upgradeDatabase(project.getLocalDbName(), schemaDir);
                 
-                new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
+                //GCP-7958 - since users and persons tables are no longer restored, the line below is no longer needed - uncomment if it's no longer the case
+                //new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
 
                 MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 

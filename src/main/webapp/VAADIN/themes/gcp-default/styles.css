@@ -22,7 +22,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 /* Login Form */
 .v-panel-content-gcp-login>div{background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent}
 .gcp-login-subtitle{line-height:16px;font-size:16px;color:#02385a;margin-top:100px;font-weight:normal;text-align:center;text-transform:uppercase}
-.gcp-login-title{color:#dde5ec;margin-left:104px;margin-top:17px;text-transform:uppercase;font-size:21px;font-weight:400;line-height:24px;}
+.gcp-login-title{color:#dde5ec;margin-left:104px;margin-top:17px;text-transform:uppercase;font-size:21px;font-weight:400;line-height:24px;vertical-align:middle;}
+.gcp-login-user-account-title{color:#dde5ec;margin-left:104px;margin-top:32px;text-transform:uppercase;font-size:21px;font-weight:400;line-height:24px;vertical-align:middle;}
 .gcp-loginform-lbl{text-transform:uppercase;position:relative;top:4px;color:#02385a}
 
 /* Workbench split panel + sidebar */
@@ -220,3 +221,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 	display: none;
 }
 
+.select-all-bar {
+    margin-left: 7px;
+}
