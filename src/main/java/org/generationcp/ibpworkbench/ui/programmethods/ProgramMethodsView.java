@@ -593,6 +593,7 @@ import java.util.*;
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  moveSelectedItems(availableTable,favoritesTable);
+                 availableSelectAll.setValue(false);
              }
          });
 
@@ -600,6 +601,7 @@ import java.util.*;
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  moveSelectedItems(favoritesTable,availableTable);
+                 favoriteSelectAll.setValue(false);
              }
          });
 

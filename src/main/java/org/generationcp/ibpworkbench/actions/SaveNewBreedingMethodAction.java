@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public
  * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
@@ -16,6 +16,7 @@ import java.util.Date;
 
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Component;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -40,21 +41,19 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
- * 
  * @author Jeffrey Morales
- * 
  */
 
 @Configurable
 public class SaveNewBreedingMethodAction implements ClickListener {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(SaveNewBreedingMethodAction.class);
     private static final long serialVersionUID = 1L;
-   
+
     private AddBreedingMethodForm newBreedingMethodForm;
-    
+
     private AddBreedingMethodsWindow window;
-    
+
     private Component projectBreedingMethodsPanel;
 
     @Autowired
@@ -70,16 +69,16 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
         this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;
-        
+
     }
-    
+
     @Override
     public void buttonClick(ClickEvent event) {
 
         try {
             newBreedingMethodForm.commit();
         } catch (Validator.EmptyValueException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION),e.getLocalizedMessage());
+            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
             return;
         }
 
@@ -87,35 +86,40 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         BeanItem<BreedingMethodModel> breedingMethodBean = (BeanItem<BreedingMethodModel>) newBreedingMethodForm.getItemDataSource();
         BreedingMethodModel breedingMethod = breedingMethodBean.getBean();
 
+        if (StringUtils.isEmpty(breedingMethod.getMethodType())) {
+            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
+            return;
+        }
+
         //IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
 
 
-        if (!appSession.getSessionData().getUniqueBreedingMethods().contains(breedingMethod.getMethodName())){
+        if (!appSession.getSessionData().getUniqueBreedingMethods().contains(breedingMethod.getMethodName())) {
 
             appSession.getSessionData().getUniqueBreedingMethods().add(breedingMethod.getMethodName());
-        
+
             Integer nextKey = appSession.getSessionData().getProjectBreedingMethodData().keySet().size() + 1;
-            
-            nextKey = nextKey*-1;
-        
+
+            nextKey = nextKey * -1;
+
             BreedingMethodModel newBreedingMethod = new BreedingMethodModel();
-        
+
             newBreedingMethod.setMethodName(breedingMethod.getMethodName());
             newBreedingMethod.setMethodDescription(breedingMethod.getMethodDescription());
             newBreedingMethod.setMethodCode(breedingMethod.getMethodCode());
             newBreedingMethod.setMethodGroup(breedingMethod.getMethodGroup());
             newBreedingMethod.setMethodType(breedingMethod.getMethodType());
-        
+
             newBreedingMethod.setMethodId(nextKey);
 
             appSession.getSessionData().getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
-            
+
             LOG.info(appSession.getSessionData().getProjectBreedingMethodData().toString());
-            
+
             //newBreedingMethodForm.commit();
-            
-            Method newMethod=new Method();
+
+            Method newMethod = new Method();
             newMethod.setMid(newBreedingMethod.getMethodId());
             newMethod.setMname(newBreedingMethod.getMethodName());
             newMethod.setMdesc(newBreedingMethod.getMethodDescription());
@@ -132,9 +136,9 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMprgn(0);
             newMethod.setReference(0);
 
-            
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            
+
             newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newMethod.setMfprg(0);
 
@@ -142,28 +146,28 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             GermplasmDataManager gdm = managerFactoryProvider.getManagerFactoryForProject(sessionData.getLastOpenedProject()).getGermplasmDataManager();
 
             try {
-            	 Integer newMethodId =gdm.addMethod(newMethod);
+                Integer newMethodId = gdm.addMethod(newMethod);
 
-                 newMethod.setMid(newMethodId);
+                newMethod.setMid(newMethodId);
 
-			} catch (Exception e) { // we might have null exception, better be prepared
-				e.printStackTrace();
-			}
-            
+            } catch (Exception e) { // we might have null exception, better be prepared
+                e.printStackTrace();
+            }
+
             newMethod.setIsnew(true);
 
             //TODO: compatibility to old UI, remove this if new UI is stable and final
-            if (projectBreedingMethodsPanel instanceof  ProjectBreedingMethodsPanel)  {
-                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().addItem(newMethod);
-                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().setItemCaption(newMethod, newMethod.getMname());
-                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().select(newMethod);
-                ((ProjectBreedingMethodsPanel)projectBreedingMethodsPanel).getSelect().setValue(newMethod);
+            if (projectBreedingMethodsPanel instanceof ProjectBreedingMethodsPanel) {
+                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().addItem(newMethod);
+                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().setItemCaption(newMethod, newMethod.getMname());
+                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().select(newMethod);
+                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().setValue(newMethod);
             }
 
             if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
-                ProgramMethodsView pv = (ProgramMethodsView)projectBreedingMethodsPanel;
+                ProgramMethodsView pv = (ProgramMethodsView) projectBreedingMethodsPanel;
 
-                pv.addRow(newMethod,false,0);
+                pv.addRow(newMethod, false, 0);
             }
 
             /*
@@ -179,8 +183,8 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 
             newBreedingMethod = null;
             window.getParent().removeWindow(window);
-        
+
         }
-        
+
     }
 }
