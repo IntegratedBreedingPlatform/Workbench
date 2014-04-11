@@ -109,6 +109,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				Boolean val = (Boolean) ((CheckBox) event.getComponent()).getValue();
 				for (Object itemId : getTableLeft().getItemIds()){
 					((T)itemId).setActive(val);
+					
 					if (val)
 						table.select(itemId);
 					else
@@ -130,6 +131,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				Boolean val = (Boolean) ((CheckBox) event.getComponent()).getValue();
 				for (Object itemId : getTableRight().getItemIds()){
 					((T)itemId).setActive(val);
+					
 					if (val)
 						table.select(itemId);
 					else
@@ -216,7 +218,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
         
             	 Collection<T> sourceItemIds = (Collection<T>) source.getValue();
                  for (T itemId : sourceItemIds){
-                	 itemId.setActive(true);
+                	 if (itemId.isEnabled())
+                		 itemId.setActive(true);
                  }
                 
                  ((Table)event.getProperty()).requestRepaint();
@@ -269,6 +272,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 					}
 				});
 				
+				checkBox.setEnabled(bean.isEnabled());
 
 				if (bean.isActive()) {
 					checkBox.setValue(true);
@@ -304,8 +308,10 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 
                 Collection<Object> sourceItemIds = (Collection<Object>) source.getValue();
                 for (Object itemId : sourceItemIds){
-                	source.removeItem(itemId);
-                	target.addItem(itemId);
+                	if (((T)itemId).isEnabled()){
+                		source.removeItem(itemId);
+                		target.addItem(itemId);
+                	}
                 }
                 
                 target.addListener(tableValueChangeListener);
@@ -438,7 +444,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	public void removeCheckedSelectedItems(){
 		 
 		 for (Object itemId : (Set<Object>) getTableRight().getValue()){	
-			 if (((T)itemId).isActive()){
+			 if (((T)itemId).isActive() && ((T)itemId).isEnabled()){
 				 ((T)itemId).setActive(false);
 				 getTableLeft().addItem(itemId);
 				 getTableRight().removeItem(itemId);

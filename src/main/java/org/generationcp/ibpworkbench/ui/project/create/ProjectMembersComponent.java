@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +51,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.VerticalLayout;
 
@@ -126,7 +128,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				Person person = ((User) itemId).getPerson();
-				return person.getDisplayName();
+				Label label = new Label();
+				label.setValue(person.getDisplayName());
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid()))label.setStyleName("label-bold");
+				return label;
 			}
         	
         	
@@ -137,11 +142,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				Person person = ((User) itemId).getPerson();
-				return person.getDisplayName();
+				Label label = new Label();
+				label.setValue(person.getDisplayName());
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid()))label.setStyleName("label-bold");
+				return label;
 			}
         	
         	
         };
+        
         
         select.getTableLeft().addGeneratedColumn("userName", generator1);
         select.getTableRight().addGeneratedColumn("userName", generator2);
@@ -166,40 +175,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         initializeMembersTable();
         
-        
-        /*        
-        int personUID = sessionData.getUserData().getPersonid();
-
-		
-			String loggedinUserStr = ""; 
-			Person loggedinUser;
-			    
-			loggedinUser = workbenchDataManager.getPersonById(personUID);
-		
-
-            if (loggedinUser.getFirstName() != null) {
-            	loggedinUserStr = loggedinUser.getFirstName();
-            }
-            if (loggedinUser.getMiddleName() != null) {
-            	loggedinUserStr += " " + loggedinUser.getMiddleName(); 
-            }
-            if (loggedinUser.getLastName() != null) {
-            	loggedinUserStr += " " + loggedinUser.getLastName();
-            }
-       */
-        
-        String currentUserMsg = "* Note: By default, you are a member of this program.";	//TODO FIXME: add correct internationalization message for this.
-        
-        Label currentUserLbl = new Label(currentUserMsg,Label.CONTENT_XHTML);
-        currentUserLbl.addStyleName("create_project_member_current_user_msg");
-        
-        
-        addComponent(currentUserLbl);
-        
-
-        //addComponent(tblMembers);
-        
-        
+      
         buttonArea = layoutButtonArea();
         addComponent(buttonArea);
         
@@ -274,11 +250,17 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         try {
             Container container = createUsersContainer();
             select.setContainerDataSource(container);
-
-            for (Object itemId : container.getItemIds()) {
-                User user = (User) itemId;
-                //select.setItemCaption(itemId, user.getPerson().getDisplayName());
+            
+            Object selectItem = null;
+            for (Object itemId : select.getTableLeft().getItemIds()){
+            	if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())){
+            		selectItem = itemId;
+            	}
             }
+            
+            if (selectItem != null) select.select(selectItem);
+            
+
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while getting workbench users", e);
@@ -381,8 +363,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
-            if (user.equals(sessionData.getUserData())) {
-                continue;
+            if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
+                user.setEnabled(false);
             }
             
             beanItemContainer.addBean(user);
@@ -429,6 +411,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         Set<User> userList = (Set<User>) select.getValue();
         
+        User removeThisItem = null;
+        for (User user : userList){
+        	if (user.getUserid().equals(sessionData.getUserData().getUserid())){
+        		removeThisItem = user;
+        	}
+        }
+        userList.remove(removeThisItem);
+        
+       
         List<Role> roleList = null;
         try {
             roleList = workbenchDataManager.getAllRoles();
