@@ -28,7 +28,7 @@ public class SecurityQuestionWindow extends Window {
 
         // define window size, set as not resizable
         setWidth("450px");
-        setHeight("160px");
+        setHeight("180px");
         setResizable(false);
         
         // center window within the browser
