@@ -14,6 +14,7 @@ import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 import com.vaadin.ui.AbstractSelect.AcceptItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -303,8 +304,11 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 Table source =  ((Table)t.getSourceComponent());
                 Table target =  ((Table)dropEvent.getTargetDetails().getTarget());
                 
+                Object itemIdOver = t.getItemId();
+                
                 //temporarily disable the value change listener to avoid conflict
                 target.removeListener(tableValueChangeListener);
+                
                 
                 Collection<Object> sourceItemIds = (Collection<Object>) source.getValue();
                 for (Object itemId : sourceItemIds){
@@ -312,6 +316,11 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 		source.removeItem(itemId);
                 		target.addItem(itemId);
                 	}
+                }
+                
+                if (itemIdOver!=null && sourceItemIds.size() <= 0) {
+                	source.removeItem(itemIdOver);
+                	target.addItem(itemIdOver); 
                 }
                 
                 target.addListener(tableValueChangeListener);
