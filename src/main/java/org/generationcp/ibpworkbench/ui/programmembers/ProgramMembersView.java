@@ -115,7 +115,8 @@ public class ProgramMembersView extends Panel implements InitializingBean {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid()  == project.getUserId()) label.setStyleName("label-bold");
+				//if (((User) itemId).getUserid()  == project.getUserId()) label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
 				return label;
 			}
         	
@@ -129,7 +130,8 @@ public class ProgramMembersView extends Panel implements InitializingBean {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid() == project.getUserId()) label.setStyleName("label-bold");
+				//if (((User) itemId).getUserid() == project.getUserId()) label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
 				return label;
 			}
         	
@@ -447,7 +449,8 @@ public class ProgramMembersView extends Panel implements InitializingBean {
         
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
-            if (user.getUserid() == project.getUserId()) {
+            //if (user.getUserid() == project.getUserId()) {
+        	if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
               user.setEnabled(false);
             }
             
