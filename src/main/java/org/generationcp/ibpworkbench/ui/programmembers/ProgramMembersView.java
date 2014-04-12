@@ -113,7 +113,11 @@ public class ProgramMembersView extends Panel implements InitializingBean {
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				Person person = ((User) itemId).getPerson();
-				return person.getDisplayName();
+				Label label = new Label();
+				label.setValue(person.getDisplayName());
+				//if (((User) itemId).getUserid()  == project.getUserId()) label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+				return label;
 			}
         	
         	
@@ -124,7 +128,11 @@ public class ProgramMembersView extends Panel implements InitializingBean {
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				Person person = ((User) itemId).getPerson();
-				return person.getDisplayName();
+				Label label = new Label();
+				label.setValue(person.getDisplayName());
+				//if (((User) itemId).getUserid() == project.getUserId()) label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+				return label;
 			}
         	
         	
@@ -429,7 +437,6 @@ public class ProgramMembersView extends Panel implements InitializingBean {
         // TODO: This can be improved once we implement proper User-Person mapping
         List<User> userList = workbenchDataManager.getAllUsersSorted();
         
-       
         
         for (User user : userList) {
             Person person = workbenchDataManager.getPersonById(user.getPersonid());
@@ -442,13 +449,13 @@ public class ProgramMembersView extends Panel implements InitializingBean {
         
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
-            if (user.equals(sessionData.getUserData())) {
-              //  continue;
+            //if (user.getUserid() == project.getUserId()) {
+        	if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
+              user.setEnabled(false);
             }
             
-            
-            
             beanItemContainer.addBean(user);
+            
         }
  
         

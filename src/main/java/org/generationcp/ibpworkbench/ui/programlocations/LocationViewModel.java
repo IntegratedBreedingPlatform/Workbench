@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Location;
+
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -30,6 +31,7 @@ public class LocationViewModel implements BeanFormState {
     private String cntryFullName;
     private String provinceFullName;
     private Boolean isSelected = false;
+    private Boolean isEnabled = true;
 
 
 	/*
@@ -192,4 +194,16 @@ public class LocationViewModel implements BeanFormState {
     public void setSelected(Boolean selected) {
         isSelected = selected;
     }
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return isEnabled;
+	}
+
+	@Override
+	public void setEnabled(Boolean val) {
+		this.isEnabled = val;
+		
+	}
 }

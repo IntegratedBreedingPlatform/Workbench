@@ -2,13 +2,11 @@ package org.generationcp.ibpworkbench.ui.common;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -109,7 +107,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				Boolean val = (Boolean) ((CheckBox) event.getComponent()).getValue();
 				for (Object itemId : getTableLeft().getItemIds()){
 					((T)itemId).setActive(val);
-					if (val)
+					
+					if (val && ((T)itemId).isEnabled())
 						table.select(itemId);
 					else
 						table.unselect(itemId);
@@ -130,7 +129,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				Boolean val = (Boolean) ((CheckBox) event.getComponent()).getValue();
 				for (Object itemId : getTableRight().getItemIds()){
 					((T)itemId).setActive(val);
-					if (val)
+					
+					if (val && ((T)itemId).isEnabled())
 						table.select(itemId);
 					else
 						table.unselect(itemId);
@@ -216,7 +216,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
         
             	 Collection<T> sourceItemIds = (Collection<T>) source.getValue();
                  for (T itemId : sourceItemIds){
-                	 itemId.setActive(true);
+                	 if (itemId.isEnabled())
+                		 itemId.setActive(true);
                  }
                 
                  ((Table)event.getProperty()).requestRepaint();
@@ -255,7 +256,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 								.getValue();
 						
 						bean.setActive(val);
-						if (val)
+						if (val && bean.isEnabled())
 							source.select(itemId);
 						else {
 							source.unselect(itemId);
@@ -269,8 +270,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 					}
 				});
 				
+				checkBox.setEnabled(bean.isEnabled());
 
-				if (bean.isActive()) {
+				if (bean.isActive() && bean.isEnabled()) {
 					checkBox.setValue(true);
 				} else {
 					checkBox.setValue(false); 
@@ -299,23 +301,44 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 Table source =  ((Table)t.getSourceComponent());
                 Table target =  ((Table)dropEvent.getTargetDetails().getTarget());
                 
+                Object itemIdOver = t.getItemId();
+                
                 //temporarily disable the value change listener to avoid conflict
                 target.removeListener(tableValueChangeListener);
                 
-                Collection<Object> sourceItemIds = (Collection<Object>) source.getValue();
+                
+                Set<Object> sourceItemIds = (Set<Object>) source.getValue();
                 for (Object itemId : sourceItemIds){
-                	source.removeItem(itemId);
-                	target.addItem(itemId);
+                	if (((T)itemId).isEnabled()){
+                		source.removeItem(itemId);
+                		target.addItem(itemId);
+                	}
+                }
+                
+                boolean selectedItemIsDisabled = false;
+                if (sourceItemIds.size() == 1){
+                	if (!((T)sourceItemIds.iterator().next()).isEnabled()){
+                		selectedItemIsDisabled = true;
+                	}
+                }
+                
+                if (itemIdOver!=null && (sourceItemIds.size() <= 0 || selectedItemIsDisabled)) {
+                	if (((T)itemIdOver).isEnabled()){
+                	source.removeItem(itemIdOver);
+                	target.addItem(itemIdOver); 
+                	}
                 }
                 
                 target.addListener(tableValueChangeListener);
                 
         }
+		
 
         public AcceptCriterion getAcceptCriterion() {
                 return AcceptItem.ALL;
          }
 		});
+	
 		
 		table.setColumnWidth("select", 20);
 		table.setSelectable(true);
@@ -438,7 +461,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	public void removeCheckedSelectedItems(){
 		 
 		 for (Object itemId : (Set<Object>) getTableRight().getValue()){	
-			 if (((T)itemId).isActive()){
+			 if (((T)itemId).isActive() && ((T)itemId).isEnabled()){
 				 ((T)itemId).setActive(false);
 				 getTableLeft().addItem(itemId);
 				 getTableRight().removeItem(itemId);
