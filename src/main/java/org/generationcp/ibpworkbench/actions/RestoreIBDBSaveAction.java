@@ -68,7 +68,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	private File file;
 
-    private static final String BACKUP_DIR = "backup";
+    private static final String BACKUP_DIR = "temp";
 
     private boolean isUpload = false;
 
