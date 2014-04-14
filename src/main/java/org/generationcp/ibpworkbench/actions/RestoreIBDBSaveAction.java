@@ -165,7 +165,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         
         StringBuilder sb = new StringBuilder();
         if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
-        	sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
+        	//sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
         	for (int x = 1; x < 10000;x++) {
         		String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
         		if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()){
