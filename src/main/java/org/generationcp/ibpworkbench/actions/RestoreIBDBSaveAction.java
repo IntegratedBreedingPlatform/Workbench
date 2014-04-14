@@ -116,7 +116,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
                 // restore the database
-                mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
+                File backupUsersPersonsFile = mysqlUtil.backupSpecificTablesFromDatabase(project.getLocalDbName(),"users","persons");
+                mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile,backupUsersPersonsFile);
                 Integer userId = workbenchDataManager.
                 		getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                 				project.getProjectId());
