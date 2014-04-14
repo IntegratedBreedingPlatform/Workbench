@@ -7,11 +7,13 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -282,8 +284,19 @@ import java.util.*;
                      return;
 
                  ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
+                 
+                 Object itemIdOver = t.getItemId();
+                 Set<Object> sourceItemIds = (Set<Object>)((Table) t.getSourceComponent()).getValue();
 
-                 moveSelectedItems(((Table)t.getSourceComponent()),((Table)dragAndDropEvent.getTargetDetails().getTarget()));
+                 if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
+                  	if (((MethodView)itemIdOver).isEnabled()){
+                  		((Table) t.getSourceComponent()).removeItem(itemIdOver);
+                  		((Table) dragAndDropEvent.getTargetDetails().getTarget()).addItem(itemIdOver); 
+                  	}
+                  }else{
+                 	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
+                  }
+
 
                  ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
              }
