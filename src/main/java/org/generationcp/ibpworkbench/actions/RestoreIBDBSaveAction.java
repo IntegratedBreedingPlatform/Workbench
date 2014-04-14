@@ -68,7 +68,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	private File file;
 
-    private static final String BACKUP_DIR = "backup";
+    private static final String BACKUP_DIR = "temp";
 
     private boolean isUpload = false;
 
@@ -163,7 +163,22 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
             saveDir.mkdirs();
         }
         
-        this.file = new File(saveDir, fileName);
+        StringBuilder sb = new StringBuilder();
+        if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
+        	sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
+        	for (int x = 1; x < 10000;x++) {
+        		String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
+        		if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()){
+        			sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
+                	sb.append("_" + x + ".sql");
+        			break;
+        		}
+        	}
+        }else{
+        	sb.append(fileName);
+        }
+        	
+        this.file = new File(saveDir, sb.toString());
         return this.file;
     }
 
