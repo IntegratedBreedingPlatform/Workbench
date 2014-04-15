@@ -536,7 +536,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					
 					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
 		            try {
-						ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=" +  gxeInput.getDestXMLFilePath());
+						ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project", gxeInput.getDestXMLFilePath());
 						Process process = pb.start();
 
 						/* Added while loop to get input stream because process.waitFor() has a problem
