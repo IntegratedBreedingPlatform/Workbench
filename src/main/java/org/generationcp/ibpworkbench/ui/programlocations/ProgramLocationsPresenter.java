@@ -365,6 +365,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
         location.setLtype(lvm.getLtype());
         location.setCntryid(lvm.getCntryid());
 
+        if (location.getCntryid() = null) {
+            location.setCntryid(0);
+        }
+
         // defaults
         location.setNllp(0);
         location.setSnl1id(0);
