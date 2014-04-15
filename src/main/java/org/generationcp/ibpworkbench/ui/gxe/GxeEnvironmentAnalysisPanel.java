@@ -12,8 +12,10 @@
 
 package org.generationcp.ibpworkbench.ui.gxe;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -533,22 +535,29 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					GxeUtility.generateXmlFieldBook(gxeInput);
 					
 					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
-		            Runtime runtime = Runtime.getRuntime();
-		            
 		            try {
-						runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  gxeInput.getDestXMLFilePath() + "\"");
-					
-						MessageNotifier
-						.showMessage(windowSource,
-								"GxE files saved",
-								"Successfully generated the means dataset and xml input files for breeding view.");
-		            } catch (IOException e) {
-						e.printStackTrace();
-						MessageNotifier
-						.showMessage(windowSource,
-								"Cannot launch " + absoluteToolFile.getName(),
-								"But it successfully created GxE Excel and XML input file for the breeding_view!");
-					}
+						ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=" +  gxeInput.getDestXMLFilePath());
+						Process process = pb.start();
+
+						/* Added while loop to get input stream because process.waitFor() has a problem
+						 * Reference: 
+						 * http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
+						 */
+						BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+						while ((reader.readLine()) != null) {}
+
+						process.waitFor();
+
+                        MessageNotifier.showMessage(windowSource, "GxE files saved", "Successfully generated the means dataset and xml input files for breeding view.");
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                        MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(), "But it successfully created GxE Excel and XML input file for the breeding_view!");
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                        MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(), "But it successfully created GxE Excel and XML input file for the breeding_view!");
+                    }
 				}
 				
 				managerFactory.close();
