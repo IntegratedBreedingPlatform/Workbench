@@ -272,7 +272,7 @@ public class RunBreedingViewAction implements ClickListener {
              Runtime runtime = Runtime.getRuntime();
              runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
              
-             ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
+             ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=" +  breedingViewInput.getDestXMLFilePath());
              Process process = pb.start();
              
              /* Added while loop to get input stream because process.waitFor() has a problem
