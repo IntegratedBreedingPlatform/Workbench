@@ -36,7 +36,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Form;
-import com.vaadin.ui.Window.Notification;
 
 
 /**
@@ -133,8 +132,8 @@ public class SaveUserAccountAction implements ClickListener {
         
         //OpenLoginWindowFromRegistrationAction action = new OpenLoginWindowFromRegistrationAction();
         //GCP:5025
-        LoginAction loginAction = LoginAction.getLoginActionInstance();
-        loginAction.doLogin(userAccount.getUsername(),userAccount.getPassword(),event);	// Attempt to auto login
+        LoginPresenter loginPresenter = LoginPresenter.getLoginActionInstance();
+        loginPresenter.doLogin(userAccount.getUsername(),userAccount.getPassword(),event);	// Attempt to auto login
         
         //action.buttonClick(event);
         

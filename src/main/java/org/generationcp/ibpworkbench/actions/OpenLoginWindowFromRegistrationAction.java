@@ -43,7 +43,7 @@ public class OpenLoginWindowFromRegistrationAction implements ClickListener{
     @Override
     public void buttonClick(ClickEvent event) {
         //LoginWindow window = new LoginWindow();
-        //new LoginAction(window);
+        //new LoginPresenter(window);
         final Application app = event.getComponent().getApplication();
         
         //window.setWidth("100%");

@@ -77,6 +77,17 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         securityQuestion = new ComboBox();
         securityAnswer = new TextField();
         
+        int tabIndex = 100;
+        firstName.setTabIndex(tabIndex++);
+        middleName.setTabIndex(tabIndex++);
+        lastName.setTabIndex(tabIndex++);       
+        email.setTabIndex(tabIndex++);
+        username.setTabIndex(tabIndex++);
+        password.setTabIndex(tabIndex++);
+        passwordConfirmation.setTabIndex(tabIndex++);
+        securityQuestion.setTabIndex(tabIndex++);
+        securityAnswer.setTabIndex(tabIndex++);
+        
         
         firstName.setStyleName("hide-caption");
         lastName.setStyleName("hide-caption");

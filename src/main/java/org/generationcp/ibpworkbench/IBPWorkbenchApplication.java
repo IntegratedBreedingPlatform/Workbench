@@ -19,7 +19,6 @@ import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.actions.LoginAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
@@ -128,7 +127,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     }
 
     protected void initializeActions() {
-        new LoginAction(loginWindow);
+        //new LoginPresenter(loginWindow);
         
         messageSourceListener = new UpdateComponentLabelsAction(this);
         messageSource.addListener(messageSourceListener);
