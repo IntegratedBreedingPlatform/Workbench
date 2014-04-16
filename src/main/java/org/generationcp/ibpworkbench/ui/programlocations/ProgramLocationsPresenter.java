@@ -173,27 +173,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		
 
 	}
-	
-	private Location initializeLocation(Location l) {
-        Location location = new Location();
-        location.setLocid(l.getLocid());
-        location.setLabbr(l.getLabbr());
-        location.setLname(l.getLname());
-        location.setLrplce(0);
 
-        Integer ltype = (l.getLtype() != null) ? l.getLtype() : 0;
-        Integer cntryid = (l.getCntryid() != null) ? l.getCntryid() : 0;
-
-        location.setLtype(ltype);
-        location.setCntryid(cntryid);
-
-        location.setNllp(0);
-        location.setSnl1id(0);
-        location.setSnl2id(0);
-        location.setSnl3id(l.getSnl3id());
-        return location;
-    }
-		
     public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
