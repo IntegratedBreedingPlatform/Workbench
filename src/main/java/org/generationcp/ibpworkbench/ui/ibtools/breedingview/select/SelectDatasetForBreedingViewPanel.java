@@ -301,6 +301,8 @@ public class SelectDatasetForBreedingViewPanel extends VerticalLayout implements
 		generalLayout.addComponent(buttonArea);
 		generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
 
+        generalLayout.setMargin(new MarginInfo(true,false,false,false));
+
 		addComponent(generalLayout);
 
 	}

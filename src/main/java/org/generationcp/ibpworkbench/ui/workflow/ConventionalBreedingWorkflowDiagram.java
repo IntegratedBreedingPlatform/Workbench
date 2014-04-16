@@ -336,7 +336,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         final VerticalLayout rootContainer = new VerticalLayout();
         rootContainer.setSizeUndefined();
         rootContainer.setWidth("750px");
-        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootContainer.setMargin(new Layout.MarginInfo(true,true,true,true));
         rootContainer.setSpacing(false);
 
         if (!workflowPreview) {

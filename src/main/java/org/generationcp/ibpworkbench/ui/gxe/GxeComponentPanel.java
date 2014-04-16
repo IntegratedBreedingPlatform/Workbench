@@ -336,7 +336,7 @@ public class GxeComponentPanel extends VerticalLayout implements
 
 	protected void initializeLayout() {
 		this.setSpacing(true);
-		this.setMargin(new MarginInfo(false,true,true,true));
+		this.setMargin(new MarginInfo(true,true,true,true));
         this.setSizeUndefined();
         this.setWidth("100%");
 	}

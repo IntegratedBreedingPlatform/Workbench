@@ -385,7 +385,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
 
         final VerticalLayout rootContainer = new VerticalLayout();
-        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootContainer.setMargin(new Layout.MarginInfo(true,true,true,true));
         rootContainer.setSpacing(false);
 
         if (!workflowPreview) {

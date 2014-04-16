@@ -368,7 +368,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
         final VerticalLayout rootContainer = new VerticalLayout();
         rootContainer.setSizeUndefined();
-        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
+        rootContainer.setMargin(new Layout.MarginInfo(true,true,true,true));
         rootContainer.setSpacing(false);
 
         if (!workflowPreview) {

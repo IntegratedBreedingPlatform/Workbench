@@ -273,7 +273,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         generalLayout.addComponent(selectedDataSetEnvironmentLayout);
         generalLayout.addComponent(buttonArea);
         generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        
+        generalLayout.setMargin(new MarginInfo(true,false,false,false));
+
         addComponent(generalLayout);
         
     }
