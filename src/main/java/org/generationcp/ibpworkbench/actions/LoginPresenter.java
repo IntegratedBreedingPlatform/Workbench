@@ -12,18 +12,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import javax.servlet.http.Cookie;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.form.LoginForm;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.generationcp.ibpworkbench.util.CookieUtils;
-import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -36,39 +33,36 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
+
+import javax.servlet.http.Cookie;
 
 @Configurable
-public class LoginAction implements ClickListener{
+public class LoginPresenter {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginPresenter.class);
+    private static LoginPresenter self;
 
     private LoginWindow loginWindow;
-    
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    private static LoginAction self = null;
+    @Autowired
+    private SessionData sessionData;
 
-    public LoginAction(LoginWindow loginWindow) {
+    public LoginPresenter(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
+        this.self = this;
+    }
 
-        loginWindow.getLoginForm().getBtnLogin().addListener(this);
-    
-        if (self == null)
-        	this.self = this;
+    public static LoginPresenter getLoginActionInstance() {
+        return self;
     }
-    
-    public static LoginAction getLoginActionInstance() {
-    	return self;
-    }
-    
+
     public void doLogin(String username,String password,ClickEvent event) {
         LOG.debug("Login with " + username + "/" + password);
 
@@ -77,7 +71,7 @@ public class LoginAction implements ClickListener{
             valid = workbenchDataManager.isValidUserLogin(username, password);
         } catch (MiddlewareQueryException e) {
             LOG.error("Error encountered while trying to login", e);
-            MessageNotifier.showError(event.getComponent().getWindow(), 
+            MessageNotifier.showError(event.getComponent().getWindow(),
                     messageSource.getMessage(Message.LOGIN_ERROR), 
                     "<br />" + messageSource.getMessage(Message.LOGIN_DB_ERROR_DESC));
             return;
@@ -86,7 +80,7 @@ public class LoginAction implements ClickListener{
         if (!valid) {
             
             // loginForm.getMessageLabel().setVisible(true);
-            MessageNotifier.showError(event.getComponent().getWindow(), 
+            MessageNotifier.showError(event.getComponent().getWindow(),
                     messageSource.getMessage(Message.LOGIN_ERROR), 
                     "<br />" + messageSource.getMessage(Message.ERROR_LOGIN_INVALID));
             return;
@@ -95,34 +89,30 @@ public class LoginAction implements ClickListener{
         
         User user = null;
         try {
-            IWorkbenchSession appsession = (IWorkbenchSession) event.getComponent().getApplication();
-
             // set the session's current user
             user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
             user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
-            appsession.getSessionData().setUserData(user);
+            sessionData.setUserData(user);
 
             // set the cookie if remember me option is enabled
-            
-            if (loginWindow.getLoginForm().isRememberEnabled()) {
+
+            if (loginWindow.isRememberEnabled()) {
             	LOG.debug("COOKIE: Remember Option is enabled");
             	
             	CookieUtils.setupCookies(
-            			new Cookie(LoginCookieProperties.REMEMBER_OPT,"true"),
-            			new Cookie(LoginCookieProperties.USERNAME,user.getName()),
-            			new Cookie(LoginCookieProperties.PASSWORD,user.getPassword())
-            			);
+                        new Cookie(CookieUtils.LoginCookieProperties.REMEMBER_OPT, "true"),
+                        new Cookie(CookieUtils.LoginCookieProperties.USERNAME, user.getName()),
+                        new Cookie(CookieUtils.LoginCookieProperties.PASSWORD, user.getPassword())
+                );
             } else {
                 CookieUtils.setupCookies(
-                        new Cookie(LoginCookieProperties.REMEMBER_OPT,"false"),
-                        new Cookie(LoginCookieProperties.USERNAME,""),
-                        new Cookie(LoginCookieProperties.PASSWORD,"")
+                        new Cookie(CookieUtils.LoginCookieProperties.REMEMBER_OPT,"false"),
+                        new Cookie(CookieUtils.LoginCookieProperties.USERNAME,""),
+                        new Cookie(CookieUtils.LoginCookieProperties.PASSWORD,"")
                 );
             	//CookieUtils.removeCookies(LoginCookieProperties.REMEMBER_OPT,LoginCookieProperties.USERNAME,LoginCookieProperties.PASSWORD);
             }
-            
-            
-            
+
             // save the currently logged user
             WorkbenchRuntimeData data = workbenchDataManager.getWorkbenchRuntimeData();
             if (data == null) {
@@ -134,17 +124,18 @@ public class LoginAction implements ClickListener{
         }
         catch (MiddlewareQueryException e) {
             LOG.error("Database error encountered", e);
-            MessageNotifier.showError(event.getComponent().getWindow(), 
+            MessageNotifier.showError(event.getComponent().getWindow(),
                     messageSource.getMessage(Message.DATABASE_ERROR), 
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return;
         }
-        
+
+
+        /* DIRECT TO THE MAIN DASHBOARD PAGE */
         WorkbenchMainView newWindow = null;
         try {
             newWindow = new WorkbenchMainView();
             //application.removeWindow(application.getMainWindow());
-
 
             event.getComponent().getApplication().getMainWindow().open(new ExternalResource(event.getComponent().getApplication().getURL()));
 
@@ -159,22 +150,7 @@ public class LoginAction implements ClickListener{
                 MessageNotifier.showError(event.getComponent().getApplication().getMainWindow(),
                         i.getCaption(), i.getDescription());
             }
-            return;
         }
-        
-    }
-    
-    @Override
-    public void buttonClick(ClickEvent event) {
-        LoginForm loginForm = loginWindow.getLoginForm();
-
-        TextField txtUsername = loginForm.getTxtUsername();
-        PasswordField pfPassword = loginForm.getPfPassword();
-        
-        String username = ((String) txtUsername.getValue()).trim();
-        String password = ((String) pfPassword.getValue()).trim();
-        
-        this.doLogin(username, password, event);
 
     }
 }

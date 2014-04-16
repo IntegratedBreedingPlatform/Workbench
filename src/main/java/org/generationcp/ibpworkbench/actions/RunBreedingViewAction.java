@@ -11,10 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -265,21 +263,11 @@ public class RunBreedingViewAction implements ClickListener {
              
              // launch breeding view
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
-             
+             Runtime runtime = Runtime.getRuntime();
              LOG.info(breedingViewInput.toString());
              LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
+             runtime.exec(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
              
-             ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
-             Process process = pb.start();
-             
-             /* Added while loop to get input stream because process.waitFor() has a problem
-              * Reference: 
-              * http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
-              */
-             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-             while ((reader.readLine()) != null) {}
-             
-             process.waitFor();
          } catch (BreedingViewXMLWriterException e) {
              log.debug("Cannot write Breeding View input XML", e);
              
@@ -289,12 +277,11 @@ public class RunBreedingViewAction implements ClickListener {
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
-        catch (InterruptedException e) {
-            log.debug("BreedingView interrupted");
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }
          
-        source.getManagerFactory().close();
+         
+         source.getManagerFactory().close();
+            	
+    	
     }
     
     private boolean updateToolConfiguration(Window window, Tool tool) {

@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -30,12 +31,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -47,8 +43,7 @@ public class ForgotPasswordUsernamePanel extends VerticalLayout implements Initi
 
     private static final long serialVersionUID = -716281326638272855L;
     private static final Logger LOG = LoggerFactory.getLogger(ForgotPasswordUsernamePanel.class);
-    
-    private Label unameLabel;
+
     private TextField unameField;
     private Button nextBtn;
     
@@ -77,19 +72,23 @@ public class ForgotPasswordUsernamePanel extends VerticalLayout implements Initi
     }
     
     protected void initializeComponents() {
-        unameLabel = new Label(messageSource.getMessage(Message.ENTER_USERNAME_LABEL));
-        addComponent(unameLabel);
         unameField = new TextField();
-        addComponent(unameField);
+        unameField.setCaption(messageSource.getMessage(Message.ENTER_USERNAME_LABEL));
+
         nextBtn = new Button(messageSource.getMessage(Message.NEXT));
         nextBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
+        final FormLayout formLayout = new FormLayout();
+        formLayout.addComponent(unameField);
+
+        addComponent(formLayout);
         addComponent(nextBtn);
     }
 
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(nextBtn, Alignment.MIDDLE_RIGHT);
+        this.setComponentAlignment(nextBtn, Alignment.MIDDLE_CENTER);
     }
     
     protected void initializeActions() {
