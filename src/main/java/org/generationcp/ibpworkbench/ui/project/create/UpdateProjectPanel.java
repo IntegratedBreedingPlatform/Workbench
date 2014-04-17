@@ -70,8 +70,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
 
-        //UpdateProjectAccordion projectAccordion = new UpdateProjectAccordion(this);
-        //createProjectAccordion = projectAccordion;
+        UpdateProjectAccordion projectAccordion = new UpdateProjectAccordion(this);
+        createProjectAccordion = projectAccordion;
         
         projectBasicDetails = new ProjectBasicDetailsComponent(this, true);
 
