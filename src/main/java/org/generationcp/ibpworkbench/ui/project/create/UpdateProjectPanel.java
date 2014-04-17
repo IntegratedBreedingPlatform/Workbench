@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -48,7 +49,14 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     protected void initializeActions() {
         super.saveProjectButton.addListener(new UpdateProjectAction(this));
         super.saveProjectButton.setCaption("Save");
-        cancelButton.addListener(new HomeAction());
+        cancelButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				projectBasicDetails.updateProjectDetailsFormField(getProject());
+				
+			}
+		});
     }
 
     
