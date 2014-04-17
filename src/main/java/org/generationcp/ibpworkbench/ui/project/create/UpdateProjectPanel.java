@@ -64,7 +64,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     protected  void initializeComponents() {
     	
     	 
-        heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA\"></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
+        heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
         heading.setStyleName(Bootstrap.Typography.H4.styleName()); 
     	
         newProjectTitleArea = new HorizontalLayout();
