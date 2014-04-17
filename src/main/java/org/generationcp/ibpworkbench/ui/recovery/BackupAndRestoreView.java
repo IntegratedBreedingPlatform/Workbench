@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.recovery;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -134,11 +135,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
         try {
             for(ProjectBackup pb : workbenchDataManager.getProjectBackups(sessionData.getLastOpenedProject())) {
+                if (!new File(pb.getBackupPath()).exists()) {
+                    continue;
+                }
+                
                 restoreList.addItem(pb);
 
                 String dateStr = (new SimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
-
-
 
                 restoreList.setItemCaption(pb,dateStr + " - " + pb.getBackupPath());
                 restoreList.setValue(pb);
@@ -237,6 +240,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             @Override
             public void buttonClick(ClickEvent event) {
                 restoreList.setEnabled(true);
+                
+                if (restoreList.getItemIds().isEmpty()) {
+                    restoreBtn.setEnabled(false);
+                } else {
+                    restoreBtn.setEnabled(true);
+                }
             }
         });
     }
