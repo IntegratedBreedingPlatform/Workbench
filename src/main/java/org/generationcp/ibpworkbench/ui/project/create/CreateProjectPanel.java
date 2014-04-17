@@ -114,7 +114,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeLayout() {
         VerticalLayout root = new VerticalLayout();
-        root.setMargin(new Layout.MarginInfo(false,true,true,true));
+        root.setMargin(new Layout.MarginInfo(true,true,true,true));
         root.setSpacing(false);
         root.setSizeUndefined();
         root.setWidth("900px");
