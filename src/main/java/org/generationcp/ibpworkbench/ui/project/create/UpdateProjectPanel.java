@@ -89,16 +89,16 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     	VerticalLayout root = new VerticalLayout();
         root.setMargin(new Layout.MarginInfo(true,true,true,true));
         root.setSpacing(true);
-        root.setWidth("800px");
-        
         root.addComponent(heading);
         root.addComponent(projectBasicDetails);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        
-    
+        root.setWidth("800px");
+       
+  
         setScrollable(true);
         setContent(root);
+        setSizeFull();
         
         
 
