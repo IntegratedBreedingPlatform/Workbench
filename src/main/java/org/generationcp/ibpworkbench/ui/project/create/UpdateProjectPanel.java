@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -25,13 +26,19 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Configurable
 public class UpdateProjectPanel extends CreateProjectPanel {
-    @Autowired
+    
+
+	@Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
     private SessionData sessionData;
 
     private String oldProjectName;
+    
+    private ProjectBasicDetailsComponent projectBasicDetails;
+    
+    private Label heading;
 
     public UpdateProjectPanel() {
         super();
@@ -40,52 +47,48 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     @Override
     protected void initializeActions() {
         super.saveProjectButton.addListener(new UpdateProjectAction(this));
+        super.saveProjectButton.setCaption("Save");
         cancelButton.addListener(new HomeAction());
-        /*
-        cancelButton.addListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                try {
-
-                    Project project = UpdateProjectPanel.this.getProject();
-
-                    // I'm defaulting the Role to Manager role
-                    WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-                    Role role = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
-
-                    String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
-                    (new OpenWorkflowForRoleAction(project)).doAction(event.getComponent().getWindow(), url, true);
-                } catch (Exception e) {
-                    if(e.getCause() instanceof InternationalizableException) {
-                        InternationalizableException i = (InternationalizableException) e.getCause();
-                        MessageNotifier.showError(event.getComponent().getWindow(), i.getCaption(), i.getDescription());
-                    }
-                    return;
-                }
-            }
-        });
-*/
     }
 
     
     @Override
     protected  void initializeComponents() {
-        this.newProjectTitleArea = new HorizontalLayout();
-        this.newProjectTitleArea.setSpacing(true);
-
-        //this.newProjectTitleArea.setHeight("40px");
-        //newProjectTitleArea.setStyleName("gcp-content-title");
-
-        this.addComponent(newProjectTitleArea);
+    	
+    	 
+        heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
+        heading.setStyleName(Bootstrap.Typography.H4.styleName()); 
+    	
+        newProjectTitleArea = new HorizontalLayout();
+        newProjectTitleArea.setSpacing(true);
 
         UpdateProjectAccordion projectAccordion = new UpdateProjectAccordion(this);
-
-        this.createProjectAccordion = projectAccordion;
-        this.addComponent(createProjectAccordion);
-
-        this.buttonArea = layoutButtonArea();
-        this.addComponent(buttonArea);
+        createProjectAccordion = projectAccordion;
+        
+        projectBasicDetails = new ProjectBasicDetailsComponent(this, true);
+        projectBasicDetails.updateProjectDetailsFormField(this.getProject());
+  
+        buttonArea = layoutButtonArea();
+    }
+    
+    @Override
+    protected  void initializeLayout() {
+    	
+    	VerticalLayout root = new VerticalLayout();
+        root.setMargin(new Layout.MarginInfo(true,true,true,true));
+        root.setSpacing(true);
+        root.setWidth("800px");
+        
+        root.addComponent(heading);
+        root.addComponent(projectBasicDetails);
+        root.addComponent(buttonArea);
+        root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        
+    
+        setScrollable(true);
+        setContent(root);
+        
+        
 
     }
 
@@ -120,33 +123,18 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
     }
 
-
-    @Override
-    public void setTitle(String label, String description) {
-        newProjectTitleArea.removeAllComponents();
-
-        Label heading = new Label("Update Program");
-        heading.setStyleName(Bootstrap.Typography.H1.styleName());
-
-        Label title = new Label(label);
-        title.setStyleName(Bootstrap.Typography.H2.styleName());
-
-        newProjectTitleArea.addComponent(heading);
-        newProjectTitleArea.addComponent(title);
-
-        Label descLbl = new Label(description);
-        descLbl.setWidth("300px");
-
-        PopupView popup = new PopupView("?",descLbl);
-        popup.setStyleName("gcp-popup-view");
-
-        newProjectTitleArea.addComponent(popup);
-        newProjectTitleArea.setComponentAlignment(heading, Alignment.BOTTOM_LEFT);
-        newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
-        newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
-    }
-
     public String getOldProjectName() {
         return oldProjectName;
     }
+    
+    @Override
+	public boolean validate() {
+    	 if (projectBasicDetails.validateAndSave()) {
+             return true;
+         }
+
+         return false;
+	}
+    
+    
 }
