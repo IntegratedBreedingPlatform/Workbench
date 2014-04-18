@@ -117,14 +117,12 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         provinceBeanContainer.setBeanIdProperty("locid");
         provinceBeanContainer.addAll(new ArrayList<Location>());
 
-
         lType = new ComboBox();
         lType.setWidth("250px");
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
         lType.setNullSelectionAllowed(false);
-        lType.select(udfBeanContainer.getItemIds().toArray()[0]);
         lType.setRequired(true);
         lType.setRequiredError("Please a select Location Type.");
 
