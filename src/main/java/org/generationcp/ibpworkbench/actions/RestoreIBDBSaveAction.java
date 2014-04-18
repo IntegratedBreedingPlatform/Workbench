@@ -104,6 +104,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         if (dialog.isConfirmed()) {
             LOG.debug("onClick > do Restore IBDB");
 
+            File currentDbBackupFile = null;
             try {
                 toolUtil.closeAllNativeTools();
 
@@ -112,6 +113,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
 
+                currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
@@ -138,12 +140,24 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 workbenchDataManager.addProjectActivity(projAct);
 
 
-            }  catch(IOException ex) {
-                MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
-                LOG.error("Error during restore", ex);
+            }  catch(IOException e) {
+            	LOG.error("Error during restore", e);
+            	//need to restore original state 
+            	try {
+            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
+            	} catch(Exception e2) {
+            		LOG.error("Error during restore", e2);
+            	}            	
+            	MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), e.getMessage());
             } catch(Exception e) {
+            	LOG.error("Error during restore", e);
+            	//need to restore original state 
+            	try {
+            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
+            	} catch(Exception e2) {
+            		LOG.error("Error during restore", e2);
+            	} 
                 MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
-                LOG.error("Error during restore", e);
             }
 
 
