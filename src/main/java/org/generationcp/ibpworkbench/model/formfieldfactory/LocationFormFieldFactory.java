@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -122,6 +123,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
+        lType.setNullSelectionAllowed(false);
+        lType.select(udfBeanContainer.getItemIds().toArray()[0]);
+        lType.setRequired(true);
+        lType.setRequiredError("Please a select Location Type.");
 
         country = new ComboBox();
         country.setWidth("250px");
