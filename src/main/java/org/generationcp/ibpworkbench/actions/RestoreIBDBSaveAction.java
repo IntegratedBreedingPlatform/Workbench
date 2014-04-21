@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.generationcp.commons.util.MySQLUtil;
@@ -48,7 +50,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	//private Select select;
     private ProjectBackup pb;
 	
-	
+    public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_\\d+_local_\\d+_\\d+_\\d+_(system)*.sql";
+    public static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(RestoreIBDBSaveAction.BACKUP_FILE_STRING_PATTERN);
+
+
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
 	
@@ -106,14 +111,29 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
             File currentDbBackupFile = null;
             try {
-                toolUtil.closeAllNativeTools();
+
 
                 File restoreFile = file;
 
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
 
+                Matcher matcher = BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
+                                if (matcher.matches()) {
+                                    String cropName = matcher.group(1);
+                                    if (!cropName.equals(sessionData.getLastOpenedProject().getCropType().getCropName())) {
+                                        MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "Invalid backup file. Selected backup file is for crop " + cropName);
+                                        LOG.error("Invalid backup file provided during restore : wrong crop type");
+                                        return;
+                                    }
+                                }
+
+                toolUtil.closeAllNativeTools();
                 currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
+
+
+
+
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
@@ -159,7 +179,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
             	} 
                 MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
             }
-
 
 
 		}
