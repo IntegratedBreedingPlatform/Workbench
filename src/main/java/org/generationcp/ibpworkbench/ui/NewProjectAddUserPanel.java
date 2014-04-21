@@ -126,7 +126,8 @@ public class NewProjectAddUserPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setStyleName(Reindeer.PANEL_LIGHT);
-        setWidth("100%");
+        //setWidth("100%");
+        setWidth("925px");
         
         
       
