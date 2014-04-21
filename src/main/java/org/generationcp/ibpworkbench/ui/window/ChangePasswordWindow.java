@@ -76,6 +76,7 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         this.setWidth("480px");
         this.setHeight("260px");
         this.setModal(true);
+        this.setResizable(false);
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
