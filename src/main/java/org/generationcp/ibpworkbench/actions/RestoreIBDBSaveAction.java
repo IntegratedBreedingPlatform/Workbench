@@ -128,10 +128,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                                     }
                                 }
 
+                toolUtil.closeAllNativeTools();
                 currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
                 
 
-                toolUtil.closeAllNativeTools();
+
 
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
