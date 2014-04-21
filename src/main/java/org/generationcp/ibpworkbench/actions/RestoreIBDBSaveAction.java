@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.generationcp.commons.util.MySQLUtil;
@@ -42,16 +44,19 @@ import org.vaadin.easyuploads.FileFactory;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
-	protected static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 
-	protected Window sourceWindow;
-	//private Select select;
+    protected Window sourceWindow;
+    //private Select select;
     private ProjectBackup pb;
-	
-	
-	@Autowired
+
+    public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_\\d+_local_\\d+_\\d+_\\d+_(system)*.sql";
+    public static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(RestoreIBDBSaveAction.BACKUP_FILE_STRING_PATTERN);
+
+
+    @Autowired
     private WorkbenchDataManager workbenchDataManager;
-	
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
@@ -66,25 +71,25 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
     private Project project;
 
-	private File file;
+    private File file;
 
     private static final String BACKUP_DIR = "temp";
 
     private boolean isUpload = false;
 
 
-    public RestoreIBDBSaveAction(Project project, Table table,Window sourceWindow) {
+    public RestoreIBDBSaveAction(Project project, Table table, Window sourceWindow) {
         pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
 
-		this.sourceWindow = sourceWindow;
-		this.project = project;
-	}
+        this.sourceWindow = sourceWindow;
+        this.project = project;
+    }
 
     public void setProjectBackup(ProjectBackup pb) {
         this.pb = pb;
     }
 
-    public RestoreIBDBSaveAction(Project project, ProjectBackup pb,Window sourceWindow) {
+    public RestoreIBDBSaveAction(Project project, ProjectBackup pb, Window sourceWindow) {
         //this.select = select;
         this.pb = pb;
         this.sourceWindow = sourceWindow;
@@ -95,8 +100,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         this.sourceWindow = sourceWindow;
     }
 
-	@Override
-	public void onClose(ConfirmDialog dialog) {
+    @Override
+    public void onClose(ConfirmDialog dialog) {
 
         if (pb != null)
             LOG.debug("selected backup: " + pb.getProjectBackupId());
@@ -105,28 +110,40 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
             LOG.debug("onClick > do Restore IBDB");
 
             try {
-                toolUtil.closeAllNativeTools();
+
 
                 File restoreFile = file;
 
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
 
+                Matcher matcher = BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
+                if (matcher.matches()) {
+                    String cropName = matcher.group(1);
+                    if (!cropName.equals(sessionData.getLastOpenedProject().getCropType().getCropName())) {
+                        MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "Invalid backup file. Selected backup file is for crop " + cropName);
+                        LOG.error("Invalid backup file provided during restore : wrong crop type");
+                        return;
+                    }
+                }
+
+                toolUtil.closeAllNativeTools();
+
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
                 // restore the database
-                mysqlUtil.restoreDatabase(project.getLocalDbName(),restoreFile);
+                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile);
                 Integer userId = workbenchDataManager.
-                		getLocalIbdbUserId(sessionData.getUserData().getUserid(),
-                				project.getProjectId());
-                mysqlUtil.updateOwnerships(project.getLocalDbName(),userId);
+                        getLocalIbdbUserId(sessionData.getUserData().getUserid(),
+                                project.getProjectId());
+                mysqlUtil.updateOwnerships(project.getLocalDbName(), userId);
                 // the restored database may be old
                 // and needs to be upgraded for it to be usable
                 WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
                 File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
                 mysqlUtil.upgradeDatabase(project.getLocalDbName(), schemaDir);
-                
+
                 //GCP-7958 - since users and persons tables are no longer restored, the line below is no longer needed - uncomment if it's no longer the case
                 //new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
 
@@ -134,27 +151,26 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 // LOG to project activity
                 //TODO: internationalize this
-                ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(),sessionData.getUserData(), new Date());
+                ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(), sessionData.getUserData(), new Date());
                 workbenchDataManager.addProjectActivity(projAct);
 
 
-            }  catch(IOException ex) {
-                MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
+            } catch (IOException ex) {
+                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
                 LOG.error("Error during restore", ex);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
                 LOG.error("Error during restore", e);
             }
 
 
+        }
+    }
 
-		}
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		mysqlUtil.setBackupDir(BACKUP_DIR);
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        mysqlUtil.setBackupDir(BACKUP_DIR);
+    }
 
     @Override
     public File createFile(String fileName, String mimeType) {
@@ -162,22 +178,22 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         if (!saveDir.exists() || !saveDir.isDirectory()) {
             saveDir.mkdirs();
         }
-        
+
         StringBuilder sb = new StringBuilder();
         if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
-        	//sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
-        	for (int x = 1; x < 10000;x++) {
-        		String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
-        		if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()){
-        			sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
-                	sb.append("_" + x + ".sql");
-        			break;
-        		}
-        	}
-        }else{
-        	sb.append(fileName);
+            //sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
+            for (int x = 1; x < 10000; x++) {
+                String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
+                if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
+                    sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
+                    sb.append("_" + x + ".sql");
+                    break;
+                }
+            }
+        } else {
+            sb.append(fileName);
         }
-        	
+
         this.file = new File(saveDir, sb.toString());
         return this.file;
     }
