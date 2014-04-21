@@ -58,11 +58,11 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         password = new PasswordField();
         password.setRequired(true);
         password.setRequiredError("Password cannot be blank");
-        password.setCaption("Password");
+        password.setCaption("Password:");
         password.focus();
         
         confirm_password = new PasswordField();
-        confirm_password.setCaption("Confirm Password");
+        confirm_password.setCaption("Confirm Password:");
         confirm_password.setRequired(true);
         confirm_password.setRequiredError("Confirm Password cannot be blank");
 
