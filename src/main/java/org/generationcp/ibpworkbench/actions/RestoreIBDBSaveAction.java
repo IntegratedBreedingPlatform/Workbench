@@ -109,6 +109,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         if (dialog.isConfirmed()) {
             LOG.debug("onClick > do Restore IBDB");
 
+            File currentDbBackupFile = null;
             try {
 
 
@@ -116,16 +117,19 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
-
+                
                 Matcher matcher = BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
-                if (matcher.matches()) {
-                    String cropName = matcher.group(1);
-                    if (!cropName.equals(sessionData.getLastOpenedProject().getCropType().getCropName())) {
-                        MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "Invalid backup file. Selected backup file is for crop " + cropName);
-                        LOG.error("Invalid backup file provided during restore : wrong crop type");
-                        return;
-                    }
-                }
+                                if (matcher.matches()) {
+                                    String cropName = matcher.group(1);
+                                    if (!cropName.equals(sessionData.getLastOpenedProject().getCropType().getCropName())) {
+                                        MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "Invalid backup file. Selected backup file is for crop " + cropName);
+                                        LOG.error("Invalid backup file provided during restore : wrong crop type");
+                                        return;
+                                    }
+                                }
+
+                currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
+                
 
                 toolUtil.closeAllNativeTools();
 
@@ -155,12 +159,24 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 workbenchDataManager.addProjectActivity(projAct);
 
 
-            } catch (IOException ex) {
-                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), ex.getMessage());
-                LOG.error("Error during restore", ex);
-            } catch (Exception e) {
+            }  catch(IOException e) {
+            	LOG.error("Error during restore", e);
+            	//need to restore original state 
+            	try {
+            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
+            	} catch(Exception e2) {
+            		LOG.error("Error during restore", e2);
+            	}            	
+            	MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), e.getMessage());
+            } catch(Exception e) {
+            	LOG.error("Error during restore", e);
+            	//need to restore original state 
+            	try {
+            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
+            	} catch(Exception e2) {
+            		LOG.error("Error during restore", e2);
+            	} 
                 MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
-                LOG.error("Error during restore", e);
             }
 
 

@@ -32,7 +32,7 @@ public class NewProjectAddUserWindow extends Window {
         setModal(true);
 
         // define window size, set as not resizable
-        setWidth("850px");
+        setWidth("900px");
         setHeight("535px");
         setResizable(false);
         

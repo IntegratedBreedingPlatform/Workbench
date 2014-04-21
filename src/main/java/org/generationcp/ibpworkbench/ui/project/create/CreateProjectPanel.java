@@ -117,7 +117,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         root.setMargin(new Layout.MarginInfo(true,true,true,true));
         root.setSpacing(false);
         root.setSizeUndefined();
-        root.setWidth("800px");
+        root.setWidth("900px");
 
         root.addComponent(newProjectTitleArea);
         root.addComponent(createProjectAccordion);
