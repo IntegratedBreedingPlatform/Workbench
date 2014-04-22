@@ -34,6 +34,9 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
 
     private static final long serialVersionUID = 1L;
 
+    private Label passwordLabel;
+    private Label confirmLabel;
+
     private Button cancelButton;
     private Button saveButton;
     
@@ -55,17 +58,16 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         this.addStyleName(Reindeer.WINDOW_LIGHT);
         this.setCaption("Change Password");
 
+        passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
+        confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
+        passwordLabel.setStyleName("v-label");
+        confirmLabel.setStyleName("v-label");
+        
         password = new PasswordField();
-        password.setRequired(true);
-        password.setRequiredError("Password cannot be blank");
-        password.setCaption("Password");
         password.focus();
         
         confirm_password = new PasswordField();
-        confirm_password.setCaption("Confirm Password");
-        confirm_password.setRequired(true);
-        confirm_password.setRequiredError("Confirm Password cannot be blank");
-
+        
         saveButton = new Button("Save");
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         
@@ -73,10 +75,9 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
     }
 
     protected void initializeLayout() {
-        this.setWidth("480px");
-        this.setHeight("260px");
+        this.setWidth("550px");
+        this.setHeight("150px");
         this.setModal(true);
-        this.setResizable(false);
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
@@ -86,25 +87,23 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
 
         // add the vertical split panel
 
-        FormLayout formLayout = new FormLayout();
-        formLayout.addComponent(password);
-        formLayout.addComponent(confirm_password);
-
-        Panel formContainer = new Panel();
-        formContainer.setStyleName("form-panel");
-        formContainer.setSizeFull();
-        formContainer.addComponent(formLayout);
-
+        HorizontalLayout fieldslayout = new HorizontalLayout();
+        fieldslayout.addComponent(passwordLabel);
+        fieldslayout.addComponent(password);
+        fieldslayout.addComponent(confirmLabel);
+        fieldslayout.addComponent(confirm_password);
+        
+        
         HorizontalLayout buttonlayout = new HorizontalLayout();
 
         buttonlayout.addComponent(cancelButton);
         buttonlayout.addComponent(saveButton);
         buttonlayout.setSpacing(true);
 
-        layout.addComponent(formContainer);
+        layout.addComponent(fieldslayout);
         layout.addComponent(buttonlayout);
-        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
-        layout.setExpandRatio(formContainer,1.0F);
+        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_RIGHT);
+        layout.setExpandRatio(fieldslayout,1.0F);
 
         this.setContent(layout);
     }

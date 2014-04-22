@@ -104,7 +104,7 @@ public class UserAccountPanel extends Panel {
         vl.setMargin(false);
         
         p.addComponent(vl);
-        p.setWidth("95%");
+        p.setWidth("800px");
        
       
         saveButton = new Button();
@@ -122,7 +122,7 @@ public class UserAccountPanel extends Panel {
         rootLayout.setSpacing(true);
         lblTitle = new Label("Register a New User Account");
         lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
-        lblTitle.setWidth("95%");
+        lblTitle.setWidth("800px");
     
         rootLayout.addComponent(loginPanelLayout);
         rootLayout.addComponent(lblTitle);
@@ -146,7 +146,7 @@ public class UserAccountPanel extends Panel {
 
     protected void initializeLayout() {
         setImmediate(false);
-        setWidth("820px");
+        setWidth("840px");
         setHeight("620px");
     }
 

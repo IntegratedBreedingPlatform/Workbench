@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.MessageSourceResolvable;
-
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -74,7 +72,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     private TextField otherCropNameField;
     private DateField startDateField;
     private ComboBox cropTypeCombo;
-    private CropTypeComboAction cropTypeComboAction;
     
     private Label lblCrop;
     private Label lblOtherCrop;
@@ -304,16 +301,28 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         ComboBox comboBox = new ComboBox();
         comboBox.setContainerDataSource(beanItemContainer);
         comboBox.setNewItemsAllowed(false);
-        //comboBox.addListener(new ComboBoxNewItemsListener());
-        //cropTypeComboAction = new CropTypeComboAction();
-        //cropTypeComboAction.setSourceComponent(this);
-        //cropTypeComboAction.setCropTypeComboBox(comboBox);
+        comboBox.setItemCaptionPropertyId("cropName");
+        comboBox.setRequired(true);
+        comboBox.setRequiredError("Please choose a Crop.");
+        comboBox.setInputPrompt("Please choose");
+        comboBox.setInvalidAllowed(false);
+        comboBox.setNullSelectionAllowed(false);
+        comboBox.setImmediate(true);  
        
-        //comboBox.setNewItemHandler(cropTypeComboAction);
+        if (cropTypes.size() == 1){     //If there is only one crop, set this by default
+            comboBox.setValue(cropTypes.get(0));
+        }
+        
         comboBox.addListener(new Property.ValueChangeListener() {
 			
+        	private static final long serialVersionUID = 1L;
+
 			@Override
 			public void valueChange(ValueChangeEvent event) {
+				
+				if (event.getProperty() == null) return;
+				if (event.getProperty().getValue() == null) return;
+				
 				if (((CropType)event.getProperty().getValue()).getCropName().equals(GENERIC_CROP_DESCRIPTION)){
 					otherCropNameField.setVisible(true);
 					otherCropNameField.setRequired(true);
@@ -326,17 +335,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 				
 			}
 		});
-        
-        comboBox.setItemCaptionPropertyId("cropName");
-        comboBox.setRequired(true);
-        comboBox.setRequiredError("Please select a Crop.");
-        comboBox.setImmediate(true);
-        comboBox.setInputPrompt("Please choose");
-        comboBox.setInvalidAllowed(false);
-       
-        if (cropTypes.size() == 1){     //If there is only one crop, set this by default
-            comboBox.setValue(cropTypes.get(0));
-        }
        
         return comboBox;
     }
