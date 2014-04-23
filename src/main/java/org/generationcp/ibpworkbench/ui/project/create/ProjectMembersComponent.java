@@ -171,6 +171,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		});
         
+        final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+        addComponent(headingDesc);
+        
         addComponent(select);
         
         initializeMembersTable();
