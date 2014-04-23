@@ -155,8 +155,8 @@ public class LoginWindow extends Window implements InitializingBean {
         final Label loginSubTitle = new Label("Sign In",Label.CONTENT_XHTML);
         loginSubTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-        final Label usernameLbl = new Label(messageSource.getMessage(Message.USERNAME) + ":");
-        final Label passwordLbl = new Label(messageSource.getMessage(Message.PASSWORD)+ ":");
+        final Label usernameLbl = new Label((messageSource.getMessage(Message.USERNAME) + ":").toUpperCase());
+        final Label passwordLbl = new Label((messageSource.getMessage(Message.PASSWORD)+ ":").toUpperCase());
         final Label rememberMeLbl = new Label(messageSource.getMessage(Message.REMEMBER_ME) +"&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
 
         final Label desc = new Label("Please note: If this is your first time " +
@@ -184,12 +184,18 @@ public class LoginWindow extends Window implements InitializingBean {
         loginFrmLayout.addComponent(loginSubTitle,0,0,1,0);
         loginFrmLayout.addComponent(usernameLbl,0,1);
         loginFrmLayout.addComponent(usernameGrp,1,1);
+        loginFrmLayout.setComponentAlignment(usernameLbl,Alignment.MIDDLE_LEFT);
+        loginFrmLayout.setComponentAlignment(usernameGrp,Alignment.MIDDLE_LEFT);
 
         loginFrmLayout.addComponent(passwordLbl,0,2);
         loginFrmLayout.addComponent(passwordGrp,1,2);
+        loginFrmLayout.setComponentAlignment(passwordLbl,Alignment.MIDDLE_LEFT);
+        loginFrmLayout.setComponentAlignment(passwordGrp,Alignment.MIDDLE_LEFT);
 
         loginFrmLayout.addComponent(forgotPasswordBtn,1,3);
         loginFrmLayout.addComponent(loginBtn,1,4);
+        loginFrmLayout.setComponentAlignment(forgotPasswordBtn,Alignment.TOP_LEFT);
+
 
         final VerticalLayout root = new VerticalLayout();
         root.setSizeFull();
