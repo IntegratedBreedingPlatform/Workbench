@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -138,7 +140,17 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
                 // restore the database
-                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile);
+                //mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile);
+                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile,new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        IBDBGeneratorLocalDb generateLocalDB = new IBDBGeneratorLocalDb(sessionData.getLastOpenedProject().getCropType(),sessionData.getLastOpenedProject().getProjectId());
+                        return generateLocalDB.generateDatabase();
+                    }
+                });
+
+
+
                 Integer userId = workbenchDataManager.
                         getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                                 project.getProjectId());
