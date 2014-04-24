@@ -141,7 +141,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
                 // restore the database
                 //mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile);
-                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile,new Callable<Boolean>() {
+                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, currentDbBackupFile, new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         IBDBGeneratorLocalDb generateLocalDB = new IBDBGeneratorLocalDb(sessionData.getLastOpenedProject().getCropType(),sessionData.getLastOpenedProject().getProjectId());
