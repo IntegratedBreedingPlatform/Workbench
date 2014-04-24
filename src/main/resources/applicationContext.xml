@@ -145,6 +145,7 @@
         <property name="username" value="${workbench.username}"/>
         <property name="password" value="${workbench.password}"/>
         <property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}"/>
+        <property name="mysqlPath" value="${workbench.mysqlExePath}"/>
     </bean>
 
     <bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
