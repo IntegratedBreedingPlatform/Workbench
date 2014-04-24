@@ -148,7 +148,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         otherCropNameField.setRequiredError("Please enter Crop Name.");
         otherCropNameField.addValidator(new StringLengthValidator("Crop Name must be 3-70 characters.", 3, 70, false));
         otherCropNameField.addValidator(new RegexValidator("Crop name must not contain any of the following: ' \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
-        otherCropNameField.addValidator(new ValueRangeValidator("Crop name is pre-defined. Please change the crop name."));
+        otherCropNameField.addValidator(new ValueRangeValidator("This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
         otherCropNameField.setStyleName("hide-caption");
         otherCropNameField.setVisible(false);
         
@@ -512,7 +512,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			
 			for (CropType.CropEnum crop : CropType.CropEnum.values()){
 				if (crop.toString().equalsIgnoreCase((value.toString().trim()))){
-					this.setErrorMessage(String.format("Crop Name \"{0}\" is pre-defined in the system. Please change the Crop Name.", value.toString().trim()));
+					this.setErrorMessage(String.format("This crop name ({0}) is reserved because there is a database available for it. Please install the {0} database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop.", value.toString().trim()));
 					return false;
 				}
 			}
