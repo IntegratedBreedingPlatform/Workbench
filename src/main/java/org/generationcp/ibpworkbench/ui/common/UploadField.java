@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.common;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 
 public class UploadField extends org.vaadin.easyuploads.UploadField {
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class UploadField extends org.vaadin.easyuploads.UploadField {
     @Override
     protected void buildDefaulLayout() {
         super.buildDefaulLayout();
-        upload.addStyleName("restoreUploadButton");
+        upload.addStyleName(Bootstrap.Buttons.INFO.styleName() +" restoreUploadButton");
         noFileLabel = new Label(noFileSelectedText);
         getRootLayout().addComponent(noFileLabel);
     }
@@ -63,7 +64,7 @@ public class UploadField extends org.vaadin.easyuploads.UploadField {
         if( lastFileName != null )
         {
             sb.append(selectedFileText + "\u00a0");
-            sb.append(lastFileName);
+            sb.append("<i>"+ lastFileName + "</i>");
             sb.append("</br> ");
         }
 
