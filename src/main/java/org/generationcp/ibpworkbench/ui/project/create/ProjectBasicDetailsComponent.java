@@ -158,7 +158,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         startDateField.setRequiredError("Please enter a Start Date.");
 		startDateField.setStyleName("project-data-time");
 		startDateField.setStyleName("hide-caption");
-		startDateField.setWidth("250px");
+        startDateField.setResolution(DateField.RESOLUTION_DAY);
+        startDateField.setWidth("250px");
 
         cropTypeCombo = createCropTypeComboBox();
         cropTypeCombo.setWidth("250px");
