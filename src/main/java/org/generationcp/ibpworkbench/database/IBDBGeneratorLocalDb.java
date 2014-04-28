@@ -95,7 +95,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
         try {
 
-            statement = connection.createStatement();
+            statement = getConnection().createStatement();
             
             createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
             
@@ -114,8 +114,8 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             statement.executeBatch();
             
             generatedDatabaseName = databaseName;
-            
-            connection.setCatalog(databaseName);
+
+            getConnection().setCatalog(databaseName);
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -139,13 +139,13 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/local");
             
             // run the common scripts
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
+            runScriptsInDirectory(new File(localDatabaseDirectory, "common"));
             
             // run crop specific script
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, cropType.getCropName()));
+            runScriptsInDirectory(new File(localDatabaseDirectory, cropType.getCropName()));
             
             // run the common-update scripts
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common-update"));
+            runScriptsInDirectory(new File(localDatabaseDirectory, "common-update"));
         }
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
@@ -159,9 +159,9 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     	PreparedStatement preparedStatement = null;
     	try {
     		
-		    connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-    	
-		    connection.setCatalog(generatedDatabaseName);
+		    createConnection();
+
+		    getConnection().setCatalog(generatedDatabaseName);
     	
     	    Set<Integer> keySet = cachedLocations.keySet();
     	
@@ -169,7 +169,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     	
     	    LocationModel location;
     	
-    	    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
+    	    preparedStatement = getConnection().prepareStatement(DEFAULT_INSERT_LOCATIONS);
     	
     	    while(keyIter.hasNext()) {
     		
@@ -217,9 +217,9 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         PreparedStatement preparedStatement = null;
         try {
             
-            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-        
-            connection.setCatalog(generatedDatabaseName);
+            createConnection();
+
+            getConnection().setCatalog(generatedDatabaseName);
         
             Set<Integer> keySet = cachedBreedingMethods.keySet();
         
@@ -227,7 +227,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         
             BreedingMethodModel breedingMethod;
         
-            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
+            preparedStatement = getConnection().prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
         
             while(keyIter.hasNext()) {
             
@@ -300,11 +300,11 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         ResultSet resultSet = null;
         try {
             
-            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-        
-            connection.setCatalog(generatedDatabaseName);
+            createConnection();
+
+            getConnection().setCatalog(generatedDatabaseName);
             
-            stmt = connection.createStatement();
+            stmt = getConnection().createStatement();
             resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
             
             if (resultSet.next()) {
@@ -312,7 +312,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
                 installId--;
             }
             
-            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
+            preparedStatement = getConnection().prepareStatement(DEFAULT_INSERT_INSTALLATION);
             
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             Date date = new Date();

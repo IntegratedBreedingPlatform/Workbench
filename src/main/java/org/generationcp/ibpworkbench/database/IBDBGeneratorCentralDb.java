@@ -72,7 +72,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     private boolean databaseExists() {
         Statement statement = null;
         try {
-            statement = connection.createStatement();
+            statement = getConnection().createStatement();
             statement.execute("USE " + cropType.getCentralDbName());
             return true;
         } catch (SQLException e) {
@@ -96,7 +96,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
         Statement statement = null;
         try {
-            statement = connection.createStatement();
+            statement = getConnection().createStatement();
             createDatabaseSyntax.append(SQL_CREATE_DATABASE_IF_NOT_EXISTS).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
             statement.addBatch(createDatabaseSyntax.toString());
 
@@ -110,7 +110,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             statement.executeBatch();
 
             generatedDatabaseName = databaseName.toString();
-            connection.setCatalog(databaseName.toString());
+            getConnection().setCatalog(databaseName.toString());
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -134,13 +134,13 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/central");
             
             // run the common scripts
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common"));
+            runScriptsInDirectory(new File(localDatabaseDirectory, "common"));
             
             // run the scripts for custom crops
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "custom"));
+            runScriptsInDirectory(new File(localDatabaseDirectory, "custom"));
             
             // run the common-post scripts
-            runScriptsInDirectory(connection, new File(localDatabaseDirectory, "common-update"));
+            runScriptsInDirectory(new File(localDatabaseDirectory, "common-update"));
             
             // NOTE: IBDBGeneratorCentralDb is intended to be run for custom crops only,
             // hence, we should not be running scripts for specific crops here
@@ -169,12 +169,12 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         Statement stmt = null;
         ResultSet resultSet = null;
         try {
+
+            createConnection();
+
+            getConnection().setCatalog(generatedDatabaseName);
             
-            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-        
-            connection.setCatalog(generatedDatabaseName);
-            
-            stmt = connection.createStatement();
+            stmt = getConnection().createStatement();
     		
     		stmt.execute("SELECT MIN(instalid) FROM instln");
     		resultSet = stmt.getResultSet();
@@ -197,7 +197,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     			fldno = stmt.getResultSet().getInt(1);
     		}
       
-            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
+            preparedStatement = getConnection().prepareStatement(DEFAULT_INSERT_INSTALLATION);
             
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             Date date = new Date();

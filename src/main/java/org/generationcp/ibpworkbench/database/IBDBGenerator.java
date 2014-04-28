@@ -30,12 +30,16 @@ import java.util.List;
 import java.util.Properties;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.commons.util.ScriptRunner;
 import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class IBDBGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
     //common constants
@@ -66,17 +70,15 @@ public class IBDBGenerator {
     protected static final String DEFAULT_CHAR_SET = "utf8";
     protected static final String DEFAULT_COLLATE = "utf8_general_ci";
 
-    protected Connection connection;
     protected String generatedDatabaseName;
 
-    protected String workbenchHost;
-    protected String workbenchPort;
-    protected String workbenchUsername;
-    protected String workbenchPassword;
-    protected String workbenchURL;
+    @Autowired
+    private MySQLUtil mysqlUtil;
+
 
     protected void createConnection() throws InternationalizableException {
-        if (this.connection == null) {
+        /*
+        * if (this.connection == null) {
 
             Properties prop = new Properties();
 
@@ -120,10 +122,17 @@ public class IBDBGenerator {
                 handleDatabaseError(e);
             }
         }
+        * */
+
+        try {
+            mysqlUtil.connect();
+        } catch (SQLException e) {
+            handleDatabaseError(e);
+        }
     }
 
     protected void executeSQLFile(File sqlFile) throws InternationalizableException {
-        ScriptRunner scriptRunner = new ScriptRunner(connection);
+        ScriptRunner scriptRunner = new ScriptRunner(mysqlUtil.getConnection());
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
@@ -143,10 +152,14 @@ public class IBDBGenerator {
             }
         }
     }
+
+    protected void runScriptsInDirectory(File directory) {
+        mysqlUtil.runScriptsInDirectory(directory);
+    }
     
     protected void runScriptsInDirectory(Connection conn, File directory) {
-        ScriptRunner scriptRunner = new ScriptRunner(connection);
-        
+        ScriptRunner scriptRunner = new ScriptRunner(conn);
+
         // get the sql files
         File[] sqlFilesArray = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -156,13 +169,13 @@ public class IBDBGenerator {
         if (sqlFilesArray == null || sqlFilesArray.length == 0) {
             return;
         }
-        
+
         List<File> sqlFiles = Arrays.asList(sqlFilesArray);
         Collections.sort(sqlFiles);
-        
+
         for (File sqlFile : sqlFiles) {
             BufferedReader br = null;
-            
+
             try {
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
                 scriptRunner.runScript(br);
@@ -183,8 +196,9 @@ public class IBDBGenerator {
         }
     }
 
-    protected void closeConnection() throws InternationalizableException {
-        if (connection != null) {
+    protected void closeConnection() {
+        /*
+            if (connection != null) {
             try {
                 connection.close();
                 connection = null;
@@ -192,7 +206,10 @@ public class IBDBGenerator {
                 handleDatabaseError(e);
             }
         }
-    }
+        * */
+
+        mysqlUtil.disconnect();
+     }
 
     protected static void handleDatabaseError(Exception e) throws InternationalizableException {
         LOG.error(e.toString(), e);
@@ -204,5 +221,9 @@ public class IBDBGenerator {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+    }
+
+    protected Connection getConnection() {
+        return mysqlUtil.getConnection();
     }
 }
