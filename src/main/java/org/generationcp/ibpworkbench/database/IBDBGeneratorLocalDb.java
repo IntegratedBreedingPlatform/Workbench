@@ -139,13 +139,13 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/local");
             
             // run the common scripts
-            runScriptsInDirectory(new File(localDatabaseDirectory, "common"));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, "common"));
             
             // run crop specific script
-            runScriptsInDirectory(new File(localDatabaseDirectory, cropType.getCropName()));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, cropType.getCropName()));
             
             // run the common-update scripts
-            runScriptsInDirectory(new File(localDatabaseDirectory, "common-update"));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, "common-update"));
         }
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);

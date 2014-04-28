@@ -153,8 +153,8 @@ public class IBDBGenerator {
         }
     }
 
-    protected void runScriptsInDirectory(File directory) {
-        mysqlUtil.runScriptsInDirectory(directory);
+    protected void runScriptsInDirectory(String databaseName,File directory) {
+        mysqlUtil.runScriptsInDirectory(databaseName,directory);
     }
     
     protected void runScriptsInDirectory(Connection conn, File directory) {

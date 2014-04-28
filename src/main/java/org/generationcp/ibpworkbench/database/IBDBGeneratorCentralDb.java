@@ -134,13 +134,13 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/central");
             
             // run the common scripts
-            runScriptsInDirectory(new File(localDatabaseDirectory, "common"));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, "common"));
             
             // run the scripts for custom crops
-            runScriptsInDirectory(new File(localDatabaseDirectory, "custom"));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, "custom"));
             
             // run the common-post scripts
-            runScriptsInDirectory(new File(localDatabaseDirectory, "common-update"));
+            runScriptsInDirectory(generatedDatabaseName,new File(localDatabaseDirectory, "common-update"));
             
             // NOTE: IBDBGeneratorCentralDb is intended to be run for custom crops only,
             // hence, we should not be running scripts for specific crops here
