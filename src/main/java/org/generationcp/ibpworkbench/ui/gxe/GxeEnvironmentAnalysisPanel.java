@@ -537,16 +537,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 					File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
 		            try {
 						ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", gxeInput.getDestXMLFilePath());
-						Process process = pb.start();
-
-						/* Added while loop to get input stream because process.waitFor() has a problem
-						 * Reference: 
-						 * http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
-						 */
-						BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-						while ((reader.readLine()) != null) {}
-
-						process.waitFor();
+						pb.start();
 
                         MessageNotifier.showMessage(windowSource, "GxE files saved", "Successfully generated the means dataset and xml input files for breeding view.");
                     }
@@ -554,10 +545,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
                         e.printStackTrace();
                         MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(), "But it successfully created GxE Excel and XML input file for the breeding_view!");
                     }
-                    catch (InterruptedException e) {
-                        e.printStackTrace();
-                        MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(), "But it successfully created GxE Excel and XML input file for the breeding_view!");
-                    }
+                    
 				}
 				
 				managerFactory.close();
