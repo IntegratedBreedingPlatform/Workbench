@@ -270,16 +270,8 @@ public class RunBreedingViewAction implements ClickListener {
              LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\"" +  breedingViewInput.getDestXMLFilePath() + "\"");
              
              ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
-             Process process = pb.start();
+             pb.start();
              
-             /* Added while loop to get input stream because process.waitFor() has a problem
-              * Reference: 
-              * http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
-              */
-             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-             while ((reader.readLine()) != null) {}
-             
-             process.waitFor();
          } catch (BreedingViewXMLWriterException e) {
              log.debug("Cannot write Breeding View input XML", e);
              
@@ -289,11 +281,7 @@ public class RunBreedingViewAction implements ClickListener {
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
-        catch (InterruptedException e) {
-            log.debug("BreedingView interrupted");
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
-        }
-         
+        
         source.getManagerFactory().close();
     }
     
