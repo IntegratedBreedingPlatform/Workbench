@@ -331,6 +331,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 				}else{
 					otherCropNameField.setVisible(false);
 					otherCropNameField.setRequired(false);
+					otherCropNameField.setValue("");
 					lblOtherCrop.setVisible(false);
 				}
 				
