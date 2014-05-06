@@ -112,10 +112,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
             LOG.debug("onClick > do Restore IBDB");
 
             File currentDbBackupFile = null;
+            File restoreFile = file;
+
             try {
-
-
-                File restoreFile = file;
 
                 if (!this.isUpload())
                     restoreFile = new File(pb.getBackupPath());
@@ -132,15 +131,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 toolUtil.closeAllNativeTools();
                 currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
-                
-
-
 
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
                 mysqlUtil.dropSchemaVersion(project.getLocalDbName());
+
                 // restore the database
-                //mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile);
                 mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, currentDbBackupFile, new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
@@ -149,12 +145,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                     }
                 });
 
-
-
                 Integer userId = workbenchDataManager.
                         getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                                 project.getProjectId());
+
                 mysqlUtil.updateOwnerships(project.getLocalDbName(), userId);
+
                 // the restored database may be old
                 // and needs to be upgraded for it to be usable
                 WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
@@ -172,24 +168,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 workbenchDataManager.addProjectActivity(projAct);
 
 
-            }  catch(IOException e) {
-            	LOG.error("Error during restore", e);
-            	//need to restore original state 
-            	try {
-            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
-            	} catch(Exception e2) {
-            		LOG.error("Error during restore", e2);
-            	}            	
-            	MessageNotifier.showError(sourceWindow,messageSource.getMessage(Message.ERROR_UPLOAD), e.getMessage());
             } catch(Exception e) {
-            	LOG.error("Error during restore", e);
-            	//need to restore original state 
-            	try {
-            		mysqlUtil.restoreOriginalState(project.getLocalDbName(), currentDbBackupFile);
-            	} catch(Exception e2) {
-            		LOG.error("Error during restore", e2);
-            	} 
-                MessageNotifier.showError(sourceWindow, messageSource.getMessage(Message.ERROR_UPLOAD), "An error occurred during restoration");
+                MessageNotifier.showError(sourceWindow, "Cannot perform restore operation", e.getMessage());
             }
 
 

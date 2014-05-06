@@ -122,6 +122,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         lType.setContainerDataSource(udfBeanContainer);
         lType.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         lType.setItemCaptionPropertyId("fname");
+        lType.setNullSelectionAllowed(false);
+        lType.setRequired(true);
+        lType.setRequiredError("Please a select Location Type.");
+
 
         country = new ComboBox();
         country.setWidth("250px");
