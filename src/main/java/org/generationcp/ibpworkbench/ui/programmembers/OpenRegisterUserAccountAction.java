@@ -9,9 +9,9 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.ui.programmembers;
 
-import org.generationcp.ibpworkbench.ui.UserAccountPanel;
+import org.generationcp.ibpworkbench.ui.programmembers.UserAccountPanel;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;

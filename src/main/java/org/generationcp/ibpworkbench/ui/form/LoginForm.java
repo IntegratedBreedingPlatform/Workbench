@@ -16,7 +16,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.OpenRegisterUserAccountAction;
+import org.generationcp.ibpworkbench.ui.programmembers.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
 import org.generationcp.ibpworkbench.util.CookieUtils;
 import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;

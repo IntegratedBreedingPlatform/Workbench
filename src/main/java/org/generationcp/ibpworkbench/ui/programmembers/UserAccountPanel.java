@@ -9,65 +9,61 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.ui;
+package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.Collection;
-
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.CloseWindowAction;
-import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
+import org.generationcp.ibpworkbench.actions.OpenLoginWindowAction;
 import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
-import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+
 
 /**
- * <b>Description</b>: Panel for displaying UserAccountForm in the AddUser pop-up window.
+ * <b>Description</b>: Panel for displaying UserAccountForm.
  * 
  * <br>
  * <br>
  * 
- * <b>Author</b>: Mark Agarrado
+ * <b>Author</b>: Michael Blancaflor
  * <br>
- * <b>File Created</b>: October 15, 2012
+ * <b>File Created</b>: Jul 17, 2012
  */
 @Configurable
-public class NewProjectAddUserPanel extends Panel {
+public class UserAccountPanel extends Panel {
 
-    private static final long serialVersionUID = 2187912990347713234L;
+    private static final long serialVersionUID = 1013885188470873112L;
 
     private VerticalLayout vl;
     private VerticalLayout rootLayout;
-    
     private UserAccountForm userForm;
     
     private Button saveButton;
     private Button cancelButton;
     
     private HorizontalLayout buttonLayout;
-    
-    private TwinTableSelect<User> membersSelect;
-    
-    private final static Object[] VISIBLE_ITEM_PROPERTIES = new Object[] { 
-        "firstName", "middleName", "lastName", "email", 
-        "username", "securityQuestion",  "securityAnswer"};
-    
+    private HorizontalLayout spaceLayout;
+    private HorizontalLayout smallSpaceLayout;
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    public NewProjectAddUserPanel(TwinTableSelect<User> membersSelect) {
-        this.membersSelect = membersSelect;
-        
+    private Label lblTitle;
+    private Label lblBanner;
+    public UserAccountPanel() {
         assemble();
     }
+
 
     protected void assemble() {
         initializeComponents();
@@ -76,44 +72,67 @@ public class NewProjectAddUserPanel extends Panel {
         initializeActions();
     }
 
+
     protected void initializeComponents() {
-    	rootLayout = new VerticalLayout();
+    	
+    	VerticalLayout loginPanelLayout = new VerticalLayout();
+    	loginPanelLayout.setHeight("87px");
+        loginPanelLayout.setImmediate(false);
+        loginPanelLayout.setStyleName("gcp-login");
+
+        lblBanner = new Label();
+        lblBanner.setWidth("100%");
+        lblBanner.setStyleName("gcp-login-user-account-title");
+        
+        loginPanelLayout.addComponent(lblBanner);
+        
+        rootLayout = new VerticalLayout();
         vl = new VerticalLayout();
         
         final Panel p = new Panel();
         p.setStyleName("form-panel");
         p.setSizeFull();
         
-        userForm = new UserAccountForm(new UserAccountModel(), VISIBLE_ITEM_PROPERTIES);
+        userForm = new UserAccountForm(new UserAccountModel());
       
         vl.setSizeFull();
         vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
         vl.addComponent(userForm);
-        //vl.setMargin(new Layout.MarginInfo(false,true,true,true));
         vl.setSpacing(true);
+        vl.setMargin(false);
         
         p.addComponent(vl);
+        p.setWidth("800px");
+       
       
         saveButton = new Button();
+        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         cancelButton = new Button();
         buttonLayout = new HorizontalLayout();
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(saveButton);
+        buttonLayout.setComponentAlignment(cancelButton, Alignment.MIDDLE_CENTER);
+        buttonLayout.setComponentAlignment(saveButton, Alignment.MIDDLE_CENTER);
         buttonLayout.setWidth("140px");
         buttonLayout.setMargin(true, false, false, false);
       
-        rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
+        //rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootLayout.setSpacing(true);
-        Label lblTitle = new Label("Register a New User Account");
+        lblTitle = new Label("Register a New User Account");
         lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+        lblTitle.setWidth("800px");
+    
+        rootLayout.addComponent(loginPanelLayout);
         rootLayout.addComponent(lblTitle);
         rootLayout.addComponent(p);
         rootLayout.addComponent(buttonLayout);
+        rootLayout.setComponentAlignment(lblTitle, Alignment.MIDDLE_CENTER);
         rootLayout.setComponentAlignment(p, Alignment.MIDDLE_CENTER);
         rootLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
-       
+        rootLayout.setStyleName("v-panel-content-gcp-createuser");
+        
         setContent(rootLayout);
-       
+        
     }
     
     protected void initializeValues() {
@@ -125,19 +144,13 @@ public class NewProjectAddUserPanel extends Panel {
 
     protected void initializeLayout() {
         setImmediate(false);
-        setStyleName(Reindeer.PANEL_LIGHT);
-        //setWidth("100%");
-        setWidth("925px");
-        
-        
-      
+        setWidth("840px");
+        setHeight("620px");
     }
 
     protected void initializeActions() {
-        saveButton.addListener(new SaveNewProjectAddUserAction(userForm, membersSelect));
-        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
-        cancelButton.addListener(new CloseWindowAction());
+        saveButton.addListener(new SaveUserAccountAction(userForm));
+        cancelButton.addListener(new OpenLoginWindowAction());
     }
     
     @Override
@@ -148,16 +161,9 @@ public class NewProjectAddUserPanel extends Panel {
     }
 
     public void updateLabels() {
+    	messageSource.setValue(lblBanner,Message.LOGIN_TITLE);
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
         //messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
-    }
-    
-    public UserAccountForm getForm() {
-        return userForm;
-    }
-    
-    public void refreshVisibleItems(){
-        userForm.setVisibleItemProperties(VISIBLE_ITEM_PROPERTIES);
     }
 }

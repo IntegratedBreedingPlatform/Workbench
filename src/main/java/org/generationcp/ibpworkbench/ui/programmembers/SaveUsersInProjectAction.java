@@ -10,7 +10,7 @@
  * 
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

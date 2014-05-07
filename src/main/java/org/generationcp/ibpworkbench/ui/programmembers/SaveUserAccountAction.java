@@ -9,15 +9,18 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.LoginPresenter;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -59,10 +62,13 @@ public class SaveUserAccountAction implements ClickListener {
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
+    @Autowired
+    private SessionData sessionData;
+
     public SaveUserAccountAction(Form userAccountForm) {
         this.userAccountForm = userAccountForm;
     }
@@ -73,37 +79,23 @@ public class SaveUserAccountAction implements ClickListener {
         @SuppressWarnings("unchecked")
         BeanItem<UserAccountModel> bean =  (BeanItem<UserAccountModel>) userAccountForm.getItemDataSource();
         UserAccountModel userAccount = bean.getBean();
-        
+
         try {
-        	userAccountForm.commit();
-        } catch (Exception e) {
-            //TODO: investigate. Exception still not properly handled.
-            //vaadin shows an "Internal Error" message
-            if (e instanceof InternationalizableException) {                
-                InternationalizableException i = (InternationalizableException) e;
-
-                MessageNotifier.showError(event.getComponent().getWindow(),
-                        i.getCaption(), 
-                        i.getDescription());
-            } else if(e instanceof InvalidValueException){
-            	String errorMessage=e.getMessage();
-            	
-            	if(errorMessage==null){
-            		errorMessage="Please enter valid Email Address";
-            	}
-
-                MessageNotifier.showWarning(this.userAccountForm.getWindow(),
-                        errorMessage,
-                        "");
-
-            } else {
-                MessageNotifier.showError(event.getComponent().getWindow(), 
-                        e.getMessage(), 
-                        "");
-            }
+            userAccountForm.commit();
+        }
+        catch (InternationalizableException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
             return;
         }
-        
+        catch (InvalidValueException e) {
+            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.ERROR), ValidationUtil.getMessageFor(e));
+            return;
+        }
+        catch (Exception e) {
+            // handle error for unexpected cases
+            return;
+        }
+
         try {
             saveUserAccount(userAccount);
         } catch (MiddlewareQueryException e) {
@@ -117,12 +109,11 @@ public class SaveUserAccountAction implements ClickListener {
         // Just attempt to log... user will be null if session has just started,
         // and currentProject will be null when theres no last opened project
         try {
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-            User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
+            User user = sessionData.getUserData();
+            Project currentProject = sessionData.getLastOpenedProject();
 
             if (currentProject != null) {
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member", "Added a new user (" + userAccount.getUsername()
+                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Register User", "Added a new user (" + userAccount.getUsername()
                         + ") to " + currentProject.getProjectName(), user, new Date());
                 workbenchDataManager.addProjectActivity(projAct);
             }

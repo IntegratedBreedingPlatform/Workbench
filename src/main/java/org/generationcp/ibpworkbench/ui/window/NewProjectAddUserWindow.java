@@ -2,7 +2,7 @@ package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.ui.themes.Reindeer;
 
-import org.generationcp.ibpworkbench.ui.NewProjectAddUserPanel;
+import org.generationcp.ibpworkbench.ui.programmembers.NewProjectAddUserPanel;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.pojos.User;
 

@@ -21,6 +21,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -69,12 +70,17 @@ public class SaveNewProjectAddUserAction implements ClickListener {
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
     
     public SaveNewProjectAddUserAction(Form userAccountForm, TwinTableSelect<User> membersSelect) {
         this.userAccountForm = userAccountForm;
         this.membersSelect = membersSelect;
     }
-    
+
+    //TODO: Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
+    // this can be consolidated to avoid redundant code
     @Override
     public void buttonClick(ClickEvent event) {
         @SuppressWarnings("unchecked")
@@ -92,6 +98,10 @@ public class SaveNewProjectAddUserAction implements ClickListener {
             MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.ERROR), ValidationUtil.getMessageFor(e));
             return;
         }
+        catch (Exception e) {
+            // handle error for unexpected cases
+            return;
+        }
         
         try {
             saveUserAccount(userAccount, membersSelect);
@@ -103,16 +113,14 @@ public class SaveNewProjectAddUserAction implements ClickListener {
             return;
         }
         
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        User user = app.getSessionData().getUserData();
-        Project currentProject = app.getSessionData().getLastOpenedProject();
-        
         try {
+            User user = sessionData.getUserData();
+            Project currentProject = sessionData.getLastOpenedProject();
+
             if (currentProject != null) {
                 ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member", "Added a new user (" + userAccount.getUsername()
-                                                                                                                                               + ") to " + currentProject.getProjectName(), user, new Date());
+                       + ") to " + currentProject.getProjectName(), user, new Date());
                 workbenchDataManager.addProjectActivity(projAct);
-
             }
         }
         catch (MiddlewareQueryException e) {
