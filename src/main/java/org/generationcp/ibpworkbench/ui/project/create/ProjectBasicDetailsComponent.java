@@ -411,7 +411,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             
         }
         if (startDate == null){
-            errorDescription.append("No start date given. ");
+            errorDescription.append("Please enter a valid start date. ");
             success = false;
         }
         if (cropType == null){
