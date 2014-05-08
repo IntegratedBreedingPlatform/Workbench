@@ -76,7 +76,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
         Collections.sort(locationList, Location.LocationNameComparator);
 
         for (Location location : locationList) {
-            resultsMap.put(location.getLocid(),this.getLocationDetailsByLocId(location.getLocid()));
+            final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
+
+            if (locationVModel != null)
+                resultsMap.put(location.getLocid(), locationVModel);
         }
 
         // remove items already in favorites
@@ -100,7 +103,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
         Collections.sort(locationList, Location.LocationNameComparator);
 
         for (Location location : locationList) {
-            resultsMap.put(location.getLocid(),this.getLocationDetailsByLocId(location.getLocid()));
+            final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
+            if (locationVModel != null)
+                resultsMap.put(location.getLocid(), locationVModel);
         }
 
         // remove items already in favorites
@@ -145,7 +150,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
 		
 		for (Long locationId : locationIds) {
-			result.add(this.getLocationDetailsByLocId(locationId.intValue()));
+            LocationViewModel locationVModel = this.getLocationDetailsByLocId(locationId.intValue());
+
+            if (locationVModel != null)
+			    result.add(locationVModel);
 		}
 
 		return result;
@@ -162,16 +170,15 @@ public class ProgramLocationsPresenter implements InitializingBean {
 				
 				return convertFrom(location);
 			}
-			
-			
+
 			return convertFrom(locList.get(0));			
 		} catch (IndexOutOfBoundsException e) {
-			LOG.error("LocationID" + locationId);
+			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]");
 			
-			return null;
-		}
-		
-
+		} catch (NullPointerException e) {
+            LOG.error("Location [locationId="+ locationId +"]  not found in "+ sessionData.getLastOpenedProject().getLocalDbName());
+        }
+        return null;
 	}
 
     public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
@@ -326,9 +333,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
     public void addLocation(Location loc) throws MiddlewareQueryException {
         ldm.addLocation(loc);
 
-        this.getLocationDetailsByLocId(loc.getLocid());
-
-        view.addRow(this.getLocationDetailsByLocId(loc.getLocid()),false,0);
+        final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
+        view.addRow(locationVModel,false,0);
     }
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
