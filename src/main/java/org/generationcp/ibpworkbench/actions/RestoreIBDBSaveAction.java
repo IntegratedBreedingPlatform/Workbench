@@ -111,7 +111,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
         if (dialog.isConfirmed()) {
             LOG.debug("onClick > do Restore IBDB");
 
-            File currentDbBackupFile = null;
             File restoreFile = file;
 
             try {
@@ -130,14 +129,17 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                                 }
 
                 toolUtil.closeAllNativeTools();
-                currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
+
+                // UPDATE: currentDBBackup creation should be on restore
+                //currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
 
                 //drop schema version
                 //we need the schema version inserted from the backup file, not from the previous upgrade
-                mysqlUtil.dropSchemaVersion(project.getLocalDbName());
+                // UPDATE: depricated ff code as we are already dropping the schema on restore
+                //mysqlUtil.dropSchemaVersion(project.getLocalDbName());
 
                 // restore the database
-                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, currentDbBackupFile, new Callable<Boolean>() {
+                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         IBDBGeneratorLocalDb generateLocalDB = new IBDBGeneratorLocalDb(sessionData.getLastOpenedProject().getCropType(),sessionData.getLastOpenedProject().getProjectId());
