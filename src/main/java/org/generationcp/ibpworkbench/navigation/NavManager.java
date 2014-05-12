@@ -68,7 +68,7 @@ public final class NavManager {
             return;
 
         WorkbenchMainView workbenchWindow = (WorkbenchMainView) window;
-        CrumbTrail crumbTrail = workbenchWindow.getCrumbTrail();
+        CrumbTrail crumbTrail = null;
         
         if(crumbTrail.getCrumbTrailList().isEmpty() || !crumbTrail.getLastBreadCrumbUri().equals(viewId)) {
             if(isLinkAccessed) {
