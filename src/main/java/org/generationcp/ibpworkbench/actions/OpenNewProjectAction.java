@@ -46,7 +46,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
 
     @Override
     public void doAction(Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
                 ((WorkbenchMainView)w).addTitle("");
             }
             
-            NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
+            //NavManager.navigateApp(window, "/CreateProject", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

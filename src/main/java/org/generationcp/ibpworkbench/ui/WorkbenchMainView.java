@@ -101,6 +101,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private VerticalSplitPanel verticalSplitPanel;
 
     private HorizontalSplitPanel contentAreaSplitPanel;
+    private HorizontalSplitPanel root;
 
     private VerticalLayout mainContent;
 
@@ -127,8 +128,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     @Override
     public void afterPropertiesSet() throws Exception {
         //this.sessionProvider.setSessionData(sessionData);
-
         assemble();
+
+        // initialize other operations on load (
+        workbenchDashboard = new WorkbenchDashboard();
+        onLoadOperations();
+
+        // show dashboard
+        this.showContent(workbenchDashboard);
     }
 
     protected void initializeComponents() throws Exception {
@@ -187,11 +194,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         hint1.setContentMode(Label.CONTENT_PREFORMATTED);
         hint1.setSizeUndefined();
 
-        workbenchDashboard = new WorkbenchDashboard();
-
-
-        verticalSplitPanel = new VerticalSplitPanel();
-        contentAreaSplitPanel = new HorizontalSplitPanel();
+        //verticalSplitPanel = new VerticalSplitPanel();
+        //contentAreaSplitPanel = new HorizontalSplitPanel();
 
         mainContent = new VerticalLayout();
         mainContent.setStyleName("gcp-maincontentarea");
@@ -201,10 +205,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
 
-        crumbTrail = new CrumbTrail();
+        //crumbTrail = new CrumbTrail();
         //crumbTrail.setMargin(true, true, true, true);
-        crumbTrail.setSpacing(false);
-        crumbTrail.setSizeUndefined();
+        //crumbTrail.setSpacing(false);
+        //crumbTrail.setSizeUndefined();
 
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
@@ -214,33 +218,28 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     protected void initializeLayout() {
 
-        setSizeFull();
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
+        //VerticalLayout layout = new VerticalLayout();
+        //layout.setSizeFull();
 
         // add the vertical split panel
-        verticalSplitPanel.setSplitPosition(87, Sizeable.UNITS_PIXELS);
-        verticalSplitPanel.setLocked(true);
-        verticalSplitPanel.setStyleName("gcp-workbench-vsplit-panel");
-        verticalSplitPanel.setSizeFull();
+        //verticalSplitPanel.setSplitPosition(87, Sizeable.UNITS_PIXELS);
+        //verticalSplitPanel.setLocked(true);
+        //verticalSplitPanel.setStyleName("gcp-workbench-vsplit-panel");
+        //verticalSplitPanel.setSizeFull();
 
-
-
-        layout.addComponent(verticalSplitPanel);
+        //layout.addComponent(verticalSplitPanel);
 
         // add the workbench header
-        Component workbenchHeader = layoutWorkbenchHeader();
-        verticalSplitPanel.addComponent(workbenchHeader);
+        //verticalSplitPanel.addComponent(workbenchHeader);
 
         // add the content area split panel
-        contentAreaSplitPanel.setSplitPosition(0, Sizeable.UNITS_PIXELS);
-        contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
-        contentAreaSplitPanel.addStyleName("gcp-workbench-content-split-panel");
+        //contentAreaSplitPanel.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+        //contentAreaSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
 
 
         sidebar = new WorkbenchSidebar();
-        contentAreaSplitPanel.addComponent(sidebar);
+        //contentAreaSplitPanel.addComponent(sidebar);
         // layout the left area of the content area split panel
         //contentAreaSplitPanel.addComponent(new WorkbenchSidebar(null,null));
 
@@ -249,6 +248,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setSpacing(false);
 
         // Breadcrumb Tinapay
+        /*
         final HorizontalLayout crumbTrailContainer = new HorizontalLayout();
         crumbTrailContainer.setStyleName("gcp-crumbtrail");
         crumbTrailContainer.setWidth("100%");
@@ -263,18 +263,40 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 
         mainContent.addComponent(crumbTrailContainer);
-
-        this.showContent(workbenchDashboard);
+        */
 
         // layout the right area of the content area split panel
         // contentAreaSplitPanel.addComponent(workbenchDashboard);
-        contentAreaSplitPanel.addComponent(mainContent);
+        //contentAreaSplitPanel.addComponent(mainContent);
 
-        verticalSplitPanel.addComponent(contentAreaSplitPanel);
+        //verticalSplitPanel.addComponent(contentAreaSplitPanel);
 
-        setContent(layout);
+        //setContent(layout);
+
+        // content area
+        final VerticalSplitPanel contentAreaSplit = new VerticalSplitPanel();
+        contentAreaSplit.setSplitPosition(40,Sizeable.UNITS_PIXELS);
+        contentAreaSplit.setLocked(true);
+        contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
+
+        // contentArea contents
+        contentAreaSplit.addComponent(layoutWorkbenchHeader());
+        contentAreaSplit.addComponent(mainContent);
+
+        // the root layout
+        root = new HorizontalSplitPanel();
+        root.setSizeFull();
+        root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+        root.addStyleName(Reindeer.SPLITPANEL_SMALL);
+        root.addStyleName("gcp-workbench-content-split-panel");
+
+        // root contents
+        root.addComponent(sidebar);
+        root.addComponent(contentAreaSplit);
 
 
+        this.setSizeFull();
+        this.setContent(root);
     }
 
     protected void initializeActions() {
@@ -316,10 +338,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
             @Override
             public void buttonClick(ClickEvent clickEvent) {
-                if ( contentAreaSplitPanel.getSplitPosition() > 0)
-                    contentAreaSplitPanel.setSplitPosition(0);
+                if ( root.getSplitPosition() > 0)
+                    root.setSplitPosition(0);
                 else
-                    contentAreaSplitPanel.setSplitPosition(240);
+                    root.setSplitPosition(240);
             }
         });
 
@@ -343,7 +365,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         initializeComponents();
         initializeLayout();
         initializeActions();
-        onLoadOperations();
     }
 
     protected void onLoadOperations() {
@@ -467,8 +488,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         // contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
         // contentAreaSplitPanel.addComponent(content);
 
-        if (mainContent.getComponentCount() > 1)
-            mainContent.removeComponent(mainContent.getComponent(1));
+        //if (mainContent.getComponentCount() > 1)
+            mainContent.removeAllComponents();
 
         if (content instanceof Embedded) {
             //mainContent.setSizeFull();
@@ -511,9 +532,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
         if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
-            contentAreaSplitPanel.setSplitPosition(240,Sizeable.UNITS_PIXELS);
+            root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
         else
-            contentAreaSplitPanel.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+            root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
     }
 
     public CrumbTrail getCrumbTrail() {
