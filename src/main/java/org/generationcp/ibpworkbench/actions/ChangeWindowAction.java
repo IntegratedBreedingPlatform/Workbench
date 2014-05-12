@@ -161,7 +161,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
     @Override
     public void doAction(Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
@@ -203,11 +203,11 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
             w.showContent(projectLocationPanel);
-            NavManager.navigateApp(window, "/"+windowName, isLinkAccessed);
+            //NavManager.navigateApp(window, "/"+windowName, isLinkAccessed);
 
         } else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
             w.showContent(new BackupAndRestoreView());
-            NavManager.navigateApp(window,"/"+windowName,isLinkAccessed);
+            //NavManager.navigateApp(window,"/"+windowName,isLinkAccessed);
         }
         else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 
@@ -229,7 +229,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project);
             w.showContent(gxeAnalysisPanel);
-            NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
+            //NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
 
         } else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
 
@@ -250,7 +250,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project, Database.LOCAL);
             w.showContent(breedingViewPanel);
-            NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
+            //NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
 
         } else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
             try {
@@ -270,7 +270,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             SelectDatasetsForMetaAnalysisPanel metaAnalyis = new SelectDatasetsForMetaAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(metaAnalyis);
-            NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
+            //NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
         } else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),

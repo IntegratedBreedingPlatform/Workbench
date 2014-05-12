@@ -45,7 +45,7 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
 
     @Override
     public void doAction(Component.Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
             UpdateProjectPanel projectPanel = new UpdateProjectPanel();
             w.showContent(projectPanel);
 
-            NavManager.navigateApp(window, "/UpdateProgram", isLinkAccessed);
+            //NavManager.navigateApp(window, "/UpdateProgram", isLinkAccessed);
             ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Launched Update Program", projectPanel.getCurrentUser(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 

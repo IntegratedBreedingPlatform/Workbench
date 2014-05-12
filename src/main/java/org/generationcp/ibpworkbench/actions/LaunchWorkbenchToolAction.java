@@ -200,7 +200,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
     @Override
     public void doAction(Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
     
     @Override
@@ -375,7 +375,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         //browser.setHeight("800px");
                         //browser.setWidth("100%");
                         
-                        NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
+                        //NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
                         
                         IContentWindow contentWindow = (IContentWindow) window;
                         contentWindow.showContent(browser);
@@ -462,7 +462,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 //browser.setHeight("800px");
                 //browser.setWidth("100%");
                 
-                NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
+                //NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
                 
                 IContentWindow contentWindow = (IContentWindow) window;
                 contentWindow.showContent(browser);

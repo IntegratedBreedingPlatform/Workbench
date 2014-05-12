@@ -158,7 +158,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 
     @Override
     public void doAction(Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
