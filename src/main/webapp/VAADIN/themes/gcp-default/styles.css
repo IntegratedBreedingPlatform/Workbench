@@ -45,7 +45,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .main-header-right-container div.v-button span.v-button-wrap span.v-button-caption, .main-header-right-container .v-label{text-transform:uppercase;text-decoration:none;margin-left:5px;margin-right:5px;color:#dde5ec}
 
 
-.v-splitpanel-first-container-gcp-workbench-vsplit-panel{background-color:#225591}
+.bms-header{background-color:#225591}
 .v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked{width:0 !important}
 .v-splitpanel-hsplitter-small{width:0;background:transparent}
 .v-splitpanel-second-container-gcp-workbench-content-split-panel{background-color:white}
@@ -53,8 +53,15 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-splitpanel-vsplitter-gcp-workbench-vsplit-panel-locked{height:0 !important}
 
 /* Workbench Main */
-.gcp-window-title H1:first-child{text-transform:uppercase;font-size:24px;font-weight:400;margin:0px 0px 0px 20px;color:#dde5ec}
-.gcp-window-title H1{text-transform:uppercase;font-size:20px;display:inline-block;color:#dde5ec;font-weight:100}
+.gcp-window-title H1 {text-transform: uppercase;
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0px 0px 0px 5px;
+    color: #dde5ec;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 .gcp-window-title H2{font-size:14px;font-weight:normal;display:inline-block;color:#CECECE;margin:0px 0px 0px 0px;}
 .gcp-window-title H3{text-transform:uppercase;font-size:16px;display:block;color:#dde5ec;font-weight:300;margin:0px 0px 0px 20px;}
 .gcp-window-title{font-size:20px;color:#dde5ec}
