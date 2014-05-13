@@ -82,8 +82,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     @Override
     public void fragmentChanged(FragmentChangedEvent source) {
         UriFragmentUtility u = source.getUriFragmentUtility();
-
-        LOG.debug("Workbench accessed through URL. Fragment[" + u.getFragment() + "]");
+        LOG.debug("Workbench Fragment updated. Fragment[" + u.getFragment() + "]");
     }
     
 }

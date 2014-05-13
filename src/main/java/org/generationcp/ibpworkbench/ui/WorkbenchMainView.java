@@ -180,6 +180,18 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         mainContent.setMargin(false);
         mainContent.setSpacing(false);
 
+        // sidebar
+        final VerticalSplitPanel sidebarWrap = new VerticalSplitPanel();
+        sidebarWrap.setStyleName(Reindeer.SPLITPANEL_SMALL);
+        sidebarWrap.addStyleName("bms-sidebarcontent");
+        sidebarWrap.setSplitPosition(40,Sizeable.UNITS_PIXELS,true);
+
+        final Label title = new Label("Breeding Management System",Label.CONTENT_XHTML);
+
+
+        sidebarWrap.setFirstComponent(sidebar);
+        sidebarWrap.setSecondComponent(title);
+
         // content area
         final VerticalSplitPanel contentAreaSplit = new VerticalSplitPanel();
         contentAreaSplit.setSplitPosition(40,Sizeable.UNITS_PIXELS);
@@ -198,12 +210,36 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         root.addStyleName("gcp-workbench-content-split-panel");
 
         // root contents
-        root.addComponent(sidebar);
-        root.addComponent(contentAreaSplit);
-
+        root.setFirstComponent(sidebarWrap);
+        root.setSecondComponent(contentAreaSplit);
 
         this.setSizeFull();
         this.setContent(root);
+    }
+
+
+    private void toggleSidebarIcon() {
+        if ( root.getSplitPosition() == 0) {
+            collapseButton.setCaption("<span class='fa fa-chevron-right'" +
+                    "style='color: white;\n" +
+                    "font-size: 20px;\n" +
+                    "text-align: center;\n" +
+                    "width: 34px;\n" +
+                    "line-height: 34px;\n" +
+                    "height: 34px;" +
+                    "'><span>");
+
+        }
+        else {
+            collapseButton.setCaption("<span class='fa fa-chevron-left'" +
+                    "style='color: white;\n" +
+                    "font-size: 20px;\n" +
+                    "text-align: center;\n" +
+                    "width: 34px;\n" +
+                    "line-height: 34px;\n" +
+                    "height: 34px;" +
+                    "'><span>");
+        }
     }
 
     protected void initializeActions() {
@@ -233,30 +269,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             @Override
             public void buttonClick(ClickEvent clickEvent) {
                 if ( root.getSplitPosition() > 0) {
-                    collapseButton.setCaption("<span class='fa fa-chevron-right'" +
-                            "style='color: white;\n" +
-                            "font-size: 20px;\n" +
-                            "text-align: center;\n" +
-                            "width: 34px;\n" +
-                            "line-height: 34px;\n" +
-                            "height: 34px;" +
-                            "'><span>");
-
-                    root.setSplitPosition(0);
+                    root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
                 }
                 else {
-                    collapseButton.setCaption("<span class='fa fa-chevron-left'" +
-                            "style='color: white;\n" +
-                            "font-size: 20px;\n" +
-                            "text-align: center;\n" +
-                            "width: 34px;\n" +
-                            "line-height: 34px;\n" +
-                            "height: 34px;" +
-                            "'><span>");
-
-                    root.setSplitPosition(240);
+                    root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
                 }
                 // change icon here
+                toggleSidebarIcon();
             }
         });
 
@@ -427,10 +446,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
         else
             root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+
+        toggleSidebarIcon();
     }
 
-    public void setUriFragment(String fragment) {
-        uriFragUtil.setFragment(fragment);
+    public void setUriFragment(String fragment,boolean isLinkAccessed) {
+        uriFragUtil.setFragment(fragment,!isLinkAccessed);
     }
 
     @Override
@@ -442,7 +463,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     public void addTitle(String myTitle)
     {
-
         if (myTitle.length() > 50)
             workbenchTitle.setDescription(myTitle);
         else

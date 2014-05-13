@@ -46,6 +46,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 
 .bms-header{background-color:#225591}
+.v-splitpanel-vertical-bms-sidebarcontent .v-splitpanel-vsplitter {width:0 !important}
+.v-splitpanel-second-container-gcp-workbench-content-split-panel .v-splitpanel-vertical .v-splitpanel-vsplitter-locked { width:0 !important}
 .v-splitpanel-hsplitter-gcp-workbench-content-split-panel-locked{width:0 !important}
 .v-splitpanel-hsplitter-small{width:0;background:transparent}
 .v-splitpanel-second-container-gcp-workbench-content-split-panel{background-color:white}
