@@ -52,9 +52,9 @@ import com.vaadin.data.util.IndexedContainer;
  */
 @SuppressWarnings("unchecked")
 @Configurable
-public class ProgramMembersView extends Panel implements InitializingBean {
+public class ProgramMembersPanel extends Panel implements InitializingBean {
     
-    private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersView.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
     private static final long serialVersionUID = 1L;
     
     private TwinTableSelect<User> select;
@@ -76,7 +76,7 @@ public class ProgramMembersView extends Panel implements InitializingBean {
     
     private  List<Role> inheritedRoles;
 
-    public ProgramMembersView(Project project) {
+    public ProgramMembersPanel(Project project) {
     	//LOG.debug("Project is " + project.getProjectName());
         this.project = project;
     }

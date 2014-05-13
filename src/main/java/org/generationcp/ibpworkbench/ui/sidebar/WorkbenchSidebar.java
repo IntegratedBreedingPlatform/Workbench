@@ -7,9 +7,11 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
+
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.pojos.workbench.*;
@@ -227,6 +229,8 @@ public class WorkbenchSidebar extends CssLayout {
             return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
             return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),project);
+        } else if (toolName.equals("manage_program")) {
+            return new OpenManageProgramPageAction();
         } else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
