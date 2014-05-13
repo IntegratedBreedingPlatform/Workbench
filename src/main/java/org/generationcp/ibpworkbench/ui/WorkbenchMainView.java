@@ -16,7 +16,6 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -38,9 +37,9 @@ import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.springframework.beans.factory.InitializingBean;
@@ -59,7 +58,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
-    private PopupButton signOutButton;
+    private PopupButton memberButton;
     private Button accountButton;
     private Button helpButton;
 
@@ -89,6 +88,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     private WorkbenchSidebar sidebar;
     private Button collapseButton;
+    private Button signoutButton;
 
     public WorkbenchMainView() {
         super("Breeding Management System | Workbench");
@@ -152,12 +152,29 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         homeButton.setHtmlContentAllowed(true);
         homeButton.setSizeUndefined();
 
-        signOutButton = new PopupButton();
-        signOutButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
-        signOutButton.setHtmlContentAllowed(true);
-        signOutButton.setSizeUndefined();
+        memberButton = new PopupButton();
+        memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
+        memberButton.setHtmlContentAllowed(true);
+        memberButton.setSizeUndefined();
 
-        signOutButton.addComponent(new Label("Hello popups!"));
+        final VerticalLayout memberPopup = new VerticalLayout();
+        memberPopup.setStyleName("bms-memberpopup");
+        memberPopup.setWidth("250px");
+        Person member = sessionData.getUserData().getPerson();
+
+        final Label memberName = new Label(String.format("<h2>%s %s</h2>",member.getFirstName(),member.getLastName()),Label.CONTENT_XHTML);
+        final Label memberEmail = new Label(String.format("<h4>%s</h4>",member.getEmail()),Label.CONTENT_XHTML);
+
+        signoutButton = new Button("Sign out");
+        signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        signoutButton.addListener(new SignoutAction());
+
+        memberPopup.addComponent(memberName);
+        memberPopup.addComponent(memberEmail);
+        memberPopup.addComponent(signoutButton);
+
+        memberButton.addComponent(memberPopup);
+
 
         helpButton = new Button("<span class='bms-header-btn2'><span class='fa fa-question-circle ico'></span></span>");
         helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -345,11 +362,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         headerLayout.addComponent(homeButton);
         headerLayout.addComponent(helpButton);
-        headerLayout.addComponent(signOutButton);
+        headerLayout.addComponent(memberButton);
 
         headerLayout.setComponentAlignment(homeButton,Alignment.MIDDLE_RIGHT);
         headerLayout.setComponentAlignment(helpButton,Alignment.MIDDLE_RIGHT);
-        headerLayout.setComponentAlignment(signOutButton,Alignment.MIDDLE_RIGHT);
+        headerLayout.setComponentAlignment(memberButton,Alignment.MIDDLE_RIGHT);
 
         return headerLayout;
     }
@@ -443,14 +460,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //workbenchTitle.setValue(title);
         //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-        //messageSource.setCaption(signOutButton, Message.SIGNOUT);
+        //messageSource.setCaption(memberButton, Message.SIGNOUT);
 
         String signoutName = appSession.getSessionData().getUserData().getPerson().getFirstName();
         if (signoutName.length() > 10)
             signoutName = signoutName.substring(0,9) + "...";
 
-        signOutButton.setCaption("<span class='bms-header-btn2'><span>"+signoutName+"</span><span class='fa fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
-        signOutButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
+        memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='fa fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
+       //memberButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
 
     }
 
