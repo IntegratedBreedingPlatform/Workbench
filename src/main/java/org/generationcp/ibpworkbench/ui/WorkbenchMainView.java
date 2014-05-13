@@ -125,15 +125,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 
         collapseButton = new Button(
-                "<span class='fa fa-chevron-right'" +
-                        "style='color: white;\n" +
-                        "font-size: 20px;\n" +
-                        "text-align: center;\n" +
-                        "width: 34px;\n" +
-                        "line-height: 34px;\n" +
-                        "height: 34px;" +
-                        "'><span>");
-        collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " collapse-btn");
+                "<span class='bms-header-btn'><span class='fa fa-chevron-right ico'/></span>");
+        collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
 
@@ -153,22 +146,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         workbenchTitle.setStyleName("gcp-window-title");
         workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-        this.addTitle("");
-
-        homeButton = new Button();
-        homeButton.setStyleName(BaseTheme.BUTTON_LINK);
+        homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
+        homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+        homeButton.setHtmlContentAllowed(true);
         homeButton.setSizeUndefined();
 
         signOutButton = new Button();
-        signOutButton.setStyleName(BaseTheme.BUTTON_LINK);
+        signOutButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
+        signOutButton.setHtmlContentAllowed(true);
         signOutButton.setSizeUndefined();
 
-        accountButton = new Button();
-        accountButton.setStyleName(BaseTheme.BUTTON_LINK);
-        accountButton.setSizeUndefined();
-
-        helpButton = new Button();
-        helpButton.setStyleName(BaseTheme.BUTTON_LINK);
+        helpButton = new Button("<span class='bms-header-btn2'><span class='fa fa-question-circle ico'></span></span>");
+        helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
+        helpButton.setHtmlContentAllowed(true);
         helpButton.setSizeUndefined();
 
     }
@@ -184,10 +174,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         final VerticalSplitPanel sidebarWrap = new VerticalSplitPanel();
         sidebarWrap.setStyleName(Reindeer.SPLITPANEL_SMALL);
         sidebarWrap.addStyleName("bms-sidebarcontent");
-        sidebarWrap.setSplitPosition(40,Sizeable.UNITS_PIXELS,true);
+        sidebarWrap.setSplitPosition(20,Sizeable.UNITS_PIXELS,true);
+        sidebarWrap.setLocked(true);
 
-        final Label title = new Label("Breeding Management System",Label.CONTENT_XHTML);
-
+        final Label title = new Label(String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",messageSource.getMessage(Message.WORKBENCH_TITLE),workbenchProperties.getProperty("workbench.version", "")),Label.CONTENT_XHTML);
 
         sidebarWrap.setFirstComponent(sidebar);
         sidebarWrap.setSecondComponent(title);
@@ -213,6 +203,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         root.setFirstComponent(sidebarWrap);
         root.setSecondComponent(contentAreaSplit);
 
+
         this.setSizeFull();
         this.setContent(root);
     }
@@ -220,25 +211,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     private void toggleSidebarIcon() {
         if ( root.getSplitPosition() == 0) {
-            collapseButton.setCaption("<span class='fa fa-chevron-right'" +
-                    "style='color: white;\n" +
-                    "font-size: 20px;\n" +
-                    "text-align: center;\n" +
-                    "width: 34px;\n" +
-                    "line-height: 34px;\n" +
-                    "height: 34px;" +
-                    "'><span>");
+            collapseButton.setCaption("<span class='bms-header-btn'><span class='fa fa-chevron-right ico'/></span>");
 
         }
         else {
-            collapseButton.setCaption("<span class='fa fa-chevron-left'" +
-                    "style='color: white;\n" +
-                    "font-size: 20px;\n" +
-                    "text-align: center;\n" +
-                    "width: 34px;\n" +
-                    "line-height: 34px;\n" +
-                    "height: 34px;" +
-                    "'><span>");
+            collapseButton.setCaption("<span class='bms-header-btn'><span class='fa fa-chevron-left ico'/></span>");
         }
     }
 
@@ -364,35 +341,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         headerLayout.addComponent(uriFragUtil);
 
-        // right side button area
-        VerticalLayout headerRightContainer = new VerticalLayout();
-        headerRightContainer.setSizeUndefined();
 
-        headerRightContainer.setSpacing(true);
-        headerRightContainer.addStyleName("main-header-right-container");
+        headerLayout.addComponent(homeButton);
+        headerLayout.addComponent(helpButton);
+        headerLayout.addComponent(signOutButton);
 
-        HorizontalLayout headerRightLinks = new HorizontalLayout();
-        headerRightLinks.setSizeUndefined();
-        headerRightLinks.setMargin(false);
-        headerRightLinks.setSpacing(true);
-
-        homeButton.setStyleName(Bootstrap.Buttons.INFO.styleName());
-
-        headerRightLinks.addComponent(homeButton);
-        headerRightLinks.setComponentAlignment(homeButton, Alignment.TOP_LEFT);
-
-        headerRightLinks.addComponent(helpButton);
-        headerRightLinks.setComponentAlignment(helpButton, Alignment.TOP_LEFT);
-
-        headerRightLinks.addComponent(signOutButton);
-        headerRightLinks.setComponentAlignment(signOutButton, Alignment.TOP_LEFT);
-
-        headerRightContainer.addComponent(headerRightLinks);
-        //headerRightContainer.addComponent(loginUserLbl);
-
-        headerLayout.addComponent(headerRightContainer);
-        headerLayout.setComponentAlignment(headerRightContainer, Alignment.MIDDLE_RIGHT);
-        headerLayout.setExpandRatio(headerRightContainer, 0.0f);
+        headerLayout.setComponentAlignment(homeButton,Alignment.MIDDLE_RIGHT);
+        headerLayout.setComponentAlignment(helpButton,Alignment.MIDDLE_RIGHT);
+        headerLayout.setComponentAlignment(signOutButton,Alignment.MIDDLE_RIGHT);
 
         return headerLayout;
     }
@@ -486,20 +442,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         //workbenchTitle.setValue(title);
         //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-        messageSource.setCaption(homeButton, Message.HOME);
         //messageSource.setCaption(signOutButton, Message.SIGNOUT);
 
         String signoutName = appSession.getSessionData().getUserData().getPerson().getFirstName();
         if (signoutName.length() > 10)
             signoutName = signoutName.substring(0,9) + "...";
 
-        signOutButton.setCaption(messageSource.getMessage(Message.SIGNOUT) + " (" + signoutName + ")");
+        signOutButton.setCaption("<span class='bms-header-btn2'><span>"+signoutName+"</span><span class='fa fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
         signOutButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
-
-        messageSource.setCaption(accountButton, Message.ACCOUNT);
-        messageSource.setCaption(helpButton, Message.HELP);
-
-        messageSource.setCaption(actionsTitle, Message.ACTIONS);
 
     }
 
