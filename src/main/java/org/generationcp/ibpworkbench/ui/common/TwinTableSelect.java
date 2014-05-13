@@ -8,7 +8,10 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.Action;
 import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
@@ -338,6 +341,54 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
                 return AcceptItem.ALL;
          }
 		});
+		
+		final Action actionAddToProgramMembers = new Action("Add Selected Items");
+		final Action actionRemoveFromProgramMembers = new Action("Remove Selected Items");
+        final Action actionSelectAll = new Action("Select All");
+        final Action actionDeSelectAll = new Action("De-select All");
+
+        table.addActionHandler(new Action.Handler() {
+            @Override
+            public Action[] getActions(final Object target, final Object sender) {
+            	
+            	if (table.getData().toString().equals("left")){
+            		return new Action[] {actionAddToProgramMembers, actionSelectAll, actionDeSelectAll};
+            	}else{
+            		return new Action[] {actionRemoveFromProgramMembers, actionSelectAll, actionDeSelectAll};
+            	}
+               
+            }
+
+            @Override
+            public void handleAction(final Action action, final Object sender,
+                    final Object target) {
+                if (actionSelectAll == action) {
+                	if (table.getData().toString().equals("left")){
+                		chkSelectAllLeft.setValue(true);
+                		chkSelectAllLeft.click();
+                	}else{
+                		chkSelectAllRight.setValue(true);
+                		chkSelectAllRight.click();
+                	}
+                	
+                } else if (actionDeSelectAll == action) {
+                	if (table.getData().toString().equals("left")){
+                		chkSelectAllLeft.setValue(false);
+                		chkSelectAllLeft.click();
+                	}else{
+                		chkSelectAllRight.setValue(false);
+                		chkSelectAllRight.click();
+                	}
+                } else if (actionAddToProgramMembers == action) {
+                	addCheckedSelectedItems();
+                } else if (actionRemoveFromProgramMembers == action) {
+                	removeCheckedSelectedItems();
+                }
+               
+            }
+
+        });
+		
 	
 		
 		table.setColumnWidth("select", 20);
@@ -468,6 +519,20 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				
 			 }
     	 }
+		 
+		 
+	}
+	
+	public void addCheckedSelectedItems(){
+		 
+		 for (Object itemId : (Set<Object>) getTableLeft().getValue()){	
+			 if (((T)itemId).isActive() && ((T)itemId).isEnabled()){
+				 ((T)itemId).setActive(false);
+				 getTableRight().addItem(itemId);
+				 getTableLeft().removeItem(itemId);
+				
+			 }
+   	 }
 		 
 		 
 	}
