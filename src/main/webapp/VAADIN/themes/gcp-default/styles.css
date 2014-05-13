@@ -300,3 +300,21 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     padding: 4px 10px;
     display: inline-block;
 }
+
+.bms-memberpopup h2 {
+    margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.bms-memberpopup h4 {
+    margin-top: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.v-button-bms-header-popuplink .v-popup-indicator {
+    display: none !important;
+}
