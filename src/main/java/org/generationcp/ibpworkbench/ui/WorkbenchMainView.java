@@ -47,6 +47,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.vaadin.hene.popupbutton.PopupButton;
 
 import java.util.Properties;
 
@@ -58,7 +59,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
     private Label workbenchTitle;
     private Button homeButton;
-    private Button signOutButton;
+    private PopupButton signOutButton;
     private Button accountButton;
     private Button helpButton;
 
@@ -151,10 +152,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         homeButton.setHtmlContentAllowed(true);
         homeButton.setSizeUndefined();
 
-        signOutButton = new Button();
+        signOutButton = new PopupButton();
         signOutButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
         signOutButton.setHtmlContentAllowed(true);
         signOutButton.setSizeUndefined();
+
+        signOutButton.addComponent(new Label("Hello popups!"));
 
         helpButton = new Button("<span class='bms-header-btn2'><span class='fa fa-question-circle ico'></span></span>");
         helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -223,8 +226,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         final Window thisWindow = this;
 
         homeButton.addListener(new HomeAction());
-        signOutButton.addListener(new SignoutAction());
-
         helpButton.addListener(new Button.ClickListener() {
 
             @Override
