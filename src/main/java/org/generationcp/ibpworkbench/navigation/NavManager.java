@@ -75,7 +75,7 @@ public final class NavManager {
                 crumbTrail.setLinkAccessed(true);
             }
             
-            workbenchWindow.setUriFragment(viewId);
+            workbenchWindow.setUriFragment(viewId,isLinkAccessed);
             
             try {
                 crumbTrail.updateCrumbTrail(viewId, breadCrumbLabel);
