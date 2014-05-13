@@ -16,7 +16,8 @@
 
      <properties>
          <vaadin.version>6.8.13</vaadin.version>
-         <gwt.version>2.3.0</gwt.version>
+         <gwt.version>2.5.1</gwt.version>
+         <gwt.plugin.version>2.5.1</gwt.plugin.version>
      </properties>
 
      <repositories>
@@ -87,6 +88,11 @@
              <version>0.5.3</version>
          </dependency>
 
+         <dependency>
+             <groupId>org.vaadin.addons</groupId>
+             <artifactId>popupbutton</artifactId>
+             <version>1.2.1</version>
+         </dependency>
 
          <!-- Spring Dependency -->
          <dependency>
@@ -282,6 +288,57 @@
              </resource>
          </resources>
          <plugins>
+
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>gwt-maven-plugin</artifactId>
+                 <version>${gwt.plugin.version}</version>
+                 <configuration>
+                     <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                     <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                     <runTarget>IBPWorkbench</runTarget>
+                     <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                     <noServer>true</noServer>
+                     <port>8080</port>
+                     <compileReport>false</compileReport>
+                 </configuration>
+                 <executions>
+                     <execution>
+                         <goals>
+                             <goal>resources</goal>
+                             <goal>compile</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+                 <dependencies>
+                     <dependency>
+                         <groupId>com.google.gwt</groupId>
+                         <artifactId>gwt-dev</artifactId>
+                         <version>${gwt.version}</version>
+                     </dependency>
+                     <dependency>
+                         <groupId>com.google.gwt</groupId>
+                         <artifactId>gwt-user</artifactId>
+                         <version>${gwt.version}</version>
+                     </dependency>
+                 </dependencies>
+             </plugin>
+             <plugin>
+                 <groupId>com.vaadin</groupId>
+                 <artifactId>vaadin-maven-plugin</artifactId>
+                 <version>1.0.2</version>
+                 <executions>
+                     <execution>
+                         <configuration>
+                         </configuration>
+                         <goals>
+                             <goal>update-widgetset</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>
+
+
              <plugin>
                  <artifactId>maven-antrun-plugin</artifactId>
                  <version>1.7</version>

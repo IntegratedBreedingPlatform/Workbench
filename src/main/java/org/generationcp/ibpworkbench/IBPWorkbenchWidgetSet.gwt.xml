@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+    "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN"
+    "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
+<module>
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+
+    <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
+
+    <inherits name="org.vaadin.easyuploads.EasyuploadsWidgetset" />
+
+    <inherits name="com.vaadin.addon.tableexport.widgetset.Tableexport_for_vaadinWidgetset" />
+
+    <inherits name="com.vaadin.addon.colorpicker.gwt.ColorPickerWidgetSet" />
+</module>
