@@ -16,6 +16,7 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -26,6 +27,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
@@ -59,7 +61,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private Label workbenchTitle;
     private Button homeButton;
     private PopupButton memberButton;
-    private Button accountButton;
     private Button helpButton;
 
     @Autowired
@@ -89,6 +90,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     private WorkbenchSidebar sidebar;
     private Button collapseButton;
     private Button signoutButton;
+    private Button logoBtn;
 
     public WorkbenchMainView() {
         super("Breeding Management System | Workbench");
@@ -143,6 +145,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     }
 
     private void initializeHeaderComponents() {
+
+        logoBtn = new Button();
+
         workbenchTitle = new Label();
         workbenchTitle.setStyleName("gcp-window-title");
         workbenchTitle.setContentMode(Label.CONTENT_XHTML);
@@ -242,7 +247,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     protected void initializeActions() {
         final Window thisWindow = this;
 
-        homeButton.addListener(new HomeAction());
+        final Button.ClickListener homeAction = new HomeAction();
+        homeButton.addListener(homeAction);
+        logoBtn.addListener(homeAction);
+
         helpButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -344,13 +352,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         headerLayout.addComponent(collapseButton);
         headerLayout.setComponentAlignment(collapseButton, Alignment.MIDDLE_LEFT);
 
-        Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
-        ibpLogo.setWidth("34px");
-        ibpLogo.setHeight("34px");
+        final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
 
-        headerLayout.addComponent(ibpLogo);
-        headerLayout.setComponentAlignment(ibpLogo, Alignment.MIDDLE_LEFT);
-        headerLayout.setExpandRatio(ibpLogo, 0.0f);
+        logoBtn.setIcon(ibpLogo.getSource());
+        logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
+        logoBtn.setWidth("34px");
+        logoBtn.setHeight("34px");
+
+        headerLayout.addComponent(logoBtn);
+        headerLayout.setComponentAlignment(logoBtn, Alignment.MIDDLE_LEFT);
 
         // workbench title area
         headerLayout.addComponent(workbenchTitle);
@@ -462,7 +472,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         //messageSource.setCaption(memberButton, Message.SIGNOUT);
 
-        String signoutName = appSession.getSessionData().getUserData().getPerson().getFirstName();
+        String signoutName = appSession.getSessionData().getUserData().getName();
         if (signoutName.length() > 10)
             signoutName = signoutName.substring(0,9) + "...";
 

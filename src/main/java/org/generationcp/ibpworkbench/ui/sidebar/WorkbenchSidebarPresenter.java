@@ -78,11 +78,11 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                 if (category.getSidebarCategoryName().equals("admin")) {
                     
                     
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"program_member","Program Members"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Locations"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Methods"));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"program_member","Program Members"));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_location","Program Locations"));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"project_method","Program Methods"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));

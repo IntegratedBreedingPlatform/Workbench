@@ -82,9 +82,9 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		
 		final Label heading = new Label("Manage Program Settings");
         final Label headingDesc = new Label("Modify the details of this program, and manage the members, locations, and methods associated with it using the tabs below.");
-        heading.setStyleName(Bootstrap.Typography.H3.styleName());
+        heading.setStyleName(Bootstrap.Typography.H1.styleName());
 		
-		rootLayout.setMargin(new Layout.MarginInfo(true,true,true,true));
+		rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
 		rootLayout.setWidth("100%");
 		rootLayout.setSpacing(true);
 		

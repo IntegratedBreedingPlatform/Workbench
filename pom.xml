@@ -79,11 +79,6 @@
          </dependency>
          <dependency>
              <groupId>org.vaadin.addons</groupId>
-             <artifactId>tableexport</artifactId>
-             <version>1.2.9</version>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
              <artifactId>easyuploads</artifactId>
              <version>0.5.3</version>
          </dependency>
