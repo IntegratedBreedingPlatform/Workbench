@@ -57,7 +57,7 @@ public class SaveProjectMethodsAction implements ClickListener, ActionListener{
 
     @Override
     public void doAction(Event event) {
-        NavManager.breadCrumbClick(this, event);
+        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
@@ -78,7 +78,5 @@ public class SaveProjectMethodsAction implements ClickListener, ActionListener{
             }
             return;
         }
-
     }
-
 }

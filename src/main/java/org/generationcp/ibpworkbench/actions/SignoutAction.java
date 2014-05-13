@@ -40,7 +40,7 @@ public class SignoutAction implements ClickListener {
     public void buttonClick(ClickEvent event) {
         WorkbenchMainView window = (WorkbenchMainView) event.getButton()
                 .getWindow();
-        window.setUriFragment("");
+        window.setUriFragment("",true);
 
         event.getButton().getApplication().close();
     }

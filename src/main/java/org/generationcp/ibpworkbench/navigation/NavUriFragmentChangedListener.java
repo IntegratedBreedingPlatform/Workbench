@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
+import sun.rmi.runtime.Log;
 
 /**
  * <b>Description</b>: Handles URI fragment changes for the application and calls mapped 
@@ -81,18 +82,7 @@ public class NavUriFragmentChangedListener implements FragmentChangedListener {
     @Override
     public void fragmentChanged(FragmentChangedEvent source) {
         UriFragmentUtility u = source.getUriFragmentUtility();
-        CrumbTrail crumbTrail = ((WorkbenchMainView) u.getWindow()).getCrumbTrail();
-        
-        if(crumbTrail.isLinkAccessed()) {
-            crumbTrail.setLinkAccessed(false);
-        } else {
-            try {
-                throw new UnsupportedOperationException();
-            } catch (UnsupportedOperationException e) {
-                MessageNotifier.showError(u.getWindow(),"Unsupported Feature","Navigation by browser URL and Browser history (BACK/FORWARD) is not implemented at the moment.");
-            }
-
-        }
+        LOG.debug("Workbench Fragment updated. Fragment[" + u.getFragment() + "]");
     }
     
 }

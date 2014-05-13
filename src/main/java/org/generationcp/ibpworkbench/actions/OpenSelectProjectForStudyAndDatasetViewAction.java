@@ -71,11 +71,11 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         if (currentProject != null) {
             
             w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL));
-            NavManager.navigateApp(window, uriFragment, isLinkAccessed);	
+            //NavManager.navigateApp(window, uriFragment, isLinkAccessed);
         } else if (lastOpenedProject != null) {
             
         	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL));
-        	NavManager.navigateApp(window, uriFragment, isLinkAccessed);
+        	//NavManager.navigateApp(window, uriFragment, isLinkAccessed);
             
         } else {
         	MessageNotifier.showWarning(window, "Error", "Please select a Project first.");
@@ -86,7 +86,7 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
 
 	@Override
 	public void doAction(Event event) {
-		NavManager.breadCrumbClick(this, event);
+		//NavManager.breadCrumbClick(this, event);
 	}
     
 }
