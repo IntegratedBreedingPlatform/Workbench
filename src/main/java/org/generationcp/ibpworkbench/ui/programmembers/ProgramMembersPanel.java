@@ -334,14 +334,14 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
          titleContainer.setComponentAlignment(newMemberButton, Alignment.MIDDLE_RIGHT);
          titleContainer.setSizeUndefined();
          titleContainer.setWidth("100%");
-         titleContainer.setMargin(true, false, true, false);	// move this to css
+         titleContainer.setMargin(true, false, false, false);	// move this to css
     	
     	
 
         final VerticalLayout root = new VerticalLayout();
         root.setMargin(new Layout.MarginInfo(false,true,true,true));
         root.setSpacing(true);
-        root.setSizeUndefined();
+        root.setSizeFull();
         
         root.addComponent(titleContainer);
         root.addComponent(headingDesc);
@@ -355,7 +355,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
 
-        this.setScrollable(true);
+        this.setScrollable(false);
 
         this.setSizeFull();
         this.setContent(root);

@@ -93,10 +93,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         root.addComponent(projectBasicDetails);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        root.setWidth("800px");
-       
-  
-        setScrollable(true);
+        //root.setWidth("800px");
+        
+        setScrollable(false);
         setContent(root);
         setSizeFull();
         

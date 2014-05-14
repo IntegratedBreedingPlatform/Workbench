@@ -67,8 +67,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	private void initializeComponents(){
 		
 		this.setImmediate(true);
-		this.setHeight("400px");
-		this.setWidth("700px");
+		this.setSizeFull();
 		this.setSpacing(true);
 		
 		this.lblLeftColumnCaption = new Label();
