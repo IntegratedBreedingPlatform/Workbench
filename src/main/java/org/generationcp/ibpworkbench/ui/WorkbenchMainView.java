@@ -164,18 +164,16 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
         final VerticalLayout memberPopup = new VerticalLayout();
         memberPopup.setStyleName("bms-memberpopup");
-        memberPopup.setWidth("250px");
-        Person member = sessionData.getUserData().getPerson();
-
-        final Label memberName = new Label(String.format("<h2>%s %s</h2>",member.getFirstName(),member.getLastName()),Label.CONTENT_XHTML);
-        final Label memberEmail = new Label(String.format("<h4>%s</h4>",member.getEmail()),Label.CONTENT_XHTML);
+        memberPopup.setSizeUndefined();
+        //memberPopup.setWidth("250px");
 
         signoutButton = new Button("Sign out");
         signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        signoutButton.setSizeFull();
         signoutButton.addListener(new SignoutAction());
 
-        memberPopup.addComponent(memberName);
-        memberPopup.addComponent(memberEmail);
+        Person member = sessionData.getUserData().getPerson();
+        memberPopup.addComponent(new Label(String.format("<h2>%s %s</h2><h4>%s</h4>",member.getFirstName(),member.getLastName(),member.getEmail()),Label.CONTENT_XHTML));
         memberPopup.addComponent(signoutButton);
 
         memberButton.addComponent(memberPopup);
