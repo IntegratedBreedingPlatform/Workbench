@@ -1,428 +1,444 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-     <modelVersion>4.0.0</modelVersion>
-     <groupId>org.generationcp</groupId>
-     <artifactId>ibpworkbench</artifactId>
-     <packaging>war</packaging>
-     <name>IBPWorkbench</name>
-     <version>1.1.3.6</version>
-     <developers>
-         <developer>
-             <id>gmarintes</id>
-             <name>Glenn Marintes</name>
-             <email>glenn@efficio.us.com</email>
-         </developer>
-     </developers>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.generationcp</groupId>
+    <artifactId>ibpworkbench</artifactId>
+    <packaging>war</packaging>
+    <name>IBPWorkbench</name>
+    <version>1.1.3.6</version>
+    <developers>
+        <developer>
+            <id>gmarintes</id>
+            <name>Glenn Marintes</name>
+            <email>glenn@efficio.us.com</email>
+        </developer>
+    </developers>
 
-     <properties>
-         <vaadin.version>6.8.13</vaadin.version>
-         <gwt.version>2.5.1</gwt.version>
-         <gwt.plugin.version>2.5.1</gwt.plugin.version>
-     </properties>
+    <properties>
+        <vaadin.version>6.8.13</vaadin.version>
+        <gwt.version>2.5.1</gwt.version>
+        <gwt.plugin.version>2.5.1</gwt.plugin.version>
+    </properties>
 
-     <repositories>
-         <repository>
-             <id>vaadin-addons</id>
-             <url>http://maven.vaadin.com/vaadin-addons</url>
-         </repository>
-         <repository>
-             <id>gcp-efficio-repo</id>
-             <url>http://gcp.efficio.us.com:8081/nexus/content/repositories/thirdparty/</url>
-         </repository>
-     </repositories>
+    <repositories>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+        <repository>
+            <id>gcp-efficio-repo</id>
+            <url>http://gcp.efficio.us.com:8081/nexus/content/repositories/thirdparty/</url>
+        </repository>
+    </repositories>
 
-     <dependencies>
-         <!-- Vaadin Dependency -->
-         <dependency>
-             <groupId>com.vaadin</groupId>
-             <artifactId>vaadin</artifactId>
-             <version>${vaadin.version}</version>
-         </dependency>
-         <!-- <dependency> <groupId>org.vaadin.addon</groupId> <artifactId>confirmdialog</artifactId>
-             <version>1.2.1</version> </dependency> -->
-         <!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId>
-             <version>${gwt.version}</version> </dependency> -->
-         <!-- Vaadin Add-Ons -->
-         <!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>flexibleoptiongroup</artifactId>
-             <version>1.0.0</version> </dependency> -->
-         <!-- dellroad-stuff for Spring -->
-         <dependency>
-             <groupId>org.dellroad</groupId>
-             <artifactId>dellroad-stuff-vaadin</artifactId>
-             <version>1.0.315</version>
-             <exclusions>
-                 <exclusion>
-                     <groupId>javax.servlet</groupId>
-                     <artifactId>javax.servlet-api</artifactId>
-                 </exclusion>
-             </exclusions>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
-             <artifactId>vaadin-lazyquerycontainer</artifactId>
-             <version>1.2.11</version>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
-             <artifactId>tableexport</artifactId>
-             <version>1.3.0</version>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
-             <artifactId>vaadin-colorpicker</artifactId>
-             <version>1.1.0</version>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
-             <artifactId>pagedtable</artifactId>
-             <version>0.6.3</version>
-         </dependency>
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
-             <artifactId>easyuploads</artifactId>
-             <version>0.5.3</version>
-         </dependency>
+    <dependencies>
+        <!-- Vaadin Dependency -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <!-- <dependency> <groupId>org.vaadin.addon</groupId> <artifactId>confirmdialog</artifactId>
+            <version>1.2.1</version> </dependency> -->
+        <!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId>
+            <version>${gwt.version}</version> </dependency> -->
+        <!-- Vaadin Add-Ons -->
+        <!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>flexibleoptiongroup</artifactId>
+            <version>1.0.0</version> </dependency> -->
+        <!-- dellroad-stuff for Spring -->
+        <dependency>
+            <groupId>org.dellroad</groupId>
+            <artifactId>dellroad-stuff-vaadin</artifactId>
+            <version>1.0.315</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+            <artifactId>vaadin-lazyquerycontainer</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>tableexport</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>vaadin-colorpicker</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>pagedtable</artifactId>
+            <version>0.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>easyuploads</artifactId>
+            <version>0.5.3</version>
+        </dependency>
 
-         <dependency>
-             <groupId>org.vaadin.addons</groupId>
-             <artifactId>popupbutton</artifactId>
-             <version>1.2.1</version>
-         </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>popupbutton</artifactId>
+            <version>1.2.1</version>
+        </dependency>
 
-         <!-- Spring Dependency -->
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-core</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-beans</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-web</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-aop</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-orm</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-tx</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-instrument</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-instrument-tomcat</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.aspectj</groupId>
-             <artifactId>aspectjweaver</artifactId>
-             <version>1.7.0</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-asm</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-context</artifactId>
-             <version>3.1.1.RELEASE</version>
-             <exclusions>
-                 <exclusion>
-                     <groupId>commons-logging</groupId>
-                     <artifactId>commons-logging</artifactId>
-                 </exclusion>
-             </exclusions>
-         </dependency>
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-webmvc</artifactId>
-             <version>3.1.1.RELEASE</version>
-         </dependency>
-         <!-- -->
-         <dependency>
-             <groupId>org.slf4j</groupId>
-             <artifactId>jcl-over-slf4j</artifactId>
-             <version>1.6.4</version>
-         </dependency>
-         <!-- Apache Commons -->
-         <dependency>
-             <groupId>org.apache.commons</groupId>
-             <artifactId>commons-lang3</artifactId>
-             <version>3.1</version>
-         </dependency>
+        <!-- Spring Dependency -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument-tomcat</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-asm</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.1.1.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <!-- -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
 
-         <dependency>
-             <groupId>commons-beanutils</groupId>
-             <artifactId>commons-beanutils</artifactId>
-             <version>1.8.3</version>
-         </dependency>
-
-
-         <dependency>
-             <groupId>commons-io</groupId>
-             <artifactId>commons-io</artifactId>
-             <version>2.4</version>
-         </dependency>
-         <dependency>
-             <groupId>commons-codec</groupId>
-             <artifactId>commons-codec</artifactId>
-             <version>1.6</version>
-         </dependency>
-         <!-- Other Apache Libs -->
-         <dependency>
-             <groupId>org.apache.poi</groupId>
-             <artifactId>poi</artifactId>
-             <version>3.8</version>
-         </dependency>
-         <dependency>
-             <groupId>org.apache.poi</groupId>
-             <artifactId>poi-ooxml</artifactId>
-             <version>3.8</version>
-         </dependency>
-         <dependency>
-             <groupId>org.apache.poi</groupId>
-             <artifactId>poi-ooxml-schemas</artifactId>
-             <version>3.8</version>
-         </dependency>
-         <!-- Logging -->
-         <dependency>
-             <groupId>ch.qos.logback</groupId>
-             <artifactId>logback-classic</artifactId>
-             <version>1.0.1</version>
-         </dependency>
-         <!-- JUnit Dependency for Testing -->
-         <dependency>
-             <groupId>junit</groupId>
-             <artifactId>junit</artifactId>
-             <version>4.8.1</version>
-             <scope>test</scope>
-         </dependency>
-         <!-- IBPCommons Dependency -->
-         <dependency>
-             <groupId>org.generationcp</groupId>
-             <artifactId>ibpcommons</artifactId>
-             <version>1.3.0-SNAPSHOT</version>
-         </dependency>
-         <dependency>
-             <groupId>commons-logging</groupId>
-             <artifactId>commons-logging</artifactId>
-             <version>1.1.1</version>
-         </dependency>
-         <dependency>
-             <groupId>net.sf.opencsv</groupId>
-             <artifactId>opencsv</artifactId>
-             <version>2.3</version>
-         </dependency>
-
-         <!-- Random Pojo Data Generator -->
-         <dependency>
-             <groupId>uk.co.jemos.podam</groupId>
-             <artifactId>podam</artifactId>
-             <version>2.3.5.RELEASE</version>
-         </dependency>
-
-         <!-- Web-app Integration Optimization -->
-         <dependency>
-             <groupId>commons-httpclient</groupId>
-             <artifactId>commons-httpclient</artifactId>
-             <version>3.1</version>
-         </dependency>
-
-         <!-- for testing, uncomment to use junit tests in src/test/java -->
-         <dependency>
-             <groupId>javax.servlet</groupId>
-             <artifactId>servlet-api</artifactId>
-             <version>2.5</version>
-             <scope>provided</scope>
-         </dependency>
-
-         <dependency>
-             <groupId>com.google.guava</groupId>
-             <artifactId>guava</artifactId>
-             <version>14.0.1</version>
-         </dependency>
-
-     </dependencies>
-
-     <build>
-         <resources>
-             <resource>
-                 <filtering>false</filtering>
-                 <directory>src/main/java</directory>
-                 <includes>
-                     <include>**</include>
-                 </includes>
-                 <excludes>
-                     <exclude>**/*.java</exclude>
-                 </excludes>
-             </resource>
-             <resource>
-                 <filtering>false</filtering>
-                 <directory>src/main/resources</directory>
-                 <includes>
-                     <include>**</include>
-                 </includes>
-             </resource>
-         </resources>
-         <plugins>
-
-             <plugin>
-                 <groupId>org.codehaus.mojo</groupId>
-                 <artifactId>gwt-maven-plugin</artifactId>
-                 <version>${gwt.plugin.version}</version>
-                 <configuration>
-                     <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
-                     <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                     <runTarget>IBPWorkbench</runTarget>
-                     <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                     <noServer>true</noServer>
-                     <port>8080</port>
-                     <compileReport>false</compileReport>
-                 </configuration>
-                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>resources</goal>
-                             <goal>compile</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-                 <dependencies>
-                     <dependency>
-                         <groupId>com.google.gwt</groupId>
-                         <artifactId>gwt-dev</artifactId>
-                         <version>${gwt.version}</version>
-                     </dependency>
-                     <dependency>
-                         <groupId>com.google.gwt</groupId>
-                         <artifactId>gwt-user</artifactId>
-                         <version>${gwt.version}</version>
-                     </dependency>
-                 </dependencies>
-             </plugin>
-             <plugin>
-                 <groupId>com.vaadin</groupId>
-                 <artifactId>vaadin-maven-plugin</artifactId>
-                 <version>1.0.2</version>
-                 <executions>
-                     <execution>
-                         <configuration>
-                         </configuration>
-                         <goals>
-                             <goal>update-widgetset</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+        </dependency>
 
 
-             <plugin>
-                 <artifactId>maven-antrun-plugin</artifactId>
-                 <version>1.7</version>
-                 <executions>
-                     <execution>
-                         <id>default-cli</id>
-                         <phase>generate-resources</phase>
-                         <configuration>
-                             <tasks>
-                                 <copy todir="src/main/resources" overwrite="true">
-                                     <fileset dir="pipeline/config/${envConfig}" id="fromDir">
-                                         <include name="IBPDatasource.properties" />
-                                         <include name="workbench.properties" />
-                                     </fileset>
-                                 </copy>
-                                 <copy todir="src/test/resources" overwrite="true">
-                                     <fileset dir="pipeline/config/${envConfig}" id="fromDir">
-                                         <include name="testDatabaseConfig.properties" />
-                                         <include name="test.properties"/>
-                                     </fileset>
-                                 </copy>
-                             </tasks>
-                         </configuration>
-                         <goals>
-                             <goal>run</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-compiler-plugin</artifactId>
-                 <version>2.3.2</version>
-                 <configuration>
-                     <source>1.6</source>
-                     <target>1.6</target>
-                 </configuration>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-war-plugin</artifactId>
-                 <configuration>
-                     <attachClasses>true</attachClasses>
-                 </configuration>
-             </plugin>
-             <plugin>
-                 <artifactId>maven-assembly-plugin</artifactId>
-                 <configuration>
-                     <descriptorRefs>
-                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                     </descriptorRefs>
-                     <archive>
-                         <manifest>
-                             <mainClass>org.generationcp.ibpworkbench.Launcher</mainClass>
-                         </manifest>
-                     </archive>
-                 </configuration>
-                 <executions>
-                     <execution>
-                         <id>jar-with-dependencies</id>
-                         <phase>package</phase>
-                         <goals>
-                             <goal>single</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-javadoc-plugin</artifactId>
-                 <version>2.8</version>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-surefire-plugin</artifactId>
-                 <version>2.4</version>
-                 <configuration>
-                     <forkMode>once</forkMode>
-                     <argLine>
-                         -javaagent:"${user.home}/.m2/repository/org/springframework/spring-instrument/3.1.1.RELEASE/spring-instrument-3.1.1.RELEASE.jar"
-                     </argLine>
-                     <useSystemClassloader>true</useSystemClassloader>
-                 </configuration>
-             </plugin>
-             <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>aspectj-maven-plugin</artifactId>
-                 <version>1.3</version> <executions> <execution> <configuration> <source>1.6</source>
-                 <target>1.6</target> </configuration> <goals> <goal>compile</goal> <goal>test-compile</goal>
-                 </goals> </execution> </executions> </plugin> -->
-         </plugins>
-     </build>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <!-- Other Apache Libs -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.8</version>
+        </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <!-- JUnit Dependency for Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- IBPCommons Dependency -->
+        <dependency>
+            <groupId>org.generationcp</groupId>
+            <artifactId>ibpcommons</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
+        </dependency>
 
- </project>
+        <!-- Random Pojo Data Generator -->
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+            <version>2.3.5.RELEASE</version>
+        </dependency>
+
+        <!-- Web-app Integration Optimization -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <!-- for testing, uncomment to use junit tests in src/test/java -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>vaadinWidgetSetCompilation</id>
+            <activation>
+                <file>
+                    <missing>src/main/webapp/VAADIN/widgetsets</missing>
+                </file>
+                <property>
+                    <name>compileVaadinWidget</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>${gwt.plugin.version}</version>
+                        <configuration>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                            <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                            <runTarget>IBPWorkbench</runTarget>
+                            <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                            <noServer>true</noServer>
+                            <port>8080</port>
+                            <compileReport>false</compileReport>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>resources</goal>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-dev</artifactId>
+                                <version>${gwt.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-user</artifactId>
+                                <version>${gwt.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-maven-plugin</artifactId>
+                        <version>1.0.2</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                </configuration>
+                                <goals>
+                                    <goal>update-widgetset</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <copy todir="src/main/resources" overwrite="true">
+                                    <fileset dir="pipeline/config/${envConfig}" id="fromDir">
+                                        <include name="IBPDatasource.properties"/>
+                                        <include name="workbench.properties"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="src/test/resources" overwrite="true">
+                                    <fileset dir="pipeline/config/${envConfig}" id="fromDir">
+                                        <include name="testDatabaseConfig.properties"/>
+                                        <include name="test.properties"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.generationcp.ibpworkbench.Launcher</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>
+                        -javaagent:"${user.home}/.m2/repository/org/springframework/spring-instrument/3.1.1.RELEASE/spring-instrument-3.1.1.RELEASE.jar"
+                    </argLine>
+                    <useSystemClassloader>true</useSystemClassloader>
+                </configuration>
+            </plugin>
+            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.3</version> <executions> <execution> <configuration> <source>1.6</source>
+                <target>1.6</target> </configuration> <goals> <goal>compile</goal> <goal>test-compile</goal>
+                </goals> </execution> </executions> </plugin> -->
+        </plugins>
+    </build>
+
+</project>
