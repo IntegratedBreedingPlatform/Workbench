@@ -4,6 +4,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
@@ -231,7 +232,10 @@ public class WorkbenchSidebar extends CssLayout {
             return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),project);
         } else if (toolName.equals("manage_program")) {
             return new OpenManageProgramPageAction();
-        } else if (toolName.equals("update_project")) {
+        } else if (toolName.equals("tool_versions")) {
+            return new OpenToolVersionsAction();
+        }
+        else if (toolName.equals("update_project")) {
             return new OpenUpdateProjectPageAction();
         } else if (toolName.equals("project_method")) {
             return new OpenProgramMethodsAction(project);

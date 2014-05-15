@@ -25,10 +25,10 @@ import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 
 public class OpenToolVersionsAction implements ClickListener, ActionListener {
-    private static final long serialVersionUID = 1L;
-    
     private static final Logger LOG = LoggerFactory.getLogger(OpenToolVersionsAction.class);
-    
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public void buttonClick(ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);
