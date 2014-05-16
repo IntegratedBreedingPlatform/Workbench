@@ -12,6 +12,7 @@ import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
 import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ProgramLocationsPresenter implements InitializingBean {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsPresenter.class);
+    private CropType cropType;
     private ProgramLocationsView view;
 
     @Autowired
@@ -43,7 +45,17 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.view = view;
         this.project = project;
 	}
-	
+
+    /**
+     * Note: When using this constructor, the view will instantiate itself, you can get the view reference using getProgramLocationsView()
+     * @param cropType
+     */
+    public ProgramLocationsPresenter(ProgramLocationsView view,CropType cropType) {
+        this.view = view;
+        this.cropType = cropType;
+    }
+
+
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
 	public ProgramLocationsPresenter(Project project, WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
 		this.project = project;
@@ -118,7 +130,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     // The ff is a BAD BAD CODE, necessary but BAD!!! >_<
-	public void onAttachInitialize() {
+	private void onAttachInitialize() {
         try {
             LOG.debug(">BAD Routine start!");
 
@@ -146,6 +158,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 	
 	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
+        if (cropType != null)
+            return new ArrayList<LocationViewModel>();
+
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
 		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
 		
@@ -176,11 +191,16 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]");
 			
 		} catch (NullPointerException e) {
-            LOG.error("Location [locationId="+ locationId +"]  not found in "+ sessionData.getLastOpenedProject().getLocalDbName());
+            if (cropType == null)
+                LOG.error("Location [locationId="+ locationId +"]  not found in "+ sessionData.getLastOpenedProject().getLocalDbName(),e);
+            else
+                LOG.error("Location [locationId="+ locationId +"]  not found in "+ cropType.getCentralDbName(),e);
+
         }
         return null;
 	}
 
+    @Deprecated
     public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
     	
         // Delete existing project locations in the database
@@ -238,8 +258,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
         return true;
     }
-	
-	private LocationViewModel convertFrom(LocationDetails location) {
+
+    private LocationViewModel convertFrom(LocationDetails location) {
 		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLocation_name());
@@ -322,8 +342,14 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.ldm = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
-        this.onAttachInitialize();
+        if (this.cropType != null)
+            this.ldm = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
+        else {
+            this.ldm = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
+            this.onAttachInitialize();
+        }
+
+
     }
 
     public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {

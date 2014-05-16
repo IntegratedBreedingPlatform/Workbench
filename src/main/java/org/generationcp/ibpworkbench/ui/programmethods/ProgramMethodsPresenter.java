@@ -11,6 +11,7 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
@@ -31,7 +32,8 @@ import java.util.*;
 
 @Configurable
 public class ProgramMethodsPresenter implements InitializingBean {
-    private final Project project;
+    private Project project;
+    private CropType cropType;
     private ProgramMethodsView view;
 
     @Autowired
@@ -50,12 +52,19 @@ public class ProgramMethodsPresenter implements InitializingBean {
     public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
         this.view = view;
         this.project = project;
+    }
 
+    public ProgramMethodsPresenter(ProgramMethodsView view, CropType cropType) {
+        this.view = view;
+        this.cropType = cropType;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        if (cropType != null)
+            this.gdm = managerFactoryProvider.getManagerFactoryForCropType(cropType).getGermplasmDataManager();
+        else
+            this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     }
 
     public void doMoveToSelectedMethod(Integer id) {
@@ -93,12 +102,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
         }
     }
 
-    public ManagerFactory getManagerFactory() {
-        return managerFactoryProvider.getManagerFactoryForProject(project);
-
-    }
-
     public List<MethodView> getSavedProgramMethods() {
+        if (cropType != null)
+            return new ArrayList<MethodView>();
+
         List<Method> result = new ArrayList<Method>();
         try {
            List<Integer> projectMethodsIds = workbenchDataManager.getMethodIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);

@@ -15,6 +15,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ import java.util.*;
 
  @Configurable
  public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
-     private ProgramMethodsPresenter presenter;
+    private boolean cropOnly = false;
+    private ProgramMethodsPresenter presenter;
      @Autowired
      private SimpleResourceBundleMessageSource messageSource;
 
@@ -96,6 +98,11 @@ import java.util.*;
      public ProgramMethodsView(Project project) {
          presenter = new ProgramMethodsPresenter(this,project);
      }
+
+    public ProgramMethodsView(CropType cropType) {
+        this.cropOnly = true;
+        presenter = new ProgramMethodsPresenter(this,cropType);
+    }
 
 
      @Override
@@ -322,6 +329,15 @@ import java.util.*;
          }
      }
 
+    /**
+     * Use this method to return the list of methods in Favorite Methods table, you might have to manually
+     * convert the MethodView bean to Middleware's Method bean.
+     * @return
+     */
+    public Collection<MethodView> getFavoriteMethods() {
+        return favoritesTableContainer.getItemIds();
+    }
+
      private void initializeValues() {
 
              /* INITIALIZE FILTER CONTROLS DATA */
@@ -428,7 +444,10 @@ import java.util.*;
          favoriteMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
          root.addComponent(favoriteMethodsTitle);
-         root.addComponent(saveBtn);
+
+         if (!cropOnly)
+            root.addComponent(saveBtn);
+
          root.setExpandRatio(favoriteMethodsTitle,1.0F);
 
          return root;
@@ -509,8 +528,11 @@ import java.util.*;
          heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
          titleContainer.addComponent(heading);
-         titleContainer.addComponent(addNewMethodsBtn);
-         titleContainer.setComponentAlignment(addNewMethodsBtn, Alignment.MIDDLE_RIGHT);
+
+         if (!cropOnly) {
+             titleContainer.addComponent(addNewMethodsBtn);
+             titleContainer.setComponentAlignment(addNewMethodsBtn, Alignment.MIDDLE_RIGHT);
+         }
 
          final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
 
