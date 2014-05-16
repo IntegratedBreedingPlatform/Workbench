@@ -46,10 +46,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
         this.project = project;
 	}
 
-    /**
-     * Note: When using this constructor, the view will instantiate itself, you can get the view reference using getProgramLocationsView()
-     * @param cropType
-     */
     public ProgramLocationsPresenter(ProgramLocationsView view,CropType cropType) {
         this.view = view;
         this.cropType = cropType;
