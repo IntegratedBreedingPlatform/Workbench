@@ -43,6 +43,7 @@ import com.vaadin.ui.Button.ClickEvent;
      static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
+         tableColumns.put("locationId","id");
          tableColumns.put("locationName","Name");
          tableColumns.put("locationAbbreviation","abbr.");
          tableColumns.put("ltypeStr","Type");
@@ -440,8 +441,8 @@ import com.vaadin.ui.Button.ClickEvent;
 
          //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],0.3F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],0.7F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[4],0.3F);
 
              /*
              for (String col : tableColumnSizes.keySet())
