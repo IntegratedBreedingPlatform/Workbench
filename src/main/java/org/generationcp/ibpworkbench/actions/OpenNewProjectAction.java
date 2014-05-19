@@ -14,13 +14,9 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.project.create.AddProgramPanel;
-import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
+import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +52,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         final IContentWindow w = (IContentWindow) window;
 
         try {
-        	AddProgramPanel newProjectPanel = new AddProgramPanel() {
+        	AddProgramView newProjectPanel = new AddProgramView() {
 				private static final long serialVersionUID = 1640109693569711793L;
 
 				@Override

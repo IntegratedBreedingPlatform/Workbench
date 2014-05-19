@@ -81,6 +81,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
    
     private Boolean isUpdate = false;
 
+    private CropType oldCropType;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -118,7 +120,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         if (isUpdate){
         	initializeLayoutForUpdate();
         }
-        
     }
 
     protected void initializeComponents() {
@@ -246,8 +247,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     
 
     protected void initializeActions() {
- 
-        
 
     }
 
@@ -312,6 +311,22 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					otherCropNameField.setValue("");
 					lblOtherCrop.setVisible(false);
 				}
+
+                if (!isUpdate) {
+                    if (oldCropType == null) {
+                        oldCropType = getCropTypeBasedOnInput();
+                    } else {
+                        CropType newCropType = getCropTypeBasedOnInput();
+
+                        if (!oldCropType.getCropName().equalsIgnoreCase(newCropType.getCropName())) {
+                            createProjectPanel.cropTypeChanged(newCropType);
+                            LOG.debug("changed");
+                        }
+
+                        oldCropType = newCropType;
+                    }
+                }
+
 				
 			}
 		});

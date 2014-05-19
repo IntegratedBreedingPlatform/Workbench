@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,5 +205,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
 
+    }
+
+    public void cropTypeChanged(CropType newCropType) {
+        presenter.disableProgramMethodsAndLocationsTab();
     }
 }

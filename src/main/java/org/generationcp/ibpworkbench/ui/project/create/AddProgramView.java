@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.List;
 
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
@@ -18,15 +19,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class AddProgramPanel extends Panel implements InitializingBean{
+public class AddProgramView extends Panel implements InitializingBean{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -55,8 +51,9 @@ public class AddProgramPanel extends Panel implements InitializingBean{
     private VerticalLayout programMethodsContainer;
     private VerticalLayout programLocationsContainer;
     private AddProgramPresenter presenter;
+    private Button finishButton;
 
-    public AddProgramPanel() {
+    public AddProgramView() {
 		
 	}
 
@@ -103,11 +100,18 @@ public class AddProgramPanel extends Panel implements InitializingBean{
         programMethodsContainer.setSpacing(false);
         //programMethodsContainer.setSizeFull();
 
+        // finish button
+        finishButton = new Button("Finish");
+        finishButton.setEnabled(false);
     }
 	
 	protected void initializeActions() {
-		
-		
+	    finishButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                presenter.doAddNewProgram();
+            }
+        });
 	}
 
 	protected void initializeLayout() {
@@ -145,7 +149,10 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		
 		rootLayout.addComponent(heading);
 		rootLayout.addComponent(tabSheet);
-		
+
+        rootLayout.addComponent(finishButton);
+        rootLayout.setComponentAlignment(finishButton,Alignment.MIDDLE_CENTER);
+
 		setContent(rootLayout);
 		setScrollable(true);
 	    setSizeFull();
@@ -172,15 +179,20 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 
         tabSheet.getTab(programLocationsContainer).setEnabled(true);
         programLocationsContainer.removeAllComponents();
-        programLocationsContainer.addComponent(programMethodsView);
+        programLocationsContainer.addComponent(programLocationsView);
 
-        //TODO: enable finish button here
+        finishButton.setEnabled(true);
     }
 
-    public void enableOptionalTabsAndFinish() {
+    public void disableOptionalTabsAndFinish() {
         // disable program methods + locations view when crop type is changed;
         tabSheet.getTab(programMethodsContainer).setEnabled(false);
         tabSheet.getTab(programLocationsContainer).setEnabled(false);
 
+        finishButton.setEnabled(false);
+    }
+
+    public void enableFinishBtn() {
+        finishButton.setEnabled(true);
     }
 }
