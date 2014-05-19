@@ -12,6 +12,7 @@ import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +47,24 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 	protected User currentUser;               // should be the currently logged in user that will try to add / update a new project
 	
 	//TABS
-	private CreateProjectPanel createProjectPanel;
-	private ProjectMembersComponent programMembersPanel;
-	private ProgramLocationsView programLocationsView;
-	private ProgramMethodsView programMethodsView;
+	protected CreateProjectPanel createProjectPanel;
+	protected ProjectMembersComponent programMembersPanel;
+	protected ProgramLocationsView programLocationsView;
+	protected ProgramMethodsView programMethodsView;
 
-	public AddProgramPanel() {
+    private VerticalLayout programMethodsContainer;
+    private VerticalLayout programLocationsContainer;
+    private AddProgramPresenter presenter;
+
+    public AddProgramPanel() {
 		
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		assemble();
+		presenter = new AddProgramPresenter(this);
+
+        assemble();
 		updateLabels();	
 	}
 	
@@ -77,14 +84,26 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		rootLayout = new VerticalLayout();
 		
 		tabSheet = generateTabSheet();
-		
-		createProjectPanel = new CreateProjectPanel(tabSheet);
+
+		createProjectPanel = new CreateProjectPanel(presenter);
 		createProjectPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		programMembersPanel = new ProjectMembersComponent(tabSheet);
 		programMembersPanel.setStyleName(Reindeer.PANEL_LIGHT);
-		programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
-		programMethodsView = new ProgramMethodsView(sessionData.getLastOpenedProject());
-	}
+		//programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
+		//programMethodsView = new ProgramMethodsView(sessionData.getLastOpenedProject());
+
+        programLocationsContainer = new VerticalLayout();
+        programMethodsContainer = new VerticalLayout();
+
+        programLocationsContainer.setMargin(false);
+        programLocationsContainer.setSpacing(false);
+        //programLocationsContainer.setSizeFull();
+
+        programMethodsContainer.setMargin(false);
+        programMethodsContainer.setSpacing(false);
+        //programMethodsContainer.setSizeFull();
+
+    }
 	
 	protected void initializeActions() {
 		
@@ -102,10 +121,9 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		
 		createProjectPanel.setVisible(true);
 		programMembersPanel.setVisible(true);
-		programLocationsView.setVisible(true);
-		programMethodsView.setVisible(true);
-		
-		
+		programMethodsContainer.setVisible(true);
+		programLocationsContainer.setVisible(true);
+
 		tabSheet.addTab(createProjectPanel);
 		tabSheet.getTab(createProjectPanel).setClosable(false);
 		tabSheet.getTab(createProjectPanel).setCaption("Basic Details");
@@ -114,13 +132,16 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		tabSheet.getTab(programMembersPanel).setClosable(false);
 		tabSheet.getTab(programMembersPanel).setCaption("Members");
 		
-		tabSheet.addTab(programLocationsView);
-		tabSheet.getTab(programLocationsView).setClosable(false);
-		tabSheet.getTab(programLocationsView).setCaption("Locations");
+		tabSheet.addTab(programLocationsContainer);
+		tabSheet.getTab(programLocationsContainer).setClosable(false);
+        tabSheet.getTab(programLocationsContainer).setEnabled(false);
+        tabSheet.getTab(programLocationsContainer).setCaption("Locations");
 		
-		tabSheet.addTab(programMethodsView);
-		tabSheet.getTab(programMethodsView).setClosable(false);
-		tabSheet.getTab(programMethodsView).setCaption("Breeding Methods");
+		tabSheet.addTab(programMethodsContainer);
+		tabSheet.getTab(programMethodsContainer).setClosable(false);
+        tabSheet.getTab(programMethodsContainer).setEnabled(false);
+
+        tabSheet.getTab(programMethodsContainer).setCaption("Breeding Methods");
 		
 		rootLayout.addComponent(heading);
 		rootLayout.addComponent(tabSheet);
@@ -141,4 +162,18 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		return tab;
 	}
 
+    public void enableProgramMethodsAndLocationsTab(CropType selectedCropType) {
+        programMethodsView = new ProgramMethodsView(selectedCropType);
+        programLocationsView = new ProgramLocationsView(selectedCropType);
+
+        tabSheet.getTab(programMethodsContainer).setEnabled(true);
+        programMethodsContainer.removeAllComponents();
+        programMethodsContainer.addComponent(programMethodsView);
+
+        tabSheet.getTab(programLocationsContainer).setEnabled(true);
+        programLocationsContainer.removeAllComponents();
+        programLocationsContainer.addComponent(programMethodsView);
+
+
+    }
 }

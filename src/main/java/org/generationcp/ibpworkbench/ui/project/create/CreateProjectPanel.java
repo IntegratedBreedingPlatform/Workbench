@@ -16,14 +16,14 @@ import com.vaadin.ui.*;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -40,9 +40,9 @@ import java.util.List;
 public class CreateProjectPanel extends Panel implements InitializingBean{
 
     private static final long serialVersionUID = 1L;
-    
-    protected TabSheet tabSheet;
-    
+
+    protected static final Logger LOG = LoggerFactory.getLogger(CreateProjectPanel.class);
+
     protected ProjectBasicDetailsComponent projectBasicDetailsComponent;
 
     protected HorizontalLayout newProjectTitleArea;
@@ -60,13 +60,13 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     private SimpleResourceBundleMessageSource messageSource;
 	
 	private Label heading;
-	
-    public CreateProjectPanel() {
-        super();
-    }
-    
-    public CreateProjectPanel(TabSheet tabSheet) {
-    	this.tabSheet = tabSheet;
+
+    AddProgramPresenter presenter;
+
+    public CreateProjectPanel() {}
+
+    public CreateProjectPanel(AddProgramPresenter presenter) {
+        this.presenter = presenter;
 	}
 
 	public CropType getSelectedCropType() {
@@ -88,6 +88,8 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         this.project = project;
     }
 
+    /*
+    This should be moved to the presenter code
 
     public List<ProjectUserRole> getProjectMembers(){
     	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
@@ -98,7 +100,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
         return projectMembersComponent.getProjectUserRoles();
     }
-    
+    */
     
 
  
@@ -143,9 +145,19 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     }
 
     protected void initializeActions() {
-        saveProjectButton.addListener(new SaveNewProjectAction(this));
+
+        //saveProjectButton.addListener(new SaveNewProjectAction(this));
+        saveProjectButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                // if basic details is valid
+                if (presenter.validateAndSaveBasicDetails()) {
+                    presenter.enableProgramMethodsAndLocationsTab();
+                }
+            }
+        });
+
         cancelButton.addListener(new HomeAction());
-       
     }
         
 
@@ -170,7 +182,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         initializeLayout();
         initializeActions();
     }
-    
+
+    /*
+    Move to presenter
     public boolean validate(){
     	
     	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
@@ -188,6 +202,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
          return success;
     	
     }
+    */
     
     public void setTitle(String label, String description) {
     	newProjectTitleArea.removeAllComponents();
@@ -208,14 +223,5 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
 
-    }
-
-
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-    }
-
-    public User getCurrentUser() {
-        return this.currentUser;
     }
 }

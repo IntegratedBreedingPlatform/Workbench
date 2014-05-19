@@ -92,8 +92,10 @@ public class SaveNewProjectAction implements ClickListener{
         this.createProjectPanel = createProjectPanel;
     }
 
+
     @Override
     public void buttonClick(ClickEvent event) {
+    /*
 
         boolean validProjectValues = createProjectPanel.validate();
 
@@ -335,7 +337,7 @@ public class SaveNewProjectAction implements ClickListener{
             HomeAction home = new HomeAction();
             home.buttonClick(event);
         }
-
+    */
     }
 
     @SuppressWarnings("unused")

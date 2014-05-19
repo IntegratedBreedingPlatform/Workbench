@@ -6,6 +6,7 @@ import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -37,6 +38,9 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
+
 
     @Override
     public void buttonClick(Button.ClickEvent event) {
@@ -57,7 +61,7 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
             w.showContent(projectPanel);
 
             //NavManager.navigateApp(window, "/UpdateProgram", isLinkAccessed);
-            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Launched Update Program", projectPanel.getCurrentUser(), new Date());
+            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Launched Update Program", sessionData.getUserData(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
         } catch (Exception e) {

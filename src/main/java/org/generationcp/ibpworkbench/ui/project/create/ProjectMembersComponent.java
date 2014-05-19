@@ -11,11 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -69,9 +65,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     
     private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponent.class);
     private static final long serialVersionUID = 1L;
-    
-    private CreateProjectPanel createProjectPanel;
-   
+
     private TwinTableSelect<User> select;
     
     private Button newMemberButton;
@@ -90,8 +84,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     
     private  List<Role> inheritedRoles;
 
-    public ProjectMembersComponent(CreateProjectPanel createProjectPanel) {
-        this.createProjectPanel = createProjectPanel;
+    public ProjectMembersComponent() {
     }
 
 
@@ -296,18 +289,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         return true;
     }
 
-    public boolean validateAndSave(){
-    	
-    	this.createProjectPanel = (CreateProjectPanel) tabSheet.getTab(0).getComponent();
-    	
-        if (validate()) {
-            Set<User> members = (Set<User>) select.getValue();
-            Project project = createProjectPanel.getProject();
-            project.setMembers(members);
-            createProjectPanel.setProject(project);
-        }
-        return true;    // members not required, so even if there are no values, this returns true
+    public Set<User> validateAndSave(){
+
+        if(!validate())
+            return new HashSet<User>();
+
+        return select.getValue();
     }
+
+
     
     public List<ProjectUserRole> getProjectUserRoles() {
 

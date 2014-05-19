@@ -42,7 +42,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     private Label heading;
 
     public UpdateProjectPanel() {
-        super();
+
     }
 
     @Override
@@ -136,9 +136,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         return oldProjectName;
     }
     
-    @Override
-	public boolean validate() {
-    	 if (projectBasicDetails.validateAndSave()) {
+    public boolean validate() {
+    	 if (projectBasicDetails.validate()) {
              return true;
          }
 

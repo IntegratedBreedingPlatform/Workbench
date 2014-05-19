@@ -404,24 +404,26 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         return success;
     }
     
-    public boolean validateAndSave(){
-        boolean valid = validate();
-        if (valid){
-            Project project = createProjectPanel.getProject();
-            
-            String projectName = (String) projectNameField.getValue();
-            if (projectName != null) {
-                projectName = projectName.trim();
-            }
-            
-            project.setProjectName(projectName);
-            project.setStartDate((Date) startDateField.getValue());
-         
-            
-            project.setCropType(getCropTypeBasedOnInput());
+    public Project validateAndSave() throws InvalidValueException {
+        if (!validate()) {
+            throw new InvalidValueException("Failed Validation on BasicDetailsForm");
         }
-        return valid;
-    } 
+
+        Project project = new Project();
+
+        String projectName = (String) projectNameField.getValue();
+        if (projectName != null) {
+            projectName = projectName.trim();
+        }
+
+        project.setProjectName(projectName);
+        project.setStartDate((Date) startDateField.getValue());
+
+
+        project.setCropType(getCropTypeBasedOnInput());
+
+        return project;
+    }
     
     
     public CropType getCropTypeBasedOnInput(){

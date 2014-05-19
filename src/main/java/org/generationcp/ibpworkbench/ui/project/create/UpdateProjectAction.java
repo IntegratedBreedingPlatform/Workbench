@@ -7,6 +7,7 @@ import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -42,6 +43,9 @@ public class UpdateProjectAction implements Button.ClickListener  {
 
     @Autowired
     private ToolUtil toolUtil;
+
+    @Autowired
+    private SessionData sessionData;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -92,19 +96,19 @@ public class UpdateProjectAction implements Button.ClickListener  {
             List<ProjectUserRole> deleteRoles = workbenchDataManager.getProjectUserRolesByProject(projectPanel.getProject());
             // remove all previous roles assigned to current user
             for(ProjectUserRole projectUserRole : deleteRoles){
-                if (projectUserRole.getUserId().intValue() == projectPanel.getCurrentUser().getUserid().intValue())
+                if (projectUserRole.getUserId().intValue() == sessionData.getUserData().getUserid())
                     workbenchDataManager.deleteProjectUserRole(projectUserRole);
             }
 
             // add the newly updated roles
             for (ProjectUserRole projectUserRole : updatedProjectUserRoles) {
-                workbenchDataManager.addProjectUserRole(projectPanel.getProject(),projectPanel.getCurrentUser(),projectUserRole.getRole());
+                workbenchDataManager.addProjectUserRole(projectPanel.getProject(),sessionData.getUserData(),projectUserRole.getRole());
             }
 
             //MessageNotifier.showMessage(projectPanel.getWindow(),String.format("Successfully updated %s",projectPanel.getProject().getProjectName()),"");
             MessageNotifier.showMessage(projectPanel.getWindow(),"Program update is successful",String.format("%s is updated.", StringUtils.abbreviate(projectPanel.getProject().getProjectName(),50)));
 
-            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Updated Program - " + projectPanel.getProject().getProjectName(), projectPanel.getCurrentUser(), new Date());
+            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Updated Program - " + projectPanel.getProject().getProjectName(),sessionData.getUserData(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
             if (IBPWorkbenchApplication.get().getMainWindow() instanceof  WorkbenchMainView)
