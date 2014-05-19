@@ -227,6 +227,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+        return this.saveProgramLocation(selectedLocations,this.project,this.workbenchDataManager);
+    }
+
+    public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations,Project project,WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
         // Delete existing project locations in the database
         List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
@@ -244,7 +248,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         for (LocationViewModel l : selectedLocations) {
             ProjectLocationMap projectLocationMap = new ProjectLocationMap();
             projectLocationMap.setLocationId(l.getLocationId().longValue());
-            projectLocationMap.setProject(getProject());
+            projectLocationMap.setProject(project);
             projectLocationMapList.add(projectLocationMap);
         }
 

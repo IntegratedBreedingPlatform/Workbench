@@ -193,6 +193,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
     }
 
     public boolean saveProgramMethod(Collection<MethodView> selectedMethodIds) {
+        return saveProgramMethod(selectedMethodIds,this.project,this.sessionData,this.workbenchDataManager,this.gdm);
+    }
+
+    public static boolean saveProgramMethod(Collection<MethodView> selectedMethodIds,Project project,SessionData sessionData,WorkbenchDataManager workbenchDataManager,GermplasmDataManager gdm) {
         List<ProjectMethod> projectMethods = null;
         try {
             projectMethods = workbenchDataManager.getProjectMethodByProject(project,0,Integer.MAX_VALUE);
@@ -207,8 +211,8 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 }
 
                 if (!m_exists) {
-                        if (sessionData.getUserData() != null)
-                            workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionData.getUserData(),new Date()));
+                    if (sessionData.getUserData() != null)
+                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionData.getUserData(),new Date()));
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 
