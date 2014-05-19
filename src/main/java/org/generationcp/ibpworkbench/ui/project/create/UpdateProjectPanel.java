@@ -37,8 +37,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
     private String oldProjectName;
     
-    private ProjectBasicDetailsComponent projectBasicDetails;
-    
     private Label heading;
 
     public UpdateProjectPanel() {
@@ -53,7 +51,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				projectBasicDetails.updateProjectDetailsFormField(getProject());
+	    projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
 				
 			}
 		});
@@ -69,14 +67,14 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     	
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
-    
-        
-        projectBasicDetails = new ProjectBasicDetailsComponent(this, true);
 
-        projectBasicDetails.setMargin(false);
-        projectBasicDetails.setSpacing(false);
 
-        projectBasicDetails.updateProjectDetailsFormField(this.getProject());
+        projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
+
+        projectBasicDetailsComponent.setMargin(false);
+        projectBasicDetailsComponent.setSpacing(false);
+
+        projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
 
         buttonArea = layoutButtonArea();
     }
@@ -88,7 +86,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         root.setMargin(new Layout.MarginInfo(true,true,true,true));
         root.setSpacing(true);
         root.addComponent(heading);
-        root.addComponent(projectBasicDetails);
+        root.addComponent(projectBasicDetailsComponent);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
         //root.setWidth("800px");
@@ -112,11 +110,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         try {
             // initialize state
             currentUser = workbenchDataManager.getUserById(sessionData.getUserData().getUserid());   // get hibernate managed version of user
-            project = sessionData.getSelectedProject();
-            oldProjectName = new String(project.getProjectName());
 
 
-            this.setSelectedCropType(project.getCropType());
 
             this.initializeComponents();
             this.initializeLayout();
@@ -127,22 +122,21 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     public String getOldProjectName() {
-        return oldProjectName;
+        return sessionData.getSelectedProject().getProjectName();
     }
     
     public boolean validate() {
-    	 if (projectBasicDetails.validate()) {
+    	 if (projectBasicDetailsComponent.validate()) {
              return true;
          }
 
          return false;
 	}
+
+
     
     
 }

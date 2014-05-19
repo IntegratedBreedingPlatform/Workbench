@@ -162,7 +162,7 @@ public class AddProgramPanel extends Panel implements InitializingBean{
 		return tab;
 	}
 
-    public void enableProgramMethodsAndLocationsTab(CropType selectedCropType) {
+    public void enableOptionalTabsAndFinish(CropType selectedCropType) {
         programMethodsView = new ProgramMethodsView(selectedCropType);
         programLocationsView = new ProgramLocationsView(selectedCropType);
 
@@ -174,6 +174,13 @@ public class AddProgramPanel extends Panel implements InitializingBean{
         programLocationsContainer.removeAllComponents();
         programLocationsContainer.addComponent(programMethodsView);
 
+        //TODO: enable finish button here
+    }
+
+    public void enableOptionalTabsAndFinish() {
+        // disable program methods + locations view when crop type is changed;
+        tabSheet.getTab(programMethodsContainer).setEnabled(false);
+        tabSheet.getTab(programLocationsContainer).setEnabled(false);
 
     }
 }

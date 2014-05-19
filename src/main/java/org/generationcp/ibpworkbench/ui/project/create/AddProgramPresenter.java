@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.data.Validator;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -35,25 +34,14 @@ public class AddProgramPresenter {
         }
     }
 
-    public void enableProgramMethodsAndLocationsTab() {
-        view.enableProgramMethodsAndLocationsTab(project.getCropType());
+    public boolean validateAndSaveProgramMembers() {
+        this.users = this.view.programMembersPanel.validateAndSave();
+
+        return true;    // always allow.
     }
 
-
-    /*
-    public boolean validateBasicDetailsAndMembers() {
-
-
-        // validate basic details first
-        try{
-            this.users = view.programMembersPanel.validateAndSave();
-
-            return true;
-        } catch (Validator.InvalidValueException e) {
-            return false;
-        }
-    } */
-
-
+    public void enableProgramMethodsAndLocationsTab() {
+        view.enableOptionalTabsAndFinish(project.getCropType());
+    }
 
 }

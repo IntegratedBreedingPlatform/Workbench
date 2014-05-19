@@ -134,7 +134,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
             // set the combo box value to the newly added crop
             cropTypeComboBox.setValue(cropType);
 
-            sourceComponent.setCropType(cropType);
+            //sourceComponent.setCropType(cropType);
 
             if (sourceComponent != null){
                 sourceComponent.refreshVisibleItems();

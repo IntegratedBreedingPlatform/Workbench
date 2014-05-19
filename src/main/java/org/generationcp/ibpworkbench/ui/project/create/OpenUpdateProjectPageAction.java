@@ -61,7 +61,7 @@ public class OpenUpdateProjectPageAction  implements Button.ClickListener, Actio
             w.showContent(projectPanel);
 
             //NavManager.navigateApp(window, "/UpdateProgram", isLinkAccessed);
-            ProjectActivity projAct = new ProjectActivity(new Integer(projectPanel.getProject().getProjectId().intValue()), projectPanel.getProject(),"Update Program", "Launched Update Program", sessionData.getUserData(), new Date());
+            ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getSelectedProject().getProjectId().intValue()), sessionData.getSelectedProject(),"Update Program", "Launched Update Program", sessionData.getUserData(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
         } catch (Exception e) {

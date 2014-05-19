@@ -20,7 +20,6 @@ import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,24 +68,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         this.presenter = presenter;
 	}
 
-	public CropType getSelectedCropType() {
-        return project.getCropType();
-    }
-
-    public void setSelectedCropType(CropType cropType) {
-        project.setCropType(cropType);
-    }
-
-    public Project getProject() {
-        if (project == null){
-            project = new Project();
-        }
-        return project;
-    }
-    
-    public void setProject(Project project) {
-        this.project = project;
-    }
 
     /*
     This should be moved to the presenter code

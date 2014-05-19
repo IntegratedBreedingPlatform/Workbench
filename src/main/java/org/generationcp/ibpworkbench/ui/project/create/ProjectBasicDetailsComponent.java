@@ -23,6 +23,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -85,7 +86,11 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     
     @Autowired
     protected SimpleResourceBundleMessageSource messageSource;
-    
+
+    @Autowired
+    protected SessionData sessionData;
+
+
     private HorizontalLayout buttonLayout;
 
     public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
@@ -208,7 +213,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     	
         setComponentAlignment(gridLayout,Alignment.TOP_LEFT);
         
-        CropType selectedCropType = createProjectPanel.getProject().getCropType();
+        CropType selectedCropType = sessionData.getSelectedProject().getCropType();
         
         Boolean isCustomCrop = true;
         for (CropType.CropEnum crop : CropType.CropEnum.values()){
@@ -246,11 +251,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
     }
 
-
-    public void setCropType(CropType cropType) {
-        createProjectPanel.setSelectedCropType(cropType);
-    }
-    
     public void refreshVisibleItems(){
         requestRepaintAll();
     }
@@ -345,10 +345,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
                 Project project = workbenchDataManager.getProjectByName(projectName);
                 if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)){
 
-                    if (createProjectPanel.getProject() == null || createProjectPanel.getProject().getProjectId() == null){
+                    if (!isUpdate){
                         errorDescription.append("There is already a program with the given name. ");
                         success = false;
-                    } else if (createProjectPanel.getProject().getProjectId().intValue() != project.getProjectId().intValue()){
+                    } else if (sessionData.getSelectedProject().getProjectId().intValue() != project.getProjectId().intValue()){
                     	errorDescription.append("There is already a program with the given name. ");
                         success = false;
                     }
