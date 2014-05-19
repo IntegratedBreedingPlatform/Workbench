@@ -16,6 +16,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.project.create.AddProgramPanel;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.navigation.NavManager;
@@ -27,6 +28,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -54,7 +56,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         final IContentWindow w = (IContentWindow) window;
 
         try {
-            CreateProjectPanel newProjectPanel = new CreateProjectPanel() {
+        	AddProgramPanel newProjectPanel = new AddProgramPanel() {
 				private static final long serialVersionUID = 1640109693569711793L;
 
 				@Override

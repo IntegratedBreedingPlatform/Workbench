@@ -77,11 +77,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     private Label lblOtherCrop;
     private Label lblProjectName;
     private Label lblStartDate;
-    
-    private Button nextButton;
-    private Component buttonArea;
    
-    
     private Boolean isUpdate = false;
 
     @Autowired
@@ -138,7 +134,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         projectNameField.setRequiredError("Please enter a Program Name.");
         projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-70 characters.", 3, 70, false));
         projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
-        projectNameField.addShortcutListener(new Button.ClickShortcut(nextButton,KeyCode.ENTER));
         projectNameField.setStyleName("hide-caption");
         projectNameField.setWidth("250px");
         
@@ -196,8 +191,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
        
         addComponent(gridLayout);
         
-        buttonArea = layoutButtonArea();
-        this.addComponent(buttonArea);
     }
 
     protected void initializeValues() {
@@ -207,12 +200,12 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        
         setComponentAlignment(gridLayout,Alignment.TOP_CENTER);
     }
     
     protected void initializeLayoutForUpdate() {
-    	setComponentAlignment(buttonArea, Alignment.TOP_LEFT);
+    	
         setComponentAlignment(gridLayout,Alignment.TOP_LEFT);
         
         CropType selectedCropType = createProjectPanel.getProject().getCropType();
@@ -243,31 +236,16 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         
         
         disableCropTypeCombo();
-        removeNextBtn();
         		
     }
     
 
     protected void initializeActions() {
  
-        nextButton.addListener(new NextButtonClickListener());
+        
 
     }
 
-    protected Component layoutButtonArea() {
-        buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
-
-        nextButton = new Button("Next");
-        nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        buttonLayout.addComponent(nextButton);
-        return buttonLayout;
-    }
-
-    public void removeNextBtn() {
-        buttonLayout.removeComponent(nextButton);
-    }
 
     public void setCropType(CropType cropType) {
         createProjectPanel.setSelectedCropType(cropType);
@@ -445,17 +423,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         return valid;
     } 
     
-    private class NextButtonClickListener implements ClickListener{
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            if (validate()){
-                setCropType(getCropTypeBasedOnInput());
-                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
-            }
-        }
-    }
     
     public CropType getCropTypeBasedOnInput(){
     	
@@ -485,7 +452,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	public void setAlignment(Alignment alignment){
-    	this.setComponentAlignment(buttonArea, alignment);
+    	
     	this.setComponentAlignment(gridLayout, alignment);
     }
 	

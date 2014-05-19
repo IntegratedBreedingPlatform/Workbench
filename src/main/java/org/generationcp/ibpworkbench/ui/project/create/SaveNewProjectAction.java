@@ -225,9 +225,6 @@ public class SaveNewProjectAction implements ClickListener{
                         saveProjectUserRoles(projectUserRoles, project);
                     }
 
-
-
-
                     
                     List<ProjectUserRole> projectMembers = createProjectPanel.getProjectMembers(); 
 

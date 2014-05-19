@@ -113,9 +113,7 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
     }
 
     protected void initializeActions() {
-//        showMethodWindowButton.addListener(new OpenAddBreedingMethodWindowAction(this));
-        previousButton.addListener(new PreviousButtonClickListener());
-        nextButton.addListener(new NextButtonClickListener());
+
     }
 
     protected Component layoutButtonArea() {
@@ -301,25 +299,6 @@ public class ProjectBreedingMethodsComponent extends VerticalLayout implements I
         return true;     // methods not required, so even if there are no values, this returns true
     }
 
-    private class PreviousButtonClickListener implements ClickListener{
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
-        }
-    }
-
-    private class NextButtonClickListener implements ClickListener{
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FIFTH_TAB_LOCATIONS);
-        }
-    }
     
     public BeanItemContainer<Method> getBeanItemContainer() {
         return beanItemContainer;

@@ -41,8 +41,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     private static final long serialVersionUID = 1L;
     
-    protected CreateProjectAccordion createProjectAccordion;
-
+    protected TabSheet tabSheet;
+    
+    protected ProjectBasicDetailsComponent projectBasicDetailsComponent;
 
     protected HorizontalLayout newProjectTitleArea;
     protected Button cancelButton;
@@ -58,11 +59,17 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
 	
+	private Label heading;
+	
     public CreateProjectPanel() {
         super();
     }
     
-    public CropType getSelectedCropType() {
+    public CreateProjectPanel(TabSheet tabSheet) {
+    	this.tabSheet = tabSheet;
+	}
+
+	public CropType getSelectedCropType() {
         return project.getCropType();
     }
 
@@ -81,30 +88,36 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         this.project = project;
     }
 
-    public List<ProjectUserRole> getProjectUserRoles(){
-        return createProjectAccordion.getProjectUserRoles();
-    }
 
     public List<ProjectUserRole> getProjectMembers(){
-        return createProjectAccordion.getProjectMembers();
-    }
-
-    public CreateProjectAccordion getCreateProjectAccordion() {
-        return createProjectAccordion;
+    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
+        return projectMembersComponent.getProjectMembers();
     }
     
+    public List<ProjectUserRole> getProjectUserRoles(){
+    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
+        return projectMembersComponent.getProjectUserRoles();
+    }
+    
+    
+
+ 
     @Override
     public void afterPropertiesSet() {
         assemble();
     }
 
     protected void initializeComponents() {
+    	
+    	heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
+        heading.setStyleName(Bootstrap.Typography.H4.styleName()); 
+    	
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
         
         project = new Project();
-
-        createProjectAccordion = new CreateProjectAccordion(this);
+        
+        projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this);
 
         buttonArea = layoutButtonArea();
     }
@@ -118,9 +131,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         root.setSpacing(false);
         root.setSizeUndefined();
         root.setWidth("900px");
-
-        root.addComponent(newProjectTitleArea);
-        root.addComponent(createProjectAccordion);
+        
+        root.addComponent(heading);
+        root.addComponent(projectBasicDetailsComponent);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea,Alignment.TOP_CENTER);
 
@@ -142,7 +155,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        saveProjectButton = new Button("Finish");
+        saveProjectButton = new Button("Save");
         saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
         buttonLayout.addComponent(cancelButton);
@@ -159,19 +172,29 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     }
     
     public boolean validate(){
-        return createProjectAccordion.validate();
+    	
+    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
+    	
+    	 boolean success = true;
+
+         success = projectBasicDetailsComponent.validateAndSave();
+
+         if (success) {
+             if (projectMembersComponent != null) {
+                 success = projectMembersComponent.validateAndSave();
+             }
+         }
+
+         return success;
+    	
     }
     
     public void setTitle(String label, String description) {
     	newProjectTitleArea.removeAllComponents();
 
-        Label heading = new Label(messageSource.getMessage(Message.ADD_A_PROGRAM));
-        heading.setStyleName(Bootstrap.Typography.H1.styleName());
-
     	Label title = new Label(label);
         title.setStyleName(Bootstrap.Typography.H2.styleName());
 
-        newProjectTitleArea.addComponent(heading);
         newProjectTitleArea.addComponent(title);
 
     	Label descLbl = new Label(description);
@@ -180,8 +203,8 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     	PopupView popup = new PopupView("?",descLbl);
     	popup.setStyleName("gcp-popup-view");
     	
+    	
     	newProjectTitleArea.addComponent(popup);
-        newProjectTitleArea.setComponentAlignment(heading, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
         newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
 

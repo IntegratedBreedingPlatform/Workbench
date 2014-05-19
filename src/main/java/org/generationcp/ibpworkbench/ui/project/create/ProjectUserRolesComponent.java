@@ -167,8 +167,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
     }
 
     protected void initializeActions() {
-        previousButton.addListener(new PreviousButtonClickListener());
-        nextButton.addListener(new NextButtonClickListener());
+      
     }
 
     protected Component layoutButtonArea() {
@@ -254,27 +253,7 @@ public class ProjectUserRolesComponent extends VerticalLayout implements Initial
 
     }
 
-    private class PreviousButtonClickListener implements ClickListener{
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FIRST_TAB_BASIC_DETAILS);
-        }
-    }
-
-    private class NextButtonClickListener implements ClickListener{
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            if (validate()){
-                createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.THIRD_TAB_PROJECT_MEMBERS);
-            }
-        }
-    }
+   
     
     public List<ProjectUserRole> getProjectUserRoles() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();

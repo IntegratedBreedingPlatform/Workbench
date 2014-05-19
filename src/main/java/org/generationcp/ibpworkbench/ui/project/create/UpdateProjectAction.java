@@ -75,7 +75,7 @@ public class UpdateProjectAction implements Button.ClickListener  {
 
         LOG.debug("doUpdate >");
         LOG.debug(String.format("Project: [%s]", projectPanel.getProject())  );
-        LOG.debug(String.format("Project Roles: [%s]", projectPanel.getProjectUserRoles()) );
+      
 
         if (projectPanel.validate()) {
             // rename old workspace directory if found
@@ -86,7 +86,7 @@ public class UpdateProjectAction implements Button.ClickListener  {
 
             // update project roles
 
-            List<ProjectUserRole> updatedProjectUserRoles = projectPanel.getProjectUserRoles();
+            List<ProjectUserRole> updatedProjectUserRoles = null;
 
             // TODO: the following logic is best moved to workbench data manager
             List<ProjectUserRole> deleteRoles = workbenchDataManager.getProjectUserRolesByProject(projectPanel.getProject());

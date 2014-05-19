@@ -30,6 +30,7 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -50,6 +51,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.TableFieldFactory;
@@ -72,12 +74,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
    
     private TwinTableSelect<User> select;
     
-    private Button newUserButton;
+    private Button newMemberButton;
     
-    private Table tblMembers;
+    private TabSheet tabSheet;
     
-    private Button previousButton;
-//    private Button nextButton;
+    private Button btnCancel;
+    private Button btnSave;
     private Component buttonArea;
 
     @Autowired
@@ -93,7 +95,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     }
 
 
-    @Override
+    public ProjectMembersComponent(TabSheet tabSheet) {
+		// TODO Auto-generated constructor stub
+    	this.tabSheet = tabSheet;
+	}
+
+
+	@Override
     public void afterPropertiesSet() throws Exception {       
         assemble();
     }
@@ -109,16 +117,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
         setSpacing(true);
         setMargin(true);
-        
-        /**
-         * select = new TwinColSelect();
-        select.setLeftColumnCaption("Available Users");
-        select.setRightColumnCaption("Selected Program Members");
-        select.setRows(10);
-        select.setWidth("500px");
-        select.setMultiSelect(true);
-        select.setNullSelectionAllowed(true);
-        select.setImmediate(true);**/
         
         select = new TwinTableSelect<User>(User.class);
         
@@ -171,83 +169,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		});
         
-        final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
-        addComponent(headingDesc);
-        
-        addComponent(select);
-        
-        initializeMembersTable();
-        
-      
+       
         buttonArea = layoutButtonArea();
-        addComponent(buttonArea);
+        
         
     }
 
-    private void initializeMembersTable() {
-        tblMembers = new Table();
-        tblMembers.setImmediate(true);
-        
-        inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-        
-        List<Role> roleList = new ArrayList<Role>();
-        try {
-            
-            // Add the roles in this order: CB, MAS, MABC, MARS
-            List<Role> roles = workbenchDataManager.getAllRolesOrderedByLabel();
-            for (Role role: roles){
-                if (!role.getName().equals(Role.MANAGER_ROLE_NAME)) {
-                    roleList.add(role);
-                }
-            }
-            
-            
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-        
-        final List<Object> columnIds = new ArrayList<Object>();
-        columnIds.add("userName");
-        List<String> columnHeaders = new ArrayList<String>();
-        columnHeaders.add("Member");
-        
-        // prepare the container
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("userId", Integer.class, null);
-        container.addContainerProperty("userName", String.class, null);
-        for (Role role : roleList) {
-            columnIds.add("role_" + role.getRoleId());
-            columnHeaders.add(role.getName());
-            if (inheritedRoles.contains(role)){
-                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
-            } else {
-                container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
-            }
-        }
-        tblMembers.setContainerDataSource(container);
-        
-        tblMembers.setVisibleColumns(columnIds.toArray(new Object[0]));
-        tblMembers.setColumnHeaders(columnHeaders.toArray(new String[0]));
-        
-        tblMembers.setEditable(true);
-        tblMembers.setTableFieldFactory(new TableFieldFactory() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-                int columnIndex = columnIds.indexOf(propertyId);
-                if (columnIndex >= 1) {
-                    CheckBox cb = new CheckBox();
-                    cb.setValue(true);
-                    return cb;
-                }
-                return null;
-            }
-        });
-    }
 
     protected void initializeValues() {
         try {
@@ -280,55 +207,46 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         select.setWidth("100%");
         select.setHeight("300px");
         
+        
+        final HorizontalLayout titleContainer = new HorizontalLayout();
+        final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
+        final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+
+        heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+        newMemberButton = new Button("Add New User");
+        newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
+        titleContainer.addComponent(heading);
+        titleContainer.addComponent(newMemberButton);
+
+        titleContainer.setComponentAlignment(newMemberButton, Alignment.MIDDLE_RIGHT);
+        titleContainer.setSizeUndefined();
+        titleContainer.setWidth("100%");
+        titleContainer.setMargin(false, false, false, false);	// move this to css
+        
+        
+        addComponent(titleContainer);
+        addComponent(headingDesc);
+        addComponent(select);
+        addComponent(buttonArea);
+        
         setComponentAlignment(select,Alignment.TOP_CENTER);
-        //setComponentAlignment(tblMembers,Alignment.TOP_CENTER);
         setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        
+        
     }
 
     protected void initializeActions() {
-        newUserButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        
-        previousButton.addListener(new PreviousButtonClickListener());
-//        nextButton.addListener(new NextButtonClickListener());
-        
-        /**
-        select.addListener(new ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                Property property = event.getProperty();
-                Set<User> selectedItems = (Set<User>) property.getValue();
-                
-                Container container = tblMembers.getContainerDataSource();
-
-                // remove non-selected items
-                Collection<?> itemIds = container.getItemIds();
-                List<Object> deleteTargets = new ArrayList<Object>();
-                for (Object itemId : itemIds) {
-                    if (!selectedItems.contains(itemId)) {
-                        deleteTargets.add(itemId);
-                    }
-                }
-                for (Object itemId : deleteTargets) {
-                    container.removeItem(itemId);
-                }
-                
-                // add newly selected items
-                itemIds = container.getItemIds();
-                for (User user : selectedItems) {
-                    if (!itemIds.contains(user)) {
-                        Item item = container.addItem(user);
-                        item.getItemProperty("userId").setValue(1);
-                        item.getItemProperty("userName").setValue(user.getPerson().getDisplayName());
-                        //item.getItemProperty("")
-                        setInheritedRoles(item);
-                      
-                    }
-                }
-               
-            }
-        });**/
+        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+        btnCancel.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
     }
     
     protected Component layoutButtonArea() {
@@ -336,16 +254,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        newUserButton = new Button("Add New User");
-        newUserButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        btnCancel = new Button("Cancel");
+        btnSave = new Button("Save");
+        btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+     
+        buttonLayout.addComponent(btnCancel);
+        buttonLayout.addComponent(btnSave);
 
-        previousButton = new Button("Previous");
-        //previousButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
-//        nextButton = new Button("Next");
-        buttonLayout.addComponent(previousButton);
-        buttonLayout.addComponent(newUserButton);
-//        buttonLayout.addComponent(nextButton);
         return buttonLayout;
     }
     
@@ -382,6 +297,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     }
 
     public boolean validateAndSave(){
+    	
+    	this.createProjectPanel = (CreateProjectPanel) tabSheet.getTab(0).getComponent();
+    	
         if (validate()) {
             Set<User> members = (Set<User>) select.getValue();
             Project project = createProjectPanel.getProject();
@@ -391,23 +309,28 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         return true;    // members not required, so even if there are no values, this returns true
     }
     
-    private class PreviousButtonClickListener implements ClickListener{
-        private static final long serialVersionUID = 1L;
+    public List<ProjectUserRole> getProjectUserRoles() {
 
-        @Override
-        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FIRST_TAB_BASIC_DETAILS);
+        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        try {
+            WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
+        	//Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
+
+            // BY DEFAULT, current user has all the roles
+            for (Role role : workbenchDataManager.getAllRoles()) {
+                ProjectUserRole projectUserRole = new ProjectUserRole();
+                projectUserRole.setRole(role);
+                projectUserRoles.add(projectUserRole);
+
+            }
+
+        } catch (MiddlewareQueryException e) {
+            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
+
+        return projectUserRoles;
     }
-    
-//    private class NextButtonClickListener implements ClickListener{
-//        private static final long serialVersionUID = 1L;
-//
-//        @Override
-//        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
-//        }
-//    }
+
    
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
@@ -448,97 +371,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         return projectUserRoles;
     }
     
-    /**
-     * Used to set the inherited roles from the Breeding Workflows tab when edits are made after values are set in this tab.
-     * 
-     */
-    public void setInheritedRoles(){
-        inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-
-        if (tblMembers != null){
-
-            Container container = tblMembers.getContainerDataSource();
-            Collection<User> userList = (Collection<User>) container.getItemIds();
-
-            for (User user : userList) {
-                Item item = container.getItem(user);
-
-                List<Role> roleList = null;
-                try {
-                    roleList = workbenchDataManager.getAllRoles();
-                } catch (MiddlewareQueryException e) {
-                    LOG.error("Error encountered while getting workbench roles", e);
-                    throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                }
-
-                // Reset old values
-                for (Role role : roleList) {
-                    String propertyId = "role_" + role.getRoleId();
-                    Property property = item.getItemProperty(propertyId);
-                    if (property.getType() == Boolean.class){
-                        property.setValue(Boolean.FALSE);
-                    }
-                }
-
-                // Set checked boxes based on inherited roles
-                for (Role inheritedRole : inheritedRoles) {
-                    String propertyId = "role_" + inheritedRole.getRoleId();
-                    Property property = item.getItemProperty(propertyId);
-                    if (property.getType() == Boolean.class)
-                        property.setValue(Boolean.TRUE);
-
-                }
-            }
-            
-        }
-            requestRepaintAll();
-                
-        }
+    
         
-        public void setInheritedRoles(Item currentItem){
-            inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-
-            if (tblMembers != null){
-
-                Container container = tblMembers.getContainerDataSource();
-                Collection<User> userList = (Collection<User>) container.getItemIds();
-
-                
-
-                    List<Role> roleList = null;
-                    try {
-                        roleList = workbenchDataManager.getAllRoles();
-                    } catch (MiddlewareQueryException e) {
-                        LOG.error("Error encountered while getting workbench roles", e);
-                        throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-                    }
-
-                    // Reset old values
-                    for (Role role : roleList) {
-                        String propertyId = "role_" + role.getRoleId();
-                        Property property = currentItem.getItemProperty(propertyId);
-                        if (property.getType() == Boolean.class){
-                            property.setValue(Boolean.TRUE);
-                        }
-                    }
-
-                    // Set checked boxes based on inherited roles
-                    for (Role inheritedRole : inheritedRoles) {
-                        String propertyId = "role_" + inheritedRole.getRoleId();
-                        Property property = currentItem.getItemProperty(propertyId);
-                        if (property.getType() == Boolean.class)
-                            property.setValue(Boolean.TRUE);
-
-                    }
-                
-                
-                requestRepaintAll();
-                    
-            }
-
-            
-
-        
-        
-    }
+      
 }
