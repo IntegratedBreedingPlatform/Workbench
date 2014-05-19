@@ -287,7 +287,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
         rootContent.setSizeUndefined();
         rootContent.setWidth("100%");
-        rootContent.setMargin(new Layout.MarginInfo(true,true,true,true));
+        rootContent.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContent.setSpacing(true);
 
         rootContent.addComponent(pageTitle);
