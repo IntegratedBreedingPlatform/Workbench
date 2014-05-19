@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.vaadin.ui.Layout;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -113,7 +114,7 @@ public class ToolVersionsPanel extends VerticalLayout implements InitializingBea
     }
     
     protected void initializeLayout() {
-        setMargin(true);
+        setMargin(new MarginInfo(false,true,true,true));
         setSpacing(true);
         
         addComponent(lblToolVersions);

@@ -18,6 +18,7 @@ import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import com.vaadin.ui.Button.ClickEvent;
      static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
+         tableColumns.put("locationId","id");
          tableColumns.put("locationName","Name");
          tableColumns.put("locationAbbreviation","abbr.");
          tableColumns.put("ltypeStr","Type");
@@ -69,10 +71,17 @@ import com.vaadin.ui.Button.ClickEvent;
      private Button addToFavoriteBtn;
      private Button removeToFavoriteBtn;
 
+     private Boolean cropOnly = false;
 
      public ProgramLocationsView(Project project) {
          presenter = new ProgramLocationsPresenter(this,project);
      }
+
+    public ProgramLocationsView(CropType cropType) {
+        presenter = new ProgramLocationsPresenter(this,cropType);
+        cropOnly = true;
+
+    }
 
      private void initializeComponents() {
          resultCountLbl = new Label();
@@ -197,6 +206,15 @@ import com.vaadin.ui.Button.ClickEvent;
 
      }
 
+    /**
+     * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's
+     * Location bean
+     * @return
+     */
+     public Collection<LocationViewModel> getFavoriteLocations() {
+         return favoritesTableContainer.getItemIds();
+     }
+
      private void moveSelectedItems(Table source,Table target) {
          LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
@@ -268,8 +286,11 @@ import com.vaadin.ui.Button.ClickEvent;
          heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
          titleContainer.addComponent(heading);
-         titleContainer.addComponent(addNewLocationsBtn);
-         titleContainer.setComponentAlignment(addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
+
+         if (!cropOnly) {
+             titleContainer.addComponent(addNewLocationsBtn);
+             titleContainer.setComponentAlignment(addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
+         }
 
          final Label headingDesc = new Label("To choose Favorite Locations for your program, select entries from the Available Locations table at the top and drag them into the lower table. You can also add any new locations that you need for managing your program.");
 
@@ -288,7 +309,10 @@ import com.vaadin.ui.Button.ClickEvent;
          selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
          root.addComponent(selectedLocationsTitle);
-         root.addComponent(saveBtn);
+
+         if (!cropOnly)
+            root.addComponent(saveBtn);
+
          root.setExpandRatio(selectedLocationsTitle,1.0F);
 
          return root;
@@ -417,8 +441,8 @@ import com.vaadin.ui.Button.ClickEvent;
 
          //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],0.3F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],0.7F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[4],0.3F);
 
              /*
              for (String col : tableColumnSizes.keySet())
