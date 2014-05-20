@@ -14,9 +14,11 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
 
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
@@ -124,6 +126,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         this.setScrollable(true);
         this.setSizeFull();
         this.setContent(root);
+        this.setStyleName(Reindeer.PANEL_LIGHT);
     }
 
     protected void initializeActions() {
@@ -133,13 +136,18 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 // if basic details is valid
-                if (presenter.validateAndSaveBasicDetails()) {
+                if (presenter.validateAndSave()) {
                     presenter.enableProgramMethodsAndLocationsTab();
                 }
             }
         });
 
-        cancelButton.addListener(new HomeAction());
+        cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                presenter.resetBasicDetails();
+            }
+        });
     }
         
 

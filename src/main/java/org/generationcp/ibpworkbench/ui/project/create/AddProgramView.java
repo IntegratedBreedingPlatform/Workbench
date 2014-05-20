@@ -6,6 +6,7 @@ import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
@@ -48,14 +49,20 @@ public class AddProgramView extends Panel implements InitializingBean{
 	protected ProgramLocationsView programLocationsView;
 	protected ProgramMethodsView programMethodsView;
 
+    // container of the tabs
     private VerticalLayout programMethodsContainer;
     private VerticalLayout programLocationsContainer;
+    private VerticalLayout programMembersContainer;
+    private VerticalLayout basicDetailsContainer;
+
+
     private AddProgramPresenter presenter;
     private Button finishButton;
 
-    public AddProgramView() {
-		
-	}
+    private int initialTabView = OpenNewProjectAction.BASIC_DETAILS_TAB;
+
+    public AddProgramView() {	}
+    public AddProgramView(int initialTabView) { this.initialTabView = initialTabView; }
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -83,26 +90,35 @@ public class AddProgramView extends Panel implements InitializingBean{
 		tabSheet = generateTabSheet();
 
 		createProjectPanel = new CreateProjectPanel(presenter);
-		createProjectPanel.setStyleName(Reindeer.PANEL_LIGHT);
-		programMembersPanel = new ProjectMembersComponent(tabSheet);
-		programMembersPanel.setStyleName(Reindeer.PANEL_LIGHT);
-		//programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
+		programMembersPanel = new ProjectMembersComponent(presenter);
+
+        //programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
 		//programMethodsView = new ProgramMethodsView(sessionData.getLastOpenedProject());
 
         programLocationsContainer = new VerticalLayout();
         programMethodsContainer = new VerticalLayout();
+        programMembersContainer = new VerticalLayout();
+        basicDetailsContainer = new VerticalLayout();
 
         programLocationsContainer.setMargin(false);
         programLocationsContainer.setSpacing(false);
+
         //programLocationsContainer.setSizeFull();
 
         programMethodsContainer.setMargin(false);
         programMethodsContainer.setSpacing(false);
         //programMethodsContainer.setSizeFull();
 
+        programMembersContainer.setMargin(false);
+        programMembersContainer.setSpacing(false);
+
+        basicDetailsContainer.setMargin(false);
+        basicDetailsContainer.setSpacing(false);
+
         // finish button
         finishButton = new Button("Finish");
         finishButton.setEnabled(false);
+        finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
     }
 	
 	protected void initializeActions() {
@@ -118,24 +134,35 @@ public class AddProgramView extends Panel implements InitializingBean{
 		
 		final Label heading = new Label("Add a Program");
 		heading.setStyleName(Bootstrap.Typography.H1.styleName());
-		
+
+        final Label headingDesc = new Label("To provide additional Program configuration, " +
+                "click on <em>Members, Locations, and Breeding Method</em> tabs." +
+                " Note that <em>Locations and Methods</em> are optional and will be available once you" +
+                " complete the <em>Basic Details</em> form by clicking <em>Save</em>." +
+                " Click <em>Finish</em> to complete the operation.",Label.CONTENT_XHTML);
+
 		rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
 		rootLayout.setWidth("100%");
 		rootLayout.setSpacing(true);
-		
+
+        /*
 		createProjectPanel.setVisible(true);
 		programMembersPanel.setVisible(true);
 		programMethodsContainer.setVisible(true);
 		programLocationsContainer.setVisible(true);
+        */
 
-		tabSheet.addTab(createProjectPanel);
-		tabSheet.getTab(createProjectPanel).setClosable(false);
-		tabSheet.getTab(createProjectPanel).setCaption("Basic Details");
+        basicDetailsContainer.addComponent(createProjectPanel);
+        programMembersContainer.addComponent(programMembersPanel);
+
+		tabSheet.addTab(basicDetailsContainer);
+		tabSheet.getTab(basicDetailsContainer).setClosable(false);
+		tabSheet.getTab(basicDetailsContainer).setCaption("Basic Details");
 		
-		tabSheet.addTab(programMembersPanel);
-		tabSheet.getTab(programMembersPanel).setClosable(false);
-		tabSheet.getTab(programMembersPanel).setCaption("Members");
-		
+		tabSheet.addTab(programMembersContainer);
+		tabSheet.getTab(programMembersContainer).setClosable(false);
+		tabSheet.getTab(programMembersContainer).setCaption("Members");
+
 		tabSheet.addTab(programLocationsContainer);
 		tabSheet.getTab(programLocationsContainer).setClosable(false);
         tabSheet.getTab(programLocationsContainer).setEnabled(false);
@@ -148,10 +175,14 @@ public class AddProgramView extends Panel implements InitializingBean{
         tabSheet.getTab(programMethodsContainer).setCaption("Breeding Methods");
 		
 		rootLayout.addComponent(heading);
+        rootLayout.addComponent(headingDesc);
 		rootLayout.addComponent(tabSheet);
 
         rootLayout.addComponent(finishButton);
         rootLayout.setComponentAlignment(finishButton,Alignment.MIDDLE_CENTER);
+
+        // set initial tab view
+        tabSheet.setSelectedTab(initialTabView);
 
 		setContent(rootLayout);
 		setScrollable(true);
@@ -194,5 +225,19 @@ public class AddProgramView extends Panel implements InitializingBean{
 
     public void enableFinishBtn() {
         finishButton.setEnabled(true);
+    }
+
+    public void resetBasicDetails() {
+        basicDetailsContainer.removeAllComponents();
+
+        createProjectPanel = new CreateProjectPanel(presenter);
+        basicDetailsContainer.addComponent(createProjectPanel);
+    }
+
+    public void resetProgramMembers() {
+        programMembersContainer.removeAllComponents();
+
+        programMembersPanel = new ProjectMembersComponent(presenter);
+        programMembersContainer.addComponent(programMembersPanel);
     }
 }

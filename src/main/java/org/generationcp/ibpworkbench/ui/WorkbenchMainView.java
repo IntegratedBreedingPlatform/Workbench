@@ -34,6 +34,7 @@ import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -424,7 +425,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             }
         }
 
-        if (content instanceof UpdateProjectPanel || !(content instanceof WorkbenchDashboard || content instanceof  CreateProjectPanel))
+        if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView))
             root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
         else
             root.setSplitPosition(0,Sizeable.UNITS_PIXELS);

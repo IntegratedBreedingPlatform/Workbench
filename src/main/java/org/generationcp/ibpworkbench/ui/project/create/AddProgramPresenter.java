@@ -29,6 +29,10 @@ public class AddProgramPresenter {
         this.view = view;
     }
 
+    public boolean validateAndSave() {
+        return validateAndSaveBasicDetails() && validateAndSaveProgramMembers();
+    }
+
     public boolean validateAndSaveBasicDetails() {
         LOG.debug("Do validate basic details");
         try {
@@ -79,4 +83,11 @@ public class AddProgramPresenter {
         // save logic for program methods
     }
 
+    public void resetBasicDetails() {
+        view.resetBasicDetails();
+    }
+
+    public void resetProgramMembers() {
+        view.resetProgramMembers();
+    }
 }

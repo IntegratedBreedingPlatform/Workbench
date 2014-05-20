@@ -17,6 +17,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -69,9 +70,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     private TwinTableSelect<User> select;
     
     private Button newMemberButton;
-    
-    private TabSheet tabSheet;
-    
+
     private Button btnCancel;
     private Button btnSave;
     private Component buttonArea;
@@ -81,16 +80,17 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
     @Autowired
     private SessionData sessionData;
-    
+
+    private AddProgramPresenter presenter;
+
     private  List<Role> inheritedRoles;
 
     public ProjectMembersComponent() {
     }
 
 
-    public ProjectMembersComponent(TabSheet tabSheet) {
-		// TODO Auto-generated constructor stub
-    	this.tabSheet = tabSheet;
+    public ProjectMembersComponent(AddProgramPresenter presenter) {
+        this.presenter = presenter;
 	}
 
 
@@ -232,14 +232,22 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
     protected void initializeActions() {
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
-        btnCancel.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+
+        btnSave.addListener(new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent clickEvent) {
+               if (presenter.validateAndSave()) {
+                   presenter.enableProgramMethodsAndLocationsTab();
+               }
+            }
+        });
+
+        btnCancel.addListener(new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent clickEvent) {
+                presenter.resetProgramMembers();
+            }
+        });
     }
     
     protected Component layoutButtonArea() {

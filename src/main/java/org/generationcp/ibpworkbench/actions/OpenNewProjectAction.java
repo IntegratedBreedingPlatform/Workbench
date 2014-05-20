@@ -34,8 +34,18 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenNewProjectAction.class);
 
+    private int initialTabView = BASIC_DETAILS_TAB; // 0 - Basic Details, 1 - Program members
+
+    public static final int BASIC_DETAILS_TAB = 0;
+    public static final int PROGRAM_MEMBERS_TAB = 1;
+
+
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+
+    public OpenNewProjectAction() {}
+    public OpenNewProjectAction(int initialTabView) { this.initialTabView = initialTabView; }
 
     @Override
     public void buttonClick(ClickEvent event) {
@@ -52,15 +62,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener{
         final IContentWindow w = (IContentWindow) window;
 
         try {
-        	AddProgramView newProjectPanel = new AddProgramView() {
-				private static final long serialVersionUID = 1640109693569711793L;
-
-				@Override
-                public void detach() {
-                    super.detach();
-
-                }
-            };
+        	AddProgramView newProjectPanel = new AddProgramView(initialTabView);
 
             w.showContent(newProjectPanel);
 
