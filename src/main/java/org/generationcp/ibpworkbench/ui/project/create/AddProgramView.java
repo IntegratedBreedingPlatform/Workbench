@@ -1,10 +1,14 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
@@ -16,6 +20,8 @@ import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -23,11 +29,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class AddProgramView extends Panel implements InitializingBean{
+public class AddProgramView extends Panel implements InitializingBean {
 	
 	private static final long serialVersionUID = 1L;
-	
-	@Autowired
+    private static final Logger LOG = LoggerFactory.getLogger(AddProgramView.class);
+
+    @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 	
 	@Autowired
@@ -125,7 +132,15 @@ public class AddProgramView extends Panel implements InitializingBean{
 	    finishButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                presenter.doAddNewProgram();
+                try {
+                    presenter.doAddNewProgram();
+                } catch (Exception e) {
+                    LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
+
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
+                            + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+                }
             }
         });
 	}
@@ -239,5 +254,21 @@ public class AddProgramView extends Panel implements InitializingBean{
 
         programMembersPanel = new ProjectMembersComponent(presenter);
         programMembersContainer.addComponent(programMembersPanel);
+    }
+
+
+    public Collection<Location> getFavoriteLocations() {
+
+        if (programLocationsView != null)
+            return programLocationsView.getFavoriteLocations();
+
+        return new ArrayList<Location>();
+    }
+
+    public Collection<Method> getFavoriteMethods() {
+        if (programMethodsView != null)
+            return programMethodsView.getFavoriteMethods();
+
+        return new ArrayList<Method>();
     }
 }

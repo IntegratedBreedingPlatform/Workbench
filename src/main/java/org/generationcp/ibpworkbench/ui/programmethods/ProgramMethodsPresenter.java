@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -286,4 +287,33 @@ public class ProgramMethodsPresenter implements InitializingBean {
             return result;
     }
 
+    public Collection<Method> convertTo(Collection<MethodView> list) {
+        List<Method> result = new ArrayList<Method>();
+
+        for (MethodView methodView:list) {
+            Method method = new Method();
+            method.setMid(methodView.getMid());
+            method.setMname(methodView.getMname());
+            method.setMdesc(methodView.getMdesc());
+            method.setMcode(methodView.getMcode());
+            method.setMgrp(methodView.getMgrp());
+            method.setMtype(methodView.getMtype());
+            method.setUser(sessionData.getUserData().getUserid());
+
+            method.setLmid(methodView.getLmid());
+            method.setGeneq(methodView.getGeneq());
+            method.setMattr(0);
+            method.setMprgn(0);
+            method.setReference(0);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+            method.setMdate(Integer.parseInt(sdf.format(new Date())));
+            method.setMfprg(0);
+            method.setIsnew(methodView.getIsnew());
+
+            result.add(method);
+        }
+        return result;
+    }
 }

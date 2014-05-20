@@ -392,4 +392,14 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
         return location;
     }
+
+    public List<Location> convertTo(Collection<LocationViewModel> locationViewModels) {
+        List<Location> result = new ArrayList<Location>();
+
+        for (LocationViewModel locationViewModel : locationViewModels) {
+            result.add(convertLocationViewToLocation(locationViewModel));
+        }
+
+        return result;
+    }
 }

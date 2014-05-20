@@ -17,6 +17,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -211,8 +212,8 @@ import com.vaadin.ui.Button.ClickEvent;
      * Location bean
      * @return
      */
-     public Collection<LocationViewModel> getFavoriteLocations() {
-         return favoritesTableContainer.getItemIds();
+     public Collection<Location> getFavoriteLocations() {
+         return presenter.convertTo(favoritesTableContainer.getItemIds()) ;
      }
 
      private void moveSelectedItems(Table source,Table target) {

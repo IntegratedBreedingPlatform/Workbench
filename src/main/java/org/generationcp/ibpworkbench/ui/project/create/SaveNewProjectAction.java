@@ -58,6 +58,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 @Configurable
+@Deprecated
 public class SaveNewProjectAction implements ClickListener{
 
     private static final Logger LOG = LoggerFactory.getLogger(SaveNewProjectAction.class);

@@ -335,8 +335,9 @@ import java.util.*;
      * convert the MethodView bean to Middleware's Method bean.
      * @return
      */
-    public Collection<MethodView> getFavoriteMethods() {
-        return favoritesTableContainer.getItemIds();
+    public Collection<Method> getFavoriteMethods() {
+        return presenter.convertTo(favoritesTableContainer.getItemIds());
+
     }
 
      private void initializeValues() {

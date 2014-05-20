@@ -328,48 +328,4 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
         return projectUserRoles;
     }
-
-   
-    public List<ProjectUserRole> getProjectMembers() {
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        
-        Set<User> userList = (Set<User>) select.getValue();
-        
-        User removeThisItem = null;
-        for (User user : userList){
-        	if (user.getUserid().equals(sessionData.getUserData().getUserid())){
-        		removeThisItem = user;
-        	}
-        }
-        userList.remove(removeThisItem);
-        
-       
-        List<Role> roleList = null;
-        try {
-            roleList = workbenchDataManager.getAllRoles();
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench roles", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-        
-        for (User user : userList) {
-            
-            for (Role role : roleList) {
-  
-                    ProjectUserRole projectUserRole = new ProjectUserRole();
-                    projectUserRole.setUserId(user.getUserid());
-                    projectUserRole.setRole(role);
-                    
-                    projectUserRoles.add(projectUserRole);
-                }
-            
-        }
-        return projectUserRoles;
-    }
-    
-    
-        
-      
 }
