@@ -8,6 +8,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -27,17 +28,19 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Configurable
 public class UpdateProjectPanel extends CreateProjectPanel {
-    
 
-	@Autowired
+
+    @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
     private SessionData sessionData;
 
     private String oldProjectName;
-    
+
     private Label heading;
+
+    private Button deleteProgramButton;
 
     public UpdateProjectPanel() {
 
@@ -48,25 +51,37 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         super.saveProjectButton.addListener(new UpdateProjectAction(this));
         super.saveProjectButton.setCaption("Save");
         cancelButton.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-	    projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
-				
-			}
-		});
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
+
+            }
+        });
+
+        deleteProgramButton.addListener(new DeleteProjectAction());
     }
 
-    
+
     @Override
-    protected  void initializeComponents() {
-    	
-    	 
-        heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
-        heading.setStyleName(Bootstrap.Typography.H4.styleName()); 
-    	
+    protected void initializeComponents() {
+
         newProjectTitleArea = new HorizontalLayout();
         newProjectTitleArea.setSpacing(true);
+
+        heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details", Label.CONTENT_XHTML);
+        heading.setStyleName(Bootstrap.Typography.H4.styleName());
+
+        deleteProgramButton = new Button("DELETE PROGRAM");
+        deleteProgramButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
+        newProjectTitleArea.addComponent(heading);
+        newProjectTitleArea.addComponent(deleteProgramButton);
+        newProjectTitleArea.setComponentAlignment(deleteProgramButton, Alignment.MIDDLE_RIGHT);
+        newProjectTitleArea.setSizeUndefined();
+        newProjectTitleArea.setWidth("100%");
+        newProjectTitleArea.setMargin(false, false, false, false);	// move this to css
+
 
 
         projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
@@ -78,26 +93,41 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
         buttonArea = layoutButtonArea();
     }
-    
+
     @Override
-    protected  void initializeLayout() {
-    	
-    	VerticalLayout root = new VerticalLayout();
-        root.setMargin(new Layout.MarginInfo(true,true,true,true));
+    protected void initializeLayout() {
+
+        VerticalLayout root = new VerticalLayout();
+        root.setMargin(new Layout.MarginInfo(true, true, true, true));
         root.setSpacing(true);
-        root.addComponent(heading);
+        root.addComponent(newProjectTitleArea);
         root.addComponent(projectBasicDetailsComponent);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
         //root.setWidth("800px");
-        
+
         setScrollable(false);
         setContent(root);
         setSizeFull();
-        
-        
 
     }
+
+/*
+    protected Component createMainPanel() {
+        HorizontalLayout panel = new HorizontalLayout();
+        panel.setSpacing(false);
+
+        panel.addComponent(projectBasicDetailsComponent);
+        panel.addComponent(deleteProgramButton);
+
+        panel.setComponentAlignment(projectBasicDetailsComponent, Alignment.MIDDLE_LEFT);
+        panel.setComponentAlignment(deleteProgramButton, Alignment.MIDDLE_CENTER);
+
+        panel.setSizeFull();
+
+        return panel;
+    }
+*/
 
     @Override
     protected void initializeValues() {
@@ -110,7 +140,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         try {
             // initialize state
             currentUser = workbenchDataManager.getUserById(sessionData.getUserData().getUserid());   // get hibernate managed version of user
-
 
 
             this.initializeComponents();
@@ -127,16 +156,14 @@ public class UpdateProjectPanel extends CreateProjectPanel {
     public String getOldProjectName() {
         return sessionData.getSelectedProject().getProjectName();
     }
-    
+
     public boolean validate() {
-    	 if (projectBasicDetailsComponent.validate()) {
-             return true;
-         }
+        if (projectBasicDetailsComponent.validate()) {
+            return true;
+        }
 
-         return false;
-	}
+        return false;
+    }
 
 
-    
-    
 }
