@@ -60,7 +60,7 @@ import java.util.*;
      static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         tableColumns.put("mid","Id");
+         //tableColumns.put("mid","Id");
          tableColumns.put("mname","Method Name");
          tableColumns.put("desc","Description");
          tableColumns.put("mgrp","Group");
@@ -389,7 +389,7 @@ import java.util.*;
              table.setColumnWidth(col,tableColumnSizes.get(col));
          }
 
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],1.0F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],1.0F);
      }
 
      private void initializeLayout() {
