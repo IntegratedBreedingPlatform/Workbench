@@ -119,7 +119,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         gridLayout.setSpacing(true);
         
         Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
-        Pattern cropNameInvalidCharPattern = Pattern.compile("^[^'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
+        Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
 
         projectNameField = new TextField();
         projectNameField.setImmediate(true);
