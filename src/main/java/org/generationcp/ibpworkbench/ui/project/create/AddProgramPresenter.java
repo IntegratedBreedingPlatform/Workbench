@@ -115,7 +115,7 @@ public class AddProgramPresenter {
         // Validate and Save (to memory) both basic details and program members
 
         if (!validateAndSave())
-            return;
+            throw new Exception("basic_details_invalid");
 
         // retrieve results from locations / methods
         retrievceLocationsAndMethods();

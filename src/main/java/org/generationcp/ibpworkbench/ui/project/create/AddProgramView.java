@@ -130,6 +130,10 @@ public class AddProgramView extends Panel implements InitializingBean {
                     (new HomeAction()).buttonClick(clickEvent);
 
                 } catch (Exception e) {
+
+                    if (e.getMessage().equals("basic_details_invalid"))
+                        return;
+
                     LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
 
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
