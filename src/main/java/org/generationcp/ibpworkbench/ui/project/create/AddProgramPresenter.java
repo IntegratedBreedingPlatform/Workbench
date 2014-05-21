@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import sun.rmi.runtime.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -89,18 +90,25 @@ public class AddProgramPresenter {
 
     public void enableProgramMethodsAndLocationsTab() {
         boolean isGenericCrop = true;
-        for (CropType.CropEnum cropEnum : CropType.CropEnum.values()) {
-            if (program.getCropType().getCropName().equalsIgnoreCase(cropEnum.toString())) {
-                isGenericCrop = false;
 
-                break;
+
+        try {
+            for (CropType installedCrop : workbenchDataManager.getInstalledCentralCrops()) {
+                if (program.getCropType().getCropName().equalsIgnoreCase(installedCrop.getCropName())) {
+                    isGenericCrop = false;
+
+                    break;
+                }
             }
+        } catch (MiddlewareQueryException e) {
+            LOG.error("Error in enableProgramMethodsAndLocationsTab()",e);
+            return;
+        } finally {
+            if (isGenericCrop)
+                view.enableFinishBtn();
+            else
+                view.enableOptionalTabsAndFinish(program.getCropType());
         }
-
-        if (isGenericCrop)
-            view.enableFinishBtn();
-        else
-            view.enableOptionalTabsAndFinish(program.getCropType());
     }
 
     public void retrievceLocationsAndMethods() {
