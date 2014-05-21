@@ -9,7 +9,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;

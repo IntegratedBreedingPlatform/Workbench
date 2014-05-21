@@ -12,19 +12,20 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.CropTypeComboAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -34,24 +35,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.

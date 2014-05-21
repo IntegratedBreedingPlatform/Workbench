@@ -12,25 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
-import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -40,22 +26,14 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
-import org.generationcp.middleware.pojos.workbench.ProjectMethod;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Configurable
 @Deprecated

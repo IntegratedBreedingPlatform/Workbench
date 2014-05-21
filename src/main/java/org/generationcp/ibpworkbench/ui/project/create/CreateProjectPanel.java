@@ -13,12 +13,9 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
-
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
@@ -156,7 +153,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        cancelButton = new Button("Cancel");
+        cancelButton = new Button("Reset");
         saveProjectButton = new Button("Save");
         saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 

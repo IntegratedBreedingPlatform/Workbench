@@ -1,10 +1,7 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -13,21 +10,18 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
-import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
@@ -60,6 +54,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
     private AddProgramPresenter presenter;
     private Button finishButton;
+    private Button cancelBtn;
 
     private int initialTabView = OpenNewProjectAction.BASIC_DETAILS_TAB;
 
@@ -115,6 +110,9 @@ public class AddProgramView extends Panel implements InitializingBean {
         finishButton = new Button("Finish");
         finishButton.setEnabled(false);
         finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
+        // finish button
+        cancelBtn = new Button("Cancel");
     }
 	
 	protected void initializeActions() {
@@ -142,6 +140,8 @@ public class AddProgramView extends Panel implements InitializingBean {
                 }
             }
         });
+
+        cancelBtn.addListener(new HomeAction());
 	}
 
 	protected void initializeLayout() {
@@ -192,8 +192,16 @@ public class AddProgramView extends Panel implements InitializingBean {
         rootLayout.addComponent(headingDesc);
 		rootLayout.addComponent(tabSheet);
 
-        rootLayout.addComponent(finishButton);
-        rootLayout.setComponentAlignment(finishButton,Alignment.MIDDLE_CENTER);
+        final HorizontalLayout btnContainer = new HorizontalLayout();
+        btnContainer.setSpacing(true);
+        btnContainer.setSizeUndefined();
+
+        btnContainer.addComponent(cancelBtn);
+        btnContainer.addComponent(finishButton);
+
+
+        rootLayout.addComponent(btnContainer);
+        rootLayout.setComponentAlignment(btnContainer,Alignment.MIDDLE_CENTER);
 
         // set initial tab view
         tabSheet.setSelectedTab(initialTabView);
