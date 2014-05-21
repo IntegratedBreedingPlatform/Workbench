@@ -33,6 +33,7 @@ import java.util.*;
 
 @Configurable
 public class ProgramMethodsPresenter implements InitializingBean {
+    private boolean isCropOnly;
     private Project project;
     private CropType cropType;
     private ProgramMethodsView view;
@@ -58,6 +59,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     public ProgramMethodsPresenter(ProgramMethodsView view, CropType cropType) {
         this.view = view;
         this.cropType = cropType;
+        this.isCropOnly = true;
     }
 
     @Override

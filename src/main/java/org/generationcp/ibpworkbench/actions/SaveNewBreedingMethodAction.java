@@ -142,7 +142,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newMethod.setMfprg(0);
 
-            //TODO: UPDATE THIS CODE
+            //TODO: MOVE THIS CODE TO PRESENTER, GET PRESENTER REFERENCE FROM HERE
             GermplasmDataManager gdm = managerFactoryProvider.getManagerFactoryForProject(sessionData.getLastOpenedProject()).getGermplasmDataManager();
 
             try {

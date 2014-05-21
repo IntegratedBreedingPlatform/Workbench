@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ProgramLocationsPresenter implements InitializingBean {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsPresenter.class);
+    private boolean isCropOnly;
     private CropType cropType;
     private ProgramLocationsView view;
 
@@ -49,6 +50,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     public ProgramLocationsPresenter(ProgramLocationsView view,CropType cropType) {
         this.view = view;
         this.cropType = cropType;
+        this.isCropOnly = true;
     }
 
 
@@ -357,10 +359,17 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     public void addLocation(Location loc) throws MiddlewareQueryException {
-        ldm.addLocation(loc);
+        // if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
-        final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
-        view.addRow(locationVModel,false,0);
+        if(!isCropOnly) {
+            ldm.addLocation(loc);
+
+            final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
+            view.addRow(locationVModel,false,0);
+
+        } else {
+            view.addRow(convertFrom(loc), false, 0);
+        }
     }
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {

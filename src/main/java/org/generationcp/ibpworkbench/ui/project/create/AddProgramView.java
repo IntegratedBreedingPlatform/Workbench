@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
@@ -43,13 +44,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	private VerticalLayout rootLayout;
 	
 	private TabSheet tabSheet;
-	
-	protected Project project;                // the project created
-	protected List<Location> newLocations;    // locations added in Locations tab (ProjectLocationsComponent)
-	protected List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
-	protected List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
-	protected User currentUser;               // should be the currently logged in user that will try to add / update a new project
-	
+
 	//TABS
 	protected CreateProjectPanel createProjectPanel;
 	protected ProjectMembersComponent programMembersPanel;
@@ -99,9 +94,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 		createProjectPanel = new CreateProjectPanel(presenter);
 		programMembersPanel = new ProjectMembersComponent(presenter);
 
-        //programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
-		//programMethodsView = new ProgramMethodsView(sessionData.getLastOpenedProject());
-
         programLocationsContainer = new VerticalLayout();
         programMethodsContainer = new VerticalLayout();
         programMembersContainer = new VerticalLayout();
@@ -110,11 +102,8 @@ public class AddProgramView extends Panel implements InitializingBean {
         programLocationsContainer.setMargin(false);
         programLocationsContainer.setSpacing(false);
 
-        //programLocationsContainer.setSizeFull();
-
         programMethodsContainer.setMargin(false);
         programMethodsContainer.setSpacing(false);
-        //programMethodsContainer.setSizeFull();
 
         programMembersContainer.setMargin(false);
         programMembersContainer.setSpacing(false);
@@ -134,6 +123,12 @@ public class AddProgramView extends Panel implements InitializingBean {
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
                     presenter.doAddNewProgram();
+
+                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), "<br />"
+                            + messageSource.getMessage("Project has been successfully created."));
+
+                    (new HomeAction()).buttonClick(clickEvent);
+
                 } catch (Exception e) {
                     LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
 
