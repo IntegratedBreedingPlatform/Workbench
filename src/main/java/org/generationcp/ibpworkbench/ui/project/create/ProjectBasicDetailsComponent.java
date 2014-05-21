@@ -135,7 +135,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         otherCropNameField.setRequired(false);
         otherCropNameField.setRequiredError("Please enter Crop Name.");
         otherCropNameField.addValidator(new StringLengthValidator("Crop Name must be 3-70 characters.", 3, 70, false));
-        otherCropNameField.addValidator(new RegexValidator("Crop name must not contain any of the following: ' \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
+        otherCropNameField.addValidator(new RegexValidator("Crop name must not contain any of the following: '< > \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
         otherCropNameField.addValidator(new ValueRangeValidator("This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
         otherCropNameField.setStyleName("hide-caption");
         otherCropNameField.setVisible(false);
