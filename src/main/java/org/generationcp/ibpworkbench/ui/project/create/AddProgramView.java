@@ -124,16 +124,16 @@ public class AddProgramView extends Panel implements InitializingBean {
                 try {
                     presenter.doAddNewProgram();
 
-                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), "<br />"
-                            + messageSource.getMessage(presenter.program.getProjectName() + " program has been successfully created."));
+                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+                            messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
 
                     (new HomeAction()).buttonClick(clickEvent);
 
                 } catch (Exception e) {
                     LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
 
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR), "<br />"
-                            + messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
+                            messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
 
                 }
             }
