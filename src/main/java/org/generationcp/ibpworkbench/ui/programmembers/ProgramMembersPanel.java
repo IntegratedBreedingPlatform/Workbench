@@ -418,7 +418,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        cancelButton = new Button("Cancel");
+        cancelButton = new Button("Reset");
         saveButton = new Button("Save");
 
         saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());

@@ -156,7 +156,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true, false, false, false);
 
-        cancelButton = new Button("Cancel");
+        cancelButton = new Button("Reset");
         saveProjectButton = new Button("Save");
         saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
