@@ -53,7 +53,7 @@ public class AddProgramPresenter {
 
     // data to save
     private Set<User> users;
-    private Project program;
+    protected Project program;
     private Collection<Location> favoriteLocations;
     private Collection<Method> favoriteMethods;
 

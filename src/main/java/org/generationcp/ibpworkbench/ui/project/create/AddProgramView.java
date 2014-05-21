@@ -125,7 +125,7 @@ public class AddProgramView extends Panel implements InitializingBean {
                     presenter.doAddNewProgram();
 
                     MessageNotifier.showMessage(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), "<br />"
-                            + messageSource.getMessage("Project has been successfully created."));
+                            + messageSource.getMessage(presenter.program.getProjectName() + " program has been successfully created."));
 
                     (new HomeAction()).buttonClick(clickEvent);
 
