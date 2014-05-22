@@ -168,7 +168,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         memberPopup.setSizeUndefined();
         //memberPopup.setWidth("250px");
 
-        signoutButton = new Button("Sign out");
+        signoutButton = new Button("Logout");
         signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         signoutButton.setSizeFull();
         signoutButton.addListener(new SignoutAction());
