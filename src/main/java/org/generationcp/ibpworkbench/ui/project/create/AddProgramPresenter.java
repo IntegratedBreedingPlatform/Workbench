@@ -194,7 +194,7 @@ public class AddProgramPresenter {
                     currentUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     currentUser.setAdate(getCurrentDate());
                     currentUser.setInstalid(1);
-                    managerFactory.getUserDataManager().addUserToCentral(currentUser);
+                    managerFactory.getUserDataManager().addUserToCentral(currentUser.copy());
                     centralDbGenerator.addCentralInstallationRecord(program.getProjectName(), currentUser.getUserid());
                 }
 
