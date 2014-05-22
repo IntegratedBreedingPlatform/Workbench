@@ -536,7 +536,12 @@ import java.util.*;
              titleContainer.setComponentAlignment(addNewMethodsBtn, Alignment.MIDDLE_RIGHT);
          }
 
-         final Label headingDesc = new Label("To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table. You can also add any new methods that you need for managing your program.");
+         String content = "To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table.";
+
+         if (!cropOnly)
+             content += " You can also add any new methods that you need for managing your program.";
+
+         final Label headingDesc = new Label(content);
 
          root.addComponent(titleContainer);
          root.addComponent(headingDesc);

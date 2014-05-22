@@ -142,7 +142,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         cancelButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
+
                 presenter.resetBasicDetails();
+                presenter.disableProgramMethodsAndLocationsTab();
             }
         });
     }

@@ -293,7 +293,15 @@ import com.vaadin.ui.Button.ClickEvent;
              titleContainer.setComponentAlignment(addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
          }
 
-         final Label headingDesc = new Label("To choose Favorite Locations for your program, select entries from the Available Locations table at the top and drag them into the lower table. You can also add any new locations that you need for managing your program.");
+         String content = "To choose Favorite Locations for your program, " +
+                 "select entries from the Available Locations table at the top and drag them " +
+                 "into the lower table.";
+
+         if (!cropOnly)
+             content += " You can also add any new locations that you need for managing your program.";
+
+
+         final Label headingDesc = new Label(content);
 
          root.addComponent(titleContainer);
          root.addComponent(headingDesc);

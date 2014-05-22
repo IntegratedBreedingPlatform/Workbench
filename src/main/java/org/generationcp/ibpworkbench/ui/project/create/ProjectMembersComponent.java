@@ -232,6 +232,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             @Override
             public void buttonClick(ClickEvent clickEvent) {
                 presenter.resetProgramMembers();
+                presenter.disableProgramMethodsAndLocationsTab();
             }
         });
     }
