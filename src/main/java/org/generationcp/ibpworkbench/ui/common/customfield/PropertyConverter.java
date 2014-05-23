@@ -1,6 +1,8 @@
 package org.generationcp.ibpworkbench.ui.common.customfield;
 
-import com.vaadin.data.*;
+import com.vaadin.data.Property;
+import com.vaadin.data.Validatable;
+import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 
 import java.util.*;

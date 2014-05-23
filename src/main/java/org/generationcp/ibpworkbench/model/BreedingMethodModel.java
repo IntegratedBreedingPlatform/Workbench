@@ -24,6 +24,7 @@ import java.io.Serializable;
  * <br>
  * <b>File Created</b>: August 30, 2012
  */
+@Deprecated
 public class BreedingMethodModel implements Serializable{
     
     

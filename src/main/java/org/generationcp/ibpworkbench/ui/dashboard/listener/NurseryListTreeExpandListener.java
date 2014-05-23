@@ -12,16 +12,14 @@
 
 package  org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.ExpandEvent;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NurseryListTreeExpandListener implements Tree.ExpandListener{
     

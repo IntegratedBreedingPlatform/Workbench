@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.validator.StringLengthValidator;
 
 
 /**

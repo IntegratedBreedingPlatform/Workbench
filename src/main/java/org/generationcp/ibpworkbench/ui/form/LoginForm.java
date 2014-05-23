@@ -12,33 +12,21 @@
 
 package org.generationcp.ibpworkbench.ui.form;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.programmembers.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
+import org.generationcp.ibpworkbench.ui.programmembers.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.util.CookieUtils;
 import org.generationcp.ibpworkbench.util.CookieUtils.LoginCookieProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class LoginForm extends CustomComponent implements InitializingBean, InternationalizableComponent {

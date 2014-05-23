@@ -11,22 +11,21 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.Collection;
-
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CloseWindowAction;
 import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
-import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
-import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Collection;
 
 
 /**

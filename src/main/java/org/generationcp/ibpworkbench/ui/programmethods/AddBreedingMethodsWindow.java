@@ -7,7 +7,6 @@ import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
 import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
 import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
-import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 
 public class AddBreedingMethodsWindow extends Window {
 

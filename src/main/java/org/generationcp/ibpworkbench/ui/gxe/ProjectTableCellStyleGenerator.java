@@ -1,11 +1,9 @@
 package org.generationcp.ibpworkbench.ui.gxe;
 
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.middleware.pojos.workbench.Project;
-
-import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.middleware.pojos.workbench.Project;
 
 public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
     private static final long serialVersionUID = 1L;

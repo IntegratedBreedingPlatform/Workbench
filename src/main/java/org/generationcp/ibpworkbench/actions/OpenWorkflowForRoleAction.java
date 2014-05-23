@@ -11,17 +11,20 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.workflow.*;
-import org.generationcp.ibpworkbench.ui.workflow.MarsWorkflowDiagram;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.ibpworkbench.ui.workflow.*;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -33,14 +36,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListener, ActionListener {

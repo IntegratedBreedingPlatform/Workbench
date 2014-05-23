@@ -12,10 +12,10 @@
 
 package org.generationcp.ibpworkbench.manager;
 
-import java.util.List;
-
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
+
+import java.util.List;
 
 public interface IWorkFlowActivityManager{
 

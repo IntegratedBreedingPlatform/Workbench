@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.navigation;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.xml.xpath.XPathExpressionException;
-
+import com.vaadin.ui.HorizontalLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.ui.HorizontalLayout;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * <b>Description</b>: This class represents the navigation trail for the application. 

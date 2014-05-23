@@ -12,14 +12,14 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.ResourceFinder;
+import org.generationcp.commons.util.ScriptRunner;
+import org.generationcp.ibpworkbench.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,13 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.ResourceFinder;
-import org.generationcp.commons.util.ScriptRunner;
-import org.generationcp.ibpworkbench.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IBDBGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);

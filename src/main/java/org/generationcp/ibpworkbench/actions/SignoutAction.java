@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 
 /**
  * <b>Description</b>: Listener class for closing the application.

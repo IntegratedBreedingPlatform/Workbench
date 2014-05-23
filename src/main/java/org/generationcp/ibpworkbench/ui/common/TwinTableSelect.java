@@ -1,33 +1,24 @@
 package org.generationcp.ibpworkbench.ui.common;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.AbstractSelect.AcceptItem;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
-
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.middleware.pojos.BeanFormState;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	

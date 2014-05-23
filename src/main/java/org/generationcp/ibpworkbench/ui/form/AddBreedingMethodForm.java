@@ -11,13 +11,13 @@
   *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.form;
 
-import java.util.Arrays;
-
-import com.vaadin.ui.*;
-import org.generationcp.ibpworkbench.model.BreedingMethodModel;
-import org.generationcp.ibpworkbench.model.formfieldfactory.BreedingMethodFormFieldFactory;
-
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.FormLayout;
+import org.generationcp.ibpworkbench.model.formfieldfactory.BreedingMethodFormFieldFactory;
+import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
+
+import java.util.Arrays;
 
 
 /**
@@ -56,13 +56,13 @@ public class AddBreedingMethodForm extends Form{
 
         fl.setSpacing(true);
 
-        setItemDataSource(new BeanItem<BreedingMethodModel>(new BreedingMethodModel()));
+        setItemDataSource(new BeanItem<MethodView>(new MethodView()));
 
         setComponentError(null);
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
 
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "methodName", "methodCode", "methodDescription", "methodType", "methodGroup" }));
+                new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp" }));
 
         setWriteThrough(false);
         setInvalidCommitted(false);

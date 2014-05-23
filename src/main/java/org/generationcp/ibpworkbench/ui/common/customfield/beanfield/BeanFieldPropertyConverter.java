@@ -1,14 +1,12 @@
 package org.generationcp.ibpworkbench.ui.common.customfield.beanfield;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.generationcp.ibpworkbench.ui.common.customfield.PropertyConverter;
-
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
+import org.generationcp.ibpworkbench.ui.common.customfield.PropertyConverter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Converter that maps between an item identifier (a selection field value) and

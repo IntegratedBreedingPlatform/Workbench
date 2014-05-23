@@ -11,24 +11,17 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.Collection;
-
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenLoginWindowAction;
-import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
+import java.util.Collection;
 
 
 /**

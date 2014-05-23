@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.util.List;
-
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -20,16 +22,7 @@ import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresent
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Location;
 
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.List;
 
 /**
  *  @author Jeffrey Morales, Joyce Avestro

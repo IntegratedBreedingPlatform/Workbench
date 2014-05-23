@@ -18,10 +18,9 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-
 import org.generationcp.ibpworkbench.actions.LoginPresenter;
-import org.generationcp.ibpworkbench.ui.programmembers.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.actions.OpenSecurityQuestionAction;
+import org.generationcp.ibpworkbench.ui.programmembers.OpenRegisterUserAccountAction;
 import org.generationcp.ibpworkbench.util.CookieUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

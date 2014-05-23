@@ -12,17 +12,10 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.ibpworkbench.actions.CloseWindowAction;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
 
 public class PhenotypicAnalysisWindow extends Window{
 

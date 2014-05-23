@@ -12,23 +12,10 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
-import java.io.File;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.model.BreedingMethodModel;
 import org.generationcp.ibpworkbench.model.LocationModel;
+import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -37,6 +24,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.io.File;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -210,7 +206,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     	
     }
     
-    public boolean addCachedBreedingMethods(Map<Integer, BreedingMethodModel> cachedBreedingMethods) {
+    public boolean addCachedBreedingMethods(Map<Integer, MethodView> cachedBreedingMethods) {
         
         boolean areBreedingMethodsAdded = false;
         
@@ -225,7 +221,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         
             Iterator<Integer> keyIter = keySet.iterator();
         
-            BreedingMethodModel breedingMethod;
+            MethodView breedingMethod;
         
             preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
         
@@ -248,12 +244,12 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
                 lmid int 0
                 mdate int*/
                 
-                preparedStatement.setInt(1, breedingMethod.getMethodId());
-                preparedStatement.setString(2, breedingMethod.getMethodType());
-                preparedStatement.setString(3, breedingMethod.getMethodGroup());
-                preparedStatement.setString(4, breedingMethod.getMethodCode());
-                preparedStatement.setString(5, breedingMethod.getMethodName());
-                preparedStatement.setString(6, breedingMethod.getMethodDescription());
+                preparedStatement.setInt(1, breedingMethod.getMid());
+                preparedStatement.setString(2, breedingMethod.getMtype());
+                preparedStatement.setString(3, breedingMethod.getMgrp());
+                preparedStatement.setString(4, breedingMethod.getMcode());
+                preparedStatement.setString(5, breedingMethod.getMname());
+                preparedStatement.setString(6, breedingMethod.getMdesc());
                 preparedStatement.setInt(7, 0);
                 preparedStatement.setInt(8, 0);
                 preparedStatement.setInt(9, 0);

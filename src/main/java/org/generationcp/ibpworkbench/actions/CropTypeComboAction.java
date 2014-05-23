@@ -12,8 +12,13 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Iterator;
-
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.AbstractSelect.NewItemHandler;
+import com.vaadin.ui.ComboBox;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
@@ -24,13 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.AbstractSelect.NewItemHandler;
-import com.vaadin.ui.ComboBox;
+import java.util.Iterator;
 
 @Configurable
 public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{

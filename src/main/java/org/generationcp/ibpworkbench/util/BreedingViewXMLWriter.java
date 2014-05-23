@@ -13,44 +13,14 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.Map.Entry;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.generationcp.commons.breedingview.xml.BreedingViewProject;
-import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
-import org.generationcp.commons.breedingview.xml.Data;
-import org.generationcp.commons.breedingview.xml.Genotypes;
-import org.generationcp.commons.breedingview.xml.Phenotypic;
-import org.generationcp.commons.breedingview.xml.SSAParameters;
-import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.breedingview.xml.*;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.sea.xml.BreedingViewSession;
-import org.generationcp.commons.sea.xml.DataConfiguration;
-import org.generationcp.commons.sea.xml.DataFile;
-import org.generationcp.commons.sea.xml.Design;
-import org.generationcp.commons.sea.xml.Environments;
-import org.generationcp.commons.sea.xml.Pipeline;
-import org.generationcp.commons.sea.xml.Pipelines;
-import org.generationcp.commons.sea.xml.Traits;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.commons.sea.xml.*;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -59,7 +29,18 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 @Configurable

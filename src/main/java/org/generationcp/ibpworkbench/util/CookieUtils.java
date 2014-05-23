@@ -1,10 +1,10 @@
 package org.generationcp.ibpworkbench.util;
 
-import javax.servlet.http.Cookie;
-
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.Cookie;
 
 public class CookieUtils {
 	public static final class LoginCookieProperties {

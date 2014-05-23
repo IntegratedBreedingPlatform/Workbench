@@ -12,10 +12,10 @@
 
 package org.generationcp.ibpworkbench.manager;
 
+import org.generationcp.middleware.pojos.workbench.Contact;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.generationcp.middleware.pojos.workbench.Contact;
 
 public class MockContactManager implements IContactManager{
 

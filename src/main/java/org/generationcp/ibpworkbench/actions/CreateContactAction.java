@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.ibpworkbench.ui.ContactBookPanel;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+import org.generationcp.ibpworkbench.ui.ContactBookPanel;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 
 /**
  * <b>Description</b>: Listener class for generating Create Contact view.

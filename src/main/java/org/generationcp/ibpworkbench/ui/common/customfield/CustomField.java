@@ -1,11 +1,5 @@
 package org.generationcp.ibpworkbench.ui.common.customfield;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import com.vaadin.data.Buffered;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validatable;
@@ -18,6 +12,12 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Field;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * A {@link CustomComponent} that implements the {@link Field} interface,

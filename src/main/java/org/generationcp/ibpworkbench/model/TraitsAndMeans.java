@@ -1,7 +1,5 @@
 package org.generationcp.ibpworkbench.model;
 
-import java.math.BigDecimal;
-
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  *

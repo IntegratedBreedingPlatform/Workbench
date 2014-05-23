@@ -11,18 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import org.generationcp.commons.breedingview.xml.*;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.middleware.pojos.workbench.Project;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-
-import org.generationcp.commons.breedingview.xml.Blocks;
-import org.generationcp.commons.breedingview.xml.Columns;
-import org.generationcp.commons.breedingview.xml.Environment;
-import org.generationcp.commons.breedingview.xml.Genotypes;
-import org.generationcp.commons.breedingview.xml.Replicates;
-import org.generationcp.commons.breedingview.xml.Rows;
-import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.middleware.pojos.workbench.Project;
 
 /**
  * 

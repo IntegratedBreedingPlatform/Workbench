@@ -12,18 +12,17 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.List;
-
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.manager.IContactManager;
-import org.generationcp.ibpworkbench.manager.MockContactManager;
-import org.generationcp.middleware.pojos.workbench.Contact;
-
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.manager.IContactManager;
+import org.generationcp.ibpworkbench.manager.MockContactManager;
+import org.generationcp.middleware.pojos.workbench.Contact;
+
+import java.util.List;
 
 public class ContactBookPanel extends VerticalLayout{
 

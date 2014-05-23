@@ -1,15 +1,13 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.*;
-
- import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
-
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -27,8 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.*;
 
 @Configurable
  public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {

@@ -11,34 +11,29 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
-import org.generationcp.ibpworkbench.model.BreedingMethodModel;
+import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Jeffrey Morales
@@ -83,91 +78,69 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         }
 
         @SuppressWarnings("unchecked")
-        BeanItem<BreedingMethodModel> breedingMethodBean = (BeanItem<BreedingMethodModel>) newBreedingMethodForm.getItemDataSource();
-        BreedingMethodModel breedingMethod = breedingMethodBean.getBean();
+        BeanItem<MethodView> breedingMethodBean = (BeanItem<MethodView>) newBreedingMethodForm.getItemDataSource();
+        MethodView breedingMethod = breedingMethodBean.getBean();
 
-        if (StringUtils.isEmpty(breedingMethod.getMethodType())) {
+        if (StringUtils.isEmpty(breedingMethod.getMtype())) {
             MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
             return;
         }
 
-        //IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        IWorkbenchSession appSession = (IWorkbenchSession) event.getComponent().getApplication();
+        if (!sessionData.getUniqueBreedingMethods().contains(breedingMethod.getMname())) {
 
+            sessionData.getUniqueBreedingMethods().add(breedingMethod.getMname());
 
-        if (!appSession.getSessionData().getUniqueBreedingMethods().contains(breedingMethod.getMethodName())) {
-
-            appSession.getSessionData().getUniqueBreedingMethods().add(breedingMethod.getMethodName());
-
-            Integer nextKey = appSession.getSessionData().getProjectBreedingMethodData().keySet().size() + 1;
+            Integer nextKey = sessionData.getProjectBreedingMethodData().keySet().size() + 1;
 
             nextKey = nextKey * -1;
 
-            BreedingMethodModel newBreedingMethod = new BreedingMethodModel();
+            MethodView newBreedingMethod = new MethodView();
 
-            newBreedingMethod.setMethodName(breedingMethod.getMethodName());
-            newBreedingMethod.setMethodDescription(breedingMethod.getMethodDescription());
-            newBreedingMethod.setMethodCode(breedingMethod.getMethodCode());
-            newBreedingMethod.setMethodGroup(breedingMethod.getMethodGroup());
-            newBreedingMethod.setMethodType(breedingMethod.getMethodType());
+            newBreedingMethod.setMname(breedingMethod.getMname());
+            newBreedingMethod.setMdesc(breedingMethod.getMdesc());
+            newBreedingMethod.setMcode(breedingMethod.getMcode());
+            newBreedingMethod.setMgrp(breedingMethod.getMgrp());
+            newBreedingMethod.setMtype(breedingMethod.getMtype());
 
-            newBreedingMethod.setMethodId(nextKey);
+            newBreedingMethod.setMid(nextKey);
 
-            appSession.getSessionData().getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
+            sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
 
-            LOG.info(appSession.getSessionData().getProjectBreedingMethodData().toString());
+            LOG.info(sessionData.getProjectBreedingMethodData().toString());
 
             //newBreedingMethodForm.commit();
 
-            Method newMethod = new Method();
-            newMethod.setMid(newBreedingMethod.getMethodId());
-            newMethod.setMname(newBreedingMethod.getMethodName());
-            newMethod.setMdesc(newBreedingMethod.getMethodDescription());
-            newMethod.setMcode(newBreedingMethod.getMethodCode());
-            newMethod.setMgrp(newBreedingMethod.getMethodGroup());
-            newMethod.setMtype(newBreedingMethod.getMethodType());
+            if (sessionData.getUserData() != null)
+                newBreedingMethod.setUser(sessionData.getUserData().getUserid());
 
-            if (appSession.getSessionData().getUserData() != null)
-                newMethod.setUser(appSession.getSessionData().getUserData().getUserid());
-
-            newMethod.setLmid(newBreedingMethod.getMethodId());
-            newMethod.setGeneq(newBreedingMethod.getMethodId());
-            newMethod.setMattr(0);
-            newMethod.setMprgn(0);
-            newMethod.setReference(0);
+            newBreedingMethod.setMattr(0);
+            newBreedingMethod.setMprgn(0);
+            newBreedingMethod.setReference(0);
 
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-            newMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
-            newMethod.setMfprg(0);
+            newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
+            newBreedingMethod.setMfprg(0);
 
             //TODO: MOVE THIS CODE TO PRESENTER, GET PRESENTER REFERENCE FROM HERE
             GermplasmDataManager gdm = managerFactoryProvider.getManagerFactoryForProject(sessionData.getLastOpenedProject()).getGermplasmDataManager();
 
             try {
-                Integer newMethodId = gdm.addMethod(newMethod);
+                Integer newMethodId = gdm.addMethod(newBreedingMethod);
 
-                newMethod.setMid(newMethodId);
+                newBreedingMethod.setMid(newMethodId);
 
             } catch (Exception e) { // we might have null exception, better be prepared
                 e.printStackTrace();
             }
 
-            newMethod.setIsnew(true);
-
-            //TODO: compatibility to old UI, remove this if new UI is stable and final
-            if (projectBreedingMethodsPanel instanceof ProjectBreedingMethodsPanel) {
-                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().addItem(newMethod);
-                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().setItemCaption(newMethod, newMethod.getMname());
-                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().select(newMethod);
-                ((ProjectBreedingMethodsPanel) projectBreedingMethodsPanel).getSelect().setValue(newMethod);
-            }
+            newBreedingMethod.setIsnew(true);
 
             if (projectBreedingMethodsPanel instanceof ProgramMethodsView) {
                 ProgramMethodsView pv = (ProgramMethodsView) projectBreedingMethodsPanel;
 
-                pv.addRow(newMethod, false, 0);
+                pv.addRow(newBreedingMethod, false, 0);
             }
 
             /*
@@ -181,7 +154,6 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 				e.printStackTrace();
 			} */
 
-            newBreedingMethod = null;
             window.getParent().removeWindow(window);
 
         }

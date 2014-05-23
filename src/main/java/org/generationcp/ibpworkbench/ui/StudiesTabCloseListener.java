@@ -1,14 +1,13 @@
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Map;
-
-import org.generationcp.middleware.domain.dms.Study;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.CloseHandler;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.middleware.domain.dms.Study;
+
+import java.util.Map;
 
 public class StudiesTabCloseListener implements CloseHandler {
 

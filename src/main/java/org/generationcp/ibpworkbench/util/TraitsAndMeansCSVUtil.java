@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.FileReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
