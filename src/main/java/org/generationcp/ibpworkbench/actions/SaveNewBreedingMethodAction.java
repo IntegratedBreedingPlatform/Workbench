@@ -27,6 +27,7 @@ import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import java.util.Date;
  */
 
 @Configurable
+@Deprecated
 public class SaveNewBreedingMethodAction implements ClickListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaveNewBreedingMethodAction.class);
@@ -101,6 +103,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newBreedingMethod.setMcode(breedingMethod.getMcode());
             newBreedingMethod.setMgrp(breedingMethod.getMgrp());
             newBreedingMethod.setMtype(breedingMethod.getMtype());
+            newBreedingMethod.setGeneq(breedingMethod.getGeneq());
 
             newBreedingMethod.setMid(nextKey);
 
@@ -127,9 +130,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             GermplasmDataManager gdm = managerFactoryProvider.getManagerFactoryForProject(sessionData.getLastOpenedProject()).getGermplasmDataManager();
 
             try {
-                Integer newMethodId = gdm.addMethod(newBreedingMethod);
-
-                newBreedingMethod.setMid(newMethodId);
+                newBreedingMethod.setMid(gdm.addMethod(newBreedingMethod.copy()));
 
             } catch (Exception e) { // we might have null exception, better be prepared
                 e.printStackTrace();

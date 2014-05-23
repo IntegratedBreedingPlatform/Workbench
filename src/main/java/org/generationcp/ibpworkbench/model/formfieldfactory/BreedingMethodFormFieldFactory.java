@@ -40,12 +40,14 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     private Select methodSelectType;
     private Select methodSelectGroup;
     private Field methodCode;
+    private CheckBox methodBulk;
 
     // For new item handling and listener of crop type combo box
     //private MethodTypeComboAction methodTypeComboAction;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    ;
 
     public BreedingMethodFormFieldFactory() {
         initFields();
@@ -97,6 +99,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodSelectGroup.setItemCaption("G", "All System");
         methodSelectGroup.select("");
         methodSelectGroup.setNullSelectionAllowed(false);
+
+        methodBulk = new CheckBox();
+
     }
 
 
@@ -105,22 +110,26 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
         Field field = super.createField(item, propertyId, uiContext);
 
-        if ("methodName".equals(propertyId)) {
+        if ("mname".equals(propertyId)) {
             messageSource.setCaption(methodName, Message.BREED_METH_NAME);
             return methodName;
 
-        } else if ("methodDescription".equals(propertyId)) {
+        } else if ("mdesc".equals(propertyId)) {
             messageSource.setCaption(methodDescription, Message.BREED_METH_DESC);
             return methodDescription;
-        } else if ("methodCode".equals(propertyId)) {
+        } else if ("mcode".equals(propertyId)) {
             messageSource.setCaption(methodCode, Message.BREED_METH_CODE);
             return methodCode;
-        } else if ("methodType".equals(propertyId)) {
+        } else if ("mtype".equals(propertyId)) {
             messageSource.setCaption(methodSelectType, Message.BREED_METH_TYPE);
             return methodSelectType;
-        } else if ("methodGroup".equals(propertyId)) {
+        } else if ("mgrp".equals(propertyId)) {
             messageSource.setCaption(methodSelectGroup, Message.BREED_METH_GRP);
             return methodSelectGroup;
+        } else if ("bulk".equals(propertyId)) {
+
+            methodBulk.setCaption("Bulk");
+            return methodBulk;
         }
 
         return field;

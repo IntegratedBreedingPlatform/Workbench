@@ -62,7 +62,7 @@ public class AddBreedingMethodForm extends Form{
         setFormFieldFactory(new BreedingMethodFormFieldFactory());
 
         setVisibleItemProperties(Arrays.asList(
-                new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp" }));
+                new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp","bulk" }));
 
         setWriteThrough(false);
         setInvalidCommitted(false);

@@ -35,7 +35,7 @@ import java.util.*;
  @Configurable
  public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
     private boolean cropOnly = false;
-    private ProgramMethodsPresenter presenter;
+    protected ProgramMethodsPresenter presenter;
      @Autowired
      private SimpleResourceBundleMessageSource messageSource;
 
@@ -651,7 +651,7 @@ import java.util.*;
          saveBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent event) {
-                 if (ProgramMethodsView.this.presenter.saveProgramMethod(favoritesTableContainer.getItemIds())) {
+                 if (ProgramMethodsView.this.presenter.saveFavoriteBreedingMethod(favoritesTableContainer.getItemIds())) {
                      MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
                  } else {    // should never happen
 
