@@ -476,6 +476,11 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 	}
 
     private class PagedTableWithUpdatedControls extends PagedTable {
+
+        public PagedTableWithUpdatedControls() {
+            this.setHeight("270px");
+        }
+
         @Override
         public HorizontalLayout createControls() {
             HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
