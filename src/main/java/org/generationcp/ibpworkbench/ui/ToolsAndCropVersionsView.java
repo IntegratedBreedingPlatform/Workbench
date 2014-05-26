@@ -1,17 +1,20 @@
 package org.generationcp.ibpworkbench.ui;
 
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -31,13 +34,18 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
     private Label lblToolVersions;
     
     private Table tblTools;
-    
+    private Table tblCrops;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(ToolsAndCropVersionsView.class);
+
+
     @Override
     public void afterPropertiesSet() throws Exception {
         assemble();
@@ -48,8 +56,47 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         lblToolVersions.setStyleName(Bootstrap.Typography.H1.styleName());
         
         initializeToolsTable();
+
+        initializeCropsTable();
     }
-    
+
+    private void initializeCropsTable() {
+        tblCrops = new Table();
+        tblCrops.setImmediate(true);
+        tblCrops.setColumnCollapsingAllowed(true);
+
+        BeanContainer<Long,CropType> cropContainer = new BeanContainer<Long, CropType>(CropType.class);
+        cropContainer.setBeanIdProperty("cropName");
+
+        try {
+            cropContainer.addAll(workbenchDataManager.getInstalledCentralCrops());
+
+            tblCrops.setContainerDataSource(cropContainer);
+            tblCrops.addGeneratedColumn("gVersion", new Table.ColumnGenerator() {
+                @Override
+                public Object generateCell(Table source, Object itemId, Object colId) {
+                    final CropType beanItem = ((BeanContainer<Long,CropType>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                    if (beanItem.getVersion() == null || beanItem.getVersion().trim().isEmpty())
+                        return new Label("<em>Not Available</em>",Label.CONTENT_XHTML);
+                    else
+                        return beanItem.getVersion().trim();
+
+
+                }
+            });
+
+            tblCrops.setVisibleColumns(new String[]{"cropName", "gVersion"});
+            //tblCrops.setColumnWidth("gVersion",80);
+            tblCrops.setColumnHeaders(new String[]{"Crop Name", "Version"});
+            tblCrops.setColumnExpandRatio("cropName",0.7F);
+            tblCrops.setColumnExpandRatio("gVersion",0.3F);
+        } catch (MiddlewareQueryException e) {
+            LOG.error("Oops, something happened!",e);
+        }
+
+    }
+
     protected void initializeToolsTable() {
         tblTools = new Table();
         tblTools.setImmediate(true);
@@ -115,10 +162,26 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         setMargin(new MarginInfo(false,true,true,true));
         setSpacing(true);
         
-        addComponent(lblToolVersions);
-        
+        final HorizontalLayout root = new HorizontalLayout();
+        root.setSpacing(true);
+        root.setSizeFull();
+
+        this.addComponent(lblToolVersions);
+
+        final VerticalLayout cropsContainer = new VerticalLayout();
+        cropsContainer.setSpacing(true);
+        cropsContainer.addComponent(tblCrops);
+        cropsContainer.addComponent(new Label("<em>Crops with no version are installed prior to BMS 3.0</em>",Label.CONTENT_XHTML));
+
+        root.addComponent(tblTools);
+        root.addComponent(cropsContainer);
+        this.addComponent(root);
+
+        tblCrops.setWidth("100%");
+        cropsContainer.setWidth("100%");
         tblTools.setWidth("100%");
-        addComponent(tblTools);
+
+        this.setWidth("100%");
     }
     
     protected void initializeActions() {

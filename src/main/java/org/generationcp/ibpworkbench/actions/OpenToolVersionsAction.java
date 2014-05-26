@@ -17,7 +17,7 @@ import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.ToolVersionsPanel;
+import org.generationcp.ibpworkbench.ui.ToolsAndCropVersionsView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +42,9 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
         IContentWindow w = (IContentWindow) window;
         
         try {
-            ToolVersionsPanel toolVersionsPanel = new ToolVersionsPanel();
-            toolVersionsPanel.setWidth("420px");
-            
-            w.showContent(toolVersionsPanel);
+            ToolsAndCropVersionsView toolsAndCropVersionsView = new ToolsAndCropVersionsView();
+
+            w.showContent(toolsAndCropVersionsView);
             
             //NavManager.navigateApp(window, "/ToolsVersion", isLinkAccessed);
         } catch (Exception e) {
