@@ -26,6 +26,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
@@ -73,6 +74,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
 
     private Project lastOpenedProject;
     
@@ -168,11 +172,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // Get the list of Projects
         
         lastOpenedProject = null;
-        
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
+
         try {
-            User currentUser = app.getSessionData().getUserData();
+            User currentUser = sessionData.getUserData();
             projects = workbenchDataManager.getProjectsByUser(currentUser);
             lastOpenedProject = workbenchDataManager.getLastOpenedProject(
             		currentUser.getUserid());
@@ -182,11 +184,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                     Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
 
-        app.getSessionData().setLastOpenedProject(lastOpenedProject);
+        sessionData.setLastOpenedProject(lastOpenedProject);
 
         if (currentProject == null) currentProject = lastOpenedProject;
 
-        app.getSessionData().setSelectedProject(currentProject);
+        sessionData.setSelectedProject(currentProject);
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
@@ -384,6 +386,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         // update other pards
         return new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, new OpenSelectProjectForStudyAndDatasetViewAction(null),lastOpenedProject, germplasmListPreview, nurseryListPreview, previewTab, projects);
-
     }
+
+
 }

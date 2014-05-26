@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +65,16 @@ public class HomeAction implements ClickListener, ActionListener{
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
-        doAction(window, "/Home", true);
-        
+        if (newProgram != null) {
+            sessionData.setLastOpenedProject(newProgram);
+            sessionData.setSelectedProject(newProgram);
+
+            new DashboardMainClickListener(null,newProgram.getProjectId()).buttonClick(event);
+
+        }
+
+        else
+            doAction(window, "/Home", true);
     }
 
     /**
