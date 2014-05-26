@@ -403,7 +403,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         @Override
         public String getMinimizedValueAsHTML() {
-            return "<span class='glyphicon glyphicon-cog' style='right: 6px; top: 2px; font-size: 13px; font-weight: 300'></span>TOOLS";
+            return "<span class='glyphicon glyphicon-cog' style='right: 6px; top: 2px; font-size: 13px; font-weight: 300'></span>Actions";
         }
 
         @Override
