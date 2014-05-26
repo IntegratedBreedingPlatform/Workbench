@@ -71,7 +71,7 @@ public class AddBreedingMethodsWindow extends Window {
 
         layout = new VerticalLayout();
         layout.setWidth("100%");
-        layout.setHeight("410px");
+        layout.setHeight("450px");
 
         final Panel p = new Panel();
         p.setStyleName("form-panel");

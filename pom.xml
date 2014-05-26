@@ -89,6 +89,13 @@
             <version>1.2.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>customcheckbox</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+
+
         <!-- Spring Dependency -->
         <dependency>
             <groupId>org.springframework</groupId>
