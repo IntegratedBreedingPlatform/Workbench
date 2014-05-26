@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,16 @@ public class HomeAction implements ClickListener, ActionListener{
     private static final long serialVersionUID = 5592156945270416052L;
     
     private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
-    
+
+    public HomeAction(Project newProgram) {
+        this.newProgram = newProgram;
+    }
+
+    private Project newProgram;
+
+    public HomeAction() {
+    }
+
     /**
      * Button click.
      *
@@ -89,8 +99,7 @@ public class HomeAction implements ClickListener, ActionListener{
             w.showContent(workbenchDashboard);
 
             // reinitialize dashboard with default values
-            if (sessionData.getLastOpenedProject() != null)
-                workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+            workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
 
         } catch (Exception e) {
             LOG.error("Exception", e);

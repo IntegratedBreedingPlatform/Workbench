@@ -376,7 +376,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
      }
 
     //hacky hack hack
-    public ShowProjectDetailAction initializeDashboardContents() {
+    public ShowProjectDetailAction initializeDashboardContents(Project selectProgram) {
+
+        // set this program as selected in dashboard
+        if (selectProgram != null)
+            tblProject.select(selectProgram.getProjectId());
+
         // update other pards
         return new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, new OpenSelectProjectForStudyAndDatasetViewAction(null),lastOpenedProject, germplasmListPreview, nurseryListPreview, previewTab, projects);
 

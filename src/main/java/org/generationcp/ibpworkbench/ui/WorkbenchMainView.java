@@ -332,7 +332,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 
         if (sessionData.getLastOpenedProject() != null)
-            workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),this);
+            workbenchDashboard.initializeDashboardContents(null).doAction(sessionData.getLastOpenedProject().getProjectId(),this);
 
     }
 
