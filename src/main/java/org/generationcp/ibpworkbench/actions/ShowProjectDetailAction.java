@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.vaadin.data.Property;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -24,9 +25,9 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
+import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.ibpworkbench.ui.gxe.ProjectTableCellStyleGenerator;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -37,12 +38,8 @@ import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
+import java.util.Arrays;
+import java.util.List;
 
 @Configurable
 public class ShowProjectDetailAction implements Property.ValueChangeListener {

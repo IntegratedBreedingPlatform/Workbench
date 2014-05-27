@@ -12,23 +12,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.xml.hibernate.HibernateConfiguration;
@@ -37,16 +20,21 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @Configurable
 public class ToolUtil {

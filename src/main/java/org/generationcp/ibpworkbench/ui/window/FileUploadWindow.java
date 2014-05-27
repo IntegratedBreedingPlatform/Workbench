@@ -12,12 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.ibpworkbench.ui.vaadin.Upload;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.ibpworkbench.ui.vaadin.Upload;
 
 public class FileUploadWindow extends Window{
 

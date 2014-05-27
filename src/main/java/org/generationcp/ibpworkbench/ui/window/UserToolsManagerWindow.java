@@ -1,18 +1,22 @@
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.common.ServerFilePicker;
+import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -23,14 +27,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Configurable
 public class UserToolsManagerWindow extends Window implements InitializingBean {

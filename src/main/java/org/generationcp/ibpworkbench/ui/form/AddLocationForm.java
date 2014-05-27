@@ -11,19 +11,15 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.form;
 
-import java.util.Arrays;
-
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
-import org.generationcp.ibpworkbench.model.LocationModel;
+import com.vaadin.ui.GridLayout;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.GridLayout;
+import java.util.Arrays;
 
 
 /**

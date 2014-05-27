@@ -1,5 +1,7 @@
 package org.generationcp.ibpworkbench.ui.programadministration;
 
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
@@ -10,13 +12,6 @@ import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class ProgramAdministrationPanel extends Panel implements InitializingBean{

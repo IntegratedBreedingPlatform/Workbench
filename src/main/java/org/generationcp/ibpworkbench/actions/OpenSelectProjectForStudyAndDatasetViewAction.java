@@ -11,21 +11,19 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
 
 /**
  * 

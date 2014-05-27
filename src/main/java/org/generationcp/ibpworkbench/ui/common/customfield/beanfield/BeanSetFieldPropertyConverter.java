@@ -1,14 +1,13 @@
 package org.generationcp.ibpworkbench.ui.common.customfield.beanfield;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import org.generationcp.ibpworkbench.ui.common.customfield.PropertyConverter;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.generationcp.ibpworkbench.ui.common.customfield.PropertyConverter;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 
 /**
  * Converter that maps between a set of item identifiers (the value of a

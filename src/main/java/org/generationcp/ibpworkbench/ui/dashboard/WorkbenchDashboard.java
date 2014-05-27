@@ -12,20 +12,21 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
-
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
@@ -44,11 +45,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.themes.Reindeer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Configurable
@@ -73,6 +74,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
 
     private Project lastOpenedProject;
     
@@ -168,11 +172,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         // Get the list of Projects
         
         lastOpenedProject = null;
-        
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        
+
         try {
-            User currentUser = app.getSessionData().getUserData();
+            User currentUser = sessionData.getUserData();
             projects = workbenchDataManager.getProjectsByUser(currentUser);
             lastOpenedProject = workbenchDataManager.getLastOpenedProject(
             		currentUser.getUserid());
@@ -182,11 +184,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                     Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
 
-        app.getSessionData().setLastOpenedProject(lastOpenedProject);
+        sessionData.setLastOpenedProject(lastOpenedProject);
 
         if (currentProject == null) currentProject = lastOpenedProject;
 
-        app.getSessionData().setSelectedProject(currentProject);
+        sessionData.setSelectedProject(currentProject);
 
         // set the Project Table data source
         BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
@@ -376,9 +378,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
      }
 
     //hacky hack hack
-    public ShowProjectDetailAction initializeDashboardContents() {
+    public ShowProjectDetailAction initializeDashboardContents(Project selectProgram) {
+
+        // set this program as selected in dashboard
+        if (selectProgram != null)
+            tblProject.select(selectProgram.getProjectId());
+
         // update other pards
         return new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, new OpenSelectProjectForStudyAndDatasetViewAction(null),lastOpenedProject, germplasmListPreview, nurseryListPreview, previewTab, projects);
-
     }
+
+
 }

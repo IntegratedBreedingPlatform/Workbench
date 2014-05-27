@@ -1,13 +1,12 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Location;
-
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocationViewModel implements BeanFormState {
 	private Integer locationId;

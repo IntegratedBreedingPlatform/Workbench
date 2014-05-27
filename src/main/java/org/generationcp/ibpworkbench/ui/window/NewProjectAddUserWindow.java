@@ -1,13 +1,11 @@
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.ui.themes.Reindeer;
-
-import org.generationcp.ibpworkbench.ui.programmembers.NewProjectAddUserPanel;
-import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
-import org.generationcp.middleware.pojos.User;
-
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
+import org.generationcp.ibpworkbench.ui.programmembers.NewProjectAddUserPanel;
+import org.generationcp.middleware.pojos.User;
 
 public class NewProjectAddUserWindow extends Window {
     

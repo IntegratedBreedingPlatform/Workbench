@@ -1,17 +1,14 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
+import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class SheetUtil {
 	/**

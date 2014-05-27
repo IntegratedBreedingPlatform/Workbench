@@ -3,10 +3,12 @@ package org.generationcp.ibpworkbench.ui.common.customfield.util;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertyFormatter;
-
-import java.util.*;
-
 import org.generationcp.ibpworkbench.ui.common.customfield.PropertyConverter;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * It's hard to use {@link PropertyConverter} alone, so ItemConverter allows to

@@ -1,46 +1,24 @@
 package org.generationcp.ibpworkbench.ui.gxe;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.gxe.xml.GxeEnvironment;
-import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
-import org.generationcp.commons.sea.xml.Environment;
-import org.generationcp.ibpworkbench.util.TableItems;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
-import org.generationcp.middleware.domain.oms.CvId;
-import org.generationcp.middleware.domain.oms.Term;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
+import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.ibpworkbench.util.TableItems;
+import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class GxeTable extends Table {
 

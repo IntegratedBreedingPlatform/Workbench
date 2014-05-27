@@ -2,24 +2,21 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,6 +34,8 @@ public class ProgramMethodsPresenter implements InitializingBean {
     private Project project;
     private CropType cropType;
     private ProgramMethodsView view;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsPresenter.class);
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -195,11 +194,76 @@ public class ProgramMethodsPresenter implements InitializingBean {
         return resultsMap.values();
     }
 
-    public boolean saveProgramMethod(Collection<MethodView> selectedMethodIds) {
-        return saveProgramMethod(selectedMethodIds,this.project,this.sessionData,this.workbenchDataManager,this.gdm);
+    public MethodView saveNewBreedingMethod(MethodView method) {
+        if (!sessionData.getUniqueBreedingMethods().contains(method.getMname())) {
+
+            sessionData.getUniqueBreedingMethods().add(method.getMname());
+
+            Integer nextKey = sessionData.getProjectBreedingMethodData().keySet().size() + 1;
+
+            nextKey = nextKey * -1;
+
+            MethodView newBreedingMethod = new MethodView();
+
+            newBreedingMethod.setMname(method.getMname());
+            newBreedingMethod.setMdesc(method.getMdesc());
+            newBreedingMethod.setMcode(method.getMcode());
+            newBreedingMethod.setMgrp(method.getMgrp());
+            newBreedingMethod.setMtype(method.getMtype());
+            newBreedingMethod.setGeneq(method.getGeneq());
+
+            newBreedingMethod.setMid(nextKey);
+
+            sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
+
+            LOG.info(sessionData.getProjectBreedingMethodData().toString());
+
+            if (sessionData.getUserData() != null)
+                newBreedingMethod.setUser(sessionData.getUserData().getUserid());
+
+            newBreedingMethod.setLmid(0);
+            newBreedingMethod.setMattr(0);
+            newBreedingMethod.setMprgn(0);
+            newBreedingMethod.setReference(0);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+            newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
+            newBreedingMethod.setMfprg(0);
+
+            // ADD TO MIDDLEWARE LOCAL
+            try {
+                newBreedingMethod.setMid(gdm.addMethod(newBreedingMethod.copy()));
+
+            } catch (Exception e) { // we might have null exception, better be prepared
+                e.printStackTrace();
+            }
+
+            newBreedingMethod.setIsnew(true);
+
+            view.addRow(newBreedingMethod,false,0);
+
+            /*
+            User user = app.getSessionData().getUserData();
+            Project currentProject = app.getSessionData().getLastOpenedProject();
+            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added a new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
+            try {
+				workbenchDataManager.addProjectActivity(projAct);
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} */
+            return newBreedingMethod;
+        }
+
+        return method;
     }
 
-    public static boolean saveProgramMethod(Collection<MethodView> selectedMethodIds,Project project,SessionData sessionData,WorkbenchDataManager workbenchDataManager,GermplasmDataManager gdm) {
+    public boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds) {
+        return saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.sessionData, this.workbenchDataManager, this.gdm);
+    }
+
+    public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, SessionData sessionData, WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
         List<ProjectMethod> projectMethods = null;
         try {
             projectMethods = workbenchDataManager.getProjectMethodByProject(project,0,Integer.MAX_VALUE);
@@ -293,28 +357,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
         List<Method> result = new ArrayList<Method>();
 
         for (MethodView methodView:list) {
-            Method method = new Method();
-            method.setMid(methodView.getMid());
-            method.setMname(methodView.getMname());
-            method.setMdesc(methodView.getMdesc());
-            method.setMcode(methodView.getMcode());
-            method.setMgrp(methodView.getMgrp());
-            method.setMtype(methodView.getMtype());
-            method.setUser(sessionData.getUserData().getUserid());
-
-            method.setLmid(methodView.getLmid());
-            method.setGeneq(methodView.getGeneq());
-            method.setMattr(0);
-            method.setMprgn(0);
-            method.setReference(0);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-            method.setMdate(Integer.parseInt(sdf.format(new Date())));
-            method.setMfprg(0);
-            method.setIsnew(methodView.getIsnew());
-
-            result.add(method);
+            result.add(methodView.copy());
         }
         return result;
     }

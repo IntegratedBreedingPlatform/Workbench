@@ -1,7 +1,5 @@
 package org.generationcp.ibpworkbench;
 
-import org.generationcp.middleware.pojos.User;
-
 /**
  * Created by cyrus on 1/28/14.
  */

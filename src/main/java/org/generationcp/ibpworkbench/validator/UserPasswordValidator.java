@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.validator;
 
-import org.generationcp.commons.util.StringUtil;
-
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.ui.Field;
+import org.generationcp.commons.util.StringUtil;
 
 
 /**

@@ -11,19 +11,15 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.filter.Compare;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -32,9 +28,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.validator.StringLengthValidator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 /**

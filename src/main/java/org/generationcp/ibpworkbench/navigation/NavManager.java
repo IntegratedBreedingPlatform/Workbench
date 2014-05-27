@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.navigation;
 
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -21,9 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
 
 /**
  * <b>Description</b>: This class contains convenience methods for 

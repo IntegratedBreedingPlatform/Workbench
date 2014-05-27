@@ -11,15 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -27,7 +24,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -39,13 +35,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.hibernate.Session;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +43,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 @Configurable
 public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListener, ActionListener {

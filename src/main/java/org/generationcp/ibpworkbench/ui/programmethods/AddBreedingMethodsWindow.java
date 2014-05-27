@@ -1,22 +1,24 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
-import org.generationcp.ibpworkbench.actions.SaveNewBreedingMethodAction;
-import org.generationcp.ibpworkbench.ui.ProjectBreedingMethodsPanel;
 import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
-import org.generationcp.ibpworkbench.model.BreedingMethodModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class AddBreedingMethodsWindow extends Window {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 3983198771242295731L;
 
-    private Label newBreedingMethodTitle;
 
     private AddBreedingMethodForm addBreedingMethodForm;
 
@@ -29,18 +31,15 @@ public class AddBreedingMethodsWindow extends Window {
     private VerticalLayout layout;
 
 
-    private Component projectBreedingMethodsPanel;
+    private ProgramMethodsView projectBreedingMethodsPanel;
+
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
 
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
 
     public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel) {
-        this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
-        assemble();
-    }
-
-
-    public AddBreedingMethodsWindow(ProjectBreedingMethodsPanel projectBreedingMethodsPanel) {
         this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
         assemble();
     }
@@ -72,7 +71,7 @@ public class AddBreedingMethodsWindow extends Window {
 
         layout = new VerticalLayout();
         layout.setWidth("100%");
-        layout.setHeight("410px");
+        layout.setHeight("450px");
 
         final Panel p = new Panel();
         p.setStyleName("form-panel");
@@ -99,7 +98,27 @@ public class AddBreedingMethodsWindow extends Window {
 
     protected void initializeActions() {
 
-        addBreedingMethodButton.addListener(new SaveNewBreedingMethodAction(addBreedingMethodForm, this, this.projectBreedingMethodsPanel));
+        addBreedingMethodButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                try {
+                    addBreedingMethodForm.commit();
+                } catch (Validator.EmptyValueException e) {
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+                    return;
+                }
+
+                MethodView bean = ((BeanItem<MethodView>) addBreedingMethodForm.getItemDataSource()).getBean();
+                if (StringUtils.isEmpty(bean.getMtype())) {
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
+                    return;
+                }
+
+                projectBreedingMethodsPanel.presenter.saveNewBreedingMethod(bean);
+
+                AddBreedingMethodsWindow.this.getParent().removeWindow(AddBreedingMethodsWindow.this);
+            }
+        });
 
         cancelButton.addListener(new CancelBreedingMethodAction(this));
     }

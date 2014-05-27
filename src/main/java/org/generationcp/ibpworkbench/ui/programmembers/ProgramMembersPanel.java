@@ -11,15 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -39,11 +37,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
+import java.util.*;
 
 
 /**

@@ -12,6 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui;
 
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -19,13 +21,6 @@ import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**

@@ -1,14 +1,13 @@
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 
 
 public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueChangeListener{

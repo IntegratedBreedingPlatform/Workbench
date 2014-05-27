@@ -1,9 +1,5 @@
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.ParameterHandler;
-import com.vaadin.terminal.URIHandler;
-import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -11,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
-
-import java.util.Map;
 
 /**
  * Created by cyrus on 1/24/14.

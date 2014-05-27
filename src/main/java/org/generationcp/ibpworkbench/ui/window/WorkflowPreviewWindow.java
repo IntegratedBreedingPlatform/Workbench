@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.window;
 
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.workflow.*;
-import org.generationcp.ibpworkbench.ui.workflow.MarsWorkflowDiagram;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Window;
 
 @Configurable
 public class WorkflowPreviewWindow extends Window implements InitializingBean {

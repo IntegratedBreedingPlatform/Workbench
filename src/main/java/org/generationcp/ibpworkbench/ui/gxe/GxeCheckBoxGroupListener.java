@@ -1,11 +1,11 @@
 package org.generationcp.ibpworkbench.ui.gxe;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 public class GxeCheckBoxGroupListener implements ValueChangeListener {
 

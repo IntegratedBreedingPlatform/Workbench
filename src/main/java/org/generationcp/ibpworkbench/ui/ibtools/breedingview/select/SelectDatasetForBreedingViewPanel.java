@@ -12,11 +12,13 @@
 
 package org.generationcp.ibpworkbench.ui.ibtools.breedingview.select;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -29,11 +31,7 @@ import org.generationcp.ibpworkbench.actions.ShowDatasetVariablesDetailAction;
 import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.FolderReference;
-import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -45,22 +43,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * 

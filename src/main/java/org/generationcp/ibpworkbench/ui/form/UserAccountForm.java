@@ -11,25 +11,14 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.form;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import com.vaadin.ui.Layout;
-
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.model.formfieldfactory.UserAccountFormFieldFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
 
 
 /**

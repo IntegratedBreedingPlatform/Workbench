@@ -11,22 +11,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.vaadin.data.Property;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Component;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Panel;
 
 
 /**

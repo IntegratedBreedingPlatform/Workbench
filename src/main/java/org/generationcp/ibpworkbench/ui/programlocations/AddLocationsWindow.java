@@ -16,8 +16,6 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
-import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 
 /**

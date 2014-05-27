@@ -12,10 +12,11 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -30,9 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Button.ClickEvent;
 
 import javax.servlet.http.Cookie;
 

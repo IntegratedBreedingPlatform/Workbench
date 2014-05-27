@@ -1,11 +1,11 @@
 package org.generationcp.ibpworkbench.util.tomcat;
 
+import org.generationcp.ibpworkbench.util.tomcat.WebAppStatus.State;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.generationcp.ibpworkbench.util.tomcat.WebAppStatus.State;
 
 public class WebAppStatusInfo {
     

@@ -12,9 +12,9 @@
 
 package org.generationcp.ibpworkbench.manager;
 
-import java.util.List;
-
 import org.generationcp.middleware.pojos.workbench.Contact;
+
+import java.util.List;
 
 public interface IContactManager{
 

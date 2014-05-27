@@ -1,11 +1,5 @@
 package org.generationcp.ibpworkbench.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.generationcp.ibpworkbench.service.BackupIBDBService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 
 /**
  * GCP

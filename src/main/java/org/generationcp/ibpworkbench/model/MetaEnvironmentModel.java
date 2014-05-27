@@ -1,7 +1,5 @@
 package org.generationcp.ibpworkbench.model;
 
-import org.generationcp.middleware.pojos.dms.DmsProject;
-
 public class MetaEnvironmentModel {
 
 	public MetaEnvironmentModel() {

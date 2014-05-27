@@ -12,12 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.POIXMLException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,8 +32,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configurable
 public class FieldBookObservationPanel extends VerticalLayout implements InitializingBean{

@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 /**
  * 

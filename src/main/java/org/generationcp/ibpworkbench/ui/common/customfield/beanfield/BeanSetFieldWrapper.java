@@ -1,12 +1,11 @@
 package org.generationcp.ibpworkbench.ui.common.customfield.beanfield;
 
-import java.util.Collection;
-
-import org.generationcp.ibpworkbench.ui.common.customfield.FieldWrapper;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
+import org.generationcp.ibpworkbench.ui.common.customfield.FieldWrapper;
+
+import java.util.Collection;
 
 /**
  * A field that wraps another multi-select field (typically a TwinColSelect) and

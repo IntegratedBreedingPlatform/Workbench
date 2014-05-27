@@ -1,10 +1,9 @@
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
 
 
 public class BreedingViewReplicatesValueChangeListener implements ValueChangeListener{

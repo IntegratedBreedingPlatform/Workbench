@@ -11,22 +11,20 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.gxe;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.FolderReference;
-import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -39,25 +37,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Multisite analysis component

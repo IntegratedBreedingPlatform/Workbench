@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.navigation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
@@ -22,11 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.BaseTheme;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * <b>Description</b>: This class represents a view/state of the application. It

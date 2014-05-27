@@ -1,7 +1,5 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.*;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -20,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.*;
 
 @Configurable
 public class ProgramLocationsPresenter implements InitializingBean {

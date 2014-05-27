@@ -11,23 +11,18 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.RestoreIBDBWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
-import org.generationcp.ibpworkbench.navigation.NavManager;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -40,10 +35,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 @Configurable
 public class OpenWindowAction implements WorkflowConstants, ClickListener, ActionListener {

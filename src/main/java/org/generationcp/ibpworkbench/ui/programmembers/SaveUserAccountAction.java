@@ -11,13 +11,15 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.Date;
-
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Form;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LoginPresenter;
@@ -34,11 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Form;
+import java.util.Date;
 
 
 /**

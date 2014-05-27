@@ -9,6 +9,25 @@ import org.generationcp.middleware.pojos.Method;
  public class MethodView extends Method implements BeanFormState {
     private boolean active = false;
     private boolean isEnabled = true;
+
+    public MethodView() {
+        this.setMname("");
+        this.setMdesc("");
+        this.setMtype("");
+        this.setMgrp("");
+        this.setMcode("");
+        this.setGeneq(0);
+    }
+
+    public boolean isBulk() {
+        return getGeneq() == 1;
+    }
+
+    public void setBulk(boolean value) {
+        this.setGeneq(value ? 1 : 0);
+
+    }
+
     @Override
     public boolean isActive() {
         return active;
@@ -28,7 +47,25 @@ import org.generationcp.middleware.pojos.Method;
 	@Override
 	public void setEnabled(Boolean val) {
 		this.isEnabled = val;
-		
 	}
+
+    public Method copy() {
+        return new Method(
+            getMid(),
+            getMtype(),
+            getMgrp(),
+            getMcode(),
+            getMname(),
+            getMdesc(),
+            getReference(),
+            getMprgn(),
+            getMfprg(),
+            getMattr(),
+            getGeneq(),
+            getUser(),
+            getLmid(),
+            getMdate()
+        );
+    }
 
 }

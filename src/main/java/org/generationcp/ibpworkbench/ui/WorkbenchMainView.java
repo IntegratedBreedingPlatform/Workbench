@@ -27,7 +27,6 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
@@ -35,8 +34,6 @@ import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
-import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
-import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -335,7 +332,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 
         if (sessionData.getLastOpenedProject() != null)
-            workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),this);
+            workbenchDashboard.initializeDashboardContents(null).doAction(sessionData.getLastOpenedProject().getProjectId(),this);
 
     }
 

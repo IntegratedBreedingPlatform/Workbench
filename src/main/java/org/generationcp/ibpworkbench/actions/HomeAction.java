@@ -11,20 +11,20 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.navigation.NavManager;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -47,7 +47,16 @@ public class HomeAction implements ClickListener, ActionListener{
     private static final long serialVersionUID = 5592156945270416052L;
     
     private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
-    
+
+    public HomeAction(Project newProgram) {
+        this.newProgram = newProgram;
+    }
+
+    private Project newProgram;
+
+    public HomeAction() {
+    }
+
     /**
      * Button click.
      *
@@ -56,8 +65,16 @@ public class HomeAction implements ClickListener, ActionListener{
     @Override
     public void buttonClick(ClickEvent event) {
         Window window = event.getComponent().getWindow();
-        doAction(window, "/Home", true);
-        
+        if (newProgram != null) {
+            sessionData.setLastOpenedProject(newProgram);
+            sessionData.setSelectedProject(newProgram);
+
+            new DashboardMainClickListener(null,newProgram.getProjectId()).buttonClick(event);
+
+        }
+
+        else
+            doAction(window, "/Home", true);
     }
 
     /**
@@ -91,8 +108,7 @@ public class HomeAction implements ClickListener, ActionListener{
             w.showContent(workbenchDashboard);
 
             // reinitialize dashboard with default values
-            if (sessionData.getLastOpenedProject() != null)
-                workbenchDashboard.initializeDashboardContents().doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+            workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
 
         } catch (Exception e) {
             LOG.error("Exception", e);

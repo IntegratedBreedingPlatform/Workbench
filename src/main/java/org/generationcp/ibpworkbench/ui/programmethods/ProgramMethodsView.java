@@ -7,13 +7,11 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -21,7 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
- import java.text.DateFormat;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,7 +35,7 @@ import java.util.*;
  @Configurable
  public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
     private boolean cropOnly = false;
-    private ProgramMethodsPresenter presenter;
+    protected ProgramMethodsPresenter presenter;
      @Autowired
      private SimpleResourceBundleMessageSource messageSource;
 
@@ -67,6 +65,7 @@ import java.util.*;
          tableColumns.put("mcode","Code");
          tableColumns.put("mtype","Type");
          tableColumns.put("date","Date");
+         tableColumns.put("gBulk","Bulk");
 
          tableColumnSizes = new HashMap<String, Integer>();
          tableColumnSizes.put("select",20);
@@ -75,6 +74,8 @@ import java.util.*;
          tableColumnSizes.put("mcode",40);
          tableColumnSizes.put("mtype",40);
          tableColumnSizes.put("date",70);
+         tableColumnSizes.put("gBulk",30);
+
 
      }
 
@@ -219,6 +220,22 @@ import java.util.*;
                  return select;
              }
          });
+
+         table.addGeneratedColumn("gBulk", new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 Label bulkLbl = new Label("");
+                 bulkLbl.setContentMode(Label.CONTENT_XHTML);
+
+                 if (beanItem.isBulk())
+                     bulkLbl.setValue("<span class='glyphicon glyphicon-ok'></span>");
+
+                 return bulkLbl;
+             }
+         });
+
 
          table.addGeneratedColumn("date",new Table.ColumnGenerator() {
              @Override
@@ -387,6 +404,10 @@ import java.util.*;
          for (String col : tableColumnSizes.keySet())
          {
              table.setColumnWidth(col,tableColumnSizes.get(col));
+
+             if (tableColumnSizes.get(col) < 75)
+                 table.setColumnAlignment(col,Table.ALIGN_CENTER);
+
          }
 
          table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],1.0F);
@@ -653,7 +674,7 @@ import java.util.*;
          saveBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent event) {
-                 if (ProgramMethodsView.this.presenter.saveProgramMethod(favoritesTableContainer.getItemIds())) {
+                 if (ProgramMethodsView.this.presenter.saveFavoriteBreedingMethod(favoritesTableContainer.getItemIds())) {
                      MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
                  } else {    // should never happen
 

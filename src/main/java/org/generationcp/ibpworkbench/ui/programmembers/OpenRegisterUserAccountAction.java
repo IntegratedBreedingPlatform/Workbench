@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import org.generationcp.ibpworkbench.ui.programmembers.UserAccountPanel;
-
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;

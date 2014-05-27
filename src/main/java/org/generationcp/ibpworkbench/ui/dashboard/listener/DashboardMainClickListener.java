@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -28,11 +30,6 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -73,41 +70,39 @@ public class DashboardMainClickListener implements ClickListener{
     @Override
     public void buttonClick(ClickEvent event) {
         // TODO Auto-generated method stub
-        if (event.getButton().getData().equals(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID)
-                && (source instanceof WorkbenchDashboard)){
+        try {
+           // lets update last opened project
+            Project project = sessionData.getSelectedProject();
+
             try {
-
-                // lets update last opened project
-                Project project = sessionData.getSelectedProject();
-                
-                try {
-					toolUtil.createWorkspaceDirectoriesForProject(project);
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-                this.updateProjectLastOpenedDate(project);
-
-                //update sidebar selection
-                LOG.trace("selecting sidebar");
-                WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
-
-                if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list"))
-                    mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
-
-
-                // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
-
-                //System.out.println("Open list manager" + this.projectId);
-            } catch (InternationalizableException e){
-                LOG.error(e.toString() + "\n" + e.getStackTrace());
+                toolUtil.createWorkspaceDirectoriesForProject(project);
+            } catch (MiddlewareQueryException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
             }
-        } 
-    }
+
+            this.updateProjectLastOpenedDate(project);
+
+            //update sidebar selection
+            LOG.trace("selecting sidebar");
+            WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+
+            mainWindow.addTitle(project.getProjectName());
+
+            if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list"))
+                mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+
+
+            // page change to list manager, with parameter passed
+            (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
+
+            //System.out.println("Open list manager" + this.projectId);
+        } catch (InternationalizableException e){
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            e.printStackTrace();
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+        }
+}
 
     public void updateProjectLastOpenedDate(Project project) {
         try {

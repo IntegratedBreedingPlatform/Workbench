@@ -1,48 +1,33 @@
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
-import com.vaadin.ui.Window;
 import org.vaadin.easyuploads.FileFactory;
+
+import java.io.File;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {

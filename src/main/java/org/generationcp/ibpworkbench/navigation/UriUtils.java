@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.navigation;
 
+import javax.servlet.ServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletRequest;
 
 /**
  * <b>Description</b>: Utility class for URI-related functions.

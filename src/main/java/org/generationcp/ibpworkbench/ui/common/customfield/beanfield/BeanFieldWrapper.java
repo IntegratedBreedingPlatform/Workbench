@@ -1,9 +1,8 @@
 package org.generationcp.ibpworkbench.ui.common.customfield.beanfield;
 
-import org.generationcp.ibpworkbench.ui.common.customfield.FieldWrapper;
-
 import com.vaadin.data.Container;
 import com.vaadin.ui.Field;
+import org.generationcp.ibpworkbench.ui.common.customfield.FieldWrapper;
 
 /**
  * A field that wraps another single-select field (typically a combo box) and

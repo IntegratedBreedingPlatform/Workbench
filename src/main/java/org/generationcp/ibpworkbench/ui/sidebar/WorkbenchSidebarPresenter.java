@@ -1,9 +1,7 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -85,7 +82,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program Data"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools Version"));
+                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
                     //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"update_project","Update Program"));
                     //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"delete_project","Delete Program"));
