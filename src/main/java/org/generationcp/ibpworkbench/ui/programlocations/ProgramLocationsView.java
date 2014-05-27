@@ -566,20 +566,18 @@ import java.util.*;
          if (index != null) {
              if (atAvailableTable) {
                  availableTableContainer.addItemAt(index,item);
-
+                 availableTable.select(item);
              } else {
                  favoritesTableContainer.addItemAt(index,item);
              }
          } else {
              if (atAvailableTable) {
                  availableTableContainer.addItem(item);
-
+                 availableTable.select(item);
              } else {
                  favoritesTableContainer.addItem(item);
              }
          }
-
-
 
      }
 
