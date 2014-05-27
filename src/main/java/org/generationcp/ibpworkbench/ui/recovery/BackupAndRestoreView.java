@@ -162,17 +162,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             }
         };
 
-        backupBtn.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                ConfirmDialog.show(clickEvent.getComponent().getWindow(),
-                        messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION),
-                        messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_DESC),
-                        messageSource.getMessage(Message.BACKUP_IBDB_LINK),
-                        messageSource.getMessage(Message.CANCEL),
-                        backupAction);
-            }
-        });
+        backupBtn.addListener(backupAction);
 
         final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(sessionData.getLastOpenedProject(),(ProjectBackup)null,this.getWindow()) {
             @Override
