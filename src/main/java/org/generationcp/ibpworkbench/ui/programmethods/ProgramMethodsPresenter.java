@@ -194,6 +194,24 @@ public class ProgramMethodsPresenter implements InitializingBean {
         return resultsMap.values();
     }
 
+    public MethodView editBreedingMethod(MethodView method) {
+        MethodView result = null;
+        try {
+            result = convertMethod(gdm.editMethod(method.copy()));
+        } catch (MiddlewareQueryException e) {
+            e.printStackTrace();
+        }
+
+        if (!sessionData.getUniqueBreedingMethods().contains(result.getMname())) {
+            sessionData.getUniqueBreedingMethods().add(result.getMname());
+            sessionData.getProjectBreedingMethodData().put(result.getMid(), result);
+        }
+
+        view.refreshTable();
+
+        return convertMethod(result);
+    }
+
     public MethodView saveNewBreedingMethod(MethodView method) {
         if (!sessionData.getUniqueBreedingMethods().contains(method.getMname())) {
 
