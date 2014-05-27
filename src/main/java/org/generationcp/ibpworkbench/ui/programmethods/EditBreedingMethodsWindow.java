@@ -9,12 +9,13 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.middleware.pojos.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class AddBreedingMethodsWindow extends Window {
+public class EditBreedingMethodsWindow extends Window {
 
     private static final long serialVersionUID = 3983198771242295731L;
 
@@ -23,23 +24,29 @@ public class AddBreedingMethodsWindow extends Window {
 
     private Button cancelButton;
 
-    private Button addBreedingMethodButton;
+    private Button editBreedingMethodButton;
 
     private Component buttonArea;
 
     private VerticalLayout layout;
 
+    private ProgramMethodsPresenter presenter;
 
-    private ProgramMethodsView projectBreedingMethodsPanel;
+    protected MethodView modelBean;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+    private SessionData sessionData;
 
     private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] { "methodName", "methodDescription", "methodType", "methodCode" };
 
-    public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel) {
-        this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
+    public EditBreedingMethodsWindow(ProgramMethodsPresenter presenter,MethodView methodView) {
+        this.presenter = presenter;
+
+        this.modelBean = methodView;
+
         assemble();
     }
 
@@ -49,11 +56,11 @@ public class AddBreedingMethodsWindow extends Window {
 
         //layout.addComponent(newBreedingMethodTitle);
 
-        breedingMethodForm = new BreedingMethodForm();
+        breedingMethodForm = new BreedingMethodForm(modelBean);
 
         cancelButton = new Button("Cancel");
-        addBreedingMethodButton = new Button("Save");
-        addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        editBreedingMethodButton = new Button("Save");
+        editBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonArea = layoutButtonArea();
     }
 
@@ -63,7 +70,7 @@ public class AddBreedingMethodsWindow extends Window {
         this.setWidth("700px");
         this.setResizable(false);
         this.center();
-        this.setCaption("Add Breeding Method");
+        this.setCaption("Edit Breeding Method");
 
 
         this.addStyleName(Reindeer.WINDOW_LIGHT);
@@ -97,7 +104,7 @@ public class AddBreedingMethodsWindow extends Window {
 
     protected void initializeActions() {
 
-        addBreedingMethodButton.addListener(new Button.ClickListener() {
+        editBreedingMethodButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
@@ -107,19 +114,31 @@ public class AddBreedingMethodsWindow extends Window {
                     return;
                 }
 
+                sessionData.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
+                sessionData.getProjectBreedingMethodData().remove(EditBreedingMethodsWindow.this.modelBean.getMid());
+
                 MethodView bean = ((BeanItem<MethodView>) breedingMethodForm.getItemDataSource()).getBean();
                 if (StringUtils.isEmpty(bean.getMtype())) {
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
                     return;
                 }
 
-                projectBreedingMethodsPanel.presenter.saveNewBreedingMethod(bean);
+                MethodView result = presenter.editBreedingMethod(bean);
 
-                AddBreedingMethodsWindow.this.getParent().removeWindow(AddBreedingMethodsWindow.this);
+                MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),messageSource.getMessage(Message.SUCCESS),result.getMname() + " breeding method is updated.");
+
+                EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
             }
         });
 
-        cancelButton.addListener(new CancelBreedingMethodAction(this));
+        cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+
+                clickEvent.getComponent().getWindow().getParent().removeWindow(clickEvent.getComponent().getWindow());
+
+            }
+        });
     }
 
 
@@ -129,10 +148,10 @@ public class AddBreedingMethodsWindow extends Window {
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        addBreedingMethodButton = new Button("Add");
-        addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        editBreedingMethodButton = new Button("Edit");
+        editBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(cancelButton);
-        buttonLayout.addComponent(addBreedingMethodButton);
+        buttonLayout.addComponent(editBreedingMethodButton);
 
         return buttonLayout;
     }

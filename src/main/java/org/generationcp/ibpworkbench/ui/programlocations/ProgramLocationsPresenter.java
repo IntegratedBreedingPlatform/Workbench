@@ -38,7 +38,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     @Autowired
     private SessionData sessionData;
 
-    private LocationDataManager ldm;
+    private LocationDataManager locationDataManager;
 
 	private Project project;
 
@@ -80,8 +80,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         List<LocationViewModel> favorites = this.getSavedProgramLocations();
         locationName = (locationName != null) ? locationName : "";
 		
-		Country country = ldm.getCountryById(countryId);
-        locationList =ldm.getLocationsByNameCountryAndType(locationName,country,locationType);
+		Country country = locationDataManager.getCountryById(countryId);
+        locationList = locationDataManager.getLocationsByNameCountryAndType(locationName,country,locationType);
         
         Collections.sort(locationList, Location.LocationNameComparator);
 
@@ -107,8 +107,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
         locationName = (locationName != null) ? locationName : "";
 
-        Country country = ldm.getCountryById(countryId);
-        locationList =ldm.getLocationsByNameCountryAndType(locationName,country,locationType);
+        Country country = locationDataManager.getCountryById(countryId);
+        locationList = locationDataManager.getLocationsByNameCountryAndType(locationName,country,locationType);
 
         Collections.sort(locationList, Location.LocationNameComparator);
 
@@ -132,7 +132,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         try {
             LOG.debug(">BAD Routine start!");
 
-            for (Location loc : ldm.getAllLocalLocations(0,Integer.MAX_VALUE)) {
+            for (Location loc : locationDataManager.getAllLocalLocations(0,Integer.MAX_VALUE)) {
                 if (loc.getLocid()<0 && !sessionData.getProjectLocationData().containsKey(loc.getLocid())) {
                     LocationViewModel locModel = new LocationViewModel();
                     locModel.setCntryid(loc.getCntryid());
@@ -175,11 +175,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
 			
-			List<LocationDetails> locList = ldm.getLocationDetailsByLocId(locationId,0,1);
+			List<LocationDetails> locList = locationDataManager.getLocationDetailsByLocId(locationId,0,1);
 			
 			
 			if (locationId < 0) {
-				Location location = ldm.getLocationByID(locationId);
+				Location location = locationDataManager.getLocationByID(locationId);
 				
 				return convertFrom(location);
 			}
@@ -284,8 +284,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         viewModel.setProvinceId(location.getSnl3id());
 
 
-		Country country = ldm.getCountryById(location.getCntryid());
-		UserDefinedField udf = ldm.getUserDefinedFieldByID(location.getLtype());
+		Country country = locationDataManager.getCountryById(location.getCntryid());
+		UserDefinedField udf = locationDataManager.getUserDefinedFieldByID(location.getLtype());
 	
 		if (country != null)
 			viewModel.setCntryFullName(country.getIsofull());
@@ -301,7 +301,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	
 	
     public List<Country> getCountryList() throws MiddlewareQueryException {
-        List<Country> countryList = ldm.getAllCountry();
+        List<Country> countryList = locationDataManager.getAllCountry();
         Collections.sort(countryList,new Comparator<Country>() {
 			@Override
 			public int compare(Country o1, Country o2) {
@@ -319,16 +319,16 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     public List<Location> getAllProvinces() throws MiddlewareQueryException {
-        return ldm.getAllProvinces();
+        return locationDataManager.getAllProvinces();
     }
 
     public List<Location> getAllProvincesByCountry(Integer countryId) throws MiddlewareQueryException {
-        return ldm.getAllProvincesByCountry(countryId);
+        return locationDataManager.getAllProvincesByCountry(countryId);
     }
     
     public List<UserDefinedField> getLocationTypeList() throws MiddlewareQueryException {
 
-       return this.ldm.getUserDefinedFieldByFieldTableNameAndType(
+       return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType(
                 "LOCATION", "LTYPE");
         
         /*for (UserDefinedField u : userDefineField) {
@@ -345,9 +345,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         if (this.cropType != null)
-            this.ldm = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
+            this.locationDataManager = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
         else {
-            this.ldm = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
+            this.locationDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
             this.onAttachInitialize();
         }
 
@@ -355,25 +355,25 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {
-        return ldm.getUserDefinedFieldByFieldTableNameAndType("LOCATION","LTYPE");
+        return locationDataManager.getUserDefinedFieldByFieldTableNameAndType("LOCATION","LTYPE");
     }
 
     public void addLocation(Location loc) throws MiddlewareQueryException {
         // if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
         if(!isCropOnly) {
-            ldm.addLocation(loc);
+            locationDataManager.addLocation(loc);
 
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
-            view.addRow(locationVModel,false,0);
+            view.addRow(locationVModel,true,0);
 
         } else {
-            view.addRow(convertFrom(loc), false, 0);
+            view.addRow(convertFrom(loc), true, 0);
         }
     }
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
-        return ldm.getLocationsByName(locationName, Operation.EQUAL);
+        return locationDataManager.getLocationsByName(locationName, Operation.EQUAL);
     }
 
     public Location convertLocationViewToLocation(LocationViewModel lvm) {

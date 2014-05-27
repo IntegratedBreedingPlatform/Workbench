@@ -22,12 +22,11 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.form.AddBreedingMethodForm;
+import org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     private static final Logger LOG = LoggerFactory.getLogger(SaveNewBreedingMethodAction.class);
     private static final long serialVersionUID = 1L;
 
-    private AddBreedingMethodForm newBreedingMethodForm;
+    private BreedingMethodForm newBreedingMethodForm;
 
     private AddBreedingMethodsWindow window;
 
@@ -62,7 +61,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 
-    public SaveNewBreedingMethodAction(AddBreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
+    public SaveNewBreedingMethodAction(BreedingMethodForm newBreedingMethodForm, AddBreedingMethodsWindow window, Component projectBreedingMethodsPanel) {
         this.newBreedingMethodForm = newBreedingMethodForm;
         this.window = window;
         this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;

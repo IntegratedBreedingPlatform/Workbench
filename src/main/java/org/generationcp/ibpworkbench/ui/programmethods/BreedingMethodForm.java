@@ -9,7 +9,7 @@
   * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
   *
   *******************************************************************************/
-package org.generationcp.ibpworkbench.ui.form;
+package org.generationcp.ibpworkbench.ui.programmethods;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
@@ -34,21 +34,30 @@ import java.util.Arrays;
  * <b>File Created</b>: August 20, 2012
  */
 @Configurable
-public class AddBreedingMethodForm extends Form {
+public class BreedingMethodForm extends Form {
 
     /**
      *
      */
     private static final long serialVersionUID = -3649453194910730855L;
+    private final MethodView modelBean;
     private GridLayout grid;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
 
-    public AddBreedingMethodForm() {
+    public BreedingMethodForm() {
+        modelBean = new MethodView();
         assemble();
     }
+
+    public BreedingMethodForm(MethodView methodView)
+    {
+        modelBean = methodView;
+        assemble();
+    }
+
 
     protected void assemble() {
         initializeComponents();
@@ -65,7 +74,7 @@ public class AddBreedingMethodForm extends Form {
         grid.setMargin(new Layout.MarginInfo(true,false,false,false));
         this.setLayout(grid);
 
-        setItemDataSource(new BeanItem<MethodView>(new MethodView()));
+        setItemDataSource(new BeanItem<MethodView>(modelBean));
 
         setComponentError(null);
         setFormFieldFactory(new BreedingMethodFormFieldFactory());

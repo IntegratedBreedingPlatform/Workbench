@@ -45,6 +45,7 @@ import java.util.*;
 
      public final static Map<String,String> tableColumns;
      public final static Map<String,Integer> tableColumnSizes;
+    private Button.ClickListener editMethodListener;
 
          /*
                *
@@ -59,7 +60,7 @@ import java.util.*;
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
          //tableColumns.put("mid","Id");
-         tableColumns.put("mname","Method Name");
+         tableColumns.put("gMname","Method Name");
          tableColumns.put("desc","Description");
          tableColumns.put("mgrp","Group");
          tableColumns.put("mcode","Code");
@@ -69,7 +70,7 @@ import java.util.*;
 
          tableColumnSizes = new HashMap<String, Integer>();
          tableColumnSizes.put("select",20);
-         tableColumnSizes.put("mname",210);
+         tableColumnSizes.put("gMname",210);
          tableColumnSizes.put("mgrp",45);
          tableColumnSizes.put("mcode",40);
          tableColumnSizes.put("mtype",40);
@@ -220,6 +221,28 @@ import java.util.*;
                  return select;
              }
          });
+
+         table.addGeneratedColumn("gMname", new Table.ColumnGenerator() {
+             @Override
+             public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
+
+                 if (beanItem.getMid() < 0) {
+
+                     final Button mNameBtn = new Button(beanItem.getMname());
+                     mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+                     mNameBtn.setData(beanItem);
+                     mNameBtn.addListener(editMethodListener);
+
+                     return mNameBtn;
+
+                 } else {
+                     return beanItem.getMname();
+                 }
+             }
+         });
+
+
 
          table.addGeneratedColumn("gBulk", new Table.ColumnGenerator() {
              @Override
@@ -607,12 +630,19 @@ import java.util.*;
      }
 
      private void initializeActions() {
+
+         editMethodListener = new Button.ClickListener() {
+             @Override
+             public void buttonClick(Button.ClickEvent event) {
+                 event.getComponent().getWindow().addWindow(new EditBreedingMethodsWindow(ProgramMethodsView.this.presenter,(MethodView)event.getButton().getData()));
+             }
+         };
+
          addNewMethodsBtn.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent event) {
                  //ProgramMethodsView.this.presenter.doAddMethodAction();
                  event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
-
              }
          });
 
@@ -641,7 +671,6 @@ import java.util.*;
                  }
              }
          });
-
 
          favoriteSelectAll.addListener(new Button.ClickListener() {
              @Override
@@ -682,5 +711,16 @@ import java.util.*;
              }
          });
      }
+
+
+    protected void refreshTable() {
+        // do table repaint
+        availableTable.requestRepaint();
+        availableTable.refreshRowCache();
+
+        favoritesTable.requestRepaint();
+        favoritesTable.refreshRowCache();
+
+    }
 
  }
