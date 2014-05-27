@@ -1,10 +1,7 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.List;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -27,7 +24,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.List;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -290,7 +300,7 @@ public class NurseryListPreview extends VerticalLayout {
 
         renameFolderBtn = new Button("<span class='bms-edit' style='color:#0082CB'><span>");
         renameFolderBtn.setHtmlContentAllowed(true);
-        renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_FOLDER));
+        renameFolderBtn.setDescription(messageSource.getMessage(Message.RENAME_ITEM));
 
         addFolderBtn = new Button("<span class='bms-add' style='color:#00AF40'></span>");
         addFolderBtn.setHtmlContentAllowed(true);
@@ -298,7 +308,7 @@ public class NurseryListPreview extends VerticalLayout {
 
         deleteFolderBtn = new Button("<span class='bms-delete' style='color:#F4A41C'></span>");
         deleteFolderBtn.setHtmlContentAllowed(true);
-        deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_FOLDER));
+        deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_ITEM));
 
         openStudyManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         renameFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
@@ -387,7 +397,7 @@ public class NurseryListPreview extends VerticalLayout {
                     return;
                 }
 
-                final Window w = new Window(messageSource.getMessage(Message.RENAME_LIST_FOLDER, treeView.getItemCaption(treeView.getValue())));
+                final Window w = new Window(messageSource.getMessage(Message.RENAME_ITEM));
                 w.setWidth("300px");
                 w.setHeight("150px");
                 w.setModal(true);
@@ -401,7 +411,7 @@ public class NurseryListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label(messageSource.getMessage(Message.FOLDER_LIST_NAME));
+                Label l = new Label(messageSource.getMessage(Message.ITEM_NAME));
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(treeView.getValue()));
 
@@ -424,7 +434,7 @@ public class NurseryListPreview extends VerticalLayout {
                         try {
                             presenter.renameNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
                             return;
                         }
 
@@ -476,7 +486,7 @@ public class NurseryListPreview extends VerticalLayout {
                 HorizontalLayout formContainer = new HorizontalLayout();
                 formContainer.setSpacing(true);
 
-                Label l = new Label(messageSource.getMessage(Message.FOLDER_LIST_NAME));
+                Label l = new Label(messageSource.getMessage(Message.FOLDER_NAME));
                 final TextField name = new TextField();
 
                 formContainer.addComponent(l);
@@ -581,8 +591,8 @@ public class NurseryListPreview extends VerticalLayout {
 
                 final Integer finalId = id;
                 ConfirmDialog.show(event.getComponent().getWindow(),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER, treeView.getItemCaption(treeView.getValue())),
-                        messageSource.getMessage(Message.DELETE_LIST_FOLDER_CONFIRM, treeView.getItemCaption(treeView.getValue())),
+                        messageSource.getMessage(Message.DELETE_ITEM),
+                        messageSource.getMessage(Message.DELETE_ITEM_CONFIRM),
                         messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                     @Override
                     public void onClose(ConfirmDialog dialog) {

@@ -260,7 +260,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         try {
 
             if (newFolderName == null || newFolderName.isEmpty()) {
-                throw new Error(messageSource.getMessage(Message.INVALID_CANNOT_RENAME_EMPTY_STRING));
+                throw new Error(messageSource.getMessage(Message.INVALID_ITEM_NAME));
             }
 
             this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);

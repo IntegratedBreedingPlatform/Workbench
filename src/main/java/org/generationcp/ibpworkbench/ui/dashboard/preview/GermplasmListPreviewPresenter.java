@@ -185,7 +185,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         try {
 
             if (newName == null || newName.isEmpty()) {
-                throw new Error(messageSource.getMessage(Message.INVALID_CANNOT_RENAME_EMPTY_STRING));
+                throw new Error(messageSource.getMessage(Message.INVALID_ITEM_NAME));
             }
 
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
