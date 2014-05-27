@@ -631,7 +631,7 @@ public class ToolUtil {
             .getInstallationDirectory();
 
         // create the directory for the project
-        String projectDirName = String.format("%d", project.getProjectId());
+        String projectDirName = project.getProjectName();
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
         
