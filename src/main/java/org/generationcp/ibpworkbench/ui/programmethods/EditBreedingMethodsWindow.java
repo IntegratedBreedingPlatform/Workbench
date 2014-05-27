@@ -123,7 +123,9 @@ public class EditBreedingMethodsWindow extends Window {
                     return;
                 }
 
-                presenter.editBreedingMethod(bean);
+                MethodView result = presenter.editBreedingMethod(bean);
+
+                MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),messageSource.getMessage(Message.SUCCESS),result.getMname() + " breeding method is updated.");
 
                 EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
             }
@@ -132,7 +134,9 @@ public class EditBreedingMethodsWindow extends Window {
         cancelButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
+
                 clickEvent.getComponent().getWindow().getParent().removeWindow(clickEvent.getComponent().getWindow());
+
             }
         });
     }
