@@ -17,6 +17,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -32,7 +33,11 @@ import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -472,19 +477,37 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 							Trait t = new Trait();
 							t.setName(propertyId.toString());
 							t.setActive(true);
-							//t.setId(counter++);
 							selectedTraits.add(t);
 						}
 					}
 					
 					
 					List<Environment> selectedEnnvironments = gxeTable.getSelectedEnvironments();
-					
+				
 
 					
 					File datasetExportFile = null;
-					
 					datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName , selectedGenotypeFactorName ,gxeEnv,selectedTraits, currentProject);
+					
+					
+	
+					
+					try{
+						DataSet trialDataSet;
+						List<DataSet> dataSets = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.SUMMARY_DATA);
+						if (dataSets.size() > 0) {
+							trialDataSet = dataSets.get(0);
+						}else{
+							trialDataSet = getTrialDataSet(currentStudy.getId());
+						}
+						List<Experiment> trialExperiments = studyDataManager.getExperiments(trialDataSet.getId(), 0, Integer.MAX_VALUE);
+						File summaryStatsFile = GxeUtility.exportTrialDatasetToSummaryStatsCsv(trialDataSet, trialExperiments, gxeTable.getEnvironmentName(), selectedTraits, currentProject);
+						gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsFile.getAbsolutePath());
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					
+					
 					
 					if (isXLS)
 						gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
@@ -565,6 +588,42 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 		
 		chkSelectAllTraits.addListener(selectAllTraitsListener);
 
+    }
+    
+    
+    private DataSet getTrialDataSet(int studyId) throws MiddlewareQueryException{
+    	
+    	int trialDatasetId = studyId-1;//default
+		List<DatasetReference> datasets = studyDataManager.getDatasetReferences(studyId);
+		for (DatasetReference datasetReference : datasets) {
+			String name = datasetReference.getName();
+			int id = datasetReference.getId();
+			
+				if(name!=null && (name.startsWith("TRIAL_") || name.startsWith("NURSERY_"))) {
+					trialDatasetId = id;
+					break;
+				} else {
+					DataSet ds = studyDataManager.getDataSet(id);
+					if(ds!=null && ds.getVariableTypes().getVariableTypes()!=null) {
+						boolean aTrialDataset = true;
+						for (VariableType variableType: ds.getVariableTypes().getVariableTypes()) {
+							if(variableType.getStandardVariable().getPhenotypicType() 
+									== PhenotypicType.GERMPLASM) {
+								aTrialDataset = false;
+								break;
+							}
+						}
+						if(aTrialDataset) {
+							trialDatasetId = id;
+						}
+					}
+				}
+			
+		}
+		
+		DataSet trialDataSet = studyDataManager.getDataSet(trialDatasetId);
+		return trialDataSet;
+		
     }
     
 

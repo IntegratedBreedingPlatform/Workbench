@@ -54,73 +54,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     	this.gxeInput = gxeInput;
     }
     
-    @Deprecated
     public void writeProjectXML() throws GxeXMLWriterException{
-       
-    	//final Project workbenchProject = sessionData.getLastOpenedProject();
-  
-        //final ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(workbenchProject);
-        
-        //final StudyDataManager studyDataManager = managerFactory.getNewStudyDataManager();
-        
-        //Create object to be serialized
-        GxePhenotypic phenotypic = new GxePhenotypic();
-        
-        GxeData data = new GxeData();
-        if (gxeInput.getSourceXLSFilePath() != "" && gxeInput.getSourceXLSFilePath() != null){
-        	data.setFieldBookFile(gxeInput.getSourceXLSFilePath());
-        }else{
-        	data.setCsvFile(gxeInput.getSourceCSVFilePath());
-        }
-        
-        
-        phenotypic.setFieldbook(data);
-        
-        phenotypic.setTraits(gxeInput.getTraits());
-   
-        GxeEnvironment gxeEnv = gxeInput.getEnvironment();
-        gxeEnv.setName(gxeInput.getEnvironmentName());
-        phenotypic.setEnvironments(gxeEnv);
-        
-        phenotypic.setGenotypes(gxeInput.getGenotypes());
-        
-        GxeProject project = new GxeProject();
-        project.setName(gxeInput.getBreedingViewProjectName());
-        project.setVersion("1.01");
-        project.setPhenotypic(phenotypic);
-
-        
-        BreedingViewProjectType t = new BreedingViewProjectType();
-        t.setType("GxE analysis");
-        project.setType(t);
-        
-        
-        //prepare the writing of the xml
-        JAXBContext context = null;
-        Marshaller marshaller = null;
-        try{
-            context = JAXBContext.newInstance(GxeProject.class);
-            marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        } catch(final JAXBException ex){
-            throw new GxeXMLWriterException("Error with opening JAXB context and marshaller: "
-                    + ex.getMessage(), ex);
-        }
-        
-        //write the xml
-        try{
-        	
-        	//new File(outputDirectory).mkdirs();
-            final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath());
-            marshaller.marshal(project, fileWriter);
-            fileWriter.flush();
-            fileWriter.close();
-        } catch(final Exception ex){
-            throw new GxeXMLWriterException(String.format("Error with writing xml to: %s : %s" , "" ,ex.getMessage()), ex);
-        }
-    }
-    
-    public void writeProjectXMLV2() throws GxeXMLWriterException{
         
     	Traits traits = new Traits();
         for( Trait t : gxeInput.getTraits()){
@@ -133,7 +67,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         //create DataFile element
         DataFile data = new DataFile();
         data.setName(gxeInput.getSourceCSVFilePath());
-        
+        data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
         
         Environments environments = new Environments();
         environments.setName(gxeInput.getEnvironmentName());

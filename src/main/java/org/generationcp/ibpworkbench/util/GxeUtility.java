@@ -1,53 +1,34 @@
 package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.vaadin.data.Property;
+
 import com.vaadin.ui.*;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.middleware.domain.dms.*;
-import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.StudyDataManagerImpl;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.*;
 import java.util.Map.Entry;
 
+@Configurable
 public class GxeUtility {
-    private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
-
-	public static Table generateTestData(Table table, Integer numRows) throws Exception{
-		
-		ArrayList<Class<?>> arr =  new ArrayList<Class<?>>();
-		Object item = table.addItem();
-		for (Iterator i = table.getContainerPropertyIds().iterator(); i.hasNext();) {
-			Property p = table.getContainerProperty(item, i.next());
-			arr.add(p.getType());
-		}
-		table.removeItem(item);
-		for (Integer c = 1;c <= numRows; c++ ){
-			
-			Object[] obj = new Object[arr.size()];
-			for(Integer c2 = 0; c2 < arr.size(); c2++){
-				obj[c2] = createObjectCaption(arr.get(c2), "Data" + c, c2);
-			}
-		
-			LOG.debug(table.addItem(obj, new Integer(c)).toString());
-					
-		}
-		
-		return table;
 	
-	}
+	@Autowired
+	private StudyDataManager studyDataManager;
+	
+    private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
 	
 	public static Object createObjectCaption(Class<?> propertyType, String value, Integer colIndex) throws Exception{
 	
@@ -111,8 +92,7 @@ public class GxeUtility {
 	public static void generateXmlFieldBook(GxeInput gxeInput){
 		try {
 			GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
-			//writer.writeProjectXML();
-			writer.writeProjectXMLV2();
+			writer.writeProjectXML();
 			
 		} catch (GxeXMLWriterException e) {
 			// TODO Auto-generated catch block
@@ -120,153 +100,9 @@ public class GxeUtility {
 		}
 	}
 	
-	/**
-	 * Generates GxE Multi-site analysis output to excel, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
-	 * @param gxeDataSet
-	 * @param experiments
-	 * @param currentProject
-	 * @param xlsfilename
-	 * @return File
-	 */
-	public static File exportGxEDatasetToBreadingViewXls(DataSet gxeDataset,List<Experiment> experiments,String environmentName,GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
-		Workbook workbook = new HSSFWorkbook();
-		Sheet defaultSheet = workbook.createSheet(gxeDataset.getName());
-		
-		// get the headers first
-		VariableTypeList vtList = gxeDataset.getVariableTypes();
-		
-		//Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
-		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
-		
-		int i = 0, j = 0;
-		//Integer datasetTypeFactorId = null;
-		// create header row
-		Row headerRow = defaultSheet.createRow(i);
-		
-		// site no && site code insert to columnMap
-		if (environmentName != null && !environmentName.isEmpty()) {
-			traitToColNoMap.put(environmentName,j);
-			headerRow.createCell(j).setCellValue(environmentName);
-			j++;
-		}
-		
-		// find entry number storage factor and explicitly aadd it as a column
-		for (VariableType factor : vtList.getFactors().getVariableTypes()) {
-			if (factor.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
-				traitToColNoMap.put(factor.getLocalName(),j);
-				headerRow.createCell(j).setCellValue(factor.getLocalName());
-				j++;
-				
-				break;
-			}
-		}
-
-		
-		// site no or site code
-		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_STORAGE.getId());
-		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId());
-		/*
-		for (VariableType f : germplasmFactors) {
-			// do not add entryNoFactor as it has bean added explicitly
-			if (entryNoFactor != null && entryNoFactor.getId() == f.getId())
-				continue;
-			
-			traitToColNoMap.put(f.getLocalName(),j);
-			headerRow.createCell(j).setCellValue(f.getLocalName());
-			j++;	
-		}*/
-		
-		for (Trait trait : selectedTraits) {
-			//if (trait.getName().trim().)
-			traitToColNoMap.put(trait.getName(),j);
-			headerRow.createCell(j).setCellValue(trait.getName());
-			
-			j++;
-		}
-		
-		i++;
-		
-		List<String> gxeEnvLabels = new ArrayList<String>();
-		for (GxeEnvironmentLabel env : gxeEnv.getLabels()) {
-			gxeEnvLabels.add(env.getName());
-		}
-		
-		// create table content
-		for (Experiment experiment : experiments) {
-			Row row = defaultSheet.createRow(i);
-			
-			// site no && site code insert to columnMap
-			if (environmentName != null && !environmentName.isEmpty()) {
-				Variable var = experiment.getFactors().findByLocalName(environmentName);
-				
-				if (var == null) {
-					var = experiment.getVariates().findByLocalName(environmentName);
-				}
-				
-				if (var != null && var.getValue() != null) {
-					if (!gxeEnvLabels.contains(var.getValue())) {
-						continue;						
-					}					
-					row.createCell(traitToColNoMap.get(environmentName)).setCellValue(var.getValue());
-				}
-			}
-			
-			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
-				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
-				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
-				
-				if (var == null) {
-					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
-				}
-				
-				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)"))
-					row.createCell(traitMapEntry.getValue()).setCellValue(var.getValue());
-				
-			}
-			i++;
-		}
-		
-		// done creating the worksheet! time to create the excel file
-		try {
-			if (currentProject == null)
-				throw new Exception("currentProject is null");
-			
-			//NOTE: Directory location is hardcoded to workspace/{projectId/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
-			
-			LOG.debug("save to " + dir);
-			
-			new File(dir).mkdirs();
-			
-			File xlsFile = new File(dir + File.separator + gxeDataset.getName().trim() + ".xls");
-			
-			/*
-			for (i = 1; !xlsFile.createNewFile(); i++) {
-				String newFile = gxeDataset.getName().trim().split("\\.(?=[^\\.]+$)")[0] + "_" + i + "." + gxeDataset.getName().trim().split("\\.(?=[^\\.]+$)")[1];
-				
-				xlsFile = new File(dir + File.separator + newFile);
-			}*/
-			
-			FileOutputStream fos = new FileOutputStream(xlsFile);
-			workbook.write(fos);
-			
-			fos.close();
-			
-			
-			return xlsFile.getAbsoluteFile();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-			return null;
-		}
-	}
 	
 	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,String genotypeName ,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
-
-		// get the headers first
-		VariableTypeList vtList = gxeDataset.getVariableTypes();
 		
 		//Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
 		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
@@ -288,37 +124,9 @@ public class GxeUtility {
 			j++;
 		}
 		
-		LOG.debug(vtList.toString());
-		
-		/**
-		// find entry number storage factor and explicitly aadd it as a column
-		for (VariableType factor : vtList.getFactors().getVariableTypes()) {
-			if (factor.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
-				traitToColNoMap.put(factor.getLocalName(),j);
-				headerRow.add(factor.getLocalName());
-				j++;
-				
-				break;
-			}
-		}**/
-		
 		traitToColNoMap.put(genotypeName,j);
 		headerRow.add(genotypeName);
 		j++;
-		
-		// site no or site code
-		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_STORAGE.getId());
-		//gxeDataset.getVariableTypes().findById(TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId());
-		/*
-		for (VariableType f : germplasmFactors) {
-			// do not add entryNoFactor as it has bean added explicitly
-			if (entryNoFactor != null && entryNoFactor.getId() == f.getId())
-				continue;
-			
-			traitToColNoMap.put(f.getLocalName(),j);
-			headerRow.add(f.getLocalName());
-			j++;	
-		}*/
 				
 		for (Trait trait : selectedTraits) {
 
@@ -401,6 +209,103 @@ public class GxeUtility {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	
+	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName, List<Trait> selectedTraits, Project currentProject) throws MiddlewareQueryException {
+		
+		ArrayList<String[]> tableItems = new ArrayList<String[]>();
+		
+		String[] header = new String[] {
+				environmentName
+				,"Trait"
+				,"NumValues"
+				,"NumMissing"
+				,"Mean"
+				,"Variance"
+				,"SD"
+				,"Min"
+				,"Max"
+				,"Range"
+				,"Median"
+				,"LowerQuartile"
+				,"UpperQuartile"
+				,"MeanRep"
+				,"MinRep"
+				,"MaxRep"
+				,"MeanSED"
+				,"MinSED"
+				,"MaxSED"
+				,"MeanLSD"
+				,"MinLSD"
+				,"MaxLSD"
+				,"CV"
+				,"Heritability"
+				,"WaldStatistic"
+				,"WaldDF"
+				,"Pvalue"
+
+		};
+		
+		tableItems.add(header);
+		
+		for (Experiment exp : experiments){
+			
+			Map<String, Variable> map = exp.getVariatesMap();
+			
+			for (Trait trait : selectedTraits){
+				
+				List<String> row = new ArrayList<String>();
+				row.add(exp.getFactors().findByLocalName(environmentName).getValue());
+					
+				String traitName = trait.getName().replace("_Means", "");
+				row.add(traitName);
+				
+				for (int i = 2; i < header.length; i++){
+					boolean existsFlag = false;
+					for (Variable variable : map.values()){
+						if (variable.getVariableType().getLocalName().equals(traitName + "_" + header[i])){
+							row.add(variable.getValue());
+							existsFlag = true;
+							break;
+						}
+					}
+					if (!existsFlag){
+						row.add("");
+					}	
+				}
+				
+				tableItems.add(row.toArray(new String[0]));
+			}
+			
+		}
+
+	
+		try {
+
+			if (currentProject == null)
+				throw new Exception("currentProject is null");
+
+			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
+
+			LOG.debug("save to " + dir);
+
+			new File(dir).mkdirs();
+
+			File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR , CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			csvWriter.writeAll(tableItems);
+			csvWriter.flush();
+			csvWriter.close();
+
+			return csvFile;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	
 	}
 	
 }

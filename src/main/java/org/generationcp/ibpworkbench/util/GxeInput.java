@@ -41,6 +41,7 @@ public class GxeInput implements Serializable {
     private String version;
     private String sourceXLSFilePath;
     private String sourceCSVFilePath;
+    private String sourceCSVSummaryStatsFilePath;
     private String destXMLFilePath;
     private String projectType;
     private String designType;
@@ -351,6 +352,15 @@ public class GxeInput implements Serializable {
 
 	public void setHeritabilities(Heritabilities heritabilities) {
 		this.heritabilities = heritabilities;
+	}
+
+	public String getSourceCSVSummaryStatsFilePath() {
+		return sourceCSVSummaryStatsFilePath;
+	}
+
+	public void setSourceCSVSummaryStatsFilePath(
+			String sourceCSVSummaryStatsFilePath) {
+		this.sourceCSVSummaryStatsFilePath = sourceCSVSummaryStatsFilePath;
 	}
     
 }
