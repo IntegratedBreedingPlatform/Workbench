@@ -14,11 +14,12 @@ package org.generationcp.ibpworkbench.actions;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
+
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -51,7 +52,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     private static final Logger LOG = LoggerFactory.getLogger(OpenSelectDatasetForExportAction.class);
     
-    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel; 
+    private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel; 
     
     @Autowired 
     private ManagerFactoryProvider managerFactoryProvider;
@@ -62,7 +63,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     @Autowired
     private ToolUtil toolUtil;
     
-    public OpenSelectDatasetForExportAction(SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
+    public OpenSelectDatasetForExportAction(SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
         
         this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
         
@@ -151,7 +152,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
 
-            w.showContent(new SelectDetailsForBreedingViewPanel(breedingViewTool, breedingViewInput, factorsInDataset
+            w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset
                     , project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory(), selectDatasetForBreedingViewPanel));
             
             

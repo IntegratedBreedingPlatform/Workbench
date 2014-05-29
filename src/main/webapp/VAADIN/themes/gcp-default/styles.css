@@ -335,3 +335,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-button-bms-header-popuplink .v-popup-indicator {
     display: none !important;
 }
+
+.v-icon {
+    width:17px;
+    height:17px;
+}

@@ -5,11 +5,12 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Study;
@@ -47,12 +48,12 @@ public class ShowStudyDatasetDetailAction implements ItemClickListener {
     
     private Table tblVariates;
     
-    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow;
+    private SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow;
 
     private final static Logger LOG = LoggerFactory.getLogger(ShowStudyDatasetDetailAction.class);
     
 
-    public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
+    public ShowStudyDatasetDetailAction(Table tblDataset, Table tblFactors, Table tblVariates, SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
  
         this.tblDataset = tblDataset;
         this.tblFactors = tblFactors;

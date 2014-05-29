@@ -10,7 +10,7 @@
  * 
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.ui.gxe;
+package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;

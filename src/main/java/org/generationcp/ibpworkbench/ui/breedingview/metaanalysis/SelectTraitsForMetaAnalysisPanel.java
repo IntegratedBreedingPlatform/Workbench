@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.ui.metaanalysis;
+package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;

@@ -15,9 +15,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -68,11 +69,11 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         
         if (currentProject != null) {
             
-            w.showContent(new SelectDatasetForBreedingViewPanel(currentProject, Database.LOCAL));
+            w.showContent(new SingleSiteAnalysisPanel(currentProject, Database.LOCAL));
             //NavManager.navigateApp(window, uriFragment, isLinkAccessed);
         } else if (lastOpenedProject != null) {
             
-        	w.showContent(new SelectDatasetForBreedingViewPanel(lastOpenedProject, Database.LOCAL));
+        	w.showContent(new SingleSiteAnalysisPanel(lastOpenedProject, Database.LOCAL));
         	//NavManager.navigateApp(window, uriFragment, isLinkAccessed);
             
         } else {

@@ -5,13 +5,14 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -46,15 +47,15 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     
     private Table tblFactors;
     
-    private SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewPanel;
+    private SingleSiteAnalysisPanel singleSiteAnalysisPanel;
 
     private final static Logger LOG = LoggerFactory.getLogger(ShowDatasetVariablesDetailAction.class);
 
-    public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SelectDatasetForBreedingViewPanel selectDatasetForBreedingViewWindow) {
+    public ShowDatasetVariablesDetailAction(Table tblFactors, Table tblVariates, SingleSiteAnalysisPanel singleSiteAnalysisPanel) {
         this.tblFactors = tblFactors;
         this.tblVariates = tblVariates;
-        this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
-        this.studyDataManager = selectDatasetForBreedingViewWindow.getStudyDataManager();
+        this.singleSiteAnalysisPanel = singleSiteAnalysisPanel;
+        this.studyDataManager = singleSiteAnalysisPanel.getStudyDataManager();
     }
     
     @Override
@@ -72,14 +73,14 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             
             DataSet ds = studyDataManager.getDataSet(dataSetId);
             
-            Study currentStudy = selectDatasetForBreedingViewPanel.getCurrentStudy();
+            Study currentStudy = singleSiteAnalysisPanel.getCurrentStudy();
          
             if (currentStudy == null){
             	Study study = studyDataManager.getStudy(ds.getStudyId());
-	            selectDatasetForBreedingViewPanel.setCurrentStudy(study);
-            }else if (selectDatasetForBreedingViewPanel.getCurrentStudy().getId() != ds.getStudyId()){
+	            singleSiteAnalysisPanel.setCurrentStudy(study);
+            }else if (singleSiteAnalysisPanel.getCurrentStudy().getId() != ds.getStudyId()){
             	Study study = studyDataManager.getStudy(ds.getStudyId());
-	            selectDatasetForBreedingViewPanel.setCurrentStudy(study);
+	            singleSiteAnalysisPanel.setCurrentStudy(study);
             }
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
@@ -129,8 +130,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             }
             
            
-            selectDatasetForBreedingViewPanel.setCurrentDatasetName(ds.getName());
-            selectDatasetForBreedingViewPanel.setCurrentDataSetId(ds.getId());
+            singleSiteAnalysisPanel.setCurrentDatasetName(ds.getName());
+            singleSiteAnalysisPanel.setCurrentDataSetId(ds.getId());
             
             updateFactorsTable(factorList);
             updateVariatesTable(variateList);
@@ -140,7 +141,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             showDatabaseError(event.getComponent().getWindow());
         }
         
-        selectDatasetForBreedingViewPanel.getManagerFactory().close();
+        singleSiteAnalysisPanel.getManagerFactory().close();
     }
     
     private void updateFactorsTable(List<FactorModel> factorList){
@@ -164,9 +165,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     private void updateVariatesTable(List<VariateModel> variateList){
  	   
     	//reset
-    	selectDatasetForBreedingViewPanel.getVariatesCheckboxState().clear();
-    	selectDatasetForBreedingViewPanel.setNumOfSelectedVariates(0);
-    	selectDatasetForBreedingViewPanel.toggleNextButton(false);
+    	singleSiteAnalysisPanel.getVariatesCheckboxState().clear();
+    	singleSiteAnalysisPanel.setNumOfSelectedVariates(0);
+    	singleSiteAnalysisPanel.toggleNextButton(false);
     	
     	//load data
         BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
@@ -174,7 +175,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
         
         for (VariateModel v : variateList ){
       	   container.addBean(v);
-      	   selectDatasetForBreedingViewPanel.getVariatesCheckboxState().put(v.getName(), v.getActive());
+      	   singleSiteAnalysisPanel.getVariatesCheckboxState().put(v.getName(), v.getActive());
         }
         tblVariates.setContainerDataSource(container);
         tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});

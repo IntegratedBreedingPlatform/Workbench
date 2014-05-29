@@ -9,7 +9,7 @@
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  * 
  *******************************************************************************/
-package org.generationcp.ibpworkbench.ui.gxe;
+package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;

@@ -10,7 +10,7 @@
  * 
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.ui.metaanalysis;
+package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
@@ -20,7 +20,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import org.generationcp.browser.study.StudyInfoDialog;
+import org.generationcp.browser.study.SelectDatasetDialog;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -28,7 +28,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.StudyTreeExpandAction;
+import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
@@ -688,7 +688,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				@Override
 				public void buttonClick(ClickEvent event) {
 						
-					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), (Integer) dataSet.getStudyId(), false, (StudyDataManagerImpl) getStudyDataManager());
+					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), (Integer) dataSet.getStudyId(), false, (StudyDataManagerImpl) getStudyDataManager());
 					event.getComponent().getWindow().addWindow(dialog);
 				}
 			});

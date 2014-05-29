@@ -16,13 +16,14 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+
 import org.generationcp.commons.breedingview.xml.*;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.util.*;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
@@ -53,7 +54,7 @@ public class RunBreedingViewAction implements ClickListener {
     
     private final static Logger log = LoggerFactory.getLogger(RunBreedingViewAction.class);
     
-    private SelectDetailsForBreedingViewPanel source;
+    private SingleSiteAnalysisDetailsPanel source;
     
     private Project project;
 
@@ -71,7 +72,7 @@ public class RunBreedingViewAction implements ClickListener {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    public RunBreedingViewAction(SelectDetailsForBreedingViewPanel selectDetailsForBreedingViewWindow, Project project) {
+    public RunBreedingViewAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, Project project) {
         this.source = selectDetailsForBreedingViewWindow;
         this.project = project;
     }

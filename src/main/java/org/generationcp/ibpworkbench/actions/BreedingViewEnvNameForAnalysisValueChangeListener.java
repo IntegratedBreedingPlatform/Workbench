@@ -2,8 +2,9 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDetailsForBreedingViewPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.exceptions.ConfigException;
@@ -14,9 +15,9 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 
     private static final long serialVersionUID = -6425208753343322313L;
 
-    SelectDetailsForBreedingViewPanel source;
+    SingleSiteAnalysisDetailsPanel source;
     
-    public BreedingViewEnvNameForAnalysisValueChangeListener(SelectDetailsForBreedingViewPanel source){
+    public BreedingViewEnvNameForAnalysisValueChangeListener(SingleSiteAnalysisDetailsPanel source){
         this.source = source;
     }
     

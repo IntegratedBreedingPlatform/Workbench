@@ -15,6 +15,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -22,9 +23,9 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
-import org.generationcp.ibpworkbench.ui.gxe.GxeComponentPanel;
-import org.generationcp.ibpworkbench.ui.ibtools.breedingview.select.SelectDatasetForBreedingViewPanel;
-import org.generationcp.ibpworkbench.ui.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeComponentPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -245,7 +246,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            SelectDatasetForBreedingViewPanel breedingViewPanel = new SelectDatasetForBreedingViewPanel(this.project, Database.LOCAL);
+            SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(breedingViewPanel);
             //NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
 
