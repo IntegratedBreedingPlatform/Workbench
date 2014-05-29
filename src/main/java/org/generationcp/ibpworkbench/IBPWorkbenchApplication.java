@@ -150,10 +150,12 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     public Window getWindow(String name) {
         Window w = super.getWindow(name);
 
-        final String prefetch_script = "/ibpworkbench/VAADIN/js/prefetch_resources.js";
+        final String prefetch_script = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
+
         final String script = "try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
-        w.executeJavaScript(String.format(script, prefetch_script));
+        if (!jiraSetupDone)
+            w.executeJavaScript(String.format(script, prefetch_script));
 
         if (w instanceof WorkbenchMainView && !jiraSetupDone) {
             final String jiraSupportJSSrc = "https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";

@@ -154,7 +154,10 @@ public class LoginWindow extends Window implements InitializingBean {
         final Label loginSubTitle = new Label("Sign In",Label.CONTENT_XHTML);
         loginSubTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-        final Label usernameLbl = new Label("<b>" + (messageSource.getMessage(Message.USERNAME) + ":").toUpperCase() + "</b>",Label.CONTENT_XHTML);
+        final Label usernameLbl = new Label("<b>" + (messageSource.getMessage(Message.USERNAME) + ":").toUpperCase() + "</b><span class=\"fa fa-chevron-left\" style=\"\n" +
+                "    position: relative;\n" +
+                "    z-index: -1;\n" +
+                "\"></span>",Label.CONTENT_XHTML);
         final Label passwordLbl = new Label("<b>" + (messageSource.getMessage(Message.PASSWORD)+ ":").toUpperCase() + "</b>",Label.CONTENT_XHTML);
         final Label rememberMeLbl = new Label(messageSource.getMessage(Message.REMEMBER_ME) +"&nbsp;&nbsp;&nbsp;",Label.CONTENT_XHTML);
 

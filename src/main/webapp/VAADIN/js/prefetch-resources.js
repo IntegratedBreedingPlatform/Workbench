@@ -6,7 +6,7 @@
     // list of stuff to preload
         preload = [
             '/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/font-min.css',
-            '/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/styles-min.css'
+            '/ibpworkbench/VAADIN/themes/vaadin-retro/styles-min.css'
         ],
         isIE = navigator.appName.indexOf('Microsoft') === 0;
 
