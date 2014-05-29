@@ -164,6 +164,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		browseLink.setImmediate(true);
 		browseLink.setStyleName("link");
 		browseLink.setCaption("Browse");
+		browseLink.setWidth("48px");
 		browseLink.addListener(new Button.ClickListener() {
 			
 			private static final long serialVersionUID = 1425892265723948423L;
@@ -193,10 +194,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
         Label headingLabel =  new Label("Select Data for Analysis");
         headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
         HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
-        
+        heading.setMargin(true, false, false, false);
 		
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
-		browseLabelLayout.setSpacing(true);
 		browseLabelLayout.addComponent(browseLink);
 		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
 		browseLabelLayout.setSizeUndefined();
@@ -222,8 +222,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		tblFactorContainer.addComponent(tblFactors);
 		tblVariateContainer.addComponent(tblVariates);
 		
-		lblFactorContainer.setMargin(false, false, false, false);
-		lblVariateContainer.setMargin(false, true, false, true);
+		lblFactorContainer.setMargin(true, false, false, false);
+		lblVariateContainer.setMargin(true, true, false, true);
 		tblFactorContainer.setMargin(false, false, false, false);
 		tblVariateContainer.setMargin(false, true, false, true);
 		
