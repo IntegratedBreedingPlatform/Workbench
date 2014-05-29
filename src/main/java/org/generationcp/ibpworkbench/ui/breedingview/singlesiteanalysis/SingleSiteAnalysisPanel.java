@@ -255,7 +255,13 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 				} else {
 					numOfSelectedVariates = 0;
 				}
-				toggleNextButton(val);
+				
+				if (numOfSelectedVariates == 0) {
+					toggleNextButton(false);
+				}else{
+					toggleNextButton(val);
+				}
+				
 			}
 
 		};
@@ -458,7 +464,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		table.setContainerDataSource(container);
 
 		String[] columns = new String[] { "", "name", "description", "scname" };
-		String[] columnHeaders = new String[] { "", "Name", "Description",
+		String[] columnHeaders = new String[] { "<span class='glyphicon glyphicon-ok'></span>", "Name", "Description",
 				"Scale" };
 		table.setVisibleColumns(columns);
 		table.setColumnHeaders(columnHeaders);
@@ -475,6 +481,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		tblVariates = initializeVariatesTable();
 		tblFactorContainer.addComponent(tblFactors);
 		tblVariateContainer.addComponent(tblVariates);
+		tblVariateContainer.addComponent(chkVariatesSelectAll);
 		toreturn[0] = tblFactors;
 		toreturn[1] = tblVariates;
 		return toreturn;
@@ -668,7 +675,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	        }
 	        tblVariates.setContainerDataSource(container);
 	        tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
-	        tblVariates.setColumnHeaders(new String[]{"","Name", "Description", "Scale"});
+	        tblVariates.setColumnHeaders(new String[]{"<span class='glyphicon glyphicon-ok'></span>","Name", "Description", "Scale"});
 	    }
 	  
 	private void showDatabaseError(Window window) {
