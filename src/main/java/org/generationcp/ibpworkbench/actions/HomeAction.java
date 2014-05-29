@@ -108,7 +108,12 @@ public class HomeAction implements ClickListener, ActionListener{
             w.showContent(workbenchDashboard);
 
             // reinitialize dashboard with default values
-            workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+
+            if (sessionData.getLastOpenedProject() != null)
+                workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
+            else {
+                workbenchDashboard.initializeDashboardContents(newProgram).doAction(null,IBPWorkbenchApplication.get().getMainWindow());
+            }
 
         } catch (Exception e) {
             LOG.error("Exception", e);
@@ -121,5 +126,4 @@ public class HomeAction implements ClickListener, ActionListener{
 
         //NavManager.navigateApp(window, "/Home", isLinkAccessed);
     }
-
 }
