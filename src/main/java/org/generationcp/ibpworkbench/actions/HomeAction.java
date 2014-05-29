@@ -121,5 +121,4 @@ public class HomeAction implements ClickListener, ActionListener{
 
         //NavManager.navigateApp(window, "/Home", isLinkAccessed);
     }
-
 }

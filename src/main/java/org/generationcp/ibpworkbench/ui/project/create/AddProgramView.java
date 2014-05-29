@@ -5,10 +5,13 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
@@ -125,7 +128,16 @@ public class AddProgramView extends Panel implements InitializingBean {
                     MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
                             messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
 
-                    (new HomeAction(presenter.program)).buttonClick(clickEvent);
+                    //(new HomeAction(presenter.program)).buttonClick(clickEvent);
+                    // set sessiondata project
+                    sessionData.setLastOpenedProject(presenter.program);
+                    sessionData.setSelectedProject(presenter.program);
+
+                    // populate sidebar
+                    ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+
+                    new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(),presenter.program.getProjectId()).buttonClick(clickEvent);
+
 
                 } catch (Exception e) {
 
