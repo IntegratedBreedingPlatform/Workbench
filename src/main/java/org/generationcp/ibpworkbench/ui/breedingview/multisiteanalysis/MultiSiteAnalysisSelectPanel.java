@@ -553,7 +553,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         variates.setContainerDataSource(container);
         
         String[] columns = new String[] {"", "displayName", "description","testedin"};
-        String[] columnHeaders = new String[] {"","Name", "Description","Tested In"};
+        String[] columnHeaders = new String[] {"<span class='glyphicon glyphicon-ok'></span>","Name", "Description","Tested In"};
         variates.setVisibleColumns(columns);
         variates.setColumnHeaders(columnHeaders);
         variates.setColumnWidth("", 18);
@@ -604,8 +604,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             	fm.setScaleid(factor.getStandardVariable().getScale().getId());
             	fm.setTmname(factor.getStandardVariable().getMethod().getName());
             	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
-            	fm.setTrname(factor.getStandardVariable().getName());
-            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
+            	fm.setTrname(factor.getStandardVariable().getProperty().getName());
             	fm.setDescription(factor.getLocalDescription());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
             	fm.setDataType(factor.getStandardVariable().getDataType().getName());
@@ -643,7 +642,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
             	vm.setTmname(variate.getStandardVariable().getMethod().getName());
             	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-            	vm.setTrname(variate.getStandardVariable().getName());
+            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	vm.setDescription(variate.getLocalDescription());
             	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
@@ -699,7 +698,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         this.variates.setContainerDataSource(container);
         
         this.variates.setVisibleColumns(new String[]{ "","displayName", "description","testedin"});
-        this.variates.setColumnHeaders(new String[]{ "", "Name", "Description", "Tested In"});
+        this.variates.setColumnHeaders(new String[]{ "<span class='glyphicon glyphicon-ok'></span>", "Name", "Description", "Tested In"});
         //this.variates.refreshRowCache();
         
  }
