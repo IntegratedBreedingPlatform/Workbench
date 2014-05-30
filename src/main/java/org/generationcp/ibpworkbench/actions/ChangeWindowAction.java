@@ -24,7 +24,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
-import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeComponentPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
@@ -225,7 +225,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            GxeComponentPanel gxeAnalysisPanel = new GxeComponentPanel(this.project);
+            MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
             w.showContent(gxeAnalysisPanel);
             //NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
 

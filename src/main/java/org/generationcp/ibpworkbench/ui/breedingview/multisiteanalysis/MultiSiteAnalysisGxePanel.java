@@ -60,7 +60,7 @@ import java.util.Map.Entry;
  *
  */
 @Configurable
-public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MultiSiteAnalysisGxePanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -85,7 +85,7 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
     private Button btnReset;
     private Button btnRunBreedingView;
     private Map<String, Boolean> variatesCheckboxState;
-    private GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel;
+    private MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel;
     
     @Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -121,10 +121,10 @@ public class GxeEnvironmentAnalysisPanel extends VerticalLayout implements Initi
 	private Property.ValueChangeListener selectAllTraitsListener;
 	
 	
-    public GxeEnvironmentAnalysisPanel(StudyDataManager studyDataManager,
+    public MultiSiteAnalysisGxePanel(StudyDataManager studyDataManager,
     		Project currentProject, 
     		Study study,  
-    		GxeSelectEnvironmentPanel gxeSelectEnvironmentPanel, 
+    		MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel, 
     		String selectedEnvFactorName,
     		String selectedGenotypeFactorName,
     		String selectedEnvGroupFactorName,

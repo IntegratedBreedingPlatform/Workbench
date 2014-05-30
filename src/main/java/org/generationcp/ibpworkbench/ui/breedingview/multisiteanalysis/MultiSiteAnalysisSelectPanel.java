@@ -18,6 +18,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -25,10 +26,13 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SelectDatasetDialog;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,7 +48,7 @@ import java.util.Map.Entry;
  *
  */
 @Configurable
-public class GxeSelectEnvironmentPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
     
@@ -101,7 +105,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
-    private GxeComponentPanel gxeAnalysisComponentPanel;
+    private MultiSiteAnalysisPanel gxeAnalysisComponentPanel;
     
 	private StudyDataManager studyDataManager;
     
@@ -110,7 +114,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     private List<String> environmentNames = new ArrayList<String>();
     private TrialEnvironments trialEnvironments = null;
 
-    public GxeSelectEnvironmentPanel(StudyDataManager studyDataManager,Project currentProject, Study study, GxeComponentPanel gxeAnalysisComponentPanel) {
+    public MultiSiteAnalysisSelectPanel(StudyDataManager studyDataManager,Project currentProject, Study study, MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
     	this.studyDataManager = studyDataManager;
         this.currentProject = currentProject;
         this.currentStudy = study;
@@ -161,7 +165,6 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
     }
 
     protected void initializeComponents() {
-    	
     	
     	
     	setVariatesCheckboxState(new HashMap<String, Boolean>());
@@ -379,7 +382,7 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 							selectSpecifyEnvironment.getValue().toString(), 
 							selectSpecifyGenotypes.getValue().toString(), 
 							selectSpecifyEnvironmentGroups.getValue().toString(), 
-							variatesCheckboxState, GxeSelectEnvironmentPanel.this);
+							variatesCheckboxState, MultiSiteAnalysisSelectPanel.this);
 				}
 				
 			}
@@ -782,11 +785,11 @@ public class GxeSelectEnvironmentPanel extends VerticalLayout implements Initial
 		
 	}
 
-	public GxeComponentPanel getGxeAnalysisComponentPanel() {
+	public MultiSiteAnalysisPanel getGxeAnalysisComponentPanel() {
 		return gxeAnalysisComponentPanel;
 	}
 
-	public void setGxeAnalysisComponentPanel(GxeComponentPanel gxeAnalysisComponentPanel) {
+	public void setGxeAnalysisComponentPanel(MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
 		this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
 	}
 	
