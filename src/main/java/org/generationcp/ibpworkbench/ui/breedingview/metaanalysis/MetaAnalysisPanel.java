@@ -20,15 +20,15 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import org.generationcp.browser.study.SelectDatasetDialog;
-import org.generationcp.commons.exceptions.InternationalizableException;
+
+import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.SelectDatasetDialog;
+import org.generationcp.browser.study.StudyInfoDialog;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
@@ -54,19 +54,17 @@ import java.util.List;
 
 /**
  * 
- * @author Jeffrey Morales
+ * @author Aldrin Batac
  *
  */
 @Configurable
-public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = 1L;
    
 	private TabSheet tabSheet; 
 	private Label lblPageTitle;
-    private Label lblStudyTreeDetailTitle;
-    private Label lblStudyTreeDetailDescription;
-    private Label lblBuildNewAnalysisHeader;
+	private Label lblStudyTreeDetailDescription;
     private Label lblBuildNewAnalysisDescription;
     private Label lblReviewEnvironments;
     private Label lblSelectDatasetsForAnalysis;
@@ -74,9 +72,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private Button linkCloseAllTab;
     private Table selectedEnvironmenTable;
     
-    private VerticalLayout generalLayout;
-    private VerticalLayout studyTreeLayout;
-    private VerticalLayout studyTreeLayoutTableContainer;
+    private Button browseLink;
+   
     private VerticalLayout selectedDataSetEnvironmentLayout;
     private GridLayout studyDetailsLayout;
     
@@ -91,13 +88,9 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     private Button btnNext;
     private Component buttonArea;
 
-    private Database database;
     private HashMap<String, Boolean> variatesCheckboxState;
     
-    private ThemeResource folderResource;
-    private ThemeResource leafResource;
-    
-    private final static Logger LOG = LoggerFactory.getLogger(SelectDatasetsForMetaAnalysisPanel.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MetaAnalysisPanel.class);
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -109,13 +102,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     
     private ManagerFactory managerFactory;
     
-    public SelectDatasetsForMetaAnalysisPanel(Project currentProject, Database database) {
-  
+    public MetaAnalysisPanel(Project currentProject, Database database) {
         this.currentProject = currentProject;
-        this.database = database;
-
-
-        
     }
 
     public Project getCurrentProject() {
@@ -160,40 +148,56 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 
     protected void initializeComponents() {
     	
+    	browseLink = new Button();
+		browseLink.setImmediate(true);
+		browseLink.setStyleName("link");
+		browseLink.setCaption("Browse");
+		browseLink.setWidth("48px");
+		browseLink.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1425892265723948423L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+					
+				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				event.getComponent().getWindow().addWindow(dialog);
+			}
+			
+		});
+		
+		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.addComponent(browseLink);
+		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
+		browseLabelLayout.setSizeUndefined();
+		browseLabelLayout.setMargin(true, false, false, false);
+		
+		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+		Label headingLabel =  new Label("Select Data for Analysis");
+		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+		HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
+		heading.setMargin(true, false, false, false);
+    	
     	lblPageTitle = new Label();
     	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
     	
     	tabSheet = new TabSheet();
     	tabSheet.setWidth("100%");
-    	//tabSheet.setStyleName(Reindeer.);
-    	
-    	folderResource =  new ThemeResource("images/folder.png");
-        leafResource =  new ThemeResource("images/leaf_16.png");
-        
-        generalLayout = new VerticalLayout();
-        generalLayout.setWidth("100%");
-        
-        studyTreeLayout = new VerticalLayout();
-        studyTreeLayoutTableContainer = new VerticalLayout();
-        
-        studyDetailsLayout = new GridLayout(10, 4);
-        studyDetailsLayout.setMargin(true);
+    	       
+        studyDetailsLayout = new GridLayout(10, 3);
+        studyDetailsLayout.setMargin(true, false,false,false);
         studyDetailsLayout.setSpacing(true);
         
         selectedDataSetEnvironmentLayout = new VerticalLayout();
-        selectedDataSetEnvironmentLayout.setMargin(true);
+        selectedDataSetEnvironmentLayout.setMargin(true, false,false,false);
         selectedDataSetEnvironmentLayout.setSpacing(true);
         
-        
-        studyTreeLayout.addComponent(lblPageTitle);
-        studyTreeLayout.addComponent(new Label(""));
-      
-        lblStudyTreeDetailTitle = new Label();
-        lblStudyTreeDetailTitle.setStyleName(Bootstrap.Typography.H2.styleName());
-        studyTreeLayout.addComponent(lblStudyTreeDetailTitle);
-        
         lblStudyTreeDetailDescription = new Label();
-        studyTreeLayout.addComponent(lblStudyTreeDetailDescription);
+        
+        addComponent(lblPageTitle);
+        addComponent(heading);
+        addComponent(lblStudyTreeDetailDescription);
+        addComponent(browseLabelLayout);
         
         setSelectedEnvironmenTable(new Table());
         BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
@@ -203,13 +207,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         getSelectedEnvironmenTable().setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
         getSelectedEnvironmenTable().setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
         
-        
-        TreeTable tr = createStudyTreeTable(this.database);
-        studyTreeLayoutTableContainer.addComponent(tr);
-        studyTreeLayout.addComponent(studyTreeLayoutTableContainer);
-        
-        lblBuildNewAnalysisHeader = new Label();
-        lblBuildNewAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
         lblBuildNewAnalysisDescription = new Label();
         lblReviewEnvironments = new Label();
         lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
@@ -218,7 +215,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         linkCloseAllTab.setImmediate(true);
         linkCloseAllTab.setCaption("Close All Tabs");
         lblSelectDatasetsForAnalysis = new Label();
-        lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
+        lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
         lblSelectDatasetsForAnalysisDescription = new Label();
         
         linkCloseAllTab.addListener(new Button.ClickListener() {
@@ -231,14 +228,12 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			}
 		});
      
-        studyDetailsLayout.addComponent(lblBuildNewAnalysisHeader, 0, 0, 9, 0);
-        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 1, 2, 1);
-        studyDetailsLayout.addComponent(linkCloseAllTab, 8, 1, 9, 1);
+        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 0, 2, 0);
+        studyDetailsLayout.addComponent(linkCloseAllTab, 8, 0, 9, 0);
         studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
-        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 2, 9, 2);
-        studyDetailsLayout.addComponent(tabSheet, 0, 3, 9, 3);
-        //studyDetailsLayout.addComponent(selectedEnvironmenTable, 5, 2, 9, 3);
-        
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 1, 9, 1);
+        //studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
+        studyDetailsLayout.setWidth("100%");
         
         selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysis);
         selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysisDescription);
@@ -246,24 +241,17 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         
         buttonArea = layoutButtonArea();
           
-        generalLayout.addComponent(studyTreeLayout);  
-        generalLayout.addComponent(studyDetailsLayout);
-        generalLayout.addComponent(selectedDataSetEnvironmentLayout);
-        generalLayout.addComponent(buttonArea);
-        generalLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        generalLayout.setMargin(new MarginInfo(true,false,false,false));
-
-        addComponent(generalLayout);
+        addComponent(studyDetailsLayout);
+        addComponent(selectedDataSetEnvironmentLayout);
+        addComponent(buttonArea);
+        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+        setMargin(new MarginInfo(true,false,false,false));
         
     }
     
     protected void initializeLayout() {
-              
-        studyTreeLayout.setSpacing(true);
-        studyTreeLayout.setMargin(new MarginInfo(false,true,true,true));
-        studyDetailsLayout.setWidth("100%");
-
-        this.setWidth("100%");
+    	setMargin(false, true, false, true);
+    	setWidth("100%");        
     }
     
     protected void initialize() {
@@ -289,14 +277,14 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			@Override
 			public void buttonClick(ClickEvent event) {
 					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
-					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
+					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
 					while(itr.hasNext()){
 						metaEnvironments.add(itr.next());
 					}
 					
 					if (metaEnvironments.size() > 0){
 						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
-						w.showContent(new SelectTraitsForMetaAnalysisPanel(SelectDatasetsForMetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, SelectDatasetsForMetaAnalysisPanel.this, managerFactory));
+						w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, MetaAnalysisPanel.this, managerFactory));
 					}
 					
 			}
@@ -328,185 +316,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         initializeLayout();
         initializeActions();
     }
-    
-    private TreeTable createStudyTreeTable(Database database) {
-        
-        TreeTable tr = new TreeTable();
-            
-       
-        tr.addContainerProperty("Study Name", String.class, "sname");
-        tr.addContainerProperty("Title", String.class, "title");
-        tr.addContainerProperty("Description", String.class, "description");
- 
-        List<FolderReference> folderRef = null;
-        
-        try {
-			folderRef = getStudyDataManager().getRootFolders(database);
-        } catch (MiddlewareQueryException e1) {
-			
-			e1.printStackTrace();
-	            if (getWindow() != null){
-	                MessageNotifier.showWarning(getWindow(), 
-	                        messageSource.getMessage(Message.ERROR_DATABASE),
-	                    messageSource.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
-	            }
-		}
-        
-
-        for (FolderReference fr : folderRef) {
-            
-            Object[] cells = new Object[3];
-            cells[0] = " " + fr.getName();
-            cells[1] = "";
-            cells[2] = fr.getDescription();
-            
-            Object itemId = tr.addItem(cells, fr);
-            tr.setItemIcon(itemId, folderResource);
-            
-        }
-        
-        // reserve excess space for the "treecolumn"
-        tr.setSizeFull();
-        tr.setColumnExpandRatio("Study Name", 1);
-        tr.setColumnExpandRatio("Title", 1);
-        tr.setColumnExpandRatio("Description", 1);
-        tr.setSelectable(true);
-        
-        tr.addListener(new StudyTreeExpandAction(this, tr));
-        tr.addListener(new ShowEnvironmentTab());
-        return tr;
-    }
-    
-    public void refreshStudyTreeTable(Database database) {
-        
-        this.studyTreeLayout.removeAllComponents();
-        TreeTable tr = createStudyTreeTable(database);
-        this.studyTreeLayout.addComponent(tr);
-    }
-    
-    
-    public void queryChildrenStudies(Reference parentFolderReference, TreeTable tr) throws InternationalizableException{
-    	 
-    	List<Reference> childrenReference = new ArrayList<Reference>();
-    	  
-         try {
-         
-         	childrenReference = getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId());
-         	
-         } catch (MiddlewareQueryException e) {
-             //LOG.error(e.toString() + "\n" + e.getStackTrace());
-             e.printStackTrace();
-             MessageNotifier.showWarning(getWindow(), 
-                     messageSource.getMessage(Message.ERROR_DATABASE), 
-                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-         }
-         
-         for (java.util.Iterator<Reference> i = childrenReference.iterator(); i.hasNext(); ){
-
-        	 Reference r = i.next();
-        	 
-        	 Object[] cells = new Object[3];
-        	 
-        	Study s = null;
-			try {
-				s = this.getStudyDataManager().getStudy(r.getId());
-			} catch (MiddlewareQueryException e) {}
-        	
-             cells[0] = " " + r.getName();
-             cells[1] = (s != null) ? s.getTitle() : "" ;
-             cells[2] = r.getDescription();
-             
-             if (r instanceof FolderReference) LOG.debug("r is FolderReference");
-             if (r instanceof StudyReference) LOG.debug("r is StudyReference");
-
-				
-        	 tr.addItem(cells, r);
-        	 tr.setParent(r, parentFolderReference);
-        	 if (hasChildStudy(r.getId()) || hasChildDataset(r.getId())) {
-                 tr.setChildrenAllowed(r, true);
-                 tr.setItemIcon(r, folderResource);
-             } else {
-                 tr.setChildrenAllowed(r, false);
-                 tr.setItemIcon(r, leafResource);
-             }
-         }
-    	
-    }
-    
-    public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) throws InternationalizableException{
-   	 
-    	List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
-    	  
-         try {
-         
-         	childrenReference = getStudyDataManager().getDatasetReferences(parentFolderReference.getId());
-         	
-         } catch (MiddlewareQueryException e) {
-             //LOG.error(e.toString() + "\n" + e.getStackTrace());
-             e.printStackTrace();
-             MessageNotifier.showWarning(getWindow(), 
-                     messageSource.getMessage(Message.ERROR_DATABASE), 
-                     messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-         }
-         
-         for (java.util.Iterator<DatasetReference> i = childrenReference.iterator(); i.hasNext(); ){
-
-        	 Reference r = i.next();
-        	 
-        	 Object[] cells = new Object[3];
-        	
-             cells[0] = " " + r.getName();
-             cells[1] = "";
-             cells[2] = r.getDescription();
-             
-             if (r instanceof DatasetReference) LOG.debug("r is DatasetReference");
-				
-        	 tr.addItem(cells, r);
-        	 tr.setParent(r, parentFolderReference);
-             tr.setChildrenAllowed(r, false);
-             tr.setItemIcon(r, leafResource);
-             
-         }
-    	
-    }
-    
-    private boolean hasChildStudy(int folderId) {
-
-        List<Reference> children = new ArrayList<Reference>();
-
-        try {
-            children = getStudyDataManager().getChildrenOfFolder(folderId);
-        } catch (MiddlewareQueryException e) {
-            //LOG.error(e.toString() + "\n" + e.getStackTrace());
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-            children = new ArrayList<Reference>();
-        }
-        if (!children.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-    
-    private boolean hasChildDataset(int folderId) {
-
-        List<DatasetReference> children = new ArrayList<DatasetReference>();
-
-        try {
-            children = getStudyDataManager().getDatasetReferences(folderId);
-        } catch (MiddlewareQueryException e) {
-            //LOG.error(e.toString() + "\n" + e.getStackTrace());
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-            children = new ArrayList<DatasetReference>();
-        }
-        if (!children.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -518,7 +327,6 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
     @Override
     public void attach() {
         super.attach();
-        
         updateLabels();
     }
     
@@ -527,9 +335,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
         messageSource.setCaption(btnCancel, Message.RESET);
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
-        messageSource.setValue(lblStudyTreeDetailTitle, Message.BV_STUDY_TREE_TITLE);
         messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
-        messageSource.setValue(lblBuildNewAnalysisHeader,  Message.META_BUILD_NEW_ANALYSIS_HEADER);
         messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
         messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
         messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
@@ -568,54 +374,44 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		this.selectedEnvironmenTable = selectedEnvironmenTable;
 	}
 
-	class ShowEnvironmentTab implements ItemClickListener {
-
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void itemClick(ItemClickEvent event) {
-			
-			if (!(event.getItemId() instanceof DatasetReference)) return;
-
-	    	DatasetReference datasetRef = (DatasetReference) event.getItemId();
-	        Integer dataSetId = datasetRef.getId();
-
-	        if (dataSetId == null) return;
-
-	        try {
-	        	
-	        	
-	            TabSheet tabSheet = SelectDatasetsForMetaAnalysisPanel.this.getTabsheet();
-	            DataSet ds = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
-	            
-	            Iterator<Component> itr = tabSheet.getComponentIterator();
-	            while(itr.hasNext()){
-	            	EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
-	            	if (tab.getDataSetId() == ds.getId()){
-	            		tabSheet.setSelectedTab(tab);
-	            		return;
-	            	}
-	            }
-	            
-	            
-	            EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
-	            tabSheet.addTab(component);
-	            tabSheet.getTab(component).setClosable(true);
-	            tabSheet.getTab(component).setCaption(ds.getName());
-	            tabSheet.setSelectedTab(component);
-	            
-	            
-	        }catch(Exception e){
-	        	e.printStackTrace();
-	        }
-			
-			
-			
-		}
-		
-	}
 	
+	public void generateTab(int dataSetId) {
+
+		try {
+
+			if (studyDetailsLayout.getComponent(0, 2) == null){
+				studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
+			}
+
+			TabSheet tabSheet = MetaAnalysisPanel.this.getTabsheet();
+			DataSet ds = MetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
+
+			Iterator<Component> itr = tabSheet.getComponentIterator();
+			while(itr.hasNext()){
+				EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
+				if (tab.getDataSetId() == ds.getId()){
+					tabSheet.setSelectedTab(tab);
+					return;
+				}
+			}
+
+
+			EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
+			tabSheet.addTab(component);
+			tabSheet.getTab(component).setClosable(true);
+			tabSheet.getTab(component).setCaption(ds.getName());
+			tabSheet.setSelectedTab(component);
+
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+
+
+	}
+		
+
 	class EnvironmentTabComponent extends VerticalLayout {
 		
 		private static final long serialVersionUID = 1L;
@@ -650,7 +446,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		private void initializeComponents(){
 			
 			try {
-				studyName = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
+				studyName = MetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
 			} catch (MiddlewareQueryException e) {
 				
 				e.printStackTrace();
@@ -686,9 +482,8 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 				private static final long serialVersionUID = 1425892265723948423L;
 
 				@Override
-				public void buttonClick(ClickEvent event) {
-						
-					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), (Integer) dataSet.getStudyId(), false, (StudyDataManagerImpl) getStudyDataManager());
+				public void buttonClick(ClickEvent event) {	
+					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), dataSet.getStudyId() ,false, (StudyDataManagerImpl) getStudyDataManager());
 					event.getComponent().getWindow().addWindow(dialog);
 				}
 			});
@@ -786,7 +581,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
             	vm.setScaleid(variate.getStandardVariable().getScale().getId());
             	vm.setTmname(variate.getStandardVariable().getMethod().getName());
             	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-            	vm.setTrname(variate.getStandardVariable().getName());
+            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
             	container.addBean(vm);
@@ -826,8 +621,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 	            	fm.setScaleid(factor.getStandardVariable().getScale().getId());
 	            	fm.setTmname(factor.getStandardVariable().getMethod().getName());
 	            	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
-	            	fm.setTrname(factor.getStandardVariable().getName());
-	            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
+	            	fm.setTrname(factor.getStandardVariable().getProperty().getName());
 	            	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 	            	container.addBean(fm);
 		        }
@@ -868,7 +662,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 		@SuppressWarnings("unchecked")
 		private void addDataSetToTable(){
 			
-			BeanItemContainer<MetaEnvironmentModel> container  = (BeanItemContainer<MetaEnvironmentModel>) SelectDatasetsForMetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
+			BeanItemContainer<MetaEnvironmentModel> container  = (BeanItemContainer<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
 				
 			String trialInstanceFactorName=null;
 			String environmentFactorName=null;
@@ -893,7 +687,7 @@ public class SelectDatasetsForMetaAnalysisPanel extends VerticalLayout implement
 			if (environmentFactorName == null) environmentFactorName = trialInstanceFactorName;
 			
 			try {
-				TrialEnvironments envs = SelectDatasetsForMetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
+				TrialEnvironments envs = MetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
 			
 				List<Variable> variables;
 				variables = envs.getVariablesByLocalName(environmentFactorName);

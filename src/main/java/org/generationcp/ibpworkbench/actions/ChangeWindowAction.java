@@ -23,7 +23,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
-import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.MetaAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
@@ -266,7 +266,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
                 return;
             }
 
-            SelectDatasetsForMetaAnalysisPanel metaAnalyis = new SelectDatasetsForMetaAnalysisPanel(this.project, Database.LOCAL);
+            MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(metaAnalyis);
             //NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
         } else {

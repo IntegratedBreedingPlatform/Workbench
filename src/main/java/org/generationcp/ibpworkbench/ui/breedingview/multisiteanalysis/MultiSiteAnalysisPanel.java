@@ -54,6 +54,7 @@ InitializingBean {
 
 	private Map<Integer, Table> studyTables = new HashMap<Integer, Table>();
 	private TabSheet studiesTabsheet;
+	private VerticalLayout tabSheetContainer;
 
 	private Button browseLink;
 
@@ -187,11 +188,11 @@ InitializingBean {
 
 		setStudiesTabsheet(generateTabSheet());
 		
-		VerticalLayout tabSheetContainer = new VerticalLayout();
+		tabSheetContainer = new VerticalLayout();
 		tabSheetContainer.addComponent(getStudiesTabsheet());
 		tabSheetContainer.setMargin(true, false,false,false);
 		
-		addComponent(tabSheetContainer);
+		//addComponent(tabSheetContainer);
 
 	}
 
@@ -212,6 +213,9 @@ InitializingBean {
 
 	public void openStudyMeansDataset(Study study) {
 
+		if (getComponentIndex(tabSheetContainer) == -1){
+			addComponent(tabSheetContainer);
+		}
 
 		for ( Iterator<Component> tabs = getStudiesTabsheet().getComponentIterator(); tabs.hasNext();){
 			Component tab = tabs.next();

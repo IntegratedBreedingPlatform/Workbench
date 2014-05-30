@@ -30,11 +30,11 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
 @Configurable
-public class SelectDatasetDialog extends Window implements InitializingBean, InternationalizableComponent {
+public class StudyInfoDialog extends Window implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = -7651767452229107837L;
     
-    private final static Logger LOG = LoggerFactory.getLogger(SelectDatasetDialog.class);
+    private final static Logger LOG = LoggerFactory.getLogger(StudyInfoDialog.class);
     
     public static final String CLOSE_SCREEN_BUTTON_ID = "StudyInfoDialog Close Button ID";
 
@@ -52,7 +52,7 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 
 	private boolean h2hCall;
     
-    public SelectDatasetDialog(Window parentWindow, Integer studyId,boolean h2hCall, StudyDataManagerImpl studyDataManager){
+    public StudyInfoDialog(Window parentWindow, Integer studyId,boolean h2hCall, StudyDataManagerImpl studyDataManager){
         
         this.parentWindow = parentWindow;
         this.studyId = studyId;
@@ -124,7 +124,7 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 			@Override
 			public void buttonClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				parentWindow.removeWindow(SelectDatasetDialog.this);
+				parentWindow.removeWindow(StudyInfoDialog.this);
 				
 			}
 		});

@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 @Configurable
-public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
 	private List<MetaEnvironmentModel> metaEnvironments;
@@ -79,10 +79,10 @@ public class SelectTraitsForMetaAnalysisPanel extends VerticalLayout implements 
 	    
 	private ManagerFactory managerFactory;
 	
-	private SelectDatasetsForMetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
+	private MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
 	
 
-	public SelectTraitsForMetaAnalysisPanel(Project project,List<MetaEnvironmentModel> metaEnvironments, SelectDatasetsForMetaAnalysisPanel selectDatasetsForMetaAnalysisPanel, ManagerFactory managerFactory) {
+	public MetaAnalysisSelectTraitsPanel(Project project,List<MetaEnvironmentModel> metaEnvironments, MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel, ManagerFactory managerFactory) {
 		this.metaEnvironments = metaEnvironments;
 		this.currentProject = project;
 		this.selectDatasetsForMetaAnalysisPanel = selectDatasetsForMetaAnalysisPanel;

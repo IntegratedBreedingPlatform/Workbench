@@ -7,7 +7,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.SelectDatasetsForMetaAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.MetaAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.slf4j.Logger;
