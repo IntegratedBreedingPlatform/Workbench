@@ -171,7 +171,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         final VerticalLayout cropsContainer = new VerticalLayout();
         cropsContainer.setSpacing(true);
         cropsContainer.addComponent(tblCrops);
-        cropsContainer.addComponent(new Label("<em>Crops with no version are installed prior to BMS 3.0</em>",Label.CONTENT_XHTML));
+        cropsContainer.addComponent(new Label("<em>Not available</em> means crop is installed prior to version BMS 3.0",Label.CONTENT_XHTML));
 
         root.addComponent(tblTools);
         root.addComponent(cropsContainer);

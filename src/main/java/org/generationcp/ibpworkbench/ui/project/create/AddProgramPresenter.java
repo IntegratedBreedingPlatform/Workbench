@@ -497,6 +497,12 @@ public class AddProgramPresenter {
         String dateNowStr = formatter.format(now.getTime());
         Integer dateNowInt = Integer.valueOf(dateNowStr);
         return dateNowInt;
+    }
+
+    /**
+     * call this when the program is saved and created, update the add program UI to act like the manage program settings
+     */
+    public void switchToUpdateMode() {
 
     }
 }
