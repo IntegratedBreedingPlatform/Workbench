@@ -191,7 +191,7 @@ public class GxeUtility {
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
 
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 
 			LOG.debug("save to" + dir);
 
@@ -287,7 +287,7 @@ public class GxeUtility {
 			if (currentProject == null)
 				throw new Exception("currentProject is null");
 
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 
 			LOG.debug("save to " + dir);
 

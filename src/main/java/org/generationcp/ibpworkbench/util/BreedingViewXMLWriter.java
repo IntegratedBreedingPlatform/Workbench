@@ -125,7 +125,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
         try{
             String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId());
+            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
             ssaParameters.setOutputDirectory(outputDirectory);
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
@@ -240,7 +240,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         }
         try{
             String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectId());
+            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
             ssaParameters.setOutputDirectory(outputDirectory);
         } catch(MiddlewareQueryException ex){
             throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
