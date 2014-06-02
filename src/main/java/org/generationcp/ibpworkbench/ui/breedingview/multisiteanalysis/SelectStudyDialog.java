@@ -183,7 +183,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 		tr.addContainerProperty("Study Name", String.class, "sname");
 		tr.addContainerProperty("Title", String.class, "title");
-		tr.addContainerProperty("Description", String.class, "description");
+		tr.addContainerProperty("Objective", String.class, "description");
 
 		List<FolderReference> folderRef = null;
 
@@ -219,7 +219,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 		tr.setSizeFull();
 		tr.setColumnExpandRatio("Study Name", 1);
 		tr.setColumnExpandRatio("Title", 1);
-		tr.setColumnExpandRatio("Description", 1);
+		tr.setColumnExpandRatio("Objective", 1);
 		tr.setSelectable(true);
 
 		tr.addListener(new StudyTreeExpandAction(this, tr));
