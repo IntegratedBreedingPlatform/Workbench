@@ -675,7 +675,7 @@ public class ToolUtil {
                 "Workbench Setting record was not found!");
         }
 
-        String projectDirName = String.format("%d", project.getProjectId());
+        String projectDirName = String.format("%s", project.getProjectName());
 
         String installationDirectory = workbenchSetting
             .getInstallationDirectory();
