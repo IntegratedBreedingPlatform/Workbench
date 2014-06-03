@@ -63,8 +63,8 @@ public class NurseryListPreview extends VerticalLayout {
 
     private Panel panel;
 
-    private ThemeResource folderResource = new ThemeResource("images/folder.png");
-    private ThemeResource leafResource = new ThemeResource("images/leaf_16.png");
+    private ThemeResource folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
+    private ThemeResource studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -179,7 +179,7 @@ public class NurseryListPreview extends VerticalLayout {
                 treeView.setItemIcon(folderReference.getId(), folderResource);
             } else {
                 treeView.setChildrenAllowed(folderReference.getId(), false);
-                treeView.setItemIcon(folderReference.getId(), leafResource);
+                treeView.setItemIcon(folderReference.getId(), studyResource);
             }
 
             treeView.setSelectable(true);
@@ -630,7 +630,7 @@ public class NurseryListPreview extends VerticalLayout {
                 treeView.setItemIcon(sc.getId(), folderResource);
             } else {
                 treeView.setChildrenAllowed(sc.getId(), false);
-                treeView.setItemIcon(sc.getId(), leafResource);
+                treeView.setItemIcon(sc.getId(), studyResource);
             }
             treeView.setSelectable(true);
         }

@@ -94,7 +94,7 @@ public class GermplasmListPreview extends VerticalLayout {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        folderResource = new ThemeResource("images/folder.png");
+        folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
         leafResource = new ThemeResource("images/leaf_16.png");
 
 

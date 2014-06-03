@@ -211,7 +211,12 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 			cells[2] = fr.getDescription();
 
 			Object itemId = tr.addItem(cells, fr);
-			tr.setItemIcon(itemId, folderResource);
+			
+			if (!isFolder(fr.getId())){
+				tr.setItemIcon(itemId, studyResource);
+			}else{
+				tr.setItemIcon(itemId, folderResource);
+			}
 
 		}
 
@@ -404,6 +409,15 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 		}
 		return false;
 	}
+	
+	 public Boolean isFolder(Integer studyId) {
+	        try {
+	            boolean isStudy = studyDataManager.isStudy(studyId);
+	            return !isStudy;
+	        } catch (MiddlewareQueryException e) {
+	        	return false;
+	        }
+	    }
 
 	@Override
 	public void attach() {

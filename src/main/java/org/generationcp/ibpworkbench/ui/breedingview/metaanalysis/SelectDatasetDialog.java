@@ -207,7 +207,11 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 			cells[2] = fr.getDescription();
 
 			Object itemId = tr.addItem(cells, fr);
-			tr.setItemIcon(itemId, folderResource);
+			if (!isFolder(fr.getId())){
+				tr.setItemIcon(itemId, studyResource);
+			}else{
+				tr.setItemIcon(itemId, folderResource);
+			}
 
 		}
 
@@ -380,6 +384,15 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 		}
 		return false;
 	}
+	
+	 public Boolean isFolder(Integer studyId) {
+	        try {
+	            boolean isStudy = studyDataManager.isStudy(studyId);
+	            return !isStudy;
+	        } catch (MiddlewareQueryException e) {
+	        	return false;
+	        }
+	    }
 
 	private boolean hasChildDataset(int folderId) {
 

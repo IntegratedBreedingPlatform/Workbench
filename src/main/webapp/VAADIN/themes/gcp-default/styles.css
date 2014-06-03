@@ -340,3 +340,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     width:17px;
     height:17px;
 }
+
+img[src$="leaf_16.png"] {
+  	width:14px;
+    height:16px;
+}
