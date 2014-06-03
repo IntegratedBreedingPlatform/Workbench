@@ -200,11 +200,23 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 		}
 
 		for (FolderReference fr : folderRef) {
-
+			
+			
+			Study study = null;
+			Boolean isStudy = false;
+			try {
+				isStudy = getStudyDataManager().isStudy(fr.getId());
+				if (isStudy){
+					study = getStudyDataManager().getStudy(fr.getId());
+				}
+			} catch (MiddlewareQueryException e) {
+			}
+			
+			
 			Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
-			cells[1] = "";
-			cells[2] = fr.getDescription();
+			cells[1] = (study != null) ? study.getTitle() : "";
+			cells[2] = (study != null) ? study.getObjective() : "";
 
 			Object itemId = tr.addItem(cells, fr);
 			
@@ -288,7 +300,7 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 
 			cells[0] = " " + r.getName();
 			cells[1] = (s != null) ? s.getTitle() : "";
-			cells[2] = r.getDescription();
+			cells[2] = (s != null) ? s.getObjective() : "";
 
 
 			tr.addItem(cells, r);
@@ -351,7 +363,7 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 
 			cells[0] = " " + r.getName();
 			cells[1] = "";
-			cells[2] = r.getDescription();
+			cells[2] = "";
 
 			if (r instanceof DatasetReference)
 				LOG.debug("r is DatasetReference");

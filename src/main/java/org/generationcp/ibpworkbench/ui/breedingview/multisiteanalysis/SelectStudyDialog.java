@@ -15,6 +15,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -205,15 +206,26 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 		for (FolderReference fr : folderRef) {
 
+			Study study = null;
+			Boolean isStudy = false;
+			try {
+				isStudy = getStudyDataManager().isStudy(fr.getId());
+				if (isStudy){
+					study = getStudyDataManager().getStudy(fr.getId());
+				}
+			} catch (MiddlewareQueryException e) {
+			}
+
 			Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
-			cells[1] = "";
-			cells[2] = fr.getDescription();
+			cells[1] = (study != null) ? study.getTitle() : "";
+			cells[2] = (study != null) ? study.getObjective() : "";
 
 			Object itemId = tr.addItem(cells, fr);
 			
 			if (!isFolder(fr.getId())){
 				tr.setItemIcon(itemId, studyResource);
+				tr.setChildrenAllowed(itemId, false);
 			}else{
 				tr.setItemIcon(itemId, folderResource);
 			}
@@ -244,7 +256,21 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 				if (event.getItemId() instanceof StudyReference){
 					selectButton.setEnabled(true);
 				}else{
-					selectButton.setEnabled(false);
+					
+					Reference r = (Reference) event.getItemId();
+					Boolean isStudy = false;
+					try {
+						
+						isStudy = getStudyDataManager().isStudy(r.getId());
+					} catch (MiddlewareQueryException e) {
+					}
+					if (isStudy){
+						selectButton.setEnabled(true);
+					}else{
+						selectButton.setEnabled(false);
+					}
+					
+					
 				}
 				
 			}
@@ -289,8 +315,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 			cells[0] = " " + r.getName();
 			cells[1] = (s != null) ? s.getTitle() : "";
-			cells[2] = r.getDescription();
-
+			cells[2] = (s != null) ? s.getObjective() : "";
 
 			tr.addItem(cells, r);
 			tr.setParent(r, parentFolderReference);
@@ -352,7 +377,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 			cells[0] = " " + r.getName();
 			cells[1] = "";
-			cells[2] = r.getDescription();
+			cells[2] = "";
 
 			if (r instanceof DatasetReference)
 				LOG.debug("r is DatasetReference");
