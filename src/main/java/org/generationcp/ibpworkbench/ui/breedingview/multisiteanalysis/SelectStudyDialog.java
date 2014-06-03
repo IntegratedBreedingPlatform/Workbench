@@ -159,6 +159,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 		selectButton = new Button("Select");
 		selectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		selectButton.setEnabled(false);
 
 		rootLayout.addComponent(lblStudyTreeDetailDescription);
 		rootLayout.addComponent(treeTable);
