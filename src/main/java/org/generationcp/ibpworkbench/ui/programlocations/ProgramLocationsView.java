@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.DataBoundTransferable;
@@ -150,12 +151,13 @@ import java.util.*;
          availableSelectAll.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(ClickEvent clickEvent) {
-                 for (Object itemId :availableTable.getItemIds()) {
-                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
-                         availableTable.select(itemId);
-                     else
-                         availableTable.unselect(itemId);
-                 }
+
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                     availableTable.setValue(availableTable.getItemIds());
+                 else
+                     availableTable.setValue(null);
+
+
              }
          });
 
@@ -163,12 +165,11 @@ import java.util.*;
          favoriteSelectAll.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(ClickEvent clickEvent) {
-                 for (Object itemId : favoritesTable.getItemIds()) {
-                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
-                         favoritesTable.select(itemId);
-                     else
-                         favoritesTable.unselect(itemId);
-                 }
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                     favoritesTable.setValue(favoritesTable.getItemIds());
+                 else
+                     favoritesTable.setValue(null);
+
              }
          });
 
@@ -217,11 +218,14 @@ import java.util.*;
          LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
+         BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
+         Container sourceDataContainer = source.getContainerDataSource();
+
          while (sourceItemsIterator.hasPrevious()) {
              LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
              itemId.setActive(false);
-             ((BeanItemContainer<LocationViewModel>) target.getContainerDataSource()).addItemAt(0, itemId);
-             source.removeItem(itemId);
+             targetDataContainer.addItemAt(0, itemId);
+             sourceDataContainer.removeItem(itemId);
          }
      }
 
@@ -468,8 +472,6 @@ import java.util.*;
          table.addGeneratedColumn("select", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final LocationViewModel beanItem = ((BeanItemContainer<LocationViewModel>) source.getContainerDataSource()).getItem(itemId).getBean();
-
                  final CheckBox select = new CheckBox();
                  select.setImmediate(true);
                  select.addListener(new Button.ClickListener() {
@@ -478,7 +480,7 @@ import java.util.*;
                          Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
                                  .getValue();
 
-                         beanItem.setActive(val);
+                         ((LocationViewModel)itemId).setActive(val);
                          if (val)
                              source.select(itemId);
                          else {
@@ -488,7 +490,7 @@ import java.util.*;
                      }
                  });
 
-                 if (beanItem.isActive())
+                 if (((LocationViewModel)itemId).isActive())
                      select.setValue(true);
                  else
                      select.setValue(false);
@@ -540,8 +542,8 @@ import java.util.*;
                  
                  if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
                  	if (((LocationViewModel)itemIdOver).isEnabled()){
-                 		((Table) t.getSourceComponent()).removeItem(itemIdOver);
-                 		((Table) dragAndDropEvent.getTargetDetails().getTarget()).addItem(itemIdOver); 
+                 		((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                  	}
                  }else{
                 	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));

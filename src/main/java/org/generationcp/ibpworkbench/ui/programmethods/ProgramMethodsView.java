@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.DataBoundTransferable;
@@ -192,8 +193,6 @@ import java.util.*;
          table.addGeneratedColumn("select", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
-
                  final CheckBox select = new CheckBox();
                  select.setImmediate(true);
                  select.addListener(new Button.ClickListener() {
@@ -202,7 +201,7 @@ import java.util.*;
                          Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
                                  .getValue();
 
-                         beanItem.setActive(val);
+                         ((MethodView)itemId).setActive(val);
                          if (val)
                              source.select(itemId);
                          else {
@@ -212,7 +211,7 @@ import java.util.*;
                      }
                  });
 
-                 if (beanItem.isActive())
+                 if (((MethodView)itemId).isActive())
                      select.setValue(true);
                  else
                      select.setValue(false);
@@ -225,19 +224,18 @@ import java.util.*;
          table.addGeneratedColumn("gMname", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
 
-                 if (beanItem.getMid() < 0) {
+                 if (((MethodView)itemId).getMid() < 0) {
 
-                     final Button mNameBtn = new Button(beanItem.getMname());
+                     final Button mNameBtn = new Button(((MethodView)itemId).getMname());
                      mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-                     mNameBtn.setData(beanItem);
+                     mNameBtn.setData(((MethodView)itemId));
                      mNameBtn.addListener(editMethodListener);
 
                      return mNameBtn;
 
                  } else {
-                     return beanItem.getMname();
+                     return ((MethodView)itemId).getMname();
                  }
              }
          });
@@ -247,12 +245,10 @@ import java.util.*;
          table.addGeneratedColumn("gBulk", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
-
                  Label bulkLbl = new Label("");
                  bulkLbl.setContentMode(Label.CONTENT_XHTML);
 
-                 if (beanItem.isBulk())
+                 if (((MethodView)itemId).isBulk())
                      bulkLbl.setValue("<span class='glyphicon glyphicon-ok'></span>");
 
                  return bulkLbl;
@@ -263,14 +259,12 @@ import java.util.*;
          table.addGeneratedColumn("date",new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
-
                  DateFormat df = new SimpleDateFormat("yyyyMMdd");
                  DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
 
-                 if (beanItem.getMdate().toString().length() > 1) {
+                 if (((MethodView)itemId).getMdate().toString().length() > 1) {
                      try {
-                         return newDf.format(df.parse(beanItem.getMdate().toString()));
+                         return newDf.format(df.parse(((MethodView) itemId).getMdate().toString()));
                      } catch (ParseException e) {
                          return "N/A";
                          //e.printStackTrace();
@@ -283,14 +277,12 @@ import java.util.*;
          table.addGeneratedColumn("desc", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colI) {
-                 final MethodView beanItem = ((BeanItemContainer<MethodView>) source.getContainerDataSource()).getItem(itemId).getBean();
-
                  Label l = new Label();
-                 l.setDescription(beanItem.getMdesc());
-                 l.setValue(beanItem.getMdesc());
+                 l.setDescription(((MethodView)itemId).getMdesc());
+                 l.setValue(((MethodView) itemId).getMdesc());
 
-                 if (beanItem.getMdesc().length() > 90) {
-                     l.setValue(beanItem.getMdesc().substring(0,90-3).trim().concat("..."));
+                 if (((MethodView)itemId).getMdesc().length() > 90) {
+                     l.setValue(((MethodView)itemId).getMdesc().substring(0,90-3).trim().concat("..."));
                  }
 
                  return l;
@@ -338,8 +330,8 @@ import java.util.*;
 
                  if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
                   	if (((MethodView)itemIdOver).isEnabled()){
-                  		((Table) t.getSourceComponent()).removeItem(itemIdOver);
-                  		((Table) dragAndDropEvent.getTargetDetails().getTarget()).addItem(itemIdOver); 
+                  		((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                  		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                   	}
                   }else{
                  	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
@@ -362,11 +354,14 @@ import java.util.*;
          LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
+         BeanItemContainer<MethodView> targetDataContainer = (BeanItemContainer<MethodView>) target.getContainerDataSource();
+         Container sourceDataContainer = source.getContainerDataSource();
+
          while (sourceItemsIterator.hasPrevious()) {
              MethodView itemId = (MethodView) sourceItemsIterator.previous();
              itemId.setActive(false);
-             ((BeanItemContainer<MethodView>) target.getContainerDataSource()).addItemAt(0, itemId);
-             source.removeItem(itemId);
+             targetDataContainer.addItemAt(0, itemId);
+             sourceDataContainer.removeItem(itemId);
          }
      }
 
@@ -663,24 +658,24 @@ import java.util.*;
          availableSelectAll.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 for (Object itemId :availableTable.getItemIds()) {
-                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
-                         availableTable.select(itemId);
-                     else
-                         availableTable.unselect(itemId);
-                 }
+
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                     availableTable.setValue(availableTable.getItemIds());
+                 else
+                     availableTable.setValue(null);
+
+
              }
          });
 
          favoriteSelectAll.addListener(new Button.ClickListener() {
              @Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 for (Object itemId : favoritesTable.getItemIds()) {
-                     if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
-                         favoritesTable.select(itemId);
-                     else
-                         favoritesTable.unselect(itemId);
-                 }
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                     favoritesTable.setValue(favoritesTable.getItemIds());
+                 else
+                     favoritesTable.setValue(null);
+
              }
          });
 
