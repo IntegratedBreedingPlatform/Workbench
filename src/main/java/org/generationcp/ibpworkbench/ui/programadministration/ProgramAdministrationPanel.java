@@ -61,9 +61,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		tabSheet = generateTabSheet();
 		
 		updateProjectPanel = new UpdateProjectPanel();
-		updateProjectPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		programMembersPanel = new ProgramMembersPanel(sessionData.getLastOpenedProject());
-		programMembersPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		programLocationsView = new ProgramLocationsView(sessionData.getLastOpenedProject());
 		programMethodsView = new ProgramMethodsView(sessionData.getLastOpenedProject());
 	}

@@ -13,10 +13,12 @@ import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
+import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -122,34 +124,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	    finishButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                try {
-                    presenter.doAddNewProgram();
-
-                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-                            messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
-
-                    //(new HomeAction(presenter.program)).buttonClick(clickEvent);
-                    // set sessiondata project
-                    sessionData.setLastOpenedProject(presenter.program);
-                    sessionData.setSelectedProject(presenter.program);
-
-                    // populate sidebar
-                    ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
-
-                    new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(),presenter.program.getProjectId()).buttonClick(clickEvent);
-
-
-                } catch (Exception e) {
-
-                    if (e.getMessage().equals("basic_details_invalid"))
-                        return;
-
-                    LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
-
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
-                            messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-                }
+                new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(),presenter.program.getProjectId()).buttonClick(clickEvent);
             }
         });
 
@@ -170,13 +145,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 		rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
 		rootLayout.setWidth("100%");
 		rootLayout.setSpacing(true);
-
-        /*
-		createProjectPanel.setVisible(true);
-		programMembersPanel.setVisible(true);
-		programMethodsContainer.setVisible(true);
-		programLocationsContainer.setVisible(true);
-        */
 
         basicDetailsContainer.addComponent(createProjectPanel);
         programMembersContainer.addComponent(programMembersPanel);
@@ -234,9 +202,14 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return tab;
 	}
 
-    public void enableOptionalTabsAndFinish(CropType selectedCropType) {
-        programMethodsView = new ProgramMethodsView(selectedCropType);
-        programLocationsView = new ProgramLocationsView(selectedCropType);
+    public void updateUIOnProgramSave(Project project) {
+        if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+            ((WorkbenchMainView)IBPWorkbenchApplication.get().getMainWindow()).addTitle(sessionData.getSelectedProject().getProjectName());
+        }
+
+        // initialize program methods and view and set them to the tabs
+        programMethodsView = new ProgramMethodsView(project);
+        programLocationsView = new ProgramLocationsView(project);
 
         tabSheet.getTab(programMethodsContainer).setEnabled(true);
         programMethodsContainer.removeAllComponents();
@@ -246,7 +219,17 @@ public class AddProgramView extends Panel implements InitializingBean {
         programLocationsContainer.removeAllComponents();
         programLocationsContainer.addComponent(programLocationsView);
 
+        // re-initialize program members and basic details (in update mode)
+        basicDetailsContainer.removeAllComponents();
+        UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
+        updateProjectPanel.hideDeleteBtn();
+        basicDetailsContainer.addComponent(updateProjectPanel);
+
+        programMembersContainer.removeAllComponents();
+        programMembersContainer.addComponent(new ProgramMembersPanel(sessionData.getLastOpenedProject()));
+
         finishButton.setEnabled(true);
+        cancelBtn.setEnabled(false);
     }
 
     public void disableOptionalTabsAndFinish() {

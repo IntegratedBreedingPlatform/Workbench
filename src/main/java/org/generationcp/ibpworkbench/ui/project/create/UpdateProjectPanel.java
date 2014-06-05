@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
@@ -26,8 +27,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
     @Autowired
     private SessionData sessionData;
-
-    private String oldProjectName;
 
     private Label heading;
 
@@ -77,9 +76,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
         projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 
-        projectBasicDetailsComponent.setMargin(false);
-        projectBasicDetailsComponent.setSpacing(false);
-
         projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
 
         buttonArea = layoutButtonArea();
@@ -87,7 +83,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
     @Override
     protected void initializeLayout() {
-
         VerticalLayout root = new VerticalLayout();
         root.setMargin(new Layout.MarginInfo(true, true, true, true));
         root.setSpacing(true);
@@ -95,12 +90,11 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         root.addComponent(projectBasicDetailsComponent);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        //root.setWidth("800px");
 
-        setScrollable(false);
-        setContent(root);
-        setSizeFull();
-
+        this.setScrollable(false);
+        this.setSizeFull();
+        this.setContent(root);
+        this.setStyleName(Reindeer.PANEL_LIGHT);
     }
 
 /*
@@ -156,5 +150,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         return false;
     }
 
+    public void hideDeleteBtn() {
+        this.deleteProgramButton.setVisible(false);
+    }
 
 }

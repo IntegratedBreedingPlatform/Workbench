@@ -16,6 +16,12 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
@@ -50,13 +56,13 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     protected Component buttonArea;
 
     protected Project project;                // the project created
-    protected List<Location> newLocations;    // locations added in Locations tab (ProjectLocationsComponent)
-    protected List<Method> newMethods;        // methods added in Breeding Methods tab (ProjectBreedingMethodsComponent)
-    protected List<User> newUsers;            // users added in Project Members tab (ProjectMembersComponent)
     protected User currentUser;               // should be the currently logged in user that will try to add / update a new project
 
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
+
+    @Autowired
+    private SessionData sessionData;
 	
 	private Label heading;
 
@@ -101,8 +107,8 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         project = new Project();
         
         projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this);
-
         buttonArea = layoutButtonArea();
+
     }
 
     protected void initializeValues() {
@@ -110,17 +116,14 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeLayout() {
         VerticalLayout root = new VerticalLayout();
-        root.setMargin(new Layout.MarginInfo(true,true,true,true));
-        root.setSpacing(false);
-        root.setSizeUndefined();
-        root.setWidth("900px");
-        
+        root.setMargin(new Layout.MarginInfo(true, true, true, true));
+        root.setSpacing(true);
         root.addComponent(heading);
         root.addComponent(projectBasicDetailsComponent);
         root.addComponent(buttonArea);
         root.setComponentAlignment(buttonArea,Alignment.TOP_CENTER);
 
-        this.setScrollable(true);
+        this.setScrollable(false);
         this.setSizeFull();
         this.setContent(root);
         this.setStyleName(Reindeer.PANEL_LIGHT);
@@ -132,9 +135,31 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         saveProjectButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                // if basic details is valid
-                if (presenter.validateAndSave()) {
+                try {
+                    presenter.doAddNewProgram();
+
+                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+                            messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
+
+                    sessionData.setLastOpenedProject(presenter.program);
+                    sessionData.setSelectedProject(presenter.program);
+
+                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView)
+                        ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+
                     presenter.enableProgramMethodsAndLocationsTab();
+
+
+                } catch (Exception e) {
+
+                    if (e.getMessage().equals("basic_details_invalid"))
+                        return;
+
+                    LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
+
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
+                            messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
                 }
             }
         });
@@ -170,47 +195,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         initializeValues();
         initializeLayout();
         initializeActions();
-    }
-
-    /*
-    Move to presenter
-    public boolean validate(){
-    	
-    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
-    	
-    	 boolean success = true;
-
-         success = projectBasicDetailsComponent.validateAndSave();
-
-         if (success) {
-             if (projectMembersComponent != null) {
-                 success = projectMembersComponent.validateAndSave();
-             }
-         }
-
-         return success;
-    	
-    }
-    */
-    
-    public void setTitle(String label, String description) {
-    	newProjectTitleArea.removeAllComponents();
-
-    	Label title = new Label(label);
-        title.setStyleName(Bootstrap.Typography.H2.styleName());
-
-        newProjectTitleArea.addComponent(title);
-
-    	Label descLbl = new Label(description);
-    	descLbl.setWidth("300px");
-    	
-    	PopupView popup = new PopupView("?",descLbl);
-    	popup.setStyleName("gcp-popup-view");
-    	
-    	
-    	newProjectTitleArea.addComponent(popup);
-        newProjectTitleArea.setComponentAlignment(title, Alignment.BOTTOM_LEFT);
-        newProjectTitleArea.setComponentAlignment(popup, Alignment.MIDDLE_LEFT);
 
     }
 

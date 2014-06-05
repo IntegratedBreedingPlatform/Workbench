@@ -345,3 +345,5 @@ img[src$="leaf_16.png"] {
   	width:14px;
     height:16px;
 }
+.green {background: green !important;}
+.blue {background: blue !important;}

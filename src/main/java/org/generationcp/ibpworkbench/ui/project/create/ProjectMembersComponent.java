@@ -17,10 +17,14 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -67,9 +71,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     @Autowired
     private SessionData sessionData;
 
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
+
     private AddProgramPresenter presenter;
 
-    private  List<Role> inheritedRoles;
 
     public ProjectMembersComponent() {
     }
@@ -222,9 +228,32 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         btnSave.addListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent clickEvent) {
-               if (presenter.validateAndSave()) {
-                   presenter.enableProgramMethodsAndLocationsTab();
-               }
+                try {
+                    presenter.doAddNewProgram();
+
+                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+                            messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
+
+                    sessionData.setLastOpenedProject(presenter.program);
+                    sessionData.setSelectedProject(presenter.program);
+
+                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView)
+                        ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+
+                    presenter.enableProgramMethodsAndLocationsTab();
+
+
+                } catch (Exception e) {
+
+                    if (e.getMessage().equals("basic_details_invalid"))
+                        return;
+
+                    LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
+
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
+                            messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+                }
             }
         });
 

@@ -88,26 +88,7 @@ public class AddProgramPresenter {
     }
 
     public void enableProgramMethodsAndLocationsTab() {
-        boolean isGenericCrop = true;
-
-
-        try {
-            for (CropType installedCrop : workbenchDataManager.getInstalledCentralCrops()) {
-                if (program.getCropType().getCropName().equalsIgnoreCase(installedCrop.getCropName())) {
-                    isGenericCrop = false;
-
-                    break;
-                }
-            }
-        } catch (MiddlewareQueryException e) {
-            LOG.error("Error in enableProgramMethodsAndLocationsTab()",e);
-            return;
-        } finally {
-            if (isGenericCrop)
-                view.enableFinishBtn();
-            else
-                view.enableOptionalTabsAndFinish(program.getCropType());
-        }
+        view.updateUIOnProgramSave(sessionData.getSelectedProject());
     }
 
     public void retrievceLocationsAndMethods() {

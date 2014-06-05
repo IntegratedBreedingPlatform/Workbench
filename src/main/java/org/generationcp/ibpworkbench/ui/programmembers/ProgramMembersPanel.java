@@ -18,6 +18,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -312,7 +313,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
     }
 
     protected void initializeLayout() {
-    	
+    	 this.setStyleName(Reindeer.PANEL_LIGHT);
+
     	 final HorizontalLayout titleContainer = new HorizontalLayout();
          final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
          final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");

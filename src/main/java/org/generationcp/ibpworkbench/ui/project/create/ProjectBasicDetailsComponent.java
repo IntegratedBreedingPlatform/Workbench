@@ -79,9 +79,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     @Autowired
     protected SessionData sessionData;
 
-
-    private HorizontalLayout buttonLayout;
-
     public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
         super();
         this.createProjectPanel = createProjectPanel;
@@ -110,9 +107,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     }
 
     protected void initializeComponents() {
-        setSpacing(true);
-        setMargin(true);
-        
         gridLayout = new GridLayout();
         gridLayout.setRows(4);
         gridLayout.setColumns(5);
@@ -191,15 +185,15 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     }
 
     protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
-        
-        setComponentAlignment(gridLayout,Alignment.TOP_CENTER);
+        this.setMargin(false);
+        this.setSpacing(false);
+
+        this.setComponentAlignment(gridLayout, Alignment.TOP_CENTER);
     }
     
     protected void initializeLayoutForUpdate() {
     	
-        setComponentAlignment(gridLayout,Alignment.TOP_LEFT);
+        //this.setComponentAlignment(gridLayout,Alignment.TOP_LEFT);
         
         CropType selectedCropType = sessionData.getSelectedProject().getCropType();
         
