@@ -225,7 +225,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .gcp-login-info{
     background: none !important;
     color: #7D7D7D;
-    font-size: 14px;
+    font-size: 18px;
     text-decoration: none;
     margin-right: 5px;
     vertical-align: bottom;
@@ -288,6 +288,15 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     display: inline-block;
     padding: 0;
 }
+
+.bms-header-btn > span.ico:before {
+    top:10px;
+}
+
+.bms-header-popuplink .bms-fa-caret-down:before {
+    top:2px;
+}
+
 
 .bms-header-btn2 {
     color: white;

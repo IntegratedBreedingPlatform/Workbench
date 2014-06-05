@@ -98,7 +98,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeComponents() {
     	
-    	heading = new Label("<span class=\"fa fa-file-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
+    	heading = new Label("<span class=\"fa-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",Label.CONTENT_XHTML);
         heading.setStyleName(Bootstrap.Typography.H4.styleName()); 
     	
         newProjectTitleArea = new HorizontalLayout();

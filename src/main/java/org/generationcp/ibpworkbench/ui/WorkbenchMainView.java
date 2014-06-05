@@ -126,7 +126,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 
         collapseButton = new Button(
-                "<span class='bms-header-btn'><span class='fa fa-chevron-right ico'/></span>");
+                "<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
         collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
@@ -177,7 +177,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         memberButton.addComponent(memberPopup);
 
 
-        helpButton = new Button("<span class='bms-header-btn2'><span class='fa fa-question-circle ico'></span></span>");
+        helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
         helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
         helpButton.setHtmlContentAllowed(true);
         helpButton.setSizeUndefined();
@@ -232,11 +232,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     private void toggleSidebarIcon() {
         if ( root.getSplitPosition() == 0) {
-            collapseButton.setCaption("<span class='bms-header-btn'><span class='fa fa-chevron-right ico'/></span>");
+            collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
 
         }
         else {
-            collapseButton.setCaption("<span class='bms-header-btn'><span class='fa fa-chevron-left ico'/></span>");
+            collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
         }
     }
 
@@ -472,7 +472,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         if (signoutName.length() > 10)
             signoutName = signoutName.substring(0,9) + "...";
 
-        memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='fa fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
+        memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
        //memberButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
 
     }
