@@ -140,7 +140,7 @@ public class AddProgramView extends Panel implements InitializingBean {
                 "click on <em>Members, Locations, and Breeding Method</em> tabs." +
                 " Note that <em>Locations and Methods</em> are optional and will be available once you" +
                 " complete the <em>Basic Details</em> form by clicking <em>Save</em>." +
-                " Click <em>Finish</em> to complete the operation. Switching to a different crop will reset <em>Locations and Breeding Method</em>.",Label.CONTENT_XHTML);
+                " Click <em>Finish</em> to complete the operation.",Label.CONTENT_XHTML);
 
 		rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
 		rootLayout.setWidth("100%");
