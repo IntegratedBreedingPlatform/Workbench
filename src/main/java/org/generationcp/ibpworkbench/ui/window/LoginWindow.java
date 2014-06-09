@@ -193,7 +193,15 @@ public class LoginWindow extends Window implements InitializingBean {
         loginFrmLayout.setComponentAlignment(passwordGrp,Alignment.MIDDLE_LEFT);
 
         loginFrmLayout.addComponent(forgotPasswordBtn,1,3);
-        loginFrmLayout.addComponent(loginBtn,1,4);
+
+        final Label preloadFont = new Label("<span class='glyphicon glyphicon-stop' style=\"color:transparent; font-size: 1px\"></span>",Label.CONTENT_XHTML);
+
+        final HorizontalLayout buttonContainer = new HorizontalLayout();
+        buttonContainer.setSizeUndefined();
+        buttonContainer.addComponent(loginBtn);
+        buttonContainer.addComponent(preloadFont);
+
+        loginFrmLayout.addComponent(buttonContainer,1,4);
         loginFrmLayout.setComponentAlignment(forgotPasswordBtn,Alignment.TOP_LEFT);
 
 
@@ -201,6 +209,8 @@ public class LoginWindow extends Window implements InitializingBean {
         root.setSizeFull();
         root.addComponent(loginFrmLayout);
         root.setComponentAlignment(loginFrmLayout,Alignment.MIDDLE_CENTER);
+
+
 
         return root;
     }
