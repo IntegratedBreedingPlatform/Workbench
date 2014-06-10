@@ -93,6 +93,11 @@ class NurseryTreeDropHandler implements DropHandler {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
+        
+        if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
+            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_TO_NURSERY_TRIAL,tree.getItemCaption(sourceItemId)));
+            return;
+        }
 
         // Sorting goes as
         // - If dropped ON a node, we append it as a child
