@@ -36,7 +36,7 @@ import java.util.List;
 @Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
 
-    private final NurseryListPreview view;
+    private NurseryListPreview view;
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
 
     private Project project;
@@ -55,6 +55,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     private ManagerFactory managerFactory;
 
+    public NurseryListPreviewPresenter() {
+    	
+    }
 
     public NurseryListPreviewPresenter(NurseryListPreview view, Project project) {
         this.view = view;

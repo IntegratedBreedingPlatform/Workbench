@@ -13,9 +13,11 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.ui.Window;
+
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.api.WorkbenchContext;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
@@ -38,6 +40,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
     @Autowired
     private SessionData sessionData;
+    
+    @Autowired
+    private WorkbenchContext workbenchContext;
 
     private UpdateComponentLabelsAction messageSourceListener;
 
@@ -52,6 +57,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         // implement this when we need to do something on session timeout
 
         messageSource.removeListener(messageSourceListener);
+        
+        workbenchContext.remove(this.sessionData.getUserData().getUserid());
+        this.request.getSession().invalidate();
 
         LOG.debug("Application closed");
     }
@@ -87,7 +95,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         super.doOnRequestStart(request, response);
 
         this.response = response;
-        this.request = request;
+        this.request = request;     
+        this.sessionData.setSessionId(request.getSession().getId());
+        
         //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
 
         //synchronized (this) {

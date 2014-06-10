@@ -14,11 +14,14 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.api.WorkbenchContext;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.generationcp.ibpworkbench.util.CookieUtils;
@@ -51,6 +54,9 @@ public class LoginPresenter {
 
     @Autowired
     private SessionData sessionData;
+    
+    @Autowired
+    private WorkbenchContext workbenchContext;
 
     public LoginPresenter(LoginWindow loginWindow) {
         this.loginWindow = loginWindow;
@@ -90,8 +96,10 @@ public class LoginPresenter {
             // set the session's current user
             user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
             user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
-            sessionData.setUserData(user);
-
+            
+            sessionData.setUserData(user);        
+            workbenchContext.add(user.getUserid(), sessionData);
+            
             // set the cookie if remember me option is enabled
 
             if (loginWindow.isRememberEnabled()) {
