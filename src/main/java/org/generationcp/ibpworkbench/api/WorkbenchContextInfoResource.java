@@ -39,8 +39,7 @@ public class WorkbenchContextInfoResource {
 		
 		for (Integer key : currentSessions.keySet()) {
 			SessionData data = currentSessions.get(key);
-			contextInfo.add(new ContextInfo(new Long(data.getUserData().getUserid()), data.getSelectedProject().getProjectId(), 
-					data.getUserData().getName(), data.getLastOpenedProject().getProjectId(), data.getSessionId()));
+			contextInfo.add(new ContextInfo(new Long(data.getUserData().getUserid()), data.getSelectedProject().getProjectId()));
 		}
 		
 		return contextInfo;

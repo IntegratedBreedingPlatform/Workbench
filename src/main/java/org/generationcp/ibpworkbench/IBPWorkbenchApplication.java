@@ -53,15 +53,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     @Override
     public void close() {
         super.close();
-
         // implement this when we need to do something on session timeout
-
-        messageSource.removeListener(messageSourceListener);
-        
+        messageSource.removeListener(messageSourceListener);     
         workbenchContext.remove(this.sessionData.getUserData().getUserid());
         this.request.getSession().invalidate();
-
-        LOG.debug("Application closed");
+        LOG.debug("IBPWorkbenchApplication closed");
     }
 
     @Override
@@ -96,27 +92,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
         this.response = response;
         this.request = request;     
-        this.sessionData.setSessionId(request.getSession().getId());
-        
-        //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
-
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
-        //}
-
-        //IBPWorkbenchApplication.response = response;	// get a reference of the response
-        //IBPWorkbenchApplication.request = request;
     }
 
     @Override
     protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
         super.doOnRequestEnd(request, response);
-
-        //LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
-
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
-        //}
     }
 
     @Override
@@ -137,8 +117,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     }
 
     protected void initializeActions() {
-        //new LoginPresenter(loginWindow);
-        
         messageSourceListener = new UpdateComponentLabelsAction(this);
         messageSource.addListener(messageSourceListener);
     }

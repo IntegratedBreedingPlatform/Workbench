@@ -20,22 +20,12 @@ public class SessionData {
     private Project lastOpenedProject;
     private Project selectedProject;
     
-    private String sessionId;
-    
     public Project getSelectedProject() {
 		return selectedProject;
 	}
 
 	public void setSelectedProject(Project selectedProject) {
 		this.selectedProject = selectedProject;
-	}
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
 	}
 
 	private User userData;

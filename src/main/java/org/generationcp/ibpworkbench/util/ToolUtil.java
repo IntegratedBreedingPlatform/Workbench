@@ -716,11 +716,8 @@ public class ToolUtil {
     	
     	StringBuffer contextParameters = new StringBuffer();
     	contextParameters
-    		.append(addQueryParameter(ContextConstants.PARAM_USER_ID, sessionData.getUserData().getUserid()))
-	    	.append(addQueryParameter(ContextConstants.PARAM_USER_NAME, sessionData.getUserData().getName()))
-	    	.append(addQueryParameter(ContextConstants.PARAM_SELECTED_PROJECT_ID, sessionData.getSelectedProject().getProjectId()))
-	    	.append(addQueryParameter(ContextConstants.PARAM_LAST_OPENED_PROJECT_ID, sessionData.getLastOpenedProject().getProjectId()))
-	    	.append(addQueryParameter(ContextConstants.PARAM_WORKBENCH_SESSION_ID, sessionData.getSessionId()));
+    		.append(addQueryParameter(ContextConstants.PARAM_LOGGED_IN_USER_ID, sessionData.getUserData().getUserid()))
+	    	.append(addQueryParameter(ContextConstants.PARAM_SELECTED_PROJECT_ID, sessionData.getSelectedProject().getProjectId()));
     	
     	return contextParameters.toString();
     }
