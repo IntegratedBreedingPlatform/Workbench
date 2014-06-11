@@ -12,13 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -35,10 +33,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
@@ -78,6 +87,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
     @Autowired
     protected SessionData sessionData;
+    
+    @Autowired
+    @Qualifier("workbenchProperties")
+    private Properties workbenchProperties;
 
     public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
         super();
@@ -425,11 +438,12 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     public CropType getCropTypeBasedOnInput(){
     	
     	if (((CropType)cropTypeCombo.getValue()).getCropName().equalsIgnoreCase(GENERIC_CROP_DESCRIPTION)){
-  
+    	    String bmsVersion = workbenchProperties.getProperty("workbench.version", null);
+    	    
     		String newItemCaption = (String) otherCropNameField.getValue();
     		CropType cropType = new CropType(newItemCaption);  	
             cropType.setCentralDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_central");
-            
+            cropType.setVersion(bmsVersion);
             return cropType;
     	}else{
     		return (CropType) cropTypeCombo.getValue();
