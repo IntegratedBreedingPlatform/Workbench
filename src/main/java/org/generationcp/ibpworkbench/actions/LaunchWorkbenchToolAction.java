@@ -393,6 +393,11 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         toolUtil.closeNativeTool(fieldbookTool);
                         
                         toolUtil.updateToolConfigurationForProject(fieldbookTool, currentProject);
+                        
+                        
+                        Tool germplasmBrowserTool = workbenchDataManager.getToolWithName(ToolName.germplasm_browser.name());
+                        updateToolConfiguration(window, germplasmBrowserTool);
+                        
                     }
                     catch (MiddlewareQueryException e) {
                         LOG.error("QueryException", e);
