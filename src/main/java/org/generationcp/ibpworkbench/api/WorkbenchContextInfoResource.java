@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.generationcp.commons.workbench.WorkbenchSessionInfo;
+import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.ibpworkbench.SessionData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * This resource is an API of Workbench. It is used to expose information from Workbench for other BMS applications to
+ * This resource is Workbench API to expose context/session information from Workbench for other BMS applications to
  * use.
  * 
  * @author Naymesh Mistry
@@ -32,18 +32,18 @@ public class WorkbenchContextInfoResource {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public Set<WorkbenchSessionInfo> getContextInfo() {
+	public Set<ContextInfo> getContextInfo() {
 
-		Set<WorkbenchSessionInfo> sessionInfo = new HashSet<WorkbenchSessionInfo>();
+		Set<ContextInfo> contextInfo = new HashSet<ContextInfo>();
 		Map<Integer, SessionData> currentSessions = workbenchContext.getCurrentSessions();
 		
 		for (Integer key : currentSessions.keySet()) {
 			SessionData data = currentSessions.get(key);
-			sessionInfo.add(new WorkbenchSessionInfo(data.getUserData().getUserid(), data.getUserData().getName(), data
-					.getSelectedProject().getProjectId(), data.getLastOpenedProject().getProjectId(), data.getSessionId()));
+			contextInfo.add(new ContextInfo(new Long(data.getUserData().getUserid()), data.getSelectedProject().getProjectId(), 
+					data.getUserData().getName(), data.getLastOpenedProject().getProjectId(), data.getSessionId()));
 		}
 		
-		return sessionInfo;
+		return contextInfo;
 	}
 
 }

@@ -12,11 +12,13 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.xml.hibernate.HibernateConfiguration;
 import org.generationcp.commons.xml.hibernate.SessionFactory;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -30,6 +32,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -704,5 +707,25 @@ public class ToolUtil {
         File toolDir = new File(projectDir, tool.getGroupName());
 
         return new File(toolDir, "input").getAbsolutePath();
+    }
+    
+    public static String getWorkbenchContextParameters() {
+    	
+    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+    	SessionData sessionData = app.getSessionData();
+    	
+    	StringBuffer contextParameters = new StringBuffer();
+    	contextParameters
+    		.append(addQueryParameter(ContextConstants.PARAM_USER_ID, sessionData.getUserData().getUserid()))
+	    	.append(addQueryParameter(ContextConstants.PARAM_USER_NAME, sessionData.getUserData().getName()))
+	    	.append(addQueryParameter(ContextConstants.PARAM_SELECTED_PROJECT_ID, sessionData.getSelectedProject().getProjectId()))
+	    	.append(addQueryParameter(ContextConstants.PARAM_LAST_OPENED_PROJECT_ID, sessionData.getLastOpenedProject().getProjectId()))
+	    	.append(addQueryParameter(ContextConstants.PARAM_WORKBENCH_SESSION_ID, sessionData.getSessionId()));
+    	
+    	return contextParameters.toString();
+    }
+    
+    private static String addQueryParameter(String parameterName, Object parameterValue) {
+    	return "&" + parameterName + "=" + parameterValue;
     }
 }

@@ -450,6 +450,8 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                     toolUrl += "?restartApplication";
                 }
                 
+                toolUrl += ToolUtil.getWorkbenchContextParameters();
+                
                 Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
                 
                 browser.setType(Embedded.TYPE_BROWSER);
