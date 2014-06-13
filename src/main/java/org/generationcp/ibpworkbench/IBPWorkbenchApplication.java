@@ -12,7 +12,9 @@
 
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -23,8 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.ui.Window;
 
 public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
@@ -48,12 +49,10 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     @Override
     public void close() {
         super.close();
-
         // implement this when we need to do something on session timeout
-
-        messageSource.removeListener(messageSourceListener);
-
-        LOG.debug("Application closed");
+        messageSource.removeListener(messageSourceListener);     
+        this.request.getSession().invalidate();
+        LOG.debug("IBPWorkbenchApplication closed");
     }
 
     @Override
@@ -87,26 +86,12 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         super.doOnRequestStart(request, response);
 
         this.response = response;
-        this.request = request;
-        //LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
-
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestStart(applicationContext, request, response);
-        //}
-
-        //IBPWorkbenchApplication.response = response;	// get a reference of the response
-        //IBPWorkbenchApplication.request = request;
+        this.request = request;     
     }
 
     @Override
     protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
         super.doOnRequestEnd(request, response);
-
-        //LOG.trace("Request ended " + request.getRequestURI() + "?" + request.getQueryString());
-
-        //synchronized (this) {
-        //    HttpRequestAwareUtil.onRequestEnd(applicationContext, request, response);
-        //}
     }
 
     @Override
@@ -127,8 +112,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     }
 
     protected void initializeActions() {
-        //new LoginPresenter(loginWindow);
-        
         messageSourceListener = new UpdateComponentLabelsAction(this);
         messageSource.addListener(messageSourceListener);
     }
