@@ -12,12 +12,12 @@
 
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.api.WorkbenchContext;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.ui.Window;
 
 public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
@@ -40,9 +39,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
     @Autowired
     private SessionData sessionData;
-    
-    @Autowired
-    private WorkbenchContext workbenchContext;
 
     private UpdateComponentLabelsAction messageSourceListener;
 
@@ -55,7 +51,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         super.close();
         // implement this when we need to do something on session timeout
         messageSource.removeListener(messageSourceListener);     
-        workbenchContext.remove(this.sessionData.getUserData().getUserid());
         this.request.getSession().invalidate();
         LOG.debug("IBPWorkbenchApplication closed");
     }

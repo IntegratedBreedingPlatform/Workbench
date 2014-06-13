@@ -266,20 +266,8 @@
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
-        
-        <!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
     </dependencies>
-
+    
     <profiles>
         <profile>
             <id>vaadinWidgetSetCompilation</id>
