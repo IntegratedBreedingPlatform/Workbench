@@ -13,6 +13,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -95,8 +96,19 @@ class NurseryTreeDropHandler implements DropHandler {
         }
         
         if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_TO_NURSERY_TRIAL,tree.getItemCaption(sourceItemId)));
-            return;
+        	DmsProject parentFolder = (DmsProject)presenter.getStudyNodeParent((Integer) targetItemId);
+        	if(parentFolder != null){
+        		if(((Integer) targetItemId).intValue() < 0 && parentFolder.getProjectId().equals(
+        				NurseryListPreview.ROOT_FOLDER)){
+        			targetItemId = NurseryListPreview.MY_STUDIES;
+        		} else {
+        			targetItemId = parentFolder.getProjectId();
+        		}
+        	} else {
+        		targetItemId = NurseryListPreview.MY_STUDIES;
+        	}
+        	
+        	
         }
 
         // Sorting goes as
