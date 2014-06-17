@@ -303,6 +303,9 @@ public class RunBreedingViewAction implements ClickListener {
             if (webTool) {
                 contextPath = TomcatUtil.getContextPathFromUrl(url);
                 localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
+                
+                contextPath += ToolUtil.getWorkbenchContextParameters();
+                localWarPath += ToolUtil.getWorkbenchContextParameters();
             }
         }
         catch (Exception e1) {

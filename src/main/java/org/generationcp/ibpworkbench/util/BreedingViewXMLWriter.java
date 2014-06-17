@@ -114,6 +114,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         phenotypic.setFieldbook(data);
         
         SSAParameters ssaParameters = new SSAParameters();
+	        webApiUrl += "?restartApplication";
+	    	webApiUrl += ToolUtil.getWorkbenchContextParameters();
         ssaParameters.setWebApiUrl(webApiUrl);
         ssaParameters.setStudyId(breedingViewInput.getStudyId());
         ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
@@ -229,6 +231,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
         
         SSAParameters ssaParameters = new SSAParameters();
+        	webApiUrl += "?restartApplication";
+        	webApiUrl += ToolUtil.getWorkbenchContextParameters();
         ssaParameters.setWebApiUrl(webApiUrl);
         ssaParameters.setStudyId(breedingViewInput.getStudyId());
         ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
