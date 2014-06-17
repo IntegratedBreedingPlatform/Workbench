@@ -126,7 +126,7 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 			public void buttonClick(ClickEvent event) {
 
 				if (treeTable.getValue() == null) return;
-				StudyReference studyRef = (StudyReference) treeTable.getValue();
+				Reference studyRef = (Reference) treeTable.getValue();
 				try {
 					Study study = getStudyDataManager().getStudy(studyRef.getId());
 					multiSiteAnalysisPanel.openStudyMeansDataset(study);
