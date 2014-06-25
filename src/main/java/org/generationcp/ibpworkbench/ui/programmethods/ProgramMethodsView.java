@@ -67,7 +67,7 @@ import java.util.*;
          tableColumns.put("mcode","Code");
          tableColumns.put("mtype","Type");
          tableColumns.put("date","Date");
-         tableColumns.put("gBulk","Bulk");
+         tableColumns.put("class","Class");
 
          tableColumnSizes = new HashMap<String, Integer>();
          tableColumnSizes.put("select",20);
@@ -76,7 +76,7 @@ import java.util.*;
          tableColumnSizes.put("mcode",40);
          tableColumnSizes.put("mtype",40);
          tableColumnSizes.put("date",70);
-         tableColumnSizes.put("gBulk",30);
+         tableColumnSizes.put("class",45);
 
 
      }
@@ -97,6 +97,8 @@ import java.util.*;
      private BeanItemContainer<MethodView> favoritesTableContainer;
      private Button addToFavoriteBtn;
      private Button removeToFavoriteBtn;
+     
+     private Map<Integer,String> classMap;
 
 
      public ProgramMethodsView(Project project) {
@@ -242,16 +244,16 @@ import java.util.*;
 
 
 
-         table.addGeneratedColumn("gBulk", new Table.ColumnGenerator() {
+         table.addGeneratedColumn("class", new Table.ColumnGenerator() {
              @Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 Label bulkLbl = new Label("");
-                 bulkLbl.setContentMode(Label.CONTENT_XHTML);
-
-                 if (((MethodView)itemId).isBulk())
-                     bulkLbl.setValue("<span class='glyphicon glyphicon-ok'></span>");
-
-                 return bulkLbl;
+                 Label classLbl = new Label("");
+                 classLbl.setContentMode(Label.CONTENT_XHTML);
+                 String methodClass = classMap.get(((MethodView)itemId).getGeneq());
+                 methodClass = methodClass==null?"":methodClass;
+                 classLbl.setValue(methodClass);
+                 classLbl.setDescription(methodClass);
+                 return classLbl;
              }
          });
 
@@ -409,6 +411,9 @@ import java.util.*;
              /* SETUP TABLE FIELDS */
          this.setupTableFields(availableTable);
          this.setupTableFields(favoritesTable);
+         
+         //set lookup map for classes
+         classMap = presenter.getMethodClasses();
      }
 
      private void setupTableFields(Table table) {

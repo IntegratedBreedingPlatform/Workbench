@@ -3,8 +3,10 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -379,4 +381,20 @@ public class ProgramMethodsPresenter implements InitializingBean {
         }
         return result;
     }
+
+	public Map<Integer, String> getMethodClasses() {
+		Map<Integer, String> methodClasses = new HashMap<Integer, String>();
+		try {
+			List<Term> terms = gdm.getMethodClasses();
+			if(terms!=null) {
+				for (Term term : terms) {
+					methodClasses.put(term.getId(), term.getName());
+				}
+			}
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
+		
+		return methodClasses;
+	}
 }
