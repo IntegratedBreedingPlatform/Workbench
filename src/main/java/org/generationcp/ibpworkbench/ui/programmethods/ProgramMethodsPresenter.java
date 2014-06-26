@@ -383,7 +383,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     }
 
 	public Map<Integer, String> getMethodClasses() {
-		Map<Integer, String> methodClasses = new HashMap<Integer, String>();
+		Map<Integer, String> methodClasses = new LinkedHashMap<Integer, String>();
 		try {
 			List<Term> terms = gdm.getMethodClasses();
 			if(terms!=null) {

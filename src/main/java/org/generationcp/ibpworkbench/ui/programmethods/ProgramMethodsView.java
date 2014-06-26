@@ -412,11 +412,18 @@ import java.util.*;
          this.setupTableFields(availableTable);
          this.setupTableFields(favoritesTable);
          
-         //set lookup map for classes
-         classMap = presenter.getMethodClasses();
+         retrieveMethodClasses();
      }
 
-     private void setupTableFields(Table table) {
+    public Map<Integer,String> retrieveMethodClasses() {
+    	 //set lookup map for classes
+    	 if(classMap==null || classMap.isEmpty()) {
+    		 classMap = presenter.getMethodClasses();
+    	 }
+    	 return classMap;
+	}
+
+	private void setupTableFields(Table table) {
          table.setVisibleColumns(tableColumns.keySet().toArray());
          table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
 

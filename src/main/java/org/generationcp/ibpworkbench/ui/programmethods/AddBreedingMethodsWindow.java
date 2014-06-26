@@ -49,7 +49,8 @@ public class AddBreedingMethodsWindow extends Window {
 
         //layout.addComponent(newBreedingMethodTitle);
 
-        breedingMethodForm = new BreedingMethodForm();
+        breedingMethodForm = new BreedingMethodForm(
+        		projectBreedingMethodsPanel.retrieveMethodClasses());
 
         cancelButton = new Button("Cancel");
         addBreedingMethodButton = new Button("Save");
@@ -129,7 +130,7 @@ public class AddBreedingMethodsWindow extends Window {
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        addBreedingMethodButton = new Button("Add");
+        addBreedingMethodButton = new Button("Save");
         addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(addBreedingMethodButton);

@@ -153,6 +153,7 @@ public enum Message {
     ,BREED_METH_GRP
     ,BREED_METH_CODE
     ,BREED_METH_TYPE
+    ,BREED_METH_CLASS
     
     // Tool configuration update
     ,UPDATING

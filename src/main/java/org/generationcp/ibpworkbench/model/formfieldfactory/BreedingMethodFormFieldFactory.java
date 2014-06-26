@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
+import java.util.Map;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.incubator.customcheckbox.CustomCheckbox;
@@ -41,7 +43,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     private Select methodSelectType;
     private Select methodSelectGroup;
     private Field methodCode;
-    private CheckBox methodBulk;
+    private Select methodSelectClass;
 
     // For new item handling and listener of crop type combo box
     //private MethodTypeComboAction methodTypeComboAction;
@@ -49,11 +51,11 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public BreedingMethodFormFieldFactory() {
-        initFields();
+    public BreedingMethodFormFieldFactory(Map<Integer,String> classMap) {
+        initFields(classMap);
     }
 
-    private void initFields() {
+    private void initFields(Map<Integer,String> classMap) {
 
         methodName = new TextField();
         methodName.setRequired(true);
@@ -99,9 +101,17 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodSelectGroup.setItemCaption("G", "All System");
         methodSelectGroup.select("");
         methodSelectGroup.setNullSelectionAllowed(false);
-
-        methodBulk = new CheckBox();
-
+        
+        methodSelectClass = new Select();
+        methodSelectClass.setWidth("250px");
+        for (Integer key : classMap.keySet()) {
+			String value = classMap.get(key);
+			methodSelectClass.addItem(key);
+			methodSelectClass.setItemCaption(key, value);
+		}
+        methodSelectClass.setNullSelectionAllowed(false);
+        methodSelectClass.setRequired(true);
+        methodSelectClass.setRequiredError("Please select a Class");        
     }
 
 
@@ -126,10 +136,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         } else if ("mgrp".equals(propertyId)) {
         //    messageSource.setCaption(methodSelectGroup, Message.BREED_METH_GRP);
             return methodSelectGroup;
-        } else if ("bulk".equals(propertyId)) {
-
-        //    methodBulk.setCaption("Bulk Method");
-            return methodBulk;
+        } else if ("geneq".equals(propertyId)) {
+            return methodSelectClass;
         }
         return field;
     }

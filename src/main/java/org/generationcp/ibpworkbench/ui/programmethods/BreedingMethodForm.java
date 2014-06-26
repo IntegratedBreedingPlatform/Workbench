@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Arrays;
+import java.util.Map;
 
 
 /**
@@ -42,19 +43,23 @@ public class BreedingMethodForm extends Form {
     private static final long serialVersionUID = -3649453194910730855L;
     private final MethodView modelBean;
     private GridLayout grid;
+    private Map<Integer,String> classMap;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
 
-    public BreedingMethodForm() {
-        modelBean = new MethodView();
+    public BreedingMethodForm(Map<Integer,String> classMap) {
+    	this.classMap = classMap;
+    	modelBean = new MethodView();
         assemble();
+        
     }
 
-    public BreedingMethodForm(MethodView methodView)
+    public BreedingMethodForm(Map<Integer,String> classMap, MethodView methodView)
     {
-        modelBean = methodView;
+    	this.classMap = classMap;
+    	modelBean = methodView;
         assemble();
     }
 
@@ -77,9 +82,9 @@ public class BreedingMethodForm extends Form {
         setItemDataSource(new BeanItem<MethodView>(modelBean));
 
         setComponentError(null);
-        setFormFieldFactory(new BreedingMethodFormFieldFactory());
+        setFormFieldFactory(new BreedingMethodFormFieldFactory(classMap));
         this.setVisibleItemProperties(Arrays.asList(
-                new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp","bulk" }));
+                new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp", "geneq" }));
 
 
         setWriteThrough(false);
@@ -106,7 +111,7 @@ public class BreedingMethodForm extends Form {
             grid.addComponent(field, 1, 3);
         } else if ("mgrp".equals(propertyId)) {
             grid.addComponent(field, 1, 4);
-        } else if ("bulk".equals(propertyId)) {
+        } else if ("geneq".equals(propertyId)) {
             grid.addComponent(field,1,5);
         }
     }
@@ -130,7 +135,7 @@ public class BreedingMethodForm extends Form {
         grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_GRP)),0,4);
 
         if (grid.getComponent(0, 5) == null)
-        grid.addComponent(createLabel("Bulk Method"),0,5);
+        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_CLASS),true),0,5);
 
         super.attach();
 

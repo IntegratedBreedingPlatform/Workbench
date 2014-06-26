@@ -16,7 +16,7 @@ import org.generationcp.middleware.pojos.Method;
         this.setMtype("");
         this.setMgrp("");
         this.setMcode("");
-        this.setGeneq(0);
+        this.setGeneq(null);
     }
 
     public boolean isBulk() {
