@@ -120,7 +120,7 @@ public class AddLocationsWindow extends Window{
         buttonLayout.setMargin(true, false, false, false);
 
         cancelButton = new Button("Cancel");
-        addLocationButton = new Button("Add");
+        addLocationButton = new Button("Save");
         addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         buttonLayout.addComponent(cancelButton);
         buttonLayout.addComponent(addLocationButton);
