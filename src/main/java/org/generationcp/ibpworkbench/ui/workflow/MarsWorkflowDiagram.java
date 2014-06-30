@@ -449,11 +449,11 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserFBBtn, 0);
 
-
-        layout.addComponent(browseGenotypingDataButton);
-       // browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
+        // Hide GDMS links for 2.1.9 installer
+//        layout.addComponent(browseGenotypingDataButton);
+//       // browseGenotypingDataButton.setHeight("20px");
+//        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         //layout.addComponent(headToHeadButton2);
         //headToHeadButton2.setHeight("20px");
@@ -550,9 +550,10 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(gdmsButton);
-        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(gdmsButton, 0);
+        // Hide GDMS links for 2.1.9 installer
+//        layout.addComponent(gdmsButton);
+//        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(gdmsButton, 0);
 
         return layout;
     }

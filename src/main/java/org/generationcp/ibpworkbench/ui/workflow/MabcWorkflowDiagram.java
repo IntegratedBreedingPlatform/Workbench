@@ -418,48 +418,21 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
 
-        // GCP-6394
-        /*layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmButton, 0);*/
-
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
-
-        //layout.addComponent(germplasmImportButton);
-        //germplasmImportButton.setHeight("20px");
-        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(germplasmImportButton, 0);
-
 
         layout.addComponent(germplasmImportButton2);
         germplasmImportButton2.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
 
-        /**layout.addComponent(manageGermplasmListsButton);
-         manageGermplasmListsButton.setHeight("20px");
-         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-         layout.setExpandRatio(manageGermplasmListsButton, 0);**/
-          
-        /*layout.addComponent(browseGermplasmListsButton);
-        browseGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmListsButton, 0);*/
-
-        layout.addComponent(browseGenotypingDataButton);
-        browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
-        
-        /*layout.addComponent(headToHeadButton2);
-        headToHeadButton2.setHeight("20px");
-        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton2, 0);
-        */
+        // Hide GDMS links for 2.1.9 installer
+//        layout.addComponent(browseGenotypingDataButton);
+//        browseGenotypingDataButton.setHeight("20px");
+//        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
@@ -470,11 +443,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         ontologyBrowserButton.setHeight("20px");
         layout.setComponentAlignment(ontologyBrowserButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserButton, 0);
-
-        /*layout.addComponent(browseGermplasmAndListsButton);
-        ontologyBrowserButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmAndListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmAndListsButton, 0);*/
 
         layout.addComponent(queryForAdaptedGermplasmButton2);
         queryForAdaptedGermplasmButton2.setHeight("20px");
@@ -557,9 +525,10 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        layout.addComponent(gdmsButton);
-        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(gdmsButton, 0);
+        // Hide GDMS links for 2.1.9 installer
+//        layout.addComponent(gdmsButton);
+//        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(gdmsButton, 0);
 
 
         return layout;

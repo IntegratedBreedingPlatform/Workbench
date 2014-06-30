@@ -368,13 +368,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         ontologyBrowserFBBtn.setHeight("20px");
         layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserFBBtn, 0);
-
         
-        //layout.addComponent(browseGermplasmButton);
-        //browseGermplasmButton.setHeight("20px");
-        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(browseGermplasmButton, 0);
-
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
@@ -385,10 +379,11 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
-        layout.addComponent(browseGenotypingDataButton);
-        browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
+        // Hide GDMS links for 2.1.9 installer
+//        layout.addComponent(browseGenotypingDataButton);
+//        browseGenotypingDataButton.setHeight("20px");
+//        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+//        layout.setExpandRatio(browseGenotypingDataButton, 0);
          /*
         layout.addComponent(headToHeadButton);
         headToHeadButton.setHeight("20px");
