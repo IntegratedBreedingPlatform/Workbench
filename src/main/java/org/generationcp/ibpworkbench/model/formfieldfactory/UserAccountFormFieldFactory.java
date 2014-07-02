@@ -15,6 +15,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.validator.PersonNameValidator;
 import org.generationcp.ibpworkbench.validator.UserPasswordValidator;
@@ -58,12 +59,47 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
     }
     
     private void initFields() {
-        firstName = new TextField();  
-        lastName = new TextField();
+        firstName = new TextField(){
+
+			@Override
+			public Object getValue() {
+				return super.getValue().toString().trim();
+			}
+        	
+        }; 
+        lastName = new TextField(){
+
+			@Override
+			public Object getValue() {
+				return super.getValue().toString().trim();
+			}
+        	
+        };
         firstName.addValidator(new PersonNameValidator(firstName, lastName));
-        middleName = new TextField();
-        email = new TextField();
-        username = new TextField();
+        middleName = new TextField(){
+
+			@Override
+			public Object getValue() {
+				return super.getValue().toString().trim();
+			}
+        	
+        };
+        email = new TextField(){
+
+			@Override
+			public Object getValue() {
+				return super.getValue().toString().trim();
+			}
+        	
+        };
+        username = new TextField(){
+
+			@Override
+			public Object getValue() {
+				return super.getValue().toString().trim();
+			}
+        	
+        };
         password = new PasswordField();
         passwordConfirmation = new PasswordField();
         password.addValidator(new UserPasswordValidator(password, passwordConfirmation));
