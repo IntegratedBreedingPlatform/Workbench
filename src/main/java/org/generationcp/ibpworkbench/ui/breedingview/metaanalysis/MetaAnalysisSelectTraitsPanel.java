@@ -738,7 +738,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		
 		try {
 			//NOTE: Directory location is hardcoded to workspace/{projectId/breeding_view/input}
-			String dir = "workspace" + File.separator + currentProject.getProjectId().toString() + File.separator + "breeding_view" + File.separator + "input";
+			String dir = "workspace" + File.separator + currentProject.getProjectName().toString() + File.separator + "breeding_view" + File.separator + "input";
 			new File(dir).mkdirs();
 			File xlsFile = new File(dir + File.separator + "mergedDataSets.xls");
 			FileOutputStream fos = new FileOutputStream(xlsFile);
