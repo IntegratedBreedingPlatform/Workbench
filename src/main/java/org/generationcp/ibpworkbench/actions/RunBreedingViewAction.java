@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import com.google.common.base.Strings;
 import com.mysql.jdbc.StringUtils;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -27,6 +28,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.util.*;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -195,9 +197,12 @@ public class RunBreedingViewAction implements ClickListener {
             return;
         } else{
            
-            String entry  = "";
+            String entryName  = "";
+            String plotName = "";
 			try {
-				entry = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), 8230);
+				entryName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), 8230);
+				plotName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NO.getId());
+				
 			} catch (ConfigException e) {
 				
 				e.printStackTrace();
@@ -208,8 +213,15 @@ public class RunBreedingViewAction implements ClickListener {
 			
 			Genotypes genotypes = new Genotypes();
 	        genotypes.setName(genotypesName.trim());
-            genotypes.setEntry(entry);
+            genotypes.setEntry(entryName);
             breedingViewInput.setGenotypes(genotypes);
+            
+            if (!Strings.isNullOrEmpty(plotName)){
+	            Plot plot = new Plot();
+	            plot.setName(plotName);
+	            breedingViewInput.setPlot(plot);
+            }
+            
         }
         
         

@@ -209,6 +209,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         design.setReplicates(breedingViewInput.getReplicates());
         design.setColumns(breedingViewInput.getColumns());
         design.setRows(breedingViewInput.getRows());
+        design.setPlot(breedingViewInput.getPlot());
         
         Environments environments = new Environments();
         environments.setName(breedingViewInput.getEnvironment().getName());
