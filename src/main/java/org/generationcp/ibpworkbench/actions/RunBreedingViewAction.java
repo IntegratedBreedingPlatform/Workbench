@@ -200,9 +200,11 @@ public class RunBreedingViewAction implements ClickListener {
             String entryName  = "";
             String plotName = "";
 			try {
-				entryName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), 8230);
+				entryName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.ENTRY_NO.getId());
 				plotName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NO.getId());
-				
+				if (Strings.isNullOrEmpty(plotName)){
+					plotName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NNO.getId());
+				}
 			} catch (ConfigException e) {
 				
 				e.printStackTrace();
