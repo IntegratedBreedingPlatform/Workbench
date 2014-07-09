@@ -82,10 +82,20 @@ class NurseryTreeDropHandler implements DropHandler {
      */
     private void moveNode(Object sourceItemId, Object targetItemId,
                           VerticalDropLocation location) {
-        HierarchicalContainer container = (HierarchicalContainer) tree
+    	
+    	if(location != VerticalDropLocation.MIDDLE || sourceItemId.equals(targetItemId)){
+        	return;
+        }
+    	
+    	HierarchicalContainer container = (HierarchicalContainer) tree
                 .getContainerDataSource();
-
-        if ((targetItemId instanceof String && ((String) targetItemId).equals(NurseryListPreview.SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
+        
+        if(sourceItemId.equals(NurseryListPreview.SHARED_STUDIES) || sourceItemId.equals(NurseryListPreview.MY_STUDIES)){
+    		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
+            return;
+    	}
+    	
+    	if ((targetItemId instanceof String && ((String) targetItemId).equals(NurseryListPreview.SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_STUDIES)));
             return;
         }
@@ -111,13 +121,6 @@ class NurseryTreeDropHandler implements DropHandler {
         	
         }
 
-        // Sorting goes as
-        // - If dropped ON a node, we append it as a child
-        // - If dropped on the TOP part of a node, we move/add it before
-        // the node
-        // - If dropped on the BOTTOM part of a node, we move/add it
-        // after the node
-
         boolean success = true;
         try {
             int actualTargetId = 0;
@@ -139,25 +142,9 @@ class NurseryTreeDropHandler implements DropHandler {
         // only perform UI change if backend modification was successful
         if (success) {
 
-            if (location == VerticalDropLocation.MIDDLE) {
-                if (container.setParent(sourceItemId, targetItemId)
-                        && container.hasChildren(targetItemId)) {
-                    // move first in the container
-                    container.moveAfterSibling(sourceItemId, null);
-                }
-            } else if (location == VerticalDropLocation.TOP) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    // reorder only the two items, moving source above target
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                    container.moveAfterSibling(targetItemId, sourceItemId);
-                }
-            } else if (location == VerticalDropLocation.BOTTOM) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                }
-            }
+        	container.setParent(sourceItemId, targetItemId);
+            container.moveAfterSibling(sourceItemId, null);
+            
         }
     }
 
