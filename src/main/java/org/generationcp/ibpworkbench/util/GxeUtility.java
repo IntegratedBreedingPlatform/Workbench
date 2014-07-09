@@ -263,7 +263,7 @@ public class GxeUtility {
 				for (int i = 2; i < header.length; i++){
 					boolean existsFlag = false;
 					for (Variable variable : map.values()){
-						if (variable.getVariableType().getLocalName().equals(trait.getName() + "_" + header[i])){
+						if (variable.getVariableType().getLocalName().equals(trait.getName().replace("_Means", "") + "_" + header[i])){
 							row.add(variable.getValue());
 							existsFlag = true;
 							break;
