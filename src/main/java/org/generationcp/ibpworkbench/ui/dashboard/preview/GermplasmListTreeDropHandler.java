@@ -112,7 +112,7 @@ public class GermplasmListTreeDropHandler implements DropHandler {
         	if(parentFolder != null){
         		targetItemId = parentFolder.getId();
         	} else {
-        		targetItemId = null;
+        		targetItemId = GermplasmListPreview.MY_LIST;
         	}
         }
 
@@ -123,15 +123,10 @@ public class GermplasmListTreeDropHandler implements DropHandler {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
             }
 
-            // Sorting goes as
-            // - If dropped ON a node, we append it as a child
-            // - If dropped on the TOP part of a node, we move/add it before
-            // the node
-            // - If dropped on the BOTTOM part of a node, we move/add it
-            // after the node
-
-            container.setParent(sourceItemId, targetItemId);
-            container.moveAfterSibling(sourceItemId, null);
+            if(container.setParent(sourceItemId, targetItemId) && 
+            	container.hasChildren(targetItemId)) {
+            	container.moveAfterSibling(sourceItemId, null);
+            }
             
         } catch (Error error) {
             error.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

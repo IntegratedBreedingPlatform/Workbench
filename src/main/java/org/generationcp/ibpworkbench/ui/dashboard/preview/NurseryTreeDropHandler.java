@@ -142,8 +142,10 @@ class NurseryTreeDropHandler implements DropHandler {
         // only perform UI change if backend modification was successful
         if (success) {
 
-        	container.setParent(sourceItemId, targetItemId);
-            container.moveAfterSibling(sourceItemId, null);
+        	if(container.setParent(sourceItemId, targetItemId) && 
+            	container.hasChildren(targetItemId)) {
+            	container.moveAfterSibling(sourceItemId, null);
+            }
             
         }
     }
