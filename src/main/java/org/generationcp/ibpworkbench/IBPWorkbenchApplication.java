@@ -51,7 +51,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         super.close();
         // implement this when we need to do something on session timeout
         messageSource.removeListener(messageSourceListener);     
-        this.request.getSession().invalidate();
+        if(this.request != null) {
+        	this.request.getSession().invalidate();
+        }
         LOG.debug("IBPWorkbenchApplication closed");
     }
 
