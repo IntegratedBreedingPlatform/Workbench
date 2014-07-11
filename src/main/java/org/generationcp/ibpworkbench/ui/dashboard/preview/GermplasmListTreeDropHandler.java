@@ -9,10 +9,12 @@ import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Tree;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.pojos.GermplasmList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -82,9 +84,19 @@ public class GermplasmListTreeDropHandler implements DropHandler {
      */
     private void moveNode(Object sourceItemId, Object targetItemId,
                           VerticalDropLocation location) {
+    	
+        if(location != VerticalDropLocation.MIDDLE || sourceItemId.equals(targetItemId)){
+        	return;
+        }
+
         HierarchicalContainer container = (HierarchicalContainer) tree
                 .getContainerDataSource();
-
+        
+        if(sourceItemId.equals(GermplasmListPreview.SHARED_LIST) || sourceItemId.equals(GermplasmListPreview.MY_LIST)){
+    		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
+            return;
+    	}
+        
         if ((targetItemId instanceof String && ((String) targetItemId).equals(GermplasmListPreview.SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_LIST)));
             return;
@@ -94,40 +106,36 @@ public class GermplasmListTreeDropHandler implements DropHandler {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
+        
+        if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
+        	GermplasmList parentFolder = (GermplasmList)presenter.getGermplasmListParent((Integer) targetItemId);
+        	if(parentFolder != null){
+        		targetItemId = parentFolder.getId();
+        	} else {
+        		targetItemId = GermplasmListPreview.MY_LIST;
+        	}
+        }
 
         try {
+        	
+        	Object previousTargetItemId = container.getParent(sourceItemId);
+            if(previousTargetItemId.equals(targetItemId)) {
+            	return;
+            }
+            
+            
             if (targetItemId instanceof String) {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
             } else {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
             }
 
-            // Sorting goes as
-            // - If dropped ON a node, we append it as a child
-            // - If dropped on the TOP part of a node, we move/add it before
-            // the node
-            // - If dropped on the BOTTOM part of a node, we move/add it
-            // after the node
-
-            if (location == VerticalDropLocation.MIDDLE) {
-                if (container.setParent(sourceItemId, targetItemId)
-                        && container.hasChildren(targetItemId)) {
-                    // move first in the container
-                    container.moveAfterSibling(sourceItemId, null);
-                }
-            } else if (location == VerticalDropLocation.TOP) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    // reorder only the two items, moving source above target
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                    container.moveAfterSibling(targetItemId, sourceItemId);
-                }
-            } else if (location == VerticalDropLocation.BOTTOM) {
-                Object parentId = container.getParent(targetItemId);
-                if (container.setParent(sourceItemId, parentId)) {
-                    container.moveAfterSibling(sourceItemId, targetItemId);
-                }
+            container.setChildrenAllowed(targetItemId,true);
+            if(container.setParent(sourceItemId, targetItemId) && 
+            	container.hasChildren(targetItemId)) {
+            	container.moveAfterSibling(sourceItemId, null);
             }
+            
         } catch (Error error) {
             error.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

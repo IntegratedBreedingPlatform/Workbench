@@ -258,14 +258,12 @@ public class GxeUtility {
 				
 				List<String> row = new ArrayList<String>();
 				row.add(exp.getFactors().findByLocalName(environmentName).getValue());
-					
-				String traitName = trait.getName().replace("_Means", "");
-				row.add(traitName);
+				row.add(trait.getName());
 				
 				for (int i = 2; i < header.length; i++){
 					boolean existsFlag = false;
 					for (Variable variable : map.values()){
-						if (variable.getVariableType().getLocalName().equals(traitName + "_" + header[i])){
+						if (variable.getVariableType().getLocalName().equals(trait.getName().replace("_Means", "") + "_" + header[i])){
 							row.add(variable.getValue());
 							existsFlag = true;
 							break;

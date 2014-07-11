@@ -63,7 +63,7 @@ public class UsernameValidator extends AbstractValidator{
     		return true;
     	}
         try {
-        	if(workbenchDataManager.isUsernameExists(value.toString()))
+        	if(workbenchDataManager.isUsernameExists(value.toString().trim()))
         	{
         		return false;
         	}

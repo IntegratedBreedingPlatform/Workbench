@@ -50,6 +50,7 @@ public class BreedingViewInput implements Serializable {
     private Genotypes genotypes;
     private Rows rows;
     private Columns columns;
+    private Plot plot;
     private Environment environment;
     private HashMap<Integer, String> variateColumns;
     private String datasetName;
@@ -375,6 +376,14 @@ public class BreedingViewInput implements Serializable {
 
 	public void setSelectedEnvironments(List<SeaEnvironmentModel> selectedEnvironments) {
 		this.selectedEnvironments = selectedEnvironments;
+	}
+
+	public Plot getPlot() {
+		return plot;
+	}
+
+	public void setPlot(Plot plot) {
+		this.plot = plot;
 	}
 
     
