@@ -117,12 +117,20 @@ public class GermplasmListTreeDropHandler implements DropHandler {
         }
 
         try {
+        	
+        	Object previousTargetItemId = container.getParent(sourceItemId);
+            if(previousTargetItemId.equals(targetItemId)) {
+            	return;
+            }
+            
+            
             if (targetItemId instanceof String) {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
             } else {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, (Integer) targetItemId);
             }
 
+            container.setChildrenAllowed(targetItemId,true);
             if(container.setParent(sourceItemId, targetItemId) && 
             	container.hasChildren(targetItemId)) {
             	container.moveAfterSibling(sourceItemId, null);

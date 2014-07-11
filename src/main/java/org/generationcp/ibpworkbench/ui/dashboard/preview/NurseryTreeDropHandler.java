@@ -130,6 +130,11 @@ class NurseryTreeDropHandler implements DropHandler {
             } else {
                 actualTargetId = (Integer)targetItemId;
             }
+            
+            Object previousTargetItemId = container.getParent(sourceItemId);
+            if(previousTargetItemId.equals(targetItemId)) {
+            	return;
+            }
 
             Integer source = (Integer)sourceItemId;
 
@@ -141,7 +146,7 @@ class NurseryTreeDropHandler implements DropHandler {
 
         // only perform UI change if backend modification was successful
         if (success) {
-
+        	container.setChildrenAllowed(targetItemId,true);
         	if(container.setParent(sourceItemId, targetItemId) && 
             	container.hasChildren(targetItemId)) {
             	container.moveAfterSibling(sourceItemId, null);
