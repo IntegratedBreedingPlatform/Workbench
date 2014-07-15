@@ -6,7 +6,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.service.BackupIBDBService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -79,6 +81,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
             ProjectActivity projAct = new ProjectActivity(new Integer(selectedProject.getProjectId().intValue()), selectedProject, "backup action", "backup performed on " + selectedProject.getProjectName(), user, new Date());
 
             workbenchDataManager.addProjectActivity(projAct);
+            
+            MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.BACKUP_IBDB_COMPLETE));
 
 
             FileResource fr = new FileResource(backupFile, sourceWindow.getApplication()) {
@@ -103,9 +107,10 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
             sourceWindow.getApplication().getMainWindow().open(fr);
 
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.BACKUP_IBDB_CANNOT_PERFORM_OPERATION),e.getMessage());
+
         }
     }
 
