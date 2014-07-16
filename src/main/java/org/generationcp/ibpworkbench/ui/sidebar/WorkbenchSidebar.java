@@ -53,6 +53,14 @@ public class WorkbenchSidebar extends CssLayout {
 
                 TreeItem treeItem = (TreeItem) event.getItemId();
                 if (treeItem.getValue() == null) {
+                    
+                    if (sidebarTree.isExpanded(treeItem)) {
+                        sidebarTree.collapseItem(treeItem);
+                    }
+                    else {
+                        sidebarTree.expandItem(treeItem);
+                    }
+                    
                     return;
                 }
 
@@ -141,32 +149,32 @@ public class WorkbenchSidebar extends CssLayout {
 
         sidebarTree.setSelectable(true);
         sidebarTree.addListener(treeClickListener);
-        sidebarTree.addListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                LOG.trace("valueChange");
-
-                // expand category if not yet expanded
-
-                Object parentItem = sidebarTree.getParent(event.getProperty().getValue());
-
-                if (parentItem != null && !sidebarTree.isExpanded(parentItem)) {
-                    sidebarTree.expandItem(sidebarTree.getParent(event.getProperty().getValue()));
-
-                }
-
-                // item is category, expand or collapse this
-                if (event.getProperty() != null || event.getProperty().getValue() != null) {
-                    if (sidebarTree.isExpanded(event.getProperty().getValue()))
-                        sidebarTree.collapseItem(event.getProperty().getValue());
-                    else
-                        sidebarTree.expandItem(event.getProperty().getValue());
-                }
-
-
-            }
-        });
+//        sidebarTree.addListener(new Property.ValueChangeListener() {
+//
+//            @Override
+//            public void valueChange(Property.ValueChangeEvent event) {
+//                LOG.trace("valueChange");
+//
+//                // expand category if not yet expanded
+//
+//                Object parentItem = sidebarTree.getParent(event.getProperty().getValue());
+//
+//                if (parentItem != null && !sidebarTree.isExpanded(parentItem)) {
+//                    sidebarTree.expandItem(sidebarTree.getParent(event.getProperty().getValue()));
+//
+//                }
+//
+//                // item is category, expand or collapse this
+//                if (event.getProperty() != null || event.getProperty().getValue() != null) {
+//                    if (sidebarTree.isExpanded(event.getProperty().getValue()))
+//                        sidebarTree.collapseItem(event.getProperty().getValue());
+//                    else
+//                        sidebarTree.expandItem(event.getProperty().getValue());
+//                }
+//
+//
+//            }
+//        });
         this.addComponent(sidebarTree);
     }
 
