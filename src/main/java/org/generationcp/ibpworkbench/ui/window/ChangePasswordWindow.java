@@ -83,7 +83,9 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         layout.setSpacing(true);
 
         passwordLabel.setWidth("140px");
+        password.setWidth("140px");
         confirmLabel.setWidth("140px");
+        confirm_password.setWidth("140px");
         
         GridLayout passwordGridLayout = new GridLayout(2, 2);
         passwordGridLayout.setMargin(false, false, false, false);
@@ -91,6 +93,7 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         passwordGridLayout.addComponent(password);
         passwordGridLayout.addComponent(confirmLabel);
         passwordGridLayout.addComponent(confirm_password);
+        passwordGridLayout.setSizeFull();
         
         
         HorizontalLayout buttonlayout = new HorizontalLayout();
