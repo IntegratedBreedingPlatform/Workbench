@@ -98,11 +98,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private Button btnReset;
     private Button btnBack;
     private TextField txtVersion;
-    private TextField txtProjectType;
+    private Label valueProjectType;
     private TextField txtAnalysisName;
     private TextField txtNameForAnalysisEnv;
-    private TextField txtDatasetName;
-    private TextField txtDatasourceName;
+    private Label valueDatasetName;
+    private Label valueDatasourceName;
     private Select selDesignType;
     private Select selEnvFactor;
     private Select selReplicates;
@@ -167,8 +167,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         return breedingViewInput;
     }
     
-    public TextField getTxtProjectType() {
-        return txtProjectType;
+    public Label getValueProjectType() {
+        return valueProjectType;
     }
 
     public TextField getTxtAnalysisName() {
@@ -385,33 +385,24 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
             
         }
         
-        txtProjectType = new TextField();
-        txtProjectType.setNullRepresentation("");
-        txtProjectType.setValue("Field Trial");
-        txtProjectType.setReadOnly(true);
-        txtProjectType.setRequired(false);
+        valueProjectType = new Label();
+        valueProjectType.setValue("Field Trial");
         
-        txtDatasetName = new TextField();
-        txtDatasetName.setWidth("100%");
-        txtDatasetName.setNullRepresentation("");
-        txtDatasetName.setValue(breedingViewInput.getDatasetName());
-        txtDatasetName.setReadOnly(true);
-        txtDatasetName.setRequired(false);
+        valueDatasetName = new Label();
+        valueDatasetName.setWidth("100%");
+        valueDatasetName.setValue(breedingViewInput.getDatasetName());
         
-        txtDatasourceName = new TextField();
-        txtDatasourceName.setWidth("100%");
-        txtDatasourceName.setNullRepresentation("");
-        txtDatasourceName.setValue(breedingViewInput.getDatasetSource());
-        txtDatasourceName.setReadOnly(true);
-        txtDatasourceName.setRequired(false);
+        valueDatasourceName = new Label();
+        valueDatasourceName.setWidth("100%");
+        valueDatasourceName.setValue(breedingViewInput.getDatasetSource());
         
         txtAnalysisName = new TextField();
         txtAnalysisName.setNullRepresentation("");
         if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewAnalysisName())) {
-            txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
+        	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
         }
         txtAnalysisName.setRequired(false);
-        txtAnalysisName.setWidth("80%");
+        txtAnalysisName.setWidth("450");
                
         
         selEnvFactor = new Select();
@@ -703,31 +694,58 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         mainLayout.setWidth("100%");
         mainLayout.setSpacing(true);
         
-        GridLayout selectedInfoLayout = new GridLayout(4, 5);
+        VerticalLayout selectedInfoLayout = new VerticalLayout();
         selectedInfoLayout.setSizeUndefined();
         selectedInfoLayout.setWidth("95%");
         selectedInfoLayout.setSpacing(true);
         selectedInfoLayout.setMargin(true, false, true, false);
-        selectedInfoLayout.setColumnExpandRatio(0, 1.2f);
-        selectedInfoLayout.setColumnExpandRatio(1, 5);
-        selectedInfoLayout.setColumnExpandRatio(2, 1);
-        selectedInfoLayout.setColumnExpandRatio(3, 2);
-        selectedInfoLayout.addComponent(lblDataSelectedForAnalysisHeader , 0, 0, 3, 0);
-        selectedInfoLayout.addComponent(lblDatasetName, 0, 1);
-        selectedInfoLayout.addComponent(txtDatasetName, 1, 1);
-        selectedInfoLayout.addComponent(lblDatasourceName, 0, 2);
-        selectedInfoLayout.addComponent(txtDatasourceName, 1, 2);
-        selectedInfoLayout.addComponent(lblProjectType, 2, 1);
-        selectedInfoLayout.addComponent(txtProjectType, 3, 1);
-        selectedInfoLayout.addComponent(lblAnalysisNameHeader , 0, 3, 3, 3);
-        selectedInfoLayout.addComponent(lblAnalysisName, 0, 4);
-        selectedInfoLayout.addComponent(txtAnalysisName, 1, 4, 3, 4);
         
+        HorizontalLayout row1 = new HorizontalLayout();
+        row1.setSpacing(true);
+        row1.addComponent(lblDataSelectedForAnalysisHeader);
+        
+        HorizontalLayout row2a = new HorizontalLayout();
+        row2a.setSpacing(true);
+        row2a.addComponent(lblDatasetName);
+        row2a.addComponent(valueDatasetName);
+        HorizontalLayout row2b = new HorizontalLayout();
+        row2b.setSpacing(true);
+        row2b.addComponent(lblProjectType);
+        row2b.addComponent(valueProjectType);
+        
+        GridLayout row2 = new GridLayout(2, 1);
+        row2.setSizeUndefined();
+        row2.setWidth("95%");
+        row2.setColumnExpandRatio(0,0.45f);
+        row2.setColumnExpandRatio(1,0.55f);
+        row2.setMargin(false, false, false, false);
+        row2.addComponent(row2a);
+        row2.addComponent(row2b);
+        
+        HorizontalLayout row3 = new HorizontalLayout();
+        row3.setSpacing(true);
+        row3.addComponent(lblDatasourceName);
+        row3.addComponent(valueDatasourceName);
+        
+        HorizontalLayout row4 = new HorizontalLayout();
+        row4.setSpacing(true);
+        row4.addComponent(lblAnalysisNameHeader);
+        
+        HorizontalLayout row5 = new HorizontalLayout();
+        row5.setSpacing(true);
+        row5.addComponent(lblAnalysisName);
+        row5.addComponent(txtAnalysisName);
+        
+        selectedInfoLayout.addComponent(row1);
+        selectedInfoLayout.addComponent(row2);
+        selectedInfoLayout.addComponent(row3);
+        selectedInfoLayout.addComponent(row4);
+        selectedInfoLayout.addComponent(row5);        
         
         GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
         chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
         chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
-        chooseEnvironmentLayout.setWidth("450");
+        chooseEnvironmentLayout.setWidth("100%");
         chooseEnvironmentLayout.setSpacing(true);
         chooseEnvironmentLayout.setMargin(true, true, true, false);
         chooseEnvironmentLayout.addComponent(lblChooseEnvironmentHeader ,0, 0, 1, 0);
@@ -742,7 +760,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         GridLayout designDetailsLayout = new GridLayout(2, 8);
         designDetailsLayout.setColumnExpandRatio(0, 4);
         designDetailsLayout.setColumnExpandRatio(1, 4);
-        designDetailsLayout.setWidth("550");
+        designDetailsLayout.setWidth("100%");
         designDetailsLayout.setSpacing(true);
         designDetailsLayout.setMargin(true, false, true, false);
         designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
@@ -766,6 +784,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         mainLayout.addComponent(selectedInfoLayout);
         
         HorizontalLayout combineLayout = new HorizontalLayout();
+        combineLayout.setSizeUndefined();
+        combineLayout.setWidth("95%");
         combineLayout.addComponent(chooseEnvironmentLayout);
         combineLayout.addComponent(designDetailsLayout);
         mainLayout.addComponent(combineLayout);
