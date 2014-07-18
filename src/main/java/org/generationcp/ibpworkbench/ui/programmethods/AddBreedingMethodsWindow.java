@@ -106,13 +106,16 @@ public class AddBreedingMethodsWindow extends Window {
                 } catch (Validator.EmptyValueException e) {
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
                     return;
+                } catch (Validator.InvalidValueException e) {
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+                    return;
                 }
 
                 MethodView bean = ((BeanItem<MethodView>) breedingMethodForm.getItemDataSource()).getBean();
                 if (StringUtils.isEmpty(bean.getMtype())) {
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
                     return;
-                }
+                } 
 
                 projectBreedingMethodsPanel.presenter.saveNewBreedingMethod(bean);
 

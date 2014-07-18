@@ -113,6 +113,9 @@ public class EditBreedingMethodsWindow extends Window {
                 } catch (Validator.EmptyValueException e) {
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
                     return;
+                } catch (Validator.InvalidValueException e) {
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+                    return;
                 }
 
                 sessionData.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
