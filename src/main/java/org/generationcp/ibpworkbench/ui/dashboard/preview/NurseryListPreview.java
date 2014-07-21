@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -345,6 +346,7 @@ public class NurseryListPreview extends VerticalLayout {
 
     private void initializeToolbarActions() {
         openStudyManagerBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -379,6 +381,7 @@ public class NurseryListPreview extends VerticalLayout {
         });
 
         renameFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -414,6 +417,7 @@ public class NurseryListPreview extends VerticalLayout {
                 Label l = new Label(messageSource.getMessage(Message.ITEM_NAME));
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(treeView.getValue()));
+                name.setCursorPosition(name.getValue() == null ? 0 : name.getValue().toString().length());
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -427,8 +431,11 @@ public class NurseryListPreview extends VerticalLayout {
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button(messageSource.getMessage(Message.OK));
+                ok.setClickShortcut(KeyCode.ENTER);
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
@@ -448,6 +455,8 @@ public class NurseryListPreview extends VerticalLayout {
 
                 Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
                 cancel.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
@@ -469,6 +478,7 @@ public class NurseryListPreview extends VerticalLayout {
         });
 
         addFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -488,6 +498,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 Label l = new Label(messageSource.getMessage(Message.FOLDER_NAME));
                 final TextField name = new TextField();
+                name.focus();
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -501,8 +512,11 @@ public class NurseryListPreview extends VerticalLayout {
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button("Ok");
+                ok.setClickShortcut(KeyCode.ENTER);
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
@@ -549,6 +563,8 @@ public class NurseryListPreview extends VerticalLayout {
 
                 Button cancel = new Button("Cancel");
                 cancel.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
@@ -569,6 +585,7 @@ public class NurseryListPreview extends VerticalLayout {
         });
 
         deleteFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
@@ -594,26 +611,28 @@ public class NurseryListPreview extends VerticalLayout {
                         messageSource.getMessage(Message.DELETE_ITEM),
                         messageSource.getMessage(Message.DELETE_ITEM_CONFIRM),
                         messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
-                    @Override
-                    public void onClose(ConfirmDialog dialog) {
-                        if (dialog.isConfirmed()) {
-                            try {
-                                DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
-                                presenter.deleteNurseryListFolder(finalId);
-                                treeView.removeItem(treeView.getValue());
-                                if (parent.getProjectId().intValue() == ROOT_FOLDER) {
-                                    treeView.select(MY_STUDIES);
-                                    processToolbarButtons(MY_STUDIES);
-                                } else {
-                                    treeView.select(parent.getProjectId());
-                                    processToolbarButtons(parent.getProjectId());
+                            private static final long serialVersionUID = 1L;
+
+                            @Override
+                            public void onClose(ConfirmDialog dialog) {
+                                if (dialog.isConfirmed()) {
+                                    try {
+                                        DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
+                                        presenter.deleteNurseryListFolder(finalId);
+                                        treeView.removeItem(treeView.getValue());
+                                        if (parent.getProjectId().intValue() == ROOT_FOLDER) {
+                                            treeView.select(MY_STUDIES);
+                                            processToolbarButtons(MY_STUDIES);
+                                        } else {
+                                            treeView.select(parent.getProjectId());
+                                            processToolbarButtons(parent.getProjectId());
+                                        }
+                                        treeView.setImmediate(true);
+                                    } catch (Error e) {
+                                        MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+                                    }
                                 }
-                                treeView.setImmediate(true);
-                            } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
-                        }
-                    }
                 });
             }
         });

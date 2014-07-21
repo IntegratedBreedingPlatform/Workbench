@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -47,6 +48,8 @@ import com.vaadin.ui.themes.Reindeer;
  */
 @Configurable
 public class GermplasmListPreview extends VerticalLayout {
+    private static final long serialVersionUID = 1L;
+
     @Autowired
     private SessionData sessionData;
 
@@ -185,6 +188,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
     private void initializeToolbarActions() {
         openListManagerBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -213,6 +217,7 @@ public class GermplasmListPreview extends VerticalLayout {
         });
 
         renameFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -248,6 +253,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 Label l = new Label(messageSource.getMessage(Message.ITEM_NAME));
                 final TextField name = new TextField();
                 name.setValue(treeView.getItemCaption(lastItemId));
+                name.setCursorPosition(name.getValue() == null ? 0 : name.getValue().toString().length());
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -261,8 +267,11 @@ public class GermplasmListPreview extends VerticalLayout {
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button(messageSource.getMessage(Message.OK));
+                ok.setClickShortcut(KeyCode.ENTER);
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
@@ -282,6 +291,8 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
                 cancel.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
@@ -303,6 +314,7 @@ public class GermplasmListPreview extends VerticalLayout {
         });
 
         addFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -322,6 +334,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 Label l = new Label(messageSource.getMessage(Message.FOLDER_NAME));
                 final TextField name = new TextField();
+                name.focus();
 
                 formContainer.addComponent(l);
                 formContainer.addComponent(name);
@@ -335,8 +348,11 @@ public class GermplasmListPreview extends VerticalLayout {
                 btnContainer.setExpandRatio(spacer, 1.0F);
 
                 Button ok = new Button(messageSource.getMessage(Message.OK));
+                ok.setClickShortcut(KeyCode.ENTER);
                 ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
                 ok.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
@@ -384,6 +400,8 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
                 cancel.addListener(new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
@@ -404,6 +422,7 @@ public class GermplasmListPreview extends VerticalLayout {
         });
 
         deleteFolderBtn.addListener(new Button.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(final Button.ClickEvent event) {
@@ -427,29 +446,31 @@ public class GermplasmListPreview extends VerticalLayout {
                         messageSource.getMessage(Message.DELETE_ITEM),
                         messageSource.getMessage(Message.DELETE_ITEM_CONFIRM),
                         messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
-                    @Override
-                    public void onClose(ConfirmDialog dialog) {
-                        if (dialog.isConfirmed()) {
-                            try {
-                                GermplasmList parent = presenter.getGermplasmListParent(finalGpList.getId());
-                                presenter.deleteGermplasmListFolder(finalGpList);
-                                treeView.removeItem(lastItemId);
-                                treeView.select(null);
-                                if (parent == null) {
-                                    treeView.select(MY_LIST);
-                                    lastItemId = MY_LIST;
-                                    processToolbarButtons(MY_LIST);
-                                } else {
-                                    treeView.select(parent.getId());
-                                    lastItemId = parent.getId();
-                                    processToolbarButtons(parent.getId());
+                            private static final long serialVersionUID = 1L;
+
+                            @Override
+                            public void onClose(ConfirmDialog dialog) {
+                                if (dialog.isConfirmed()) {
+                                    try {
+                                        GermplasmList parent = presenter.getGermplasmListParent(finalGpList.getId());
+                                        presenter.deleteGermplasmListFolder(finalGpList);
+                                        treeView.removeItem(lastItemId);
+                                        treeView.select(null);
+                                        if (parent == null) {
+                                            treeView.select(MY_LIST);
+                                            lastItemId = MY_LIST;
+                                            processToolbarButtons(MY_LIST);
+                                        } else {
+                                            treeView.select(parent.getId());
+                                            lastItemId = parent.getId();
+                                            processToolbarButtons(parent.getId());
+                                        }
+                                        treeView.setImmediate(true);
+                                    } catch (Error e) {
+                                        MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+                                    }
                                 }
-                                treeView.setImmediate(true);
-                            } catch (Error e) {
-                                MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             }
-                        }
-                    }
                 });
             }
         });
