@@ -85,22 +85,14 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         dataConfiguration.setTraits(traits);
         dataConfiguration.setHeritabilities(gxeInput.getHeritabilities());
         
-        if (!gxeInput.getEnvironmentGroup().equalsIgnoreCase("Analyze all")){
+        if (!gxeInput.getEnvironmentGroup().equalsIgnoreCase("None")){
         	MegaEnvironment megaEnv = new MegaEnvironment();
         	MegaEnvironments megaEnvs = new MegaEnvironments();
         	megaEnv.setActive(true);
         	megaEnv.setName(gxeInput.getEnvironmentGroup());
         	megaEnvs.add(megaEnv);
         	dataConfiguration.setMegaEnvironments(megaEnvs);
-        }else{
-        	MegaEnvironment megaEnv = new MegaEnvironment();
-        	MegaEnvironments megaEnvs = new MegaEnvironments();
-        	megaEnv.setActive(false);
-        	megaEnv.setName("Analyze all");
-        	megaEnvs.add(megaEnv);
-        	dataConfiguration.setMegaEnvironments(megaEnvs);
         }
-        
         
         Pipelines pipelines = new Pipelines();
         Pipeline pipeline = new Pipeline();

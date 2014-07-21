@@ -325,7 +325,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         generalLayout.addComponent(datasetVariablesDetailLayout);
         generalLayout.addComponent(buttonArea);
         
-        Object item = "Analyze All";
+        Object item = "None";
         selectSpecifyEnvironmentGroups.addItem(item);
         selectSpecifyEnvironmentGroups.select(item);
         
