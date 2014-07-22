@@ -17,6 +17,7 @@ import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpand
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -375,7 +376,16 @@ public class NurseryListPreview extends VerticalLayout {
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("study_browser"));
 
                 // launch tool
-                new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, ((Integer) value).intValue()).buttonClick(event);
+                int studyId = ((Integer) value).intValue();
+                StudyType studyType = presenter.getStudyType(studyId);
+                if(studyType!=null && studyType.getId()==StudyType.T.getId()) {
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB, project, studyId).buttonClick(event);
+                } else if(studyType!=null && studyType.getId()==StudyType.N.getId()) {
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB, project, studyId).buttonClick(event);
+                } else {
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, studyId).buttonClick(event);
+                }
+                
 
             }
         });

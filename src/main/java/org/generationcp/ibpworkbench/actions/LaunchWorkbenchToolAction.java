@@ -398,6 +398,17 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         Tool germplasmBrowserTool = workbenchDataManager.getToolWithName(ToolName.germplasm_browser.name());
                         updateToolConfiguration(window, germplasmBrowserTool);
                         
+                        if (tool.getToolName().equals(ToolName.trial_manager_fieldbook_web.name())) {
+                        	if (idParam != null) {
+                                toolUrl += "/openTrial/" + idParam;
+                            }
+                        }
+                        
+                        if(tool.getToolName().equals(ToolName.nursery_manager_fieldbook_web.name())) {
+                        	if (idParam != null) {
+                                toolUrl += "/editNursery/" + idParam;
+                            }
+                        }
                     }
                     catch (MiddlewareQueryException e) {
                         LOG.error("QueryException", e);

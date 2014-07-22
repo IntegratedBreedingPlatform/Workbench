@@ -7,6 +7,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -407,6 +409,19 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
+        }
+    }
+    
+    public StudyType getStudyType(int studyId) {
+        try {
+        	Study study = this.getManagerFactory().getStudyDataManager().getStudy(studyId);
+        	if(study!=null && study.getType()!=null) {
+        		return StudyType.getStudyType(study.getType());
+        	}
+            return null;
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            return null;
         }
     }
 }
