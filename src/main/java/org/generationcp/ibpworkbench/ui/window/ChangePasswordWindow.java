@@ -73,23 +73,27 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
     }
 
     protected void initializeLayout() {
-        this.setWidth("550px");
-        this.setHeight("150px");
+        this.setWidth("335px");
+        this.setHeight("200px");
         this.setModal(true);
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
-        //layout.setWidth("100%");
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        // add the vertical split panel
-
-        HorizontalLayout fieldslayout = new HorizontalLayout();
-        fieldslayout.addComponent(passwordLabel);
-        fieldslayout.addComponent(password);
-        fieldslayout.addComponent(confirmLabel);
-        fieldslayout.addComponent(confirm_password);
+        passwordLabel.setWidth("140px");
+        password.setWidth("140px");
+        confirmLabel.setWidth("140px");
+        confirm_password.setWidth("140px");
+        
+        GridLayout passwordGridLayout = new GridLayout(2, 2);
+        passwordGridLayout.setMargin(false, false, false, false);
+        passwordGridLayout.addComponent(passwordLabel);
+        passwordGridLayout.addComponent(password);
+        passwordGridLayout.addComponent(confirmLabel);
+        passwordGridLayout.addComponent(confirm_password);
+        passwordGridLayout.setSizeFull();
         
         
         HorizontalLayout buttonlayout = new HorizontalLayout();
@@ -98,10 +102,10 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
         buttonlayout.addComponent(saveButton);
         buttonlayout.setSpacing(true);
 
-        layout.addComponent(fieldslayout);
+        layout.addComponent(passwordGridLayout);
         layout.addComponent(buttonlayout);
-        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_RIGHT);
-        layout.setExpandRatio(fieldslayout,1.0F);
+        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
+        layout.setExpandRatio(passwordGridLayout,1.0F);
 
         this.setContent(layout);
     }

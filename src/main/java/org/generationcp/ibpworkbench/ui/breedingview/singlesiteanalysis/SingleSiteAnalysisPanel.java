@@ -15,7 +15,6 @@ package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
@@ -172,8 +171,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			@Override
 			public void buttonClick(ClickEvent event) {
 					
-				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
-				event.getComponent().getWindow().addWindow(dialog);
+				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
+					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+					event.getComponent().getWindow().addWindow(dialog);
+				} else if(event.getComponent()==null){
+					LOG.error("event component is null");
+				} else if(event.getComponent().getWindow()==null){
+					LOG.error("event component window is null");
+				}
 			}
 			
 		});
