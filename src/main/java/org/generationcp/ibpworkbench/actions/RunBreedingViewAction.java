@@ -236,7 +236,7 @@ public class RunBreedingViewAction implements ClickListener {
         		selectedEnvironments.add(m.getEnvironmentName());
         	}
         	
-        	datasetExporter.exportToFieldBookCSVUsingIBDBv2(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
+        	datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
         	
         } catch (DatasetExporterException e1) {
 			e1.printStackTrace();
@@ -262,7 +262,7 @@ public class RunBreedingViewAction implements ClickListener {
              
              // write the XML input for breeding view
              breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-             breedingViewXMLWriter.writeProjectXMLV2();
+             breedingViewXMLWriter.writeProjectXML();
              
              // launch breeding view
              File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();

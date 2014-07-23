@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
 import java.io.FileWriter;
 import java.io.Serializable;
 
@@ -58,9 +59,10 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         
     	Traits traits = new Traits();
         for( Trait t : gxeInput.getTraits()){
-        	t.setBlues(t.getName());
-        	t.setBlups(t.getName().replace("_Means", "_BLUPs"));
-        	t.setName(t.getName());
+        	String traitName = t.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+        	t.setBlues(traitName);
+        	t.setBlups(traitName.replace("_Means", "_BLUPs"));
+        	t.setName(traitName);
             traits.add(t);
         }
         
@@ -111,7 +113,16 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         BreedingViewSession bvSession = new BreedingViewSession();
         bvSession.setBreedingViewProject(project);
         bvSession.setDataFile(data);
-        bvSession.setIbws(new SSAParameters());
+        
+        SSAParameters ssaParameters = new SSAParameters();
+        try{
+        	String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, gxeInput.getProject().getProjectName());
+            ssaParameters.setOutputDirectory(outputDirectory);
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        bvSession.setIbws(ssaParameters);
         
         //prepare the writing of the xml
         JAXBContext context = null;

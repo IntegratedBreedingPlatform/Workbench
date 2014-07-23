@@ -28,6 +28,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;

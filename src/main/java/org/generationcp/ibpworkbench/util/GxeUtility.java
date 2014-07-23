@@ -114,24 +114,24 @@ public class GxeUtility {
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName,j);
-			headerRow.add(environmentName);
+			headerRow.add(environmentName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 		
 		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !environmentGroup.equalsIgnoreCase("none")) {
 			traitToColNoMap.put(environmentGroup,j);
-			headerRow.add(environmentGroup);
+			headerRow.add(environmentGroup.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 		
 		traitToColNoMap.put(genotypeName,j);
-		headerRow.add(genotypeName);
+		headerRow.add(genotypeName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		j++;
 				
 		for (Trait trait : selectedTraits) {
 
 			traitToColNoMap.put(trait.getName(),j);			
-			headerRow.add(j,trait.getName());
+			headerRow.add(j,trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 		
@@ -258,7 +258,7 @@ public class GxeUtility {
 				
 				List<String> row = new ArrayList<String>();
 				row.add(exp.getFactors().findByLocalName(environmentName).getValue());
-				row.add(trait.getName());
+				row.add(trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 				
 				for (int i = 2; i < header.length; i++){
 					boolean existsFlag = false;

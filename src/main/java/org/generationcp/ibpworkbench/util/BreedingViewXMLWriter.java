@@ -88,93 +88,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         
     }
     
-    public void writeProjectXML() throws BreedingViewXMLWriterException{
-  
-    	List<Trait> traits = new ArrayList<Trait>();
-        for( Entry<Integer, String> s : breedingViewInput.getVariateColumns().entrySet()){
-        	 Trait trait = new Trait();
-             trait.setName(s.getValue());
-             trait.setActive(true);
-             traits.add(trait);
-        }
-        
-        //create Fieldbook element
-        Data data = new Data();
-        data.setFieldBookFile(breedingViewInput.getSourceXLSFilePath());
-        
-        //create the Phenotypic element
-        Phenotypic phenotypic = new Phenotypic();
-        phenotypic.setTraits(traits);
-        phenotypic.setEnvironments(breedingViewInput.getEnvironment());
-        phenotypic.setBlocks(breedingViewInput.getBlocks());
-        phenotypic.setReplicates(breedingViewInput.getReplicates());
-        phenotypic.setRows(breedingViewInput.getRows());
-        phenotypic.setColumns(breedingViewInput.getColumns());
-        phenotypic.setGenotypes(breedingViewInput.getGenotypes());
-        phenotypic.setFieldbook(data);
-        
-        SSAParameters ssaParameters = new SSAParameters();
-	        webApiUrl += "?restartApplication";
-	    	webApiUrl += ToolUtil.getWorkbenchContextParameters();
-        ssaParameters.setWebApiUrl(webApiUrl);
-        ssaParameters.setStudyId(breedingViewInput.getStudyId());
-        ssaParameters.setInputDataSetId(breedingViewInput.getDatasetId());
-        ssaParameters.setOutputDataSetId(breedingViewInput.getOutputDatasetId());
-
-        Project workbenchProject = sessionData.getLastOpenedProject();
-        if(workbenchProject != null) {
-            ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
-        }
-        try{
-            String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
-            ssaParameters.setOutputDirectory(outputDirectory);
-        } catch(MiddlewareQueryException ex){
-            throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
-                    + ": " + ex.getMessage(), ex);
-        }
-
-        //create the ProjectType element
-        BreedingViewProjectType projectTypeElem = new BreedingViewProjectType();
-        projectTypeElem.setDesign(breedingViewInput.getDesignType());
-        projectTypeElem.setType(breedingViewInput.getProjectType());
-        projectTypeElem.setEnvname(breedingViewInput.getEnvironmentName());
-        
-        //create the Breeding View project element
-        BreedingViewProject project = new BreedingViewProject();
-        project.setName(breedingViewInput.getBreedingViewProjectName());
-        project.setVersion(breedingViewInput.getVersion());
-        project.setType(projectTypeElem);
-        project.setPhenotypic(phenotypic);
-        project.setSsaParameters(ssaParameters);
-        
-        //prepare the writing of the xml
-        JAXBContext context = null;
-        Marshaller marshaller = null;
-        try{
-            context = JAXBContext.newInstance(BreedingViewProject.class);
-            marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        } catch(JAXBException ex){
-            throw new BreedingViewXMLWriterException("Error with opening JAXB context and marshaller: "
-                    + ex.getMessage(), ex);
-        }
-        
-        //write the xml
-        try{
-        	
-        	new File(new File(breedingViewInput.getDestXMLFilePath()).getParent()).mkdirs();
-            FileWriter fileWriter = new FileWriter(breedingViewInput.getDestXMLFilePath());
-            LOG.debug(breedingViewInput.getDestXMLFilePath());
-            marshaller.marshal(project, fileWriter);
-            fileWriter.flush();
-            fileWriter.close();
-        } catch(Exception ex){
-            throw new BreedingViewXMLWriterException("Error with writing xml to: " + breedingViewInput.getDestXMLFilePath() + ": " + ex.getMessage(), ex);
-        }
-    }
-
-	public void writeProjectXMLV2() throws BreedingViewXMLWriterException {
+ 
+	public void writeProjectXML() throws BreedingViewXMLWriterException {
 	
 		Traits traits = new Traits();
 		
@@ -182,22 +97,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 		for (String key : keys){
 			if(breedingViewInput.getVariatesActiveState().get(key)){
 				Trait trait = new Trait();
-	            trait.setName(key);
+	            trait.setName(key.replaceAll("[^a-zA-Z0-9-_%']+", "_"));
 	            trait.setActive(true);
 	            traits.add(trait);
 			}
 		}
-		
-		/**
-        for ( Entry<String, Boolean> entry : breedingViewInput.getVariatesActiveState().entrySet()){
-        	Trait trait = new Trait();
-            trait.setName(entry.getKey());
-            trait.setActive(true);
-            if (entry.getValue()){
-            	traits.add(trait);
-            }
-            
-        }**/
         
         //create DataFile element
         DataFile data = new DataFile();
