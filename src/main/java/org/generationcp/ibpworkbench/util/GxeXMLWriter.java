@@ -72,7 +72,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
         
         Environments environments = new Environments();
-        environments.setName(gxeInput.getEnvironmentName());
+        environments.setName(gxeInput.getEnvironmentName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
         environments.setEnvironments(gxeInput.getSelectedEnvironments());
         
         for (Environment e : environments.getEnvironments()){
@@ -83,6 +83,9 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         DataConfiguration dataConfiguration = new DataConfiguration();
         dataConfiguration.setName("GxE Analysis");
         dataConfiguration.setEnvironments(environments);
+        if (gxeInput.getGenotypes() != null){
+        	gxeInput.getGenotypes().setName(gxeInput.getGenotypes().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         dataConfiguration.setGenotypes(gxeInput.getGenotypes());
         dataConfiguration.setTraits(traits);
         dataConfiguration.setHeritabilities(gxeInput.getHeritabilities());
@@ -91,7 +94,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         	MegaEnvironment megaEnv = new MegaEnvironment();
         	MegaEnvironments megaEnvs = new MegaEnvironments();
         	megaEnv.setActive(true);
-        	megaEnv.setName(gxeInput.getEnvironmentGroup());
+        	megaEnv.setName(gxeInput.getEnvironmentGroup().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
         	megaEnvs.add(megaEnv);
         	dataConfiguration.setMegaEnvironments(megaEnvs);
         }
