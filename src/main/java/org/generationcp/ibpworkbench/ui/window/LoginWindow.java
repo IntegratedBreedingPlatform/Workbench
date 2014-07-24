@@ -131,13 +131,16 @@ public class LoginWindow extends Window implements InitializingBean {
         forgotPasswordBtn = new Button(messageSource.getMessage(Message.FORGOT_PASSWORD));
         registerUserBtn = new Button("<span style='padding-right:10px; position: relative; top: 2px'>" + messageSource.getMessage(Message.REGISTER_USER_ACCOUNT) + "</span>");
         registerUserBtn.setHtmlContentAllowed(true);
-        loginBtn = new Button(messageSource.getMessage(Message.LOGIN));
+        loginBtn = new Button(messageSource.getMessage(Message.SIGNIN));
     }
 
     private ComponentContainer layoutLoginForm() {
         forgotPasswordBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
         registerUserBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
         loginBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        loginBtn.setWidth("146px");
+        passwordFld.setWidth("146px");
+        usernameFld.setWidth("146px");
 
         usernameFld.setTabIndex(1);
         passwordFld.setTabIndex(2);
@@ -151,8 +154,8 @@ public class LoginWindow extends Window implements InitializingBean {
         final GridLayout loginFrmLayout = new GridLayout(2,5);
         loginFrmLayout.setSpacing(true);
 
-        final Label loginSubTitle = new Label("Sign In",Label.CONTENT_XHTML);
-        loginSubTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+        final Label dummyLabel = new Label(" ",Label.CONTENT_XHTML);
+        dummyLabel.setHeight("80px");
 
         final Label usernameLbl = new Label("<b>" + (messageSource.getMessage(Message.USERNAME) + ":").toUpperCase(),Label.CONTENT_XHTML);
         final Label passwordLbl = new Label("<b>" + (messageSource.getMessage(Message.PASSWORD)+ ":").toUpperCase() + "</b>",Label.CONTENT_XHTML);
@@ -181,7 +184,7 @@ public class LoginWindow extends Window implements InitializingBean {
         passwordGrp.addComponent(rememberMeLbl);
 
         // ADD TO GRID
-        loginFrmLayout.addComponent(loginSubTitle,0,0,1,0);
+        loginFrmLayout.addComponent(dummyLabel,0,0,1,0);
         loginFrmLayout.addComponent(usernameLbl,0,1);
         loginFrmLayout.addComponent(usernameGrp,1,1);
         loginFrmLayout.setComponentAlignment(usernameLbl,Alignment.MIDDLE_LEFT);
@@ -192,7 +195,6 @@ public class LoginWindow extends Window implements InitializingBean {
         loginFrmLayout.setComponentAlignment(passwordLbl,Alignment.MIDDLE_LEFT);
         loginFrmLayout.setComponentAlignment(passwordGrp,Alignment.MIDDLE_LEFT);
 
-        loginFrmLayout.addComponent(forgotPasswordBtn,1,3);
 
         final Label preloadFont = new Label("<span class='glyphicon glyphicon-stop' style=\"color:transparent; font-size: 1px\"></span>",Label.CONTENT_XHTML);
 
@@ -201,14 +203,16 @@ public class LoginWindow extends Window implements InitializingBean {
         buttonContainer.addComponent(loginBtn);
         buttonContainer.addComponent(preloadFont);
 
-        loginFrmLayout.addComponent(buttonContainer,1,4);
+        loginFrmLayout.addComponent(buttonContainer,1,3);
+        loginFrmLayout.addComponent(forgotPasswordBtn,1,4);
+        
         loginFrmLayout.setComponentAlignment(forgotPasswordBtn,Alignment.TOP_LEFT);
 
 
         final VerticalLayout root = new VerticalLayout();
         root.setSizeFull();
         root.addComponent(loginFrmLayout);
-        root.setComponentAlignment(loginFrmLayout,Alignment.MIDDLE_CENTER);
+        root.setComponentAlignment(loginFrmLayout,Alignment.TOP_CENTER);
 
 
 
