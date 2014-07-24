@@ -341,18 +341,24 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblDesign = new Label();
         lblDesignType = new Label();
         lblDesignType.setContentMode(Label.CONTENT_XHTML);
+        lblDesignType.setWidth("160px");
         setLblReplicates(new Label());
         getLblReplicates().setContentMode(Label.CONTENT_XHTML);
+        getLblReplicates().setWidth("160px");
         setLblBlocks(new Label());
         getLblBlocks().setContentMode(Label.CONTENT_XHTML);
         getLblBlocks().setVisible(false);
+        getLblBlocks().setWidth("160px");
         setLblSpecifyRowFactor(new Label());
         getLblSpecifyRowFactor().setContentMode(Label.CONTENT_XHTML);
         getLblSpecifyRowFactor().setVisible(false);
+        getLblSpecifyRowFactor().setWidth("160px");
         setLblSpecifyColumnFactor(new Label());
         getLblSpecifyColumnFactor().setContentMode(Label.CONTENT_XHTML);
         getLblSpecifyColumnFactor().setVisible(false);
+        getLblSpecifyColumnFactor().setWidth("160px");
         lblGenotypes = new Label();
+        lblGenotypes.setWidth("160px");
         
         
         lblDataSelectedForAnalysisHeader = new Label();
@@ -424,6 +430,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
         selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
+        selDesignType.setWidth("191px");
         
         checkDesignFactor();
         
@@ -433,6 +440,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         populateChoicesForReplicates();
         selReplicates.setNullSelectionAllowed(true);
         selReplicates.setNewItemsAllowed(false);
+        selReplicates.setWidth("191px");
         
         selBlocks = new Select();
         selBlocks.setImmediate(true); 
@@ -440,6 +448,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         selBlocks.setNullSelectionAllowed(false);
         selBlocks.setNewItemsAllowed(false);
         selBlocks.setVisible(false);
+        selBlocks.setWidth("191px");
         
         selRowFactor = new Select();
         selRowFactor.setImmediate(true); 
@@ -447,6 +456,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         selRowFactor.setNullSelectionAllowed(false);
         selRowFactor.setNewItemsAllowed(false);
         selRowFactor.setVisible(false);
+        selRowFactor.setWidth("191px");
         
         selColumnFactor = new Select();
         selColumnFactor.setImmediate(true); 
@@ -454,6 +464,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         selColumnFactor.setNullSelectionAllowed(false);
         selColumnFactor.setNewItemsAllowed(false);
         selColumnFactor.setVisible(false);
+        selColumnFactor.setWidth("191px");
         
         refineChoicesForBlocksReplicationRowAndColumnFactos();
         
@@ -462,6 +473,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         populateChoicesForGenotypes();
         selGenotypes.setNullSelectionAllowed(true);
         selGenotypes.setNewItemsAllowed(false);
+        selGenotypes.setWidth("191px");
         
         btnRun = new Button();
         btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -696,7 +708,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
         VerticalLayout selectedInfoLayout = new VerticalLayout();
         selectedInfoLayout.setSizeUndefined();
-        selectedInfoLayout.setWidth("95%");
+        selectedInfoLayout.setWidth("100%");
         selectedInfoLayout.setSpacing(true);
         selectedInfoLayout.setMargin(true, false, true, false);
         
@@ -715,7 +727,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
         GridLayout row2 = new GridLayout(2, 1);
         row2.setSizeUndefined();
-        row2.setWidth("95%");
+        row2.setWidth("100%");
         row2.setColumnExpandRatio(0,0.45f);
         row2.setColumnExpandRatio(1,0.55f);
         row2.setMargin(false, false, false, false);
@@ -758,8 +770,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
         
         GridLayout designDetailsLayout = new GridLayout(2, 8);
-        designDetailsLayout.setColumnExpandRatio(0, 4);
-        designDetailsLayout.setColumnExpandRatio(1, 4);
+        designDetailsLayout.setColumnExpandRatio(0, 0);
+        designDetailsLayout.setColumnExpandRatio(1, 1);
         designDetailsLayout.setWidth("100%");
         designDetailsLayout.setSpacing(true);
         designDetailsLayout.setMargin(true, false, true, false);
@@ -785,7 +797,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
         HorizontalLayout combineLayout = new HorizontalLayout();
         combineLayout.setSizeUndefined();
-        combineLayout.setWidth("95%");
+        combineLayout.setWidth("100%");
         combineLayout.addComponent(chooseEnvironmentLayout);
         combineLayout.addComponent(designDetailsLayout);
         mainLayout.addComponent(combineLayout);
