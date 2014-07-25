@@ -87,7 +87,7 @@ public class LoginWindow extends Window implements InitializingBean {
         loginPanel.setContent(loginPanelContainer);
 
         loginPanel.setWidth("640px");
-        loginPanel.setHeight("480px");
+        loginPanel.setHeight("417px");
         loginPanel.setStyleName(Reindeer.PANEL_LIGHT + " gcp-login");
 
         final Label loginTitle = new Label(messageSource.getMessage(Message.LOGIN_TITLE),Label.CONTENT_XHTML);
@@ -97,6 +97,7 @@ public class LoginWindow extends Window implements InitializingBean {
 
         final ComponentContainer loginFrm = layoutLoginForm();
         loginPanelContainer.addComponent(loginFrm);
+        loginPanelContainer.setComponentAlignment(loginFrm, Alignment.MIDDLE_CENTER);
         loginPanelContainer.setExpandRatio(loginFrm,1.0F);
 
         final VerticalLayout root = new VerticalLayout();
@@ -155,7 +156,7 @@ public class LoginWindow extends Window implements InitializingBean {
         loginFrmLayout.setSpacing(true);
 
         final Label dummyLabel = new Label(" ",Label.CONTENT_XHTML);
-        dummyLabel.setHeight("80px");
+        //dummyLabel.setHeight("80px");
 
         final Label usernameLbl = new Label("<b>" + (messageSource.getMessage(Message.USERNAME) + ":").toUpperCase(),Label.CONTENT_XHTML);
         final Label passwordLbl = new Label("<b>" + (messageSource.getMessage(Message.PASSWORD)+ ":").toUpperCase() + "</b>",Label.CONTENT_XHTML);
@@ -212,7 +213,7 @@ public class LoginWindow extends Window implements InitializingBean {
         final VerticalLayout root = new VerticalLayout();
         root.setSizeFull();
         root.addComponent(loginFrmLayout);
-        root.setComponentAlignment(loginFrmLayout,Alignment.TOP_CENTER);
+        root.setComponentAlignment(loginFrmLayout,Alignment.MIDDLE_CENTER);
 
 
 
