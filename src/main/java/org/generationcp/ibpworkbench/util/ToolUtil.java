@@ -280,63 +280,6 @@ public class ToolUtil {
         	configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
         }
         
-        /****
-        if (Util.isOneOf(tool.getToolName()
-                         ,ToolName.breeding_manager.name()
-                         ,ToolName.fieldbook.name()
-                         ,ToolName.ibfb_germplasm_import.name())) {
-            configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
-        } else if (Util.isOneOf(tool.getToolName()
-                                ,ToolName.germplasm_browser.name()
-                                ,ToolName.germplasm_list_browser.name()
-                                ,ToolName.germplasm_headtohead.name()
-                                ,ToolName.germplasm_mainheadtohead.name()
-                                ,ToolName.query_for_adapted_germplasm.name()
-                                ,ToolName.study_browser.name()
-                                ,ToolName.study_browser_with_id.name()
-                                )) {
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GermplasmStudyBrowser/WEB-INF/classes/IBPDatasource.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName,
-                                                                             localDbName, username, password);
-        } else if (Util.isOneOf(tool.getToolName()
-                                ,ToolName.fieldbook_web.name()
-                                ,ToolName.nursery_manager_fieldbook_web.name()
-                                ,ToolName.trial_manager_fieldbook_web.name()
-                                ,ToolName.ontology_browser_fieldbook_web.name()
-                                )) {
-            // Fieldbook web apps
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/Fieldbook/WEB-INF/classes/database.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username, password, true, true, true);
-        } else if (Util.isOneOf(tool.getToolName()
-                                ,ToolName.bm_list_manager.name()
-                                ,ToolName.bm_list_manager_main.name()
-                                ,ToolName.crossing_manager.name()
-                                ,ToolName.germplasm_import.name()
-                                ,ToolName.list_manager.name()
-                                ,ToolName.nursery_template_wizard.name()
-                                )) {
-            // crossing manager uses the same property file
-            // nursery_template_wizard uses the same property file
-            // so no need to update 
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/BreedingManager/WEB-INF/classes/IBPDatasource.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName,
-                                                                             username, password);
-        } else if (Util.isOneOf(tool.getToolName(),
-                                ToolName.dataset_importer.name())) {
-            // crossing manager uses the same property file
-            // nursery_template_wizard uses the same property file
-            // so no need to update 
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/DatasetImporter/WEB-INF/classes/database.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
-                                                                             password, true);
-        } else if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
-                                                                             password, true);
-        } else if (Util.isOneOf(tool.getToolName(), ToolName.ibpwebservice.name())) {
-            configurationChanged = updateWebServiceConfigurationForProject(project, workbenchSetting);
-        }**/
-        
         return configurationChanged;
     }
     
