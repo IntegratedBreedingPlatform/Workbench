@@ -67,5 +67,27 @@ import org.generationcp.middleware.pojos.Method;
             getMdate()
         );
     }
+    
+    public MethodView copyMethodView(){
+    	
+    	MethodView methodView = new MethodView();
+    	//methodView.setMid(getMid());
+    	methodView.setMtype(getMtype());
+    	methodView.setMgrp(getMgrp());
+    	methodView.setMcode(getMcode());
+    	methodView.setMname(getMname());
+    	methodView.setMdesc(getMdesc());
+    	methodView.setReference(getReference());
+    	methodView.setMprgn(getMprgn());
+    	methodView.setMfprg(getMfprg());
+    	methodView.setMattr(getMattr());
+    	methodView.setGeneq(getGeneq());
+    	methodView.setUser(getUser());
+    	methodView.setLmid(getLmid());
+    	methodView.setMdate(getMdate());
+    	
+		return methodView;
+    	
+    }
 
 }

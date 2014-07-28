@@ -82,7 +82,12 @@ public class BreedingMethodForm extends Form {
         setItemDataSource(new BeanItem<MethodView>(modelBean));
 
         setComponentError(null);
-        setFormFieldFactory(new BreedingMethodFormFieldFactory(classMap));
+        if (modelBean.getMid() != null){
+        	setFormFieldFactory(new BreedingMethodFormFieldFactory(classMap, true));
+        }else{
+        	setFormFieldFactory(new BreedingMethodFormFieldFactory(classMap, false));
+        }
+        
         this.setVisibleItemProperties(Arrays.asList(
                 new String[] { "mname", "mcode", "mdesc", "mtype", "mgrp", "geneq" }));
 

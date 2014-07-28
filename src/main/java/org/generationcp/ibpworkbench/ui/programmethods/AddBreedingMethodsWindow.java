@@ -4,12 +4,14 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
+import org.generationcp.middleware.pojos.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -18,7 +20,8 @@ public class AddBreedingMethodsWindow extends Window {
 
     private static final long serialVersionUID = 3983198771242295731L;
 
-
+    private MethodView methodView;
+    
     private BreedingMethodForm breedingMethodForm;
 
     private Button cancelButton;
@@ -42,6 +45,12 @@ public class AddBreedingMethodsWindow extends Window {
         this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
         assemble();
     }
+    
+    public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel, MethodView methodView) {
+        this.projectBreedingMethodsPanel=projectBreedingMethodsPanel;
+        this.methodView = methodView;
+        assemble();
+    }
 
     protected void initializeComponents() {
         //newBreedingMethodTitle = new Label("Add Breeding Method");
@@ -49,8 +58,14 @@ public class AddBreedingMethodsWindow extends Window {
 
         //layout.addComponent(newBreedingMethodTitle);
 
-        breedingMethodForm = new BreedingMethodForm(
-        		projectBreedingMethodsPanel.retrieveMethodClasses());
+    	if (methodView != null){
+    		breedingMethodForm = new BreedingMethodForm(
+            		projectBreedingMethodsPanel.retrieveMethodClasses(), methodView);
+    	}else{
+    		breedingMethodForm = new BreedingMethodForm(
+            		projectBreedingMethodsPanel.retrieveMethodClasses());
+    	}
+        
 
         cancelButton = new Button("Cancel");
         addBreedingMethodButton = new Button("Save");

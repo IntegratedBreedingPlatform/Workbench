@@ -14,11 +14,16 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.incubator.customcheckbox.CustomCheckbox;
 import com.vaadin.ui.*;
+
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.pojos.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -44,14 +49,24 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     private Select methodSelectGroup;
     private Field methodCode;
     private Select methodSelectClass;
+    
+    private Boolean isEditMode;
 
     // For new item handling and listener of crop type combo box
     //private MethodTypeComboAction methodTypeComboAction;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
+    
+    @Autowired
+	private ManagerFactoryProvider managerFactoryProvider;
 
     public BreedingMethodFormFieldFactory(Map<Integer,String> classMap) {
+        initFields(classMap);
+    }
+    
+    public BreedingMethodFormFieldFactory(Map<Integer,String> classMap, Boolean isEditMode) {
+    	this.isEditMode = isEditMode;
         initFields(classMap);
     }
 
@@ -61,6 +76,46 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodName.setRequired(true);
         methodName.setRequiredError("Please enter a Breeding Method Name.");
         methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
+        methodName.addValidator(new Validator(){
+        	
+			@Override
+			public void validate(Object value) throws InvalidValueException {
+				
+				if (value == null) return;
+				
+				if (!isValid(value)){
+					throw new InvalidValueException(String.format("Breeding Method \"%s\" already exists.", value.toString())); 
+				}
+			}
+
+			@Override
+			public boolean isValid(Object value) {
+				
+				if (value == null) return true;
+				
+				Method method = null;
+				try {
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
+					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString());
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//If Method ID is not null, then Method already exists
+				if (method != null && method.getMid() != null) {
+					
+					 if (isEditMode && methodName.isModified()){
+						 return false;
+					 }else if (!isEditMode){
+						 return false;
+					 }
+					
+				}
+				return true;
+			}
+        	
+        });
         methodName.setWidth("250px");
 
         methodDescription = new TextArea();
@@ -74,6 +129,46 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodCode.setRequired(true);
         methodCode.setRequiredError("Please enter a Breeding Method Code.");
         methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
+        methodCode.addValidator(new Validator(){
+        	
+			@Override
+			public void validate(Object value) throws InvalidValueException {
+				
+				if (value == null) return;
+				
+				if (!isValid(value)){
+					throw new InvalidValueException(String.format("Breeding Method with Code \"%s\" already exists.", value.toString())); 
+				}
+			}
+
+			@Override
+			public boolean isValid(Object value) {
+				
+				if (value == null) return true;
+				
+				Method method = null;
+				try {
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
+					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString());
+				} catch (MiddlewareQueryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//If Method ID is not null, then Method already exists
+				if (method != null && method.getMid() != null) {
+					
+					 if (isEditMode && methodCode.isModified()){
+						 return false;
+					 }else if (!isEditMode){
+						 return false;
+					 }
+					
+				}
+				return true;
+			}
+        	
+        });
         methodCode.setWidth("70px");
 
         methodSelectType = new Select();

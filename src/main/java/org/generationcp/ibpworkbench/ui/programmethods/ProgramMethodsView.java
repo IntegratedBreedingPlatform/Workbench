@@ -3,11 +3,14 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -44,6 +47,8 @@ import java.util.*;
      public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
      public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 
+     private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
+     
      public final static Map<String,String> tableColumns;
      public final static Map<String,Integer> tableColumnSizes;
     private Button.ClickListener editMethodListener;
@@ -157,7 +162,6 @@ import java.util.*;
 
          // TABLES!
          availableTable = buildCustomTable(availableSelectAll);
-
          favoritesTable = buildCustomTable(favoriteSelectAll);
 
          addToFavoriteBtn = new Button("Add to Favorite Methods");
@@ -717,6 +721,45 @@ import java.util.*;
                  }
              }
          });
+         
+         
+         availableTable.addActionHandler(new Handler(){
+
+			@Override
+			public Action[] getActions(Object target, Object sender) {
+				// TODO Auto-generated method stub
+				Action[] actions = new Action[] { copyBreedingMethodAction };
+				return actions;
+			}
+
+			@Override
+			public void handleAction(Action action, Object sender, Object target) {
+				if (action == copyBreedingMethodAction){
+					availableTable.getParent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this, ((MethodView) target).copyMethodView()));
+				}
+				
+			}
+        	 
+         });
+         
+         favoritesTable.addActionHandler(new Handler(){
+
+ 			@Override
+ 			public Action[] getActions(Object target, Object sender) {
+ 				// TODO Auto-generated method stub
+ 				Action[] actions = new Action[] { copyBreedingMethodAction };
+ 				return actions;
+ 			}
+
+ 			@Override
+ 			public void handleAction(Action action, Object sender, Object target) {
+ 				if (action == copyBreedingMethodAction){
+ 					favoritesTable.getParent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this, ((MethodView) target).copyMethodView()));
+ 				}
+ 				
+ 			}
+         	 
+          });
      }
 
 
