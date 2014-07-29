@@ -4,12 +4,15 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
 import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
@@ -28,6 +31,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
     private boolean isCropOnly;
     private CropType cropType;
     private ProgramLocationsView view;
+    
+    private static GermplasmDataManager gdm;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -59,8 +64,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.project = project;
 
 		this.workbenchDataManager = workbenchDataManager;
-
-        managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
 	}
 	
 	/**
@@ -160,10 +163,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
             return new ArrayList<LocationViewModel>();
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<Long> locationIds = workbenchDataManager.getLocationIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
+		List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION);
 		
-		for (Long locationId : locationIds) {
-            LocationViewModel locationVModel = this.getLocationDetailsByLocId(locationId.intValue());
+		for (ProgramFavorite favorite : favorites) {
+            LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
 
             if (locationVModel != null)
 			    result.add(locationVModel);
@@ -235,28 +238,24 @@ public class ProgramLocationsPresenter implements InitializingBean {
     public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations,Project project,WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
         // Delete existing project locations in the database
-        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
-                project.getProjectId(), 0,Integer.MAX_VALUE);
+    	List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION);
+    	gdm.deleteProgramFavorites(favorites);
 
-        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
-            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
-        }
-        projectLocationMapList.removeAll(projectLocationMapList);
-
-             /*
-            * add selected location to local db location table if it does not yet exist
-            * add location in workbench_project_loc_map in workbench db
-            */
+         /*
+        * add selected location to local db location table if it does not yet exist
+        * add location in workbench_project_loc_map in workbench db
+        */
+    	ArrayList<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
         for (LocationViewModel l : selectedLocations) {
-            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
-            projectLocationMap.setLocationId(l.getLocationId().longValue());
-            projectLocationMap.setProject(project);
-            projectLocationMapList.add(projectLocationMap);
+        	ProgramFavorite favorite = new ProgramFavorite();
+        	favorite.setEntityId(l.getLocationId());
+        	favorite.setEntityType(FavoriteType.LOCATION.getName());
+        	list.add(favorite);
         }
 
 
         // Add the new set of project locations
-        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+        gdm.saveProgramFavorites(list);
 
         return true;
     }
@@ -344,6 +343,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+    	
+    	gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+    	
         if (this.cropType != null)
             this.locationDataManager = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
         else {

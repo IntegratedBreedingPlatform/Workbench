@@ -15,6 +15,7 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -342,10 +343,10 @@ public class AddProgramPresenter {
 
     private void saveProjectMethods(ManagerFactory managerFactory, Collection<Method> methods, Project projectSaved) throws MiddlewareQueryException {
 
-        List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
+        List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
         int mID = 0;
         for (Method m : methods) {
-            ProjectMethod projectMethod = new ProjectMethod();
+        	ProgramFavorite favorite = new ProgramFavorite();
             if(m.getMid() < 1){
                 //save the added  method to the local database created
                 mID = managerFactory.getGermplasmDataManager().addMethod(new Method(m.getMid(), m.getMtype(), m.getMgrp(),
@@ -353,20 +354,20 @@ public class AddProgramPresenter {
             }else{
                 mID=m.getMid();
             }
-            projectMethod.setMethodId(mID);
-            projectMethod.setProject(projectSaved);
-            projectMethodList.add(projectMethod);
+            favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
+            favorite.setEntityId(mID);
+            list.add(favorite);
         }
-        workbenchDataManager.addProjectMethod(projectMethodList);
+        managerFactory.getGermplasmDataManager().saveProgramFavorites(list);
 
     }
 
     private void saveProjectLocation(ManagerFactory managerFactory, Collection<Location> locations, Project projectSaved) throws MiddlewareQueryException {
 
-        List<ProjectLocationMap> projectLocationMapList = new ArrayList<ProjectLocationMap>();
+        List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
         long locID=0;
         for (Location l : locations) {
-            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
+        	ProgramFavorite favorite = new ProgramFavorite();
             if(l.getLocid() < 1){
                 //save the added new location to the local database created
                 Location location = new Location();
@@ -385,12 +386,12 @@ public class AddProgramPresenter {
             }else{
                 locID=l.getLocid();
             }
-            projectLocationMap.setLocationId(locID);
-            projectLocationMap.setProject(projectSaved);
-            projectLocationMapList.add(projectLocationMap);
+            favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
+            favorite.setEntityId((int) locID);
+            list.add(favorite);
         }
 
-        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
+        managerFactory.getGermplasmDataManager().saveProgramFavorites(list);
     }
 
     /**
