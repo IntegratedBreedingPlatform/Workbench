@@ -127,16 +127,21 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 				if (treeTable.getValue() == null) return;
 				Reference studyRef = (Reference) treeTable.getValue();
+				
+				Study study = null;
 				try {
-					Study study = getStudyDataManager().getStudy(studyRef.getId());
+					study = getStudyDataManager().getStudy(studyRef.getId());
 					multiSiteAnalysisPanel.openStudyMeansDataset(study);
+					parentWindow.removeWindow(SelectStudyDialog.this);
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
+					if (study != null)
+					MessageNotifier.showError(event.getComponent().getWindow(), "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
+					else
+					MessageNotifier.showError(event.getComponent().getWindow(), "MEANS dataset doesn't exist", "The selected Study doesn't have an existing MEANS dataset.");
+					
 					e.printStackTrace();
 				}
 				
-				parentWindow.removeWindow(SelectStudyDialog.this);
-
 			}
 		});
 

@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -211,7 +212,7 @@ InitializingBean {
 	}
 
 
-	public void openStudyMeansDataset(Study study) {
+	public void openStudyMeansDataset(Study study) throws MiddlewareQueryException {
 
 		if (getComponentIndex(tabSheetContainer) == -1){
 			addComponent(tabSheetContainer);
@@ -230,10 +231,18 @@ InitializingBean {
 
 		try {
 
+			
 			if (study==null) return;
 			LOG.debug("selected from folder tree:" + study.toString());
+			
+			List<DataSet> dataSets = null;
+			try{
+				dataSets = getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
+			}catch(MiddlewareQueryException e){
+				e.printStackTrace();
+			}
 
-			if (study.getName() != null && getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).size() > 0){
+			if (dataSets != null && study.getName() != null && dataSets.size() > 0){
 
 				MultiSiteAnalysisSelectPanel selectEnvironmentPanel = new MultiSiteAnalysisSelectPanel(getStudyDataManager() ,project, study, this);
 
@@ -241,6 +250,8 @@ InitializingBean {
 				getStudiesTabsheet().addTab(selectEnvironmentPanel);
 				getStudiesTabsheet().getTab(selectEnvironmentPanel).setClosable(true);
 
+			}else{
+				throw new MiddlewareQueryException("This study doesnt have an existing MEANS dataset.");
 			}
 
 
@@ -248,10 +259,7 @@ InitializingBean {
 
 			e.printStackTrace();
 
-		} catch (MiddlewareQueryException e) {
-
-			e.printStackTrace();
-		}
+		} 
 
 		requestRepaintAll();
 

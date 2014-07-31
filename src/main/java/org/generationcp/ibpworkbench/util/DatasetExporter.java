@@ -180,7 +180,9 @@ public class DatasetExporter {
 						} else{
 							String value = factorVariable.getValue();
 							if(value != null) {
-								if (factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
+								if (factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+										|| factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM
+										){
 									value = value.trim().replace(",", ";");
 								}else{
 									value = value.trim();
