@@ -29,16 +29,16 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 /* Workbench split panel + sidebar */
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-csslayout{margin-top:20px}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node.v-tree-node-root {margin-bottom: 14px}
-.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-caption{color:#43b2db;font-weight:bold}
+.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-caption{color:#428bca;font-weight:bold}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-caption div {white-space: inherit}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-caption{margin-left:0}
-.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-leaf span:hover{display:block;color:#fff;background-color:#026ec2;border-color:#357ebd;border-radius:0;padding-top:5px;padding-bottom:5px}
+.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-leaf span:hover{display:block;color:#fff;background-color:#428bca;border-color:#357ebd;border-radius:0;padding-top:5px;padding-bottom:5px}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-leaf span{display:block;padding-left:34px;padding-top:5px;padding-bottom:5px;margin:0}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root .v-tree-node-leaf span{display:block;padding-left:34px}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-children-root{padding:0}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-root>.v-tree-node-caption span{color:#9e9e9e;text-shadow:none;font-size:14px;text-transform:uppercase;padding:0;margin-left:3px}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-root>.v-tree-node-caption.v-tree-node-selected span{padding:0 !important;margin-left:3px !important;background:0}
-.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-selected span{display:block;color:#fff;background-color:#026ec2;border-radius:0;text-shadow:none;padding-left:34px !important;padding-top:5px !important;padding-bottom:5px !important}
+.v-splitpanel-first-container-gcp-workbench-content-split-panel .v-tree-node-selected span{display:block;color:#fff;background-color:#428bca;border-radius:0;text-shadow:none;padding-left:34px !important;padding-top:5px !important;padding-bottom:5px !important}
 .v-splitpanel-first-container-gcp-workbench-content-split-panel .v-verticallayout{margin-top:20px}
 .main-header-right-container div div div div.v-label-undef-w{position:relative;bottom:3px;color:#dde5ec !important}
 .main-header-right-container div.v-button span.v-button-wrap span.v-button-caption:hover{text-decoration:underline}
