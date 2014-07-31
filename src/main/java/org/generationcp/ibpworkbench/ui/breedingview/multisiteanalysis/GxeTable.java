@@ -259,7 +259,9 @@ public class GxeTable extends Table {
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
 						container.addContainerProperty(v.getLocalName(), Label.class, null);
-						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") && !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
+						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
+								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + v.getLocalName().replace("_UnitErrors", "") + ")") 
+								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
 							if (variatesCheckBoxState.get(v.getLocalName()))
 								variateLocalNames.put(v.getRank(), v.getLocalName());
 						}

@@ -646,7 +646,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
             	vm.setDescription(variate.getLocalDescription());
             	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
-            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") && !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
+            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
+            			&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + variate.getLocalName().replace("_UnitErrors", "") + ")") 
+            			&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
             		vm.setActive(false);
             		variateList.add(vm);
             	}
