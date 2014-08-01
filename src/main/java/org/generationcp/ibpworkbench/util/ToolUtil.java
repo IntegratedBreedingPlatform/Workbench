@@ -275,9 +275,14 @@ public class ToolUtil {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
-        }else if(Util.isOneOf(tool.getToolName()                
-                ,ToolName.fieldbook.name())){
-        	configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
+        }
+        else if(Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name())){
+            configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
+        }
+        else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
+            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "tools/mbdt/DatabaseConfig.properties";
+            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
+                                                                             password, true);
         }
         
         return configurationChanged;
