@@ -126,24 +126,12 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 			public void buttonClick(ClickEvent event) {
 
 				if (treeTable.getValue() == null) return;
-				Reference studyRef = (Reference) treeTable.getValue();
-				
-				Study study = null;
-				try {
-					study = getStudyDataManager().getStudy(studyRef.getId());
-					multiSiteAnalysisPanel.openStudyMeansDataset(study);
-					parentWindow.removeWindow(SelectStudyDialog.this);
-				} catch (MiddlewareQueryException e) {
-					if (study != null)
-					MessageNotifier.showError(event.getComponent().getWindow(), "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
-					else
-					MessageNotifier.showError(event.getComponent().getWindow(), "MEANS dataset doesn't exist", "The selected Study doesn't have an existing MEANS dataset.");
-					
-					e.printStackTrace();
-				}
+				Reference studyRef = (Reference) treeTable.getValue();		
+				openStudy(studyRef.getId());
 				
 			}
 		});
+		
 
 	}
 
@@ -252,37 +240,65 @@ public class SelectStudyDialog extends Window implements InitializingBean, Inter
 
 			@Override
 			public void itemClick(ItemClickEvent event) {
-				Object itemId = event.getItemId();
-				if (tr.isCollapsed(itemId)){
-					tr.setCollapsed(itemId, false);
-				}else{
-					tr.setCollapsed(itemId, true);
-				}
 				
-				if (event.getItemId() instanceof StudyReference){
-					selectButton.setEnabled(true);
-				}else{
+				
+				if (event.isDoubleClick()){
 					
-					Reference r = (Reference) event.getItemId();
-					Boolean isStudy = false;
-					try {
-						
-						isStudy = getStudyDataManager().isStudy(r.getId());
-					} catch (MiddlewareQueryException e) {
+					Reference studyRef = (Reference) event.getItemId();
+					openStudy(studyRef.getId());
+					
+				}else{
+				
+				
+					Object itemId = event.getItemId();
+					
+					if (tr.isCollapsed(itemId)){
+						tr.setCollapsed(itemId, false);
+					}else{
+						tr.setCollapsed(itemId, true);
 					}
-					if (isStudy){
+					
+					if (event.getItemId() instanceof StudyReference){
 						selectButton.setEnabled(true);
 					}else{
-						selectButton.setEnabled(false);
+						
+						Reference r = (Reference) event.getItemId();
+						Boolean isStudy = false;
+						try {
+							
+							isStudy = getStudyDataManager().isStudy(r.getId());
+						} catch (MiddlewareQueryException e) {
+						}
+						if (isStudy){
+							selectButton.setEnabled(true);
+						}else{
+							selectButton.setEnabled(false);
+						}
+						
+						
 					}
-					
-					
 				}
 				
 			}
 			
 		});
 		return tr;
+	}
+	
+	private void openStudy(Integer studyId){
+		Study study = null;
+		try {
+			study = getStudyDataManager().getStudy(studyId);
+			multiSiteAnalysisPanel.openStudyMeansDataset(study);
+			parentWindow.removeWindow(SelectStudyDialog.this);
+		} catch (MiddlewareQueryException e) {
+			if (study != null)
+			MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
+			else
+			MessageNotifier.showError(this, "MEANS dataset doesn't exist", "The selected Study doesn't have an existing MEANS dataset.");
+			
+			e.printStackTrace();
+		}
 	}
 
 	public void queryChildrenStudies(Reference parentFolderReference,

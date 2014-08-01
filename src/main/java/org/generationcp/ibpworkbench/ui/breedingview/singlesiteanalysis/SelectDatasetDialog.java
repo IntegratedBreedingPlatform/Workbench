@@ -245,17 +245,31 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 			public void itemClick(ItemClickEvent event) {
 
 				Object itemId = event.getItemId();
-				if (tr.isCollapsed(itemId)){
-					tr.setCollapsed(itemId, false);
+				
+				if (event.isDoubleClick() && itemId instanceof DatasetReference){
+					
+					DatasetReference datasetRef = (DatasetReference) itemId;
+					Integer dataSetId = datasetRef.getId();
+					singleSiteAnalysisPanel.showDatasetVariatesDetails(dataSetId);
+					parentWindow.removeWindow(SelectDatasetDialog.this);
+					
+					
 				}else{
-					tr.setCollapsed(itemId, true);
+					if (tr.isCollapsed(itemId)){
+						tr.setCollapsed(itemId, false);
+					}else{
+						tr.setCollapsed(itemId, true);
+					}
+					
+					if (event.getItemId() instanceof DatasetReference){
+						selectButton.setEnabled(true);
+					}else{
+						selectButton.setEnabled(false);
+					}
 				}
 				
-				if (event.getItemId() instanceof DatasetReference){
-					selectButton.setEnabled(true);
-				}else{
-					selectButton.setEnabled(false);
-				}
+				
+				
 				
 			}
 			
