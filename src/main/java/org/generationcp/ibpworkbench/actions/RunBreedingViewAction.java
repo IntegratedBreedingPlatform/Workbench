@@ -131,11 +131,13 @@ public class RunBreedingViewAction implements ClickListener {
         
         String replicates = (String) this.source.getSelReplicates().getValue();
         if(StringUtils.isNullOrEmpty(replicates)){
-            if(designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())){
+            if(designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source.getSelReplicates().isEnabled()){
                 event.getComponent().getWindow().showNotification("Please specify replicates factor.", Notification.TYPE_ERROR_MESSAGE);
                 return;
             } else{
-                breedingViewInput.setReplicates(null);
+            	Replicates reps = new Replicates();
+                reps.setName("_REPLICATES_");
+                breedingViewInput.setReplicates(reps);
             }
         } else{
             Replicates reps = new Replicates();

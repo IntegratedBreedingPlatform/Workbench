@@ -68,8 +68,8 @@ public class DatasetExporter {
 				observationSheetColumnIndex++;
 			}
 		}
-
-
+		
+		
 		//get the variates and their details
 		VariableTypeList variateVariableTypeList = datasetVariableTypes.getVariates();
 		List<VariableType> variateVariableTypes = variateVariableTypeList.getVariableTypes();
@@ -94,6 +94,13 @@ public class DatasetExporter {
 
 		}
 
+		
+		if (breedingViewInput.getReplicates().getName().equals("_REPLICATES_")){
+			columnsMap.put("_REPLICATES_", Integer.valueOf(observationSheetColumnIndex));
+			observationSheetColumnIndex++;
+		}		
+		
+		
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 		List<Experiment> experiments = new ArrayList<Experiment>();
 
@@ -258,6 +265,11 @@ public class DatasetExporter {
 						}
 					}
 				}
+			}
+			
+			
+			if (breedingViewInput.getReplicates().getName().equals("_REPLICATES_")){
+				row.add("1");
 			}
 
 			tableItems.add(row.toArray(new String[0]));
