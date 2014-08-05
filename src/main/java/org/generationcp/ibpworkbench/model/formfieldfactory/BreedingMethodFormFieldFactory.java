@@ -21,6 +21,8 @@ import com.vaadin.ui.*;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -93,9 +95,21 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				if (value == null) return true;
 				
+				SessionData sessionData = null;
+				
+				try{
+					sessionData = WorkbenchContentApp.get().getSessionData();
+				}catch(Exception e){}
+				
+				try{
+					if (sessionData == null){
+						sessionData = IBPWorkbenchApplication.get().getSessionData();
+					}
+				}catch(Exception e){}
+				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
 					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString());
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
@@ -146,9 +160,22 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				if (value == null) return true;
 				
+				SessionData sessionData = null;
+				
+				try{
+					sessionData = WorkbenchContentApp.get().getSessionData();
+				}catch(Exception e){}
+				
+				try{
+					if (sessionData == null){
+						sessionData = IBPWorkbenchApplication.get().getSessionData();
+					}
+				}catch(Exception e){}
+				
+				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(IBPWorkbenchApplication.get().getSessionData().getSelectedProject());
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
 					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString());
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
