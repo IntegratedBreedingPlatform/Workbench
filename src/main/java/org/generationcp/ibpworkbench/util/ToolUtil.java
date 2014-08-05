@@ -552,36 +552,6 @@ public class ToolUtil {
         return updatePropertyFile(configurationFile, newPropertyValues);
     }
     
-    public boolean updateWebServiceConfigurationForProject(Project project, WorkbenchSetting workbenchSetting) throws IOException, MiddlewareQueryException {
-        String centralDbName = project.getCropType().getCentralDbName();
-        String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
-        
-        // get mysql user name and password to use
-        String username = null;
-        String password = null;
-
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        if (app != null) {
-            User currentUser = app.getSessionData().getUserData();
-
-            if (currentUser != null) {
-                try {
-                    ProjectUserMysqlAccount account = workbenchDataManager.getProjectUserMysqlAccountByProjectIdAndUserId(Integer.valueOf(project.getProjectId().intValue()), currentUser.getUserid());
-                    username = account.getMysqlUsername();
-                    password = account.getMysqlPassword();
-                }
-                catch (MiddlewareQueryException ex) {
-                    // do nothing, use the default central and local mysql user
-                    // accounts
-                }
-            }
-        }
-        
-        String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/IBPWebService/WEB-INF/classes/IBPDatasource.properties";
-        LOG.debug("Updating ibpwebservice configuration at: " + configPath);
-        return updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username, password, false);
-    }
-
     public void createWorkspaceDirectoriesForProject(Project project)
         throws MiddlewareQueryException {
         WorkbenchSetting workbenchSetting = workbenchDataManager
