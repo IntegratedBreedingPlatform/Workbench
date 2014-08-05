@@ -21,11 +21,13 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window.Notification;
+
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
@@ -227,9 +229,17 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
+				
 				CheckBox chk = (CheckBox) event.getProperty();
 				Boolean val = (Boolean) event.getProperty()
 						.getValue();
+				
+				if (val == false) { 
+					footerCheckBox.removeListener(footerCheckBoxListener);
+					footerCheckBox.setValue(false); 
+					footerCheckBox.addListener(footerCheckBoxListener);
+					return; }
+				
 				SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
 			
 				 TrialEnvironments trialEnvironments;
@@ -239,14 +249,22 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 						
 						if (trialEnv == null){
 							
-							 getWindow().showNotification("\""+ model.getEnvironmentName()  + "\" value is not a valid selection for breeding view.", Notification.TYPE_ERROR_MESSAGE);
+							 MessageNotifier.showError(getWindow(), "Invalid Selection", "\""+ model.getEnvironmentName()  + "\" value is not a valid selection for breeding view.");
 							 chk.setValue(false);
 							 model.setActive(false);
 							
 						}else{
 							
-							model.setActive(val);
+							Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(getBreedingViewInput().getDatasetId(), model.getLocationId());
 							
+							if (!valid){
+								MessageNotifier.showError(getWindow(), "Invalid Selection", getSelEnvFactor().getValue().toString() + " \""+ model.getEnvironmentName()  + "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+								chk.setValue(false);
+								model.setActive(false);
+							}else{
+								model.setActive(val);
+							}
+	
 						}
 					} catch (ConfigException e) {
 						// TODO Auto-generated catch block
@@ -256,11 +274,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 						e.printStackTrace();
 					}
 					
-					if (val == false) { 
-						footerCheckBox.removeListener(footerCheckBoxListener);
-						footerCheckBox.setValue(false); 
-						footerCheckBox.addListener(footerCheckBoxListener);
-						return; }
+					
 				
 			}
 			
@@ -292,15 +306,63 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-
+				
+				if ((Boolean) event.getProperty().getValue() == false){
+					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();){
+						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
+						m.setActive(false);
+					}
+					tblEnvironmentSelection.refreshRowCache();
+					return;
+				}
+					
+				
+				try{
+					
+					
+					ArrayList<String> invalidEnvs = new ArrayList<String>(){
+						
+						@Override
+						public String toString(){
+							StringBuilder sb = new StringBuilder();
+							Iterator<String> itr = this.listIterator();
+							while (itr.hasNext()){
+								sb.append("\"" + itr.next()  + "\"");
+								if (itr.hasNext()) sb.append(",");
+							}
+							return sb.toString();
+						}
+					};
+					
 					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();){
 						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 						m.setActive((Boolean) event.getProperty().getValue());
+		
+						Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(getBreedingViewInput().getDatasetId(), m.getLocationId());
+						
+						if (!valid){
+							invalidEnvs.add(m.getEnvironmentName());
+							m.setActive(false);
+						}else{
+							m.setActive(true);
+						}
+						
+						
 					}
 					
+					
 					tblEnvironmentSelection.refreshRowCache();
-				}
+					
+					if (invalidEnvs.size() > 0){
+						MessageNotifier.showError(getWindow(), "Invalid Selection", getSelEnvFactor().getValue().toString() + " " + invalidEnvs.toString()  + " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+					}
 				
+				
+				}catch(Exception e){
+					
+				}
+
+			}
 			
 			
 		};
@@ -570,6 +632,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 							bean.setActive(false);	
 							bean.setEnvironmentName(selectedEnvVar.getValue());
 							bean.setTrialno(trialVar.getValue());
+							bean.setLocationId(temp.getId());
 							container.addBean(bean);
 
 						}else{

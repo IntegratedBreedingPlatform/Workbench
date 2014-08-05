@@ -34,6 +34,7 @@ public class SeaEnvironmentModel implements Serializable{
     
     private String environmentName;
     private String trialno;
+    private Integer locationId;
     private Boolean active;
     
     
@@ -74,6 +75,16 @@ public class SeaEnvironmentModel implements Serializable{
 
 	public void setTrialno(String trialno) {
 		this.trialno = trialno;
+	}
+
+
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 }
