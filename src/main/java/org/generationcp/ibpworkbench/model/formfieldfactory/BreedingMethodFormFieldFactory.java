@@ -14,6 +14,8 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
@@ -23,6 +25,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.WorkbenchContentApp;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
@@ -72,7 +75,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         initFields(classMap);
     }
 
-    private void initFields(Map<Integer,String> classMap) {
+    private void initFields(final Map<Integer,String> classMap) {
 
         methodName = new TextField();
         methodName.setRequired(true);
@@ -199,6 +202,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodCode.setWidth("70px");
 
         methodSelectType = new Select();
+        methodSelectType.setImmediate(true);
         methodSelectType.setWidth("250px");
         methodSelectType.addItem("GEN");
         methodSelectType.setItemCaption("GEN", "Generative");
@@ -210,6 +214,54 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodSelectType.setNullSelectionAllowed(false);
         methodSelectType.setRequired(true);
         methodSelectType.setRequiredError("Please select a Generation Advancement Type");
+        
+        
+        methodSelectType.addListener(new Property.ValueChangeListener(){
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				methodSelectClass.removeAllItems();
+				if (event.getProperty().getValue().toString().equals("GEN")){
+					for (Integer key : classMap.keySet()) {
+						String value = classMap.get(key);
+						
+						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId())
+								|| key.equals(TermId.MUTATION_METHODS_CLASS.getId())
+								|| key.equals(TermId.GENETIC_MODIFICATION_CLASS.getId())
+								|| key.equals(TermId.CYTOGENETIC_MANIPULATION.getId()))
+						{
+							methodSelectClass.addItem(key);
+							methodSelectClass.setItemCaption(key, value);
+						}
+					}
+				}else if (event.getProperty().getValue().toString().equals("DER")){
+					for (Integer key : classMap.keySet()) {
+						String value = classMap.get(key);
+						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId())
+								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId()))
+						{
+							methodSelectClass.addItem(key);
+							methodSelectClass.setItemCaption(key, value);
+						}
+					}
+				}else if (event.getProperty().getValue().toString().equals("MAN")){
+					for (Integer key : classMap.keySet()) {
+						String value = classMap.get(key);
+						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId())
+								|| key.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId())
+								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId()))
+						{
+							methodSelectClass.addItem(key);
+							methodSelectClass.setItemCaption(key, value);
+						}
+					}
+				}
+				
+			}
+        	
+        });
+        
+        
 
         methodSelectGroup = new Select();
         methodSelectGroup.setWidth("250px");
@@ -226,14 +278,10 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         
         methodSelectClass = new Select();
         methodSelectClass.setWidth("250px");
-        for (Integer key : classMap.keySet()) {
-			String value = classMap.get(key);
-			methodSelectClass.addItem(key);
-			methodSelectClass.setItemCaption(key, value);
-		}
         methodSelectClass.setNullSelectionAllowed(false);
         methodSelectClass.setRequired(true);
-        methodSelectClass.setRequiredError("Please select a Class");        
+        methodSelectClass.setRequiredError("Please select a Class");  
+        methodSelectClass.setImmediate(true);
     }
 
 
