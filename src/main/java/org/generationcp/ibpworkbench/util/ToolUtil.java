@@ -276,9 +276,6 @@ public class ToolUtil {
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
         }
-        else if(Util.isOneOf(tool.getToolName(), ToolName.fieldbook.name())){
-            configurationChanged = updateFieldBookConfiguration(tool, centralDbName, localDbName, username, password, workbenchLoggedinUserId);
-        }
         else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "tools/mbdt/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
@@ -286,68 +283,6 @@ public class ToolUtil {
         }
         
         return configurationChanged;
-    }
-    
-    protected boolean updateFieldBookConfiguration(Tool tool, String centralDbName, String localDbName, String username, String password, String workbenchLoggedinUserId) throws MiddlewareQueryException {
-        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-        
-        String installationDirectory = workbenchSetting == null? "" : workbenchSetting.getInstallationDirectory() + File.separator;
-        
-        // Update databaseconfig.properties
-        File configurationFile = new File(installationDirectory + File.separator + "tools/fieldbook/IBFb/ibfb/modules/ext/databaseconfig.properties").getAbsoluteFile();
-        
-        String jdbcFormat = "jdbc:mysql://%s:%s/%s";
-        String centralJdbcString = String.format(jdbcFormat, jdbcHost,
-                                                 jdbcPort, centralDbName);
-        String localJdbcString = String.format(jdbcFormat, jdbcHost,
-                                               jdbcPort, localDbName);
-
-        String centralDbUser = centralUser;
-        String centralDbPassword = centralPassword;
-        String localDbUser = localUser;
-        String localDbPassword = localPassword;
-        if (!StringUtil.isEmptyOrWhitespaceOnly(username)
-            && !StringUtil.isEmptyOrWhitespaceOnly(password)) {
-            centralDbUser = username;
-            centralDbPassword = password;
-            localDbUser = username;
-            localDbPassword = password;
-        }
-        
-        Map<String, String> propertyValues = new HashMap<String, String>();
-
-        propertyValues.put("dmscentral.url", centralJdbcString);
-        propertyValues.put("dmscentral.driverclassname", "com.mysql.jdbc.Driver");
-        propertyValues.put("dmscentral.username", centralDbUser);
-        propertyValues.put("dmscentral.password", centralDbPassword);
-        propertyValues.put("dmscentral.accessType", "central");
-
-        propertyValues.put("dmscentral2.defaultSchema", centralDbName);
-
-        propertyValues.put("gmscentral.hibernateDialect", "");
-        propertyValues.put("gmscentral.url", centralJdbcString);
-        propertyValues.put("gmscentral.driverclassname", "com.mysql.jdbc.Driver");
-        propertyValues.put("gmscentral.username", centralDbUser);
-        propertyValues.put("gmscentral.password", centralDbPassword);
-        propertyValues.put("gmscentral.accessType", "central");
-
-        propertyValues.put("dmslocal.hibernateDialect", "");
-        propertyValues.put("dmslocal.url", localJdbcString);
-        propertyValues.put("dmslocal.driverclassname", "com.mysql.jdbc.Driver");
-        propertyValues.put("dmslocal.username", localDbUser);
-        propertyValues.put("dmslocal.password", localDbPassword);
-        propertyValues.put("dmslocal.accessType", "local");
-
-        propertyValues.put("gmslocal.hibernateDialect", "");
-        propertyValues.put("gmslocal.url", localJdbcString);
-        propertyValues.put("gmslocal.driverclassname", "com.mysql.jdbc.Driver");
-        propertyValues.put("gmslocal.username", localDbUser);
-        propertyValues.put("gmslocal.password", localDbPassword);
-        propertyValues.put("gmslocal.accessType", "local");
-
-        propertyValues.put("workbench.currentUserId", workbenchLoggedinUserId);
-        
-        return updatePropertyFile(configurationFile, propertyValues);
     }
     
     protected boolean updateGdmsConfiguration(String connectionUrl, String username, String password) throws JAXBException, MiddlewareQueryException, IOException {
@@ -538,14 +473,6 @@ public class ToolUtil {
             
             if (project != null) {
                 newPropertyValues.put("workbench.currentProjectId", String.valueOf(project.getProjectId()));
-            }
-        }
-        
-        // if we are instructed to include the fieldbook tool path, add it
-        if (includeOldFieldbookPath) {
-            Tool tool = workbenchDataManager.getToolWithName(ToolName.fieldbook.name());
-            if (tool != null) {
-                newPropertyValues.put("old.fb.tool.path", tool.getPath());
             }
         }
         

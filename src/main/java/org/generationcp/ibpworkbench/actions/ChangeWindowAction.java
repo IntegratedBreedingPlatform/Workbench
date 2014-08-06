@@ -57,7 +57,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
         ,STUDY_BROWSER("study_browser")
         ,GERMPLASM_LIST_BROWSER("germplasm_list_browser")
         ,GDMS("gdms")
-        ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
         ,BREEDING_VIEW("breeding_view_wb")
