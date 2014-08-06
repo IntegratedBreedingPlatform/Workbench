@@ -9,6 +9,8 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -112,10 +114,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
         List<Method> result = new ArrayList<Method>();
         try {
-           List<Integer> projectMethodsIds = workbenchDataManager.getMethodIdsByProjectId(project.getProjectId(), 0, Integer.MAX_VALUE);
+           List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.METHOD);
 
-            for (Integer id : projectMethodsIds) {
-                Method m = gdm.getMethodByID(id);
+            for (ProgramFavorite favorite : favorites) {
+                Method m = gdm.getMethodByID(favorite.getEntityId());
 
                 if (m != null)
                     result.add(m);
@@ -284,17 +286,17 @@ public class ProgramMethodsPresenter implements InitializingBean {
     }
 
     public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, SessionData sessionData, WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
-        List<ProjectMethod> projectMethods = null;
+        List<ProgramFavorite> favorites = null;
         try {
-            projectMethods = workbenchDataManager.getProjectMethodByProject(project,0,Integer.MAX_VALUE);
+        	favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD);
 
             //TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
             for (Method m : selectedMethodIds) {
                 boolean m_exists = false;
 
-                for (ProjectMethod pmethod : projectMethods) {
-                    if (pmethod.getMethodId().equals(m.getMid())) m_exists = true;
+                for (ProgramFavorite favorite : favorites) {
+                    if (favorite.getEntityId().equals(m.getMid())) m_exists = true;
                 }
 
                 if (!m_exists) {
@@ -303,17 +305,16 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 
-            // delete all project methods
-            for (ProjectMethod projectMethod : projectMethods) {
-                workbenchDataManager.deleteProjectMethod(projectMethod);
-            }
+            
+            gdm.deleteProgramFavorites(favorites);
+            
 
             // Repopulate the project methods table
-            List<ProjectMethod> projectMethodList = new ArrayList<ProjectMethod>();
+            List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
             int mID = 0;
 
             for (Method m : selectedMethodIds)   {
-                ProjectMethod projectMethod = new ProjectMethod();
+            	ProgramFavorite favorite = new ProgramFavorite();
                 if (m.getMid() < 1) {
                     Method m2 = gdm.getMethodByID(m.getMid());
 
@@ -327,12 +328,13 @@ public class ProgramMethodsPresenter implements InitializingBean {
                     mID = m.getMid();
                 }
 
-                projectMethod.setMethodId(mID);
-                projectMethod.setProject(project);
-                projectMethodList.add(projectMethod);
+                favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
+                favorite.setEntityId(mID);
+                list.add(favorite);
             }
 
-            workbenchDataManager.addProjectMethod(projectMethodList);
+            gdm.saveProgramFavorites(list);
+            
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
