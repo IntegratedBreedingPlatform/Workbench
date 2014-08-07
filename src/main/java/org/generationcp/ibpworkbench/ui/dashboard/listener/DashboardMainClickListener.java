@@ -15,13 +15,15 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -32,9 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
 import java.util.Date;
-
 
 /**
  * @author Efficio.Daniel
@@ -55,8 +55,8 @@ public class DashboardMainClickListener implements ClickListener{
     @Autowired
     private SessionData sessionData;
 
-    //@Autowired
-    //private SimpleResourceBundleMessageSource messageSource;
+    @Autowired
+    private SimpleResourceBundleMessageSource messageSource;
 
     private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
     
@@ -73,6 +73,14 @@ public class DashboardMainClickListener implements ClickListener{
         try {
            // lets update last opened project
             Project project = sessionData.getSelectedProject();
+            String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+            String currentCropVersion = project.getCropType().getVersion();
+            if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
+            	MessageNotifier.showWarning(event.getComponent().getWindow(), 
+            			"",messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
+            					minimumCropVersion,
+            					currentCropVersion));
+            }
 
             try {
                 toolUtil.createWorkspaceDirectoriesForProject(project);
@@ -102,9 +110,9 @@ public class DashboardMainClickListener implements ClickListener{
             e.printStackTrace();
             MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
         }
-}
-
-    public void updateProjectLastOpenedDate(Project project) {
+    }
+    
+	public void updateProjectLastOpenedDate(Project project) {
         try {
 
             // set the last opened project in the session
@@ -124,12 +132,6 @@ public class DashboardMainClickListener implements ClickListener{
 
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
-
-            /*
-            MessageNotifier.showError(window,
-                messageSource.getMessage(Message.DATABASE_ERROR),
-                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-             */
         }
     }
 }

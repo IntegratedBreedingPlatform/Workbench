@@ -24,6 +24,7 @@ import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -319,6 +320,15 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
                         oldCropType = newCropType;
                     }
+                    
+                }
+                String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+                String currentCropVersion = getCropTypeBasedOnInput().getVersion();
+                if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
+                   	MessageNotifier.showWarning(getWindow(),"",
+                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
+                					minimumCropVersion,
+                					currentCropVersion));
                 }
 
 				
@@ -428,9 +438,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         project.setProjectName(projectName);
         project.setStartDate((Date) startDateField.getValue());
 
-
         project.setCropType(getCropTypeBasedOnInput());
-
+        
+        
+        
         return project;
     }
     
