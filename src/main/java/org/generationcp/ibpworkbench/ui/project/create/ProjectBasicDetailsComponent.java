@@ -322,13 +322,15 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
                     }
                     
                 }
-                String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-                String currentCropVersion = getCropTypeBasedOnInput().getVersion();
-                if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
-                   	MessageNotifier.showWarning(getWindow(),"",
-                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-                					minimumCropVersion,
-                					currentCropVersion));
+                if(getWindow()!=null) {
+	                String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+	                String currentCropVersion = getCropTypeBasedOnInput().getVersion();
+	                if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
+	                   	MessageNotifier.showWarning(getWindow(),"",
+	                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
+	                					minimumCropVersion,
+	                					currentCropVersion));
+	                }
                 }
 
 				
