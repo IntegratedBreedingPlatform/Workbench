@@ -15,7 +15,6 @@ import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectLocationMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -200,39 +199,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
         return null;
 	}
-
-    @Deprecated
-    public boolean saveProgramLocationByIds(List<Integer> selectedLocationIds) throws MiddlewareQueryException {
-    	
-        // Delete existing project locations in the database
-        List<ProjectLocationMap> projectLocationMapList = workbenchDataManager.getProjectLocationMapByProjectId(
-                project.getProjectId(), 0,Integer.MAX_VALUE);
-        
-        for (ProjectLocationMap projectLocationMap : projectLocationMapList){
-            workbenchDataManager.deleteProjectLocationMap(projectLocationMap);
-        }
-        projectLocationMapList.removeAll(projectLocationMapList);
-        
-        /*
-         * add selected location to local db location table if it does not yet exist
-         * add location in workbench_project_loc_map in workbench db
-         */
-        for (Integer l : selectedLocationIds) {
-            ProjectLocationMap projectLocationMap = new ProjectLocationMap();
-            projectLocationMap.setLocationId(l.longValue());
-            projectLocationMap.setProject(getProject());
-            projectLocationMapList.add(projectLocationMap);
-        }
-
-
-        // Add the new set of project locations
-        workbenchDataManager.addProjectLocationMap(projectLocationMapList);
-              
-        return true;
-    }
-
+	
     public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
-        return this.saveProgramLocation(selectedLocations,this.project,this.workbenchDataManager);
+        return saveProgramLocation(selectedLocations,this.project,this.workbenchDataManager);
     }
 
     public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations,Project project,WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
