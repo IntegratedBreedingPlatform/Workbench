@@ -43,7 +43,7 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
 
 
     private static final String WINDOW_WIDTH = "640px";
-    private static final String WINDOW_HEIGHT = "480px";
+    private static final String WINDOW_HEIGHT = "415px";
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
