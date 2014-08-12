@@ -341,10 +341,6 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
-        if (!isFolder(id)) {
-            throw new Error(NOT_FOLDER);
-        }
-
         try {
             if (hasChildren(id)) {
                 throw new Error(HAS_CHILDREN);

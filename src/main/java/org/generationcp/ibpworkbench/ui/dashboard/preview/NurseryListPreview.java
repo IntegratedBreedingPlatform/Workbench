@@ -678,6 +678,10 @@ public class NurseryListPreview extends VerticalLayout {
         addFolderBtn.setEnabled(enabled);
     }
 
+    public void setToolbarDeleteButtonEnabled(boolean enabled) {
+        deleteFolderBtn.setEnabled(enabled);
+    }    
+    
     public void setToolbarLaunchButtonEnabled(boolean enabled) {
         openStudyManagerBtn.setEnabled(enabled);
     }
@@ -698,6 +702,7 @@ public class NurseryListPreview extends VerticalLayout {
         } else if (!isFolder) {
             setToolbarButtonsEnabled(false);
             setToolbarAddButtonEnabled(true);
+            setToolbarDeleteButtonEnabled(true);
         } else {
             setToolbarButtonsEnabled(true);
         }
