@@ -329,7 +329,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	                   	MessageNotifier.showWarning(getWindow(),"",
 	                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
 	                					minimumCropVersion,
-	                					currentCropVersion));
+	                					currentCropVersion!=null?currentCropVersion:
+	                						messageSource.getMessage(Message.BELOW_MINIMUM)));
 	                }
                 }
 

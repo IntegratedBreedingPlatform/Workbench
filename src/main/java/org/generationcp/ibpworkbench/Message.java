@@ -508,4 +508,5 @@ public enum Message {
     , BASIC_DETAILS_OTHER_CROP_NAME
     
     ,MINIMUM_CROP_VERSION_WARNING
+    ,BELOW_MINIMUM
 }

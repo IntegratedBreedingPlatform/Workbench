@@ -33,7 +33,10 @@ public class SchemaVersionUtil {
 	public static boolean checkIfVersionIsSupported(String currentCropVersion, String minimumCropVersion) {
 		//check BMS minimum support crop version against the crop version of the project
     	//if crop version is below the minimum supported crop version, display a warning
-    	if(currentCropVersion==null || currentCropVersion.trim().equals("")) {
+		if(minimumCropVersion==null || minimumCropVersion.trim().equals("")) {
+    		return true;
+    	}
+		if(currentCropVersion==null || currentCropVersion.trim().equals("")) {
     		return false;
     	}
     	StringTokenizer currentTokens = new StringTokenizer(currentCropVersion,".");
