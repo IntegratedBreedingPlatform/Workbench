@@ -79,7 +79,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		List<Location> locationList = null;
 
         Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
-        List<LocationViewModel> favorites = this.getSavedProgramLocations();
         locationName = (locationName != null) ? locationName : "";
 		
 		Country country = locationDataManager.getCountryById(countryId);
@@ -92,12 +91,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
             if (locationVModel != null)
                 resultsMap.put(location.getLocid(), locationVModel);
-        }
-
-        // remove items already in favorites
-        for (LocationViewModel item : favorites) {
-            if (resultsMap.containsKey(item.getLocationId()))
-                resultsMap.remove(item.getLocationId());
         }
 
         return resultsMap.values();
@@ -120,12 +113,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
                 resultsMap.put(location.getLocid(), locationVModel);
         }
 
-        // remove items already in favorites
-        for (LocationViewModel item : existingItems) {
-            if (resultsMap.containsKey(item.getLocationId()))
-                resultsMap.remove(item.getLocationId());
-        }
-
+ 
         return resultsMap.values();
     }
 

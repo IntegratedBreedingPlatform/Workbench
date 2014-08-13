@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.dms.DmsProject;
+
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationViewModel implements BeanFormState {
+	
+
 	private Integer locationId;
 	private String locationName = "";
 	public String locationAbbreviation = "";
@@ -205,4 +209,32 @@ public class LocationViewModel implements BeanFormState {
 		this.isEnabled = val;
 		
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((locationId == null) ? 0 : locationId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LocationViewModel other = (LocationViewModel) obj;
+		if (locationId == null) {
+			if (other.locationId != null)
+				return false;
+		} else if (!locationId.equals(other.locationId))
+			return false;
+		return true;
+	}
+	
+
 }

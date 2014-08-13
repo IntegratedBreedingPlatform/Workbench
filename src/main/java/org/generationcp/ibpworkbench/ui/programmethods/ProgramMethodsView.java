@@ -162,7 +162,9 @@ import java.util.*;
 
          // TABLES!
          availableTable = buildCustomTable(availableSelectAll);
+         availableTable.setData("available");
          favoritesTable = buildCustomTable(favoriteSelectAll);
+         favoritesTable.setData("favorites");
 
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -336,8 +338,12 @@ import java.util.*;
 
                  if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
                   	if (((MethodView)itemIdOver).isEnabled()){
-                  		((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                  		
+                  		if (((Table) t.getSourceComponent()).getData().toString().equals("favorites")){
+                 			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 		}
                   		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
+                  		
                   	}
                   }else{
                  	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
@@ -363,12 +369,34 @@ import java.util.*;
          BeanItemContainer<MethodView> targetDataContainer = (BeanItemContainer<MethodView>) target.getContainerDataSource();
          Container sourceDataContainer = source.getContainerDataSource();
 
+         
+         int counter = 0;
          while (sourceItemsIterator.hasPrevious()) {
              MethodView itemId = (MethodView) sourceItemsIterator.previous();
              itemId.setActive(false);
-             targetDataContainer.addItemAt(0, itemId);
-             sourceDataContainer.removeItem(itemId);
+             if (source.getData().toString().equals("available")){
+            	 targetDataContainer.addItemAt(0, itemId);
+            	 if (counter < 100) target.unselect(itemId);
+             }else{
+            	 sourceDataContainer.removeItem(itemId);
+             }
+             counter++;
+          
          }
+         
+         if (counter >= 100){
+        	 if (target.getData().toString().equals("favorites")){
+            	 target.setValue(null);
+             }
+         }
+         
+         if (source.getData().toString().equals("available")){
+        	 source.setValue(null);
+         }
+         
+         source.refreshRowCache();
+         target.refreshRowCache();
+         
      }
 
     /**
@@ -405,11 +433,11 @@ import java.util.*;
 
              /* INITIALIZE TABLE DATA */
          favoritesTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getSavedProgramMethods());
-         availableTableContainer = new BeanItemContainer<MethodView>(MethodView.class,presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),""));
+         setAvailableTableContainer(new BeanItemContainer<MethodView>(MethodView.class,presenter.getFilteredResults(groupFilter.getValue().toString(),typeFilter.getValue().toString(),"")));
 
-         resultCountLbl.setValue("Result: " + availableTableContainer.size());
+         resultCountLbl.setValue("Result: " + getAvailableTableContainer().size());
 
-         availableTable.setContainerDataSource(availableTableContainer);
+         availableTable.setContainerDataSource(getAvailableTableContainer());
          favoritesTable.setContainerDataSource(favoritesTableContainer);
 
              /* SETUP TABLE FIELDS */
@@ -607,16 +635,18 @@ import java.util.*;
      public void addRow(MethodView item,boolean atAvailableTable,Integer index) {
          if (index != null) {
              if (atAvailableTable) {
-                 availableTableContainer.addItemAt(index,item);
+                 getAvailableTableContainer().addItemAt(index,item);
 
              } else {
+            	 getAvailableTableContainer().addItemAt(index,item);
                  favoritesTableContainer.addItemAt(index,item);
              }
          } else {
              if (atAvailableTable) {
-                 availableTableContainer.addItem(item);
+                 getAvailableTableContainer().addItem(item);
 
              } else {
+            	 getAvailableTableContainer().addItem(item);
                  favoritesTableContainer.addItem(item);
              }
          }
@@ -625,16 +655,18 @@ import java.util.*;
      public void addRow(Method item,boolean atAvailableTable,Integer index) {
          if (index != null) {
              if (atAvailableTable) {
-                 availableTableContainer.addItemAt(index,presenter.convertMethod(item));
+                 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
 
              } else {
+            	 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
                  favoritesTableContainer.addItemAt(index,presenter.convertMethod(item));
              }
          } else {
              if (atAvailableTable) {
-                 availableTableContainer.addItem(presenter.convertMethod(item));
+                 getAvailableTableContainer().addItem(presenter.convertMethod(item));
 
              } else {
+            	 getAvailableTableContainer().addItem(presenter.convertMethod(item));
                  favoritesTableContainer.addItem(presenter.convertMethod(item));
              }
          }
@@ -660,8 +692,8 @@ import java.util.*;
          Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
              @Override
              public void valueChange(Property.ValueChangeEvent event) {
-                 availableTableContainer.removeAllItems();
-                 availableTableContainer.addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
+                 getAvailableTableContainer().removeAllItems();
+                 getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
 
                  resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
              }
@@ -772,5 +804,13 @@ import java.util.*;
         favoritesTable.refreshRowCache();
 
     }
+
+	public BeanItemContainer<MethodView> getAvailableTableContainer() {
+		return availableTableContainer;
+	}
+
+	public void setAvailableTableContainer(BeanItemContainer<MethodView> availableTableContainer) {
+		this.availableTableContainer = availableTableContainer;
+	}
 
  }

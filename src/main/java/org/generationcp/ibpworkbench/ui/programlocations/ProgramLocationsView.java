@@ -9,6 +9,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -98,8 +99,10 @@ import java.util.*;
 
          // TABLES!
          availableTable = buildCustomTable(availableSelectAll);
+         availableTable.setData("available");
 
          favoritesTable = buildCustomTable(favoriteSelectAll);
+         favoritesTable.setData("favorites");
 
          addToFavoriteBtn = new Button("Add to Favorite Locations");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -221,12 +224,34 @@ import java.util.*;
          BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
          Container sourceDataContainer = source.getContainerDataSource();
 
+         int counter = 0;
          while (sourceItemsIterator.hasPrevious()) {
              LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
              itemId.setActive(false);
-             targetDataContainer.addItemAt(0, itemId);
-             sourceDataContainer.removeItem(itemId);
+             
+             if (source.getData().toString().equals("available")){
+            	 targetDataContainer.addItemAt(0, itemId);
+            	 if (counter < 100) target.unselect(itemId);
+             }else{
+            	 sourceDataContainer.removeItem(itemId);
+             }
+             counter++;
          }
+         
+         
+         if (counter >= 100){
+        	 if (target.getData().toString().equals("favorites")){
+            	 target.setValue(null);
+             }
+         }
+         
+         if (source.getData().toString().equals("available")){
+        	 source.setValue(null);
+         }
+         
+         source.refreshRowCache();
+         target.refreshRowCache();
+         
      }
 
      private void initializeLayout() {
@@ -234,7 +259,7 @@ import java.util.*;
          root.setSpacing(false);
          root.setMargin(new Layout.MarginInfo(false,true,true,true));
 
-         final Label availableLocationsTitle = new Label("Available Locations");
+         final Label availableLocationsTitle = new Label("All Locations");
          availableLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
          availableTable.setWidth("100%");
@@ -542,7 +567,9 @@ import java.util.*;
                  
                  if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
                  	if (((LocationViewModel)itemIdOver).isEnabled()){
-                 		((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 		if (((Table) t.getSourceComponent()).getData().toString().equals("favorites")){
+                 			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 		}
                  		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                  	}
                  }else{
@@ -566,19 +593,17 @@ import java.util.*;
 
      public void addRow(LocationViewModel item,boolean atAvailableTable,Integer index) {
          if (index != null) {
-             if (atAvailableTable) {
+             
                  availableTableContainer.addItemAt(index,item);
-                 availableTable.select(item);
-             } else {
+                 //availableTable.select(item);
                  favoritesTableContainer.addItemAt(index,item);
-             }
+             
          } else {
-             if (atAvailableTable) {
+             
                  availableTableContainer.addItem(item);
-                 availableTable.select(item);
-             } else {
+                 //availableTable.select(item);
                  favoritesTableContainer.addItem(item);
-             }
+             
          }
 
      }

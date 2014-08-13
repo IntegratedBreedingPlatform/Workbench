@@ -140,11 +140,11 @@ public class ProgramMethodsPresenter implements InitializingBean {
             }
 
             // remove items already in favorites
-            for (MethodView method : existingItems) {
-                if (resultsMap.containsKey(method.getMid())) {
-                    resultsMap.remove(method.getMid());
-                }
-            }
+            //for (MethodView method : existingItems) {
+            //    if (resultsMap.containsKey(method.getMid())) {
+            //        resultsMap.remove(method.getMid());
+            //    }
+            //}
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
@@ -174,11 +174,11 @@ public class ProgramMethodsPresenter implements InitializingBean {
             }
 
             // remove items already in favorites
-            for (MethodView method : this.getSavedProgramMethods()) {
-                if (resultsMap.containsKey(method.getMid())) {
-                    resultsMap.remove(method.getMid());
-                }
-            }
+            //for (MethodView method : this.getSavedProgramMethods()) {
+            //    if (resultsMap.containsKey(method.getMid())) {
+            //        resultsMap.remove(method.getMid());
+            //    }
+            //}
 
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
@@ -398,4 +398,5 @@ public class ProgramMethodsPresenter implements InitializingBean {
 		
 		return methodClasses;
 	}
+	
 }
