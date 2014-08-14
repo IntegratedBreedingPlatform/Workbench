@@ -103,7 +103,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         };
 
         uploadFrm.setNoFileSelectedText(messageSource.getMessage("NO_FILE_SELECTED"));
-        uploadFrm.setSelectedFileText(messageSource.getMessage("SELECTED_BACKUP_FILE"));
+        uploadFrm.setSelectedFileText("<b>" + messageSource.getMessage("SELECTED_BACKUP_FILE") + "</b>");
         uploadFrm.setDeleteCaption(messageSource.getMessage("CLEAR"));
         uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
