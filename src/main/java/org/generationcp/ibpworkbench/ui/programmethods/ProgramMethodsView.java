@@ -413,7 +413,7 @@ import java.util.*;
 
              /* INITIALIZE FILTER CONTROLS DATA */
          typeFilter.addItem("");
-         typeFilter.setItemCaption("","Generation Advancement Type");
+         typeFilter.setItemCaption("","All Generation Advancement Types");
 
          for (String[] methodType : methodTypes) {
              typeFilter.addItem(methodType[0]);
@@ -423,7 +423,7 @@ import java.util.*;
          typeFilter.select("");
 
          groupFilter.addItem("");
-         groupFilter.setItemCaption("", "Crop Reproductive System");
+         groupFilter.setItemCaption("", "All Crop Reproductive Systems");
          for(String[] methodGroup : methodGroups) {
              groupFilter.addItem(methodGroup[0]);
              groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
@@ -539,8 +539,8 @@ import java.util.*;
      }
 
      private Component buildFilterForm() {
-         groupFilter.setWidth("200px");
-         typeFilter.setWidth("220px");
+         groupFilter.setWidth("220px");
+         typeFilter.setWidth("245px");
 
          final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;",Label.CONTENT_XHTML);
          final Label searchLbl = new Label("<b>Search For:</b>&nbsp;",Label.CONTENT_XHTML);
