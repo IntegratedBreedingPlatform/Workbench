@@ -228,7 +228,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 		});
      
-        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 0, 2, 0);
+        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 0, 4, 0);
         studyDetailsLayout.addComponent(linkCloseAllTab, 8, 0, 9, 0);
         studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
         studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 1, 9, 1);
