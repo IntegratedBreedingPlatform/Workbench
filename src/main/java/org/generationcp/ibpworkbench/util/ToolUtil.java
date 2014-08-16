@@ -413,7 +413,7 @@ public class ToolUtil {
     public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
                                                             ,String localDbName, String username, String password
                                                             ,boolean includeWorkbenchConfig) throws IOException, MiddlewareQueryException {
-        return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false, false, false);
+        return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, includeWorkbenchConfig, false, false);
     }
     
     public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
