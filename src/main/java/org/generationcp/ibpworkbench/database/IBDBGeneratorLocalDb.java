@@ -95,19 +95,17 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             
             createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
             
-            statement.addBatch(createDatabaseSyntax.toString());
+            statement.executeUpdate(createDatabaseSyntax.toString());
             
             createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD).append(DEFAULT_ALL).append(SQL_TO)
                 .append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
                 .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
             
-            statement.addBatch(createGrantSyntax.toString());
+            statement.executeUpdate(createGrantSyntax.toString());
             
             createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
             
-            statement.addBatch(createFlushSyntax.toString());
-            
-            statement.executeBatch();
+            statement.executeUpdate(createFlushSyntax.toString());
             
             generatedDatabaseName = databaseName;
             
