@@ -175,17 +175,14 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
     	chkSelectAllEnvironments.setValue(true);
 		
 		lblSelectEnvVarForAnalysis = new Label();
-		lblSelectEnvVarForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
+		lblSelectEnvVarForAnalysis.setStyleName(Bootstrap.Typography.H4.styleName());
 		lblSelectEnvVarForAnalysisDesc  = new Label();
 		lblSelectVariates  = new Label();
 		lblSelectFactorsForAnalysis  = new Label();
-		lblSelectFactorsForAnalysis.setStyleName(Bootstrap.Typography.H2.styleName());
+		lblSelectFactorsForAnalysis.setStyleName(Bootstrap.Typography.H4.styleName());
 		lblSelectFactorsForAnalysisDesc  = new Label();
 		lblSelectFactors  = new Label();
-		
-	
-		
-		 
+	 
 		 environmentsTable.setWidth("100%");
 		 factorsAnalysisTable = new Table();
 		 factorsAnalysisTable.setWidth("100%");
@@ -483,10 +480,9 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		setWidth("95%");
 		
 		VerticalLayout layout1 = new VerticalLayout();
-		layout1.setMargin(new MarginInfo(true,true,true,true));
+		layout1.setMargin(new MarginInfo(false,true,false,true));
 		layout1.setSpacing(true);
 		layout1.addComponent(lblPageTitle);
-		layout1.addComponent(new Label(""));
 		layout1.addComponent(lblSelectEnvVarForAnalysis);
 		layout1.addComponent(lblSelectEnvVarForAnalysisDesc);
 		layout1.addComponent(environmentsTable);
@@ -494,16 +490,15 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		addComponent(layout1);
 		
 		VerticalLayout layout2 = new VerticalLayout();
-		layout2.setMargin(true);
+		layout2.setMargin(new MarginInfo(false,true,false,true));
 		layout2.setSpacing(true);
 		layout2.addComponent(lblSelectVariates);
 		layout2.addComponent(variatesSelectionTable);
 		layout2.addComponent(chkSelectAllVariates);
 		addComponent(layout2);
 		
-		
 		VerticalLayout layout3 = new VerticalLayout();
-		layout3.setMargin(true);
+		layout3.setMargin(new MarginInfo(true,true,false,true));
 		layout3.setSpacing(true);
 		layout3.addComponent(lblSelectFactorsForAnalysis);
 		layout3.addComponent(lblSelectFactorsForAnalysisDesc);
@@ -511,7 +506,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		addComponent(layout3);
 		
 		VerticalLayout layout4 = new VerticalLayout();
-		layout4.setMargin(true);
+		layout4.setMargin(new MarginInfo(false,true,false,true));
 		layout4.setSpacing(true);
 		layout4.addComponent(lblSelectFactors);
 		layout4.addComponent(factorsSelectionTable);
