@@ -217,6 +217,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	
     	tblEnvironmentLayout = new VerticalLayout();
     	tblEnvironmentLayout.setSizeUndefined();
+    	tblEnvironmentLayout.setSpacing(true);
     	tblEnvironmentLayout.setWidth("100%");
     	
     	tblEnvironmentSelection = new Table();
@@ -368,7 +369,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		};
     	
     	
-		footerCheckBox = new CheckBox("SELECT ALL",false);
+		footerCheckBox = new CheckBox("Select All",false);
 		footerCheckBox.addListener(footerCheckBoxListener);
 		footerCheckBox.setImmediate(true);
 		
@@ -378,8 +379,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         mainLayout = new VerticalLayout();
         
         lblTitle = new Label();
-        lblTitle.setContentMode(Label.CONTENT_XHTML);
-        lblTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        //lblTitle.setContentMode(Label.CONTENT_XHTML);
+        lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+        lblTitle.addStyleName("label-bold");
+        
         lblDatasetName = new Label();
         lblDatasetName.setContentMode(Label.CONTENT_XHTML);
         lblDatasetName.setStyleName("label-bold");
@@ -391,6 +394,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblVersion.setStyleName("label-bold");
         lblProjectType = new Label();
         lblProjectType.setStyleName("label-bold");
+        lblProjectType.setWidth("100px");
         lblAnalysisName = new Label();
         lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
         lblSiteEnvironment = new Label();
@@ -404,21 +408,21 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblDesignType = new Label();
         lblDesignType.setContentMode(Label.CONTENT_XHTML);
         lblDesignType.setWidth("160px");
-        setLblReplicates(new Label());
-        getLblReplicates().setContentMode(Label.CONTENT_XHTML);
-        getLblReplicates().setWidth("160px");
-        setLblBlocks(new Label());
-        getLblBlocks().setContentMode(Label.CONTENT_XHTML);
-        getLblBlocks().setVisible(false);
-        getLblBlocks().setWidth("160px");
-        setLblSpecifyRowFactor(new Label());
-        getLblSpecifyRowFactor().setContentMode(Label.CONTENT_XHTML);
-        getLblSpecifyRowFactor().setVisible(false);
-        getLblSpecifyRowFactor().setWidth("160px");
-        setLblSpecifyColumnFactor(new Label());
-        getLblSpecifyColumnFactor().setContentMode(Label.CONTENT_XHTML);
-        getLblSpecifyColumnFactor().setVisible(false);
-        getLblSpecifyColumnFactor().setWidth("160px");
+        lblReplicates = new Label();
+        lblReplicates.setContentMode(Label.CONTENT_XHTML);
+        lblReplicates.setWidth("160px");
+        lblBlocks = new Label();
+        lblBlocks.setContentMode(Label.CONTENT_XHTML);
+        lblBlocks.setVisible(false);
+        lblBlocks.setWidth("160px");
+        lblSpecifyRowFactor = new Label();
+        lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
+        lblSpecifyRowFactor.setVisible(false);
+        lblSpecifyRowFactor.setWidth("160px");
+        lblSpecifyColumnFactor = new Label();
+        lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
+        lblSpecifyColumnFactor.setVisible(false);
+        lblSpecifyColumnFactor.setWidth("160px");
         lblGenotypes = new Label();
         lblGenotypes.setWidth("160px");
         
@@ -773,7 +777,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         selectedInfoLayout.setSizeUndefined();
         selectedInfoLayout.setWidth("100%");
         selectedInfoLayout.setSpacing(true);
-        selectedInfoLayout.setMargin(true, false, true, false);
         
         HorizontalLayout row1 = new HorizontalLayout();
         row1.setSpacing(true);
@@ -793,7 +796,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         row2.setWidth("100%");
         row2.setColumnExpandRatio(0,0.45f);
         row2.setColumnExpandRatio(1,0.55f);
-        row2.setMargin(false, false, false, false);
         row2.addComponent(row2a);
         row2.addComponent(row2b);
         
@@ -806,7 +808,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         row4.setSpacing(true);
         row4.addComponent(lblAnalysisNameHeader);
         
-        HorizontalLayout row5 = new HorizontalLayout();
+        VerticalLayout row5 = new VerticalLayout();
         row5.setSpacing(true);
         row5.addComponent(lblAnalysisName);
         row5.addComponent(txtAnalysisName);
@@ -822,7 +824,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
         chooseEnvironmentLayout.setWidth("100%");
         chooseEnvironmentLayout.setSpacing(true);
-        chooseEnvironmentLayout.setMargin(true, true, true, false);
+        chooseEnvironmentLayout.setMargin(false, true, true, false);
         chooseEnvironmentLayout.addComponent(lblChooseEnvironmentHeader ,0, 0, 1, 0);
         chooseEnvironmentLayout.addComponent(lblChooseEnvironmentDescription , 0, 1, 1, 1);
         chooseEnvironmentLayout.addComponent(lblSpecifyEnvFactor, 0, 2);
@@ -841,13 +843,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
         designDetailsLayout.addComponent(lblDesignType, 0, 1);
         designDetailsLayout.addComponent(selDesignType, 1, 1);
-        designDetailsLayout.addComponent(getLblReplicates(), 0, 2);
+        designDetailsLayout.addComponent(lblReplicates, 0, 2);
         designDetailsLayout.addComponent(selReplicates, 1, 2);
-        designDetailsLayout.addComponent(getLblBlocks(), 0, 3);
+        designDetailsLayout.addComponent(lblBlocks, 0, 3);
         designDetailsLayout.addComponent(selBlocks, 1, 3);
-        designDetailsLayout.addComponent(getLblSpecifyRowFactor(), 0, 4);
+        designDetailsLayout.addComponent(lblSpecifyRowFactor, 0, 4);
         designDetailsLayout.addComponent(selRowFactor, 1, 4);
-        designDetailsLayout.addComponent(getLblSpecifyColumnFactor(), 0, 5);
+        designDetailsLayout.addComponent(lblSpecifyColumnFactor, 0, 5);
         designDetailsLayout.addComponent(selColumnFactor, 1, 5);
         designDetailsLayout.addComponent(lblSpecifyGenotypesHeader, 0, 6, 1, 6);
         designDetailsLayout.addComponent(lblGenotypes, 0, 7);
@@ -875,7 +877,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         mainLayout.addComponent(combineLayout2);
         mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
         
-        mainLayout.setMargin(new MarginInfo(true,true,true,true));
+        mainLayout.setMargin(new MarginInfo(false,true,true,true));
        
         addComponent(mainLayout);
     }

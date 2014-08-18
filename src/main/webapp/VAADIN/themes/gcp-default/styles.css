@@ -152,7 +152,7 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 /* GXE - Breeding View */
 .gcp-highlight{background:#dfffcf !important}
 .panel-border{display:block;border-color:#357ebd;border-radius:0}
-.label-bold{font-weight: bold}
+.label-bold{font-weight: bold !important;}
 
 /* Help Window */
 .v-window-gcp-help-window .v-window-wrap2 { background-image:url(images/login.png);background-repeat:no-repeat;background-color:transparent; }
@@ -356,3 +356,8 @@ img[src$="leaf_16.png"] {
 }
 .green {background: green !important;}
 .blue {background: blue !important;}
+
+.heading-margin-top {
+	margin-top: 8px;
+}
+

@@ -198,9 +198,10 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
         ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
         Label headingLabel =  new Label("Select Data for Analysis");
         headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+        headingLabel.addStyleName("label-bold");
         HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
-        heading.setMargin(true, false, false, false);
-		
+        heading.addStyleName("heading-margin-top");
+        
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.addComponent(browseLink);
 		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
@@ -212,15 +213,18 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 		Label lblFactors = new Label("FACTORS");
 		lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
+		lblFactors.addStyleName("label-bold");
 		lblFactors.setWidth("100%");
-		Label lblVariates = new Label("VARIATES");
+		Label lblVariates = new Label("TRAITS");
 		lblVariates.setWidth("100%");
 		lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
+		lblVariates.addStyleName("label-bold");
 		
 		lblFactorContainer = new VerticalLayout();
 		lblVariateContainer = new VerticalLayout();
 		tblFactorContainer = new VerticalLayout();
 		tblVariateContainer = new VerticalLayout();
+		tblVariateContainer.setSpacing(true);
 	
 		lblFactorContainer.addComponent(lblFactors);
 		lblVariateContainer.addComponent(lblVariates);
