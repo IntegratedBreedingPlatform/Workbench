@@ -78,9 +78,8 @@ public class DashboardMainClickListener implements ClickListener{
             if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
             	MessageNotifier.showWarning(event.getComponent().getWindow(), 
             			"",messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-            					minimumCropVersion,
             					currentCropVersion!=null?currentCropVersion:
-            						messageSource.getMessage(Message.BELOW_MINIMUM)));
+            						messageSource.getMessage(Message.NOT_AVAILABLE)));
             }
 
             try {

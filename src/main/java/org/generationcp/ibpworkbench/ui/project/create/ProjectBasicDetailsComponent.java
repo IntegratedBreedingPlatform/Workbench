@@ -328,9 +328,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	                if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
 	                   	MessageNotifier.showWarning(getWindow(),"",
 	                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-	                					minimumCropVersion,
 	                					currentCropVersion!=null?currentCropVersion:
-	                						messageSource.getMessage(Message.BELOW_MINIMUM)));
+	                						messageSource.getMessage(Message.NOT_AVAILABLE)));
 	                }
                 }
 
