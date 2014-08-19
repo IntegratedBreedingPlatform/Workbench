@@ -11,18 +11,22 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
+import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
@@ -35,10 +39,16 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Multisite analysis component
@@ -46,8 +56,8 @@ import java.util.Map;
  * @author Aldrich Abrogena
  */
 @Configurable
-public class MultiSiteAnalysisPanel extends VerticalLayout implements
-InitializingBean {
+public class MultiSiteAnalysisPanel extends VerticalLayout implements InitializingBean, 
+								InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,6 +70,7 @@ InitializingBean {
 	private Button browseLink;
 
 	private Label lblPageTitle;
+	private HeaderLabelLayout heading;
 
 	protected Boolean setAll = true;
 	protected Boolean fromOthers = true;
@@ -89,24 +100,90 @@ InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		assemble();
+		instantiateComponents();
+		initializeValues();
+		addListeners();
+		layoutComponents();
+		
 		updateLabels();
 	}
 
-	private void updateLabels(){
-		messageSource.setValue(lblPageTitle, Message.TITLE_GXE);
+	@Override
+	public void updateLabels() {
+		messageSource.setValue(lblPageTitle, Message.TITLE_GXE);	
+	}
+	
+	@Override
+	public void instantiateComponents() {
+		
+		ManagerFactory managerFactory = managerFactoryProvider
+				.getManagerFactoryForProject(project);
+		setStudyDataManager(managerFactory.getNewStudyDataManager());
+		
+		lblPageTitle = new Label();
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+    	lblPageTitle.setHeight("26px");
+
+		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+        Label headingLabel =  new Label("Select Data for Analysis");
+        headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+        headingLabel.addStyleName("label-bold");
+        heading = new HeaderLabelLayout(resource,headingLabel);
+
+		browseLink = new Button();
+		browseLink.setImmediate(true);
+		browseLink.setStyleName("link");
+		browseLink.setCaption("Browse");
+		browseLink.setWidth("48px");
+
+		setStudiesTabsheet(generateTabSheet());
+		
+		tabSheetContainer = new VerticalLayout();
+		tabSheetContainer.addComponent(getStudiesTabsheet());
+		tabSheetContainer.setMargin(true, false,false,false);
+	}
+
+	@Override
+	public void initializeValues() {
+		// TODO Auto-generated method stub
 		
 	}
 
-	protected void assemble() {
+	@Override
+	public void addListeners() {
+		browseLink.addListener(new Button.ClickListener() {
 
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+			private static final long serialVersionUID = 1425892265723948423L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+
+				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				event.getComponent().getWindow().addWindow(dialog);
+			}
+
+		});
 	}
 
-	
+	@Override
+	public void layoutComponents() {
+		this.setSpacing(true);
+		this.setMargin(new MarginInfo(false,true,true,true));
+		this.setSizeUndefined();
+		this.setWidth("100%");
+		
+		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.addComponent(browseLink);
+		browseLabelLayout.addComponent(new Label("for a study to work with."));
+		browseLabelLayout.setSizeUndefined();
+		
+		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+    	selectDataForAnalysisLayout.addComponent(heading);
+    	selectDataForAnalysisLayout.addComponent(browseLabelLayout);
+		
+		addComponent(lblPageTitle);
+		addComponent(selectDataForAnalysisLayout);
+	}
 
 	protected void repaintTab(Component comp, Study study) {
 
@@ -142,75 +219,6 @@ InitializingBean {
 		getStudiesTabsheet().getTab(tabContainer).setClosable(true);
 		getStudiesTabsheet().setSelectedTab(tabContainer);
 	}
-
-
-	protected void initializeComponents() {
-
-		browseLink = new Button();
-		browseLink.setImmediate(true);
-		browseLink.setStyleName("link");
-		browseLink.setCaption("Browse");
-		browseLink.setWidth("48px");
-		browseLink.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1425892265723948423L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-
-				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
-				event.getComponent().getWindow().addWindow(dialog);
-			}
-
-		});
-
-		HorizontalLayout browseLabelLayout = new HorizontalLayout();
-		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a study to work with."));
-		browseLabelLayout.setSizeUndefined();
-
-		lblPageTitle = new Label();
-		lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-
-		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
-        Label headingLabel =  new Label("Select Data for Analysis");
-        headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-        HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
-        heading.setMargin(true, false, false, false);
-		
-		
-		ManagerFactory managerFactory = managerFactoryProvider
-				.getManagerFactoryForProject(project);
-		setStudyDataManager(managerFactory.getNewStudyDataManager());
-
-		addComponent(lblPageTitle);
-		addComponent(heading);
-		addComponent(browseLabelLayout);
-
-		setStudiesTabsheet(generateTabSheet());
-		
-		tabSheetContainer = new VerticalLayout();
-		tabSheetContainer.addComponent(getStudiesTabsheet());
-		tabSheetContainer.setMargin(true, false,false,false);
-		
-		//addComponent(tabSheetContainer);
-
-	}
-
-
-	protected void initializeLayout() {
-		//this.setSpacing(true);
-		this.setMargin(new MarginInfo(false,true,true,true));
-		this.setSizeUndefined();
-		this.setWidth("100%");
-	}
-
-	protected void initializeActions() {
-
-
-
-	}
-
 
 	public void openStudyMeansDataset(Study study) throws MiddlewareQueryException {
 
@@ -295,5 +303,4 @@ InitializingBean {
 	public void setStudyDataManager(StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
-
 }
