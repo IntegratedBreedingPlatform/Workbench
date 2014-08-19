@@ -23,6 +23,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
+import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
@@ -56,6 +57,7 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -70,13 +72,14 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @Configurable
-public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
+public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, 
+									InternationalizableComponent, IBPWorkbenchLayout {
 
     private static final long serialVersionUID = 1L;
    
-	private TabSheet tabSheet; 
+    private TabSheet tabSheet; 
 	private Label lblPageTitle;
-	private Label lblStudyTreeDetailDescription;
+	private HeaderLabelLayout heading;	
     private Label lblBuildNewAnalysisDescription;
     private Label lblReviewEnvironments;
     private Label lblSelectDatasetsForAnalysis;
@@ -117,7 +120,259 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
     public MetaAnalysisPanel(Project currentProject, Database database) {
         this.currentProject = currentProject;
     }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        instantiateComponents();
+		initializeValues();
+		addListeners();
+		layoutComponents();
+    }
+    
+    @Override
+    public void attach() {
+        super.attach();
+        updateLabels();
+    }
+    
+    @Override
+    public void updateLabels() {
+        messageSource.setCaption(btnCancel, Message.RESET);
+        messageSource.setCaption(btnNext, Message.NEXT);
+        messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
+        messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
+        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
+        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
+        messageSource.setValue(lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
+    }
+    
+    
+	@Override
+	public void instantiateComponents() {
+		managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+		
+		lblPageTitle = new Label();
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+    	lblPageTitle.setHeight("26px");
+		
+		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+		Label headingLabel =  new Label("Select Data for Analysis");
+		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+		headingLabel.addStyleName("label-bold");
+		heading = new HeaderLabelLayout(resource,headingLabel);
+    	
+    	browseLink = new Button();
+		browseLink.setImmediate(true);
+		browseLink.setStyleName("link");
+		browseLink.setCaption("Browse");
+		browseLink.setWidth("48px");
+				
+    	tabSheet = new TabSheet();
+    	tabSheet.setWidth("100%");
+    	
+        setSelectedEnvironmenTable(new Table());
+        BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+        getSelectedEnvironmenTable().setWidth("100%");
+        getSelectedEnvironmenTable().setHeight("450px");
+        getSelectedEnvironmenTable().setContainerDataSource(container);
+        getSelectedEnvironmenTable().setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
+        getSelectedEnvironmenTable().setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
+        
+        lblReviewEnvironments = new Label();
+        lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
+        
+        lblBuildNewAnalysisDescription = new Label();
+        
+        linkCloseAllTab = new Button();
+        linkCloseAllTab.setStyleName("link");
+        linkCloseAllTab.setImmediate(true);
+        linkCloseAllTab.setCaption("Close All Tabs");
+        linkCloseAllTab.setVisible(false);
+        
+        lblSelectDatasetsForAnalysis = new Label();
+        lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
+        
+        lblSelectDatasetsForAnalysisDescription = new Label();
 
+        //initialize buttons
+        btnCancel = new Button();
+        btnNext = new Button();
+        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        
+	}
+
+	@Override
+	public void initializeValues() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListeners() {
+		
+        tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
+
+            private static final long serialVersionUID = -7822326039221887888L;
+
+            @Override
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+                if(tabSheet.getComponentCount() <= 1){
+                    linkCloseAllTab.setVisible(false);
+                }
+                else{
+                	linkCloseAllTab.setVisible(true);
+                }
+            }
+        });
+        
+		browseLink.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1425892265723948423L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+					
+				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				event.getComponent().getWindow().addWindow(dialog);
+			}
+			
+		});
+		
+        linkCloseAllTab.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tabSheet.removeAllComponents();
+				linkCloseAllTab.setVisible(false);
+			}
+		});
+
+    	btnCancel.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tabSheet.removeAllComponents();
+				selectedEnvironmenTable.removeAllItems();
+			}
+		});
+    	
+        btnNext.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 3367191648910396919L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void buttonClick(ClickEvent event) {
+					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
+					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
+					while(itr.hasNext()){
+						metaEnvironments.add(itr.next());
+					}
+					
+					if (metaEnvironments.size() > 0){
+						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+						w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, MetaAnalysisPanel.this, managerFactory));
+					}
+					
+			}
+		});
+	}
+
+	@Override
+	public void layoutComponents() {
+    	setMargin(false,true,false,true);
+    	setSpacing(true);
+    	setWidth("100%");
+    	
+		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.addComponent(browseLink);
+		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
+		browseLabelLayout.setSizeUndefined();
+		browseLabelLayout.setMargin(false);
+		
+		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+    	selectDataForAnalysisLayout.addComponent(heading);
+    	selectDataForAnalysisLayout.addComponent(browseLabelLayout);
+		
+		studyDetailsLayout = new GridLayout(10, 3);
+        studyDetailsLayout.setMargin(false);
+        studyDetailsLayout.setSpacing(true);
+        studyDetailsLayout.setWidth("100%");
+        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 0, 4, 0);
+        studyDetailsLayout.addComponent(linkCloseAllTab, 8, 0, 9, 0);
+        studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
+        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 1, 9, 1);
+        //studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
+        
+        selectedDataSetEnvironmentLayout = new VerticalLayout();
+        selectedDataSetEnvironmentLayout.setMargin(false);
+        selectedDataSetEnvironmentLayout.setSpacing(true);
+        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysis);
+        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysisDescription);
+        selectedDataSetEnvironmentLayout.addComponent(getSelectedEnvironmenTable());
+		
+        buttonArea = layoutButtonArea();
+        
+    	addComponent(lblPageTitle);
+        addComponent(selectDataForAnalysisLayout);
+        addComponent(studyDetailsLayout);
+        addComponent(selectedDataSetEnvironmentLayout);
+        addComponent(buttonArea);
+        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+	}
+	
+    protected Component layoutButtonArea() {
+    	
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        
+        buttonLayout.setSpacing(true);
+        buttonLayout.setMargin(true);
+   
+        buttonLayout.addComponent(btnCancel);
+        buttonLayout.addComponent(btnNext);
+        buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+        buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
+        return buttonLayout;
+    }
+    
+	public void generateTab(int dataSetId) {
+		try {
+			if (studyDetailsLayout.getComponent(0, 2) == null){
+				studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
+			}
+
+			TabSheet tabSheet = MetaAnalysisPanel.this.getTabsheet();
+			DataSet ds = MetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
+
+			Iterator<Component> itr = tabSheet.getComponentIterator();
+			while(itr.hasNext()){
+				EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
+				if (tab.getDataSetId() == ds.getId()){
+					tabSheet.setSelectedTab(tab);
+					return;
+				}
+			}
+
+			EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
+			tabSheet.addTab(component);
+			tabSheet.getTab(component).setClosable(true);
+			tabSheet.getTab(component).setCaption(ds.getName());
+			tabSheet.setSelectedTab(component);
+			
+			if(tabSheet.getComponentCount() > 1){
+				linkCloseAllTab.setVisible(true);
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}// end of generateTab
+
+	// SETTERS AND GETTERS
     public Project getCurrentProject() {
         return currentProject;
     }
@@ -158,204 +413,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         this.currentDatasetName = currentDatasetName;
     }
 
-    protected void initializeComponents() {
-    	
-    	browseLink = new Button();
-		browseLink.setImmediate(true);
-		browseLink.setStyleName("link");
-		browseLink.setCaption("Browse");
-		browseLink.setWidth("48px");
-		browseLink.addListener(new Button.ClickListener() {
-			
-			private static final long serialVersionUID = 1425892265723948423L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-					
-				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
-				event.getComponent().getWindow().addWindow(dialog);
-			}
-			
-		});
-		
-		HorizontalLayout browseLabelLayout = new HorizontalLayout();
-		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
-		browseLabelLayout.setSizeUndefined();
-		browseLabelLayout.setMargin(true, false, false, false);
-		
-		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
-		Label headingLabel =  new Label("Select Data for Analysis");
-		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-		HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
-		heading.setMargin(true, false, false, false);
-    	
-    	lblPageTitle = new Label();
-    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-    	
-    	tabSheet = new TabSheet();
-    	tabSheet.setWidth("100%");
-    	       
-        studyDetailsLayout = new GridLayout(10, 3);
-        studyDetailsLayout.setMargin(true, false,false,false);
-        studyDetailsLayout.setSpacing(true);
-        
-        selectedDataSetEnvironmentLayout = new VerticalLayout();
-        selectedDataSetEnvironmentLayout.setMargin(true, false,false,false);
-        selectedDataSetEnvironmentLayout.setSpacing(true);
-        
-        lblStudyTreeDetailDescription = new Label();
-        
-        addComponent(lblPageTitle);
-        addComponent(heading);
-        addComponent(lblStudyTreeDetailDescription);
-        addComponent(browseLabelLayout);
-        
-        setSelectedEnvironmenTable(new Table());
-        BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
-        getSelectedEnvironmenTable().setWidth("100%");
-        getSelectedEnvironmenTable().setHeight("450px");
-        getSelectedEnvironmenTable().setContainerDataSource(container);
-        getSelectedEnvironmenTable().setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
-        getSelectedEnvironmenTable().setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
-        
-        lblBuildNewAnalysisDescription = new Label();
-        lblReviewEnvironments = new Label();
-        lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
-        linkCloseAllTab = new Button();
-        linkCloseAllTab.setStyleName("link");
-        linkCloseAllTab.setImmediate(true);
-        linkCloseAllTab.setCaption("Close All Tabs");
-        lblSelectDatasetsForAnalysis = new Label();
-        lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
-        lblSelectDatasetsForAnalysisDescription = new Label();
-        
-        linkCloseAllTab.addListener(new Button.ClickListener() {
-			
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				tabSheet.removeAllComponents();
-			}
-		});
-     
-        studyDetailsLayout.addComponent(lblReviewEnvironments, 0, 0, 4, 0);
-        studyDetailsLayout.addComponent(linkCloseAllTab, 8, 0, 9, 0);
-        studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
-        studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 1, 9, 1);
-        //studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
-        studyDetailsLayout.setWidth("100%");
-        
-        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysis);
-        selectedDataSetEnvironmentLayout.addComponent(lblSelectDatasetsForAnalysisDescription);
-        selectedDataSetEnvironmentLayout.addComponent(getSelectedEnvironmenTable());
-        
-        buttonArea = layoutButtonArea();
-          
-        addComponent(studyDetailsLayout);
-        addComponent(selectedDataSetEnvironmentLayout);
-        addComponent(buttonArea);
-        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        setMargin(new MarginInfo(true,false,false,false));
-        
-    }
-    
-    protected void initializeLayout() {
-    	setMargin(false, true, false, true);
-    	setWidth("100%");        
-    }
-    
-    protected void initialize() {
-    }
-
-    protected void initializeActions() {
-    	btnCancel.addListener(new Button.ClickListener() {
-			
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				tabSheet.removeAllComponents();
-				selectedEnvironmenTable.removeAllItems();
-			}
-		});
-    	
-        btnNext.addListener(new Button.ClickListener() {
-			
-			private static final long serialVersionUID = 3367191648910396919L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void buttonClick(ClickEvent event) {
-					List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
-					Iterator<MetaEnvironmentModel> itr = (Iterator<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource().getItemIds().iterator();
-					while(itr.hasNext()){
-						metaEnvironments.add(itr.next());
-					}
-					
-					if (metaEnvironments.size() > 0){
-						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
-						w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, MetaAnalysisPanel.this, managerFactory));
-					}
-					
-			}
-		});
-
-    }  
-
-    protected Component layoutButtonArea() {
-    	
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true);
-        
-        btnCancel = new Button();
-        btnNext = new Button();
-        btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-   
-        buttonLayout.addComponent(btnCancel);
-        buttonLayout.addComponent(btnNext);
-        buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
-        buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
-        return buttonLayout;
-    }
-
-    protected void assemble() {
-        initialize();
-        initializeComponents();
-        initializeLayout();
-        initializeActions();
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
-        
-        assemble();
-    }
-    
-    @Override
-    public void attach() {
-        super.attach();
-        updateLabels();
-    }
-    
-    @Override
-    public void updateLabels() {
-        messageSource.setCaption(btnCancel, Message.RESET);
-        messageSource.setCaption(btnNext, Message.NEXT);
-        messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
-        messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
-        messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
-        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
-        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
-        messageSource.setValue(lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
-        
-        
-    }
-
     public StudyDataManager getStudyDataManager() {
     	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
     	return this.studyDataManager;
@@ -385,43 +442,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	public void setSelectedEnvironmenTable(Table selectedEnvironmenTable) {
 		this.selectedEnvironmenTable = selectedEnvironmenTable;
 	}
-
-	
-	public void generateTab(int dataSetId) {
-
-		try {
-
-			if (studyDetailsLayout.getComponent(0, 2) == null){
-				studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
-			}
-
-			TabSheet tabSheet = MetaAnalysisPanel.this.getTabsheet();
-			DataSet ds = MetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
-
-			Iterator<Component> itr = tabSheet.getComponentIterator();
-			while(itr.hasNext()){
-				EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
-				if (tab.getDataSetId() == ds.getId()){
-					tabSheet.setSelectedTab(tab);
-					return;
-				}
-			}
-
-
-			EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
-			tabSheet.addTab(component);
-			tabSheet.getTab(component).setClosable(true);
-			tabSheet.getTab(component).setCaption(ds.getName());
-			tabSheet.setSelectedTab(component);
-
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
-
-
-	}
 		
 
 	class EnvironmentTabComponent extends VerticalLayout {
@@ -431,10 +451,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		DataSet dataSet;
 		String studyName;
 		
-		Label lblFactor;
+		Label lblFactors;
 		Label lblFactorDescription;
-		Label lblVariate;
-		Label lblVariateDescription;
+		Label lblTraits;
+		Label lblTraitDescription;
 
 		public EnvironmentTabComponent(DataSet dataSet){
 			
@@ -464,12 +484,12 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				e.printStackTrace();
 			}
 
-			lblFactor = new Label("Factor");
-			lblFactor.setStyleName(Bootstrap.Typography.H3.styleName());
+			lblFactors = new Label("Factors");
+			lblFactors.setStyleName(Bootstrap.Typography.H3.styleName());
 			lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
-			lblVariate = new Label("Variate");
-			lblVariate.setStyleName(Bootstrap.Typography.H3.styleName());
-			lblVariateDescription = new Label("The variates of the dataset you have selected are shown below for your review.");
+			lblTraits = new Label("Traits");
+			lblTraits.setStyleName(Bootstrap.Typography.H3.styleName());
+			lblTraitDescription = new Label("The traits of the dataset you have selected are shown below for your review.");
 			
 			Label lblStudyName = new Label("<b>Study Name:</b> " + studyName);
 			lblStudyName.setContentMode(Label.CONTENT_XHTML);
@@ -516,7 +536,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
             descContainer1.setSpacing(false);
             descContainer1.setHeight("90px");
             descContainer1.setWidth("100%");
-            descContainer1.addComponent(lblFactor);
+            descContainer1.addComponent(lblFactors);
             descContainer1.addComponent(lblFactorDescription);
             descContainer1.setExpandRatio(lblFactorDescription,1.0f);
 
@@ -530,9 +550,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
             descContainer2.setSpacing(false);
             descContainer2.setHeight("90px");
             descContainer2.setWidth("100%");
-            descContainer2.addComponent(lblVariate);
-            descContainer2.addComponent(lblVariateDescription);
-            descContainer2.setExpandRatio(lblVariateDescription,1.0f);
+            descContainer2.addComponent(lblTraits);
+            descContainer2.addComponent(lblTraitDescription);
+            descContainer2.setExpandRatio(lblTraitDescription,1.0f);
 
             variatesContainer.addComponent(descContainer2);
             variatesContainer.addComponent(initializeVariatesTable());
@@ -759,9 +779,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			managerFactory.close();
 		}
 		
-	}
+	}// end of EnvironmentTabComponent inner class
 
-
-}
+}//  end of MetaAnalysisPanel 
 
 

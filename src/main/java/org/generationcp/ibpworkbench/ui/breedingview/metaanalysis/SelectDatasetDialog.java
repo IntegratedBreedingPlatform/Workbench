@@ -3,18 +3,12 @@ package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.themes.Reindeer;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.StudyTreeExpandAction;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -29,14 +23,18 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class SelectDatasetDialog extends Window implements InitializingBean, InternationalizableComponent {
@@ -95,8 +93,8 @@ public class SelectDatasetDialog extends Window implements InitializingBean, Int
 		//setCaption("Study Information");
 		// center window within the browser
 		center();
-
-		lblStudyTreeDetailDescription = new Label("Select a study and then dataset from the tree below.");
+		
+		lblStudyTreeDetailDescription = new Label(messageSource.getMessage(Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION));
 		
 		folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
 		studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
