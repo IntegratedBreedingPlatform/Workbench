@@ -12,13 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -26,11 +24,15 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -43,11 +45,22 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * 
@@ -56,7 +69,7 @@ import java.util.Map.Entry;
  */
 @Configurable
 public class SingleSiteAnalysisPanel extends VerticalLayout implements
-		InitializingBean, InternationalizableComponent {
+		InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
 	private static final String NUMERIC_VARIABLE = "Numeric variable";
@@ -64,7 +77,10 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	private Button browseLink;
 
 	private Label lblPageTitle;
-
+	private HeaderLabelLayout heading;
+	private Label lblFactors;
+	private Label lblVariates;
+	
 	private Table tblFactors;
 	private Table tblVariates;
 	private Property.ValueChangeListener selectAllListener;
@@ -115,132 +131,80 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			Database database) {
 		this.currentProject = currentProject;
 	}
-
-	public Project getCurrentProject() {
-		return currentProject;
-	}
-
-	public void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
-	}
-
-	public Study getCurrentStudy() {
-		return currentStudy;
-	}
-
-	public void setCurrentStudy(Study currentStudy) {
-		this.currentStudy = currentStudy;
-	}
-
-	public Integer getCurrentRepresentationId() {
-		return currentRepresentationId;
-	}
-
-	public void setCurrentRepresentationId(Integer currentRepresentationId) {
-		this.currentRepresentationId = currentRepresentationId;
-	}
-
-	public Integer getCurrentDataSetId() {
-		return currentDataSetId;
-	}
-
-	public void setCurrentDataSetId(Integer currentDataSetId) {
-		this.currentDataSetId = currentDataSetId;
-	}
-
-	public String getCurrentDatasetName() {
-		return currentDatasetName;
-	}
-
-	public void setCurrentDatasetName(String currentDatasetName) {
-		this.currentDatasetName = currentDatasetName;
-	}
-
-	protected void initializeComponents() {
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		instantiateComponents();
+		initializeValues();
+		addListeners();
+		layoutComponents();
 		
+		updateLabels();
+	}
 
+	@Override
+	public void attach() {
+		super.attach();
+		updateLabels();
+	}
+
+	@Override
+	public void updateLabels() {
+		messageSource.setCaption(btnCancel, Message.RESET);
+		messageSource.setCaption(btnNext, Message.NEXT);
+		messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
+	}
+	
+	@Override
+	public void instantiateComponents() {
+		managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+
+		lblPageTitle = new Label();
+    	lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+    	lblPageTitle.setHeight("26px");
+
+        ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+        Label headingLabel =  new Label("Select Data for Analysis");
+        headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+        headingLabel.addStyleName("label-bold");
+        heading = new HeaderLabelLayout(resource,headingLabel);
+        
 		browseLink = new Button();
 		browseLink.setImmediate(true);
 		browseLink.setStyleName("link");
 		browseLink.setCaption("Browse");
 		browseLink.setWidth("48px");
-		browseLink.addListener(new Button.ClickListener() {
-			
-			private static final long serialVersionUID = 1425892265723948423L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-					
-				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
-					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
-					event.getComponent().getWindow().addWindow(dialog);
-				} else if(event.getComponent()==null){
-					LOG.error("event component is null");
-				} else if(event.getComponent().getWindow()==null){
-					LOG.error("event component window is null");
-				}
-			}
-			
-		});
-		
-		
-		lblPageTitle = new Label();
-		lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-
+				
 		setVariatesCheckboxState(new HashMap<String, Boolean>());
 
-		rootLayout = new VerticalLayout();
-		rootLayout.setWidth("100%");
-		rootLayout.setMargin(false, false, false, true);
-
-		studyDetailsLayout = new GridLayout(10, 3);
-        
-        ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
-        Label headingLabel =  new Label("Select Data for Analysis");
-        headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-        headingLabel.addStyleName("label-bold");
-        HeaderLabelLayout heading = new HeaderLabelLayout(resource,headingLabel);
-        heading.addStyleName("heading-margin-top");
-        
-		HorizontalLayout browseLabelLayout = new HorizontalLayout();
-		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
-		browseLabelLayout.setSizeUndefined();
-		
 		tblFactors = initializeFactorsTable();
 		tblVariates = initializeVariatesTable();
 		buttonArea = layoutButtonArea();
 
-		Label lblFactors = new Label("FACTORS");
+		lblFactors = new Label("FACTORS");
 		lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
 		lblFactors.addStyleName("label-bold");
 		lblFactors.setWidth("100%");
-		Label lblVariates = new Label("TRAITS");
+		
+		lblVariates = new Label("TRAITS");
 		lblVariates.setWidth("100%");
 		lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
 		lblVariates.addStyleName("label-bold");
 		
-		lblFactorContainer = new VerticalLayout();
-		lblVariateContainer = new VerticalLayout();
-		tblFactorContainer = new VerticalLayout();
-		tblVariateContainer = new VerticalLayout();
-		tblVariateContainer.setSpacing(true);
-	
-		lblFactorContainer.addComponent(lblFactors);
-		lblVariateContainer.addComponent(lblVariates);
-		tblFactorContainer.addComponent(tblFactors);
-		tblVariateContainer.addComponent(tblVariates);
-		
-		lblFactorContainer.setMargin(true, false, false, false);
-		lblVariateContainer.setMargin(true, true, false, true);
-		tblFactorContainer.setMargin(false, false, false, false);
-		tblVariateContainer.setMargin(false, true, false, true);
-		
-		studyDetailsLayout.addComponent(lblFactorContainer, 0, 0, 4, 0);
-		studyDetailsLayout.addComponent(lblVariateContainer, 5, 0, 9, 0);
-		studyDetailsLayout.addComponent(tblFactorContainer, 0, 1, 4, 1);
-		studyDetailsLayout.addComponent(tblVariateContainer, 5, 1, 9, 1);
+		chkVariatesSelectAll = new CheckBox();
+		chkVariatesSelectAll.setImmediate(true);
+		chkVariatesSelectAll.setCaption("Select All");
 
+	}
+
+	@Override
+	public void initializeValues() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListeners() {
 		selectAllListener = new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = 344514045768824046L;
@@ -274,41 +238,28 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			}
 
 		};
-
-		chkVariatesSelectAll = new CheckBox();
-		chkVariatesSelectAll.setImmediate(true);
+		
 		chkVariatesSelectAll.addListener(selectAllListener);
 
-		chkVariatesSelectAll.setCaption("Select All");
+		browseLink.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1425892265723948423L;
 
-		//studyDetailsLayout.addComponent(chkVariatesSelectAll, 5, 2, 9, 2);
-		tblVariateContainer.addComponent(chkVariatesSelectAll);
+			@Override
+			public void buttonClick(ClickEvent event) {
+					
+				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
+					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+					event.getComponent().getWindow().addWindow(dialog);
+				} else if(event.getComponent()==null){
+					LOG.error("event component is null");
+				} else if(event.getComponent().getWindow()==null){
+					LOG.error("event component window is null");
+				}
+			}
+			
+		});
 
-		rootLayout.addComponent(lblPageTitle);
-		rootLayout.addComponent(heading);
-		rootLayout.addComponent(browseLabelLayout);
-		rootLayout.addComponent(studyDetailsLayout);
-		rootLayout.addComponent(buttonArea);
-		rootLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-
-        rootLayout.setMargin(new MarginInfo(false,false,false,true));
-
-		addComponent(rootLayout);
-
-	}
-
-	protected void initializeLayout() {
-
-		studyDetailsLayout.setWidth("100%");
-
-		this.setWidth("100%");
-
-	}
-
-	protected void initialize() {
-	}
-	
-	protected void initializeActions() {
 		btnCancel.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -322,9 +273,77 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(
 				this);
 		btnNext.addListener(openSelectDatasetForExportAction);
-
 	}
 
+	@Override
+	public void layoutComponents() {
+		this.setWidth("100%");
+		
+		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.addComponent(browseLink);
+		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
+		browseLabelLayout.setSizeUndefined();
+		
+		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+    	selectDataForAnalysisLayout.addComponent(heading);
+    	selectDataForAnalysisLayout.addComponent(browseLabelLayout);
+
+		lblFactorContainer = new VerticalLayout();
+		lblVariateContainer = new VerticalLayout();
+		tblFactorContainer = new VerticalLayout();
+		tblVariateContainer = new VerticalLayout();
+		tblVariateContainer.setSpacing(true);
+	
+		lblFactorContainer.addComponent(lblFactors);
+		lblVariateContainer.addComponent(lblVariates);
+		tblFactorContainer.addComponent(tblFactors);
+		tblVariateContainer.addComponent(tblVariates);
+		tblVariateContainer.addComponent(chkVariatesSelectAll);
+		
+		lblFactorContainer.setMargin(true, false, false, false);
+		lblVariateContainer.setMargin(true, true, false, true);
+		tblFactorContainer.setMargin(false, false, false, false);
+		tblVariateContainer.setMargin(false, true, false, true);
+		
+		studyDetailsLayout = new GridLayout(10, 3);
+		studyDetailsLayout.setWidth("100%");
+		studyDetailsLayout.addComponent(lblFactorContainer, 0, 0, 4, 0);
+		studyDetailsLayout.addComponent(lblVariateContainer, 5, 0, 9, 0);
+		studyDetailsLayout.addComponent(tblFactorContainer, 0, 1, 4, 1);
+		studyDetailsLayout.addComponent(tblVariateContainer, 5, 1, 9, 1);
+		
+		rootLayout = new VerticalLayout();
+		rootLayout.setWidth("100%");
+		rootLayout.setSpacing(true);
+		rootLayout.setMargin(false, false, false, true);
+		rootLayout.addComponent(lblPageTitle);
+		rootLayout.addComponent(selectDataForAnalysisLayout);
+		rootLayout.addComponent(studyDetailsLayout);
+		rootLayout.addComponent(buttonArea);
+		rootLayout.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+
+		addComponent(rootLayout);
+	}
+	
+	protected Component layoutButtonArea() {
+
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+
+		buttonLayout.setSpacing(true);
+		buttonLayout.setMargin(true);
+
+		btnCancel = new Button();
+		btnNext = new Button();
+		btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		btnNext.setEnabled(false);// default
+
+		buttonLayout.addComponent(btnCancel);
+		buttonLayout.addComponent(btnNext);
+		buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
+		buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
+		return buttonLayout;
+	}
+	
 	protected Table initializeFactorsTable() {
 
 		final Table table = new Table();
@@ -496,52 +515,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		return toreturn;
 	}
 
-	protected Component layoutButtonArea() {
-
-		HorizontalLayout buttonLayout = new HorizontalLayout();
-
-		buttonLayout.setSpacing(true);
-		buttonLayout.setMargin(true);
-
-		btnCancel = new Button();
-		btnNext = new Button();
-		btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		btnNext.setEnabled(false);// default
-
-		buttonLayout.addComponent(btnCancel);
-		buttonLayout.addComponent(btnNext);
-		buttonLayout.setComponentAlignment(btnCancel, Alignment.TOP_CENTER);
-		buttonLayout.setComponentAlignment(btnNext, Alignment.TOP_CENTER);
-		return buttonLayout;
-	}
-
-	protected void assemble() {
-		initialize();
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		managerFactory = managerFactoryProvider
-				.getManagerFactoryForProject(currentProject);
-		assemble();
-	}
-
-	@Override
-	public void attach() {
-		super.attach();
-		updateLabels();
-	}
-
-	@Override
-	public void updateLabels() {
-		messageSource.setCaption(btnCancel, Message.RESET);
-		messageSource.setCaption(btnNext, Message.NEXT);
-		messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
-	}
-
 	public StudyDataManager getStudyDataManager() {
 		if (this.studyDataManager == null)
 			this.studyDataManager = getManagerFactory()
@@ -651,47 +624,87 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	    }
 	    
 	private void updateFactorsTable(List<FactorModel> factorList){
-	    	   Object[] oldColumns = tblFactors.getVisibleColumns();
-	           String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
-	           
-	           BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
-	           container.setBeanIdProperty("id");
-	           tblFactors.setContainerDataSource(container);
-	           
-	           for (FactorModel f : factorList ){
-	        	   container.addBean(f);
-	           }
-	           
-	           tblFactors.setContainerDataSource(container);
-	           
-	           tblFactors.setVisibleColumns(columns);
-	    }
+	   Object[] oldColumns = tblFactors.getVisibleColumns();
+       String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+       
+       BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+       container.setBeanIdProperty("id");
+       tblFactors.setContainerDataSource(container);
+       
+       for (FactorModel f : factorList ){
+    	   container.addBean(f);
+       }
+       
+       tblFactors.setContainerDataSource(container);
+       
+       tblFactors.setVisibleColumns(columns);
+    }
 	    
-	private void updateVariatesTable(List<VariateModel> variateList){
-	 	   
-	    	//reset
-	    	getVariatesCheckboxState().clear();
-	    	setNumOfSelectedVariates(0);
-	    	toggleNextButton(false);
-	    	
-	    	//load data
-	        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
-	        container.setBeanIdProperty("id");
-	        
-	        for (VariateModel v : variateList ){
-	      	   container.addBean(v);
-	      	   getVariatesCheckboxState().put(v.getName(), v.getActive());
-	        }
-	        tblVariates.setContainerDataSource(container);
-	        tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
-	        tblVariates.setColumnHeaders(new String[]{"<span class='glyphicon glyphicon-ok'></span>","Name", "Description", "Scale"});
-	    }
+	private void updateVariatesTable(List<VariateModel> variateList){ 	   
+    	//reset
+    	getVariatesCheckboxState().clear();
+    	setNumOfSelectedVariates(0);
+    	toggleNextButton(false);
+    	
+    	//load data
+        BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+        container.setBeanIdProperty("id");
+        
+        for (VariateModel v : variateList ){
+      	   container.addBean(v);
+      	   getVariatesCheckboxState().put(v.getName(), v.getActive());
+        }
+        tblVariates.setContainerDataSource(container);
+        tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
+        tblVariates.setColumnHeaders(new String[]{"<span class='glyphicon glyphicon-ok'></span>","Name", "Description", "Scale"});
+    }
 	  
 	private void showDatabaseError(Window window) {
-	        MessageNotifier.showError(window, 
-	                messageSource.getMessage(Message.DATABASE_ERROR), 
-	                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-	    }
+        MessageNotifier.showError(window, 
+                messageSource.getMessage(Message.DATABASE_ERROR), 
+                "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+    }
 	
-	
-}
+	//SETTERS AND GETTERS
+	public Project getCurrentProject() {
+		return currentProject;
+	}
+
+	public void setCurrentProject(Project currentProject) {
+		this.currentProject = currentProject;
+	}
+
+	public Study getCurrentStudy() {
+		return currentStudy;
+	}
+
+	public void setCurrentStudy(Study currentStudy) {
+		this.currentStudy = currentStudy;
+	}
+
+	public Integer getCurrentRepresentationId() {
+		return currentRepresentationId;
+	}
+
+	public void setCurrentRepresentationId(Integer currentRepresentationId) {
+		this.currentRepresentationId = currentRepresentationId;
+	}
+
+	public Integer getCurrentDataSetId() {
+		return currentDataSetId;
+	}
+
+	public void setCurrentDataSetId(Integer currentDataSetId) {
+		this.currentDataSetId = currentDataSetId;
+	}
+
+	public String getCurrentDatasetName() {
+		return currentDatasetName;
+	}
+
+	public void setCurrentDatasetName(String currentDatasetName) {
+		this.currentDatasetName = currentDatasetName;
+	}
+
+
+}// end of SingleSiteAnalysisPanel
