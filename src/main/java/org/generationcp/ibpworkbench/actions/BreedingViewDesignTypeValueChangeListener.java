@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.GridLayout;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
@@ -21,59 +22,77 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
     public void valueChange(ValueChangeEvent event) {
         String value = (String) event.getProperty().getValue();
         
+        
         if (value == null) {
         	
-        	this.source.getSelColumnFactor().setVisible(false);
-        	this.source.getLblSpecifyColumnFactor().setVisible(false);
-            this.source.getSelRowFactor().setVisible(false);
-            this.source.getLblSpecifyRowFactor().setVisible(false);
-            this.source.getSelBlocks().setVisible(false);
-            this.source.getLblBlocks().setVisible(false);
+        	GridLayout gLayout = new GridLayout(2,2);
+            gLayout.setColumnExpandRatio(0, 0);
+            gLayout.setColumnExpandRatio(1, 1);
+            gLayout.setWidth("100%");
+            gLayout.setSpacing(true);
+            gLayout.addStyleName("marginTop10");
         	
+        	source.getBlockRowColumnContainer().removeAllComponents();
+        	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+        	gLayout.addComponent(this.source.getLblGenotypes(), 0, 1);
+        	gLayout.addComponent(this.source.getSelGenotypes(), 1, 1);
+        	source.getBlockRowColumnContainer().addComponent(gLayout);
         	return;
         }
         
         if(value.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
-        	/**
-            this.source.getSelColumnFactor().setEnabled(true);
-            this.source.getSelRowFactor().setEnabled(true);
-            this.source.getSelBlocks().setEnabled(false);
-            **/
         	
-        	 this.source.getSelColumnFactor().setVisible(true);
-        	 this.source.getLblSpecifyColumnFactor().setVisible(true);
-             this.source.getSelRowFactor().setVisible(true);
-             this.source.getLblSpecifyRowFactor().setVisible(true);
-             this.source.getSelBlocks().setVisible(false);
-             this.source.getLblBlocks().setVisible(false);
+        	GridLayout gLayout = new GridLayout(2,4);
+            gLayout.setColumnExpandRatio(0, 0);
+            gLayout.setColumnExpandRatio(1, 1);
+            gLayout.setWidth("100%");
+            gLayout.setSpacing(true);
+            gLayout.addStyleName("marginTop10");
+        	
+        	source.getBlockRowColumnContainer().removeAllComponents();
+        	gLayout.addComponent(this.source.getLblSpecifyColumnFactor(), 0, 0);
+        	gLayout.addComponent(this.source.getSelColumnFactor(), 1, 0);
+        	gLayout.addComponent(this.source.getLblSpecifyRowFactor(), 0, 1);
+        	gLayout.addComponent(this.source.getSelRowFactor(), 1, 1);
+        	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
+        	gLayout.addComponent(this.source.getLblGenotypes(), 0, 3);
+        	gLayout.addComponent(this.source.getSelGenotypes(), 1, 3);
+        	source.getBlockRowColumnContainer().addComponent(gLayout);
+        
              
              
         } else if(value.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())){
-            /**this.source.getSelColumnFactor().setEnabled(false);
-            this.source.getSelRowFactor().setEnabled(false);
-            this.source.getSelBlocks().setEnabled(true);
-            **/
-        
-        	this.source.getSelColumnFactor().setVisible(false);
-        	this.source.getLblSpecifyColumnFactor().setVisible(false);
-            this.source.getSelRowFactor().setVisible(false);
-            this.source.getLblSpecifyRowFactor().setVisible(false);
-            this.source.getSelBlocks().setVisible(true);
-            this.source.getLblBlocks().setVisible(true);
+        	
+        	GridLayout gLayout = new GridLayout(2,3);
+            gLayout.setColumnExpandRatio(0, 0);
+            gLayout.setColumnExpandRatio(1, 1);
+            gLayout.setWidth("100%");
+            gLayout.setSpacing(true);
+            gLayout.addStyleName("marginTop10");
+            
+        	source.getBlockRowColumnContainer().removeAllComponents();
+        	gLayout.addComponent(this.source.getLblBlocks(), 0, 0);
+        	gLayout.addComponent(this.source.getSelBlocks(), 1, 0);
+        	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
+        	gLayout.addComponent(this.source.getLblGenotypes(), 0, 2);
+        	gLayout.addComponent(this.source.getSelGenotypes(), 1, 2);
+        	source.getBlockRowColumnContainer().addComponent(gLayout);
+        	
             
         } else if(value.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())){
-            /**
-        	this.source.getSelColumnFactor().setEnabled(false);
-            this.source.getSelRowFactor().setEnabled(false);
-            this.source.getSelBlocks().setEnabled(false);
-            **/
         	
-        	this.source.getSelColumnFactor().setVisible(false);
-        	this.source.getLblSpecifyColumnFactor().setVisible(false);
-            this.source.getSelRowFactor().setVisible(false);
-            this.source.getLblSpecifyRowFactor().setVisible(false);
-            this.source.getSelBlocks().setVisible(false);
-            this.source.getLblBlocks().setVisible(false);
+        	GridLayout gLayout = new GridLayout(2,2);
+            gLayout.setColumnExpandRatio(0, 0);
+            gLayout.setColumnExpandRatio(1, 1);
+            gLayout.setWidth("100%");
+            gLayout.setSpacing(true);
+            gLayout.addStyleName("marginTop10");
+            
+        	source.getBlockRowColumnContainer().removeAllComponents();
+        	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+        	gLayout.addComponent(this.source.getLblGenotypes(), 0, 1);
+        	gLayout.addComponent(this.source.getSelGenotypes(), 1, 1);
+        	source.getBlockRowColumnContainer().addComponent(gLayout);
             
         } else if(value.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName())){
             this.source.getSelColumnFactor().setEnabled(false);

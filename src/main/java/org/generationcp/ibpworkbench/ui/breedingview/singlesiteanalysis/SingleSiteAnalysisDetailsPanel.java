@@ -113,6 +113,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private Select selColumnFactor;
     private Select selGenotypes;
     
+    private VerticalLayout blockRowColumnContainer;
+    
     private CheckBox footerCheckBox;
     
     private HashMap<String, Boolean> environmentsCheckboxState;
@@ -131,6 +133,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private ManagerFactory managerFactory;
     
     private StudyDataManager studyDataManager;
+    
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -223,6 +226,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	tblEnvironmentSelection = new Table();
     	tblEnvironmentSelection.setHeight("200px");
     	tblEnvironmentSelection.setWidth("100%");
+    	
+    	setBlockRowColumnContainer(new VerticalLayout());
     	
     	envCheckBoxListener = new Property.ValueChangeListener(){
 
@@ -382,6 +387,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         //lblTitle.setContentMode(Label.CONTENT_XHTML);
         lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
         lblTitle.addStyleName("label-bold");
+        lblTitle.setHeight("25px");
         
         lblDatasetName = new Label();
         lblDatasetName.setContentMode(Label.CONTENT_XHTML);
@@ -397,34 +403,41 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblProjectType.setWidth("100px");
         lblAnalysisName = new Label();
         lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
+        lblAnalysisName.setStyleName("label-bold");
         lblSiteEnvironment = new Label();
         lblSpecifyEnvFactor = new Label();
         lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
+        lblSpecifyEnvFactor.setStyleName("label-bold");
         lblSelectEnvironmentForAnalysis = new Label();
         lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
+        lblSelectEnvironmentForAnalysis.setStyleName("label-bold");
         lblSpecifyNameForAnalysisEnv = new Label();
         lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
+        lblSpecifyNameForAnalysisEnv.setStyleName("label-bold");
         lblDesign = new Label();
         lblDesignType = new Label();
         lblDesignType.setContentMode(Label.CONTENT_XHTML);
+        lblDesignType.setStyleName("label-bold");
         lblDesignType.setWidth("160px");
         lblReplicates = new Label();
         lblReplicates.setContentMode(Label.CONTENT_XHTML);
         lblReplicates.setWidth("160px");
+        lblReplicates.setStyleName("label-bold");
         lblBlocks = new Label();
         lblBlocks.setContentMode(Label.CONTENT_XHTML);
-        lblBlocks.setVisible(false);
         lblBlocks.setWidth("160px");
+        lblBlocks.setStyleName("label-bold");
         lblSpecifyRowFactor = new Label();
         lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
-        lblSpecifyRowFactor.setVisible(false);
         lblSpecifyRowFactor.setWidth("160px");
+        lblSpecifyRowFactor.setStyleName("label-bold");
         lblSpecifyColumnFactor = new Label();
         lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
-        lblSpecifyColumnFactor.setVisible(false);
         lblSpecifyColumnFactor.setWidth("160px");
+        lblSpecifyColumnFactor.setStyleName("label-bold");
         lblGenotypes = new Label();
         lblGenotypes.setWidth("160px");
+        lblGenotypes.setStyleName("label-bold");
         
         
         lblDataSelectedForAnalysisHeader = new Label();
@@ -436,10 +449,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblChooseEnvironmentDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
+        lblChooseEnvironmentForAnalysisDescription.setStyleName("label-bold");
         lblSpecifyDesignDetailsHeader = new Label();
         lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-        lblSpecifyGenotypesHeader = new Label();
-        lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+        setLblSpecifyGenotypesHeader(new Label());
+        getLblSpecifyGenotypesHeader().setStyleName(Bootstrap.Typography.H3.styleName());
         
         txtVersion = new TextField();
         txtVersion.setNullRepresentation("");
@@ -513,7 +527,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         populateChoicesForBlocks();
         selBlocks.setNullSelectionAllowed(false);
         selBlocks.setNewItemsAllowed(false);
-        selBlocks.setVisible(false);
         selBlocks.setWidth("191px");
         
         selRowFactor = new Select();
@@ -521,7 +534,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         populateChoicesForRowFactor();
         selRowFactor.setNullSelectionAllowed(false);
         selRowFactor.setNewItemsAllowed(false);
-        selRowFactor.setVisible(false);
         selRowFactor.setWidth("191px");
         
         selColumnFactor = new Select();
@@ -529,22 +541,23 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         populateChoicesForColumnFactor();
         selColumnFactor.setNullSelectionAllowed(false);
         selColumnFactor.setNewItemsAllowed(false);
-        selColumnFactor.setVisible(false);
         selColumnFactor.setWidth("191px");
         
         refineChoicesForBlocksReplicationRowAndColumnFactos();
         
-        selGenotypes = new Select();
-        selGenotypes.setImmediate(true); 
+        setSelGenotypes(new Select());
+        getSelGenotypes().setImmediate(true); 
         populateChoicesForGenotypes();
-        selGenotypes.setNullSelectionAllowed(true);
-        selGenotypes.setNewItemsAllowed(false);
-        selGenotypes.setWidth("191px");
+        getSelGenotypes().setNullSelectionAllowed(true);
+        getSelGenotypes().setNewItemsAllowed(false);
+        getSelGenotypes().setWidth("191px");
         
         btnRun = new Button();
         btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         btnReset = new Button();
         btnBack = new Button();
+        
+        
     }
 
     
@@ -679,12 +692,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
     	for (VariableType factor : factorsInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
-    			 this.selGenotypes.addItem(factor.getLocalName());
-    			 this.selGenotypes.setValue(factor.getLocalName());
+    			 this.getSelGenotypes().addItem(factor.getLocalName());
+    			 this.getSelGenotypes().setValue(factor.getLocalName());
     		}
     	}
     	
-    	selGenotypes.select(selGenotypes.getItemIds().iterator().next());
+    	getSelGenotypes().select(getSelGenotypes().getItemIds().iterator().next());
     	
     }
     
@@ -834,37 +847,49 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         chooseEnvironmentLayout.addComponent(lblVersion, 0, 5);
         chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
         
-        GridLayout designDetailsLayout = new GridLayout(2, 8);
+       
+        VerticalLayout designDetailsWrapper = new VerticalLayout();
+        
+        GridLayout designDetailsLayout = new GridLayout(2, 3);
         designDetailsLayout.setColumnExpandRatio(0, 0);
         designDetailsLayout.setColumnExpandRatio(1, 1);
         designDetailsLayout.setWidth("100%");
         designDetailsLayout.setSpacing(true);
-        designDetailsLayout.setMargin(true, false, true, false);
+        designDetailsLayout.setMargin(true, false, false, false);
         designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
         designDetailsLayout.addComponent(lblDesignType, 0, 1);
         designDetailsLayout.addComponent(selDesignType, 1, 1);
         designDetailsLayout.addComponent(lblReplicates, 0, 2);
         designDetailsLayout.addComponent(selReplicates, 1, 2);
-        designDetailsLayout.addComponent(lblBlocks, 0, 3);
-        designDetailsLayout.addComponent(selBlocks, 1, 3);
-        designDetailsLayout.addComponent(lblSpecifyRowFactor, 0, 4);
-        designDetailsLayout.addComponent(selRowFactor, 1, 4);
-        designDetailsLayout.addComponent(lblSpecifyColumnFactor, 0, 5);
-        designDetailsLayout.addComponent(selColumnFactor, 1, 5);
-        designDetailsLayout.addComponent(lblSpecifyGenotypesHeader, 0, 6, 1, 6);
-        designDetailsLayout.addComponent(lblGenotypes, 0, 7);
-        designDetailsLayout.addComponent(selGenotypes, 1, 7);
+        
+        designDetailsWrapper.addComponent(designDetailsLayout);
+        
+        GridLayout gLayout = new GridLayout(2,2);
+        gLayout.setColumnExpandRatio(0, 0);
+        gLayout.setColumnExpandRatio(1, 1);
+        gLayout.setWidth("100%");
+        gLayout.setSpacing(true);
+        gLayout.addStyleName("marginTop10");
+    	gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+    	gLayout.addComponent(getLblGenotypes(), 0, 1);
+    	gLayout.addComponent(getSelGenotypes(), 1, 1);
+    	getBlockRowColumnContainer().addComponent(gLayout);
+        
+        designDetailsWrapper.addComponent(getBlockRowColumnContainer());
         
         mainLayout.addComponent(lblPageTitle);
         mainLayout.addComponent(new Label(""));
-        mainLayout.addComponent(lblTitle);
-        mainLayout.addComponent(selectedInfoLayout);
+        
+        VerticalLayout subMainLayout = new VerticalLayout();
+        subMainLayout.addComponent(lblTitle);
+        subMainLayout.addComponent(selectedInfoLayout);
+        mainLayout.addComponent(subMainLayout);
         
         HorizontalLayout combineLayout = new HorizontalLayout();
         combineLayout.setSizeUndefined();
         combineLayout.setWidth("100%");
         combineLayout.addComponent(chooseEnvironmentLayout);
-        combineLayout.addComponent(designDetailsLayout);
+        combineLayout.addComponent(designDetailsWrapper);
         mainLayout.addComponent(combineLayout);
        
         HorizontalLayout combineLayout2 = new HorizontalLayout();
@@ -887,7 +912,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
     	selDesignType.select((Object) null);
     	selReplicates.select(selReplicates.getItemIds().iterator().next());
-    	selGenotypes.select(selGenotypes.getItemIds().iterator().next());
+    	getSelGenotypes().select(getSelGenotypes().getItemIds().iterator().next());
     	footerCheckBox.setValue(false);
     	txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
     
@@ -1028,7 +1053,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         messageSource.setValue(getLblBlocks(), Message.BV_SPECIFY_BLOCKS);
         messageSource.setValue(getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
         messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
-        messageSource.setValue(lblGenotypes, Message.BV_GENOTYPES);
+        messageSource.setValue(getLblGenotypes(), Message.BV_GENOTYPES);
         messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
         messageSource.setCaption(btnReset, Message.RESET);
         messageSource.setCaption(btnBack, Message.BACK);
@@ -1043,7 +1068,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         messageSource.setValue(lblChooseEnvironmentDescription, Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
         messageSource.setValue(lblChooseEnvironmentForAnalysisDescription, Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
         messageSource.setValue(lblSpecifyDesignDetailsHeader, Message.BV_SPECIFY_DESIGN_DETAILS_HEADER);
-        messageSource.setValue(lblSpecifyGenotypesHeader, Message.BV_SPECIFY_GENOTYPES_HEADER);
+        messageSource.setValue(getLblSpecifyGenotypesHeader(), Message.BV_SPECIFY_GENOTYPES_HEADER);
     }
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
@@ -1108,6 +1133,34 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			if (m.getActive()) envs.add(m);
 		}
 		return envs;
+	}
+
+	public VerticalLayout getBlockRowColumnContainer() {
+		return blockRowColumnContainer;
+	}
+
+	public void setBlockRowColumnContainer(VerticalLayout blockRowColumnContainer) {
+		this.blockRowColumnContainer = blockRowColumnContainer;
+	}
+
+	public void setSelGenotypes(Select selGenotypes) {
+		this.selGenotypes = selGenotypes;
+	}
+
+	public Label getLblGenotypes() {
+		return lblGenotypes;
+	}
+
+	public void setLblGenotypes(Label lblGenotypes) {
+		this.lblGenotypes = lblGenotypes;
+	}
+
+	public Label getLblSpecifyGenotypesHeader() {
+		return lblSpecifyGenotypesHeader;
+	}
+
+	public void setLblSpecifyGenotypesHeader(Label lblSpecifyGenotypesHeader) {
+		this.lblSpecifyGenotypesHeader = lblSpecifyGenotypesHeader;
 	}
     
 
