@@ -166,33 +166,38 @@ public class RunBreedingViewAction implements ClickListener {
         }
         
         String rowName = (String) this.source.getSelRowFactor().getValue();
-        if(StringUtils.isNullOrEmpty(rowName)){
-            if(this.source.getSelRowFactor().isEnabled()){
-                event.getComponent().getWindow().showNotification("Please specify row factor.", Notification.TYPE_ERROR_MESSAGE);
-                return;
-            } else{
-                breedingViewInput.setRows(null);
-            }
-        } else{
-            Rows rows = new Rows();
-            rows.setName(rowName.trim());
-            breedingViewInput.setRows(rows);
+        
+        if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
+	        if(StringUtils.isNullOrEmpty(rowName)){
+	            if(this.source.getSelRowFactor().isEnabled()){
+	                event.getComponent().getWindow().showNotification("Please specify row factor.", Notification.TYPE_ERROR_MESSAGE);
+	                return;
+	            } else{
+	                breedingViewInput.setRows(null);
+	            }
+	        } else{
+	            Rows rows = new Rows();
+	            rows.setName(rowName.trim());
+	            breedingViewInput.setRows(rows);
+	        }
         }
         
         String columnName = (String) this.source.getSelColumnFactor().getValue();
-        if(StringUtils.isNullOrEmpty(columnName)){
-            if(this.source.getSelColumnFactor().isEnabled()){
-                event.getComponent().getWindow().showNotification("Please specify column factor.", Notification.TYPE_ERROR_MESSAGE);
-                return;
-            } else{
-                breedingViewInput.setColumns(null);
-            }
-        } else{
-            Columns columns = new Columns();
-            columns.setName(columnName.trim());
-            breedingViewInput.setColumns(columns);
-        }
         
+        if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
+	        if(StringUtils.isNullOrEmpty(columnName)){
+	            if(this.source.getSelColumnFactor().isEnabled()){
+	                event.getComponent().getWindow().showNotification("Please specify column factor.", Notification.TYPE_ERROR_MESSAGE);
+	                return;
+	            } else{
+	                breedingViewInput.setColumns(null);
+	            }
+	        } else{
+	            Columns columns = new Columns();
+	            columns.setName(columnName.trim());
+	            breedingViewInput.setColumns(columns);
+	        }
+        }
         String genotypesName = (String) this.source.getSelGenotypes().getValue();
         if(StringUtils.isNullOrEmpty(genotypesName)){
             event.getComponent().getWindow().showNotification("Please specify Genotypes factor.", Notification.TYPE_ERROR_MESSAGE);
