@@ -859,7 +859,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         designDetailsLayout.setColumnExpandRatio(1, 1);
         designDetailsLayout.setWidth("100%");
         designDetailsLayout.setSpacing(true);
-        designDetailsLayout.setMargin(true, false, false, false);
+        designDetailsLayout.setMargin(false, false, false, false);
         designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
         designDetailsLayout.addComponent(lblDesignType, 0, 1);
         designDetailsLayout.addComponent(selDesignType, 1, 1);
