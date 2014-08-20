@@ -92,6 +92,8 @@
     
     <!-- Manager Factory Provider -->
     <bean id="managerFactoryProvider" class="org.generationcp.commons.hibernate.DefaultManagerFactoryProvider" destroy-method="close">
+    	<constructor-arg ref="workbenchDataManager" />
+    	<constructor-arg ref="mysqlUtil" />
     	<property name="localUsername" value="${local.user}"/>
     	<property name="localPassword" value="${local.password}"/>
     	<property name="localPort"     value="${workbench.port}"/>
