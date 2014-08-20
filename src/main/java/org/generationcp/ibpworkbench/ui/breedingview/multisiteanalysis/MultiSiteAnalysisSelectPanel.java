@@ -170,9 +170,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         messageSource.setValue(lblEnvironmentGroupsDescription, Message.GXE_ENVIRONMENT_GROUPS_DESCRIPTION);
         messageSource.setValue(lblEnvironmentGroupsSpecify, Message.GXE_ENVIRONMENT_GROUPS_SPECIFY);
         messageSource.setValue(lblReviewSelectedDataset, Message.GXE_REVIEW_SELECTED_DATASET);
-        messageSource.setValue(lblFactorTableHeader, Message.GXE_FACTOR_TABLE_HEADER);
+//        messageSource.setValue(lblFactorTableHeader, Message.GXE_FACTOR_TABLE_HEADER);
         messageSource.setValue(lblFactorTableDescription, Message.GXE_FACTOR_TABLE_DESCRIPTION);
-        messageSource.setValue(lblVariateTableHeader, Message.GXE_TRAIT_TABLE_HEADER);
+//        messageSource.setValue(lblVariateTableHeader, Message.GXE_TRAIT_TABLE_HEADER);
         messageSource.setValue(lblVariateTableDescription, Message.GXE_TRAIT_TABLE_DESCRIPTION);
     }
     
@@ -198,12 +198,13 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
     	lblReviewSelectedDataset = new Label();
     	lblReviewSelectedDataset.setStyleName(Bootstrap.Typography.H2.styleName());
     	
-    	lblFactorTableHeader = new Label();
+    	lblFactorTableHeader = new Label("<span class='bms-factors' style='position: relative; top:-2px; color: #39B54A; "
+    			+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",Label.CONTENT_XHTML);
     	lblFactorTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
     	
     	lblFactorTableDescription = new Label();
     	
-    	lblVariateTableHeader = new Label();
+    	lblVariateTableHeader = new Label("<span class='bms-variates' style='position: relative; top:-2px; color: #B8D433; font-size: 22px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",Label.CONTENT_XHTML);
     	lblVariateTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
     	
     	lblVariateTableDescription = new Label();

@@ -180,16 +180,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		tblFactors = initializeFactorsTable();
 		tblVariates = initializeVariatesTable();
 		buttonArea = layoutButtonArea();
-
-		lblFactors = new Label("FACTORS");
-		lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
-		lblFactors.addStyleName("label-bold");
-		lblFactors.setWidth("100%");
 		
-		lblVariates = new Label("TRAITS");
+		lblFactors = new Label("<span class='bms-factors' style='color: #39B54A; font-size: 22px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",Label.CONTENT_XHTML);
+		lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
+		lblFactors.setWidth("100%");
+        
+		lblVariates = new Label("<span class='bms-variates' style='color: #B8D433; font-size: 22px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",Label.CONTENT_XHTML);
 		lblVariates.setWidth("100%");
 		lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
-		lblVariates.addStyleName("label-bold");
 		
 		chkVariatesSelectAll = new CheckBox();
 		chkVariatesSelectAll.setImmediate(true);

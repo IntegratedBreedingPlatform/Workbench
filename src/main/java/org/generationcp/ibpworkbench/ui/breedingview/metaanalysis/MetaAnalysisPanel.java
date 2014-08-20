@@ -141,8 +141,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
         messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
-        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
-        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
+//        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
+//        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
         messageSource.setValue(lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
     }
     
@@ -178,7 +178,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         getSelectedEnvironmenTable().setVisibleColumns(new Object[]{"studyName","dataSetName","trial", "environment"});
         getSelectedEnvironmenTable().setColumnHeaders(new String[]{"Study Name","Dataset Name","Trial", "Environment"});
         
-        lblReviewEnvironments = new Label();
+        lblReviewEnvironments = new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
+        		+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;"
+        		+ "<span style='position:relative; top: -3px;'>"
+        		+ messageSource.getMessage(Message.META_REVIEW_ENVIRONMENTS)+"</span></b>",Label.CONTENT_XHTML);
         lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
         
         lblBuildNewAnalysisDescription = new Label();
@@ -189,11 +192,13 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         linkCloseAllTab.setCaption("Close All Tabs");
         linkCloseAllTab.setVisible(false);
         
-        lblSelectDatasetsForAnalysis = new Label();
+        lblSelectDatasetsForAnalysis = new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+        		+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"+
+        		messageSource.getMessage(Message.META_SELECT_DATASETS_FOR_ANALYSIS)+"</b>",Label.CONTENT_XHTML);
         lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
         
         lblSelectDatasetsForAnalysisDescription = new Label();
-
+        
         //initialize buttons
         btnCancel = new Button();
         btnNext = new Button();
@@ -484,10 +489,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				e.printStackTrace();
 			}
 
-			lblFactors = new Label("Factors");
+			lblFactors = new Label("<span class='bms-factors' style='color: #39B54A; font-size: 20px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",Label.CONTENT_XHTML);
 			lblFactors.setStyleName(Bootstrap.Typography.H3.styleName());
 			lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
-			lblTraits = new Label("Traits");
+			lblTraits = new Label("<span class='bms-variates' style='color: #B8D433; font-size: 20px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",Label.CONTENT_XHTML);
 			lblTraits.setStyleName(Bootstrap.Typography.H3.styleName());
 			lblTraitDescription = new Label("The traits of the dataset you have selected are shown below for your review.");
 			

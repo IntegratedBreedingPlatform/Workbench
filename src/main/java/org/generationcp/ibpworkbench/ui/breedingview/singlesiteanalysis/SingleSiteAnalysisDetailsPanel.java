@@ -90,7 +90,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private Label lblSpecifyColumnFactor;
     private Label lblGenotypes;
     private Label lblDataSelectedForAnalysisHeader;
-    private Label lblAnalysisNameHeader;
     private Label lblChooseEnvironmentHeader;
     private Label lblChooseEnvironmentDescription;
     private Label lblChooseEnvironmentForAnalysisDescription;
@@ -438,22 +437,32 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         lblGenotypes = new Label();
         lblGenotypes.setWidth("160px");
         lblGenotypes.setStyleName("label-bold");
-        
-        
-        lblDataSelectedForAnalysisHeader = new Label();
+                
+        lblDataSelectedForAnalysisHeader = new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+        		+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"+
+        		messageSource.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER)+"</b>",Label.CONTENT_XHTML);
         lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-        lblAnalysisNameHeader = new Label();
-        lblAnalysisNameHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-        lblChooseEnvironmentHeader = new Label();
+
+        lblChooseEnvironmentHeader = new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
+        		+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;"
+        		+ "<span style='position:relative; top: -3px;'>"
+        		+ messageSource.getMessage(Message.BV_CHOOSE_ENVIRONMENT_HEADER)+"</span></b>",Label.CONTENT_XHTML);
         lblChooseEnvironmentHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+        
         lblChooseEnvironmentDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription = new Label();
         lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
         lblChooseEnvironmentForAnalysisDescription.setStyleName("label-bold");
-        lblSpecifyDesignDetailsHeader = new Label();
+        
+        lblSpecifyDesignDetailsHeader = new Label("<span class='bms-exp-design' style='color: #9A8478; "
+        		+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
+        		+ messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER)+"</b>",Label.CONTENT_XHTML);
         lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-        setLblSpecifyGenotypesHeader(new Label());
-        getLblSpecifyGenotypesHeader().setStyleName(Bootstrap.Typography.H3.styleName());
+        
+        lblSpecifyGenotypesHeader = new Label("<span class='bms-factors' style='color: #39B54A; "
+        		+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
+        		+ messageSource.getMessage(Message.BV_SPECIFY_GENOTYPES_HEADER)+"</b>",Label.CONTENT_XHTML);
+        lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
         
         txtVersion = new TextField();
         txtVersion.setNullRepresentation("");
@@ -817,20 +826,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         row3.addComponent(lblDatasourceName);
         row3.addComponent(valueDatasourceName);
         
-        HorizontalLayout row4 = new HorizontalLayout();
+        VerticalLayout row4 = new VerticalLayout();
         row4.setSpacing(true);
-        row4.addComponent(lblAnalysisNameHeader);
-        
-        VerticalLayout row5 = new VerticalLayout();
-        row5.setSpacing(true);
-        row5.addComponent(lblAnalysisName);
-        row5.addComponent(txtAnalysisName);
+        row4.addComponent(lblAnalysisName);
+        row4.addComponent(txtAnalysisName);
         
         selectedInfoLayout.addComponent(row1);
         selectedInfoLayout.addComponent(row2);
         selectedInfoLayout.addComponent(row3);
         selectedInfoLayout.addComponent(row4);
-        selectedInfoLayout.addComponent(row5);        
         
         GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
         chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
@@ -1062,13 +1066,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
         messageSource.setValue(lblDatasetName, Message.BV_DATASET_NAME);
         messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
-        messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER);
-        messageSource.setValue(lblAnalysisNameHeader, Message.BV_ANALYSIS_NAME_HEADER);
-        messageSource.setValue(lblChooseEnvironmentHeader, Message.BV_CHOOSE_ENVIRONMENT_HEADER);
+//        messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER);
+//        messageSource.setValue(lblAnalysisNameHeader, Message.BV_ANALYSIS_NAME_HEADER);
+//        messageSource.setValue(lblChooseEnvironmentHeader, Message.BV_CHOOSE_ENVIRONMENT_HEADER);
         messageSource.setValue(lblChooseEnvironmentDescription, Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
         messageSource.setValue(lblChooseEnvironmentForAnalysisDescription, Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
-        messageSource.setValue(lblSpecifyDesignDetailsHeader, Message.BV_SPECIFY_DESIGN_DETAILS_HEADER);
-        messageSource.setValue(getLblSpecifyGenotypesHeader(), Message.BV_SPECIFY_GENOTYPES_HEADER);
+//        messageSource.setValue(lblSpecifyDesignDetailsHeader, Message.BV_SPECIFY_DESIGN_DETAILS_HEADER);
+//        messageSource.setValue(getLblSpecifyGenotypesHeader(), Message.BV_SPECIFY_GENOTYPES_HEADER);
     }
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {

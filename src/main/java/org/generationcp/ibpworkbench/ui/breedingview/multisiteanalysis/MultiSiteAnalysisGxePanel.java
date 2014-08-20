@@ -186,7 +186,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
         messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
         messageSource.setValue(lblSelectedEnvironmentFactor, Message.GXE_SELECTED_ENVIRONMENT_FACTOR);
         messageSource.setValue(lblSelectedEnvironmentGroupFactor, Message.GXE_SELECTED_ENVIRONMENT_GROUP_FACTOR);
-        messageSource.setValue(lblAdjustedMeansHeader , Message.GXE_ADJUSTED_MEANS_HEADER);
+//        messageSource.setValue(lblAdjustedMeansHeader , Message.GXE_ADJUSTED_MEANS_HEADER);
         messageSource.setValue(lblAdjustedMeansDescription  , Message.GXE_ADJUSTED_MEANS_DESCRIPTION);
         messageSource.setValue(lblSelectTraitsForAnalysis, Message.GXE_SELECT_TRAITS_FOR_ANALYSIS);
     }
@@ -224,7 +224,9 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     	chkSelectAllTraits = new CheckBox("Select all traits", true);
     	chkSelectAllTraits.setImmediate(true);
     	
-    	lblAdjustedMeansHeader  = new Label();
+    	lblAdjustedMeansHeader = new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+        		+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"+
+        		messageSource.getMessage(Message.GXE_ADJUSTED_MEANS_HEADER)+"</b>",Label.CONTENT_XHTML);
     	lblAdjustedMeansHeader.setStyleName(Bootstrap.Typography.H2.styleName());
     	
     	lblAdjustedMeansDescription  = new Label();
