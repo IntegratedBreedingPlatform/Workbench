@@ -533,6 +533,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
         selBlocks = new Select();
         selBlocks.setImmediate(true); 
+        selBlocks.setEnabled(false);
         populateChoicesForBlocks();
         selBlocks.setNullSelectionAllowed(false);
         selBlocks.setNewItemsAllowed(false);
@@ -731,6 +732,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
          	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(BLOCKING_FACTOR)){
          		this.selBlocks.addItem(factor.getLocalName());
          		this.selBlocks.setValue(factor.getLocalName());
+         		selBlocks.setEnabled(true);
          	}
         }
         

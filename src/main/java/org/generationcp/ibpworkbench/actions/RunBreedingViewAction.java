@@ -153,7 +153,7 @@ public class RunBreedingViewAction implements ClickListener {
         
         String blocksName = (String) this.source.getSelBlocks().getValue();
         if(StringUtils.isNullOrEmpty(blocksName)){
-            if(this.source.getSelBlocks().isEnabled()){
+            if(this.source.getSelBlocks().isEnabled() && !designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
                 event.getComponent().getWindow().showNotification("Please specify incomplete block factor.", Notification.TYPE_ERROR_MESSAGE);
                 return;
             } else{

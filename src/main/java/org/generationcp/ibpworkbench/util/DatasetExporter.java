@@ -153,6 +153,8 @@ public class DatasetExporter {
 			ArrayList<String> row = new ArrayList<String>();
 
 			List<Variable> factorsOfExperiments = experiment.getFactors().getVariables();
+			Map<String, Variable> factorsOfExperimentsMap = new HashMap<String, Variable>();
+			for(Variable factorVariable : factorsOfExperiments) factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName(), factorVariable);
 			for(Variable factorVariable : factorsOfExperiments){
 				String factorName = factorVariable.getVariableType().getLocalName();
 				if(factorName != null){
@@ -167,12 +169,24 @@ public class DatasetExporter {
 							double elemValue = 0;
 							if(factorVariable.getValue() != null){
 								try{
-									elemValue = Double.valueOf(factorVariable.getValue());
+									
+									
+									if (factorVariable.getValue().isEmpty() && factorVariable.getVariableType().getLocalName().equalsIgnoreCase(breedingViewInput.getReplicates().getName())){
+										Variable variable = factorsOfExperimentsMap.get(breedingViewInput.getBlocks().getName());
+										if (variable != null){
+											row.add(variable.getValue().trim());
+										}else{
+											row.add("");
+										}
+										
+									}else{
+										elemValue = Double.valueOf(factorVariable.getValue());
 
-									if (elemValue == Double.valueOf("-1E+36")){
-										row.add("");
-									} else row.add(String.valueOf(factorVariable.getValue()));
-
+										if (elemValue == Double.valueOf("-1E+36")){
+											row.add("");
+										} else row.add(String.valueOf(factorVariable.getValue()));
+									}
+									
 								}catch(NumberFormatException ex){
 									String value = factorVariable.getValue();
 									if(value != null) {
@@ -191,6 +205,17 @@ public class DatasetExporter {
 										|| factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM
 										){
 									value = value.trim().replace(",", ";");
+									
+									if (value.isEmpty() && factorVariable.getVariableType().getLocalName().equalsIgnoreCase(breedingViewInput.getReplicates().getName())){
+										Variable variable = factorsOfExperimentsMap.get(breedingViewInput.getBlocks().getName());
+										if (variable != null){
+											value = variable.getValue().trim();
+										}else{
+											value = "";
+										}
+										
+									}
+									
 								}else{
 									value = value.trim();
 								}
