@@ -58,9 +58,18 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
         	gLayout.addComponent(this.source.getLblGenotypes(), 0, 3);
         	gLayout.addComponent(this.source.getSelGenotypes(), 1, 3);
         	source.getBlockRowColumnContainer().addComponent(gLayout);
+        	
+        	if (source.getSelReplicates().isEnabled() == false
+        			|| source.getSelReplicates().getItemIds().size() == 0){
+        		
+        		for (Object itemId : source.getSelBlocks().getItemIds()){
+        			source.getSelReplicates().addItem(itemId);
+        			source.getSelReplicates().setItemCaption(itemId,"REPLICATES");
+        			source.getSelReplicates().select(itemId);
+        			source.getSelReplicates().setEnabled(true);
+        		}
+        	}
         
-             
-             
         } else if(value.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())){
         	
         	GridLayout gLayout = new GridLayout(2,3);
@@ -76,7 +85,19 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
         	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
         	gLayout.addComponent(this.source.getLblGenotypes(), 0, 2);
         	gLayout.addComponent(this.source.getSelGenotypes(), 1, 2);
+        	
         	source.getBlockRowColumnContainer().addComponent(gLayout);
+        	
+        	if (source.getSelReplicates().isEnabled() == false
+        			|| source.getSelReplicates().getItemIds().size() == 0){
+        		
+        		for (Object itemId : source.getSelBlocks().getItemIds()){
+        			source.getSelReplicates().addItem(itemId);
+        			source.getSelReplicates().setItemCaption(itemId,"REPLICATES");
+        			source.getSelReplicates().select(itemId);
+        			source.getSelReplicates().setEnabled(true);
+        		}
+        	}
         	
             
         } else if(value.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())){
@@ -93,6 +114,17 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
         	gLayout.addComponent(this.source.getLblGenotypes(), 0, 1);
         	gLayout.addComponent(this.source.getSelGenotypes(), 1, 1);
         	source.getBlockRowColumnContainer().addComponent(gLayout);
+        	
+        	if (source.getSelReplicates().isEnabled() == false
+        			|| source.getSelReplicates().getItemIds().size() == 0){
+        		
+        		for (Object itemId : source.getSelBlocks().getItemIds()){
+        			source.getSelReplicates().addItem(itemId);
+        			source.getSelReplicates().setItemCaption(itemId,"REPLICATES");
+        			source.getSelReplicates().select(itemId);
+        			source.getSelReplicates().setEnabled(true);
+        		}
+        	}
             
         } else if(value.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName())){
             this.source.getSelColumnFactor().setEnabled(false);
