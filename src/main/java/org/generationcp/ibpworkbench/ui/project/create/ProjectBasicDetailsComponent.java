@@ -202,7 +202,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         this.setMargin(false);
         this.setSpacing(false);
 
-        this.setComponentAlignment(gridLayout, Alignment.TOP_CENTER);
+        this.setComponentAlignment(gridLayout, Alignment.TOP_LEFT);
     }
     
     protected void initializeLayoutForUpdate() {

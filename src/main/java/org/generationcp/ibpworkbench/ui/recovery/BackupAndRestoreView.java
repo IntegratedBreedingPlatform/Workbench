@@ -249,10 +249,10 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
         final Label backupTitle = new Label(messageSource.getMessage("BACKUP_BMS_TITLE"));
-        backupTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        backupTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 
         final Label restoreTitle = new Label(messageSource.getMessage("RESTORE_BMS_TITLE"));
-        restoreTitle.setStyleName(Bootstrap.Typography.H2.styleName());
+        restoreTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 
         final Label restoreDropdownTitle = new Label(messageSource.getMessage("RESTORE_CHOOSE_BACKUP"));
         restoreDropdownTitle.setStyleName(Bootstrap.Typography.H6.styleName());
@@ -277,7 +277,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         rootContent.addComponent(backupTitle);
         rootContent.addComponent(new Label(messageSource.getMessage("BACKUP_BMS_DESCRIPTION",sessionData.getLastOpenedProject().getProjectName()),Label.CONTENT_XHTML));
         rootContent.addComponent(backupBtn);
-        rootContent.addComponent(new Label("<div style='height: 40px'></div>",Label.CONTENT_XHTML));
+        rootContent.addComponent(new Label("<div style='height: 20px'></div>",Label.CONTENT_XHTML));
         rootContent.addComponent(restoreTitle);
         rootContent.addComponent(new Label(messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
         rootContent.addComponent(restoreDropdownTitle);
