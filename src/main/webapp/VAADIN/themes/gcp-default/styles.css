@@ -362,3 +362,7 @@ img[src$="leaf_16.png"] {
 	margin-top: 8px;
 }
 
+.basic-details {
+    position: relative;
+    right: 6px;
+}

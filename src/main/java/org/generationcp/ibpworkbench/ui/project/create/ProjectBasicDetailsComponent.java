@@ -125,6 +125,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         gridLayout.setRows(4);
         gridLayout.setColumns(5);
         gridLayout.setSpacing(true);
+        gridLayout.addStyleName("basic-details");
         
         Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
         Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
@@ -189,7 +190,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         gridLayout.addComponent(projectNameField, 2, 2);
         gridLayout.addComponent(lblStartDate, 1, 3);
         gridLayout.addComponent(startDateField, 2, 3);
-       
         addComponent(gridLayout);
         
     }
