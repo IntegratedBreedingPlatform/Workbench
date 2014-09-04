@@ -10,6 +10,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -283,7 +284,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		spacer2.setWidth("20px");
 		
 		VerticalLayout vl = new VerticalLayout();
-		vl.setCaption(messageSource.getMessage(Message.TOOL_NAME));
+		vl.setCaption(messageSource.getMessage(Message.TOOL_NAME));	
+		vl.addComponent(new Label("<div style='height: 5px'></div>",Label.CONTENT_XHTML));
 		vl.addComponent(userToolsListSelect);
 		vl.setWidth("100%");
 		
@@ -312,6 +314,8 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
 		btnPanel.setComponentAlignment(cancelBtn, Alignment.MIDDLE_RIGHT);
 		btnPanel.setExpandRatio(spacer,1.0f);
 		
+		this.getContent().addComponent(new Label(messageSource.getMessage(Message.USER_TOOLS_REMINDER_TEXT),Label.CONTENT_XHTML));
+		this.getContent().addComponent(new Label("<div style='height: 20px'></div>",Label.CONTENT_XHTML));
 		this.getContent().addComponent(mainPanel);
 		this.getContent().addComponent(btnPanel);
 	}
