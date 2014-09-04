@@ -49,7 +49,7 @@ public class UserToolsManagerWindow extends Window implements InitializingBean {
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final String WIDTH = "780px";
-	private static final String HEIGHT = "420px";
+	private static final String HEIGHT = "470px";
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
