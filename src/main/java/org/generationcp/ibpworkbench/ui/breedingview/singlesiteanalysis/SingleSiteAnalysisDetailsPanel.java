@@ -40,6 +40,7 @@ import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -786,9 +787,30 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         }
     }
     
-    private void checkDesignFactor(){
-    	 
+    private void checkDesignFactor() {
+    	String designFactor = null;
+		try {
+			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL, TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
+			if(expDesign!=null && !expDesign.trim().equals("")) {
+	    		int designType = Integer.parseInt(expDesign);
+	    		if(designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) { 
+	    			designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName(); 
+	    		} else if(designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId() ||
+	    				  designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) { 
+	    			designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName(); 
+	    		} else if(designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId() ||
+	    				  designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) { 
+	    			designFactor = DesignType.ROW_COLUMN_DESIGN.getName(); 
+	    		}
+	    		selDesignType.setValue(designFactor);
+	    	} else {
+	        	selDesignType.select((Object) null);
+	    	}
+		} catch (MiddlewareQueryException e) {
+			e.printStackTrace();
+		}
     	
+    		
     }
     
     protected void initializeLayout() {
@@ -916,7 +938,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private void reset(){
     
     	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
-    	selDesignType.select((Object) null);
+    	checkDesignFactor();
     	selReplicates.select(selReplicates.getItemIds().iterator().next());
     	getSelGenotypes().select(getSelGenotypes().getItemIds().iterator().next());
     	footerCheckBox.setValue(false);
