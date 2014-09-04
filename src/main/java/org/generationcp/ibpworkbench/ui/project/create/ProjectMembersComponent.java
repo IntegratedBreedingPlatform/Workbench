@@ -188,11 +188,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
     protected void initializeLayout() {
         setSpacing(true);
         setMargin(true);
-        
-        select.setWidth("100%");
-        select.setHeight("300px");
-        
-        
+
         final HorizontalLayout titleContainer = new HorizontalLayout();
         final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
         final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -209,8 +205,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         titleContainer.setSizeUndefined();
         titleContainer.setWidth("100%");
         titleContainer.setMargin(false, false, false, false);	// move this to css
-        
-        
+
         addComponent(titleContainer);
         addComponent(headingDesc);
         addComponent(select);
@@ -218,8 +213,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         setComponentAlignment(select,Alignment.TOP_CENTER);
         setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
-        
-        
+
     }
 
     protected void initializeActions() {
