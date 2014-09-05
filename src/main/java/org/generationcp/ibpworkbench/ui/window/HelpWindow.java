@@ -201,15 +201,18 @@ public class HelpWindow extends Window implements InitializingBean, Internationa
     }
 
     private String getHtmlFilesLocation(String baseDir) {
-
-        Collection<File> files = FileUtils.listFiles(new File(baseDir), new RegexFileFilter("index.html$"),
+		File baseDirFile = new File(baseDir);
+        Collection<File> files = FileUtils.listFiles(baseDirFile, new RegexFileFilter("index.html$"),
                 DirectoryFileFilter.DIRECTORY);
-
 
         if (files.size() == 0) return "";
 
         for (File f : files) {
-            return f.getParent();
+        	File parentFile = f.getParentFile();
+        	if(parentFile!=null && parentFile.getParent().equals(
+        			baseDirFile.getPath())) {
+        		return f.getParent();
+        	}
         }
 
         return "";
