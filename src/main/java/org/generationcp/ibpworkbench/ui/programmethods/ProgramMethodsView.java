@@ -1,15 +1,15 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -23,10 +23,30 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
   * Created with IntelliJ IDEA.
@@ -38,31 +58,23 @@ import java.util.*;
 
  @Configurable
  public class ProgramMethodsView extends CustomComponent implements InitializingBean, IContainerFittable {
-    private boolean cropOnly = false;
+	private static final long serialVersionUID = 3300444018220674997L;
+	
+	private boolean cropOnly = false;
     protected ProgramMethodsPresenter presenter;
-     @Autowired
-     private SimpleResourceBundleMessageSource messageSource;
 
+    @Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-     public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-     public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
-
-     private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
+	public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
+	public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
+	private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
      
-     public final static Map<String,String> tableColumns;
-     public final static Map<String,Integer> tableColumnSizes;
+	public final static Map<String,String> tableColumns;
+	public final static Map<String,Integer> tableColumnSizes;
     private Button.ClickListener editMethodListener;
 
-         /*
-               *
-               * columnWidthsMap.put("mname",210);
-                  columnWidthsMap.put("mgrp",45);
-                  columnWidthsMap.put("mcode",40);
-                  columnWidthsMap.put("mtype",40);
-                  columnWidthsMap.put("fmdate",70);
-               * */
-
-     static {
+    static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
          //tableColumns.put("mid","Id");
@@ -82,10 +94,7 @@ import java.util.*;
          tableColumnSizes.put("mtype",40);
          tableColumnSizes.put("date",70);
          tableColumnSizes.put("class",45);
-
-
      }
-
 
      private Button addNewMethodsBtn;
      private VerticalLayout root;
@@ -94,6 +103,10 @@ import java.util.*;
      private Table favoritesTable;
      private CheckBox availableSelectAll;
      private CheckBox favoriteSelectAll;
+     private Label availTotalEntriesLabel;
+     private Label favTotalEntriesLabel;
+     private Label availSelectedEntriesLabel;
+     private Label favSelectedEntriesLabel;
      private Select groupFilter;
      private Select typeFilter;
      private TextField searchField;
@@ -126,16 +139,6 @@ import java.util.*;
          root.setSizeFull();
 
          this.setSizeFull();
-
-         // special actions added to save and cancel btns
-                      /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
-                                                                  @Override
-                                                                  public void buttonClick(Button.ClickEvent clickEvent) {
-                                                                      parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
-                                                                  }
-                                                              };
-                                                    */
-         //saveBtn.addListener(execCloseFrameJS);
      }
 
      @Override
@@ -159,11 +162,16 @@ import java.util.*;
          availableSelectAll.setImmediate(true);
          favoriteSelectAll = new CheckBox("Select All");
          favoriteSelectAll.setImmediate(true);
-
+         
+         availTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
+         favTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
+         availSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
+         favSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
+         
          // TABLES!
-         availableTable = buildCustomTable(availableSelectAll);
+         availableTable = buildCustomTable(availableSelectAll, availTotalEntriesLabel, availSelectedEntriesLabel);
          availableTable.setData("available");
-         favoritesTable = buildCustomTable(favoriteSelectAll);
+         favoritesTable = buildCustomTable(favoriteSelectAll, favTotalEntriesLabel, favSelectedEntriesLabel);
          favoritesTable.setData("favorites");
 
          addToFavoriteBtn = new Button("Add to Favorite Methods");
@@ -190,8 +198,8 @@ import java.util.*;
 
      }
 
-     private Table buildCustomTable(final CheckBox assocSelectAll) {
-         Table table = new Table();
+     private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
+         final Table table = new Table();
 
          table.setImmediate(true);
          table.setSelectable(true);
@@ -199,12 +207,16 @@ import java.util.*;
          table.setDragMode(Table.TableDragMode.MULTIROW);
 
          table.addGeneratedColumn("select", new Table.ColumnGenerator() {
-             @Override
+			private static final long serialVersionUID = -2712621177075270647L;
+
+			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
                  final CheckBox select = new CheckBox();
                  select.setImmediate(true);
                  select.addListener(new Button.ClickListener() {
-                     @Override
+					private static final long serialVersionUID = -5401459415390953417L;
+
+					@Override
                      public void buttonClick(Button.ClickEvent clickEvent) {
                          Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
                                  .getValue();
@@ -230,7 +242,9 @@ import java.util.*;
          });
 
          table.addGeneratedColumn("gMname", new Table.ColumnGenerator() {
-             @Override
+			private static final long serialVersionUID = -9087436773196724575L;
+
+			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
 
                  if (((MethodView)itemId).getMid() < 0) {
@@ -251,7 +265,9 @@ import java.util.*;
 
 
          table.addGeneratedColumn("class", new Table.ColumnGenerator() {
-             @Override
+			private static final long serialVersionUID = -9208828919595982878L;
+
+			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
                  Label classLbl = new Label("");
                  classLbl.setContentMode(Label.CONTENT_XHTML);
@@ -265,7 +281,9 @@ import java.util.*;
 
 
          table.addGeneratedColumn("date",new Table.ColumnGenerator() {
-             @Override
+			private static final long serialVersionUID = -8704716382416470975L;
+
+			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
                  DateFormat df = new SimpleDateFormat("yyyyMMdd");
                  DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
@@ -283,7 +301,9 @@ import java.util.*;
          });
 
          table.addGeneratedColumn("desc", new Table.ColumnGenerator() {
-             @Override
+			private static final long serialVersionUID = 6278117387128053730L;
+
+			@Override
              public Object generateCell(final Table source, final Object itemId, Object colI) {
                  Label l = new Label();
                  l.setDescription(((MethodView)itemId).getMdesc());
@@ -299,7 +319,10 @@ import java.util.*;
 
          // Add behavior to table when selected/has new Value (must be immediate)
          final Property.ValueChangeListener vcl = new Property.ValueChangeListener() {
-             @Override
+			private static final long serialVersionUID = -3156210329504164970L;
+
+			@SuppressWarnings("unchecked")
+			@Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                  Table source = ((Table) valueChangeEvent.getProperty());
                  BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
@@ -313,6 +336,9 @@ import java.util.*;
                  for (MethodView selectedItem : (Collection <MethodView>) source.getValue() ) {
                      selectedItem.setActive(true);
                  }
+                 
+                 //update the no of selected items
+                 updateSelectedNoOfEntries(selectedEntries, table);
 
                  // do table repaint
                  source.requestRepaint();
@@ -324,7 +350,10 @@ import java.util.*;
 
          // Add Drag+Drop behavior
          table.setDropHandler(new DropHandler() {
-             @Override
+			private static final long serialVersionUID = -8853235163238131008L;
+
+			@SuppressWarnings("unchecked")
+			@Override
              public void drop(DragAndDropEvent dragAndDropEvent) {
                  DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
@@ -351,6 +380,9 @@ import java.util.*;
 
 
                  ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
+                 
+                 //update no of items
+                 updateNoOfEntries(totalEntries, table);
              }
 
              @Override
@@ -362,7 +394,8 @@ import java.util.*;
          return table;
      }
 
-     private void moveSelectedItems(Table source, Table target) {
+     @SuppressWarnings("unchecked")
+	private void moveSelectedItems(Table source, Table target) {
          LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
@@ -377,11 +410,21 @@ import java.util.*;
              if (source.getData().toString().equals("available")){
             	 targetDataContainer.addItemAt(0, itemId);
             	 if (counter < 100) target.unselect(itemId);
+            	 
+            	 target.setValue(null); //reset value
+            	 
+                 //refresh the fav location table
+                 updateNoOfEntries(favTotalEntriesLabel, target);
+                 updateSelectedNoOfEntries(favSelectedEntriesLabel, target);
              }else{
             	 sourceDataContainer.removeItem(itemId);
+            	 source.setValue(null); //reset value
+            	 
+                 //refresh the fav location table
+                 updateNoOfEntries(favTotalEntriesLabel, source);
+                 updateSelectedNoOfEntries(favSelectedEntriesLabel, source);
              }
              counter++;
-          
          }
          
          if (counter >= 100){
@@ -396,7 +439,6 @@ import java.util.*;
          
          source.refreshRowCache();
          target.refreshRowCache();
-         
      }
 
     /**
@@ -438,9 +480,12 @@ import java.util.*;
          resultCountLbl.setValue("Result: " + getAvailableTableContainer().size());
 
          availableTable.setContainerDataSource(getAvailableTableContainer());
+         updateNoOfEntries(availTotalEntriesLabel, availableTable);
+         
          favoritesTable.setContainerDataSource(favoritesTableContainer);
-
-             /* SETUP TABLE FIELDS */
+         updateNoOfEntries(favTotalEntriesLabel, favoritesTable);
+         
+         /* SETUP TABLE FIELDS */
          this.setupTableFields(availableTable);
          this.setupTableFields(favoritesTable);
          
@@ -480,7 +525,7 @@ import java.util.*;
          root.setSpacing(false);
          root.setMargin(new Layout.MarginInfo(false,true,true,true));
 
-         final Label availableMethodsTitle = new Label("Available Methods");
+         final Label availableMethodsTitle = new Label(messageSource.getMessage(Message.AVAILABLE_METHODS));
          availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
          availableTable.setWidth("100%");
@@ -511,14 +556,26 @@ import java.util.*;
          root.addComponent(buildPageTitle());
          root.addComponent(availableMethodsTitle);
          root.addComponent(buildFilterForm());
+         root.addComponent(buildLocationTableLabels(availTotalEntriesLabel, availSelectedEntriesLabel));
          root.addComponent(availableTable);
          root.addComponent(availableTableBar);
          root.addComponent(buildFavoriteTableTitle());
+         root.addComponent(buildLocationTableLabels(favTotalEntriesLabel, favSelectedEntriesLabel));
          root.addComponent(favoritesTable);
          root.addComponent(favoritesTableBar);
 
          this.setCompositionRoot(root);
      }
+     
+     private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.setSpacing(true);
+		layout.setWidth("300px");
+		
+		layout.addComponent(totalEntries);
+		layout.addComponent(selectedEntries);
+		return layout;
+	}
 
      private Component buildFavoriteTableTitle() {
          final HorizontalLayout root = new HorizontalLayout();
@@ -672,17 +729,21 @@ import java.util.*;
          }
      }
 
-     private void initializeActions() {
+    private void initializeActions() {
 
          editMethodListener = new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = -6938448455072630697L;
+
+			@Override
              public void buttonClick(Button.ClickEvent event) {
                  event.getComponent().getWindow().addWindow(new EditBreedingMethodsWindow(ProgramMethodsView.this.presenter,(MethodView)event.getButton().getData()));
              }
          };
 
          addNewMethodsBtn.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = 6467414813762353127L;
+
+			@Override
              public void buttonClick(Button.ClickEvent event) {
                  //ProgramMethodsView.this.presenter.doAddMethodAction();
                  event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
@@ -690,12 +751,16 @@ import java.util.*;
          });
 
          Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
-             @Override
+			private static final long serialVersionUID = 8914267618640094463L;
+
+			@Override
              public void valueChange(Property.ValueChangeEvent event) {
                  getAvailableTableContainer().removeAllItems();
                  getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
 
                  resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
+                 updateNoOfEntries(availTotalEntriesLabel, availableTable);
+                 updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
              }
          };
 
@@ -704,7 +769,9 @@ import java.util.*;
          typeFilter.addListener(filterAction);
 
          availableSelectAll.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = -2842000142630845841L;
+
+			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
 
                  if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
@@ -717,7 +784,9 @@ import java.util.*;
          });
 
          favoriteSelectAll.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = 2545400532783269974L;
+
+			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
                      favoritesTable.setValue(favoritesTable.getItemIds());
@@ -728,7 +797,9 @@ import java.util.*;
          });
 
          addToFavoriteBtn.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = 8741702112016745513L;
+
+			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  moveSelectedItems(availableTable,favoritesTable);
                  availableSelectAll.setValue(false);
@@ -736,7 +807,9 @@ import java.util.*;
          });
 
          removeToFavoriteBtn.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = -7252226977128582313L;
+
+			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
                  moveSelectedItems(favoritesTable,availableTable);
                  favoriteSelectAll.setValue(false);
@@ -744,7 +817,9 @@ import java.util.*;
          });
 
          saveBtn.addListener(new Button.ClickListener() {
-             @Override
+			private static final long serialVersionUID = 1484296798437173855L;
+
+			@Override
              public void buttonClick(Button.ClickEvent event) {
                  if (ProgramMethodsView.this.presenter.saveFavoriteBreedingMethod(favoritesTableContainer.getItemIds())) {
                      MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
@@ -756,6 +831,7 @@ import java.util.*;
          
          
          availableTable.addActionHandler(new Handler(){
+			private static final long serialVersionUID = 4185416256388693137L;
 
 			@Override
 			public Action[] getActions(Object target, Object sender) {
@@ -775,8 +851,9 @@ import java.util.*;
          });
          
          favoritesTable.addActionHandler(new Handler(){
+			private static final long serialVersionUID = 6635300830598766541L;
 
- 			@Override
+			@Override
  			public Action[] getActions(Object target, Object sender) {
  				// TODO Auto-generated method stub
  				Action[] actions = new Action[] { copyBreedingMethodAction };
@@ -794,7 +871,25 @@ import java.util.*;
           });
      }
 
-
+	private void updateNoOfEntries(Label totalEntries, Table table){
+		 int count = 0;
+		 count = table.getItemIds().size();
+		 
+		 totalEntries.setValue(messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " 
+	    		 + "  <b>" + count + "</b>");
+	}
+	 
+	private void updateSelectedNoOfEntries(Label selectedEntries, Table table){
+		 int count = 0;
+		 
+		 Collection<?> selectedItems = (Collection<?>)table.getValue();
+		 count = selectedItems.size();
+		 
+		 
+		 selectedEntries.setValue("<i>" + messageSource.getMessage(Message.SELECTED) + ": " 
+	    		 + "  <b>" + count + "</b></i>");
+	}
+     
     protected void refreshTable() {
         // do table repaint
         availableTable.requestRepaint();
