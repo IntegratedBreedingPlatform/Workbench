@@ -28,8 +28,8 @@ import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.util.DatasetUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
@@ -602,13 +602,29 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
     public void populateFactorsVariatesByDataSetId(Study study, Table factors, Table variates) {
 
         try {
-            DataSet ds = studyDataManager.getDataSetsByType(study.getId(), DataSetType.MEANS_DATA).get(0);
-            if (ds==null) return;
+        	DataSet ds = DatasetUtil.getMeansDataSet(studyDataManager, study.getId());
+            DataSet trialDs = DatasetUtil.getTrialDataSet(studyDataManager,study.getId());
+        	
+            if (ds==null || trialDs==null) return;
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();
             
-            for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
+            for (VariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()){
+            	
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+            			&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()){
+            		selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
+            	}
+            	
+            	// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
+            	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
+	            	selectSpecifyEnvironment.addItem(factor.getLocalName());
+            	}
+            }
+			
+			for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
             	
             	FactorModel fm = new FactorModel();
             	fm.setId(factor.getRank());
@@ -622,20 +638,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
             	fm.setDataType(factor.getStandardVariable().getDataType().getName());
             	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-            			&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()){
-            		selectSpecifyEnvironmentGroups.addItem(fm.getName());
-            	}
-            	
             	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
             		factorList.add(fm);
             		selectSpecifyGenotypes.addItem(fm.getName());
-            	}
-            	
-           		// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-            	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
-	            	selectSpecifyEnvironment.addItem(factor.getLocalName());
             	}
             }
             
@@ -675,7 +680,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         }
     }
     
-    private void updateFactorsTable(List<FactorModel> factorList, Table factors){
+    
+
+	private void updateFactorsTable(List<FactorModel> factorList, Table factors){
 	   Object[] oldColumns = factors.getVisibleColumns();
        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
        

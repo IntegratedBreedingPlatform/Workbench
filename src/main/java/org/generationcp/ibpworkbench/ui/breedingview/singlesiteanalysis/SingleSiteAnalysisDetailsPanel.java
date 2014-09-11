@@ -125,6 +125,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private BreedingViewInput breedingViewInput;
     private Tool tool;
     private List<VariableType> factorsInDataset;
+    private List<VariableType> trialVariablesInDataset;
     
     private Project project;
 
@@ -141,12 +142,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     private Property.ValueChangeListener envCheckBoxListener;
     private Property.ValueChangeListener footerCheckBoxListener;
 
-    public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset
-            ,Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory, SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
+    public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
+            List<VariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory, SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
         this.tool = tool;
         this.setBreedingViewInput(breedingViewInput);
         this.factorsInDataset = factorsInDataset;
+        this.trialVariablesInDataset = trialVariablesInDataset;
         this.project = project;
         this.studyDataManager = studyDataManager;
         this.managerFactory = managerFactory;
@@ -574,9 +576,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     
     private void populateChoicesForEnvironmentFactor(){
     	
-    	if (this.factorsInDataset == null) return;
+    	if (this.trialVariablesInDataset == null) return;
     	
-    	for (VariableType factor : factorsInDataset){
+    	for (VariableType factor : trialVariablesInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
     			 this.selEnvFactor.addItem(factor.getLocalName());
     			 if (PhenotypicType.TRIAL_ENVIRONMENT.getLabelList().contains(factor.getLocalName())){
@@ -597,8 +599,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
     }
     
-    public VariableType getFactorByLocalName(String name){
-    	for (VariableType factor : factorsInDataset){
+    public VariableType getVariableByLocalName(List<VariableType> variables, String name){
+    	for (VariableType factor : variables){
     		if (factor.getLocalName().equals(name)) {
     			return factor;
     		}
@@ -619,7 +621,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
 		
-        VariableType factor = getFactorByLocalName(envFactorName);
+        VariableType factor = getVariableByLocalName(trialVariablesInDataset,envFactorName);
         
         if (factor != null){
         	

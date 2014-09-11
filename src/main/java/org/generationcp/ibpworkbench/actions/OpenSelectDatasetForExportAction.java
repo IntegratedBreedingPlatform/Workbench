@@ -22,6 +22,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.ibpworkbench.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -152,8 +153,13 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             IContentWindow w = (IContentWindow) event.getComponent().getWindow();
             
 
-            w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset
-                    , project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory(), selectDatasetForBreedingViewPanel));
+            List<VariableType> trialVariablesInDataset = null;
+            DataSet trialDataset = DatasetUtil.getTrialDataSet(selectDatasetForBreedingViewPanel.getStudyDataManager(), studyId);
+            if(trialDataset!=null && trialDataset.getVariableTypes()!=null) {
+            	trialVariablesInDataset = trialDataset.getVariableTypes().getVariableTypes();
+            }
+            w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset,
+                    trialVariablesInDataset, project, selectDatasetForBreedingViewPanel.getStudyDataManager(), selectDatasetForBreedingViewPanel.getManagerFactory(), selectDatasetForBreedingViewPanel));
             
             
 
