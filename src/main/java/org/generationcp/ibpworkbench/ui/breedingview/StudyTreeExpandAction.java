@@ -1,14 +1,11 @@
-package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
+package org.generationcp.ibpworkbench.ui.breedingview;
 
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.MetaAnalysisPanel;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

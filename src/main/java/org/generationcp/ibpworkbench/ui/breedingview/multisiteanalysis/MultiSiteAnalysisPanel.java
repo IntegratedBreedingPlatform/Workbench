@@ -23,6 +23,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;

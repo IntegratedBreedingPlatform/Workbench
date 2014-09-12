@@ -29,6 +29,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -247,7 +248,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			public void buttonClick(ClickEvent event) {
 					
 				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
-					SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+					SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if(event.getComponent()==null){
 					LOG.error("event component is null");
@@ -703,6 +704,5 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	public void setCurrentDatasetName(String currentDatasetName) {
 		this.currentDatasetName = currentDatasetName;
 	}
-
 
 }// end of SingleSiteAnalysisPanel
