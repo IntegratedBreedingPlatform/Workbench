@@ -49,24 +49,26 @@ public class SchemaVersionUtil {
 			if(minimumTokens.hasMoreTokens()) {
 				minimumToken = minimumTokens.nextToken();
 				try {
-					if(Integer.parseInt(currentToken) < Integer.parseInt(minimumToken)) {
+					if(Integer.parseInt(currentToken) == Integer.parseInt(minimumToken)) {
+						continue;
+					} else if(Integer.parseInt(currentToken) < Integer.parseInt(minimumToken)) {
 						return false;
+					} else if(Integer.parseInt(currentToken) > Integer.parseInt(minimumToken)) {
+						return true;
 					}
 				} catch(NumberFormatException e) {
-					LOG.error(e.getMessage(),e);
-					return false;
+					if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())==0) {
+						continue;
+					} else if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())<0) {
+						return false;
+					} else if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())>0) {
+						return true;
+					}
 				}
 			}
 		}
 		if(minimumTokens.hasMoreTokens()) {
-			try {
-				if(Integer.parseInt(currentToken) == Integer.parseInt(minimumToken)) {
-					return false;
-				}
-			} catch(NumberFormatException e) {
-				LOG.error(e.getMessage(),e);
-				return false;
-			}
+			return false;
 		}
 		return true;
 	}
@@ -103,4 +105,26 @@ public class SchemaVersionUtil {
         }
         return minimumCropVersion;        
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(checkIfVersionIsSupported("3.0.0","2.1.3"));
+		System.out.println(checkIfVersionIsSupported("3.0.0.release","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.0.0.%*^&^","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.0.0.RELEASE","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.0.1.RELEASE","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.0.0.RELEASE","3.0.1.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.1","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("3.0.1","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("2.1.1","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("2.1","3.0.0.RELEASE"));
+		System.out.println(checkIfVersionIsSupported("2.0.1","3.0.0"));
+		System.out.println(checkIfVersionIsSupported("2.0.1.5","3.0.0"));
+		System.out.println(checkIfVersionIsSupported("2","3.0.0.5"));
+		System.out.println(checkIfVersionIsSupported("3.0.1","3.0.0"));
+		System.out.println(checkIfVersionIsSupported("3.0.0","3.0.1"));
+		System.out.println(checkIfVersionIsSupported("3.0.0","3.0.0.1"));
+		System.out.println(checkIfVersionIsSupported("3.0.0.1","3.0.0"));
+	}
+	
+	
 }
