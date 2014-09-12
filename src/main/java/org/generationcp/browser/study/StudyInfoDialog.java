@@ -2,6 +2,7 @@ package org.generationcp.browser.study;
 
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.browser.study.StudyAccordionMenu;
 import org.generationcp.browser.study.StudyDetailComponent;
@@ -30,7 +31,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
 @Configurable
-public class StudyInfoDialog extends Window implements InitializingBean, InternationalizableComponent {
+public class StudyInfoDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
     private static final long serialVersionUID = -7651767452229107837L;
     
@@ -124,6 +125,7 @@ public class StudyInfoDialog extends Window implements InitializingBean, Interna
 			@Override
 			public void buttonClick(ClickEvent event) {
 				// TODO Auto-generated method stub
+                parentWindow.focus();
 				parentWindow.removeWindow(StudyInfoDialog.this);
 				
 			}

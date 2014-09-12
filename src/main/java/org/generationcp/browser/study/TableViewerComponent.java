@@ -14,6 +14,7 @@ package org.generationcp.browser.study;
 import java.io.File;
 
 
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.browser.study.listeners.StudyButtonClickListener;
 import org.generationcp.browser.study.util.DatasetExporterException;
@@ -39,7 +40,7 @@ import com.vaadin.ui.Window;
  *
  */
 @Configurable
-public class TableViewerComponent extends Window implements InitializingBean, InternationalizableComponent {
+public class TableViewerComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 	
 	private static final long serialVersionUID = 477658402146083181L;
 	public static final String TABLE_VIEWER_WINDOW_NAME = "table-viewer";

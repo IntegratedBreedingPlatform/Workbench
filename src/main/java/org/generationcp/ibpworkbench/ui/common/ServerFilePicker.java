@@ -8,6 +8,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.customfield.CustomField;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	}
 
 	private void buildFilePicker() {
-		pickerWindow = new Window("Select an executable file");
+		pickerWindow = new BaseSubWindow("Select an executable file");
         pickerWindow.addStyleName(Reindeer.WINDOW_LIGHT);
 		pickerWindow.center();
 		pickerWindow.setModal(true);

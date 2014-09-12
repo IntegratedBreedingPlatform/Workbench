@@ -12,6 +12,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.common.InputPopup;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -26,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -34,11 +34,9 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -118,7 +116,7 @@ public class NurseryListPreview extends VerticalLayout {
         SHARED_STUDIES = messageSource.getMessage(Message.SHARED_STUDIES);
 
         presenter = new NurseryListPreviewPresenter(this, project);
-        //presenter.generateTreeNodes();
+
         presenter.generateInitialTreeNodes();
 
         CssLayout treeContainer = new CssLayout();
@@ -134,7 +132,6 @@ public class NurseryListPreview extends VerticalLayout {
     }
 
     protected void initializeComponents() {
-        //this.setHeight("400px");
     }
 
     public void generateTopListOfTree(List<FolderReference> centralFolders, List<FolderReference> localFolders) {
@@ -187,55 +184,6 @@ public class NurseryListPreview extends VerticalLayout {
             treeView.setSelectable(true);
         }
     }
-
-
-//	public void generateTree(List<TreeNode> treeNodes){
-//        
-//        treeView = new Tree();
-//        treeView.setDragMode(TreeDragMode.NODE);
-//
-//        doCreateTree(treeNodes, treeView, null, folderResource, leafResource);
-//        
-//        treeView.addListener(new DashboardMainTreeListener(this, project));
-//        treeView.setImmediate(true);
-//        
-//    }
-
-//    private void doCreateTree(List<TreeNode> treeNodes, Tree treeView, Object parent, ThemeResource folder, ThemeResource leaf){
-//        for(TreeNode treeNode : treeNodes){
-//        	
-//            treeView.addItem(treeNode.getId());
-//            treeView.setItemCaption(treeNode.getId(), treeNode.getName());
-//
-//            // Set resource icon
-//            ThemeResource resource = folder;
-//            if(treeNode.isLeaf()){
-//                resource = leaf;
-//                treeView.setChildrenAllowed(treeNode.getId(), false);
-//                //we add listener if its the leaf
-//                Item item = treeView.getItem(treeNode.getId());
-//                
-//                if (treeNode.getName().equals(messageSource.getMessage(Message.MY_STUDIES)) 
-//                		|| treeNode.getName().equals(messageSource.getMessage(Message.SHARED_STUDIES))){
-//                	resource = folder;
-//                }
-//            }
-//            treeView.setItemIcon(treeNode.getId(), resource);
-//
-//            // Disable arrow of folders with no children
-//            if (treeNode.getTreeNodeList().size() == 0){
-//                treeView.setChildrenAllowed(treeNode.getId(), false);
-//            }
-//            
-//            // Set parent
-//            if(parent != null){
-//                treeView.setParent(treeNode.getId(), parent);
-//            }
-//            
-//            // Create children nodes
-//            doCreateTree(treeNode.getTreeNodeList(), treeView, treeNode.getId(), folder, leaf);
-//        }
-//    }
 
     public void expandTree(Object itemId) {
 
@@ -410,79 +358,30 @@ public class NurseryListPreview extends VerticalLayout {
                     return;
                 }
 
-                final Window w = new Window(messageSource.getMessage(Message.RENAME_ITEM));
-                w.setWidth("300px");
-                w.setHeight("150px");
-                w.setModal(true);
-                w.setResizable(false);
-                w.setStyleName(Reindeer.WINDOW_LIGHT);
+                final InputPopup w = new InputPopup(messageSource.getMessage(Message.RENAME_ITEM),messageSource.getMessage(Message.ITEM_NAME),treeView.getItemCaption(treeView.getValue()));
 
-                VerticalLayout container = new VerticalLayout();
-                container.setSpacing(true);
-                container.setMargin(true);
-
-                HorizontalLayout formContainer = new HorizontalLayout();
-                formContainer.setSpacing(true);
-
-                Label l = new Label(messageSource.getMessage(Message.ITEM_NAME));
-                final TextField name = new TextField();
-                name.setValue(treeView.getItemCaption(treeView.getValue()));
-                name.setCursorPosition(name.getValue() == null ? 0 : name.getValue().toString().length());
-
-                formContainer.addComponent(l);
-                formContainer.addComponent(name);
-
-                HorizontalLayout btnContainer = new HorizontalLayout();
-                btnContainer.setSpacing(true);
-                btnContainer.setWidth("100%");
-
-                Label spacer = new Label("");
-                btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer, 1.0F);
-
-                Button ok = new Button(messageSource.getMessage(Message.OK));
-                ok.setClickShortcut(KeyCode.ENTER);
-                ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-                ok.addListener(new Button.ClickListener() {
+                w.setOkListener(new Button.ClickListener() {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
-                            presenter.renameNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
+                            presenter.renameNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
                             return;
                         }
 
                         // update UI
-                        treeView.setItemCaption(treeView.getValue(), name.getValue().toString());
+                        treeView.setItemCaption(treeView.getValue(), w.getFieldVal());
 
                         // close popup
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
-                    }
-                });
-
-                Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
-                cancel.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
                         IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
                     }
                 });
 
-                btnContainer.addComponent(ok);
-                btnContainer.addComponent(cancel);
-
-                container.addComponent(formContainer);
-                container.addComponent(btnContainer);
-
-                w.setContent(container);
-
                 // show window
-                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
+                event.getComponent().getParent().getWindow().addWindow(w);
 
             }
         });
@@ -492,39 +391,9 @@ public class NurseryListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final Window w = new Window(messageSource.getMessage(Message.ADD_FOLDER));
-                w.setWidth("300px");
-                w.setHeight("150px");
-                w.setModal(true);
-                w.setResizable(false);
-                w.setStyleName(Reindeer.WINDOW_LIGHT);
+                final InputPopup w = new InputPopup(messageSource.getMessage(Message.ADD_FOLDER),messageSource.getMessage(Message.FOLDER_NAME),"");
 
-                VerticalLayout container = new VerticalLayout();
-                container.setSpacing(true);
-                container.setMargin(true);
-
-                HorizontalLayout formContainer = new HorizontalLayout();
-                formContainer.setSpacing(true);
-
-                Label l = new Label(messageSource.getMessage(Message.FOLDER_NAME));
-                final TextField name = new TextField();
-                name.focus();
-
-                formContainer.addComponent(l);
-                formContainer.addComponent(name);
-
-                HorizontalLayout btnContainer = new HorizontalLayout();
-                btnContainer.setSpacing(true);
-                btnContainer.setWidth("100%");
-
-                Label spacer = new Label("");
-                btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer, 1.0F);
-
-                Button ok = new Button("Ok");
-                ok.setClickShortcut(KeyCode.ENTER);
-                ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-                ok.addListener(new Button.ClickListener() {
+                w.setOkListener(new Button.ClickListener() {
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -532,18 +401,18 @@ public class NurseryListPreview extends VerticalLayout {
                         Integer newItem = null;
                         try {
                             if (treeView.getValue() instanceof String)//top folder
-                                newItem = presenter.addNurseryListFolder(name.getValue().toString(), ROOT_FOLDER);
+                                newItem = presenter.addNurseryListFolder(w.getFieldVal(), ROOT_FOLDER);
                             else
-                                newItem = presenter.addNurseryListFolder(name.getValue().toString(), (Integer) treeView.getValue());
+                                newItem = presenter.addNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+                            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
 
                         //update UI
                         if (newItem != null) {
                             treeView.addItem(newItem);
-                            treeView.setItemCaption(newItem, name.getValue().toString());
+                            treeView.setItemCaption(newItem, w.getFieldVal());
                             treeView.setChildrenAllowed(newItem, true);
                             treeView.setItemIcon(newItem, folderResource);
 
@@ -571,26 +440,8 @@ public class NurseryListPreview extends VerticalLayout {
                     }
                 });
 
-                Button cancel = new Button("Cancel");
-                cancel.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
-                    }
-                });
-
-                btnContainer.addComponent(ok);
-                btnContainer.addComponent(cancel);
-
-                container.addComponent(formContainer);
-                container.addComponent(btnContainer);
-
-                w.setContent(container);
-
                 // show window
-                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
+                event.getComponent().getWindow().addWindow(w);
             }
         });
 

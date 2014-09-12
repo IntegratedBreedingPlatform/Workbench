@@ -7,6 +7,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.DatasetReference;
@@ -37,7 +38,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class SelectDatasetDialog extends Window implements InitializingBean, InternationalizableComponent {
+public class SelectDatasetDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = -7651767452229107837L;
 

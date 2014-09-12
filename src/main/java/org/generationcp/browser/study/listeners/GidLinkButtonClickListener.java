@@ -13,6 +13,7 @@
 package org.generationcp.browser.study.listeners;
 
 import org.generationcp.browser.study.TableViewerComponent;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -77,7 +78,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
             germplasmBrowserLink = new ExternalResource(tool.getPath().replace("germplasm/", "germplasm-") + gid);
         }
         
-        Window germplasmWindow = new Window("Germplasm Information - " + gid);
+        Window germplasmWindow = new BaseSubWindow("Germplasm Information - " + gid);
         
         VerticalLayout layoutForGermplasm = new VerticalLayout();
         layoutForGermplasm.setMargin(false);

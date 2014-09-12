@@ -12,11 +12,13 @@
 package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -28,7 +30,7 @@ import java.util.List;
  *  @author Jeffrey Morales, Joyce Avestro
  *  
  */
-public class ConfirmLocationsWindow extends Window{
+public class ConfirmLocationsWindow extends BaseSubWindow {
 
     private static final long serialVersionUID = 3983198771242295731L;
 
@@ -90,10 +92,9 @@ public class ConfirmLocationsWindow extends Window{
     }
 
     protected void initializeComponents() {
-
         layout = new VerticalLayout();
         setContent(layout);
-
+        this.setParentWindow(window);
         
         confirmMessage = new Label();
         if (existingLocations.size() == 1){
@@ -166,7 +167,8 @@ public class ConfirmLocationsWindow extends Window{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				window.getParent().removeWindow(ConfirmLocationsWindow.this);
+		        window.focus();
+                window.getParent().removeWindow(ConfirmLocationsWindow.this);
 			}
 		});
         

@@ -13,6 +13,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -33,7 +34,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Configurable
-public class UserToolsManagerWindow extends Window implements InitializingBean {
+public class UserToolsManagerWindow extends BaseSubWindow implements InitializingBean {
 
 	private Form userToolsForm;
 	private Button addBtn;

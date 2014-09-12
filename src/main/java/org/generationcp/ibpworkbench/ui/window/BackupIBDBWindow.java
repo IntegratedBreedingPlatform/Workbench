@@ -8,6 +8,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
@@ -24,7 +25,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.util.List;
 
 @Configurable
-public class BackupIBDBWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class BackupIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     

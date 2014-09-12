@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.window;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.workflow.*;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class WorkflowPreviewWindow extends Window implements InitializingBean {
+public class WorkflowPreviewWindow extends BaseSubWindow implements InitializingBean {
     
     private static final long serialVersionUID = 753669483110384734L;
     

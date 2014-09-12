@@ -9,6 +9,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.themes.Reindeer;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.StudyTreeExpandAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
@@ -43,7 +44,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
 @Configurable
-public class SelectStudyDialog extends Window implements InitializingBean, InternationalizableComponent {
+public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = -7651767452229107837L;
 

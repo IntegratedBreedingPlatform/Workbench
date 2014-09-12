@@ -11,6 +11,7 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -31,7 +32,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 @Configurable
-public class HelpWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class HelpWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(HelpWindow.class);
 

@@ -10,6 +10,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
@@ -30,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Configurable
-public class RestoreIBDBWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
     
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     

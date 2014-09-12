@@ -14,6 +14,8 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.ui.BaseWindow;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -22,7 +24,7 @@ import org.generationcp.middleware.manager.api.LocationDataManager;
  *  @author Jeffrey Morales, Joyce Avestro
  *  
  */
-public class AddLocationsWindow extends Window{
+public class AddLocationsWindow extends BaseSubWindow {
 
     private static final long serialVersionUID = 3983198771242295731L;
 

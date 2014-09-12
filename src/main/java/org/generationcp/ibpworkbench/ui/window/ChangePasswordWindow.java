@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
 import org.generationcp.middleware.pojos.User;
@@ -26,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class ChangePasswordWindow extends Window implements InitializingBean, InternationalizableComponent {
+public class ChangePasswordWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
     @Autowired
     private SessionData sessionData;
 
@@ -53,6 +54,7 @@ public class ChangePasswordWindow extends Window implements InitializingBean, In
     }
 
     protected void initializeComponents() throws Exception {
+        this.setOverrideFocus(true);
         this.addStyleName(Reindeer.WINDOW_LIGHT);
         this.setCaption("Change Password");
 

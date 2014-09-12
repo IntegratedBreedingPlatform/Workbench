@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.common.InputPopup;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.GermplasmListTreeExpandListener;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -220,7 +221,7 @@ public class GermplasmListPreview extends VerticalLayout {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void buttonClick(Button.ClickEvent event) {
+            public void buttonClick(final Button.ClickEvent event) {
                 if (lastItemId == null) {
                     MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_ITEM_NO_RENAME_SELECT));
                     return;
@@ -236,79 +237,75 @@ public class GermplasmListPreview extends VerticalLayout {
                     return;
                 }
 
-                final Window w = new Window(messageSource.getMessage(Message.RENAME_ITEM));
-                w.setWidth("300px");
-                w.setHeight("150px");
-                w.setModal(true);
-                w.setResizable(false);
-                w.setStyleName(Reindeer.WINDOW_LIGHT);
-
-                VerticalLayout container = new VerticalLayout();
-                container.setSpacing(true);
-                container.setMargin(true);
-
-                HorizontalLayout formContainer = new HorizontalLayout();
-                formContainer.setSpacing(true);
-
-                Label l = new Label(messageSource.getMessage(Message.ITEM_NAME));
-                final TextField name = new TextField();
-                name.setValue(treeView.getItemCaption(lastItemId));
-                name.setCursorPosition(name.getValue() == null ? 0 : name.getValue().toString().length());
-
-                formContainer.addComponent(l);
-                formContainer.addComponent(name);
-
-                HorizontalLayout btnContainer = new HorizontalLayout();
-                btnContainer.setSpacing(true);
-                btnContainer.setWidth("100%");
-
-                Label spacer = new Label("");
-                btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer, 1.0F);
-
-                Button ok = new Button(messageSource.getMessage(Message.OK));
-                ok.setClickShortcut(KeyCode.ENTER);
-                ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-                ok.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
+                final InputPopup w = new InputPopup(messageSource.getMessage(Message.RENAME_ITEM),messageSource.getMessage(Message.ITEM_NAME),treeView.getItemCaption(lastItemId));
+                w.setOkListener(new Button.ClickListener(){
                     @Override
-                    public void buttonClick(Button.ClickEvent event) {
+                    public void buttonClick(Button.ClickEvent event1) {
                         try {
-                            presenter.renameGermplasmListFolder(name.getValue().toString(), (Integer) lastItemId);
+                            presenter.renameGermplasmListFolder(w.getFieldVal(), (Integer) lastItemId);
                         } catch (Error e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
                             return;
                         }
 
                         // update UI
-                        treeView.setItemCaption(lastItemId, name.getValue().toString());
+                        treeView.setItemCaption(lastItemId, w.getFieldVal());
 
                         // close popup
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
+                        event.getComponent().getWindow().removeWindow(w);
                     }
                 });
-
-                Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
-                cancel.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
-                    }
-                });
-
-                btnContainer.addComponent(ok);
-                btnContainer.addComponent(cancel);
-
-                container.addComponent(formContainer);
-                container.addComponent(btnContainer);
-
-                w.setContent(container);
 
                 // show window
-                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
+                event.getComponent().getWindow().addWindow(w);
+
+            }
+        });
+
+        final InputPopup addFolderPopup = new InputPopup(messageSource.getMessage(Message.ADD_FOLDER),messageSource.getMessage(Message.ITEM_NAME),"");
+        addFolderPopup.setOkListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                Integer newItem = null;
+                try {
+
+                    if (treeView.getValue() instanceof String)
+                        newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), null);
+                    else
+                        newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), (Integer) treeView.getValue());
+                } catch (Error e) {
+                    MessageNotifier.showError(clickEvent.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+                    return;
+                }
+
+                //update UI
+                if (newItem != null) {
+                    treeView.addItem(newItem);
+                    treeView.setItemCaption(newItem, addFolderPopup.getFieldVal());
+                    treeView.setChildrenAllowed(newItem, true);
+                    treeView.setItemIcon(newItem, folderResource);
+
+                    GermplasmList parent = presenter.getGermplasmListParent(newItem);
+                    if (parent != null) {
+                        treeView.setParent(newItem, parent.getId());
+                    } else {
+                        treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
+                    }
+
+                    if (parent != null) {
+                        if (!treeView.isExpanded(parent.getId()))
+                            expandTree(parent.getId());
+                    } else
+                        treeView.expandItem(MY_LIST);
+
+                    treeView.select(newItem);
+                    lastItemId = newItem;
+                    treeView.setImmediate(true);
+                    processToolbarButtons(newItem);
+                }
+
+                // close popup
+                IBPWorkbenchApplication.get().getMainWindow().removeWindow(clickEvent.getComponent().getWindow());
 
             }
         });
@@ -318,106 +315,8 @@ public class GermplasmListPreview extends VerticalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final Window w = new Window(messageSource.getMessage(Message.ADD_FOLDER));
-                w.setWidth("300px");
-                w.setHeight("150px");
-                w.setModal(true);
-                w.setResizable(false);
-                w.setStyleName(Reindeer.WINDOW_LIGHT);
-
-                VerticalLayout container = new VerticalLayout();
-                container.setSpacing(true);
-                container.setMargin(true);
-
-                HorizontalLayout formContainer = new HorizontalLayout();
-                formContainer.setSpacing(true);
-
-                Label l = new Label(messageSource.getMessage(Message.FOLDER_NAME));
-                final TextField name = new TextField();
-                name.focus();
-
-                formContainer.addComponent(l);
-                formContainer.addComponent(name);
-
-                HorizontalLayout btnContainer = new HorizontalLayout();
-                btnContainer.setSpacing(true);
-                btnContainer.setWidth("100%");
-
-                Label spacer = new Label("");
-                btnContainer.addComponent(spacer);
-                btnContainer.setExpandRatio(spacer, 1.0F);
-
-                Button ok = new Button(messageSource.getMessage(Message.OK));
-                ok.setClickShortcut(KeyCode.ENTER);
-                ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-                ok.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        Integer newItem = null;
-                        try {
-
-                            if (treeView.getValue() instanceof String)
-                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(), null);
-                            else
-                                newItem = presenter.addGermplasmListFolder(name.getValue().toString(), (Integer) treeView.getValue());
-                        } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
-                            return;
-                        }
-
-                        //update UI
-                        if (newItem != null) {
-                            treeView.addItem(newItem);
-                            treeView.setItemCaption(newItem, name.getValue().toString());
-                            treeView.setChildrenAllowed(newItem, true);
-                            treeView.setItemIcon(newItem, folderResource);
-
-                            GermplasmList parent = presenter.getGermplasmListParent(newItem);
-                            if (parent != null) {
-                                treeView.setParent(newItem, parent.getId());
-                            } else {
-                                treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
-                            }
-
-                            if (parent != null) {
-                                if (!treeView.isExpanded(parent.getId()))
-                                    expandTree(parent.getId());
-                            } else
-                                treeView.expandItem(MY_LIST);
-
-                            treeView.select(newItem);
-                            lastItemId = newItem;
-                            treeView.setImmediate(true);
-                            processToolbarButtons(newItem);
-                        }
-
-                        // close popup
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(event.getComponent().getWindow());
-                    }
-                });
-
-                Button cancel = new Button(messageSource.getMessage(Message.CANCEL));
-                cancel.addListener(new Button.ClickListener() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        IBPWorkbenchApplication.get().getMainWindow().removeWindow(w);
-                    }
-                });
-
-                btnContainer.addComponent(ok);
-                btnContainer.addComponent(cancel);
-
-                container.addComponent(formContainer);
-                container.addComponent(btnContainer);
-
-                w.setContent(container);
-
-                // show window
-                IBPWorkbenchApplication.get().getMainWindow().addWindow(w);
+                addFolderPopup.clearFieldVal();
+                event.getComponent().getWindow().addWindow(addFolderPopup);
             }
         });
 
