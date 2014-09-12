@@ -12,7 +12,6 @@
 package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -95,7 +94,7 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
         layout = new VerticalLayout();
         setContent(layout);
         this.setParentWindow(window);
-        
+
         confirmMessage = new Label();
         if (existingLocations.size() == 1){
         	confirmMessage.setCaption("There is already 1 location of the name you've specified:\n");
