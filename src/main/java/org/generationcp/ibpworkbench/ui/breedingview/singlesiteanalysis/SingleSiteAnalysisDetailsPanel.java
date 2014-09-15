@@ -22,6 +22,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window.Notification;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -793,7 +794,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	String designFactor = null;
 		try {
 			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL, TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
-			if(expDesign!=null && !expDesign.trim().equals("")) {
+			if(expDesign!=null && !expDesign.trim().equals("") && NumberUtils.isNumber(expDesign)) {
 	    		int designType = Integer.parseInt(expDesign);
 	    		if(designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) { 
 	    			designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName(); 
