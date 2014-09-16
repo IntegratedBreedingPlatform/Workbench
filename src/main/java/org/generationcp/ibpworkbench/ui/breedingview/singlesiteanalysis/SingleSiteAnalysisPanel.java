@@ -280,7 +280,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
+		browseLabelLayout.addComponent(new Label("for a study to work with."));
 		browseLabelLayout.setSizeUndefined();
 		
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
