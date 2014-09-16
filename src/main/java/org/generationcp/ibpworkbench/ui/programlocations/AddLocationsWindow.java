@@ -77,7 +77,7 @@ public class AddLocationsWindow extends BaseSubWindow {
 
         layout = new VerticalLayout();
         layout.setWidth("100%");
-        layout.setHeight("350px");
+        layout.setHeight("420px");
 
         final Panel p = new Panel();
         p.setStyleName("form-panel");

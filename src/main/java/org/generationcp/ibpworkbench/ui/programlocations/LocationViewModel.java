@@ -2,7 +2,6 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.dms.DmsProject;
 
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -32,16 +31,12 @@ public class LocationViewModel implements BeanFormState {
     private Integer provinceId;
 
     private String cntryFullName;
-    private String provinceFullName;
     private Boolean isSelected = false;
     private Boolean isEnabled = true;
 
-
-	/*
-	private String latitude;
-	private String longtitude;
-	private String altitude;
-	*/
+	private Double latitude;
+	private Double longitude;
+	private Double altitude;
 
     public LocationViewModel() {}
     public LocationViewModel(Location location) {
@@ -108,43 +103,29 @@ public class LocationViewModel implements BeanFormState {
 		this.cntryFullName = cntryFullName;
 	}
 
-
-	/*
-	public String getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
-
-	
-	public void setLatitude(String latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
-
-
-	public String getLongtitude() {
-		return longtitude;
+	public Double getLongitude() {
+		return longitude;
 	}
 
-
-
-	public void setLongtitude(String longtitude) {
-		this.longtitude = longtitude;
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
-
-
-	public String getAltitude() {
+	public Double getAltitude() {
 		return altitude;
 	}
 
-
-
-	public void setAltitude(String altitude) {
+	public void setAltitude(Double altitude) {
 		this.altitude = altitude;
 	}
-
-	*/
 
 	public static List<LocationViewModel> generateRandomData(int itemCount) {
 		List<LocationViewModel> list = new ArrayList<LocationViewModel>();

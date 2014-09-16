@@ -14,8 +14,10 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
@@ -57,7 +59,12 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
     private ComboBox country;
     private ComboBox province;
 
-    private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
+    private TextField latitude;
+    private TextField longitude;
+    private TextField altitude;
+    
+    @SuppressWarnings("unused")
+	private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
 
     private ProgramLocationsPresenter presenter;
 
@@ -75,26 +82,36 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         }
     }
 
-    private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
+    @SuppressWarnings("serial")
+	private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
         Collections.sort(countryList, new Comparator<Country>() {
             @Override
             public int compare(Country o1, Country o2) {
-
-
                 return o1.getIsoabbr().compareTo(o2.getIsoabbr());
-
-
-                //return o1.getIsofull().compareToIgnoreCase(o2.getIsofull());
             }
         });
 
-        locationName = new TextField();
+        locationName = new TextField(){
+        	@Override
+			public Object getValue() {
+				return super.getValue()!=null?
+						super.getValue().toString().trim():null;
+			}
+        }; 
+        
         locationName.setWidth("250px");
         locationName.setRequired(true);
         locationName.setRequiredError("Please enter a Location Name.");
         locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
 
-        locationAbbreviation = new TextField();
+        locationAbbreviation = new TextField(){
+        	@Override
+			public Object getValue() {
+				return super.getValue()!=null?
+						super.getValue().toString().trim():null;
+			}
+        }; 
+        
         locationAbbreviation.setWidth("70px");
         locationAbbreviation.setRequired(true);
         locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
@@ -137,7 +154,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
                 Object countryIdValue = country.getValue();
                 if (countryIdValue != null) {
                     try {
-                        BeanContainer<String, Location> container = (BeanContainer<String, Location>) province.getContainerDataSource();
+                        @SuppressWarnings("unchecked")
+						BeanContainer<String, Location> container = (BeanContainer<String, Location>) province.getContainerDataSource();
                         container.removeAllItems();
                         container.addAll(presenter.getAllProvincesByCountry((Integer) countryIdValue));
                     } catch (MiddlewareQueryException e) {
@@ -152,7 +170,47 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         province.setContainerDataSource(provinceBeanContainer);
         province.setItemCaptionMode(NativeSelect.ITEM_CAPTION_MODE_PROPERTY);
         province.setItemCaptionPropertyId("lname");
-
+        
+        latitude = new TextField(){
+			@Override
+			public Object getValue() {
+				return super.getValue()!=null?
+						super.getValue().toString().trim():null;
+			}
+        }; 
+        latitude.setWidth("70px");
+        latitude.setRequired(false);
+        latitude.addValidator(new DoubleValidator("Please enter a valid number"));
+        latitude.setNullSettingAllowed(true);
+        latitude.setNullRepresentation("");
+        
+        longitude = new TextField(){
+        	@Override
+			public Object getValue() {
+				return super.getValue()!=null?
+						super.getValue().toString().trim():null;
+			}
+        }; 
+        
+        longitude.setWidth("70px");
+        longitude.setRequired(false);
+        longitude.addValidator(new DoubleValidator("Please enter a valid number"));
+        longitude.setNullSettingAllowed(true);
+        longitude.setNullRepresentation("");
+        
+        altitude = new TextField(){
+        	@Override
+			public Object getValue() {
+				return super.getValue()!=null?
+						super.getValue().toString().trim():null;
+			}
+        }; 
+        altitude.setWidth("70px");
+        altitude.setRequired(false);
+        altitude.addValidator(new DoubleValidator("Please enter a valid number"));
+        altitude.setNullSettingAllowed(true);
+        altitude.setNullRepresentation("");
+        
     }
 
     @Override
@@ -160,7 +218,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         if ("locationName".equals(propertyId)) {
             messageSource.setCaption(locationName, Message.LOC_NAME);
             return locationName;
-
         } else if ("locationAbbreviation".equals(propertyId)) {
             messageSource.setCaption(locationAbbreviation, Message.LOC_ABBR);
             return locationAbbreviation;
@@ -173,6 +230,15 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
         } else if ("provinceId".equals(propertyId)) {
             messageSource.setCaption(province, Message.LOC_PROVINCE);
             return province;
+        } if ("latitude".equals(propertyId)) {
+        	messageSource.setCaption(latitude, Message.LOC_LATITUDE);
+            return latitude;
+        } else if ("longitude".equals(propertyId)) {
+        	messageSource.setCaption(longitude, Message.LOC_LONGITUDE);
+            return longitude;
+        } else if ("altitude".equals(propertyId)) {
+        	messageSource.setCaption(altitude, Message.LOC_ALTITUDE);
+            return altitude;
         }
 
         return super.createField(item, propertyId, uiContext);

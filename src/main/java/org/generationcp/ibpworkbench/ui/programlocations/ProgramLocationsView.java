@@ -70,6 +70,9 @@ import com.vaadin.ui.Window;
          //tableColumns.put("locationId","id");
          tableColumns.put("locationName","Name");
          tableColumns.put("locationAbbreviation","abbr.");
+         tableColumns.put("latitude","Lat");
+         tableColumns.put("longitude","Long");
+         tableColumns.put("altitude","Alt");
          tableColumns.put("ltypeStr","Type");
 
          tableColumnSizes = new HashMap<String, Integer>();
@@ -571,7 +574,7 @@ import com.vaadin.ui.Window;
          //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
          table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[3],0.3F);
+         table.setColumnExpandRatio(tableColumns.keySet().toArray()[6],0.3F);
 
              /*
              for (String col : tableColumnSizes.keySet())

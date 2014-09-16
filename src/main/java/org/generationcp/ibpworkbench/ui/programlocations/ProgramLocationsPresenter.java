@@ -130,7 +130,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
                     locModel.setLocationId(loc.getLocid());
                     locModel.setLocationName(loc.getLname());
                     locModel.setLtype(loc.getLtype());
-
+                    locModel.setLatitude(loc.getLatitude());
+                    locModel.setLongitude(loc.getLongitude());
+                    locModel.setAltitude(loc.getAltitude());
                     //sessionData.getUniqueLocations().add(locModel.getLocationName());
 
                     //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
@@ -226,7 +228,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLtypeStr(location.getLocation_type());
 		viewModel.setCntryid(location.getCntryid());
         viewModel.setLtype(location.getLtype());
-
+        viewModel.setLatitude(location.getLatitude());
+        viewModel.setLongitude(location.getLongitude());
+        viewModel.setAltitude(location.getAltitude());
 		return viewModel;
 	}
 	
@@ -238,7 +242,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLtype(location.getLtype());
         viewModel.setCntryid(location.getCntryid());
         viewModel.setProvinceId(location.getSnl3id());
-
+        viewModel.setLatitude(location.getLatitude());
+        viewModel.setLongitude(location.getLongitude());
+        viewModel.setAltitude(location.getAltitude());
 
 		Country country = locationDataManager.getCountryById(location.getCntryid());
 		UserDefinedField udf = locationDataManager.getUserDefinedFieldByID(location.getLtype());
@@ -348,6 +354,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
         if (location.getCntryid() == null) {
             location.setCntryid(0);
         }
+        
+        location.setLatitude(lvm.getLatitude());
+        location.setLongitude(lvm.getLongitude());
+        location.setAltitude(lvm.getAltitude());
 
         // defaults
         location.setNllp(0);
