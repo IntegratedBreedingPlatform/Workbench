@@ -118,7 +118,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
                 catch (InvalidValueException e) {
                     LOG.error("Invalid value for Crop: " + newItemCaption , e);
 
-                    MessageNotifier.showError(cropTypeComboBox.getWindow(), "Error", ValidationUtil.getMessageFor(e));
+                    MessageNotifier.showRequiredFieldError(cropTypeComboBox.getWindow(), ValidationUtil.getMessageFor(e));
                     cropTypeComboBox.focus();
                     return;
                 }

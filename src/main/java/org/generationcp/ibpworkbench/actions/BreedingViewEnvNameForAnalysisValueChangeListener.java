@@ -1,14 +1,14 @@
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 
 
 public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueChangeListener{
@@ -33,17 +33,7 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
 			TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(source.getSelEnvFactor().getValue().toString(), value);
 			
 			if (trialEnv == null){
-				/**ConfirmDialog.show(source.getParent(), "Environment Factor Validation",  "The selected environment factor and its value is not a valid selection for breeding view.", "Okay", null, new ConfirmDialog.Listener() {
-					
-					@Override
-					public void onClose(ConfirmDialog dialog) {
-						// TODO Auto-generated method stub
-						source.getSelEnvForAnalysis().select(null);
-					}
-				});			
-				**/
-				 MessageNotifier.showError(source.getParent().getWindow(),"", "The selected environment factor and its value is not a valid selection for breeding view.");
-				 //source.getSelEnvForAnalysis().select(null);
+				MessageNotifier.showRequiredFieldError(source.getParent().getWindow(),"The selected environment factor and its value is not a valid selection for breeding view.");
 			}
 		} catch (ConfigException e) {
 			// TODO Auto-generated catch block

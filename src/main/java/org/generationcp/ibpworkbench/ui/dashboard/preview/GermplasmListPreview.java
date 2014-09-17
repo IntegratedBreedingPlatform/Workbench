@@ -244,7 +244,7 @@ public class GermplasmListPreview extends VerticalLayout {
                         try {
                             presenter.renameGermplasmListFolder(w.getFieldVal(), (Integer) lastItemId);
                         } catch (Error e) {
-                            MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
+                            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getMessage());
                             return;
                         }
 

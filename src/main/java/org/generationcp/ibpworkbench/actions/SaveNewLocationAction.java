@@ -11,11 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.util.Date;
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -36,8 +34,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Date;
-import java.util.List;
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 /**
  * 
@@ -104,10 +105,10 @@ public class SaveNewLocationAction implements ClickListener{
     	} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		} catch (Validator.EmptyValueException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
             return;
         } catch (Validator.InvalidValueException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
             return;
         }
     }

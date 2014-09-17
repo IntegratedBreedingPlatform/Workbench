@@ -1,10 +1,5 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
-
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -12,9 +7,19 @@ import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
-import org.generationcp.middleware.pojos.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class AddBreedingMethodsWindow extends BaseSubWindow {
@@ -115,21 +120,24 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
     protected void initializeActions() {
 
         addBreedingMethodButton.addListener(new Button.ClickListener() {
-            @Override
+			private static final long serialVersionUID = -3013536199242402259L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
                     breedingMethodForm.commit();
                 } catch (Validator.EmptyValueException e) {
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+                    MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
                     return;
                 } catch (Validator.InvalidValueException e) {
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+                    MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
                     return;
                 }
 
-                MethodView bean = ((BeanItem<MethodView>) breedingMethodForm.getItemDataSource()).getBean();
+                @SuppressWarnings("unchecked")
+				MethodView bean = ((BeanItem<MethodView>) breedingMethodForm.getItemDataSource()).getBean();
                 if (StringUtils.isEmpty(bean.getMtype())) {
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
+                    MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), "Please select a Generation Advancement Type");
                     return;
                 } 
 

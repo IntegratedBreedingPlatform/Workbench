@@ -1,15 +1,8 @@
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -29,13 +22,33 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.FormFieldFactory;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class UserToolsManagerWindow extends BaseSubWindow implements InitializingBean {
-
+	private static final long serialVersionUID = -6946635521199054537L;
+	
 	private Form userToolsForm;
 	private Button addBtn;
 	private Button cancelBtn;
@@ -76,7 +89,8 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		
 		// ADD ACTION
 		final ConfirmDialog.Listener onAddAction = new ConfirmDialog.Listener() {
-			
+			private static final long serialVersionUID = 4058077735930043412L;
+
 			@Override
 			public void onClose(ConfirmDialog dialog) {
 				// USER did not continue
@@ -86,11 +100,11 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				try {
 					userToolsForm.commit();
 				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
-							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
+					MessageNotifier.showRequiredFieldError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
 
+				@SuppressWarnings("unchecked")
 				BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
 				Tool userToolFormData = userToolBeanItem.getBean();
 				
@@ -129,7 +143,8 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		
 		// EDIT ACTION
 		final ConfirmDialog.Listener onEditAction = new ConfirmDialog.Listener() {
-			
+			private static final long serialVersionUID = -1215274789464656574L;
+
 			@Override
 			public void onClose(ConfirmDialog dialog) {
 				
@@ -142,6 +157,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				try {
 					Collection<Tool> toolList = userToolsListContainer.getItemIds();
 					
+					@SuppressWarnings("unchecked")
 					BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
 					Tool userToolFormData = userToolBeanItem.getBean();
 					
@@ -183,6 +199,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		// LISTENERS REGISTRATION
 		
 		addBtn.addListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -2546119785522908833L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -192,8 +209,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				try {
 					userToolsForm.commit();
 				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
-							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
+					MessageNotifier.showRequiredFieldError(thisWindow, messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
 				
@@ -209,7 +225,8 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		});
 
 		editBtn.addListener(new Button.ClickListener() {
-			
+			private static final long serialVersionUID = -4324125510112093794L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				userToolsForm.setComponentError(null);
@@ -218,8 +235,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				try {
 					userToolsForm.commit();
 				} catch (InvalidValueException e) {
-					MessageNotifier.showError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FAIL),
-							messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
+					MessageNotifier.showRequiredFieldError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
 					return;
 				}
 				
@@ -234,6 +250,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		});
 		
 		cancelBtn.addListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 639662700599872921L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -242,6 +259,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		});
 
 		userToolsListSelect.addListener(new Property.ValueChangeListener() {
+			private static final long serialVersionUID = 5847065240320462232L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
@@ -383,6 +401,8 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	}
 
 	class UserToolsFormFieldFactory implements FormFieldFactory {
+		private static final long serialVersionUID = 294398306909312914L;
+		
 		private ComboBox toolTypeFld;
 		private TextField nameFld;
 		private TextField titleFld;
@@ -423,6 +443,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			// init validators here
 			//pathFld.addValidator(this.initPathValidator());
 			nameFld.addValidator(new Validator() {
+				private static final long serialVersionUID = -2137448642107085498L;
 
 				@Override
 				public void validate(Object value) throws InvalidValueException {
@@ -446,13 +467,11 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			
 			
 			filePicker.addValidator(new Validator() {
-				
+				private static final long serialVersionUID = -8613371582243919131L;
+
 				@Override
 				public void validate(Object value) throws InvalidValueException {
 					if (!this.isValid(value)) {
-					
-						//MessageNotifier.showError(UserToolsManagerWindow.this,messageSource.getMessage(Message.ERROR),messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
-						
 						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
 					} else {
 						filePicker.setComponentError(null);

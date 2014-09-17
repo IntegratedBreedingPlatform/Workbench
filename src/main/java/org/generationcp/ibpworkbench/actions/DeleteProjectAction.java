@@ -106,7 +106,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                             
 
                         } catch (MiddlewareQueryException e) {
-                            //MessageNotifier.showError(window,messageSource.getMessage(Message.ERROR), e.getLocalizedMessage());
                             e.printStackTrace();
                         }
 

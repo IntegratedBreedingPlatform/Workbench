@@ -74,7 +74,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         try {
             newBreedingMethodForm.commit();
         } catch (Validator.EmptyValueException e) {
-            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getLocalizedMessage());
+            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
             return;
         }
 
@@ -83,7 +83,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
         MethodView breedingMethod = breedingMethodBean.getBean();
 
         if (StringUtils.isEmpty(breedingMethod.getMtype())) {
-            MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), "Please select a Generation Advancement Type");
+            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), "Please select a Generation Advancement Type");
             return;
         }
 

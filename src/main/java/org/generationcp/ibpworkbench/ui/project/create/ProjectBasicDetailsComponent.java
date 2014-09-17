@@ -419,7 +419,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         }
         
         if (!success){
-            MessageNotifier.showError(getWindow(), "Error", errorDescription.toString());
+            MessageNotifier.showRequiredFieldError(getWindow(), errorDescription.toString());
         }
             
         return success;

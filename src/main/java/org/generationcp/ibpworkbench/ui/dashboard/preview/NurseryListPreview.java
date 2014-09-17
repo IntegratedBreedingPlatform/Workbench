@@ -303,12 +303,7 @@ public class NurseryListPreview extends VerticalLayout {
                     MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), messageSource.getMessage(Message.INVALID_NO_SELECTION));
                     return;
                 }
-                /*
-                if (presenter.isFolder((Integer)lastItemId)) {
-                    MessageNotifier.showError(event.getComponent().getWindow(),"Selected Item is a folder","");
-                    return;
-                }*/
-
+                
                 presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
