@@ -14,9 +14,10 @@ package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.ui.ForgotPasswordUsernamePanel;
 
-public class SecurityQuestionWindow extends Window {
+public class SecurityQuestionWindow extends BaseSubWindow {
     
     private static final long serialVersionUID = 3983198771242295731L;
 
@@ -29,6 +30,7 @@ public class SecurityQuestionWindow extends Window {
         setWidth("450px");
         setHeight("180px");
         setResizable(false);
+        this.setOverrideFocus(true);
         
         // center window within the browser
         center();

@@ -73,6 +73,7 @@ public class ForgotPasswordUsernamePanel extends VerticalLayout implements Initi
     protected void initializeComponents() {
         unameField = new TextField();
         unameField.setCaption(messageSource.getMessage(Message.ENTER_USERNAME_LABEL));
+        unameField.focus();
 
         nextBtn = new Button(messageSource.getMessage(Message.NEXT));
         nextBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
