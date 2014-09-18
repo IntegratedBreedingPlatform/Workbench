@@ -9,6 +9,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.ServerFilePicker;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
@@ -96,13 +97,6 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				// USER did not continue
 				if (!dialog.isConfirmed())
 					return;
-				
-				try {
-					userToolsForm.commit();
-				} catch (InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
-					return;
-				}
 
 				@SuppressWarnings("unchecked")
 				BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
@@ -197,22 +191,25 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		};
 		
 		// LISTENERS REGISTRATION
-		
+
 		addBtn.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -2546119785522908833L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				userToolsForm.setComponentError(null);
-				userToolsForm.setValidationVisible(false);
-				
-				try {
-					userToolsForm.commit();
-				} catch (InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(thisWindow, messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
-					return;
-				}
-				
+
+                try {
+                    userToolsForm.commit();
+                } catch (Validator.EmptyValueException e) {
+                    MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+                    return;
+                } catch (InvalidValueException e) {
+                    MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+                    return;
+                }
+
+
 				// TODO FIXME Internationalize the messages
 				ConfirmDialog.show(UserToolsManagerWindow.this.getParent(),
 						messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION),
@@ -230,15 +227,17 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			@Override
 			public void buttonClick(ClickEvent event) {
 				userToolsForm.setComponentError(null);
-				userToolsForm.setValidationVisible(false);
-				
+
 				try {
 					userToolsForm.commit();
-				} catch (InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(thisWindow,messageSource.getMessage(Message.FORM_VALIDATION_FIELDS_INVALID));
-					return;
+				} catch (Validator.EmptyValueException e) {
+                    MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+                    return;
+                } catch (InvalidValueException e) {
+                    MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+                    return;
 				}
-				
+
 				// TODO FIXME Internationalize the messages
 				ConfirmDialog.show(UserToolsManagerWindow.this.getParent(),
 						messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION),
@@ -347,14 +346,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			userToolsListContainer = new BeanItemContainer<Tool>(Tool.class,userTools);
 			userToolsListSelect.setContainerDataSource(userToolsListContainer);
 			userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),Arrays.asList(new String[] {"toolName","title","toolType","version","path","parameter"}));
-			userToolsForm.setWriteThrough(false);
-			/*
-			if (userTools.size() > 0) {
-				Tool item = userTools.iterator().next();
-				userToolsListSelect.setValue(item);
-				userToolsForm.setItemDataSource(new BeanItem<Tool>(item));
-			}*/
-				
+
 			userToolsListSelect.setItemCaptionPropertyId("title");
 			
 			userToolsForm.setVisibleItemProperties(new String[] {"toolName","title","toolType","version","path","parameter"});
@@ -377,14 +369,15 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		userToolsForm.setWidth("380px");
 		userToolsForm.setHeight("250px");
 		userToolsForm.setFormFieldFactory(new UserToolsFormFieldFactory(thisWindow));
-		//userToolsForm.setValidationVisibleOnCommit(false);
-		//userToolsForm.setImmediate(true);
-		//userToolsForm.setCaption(messageSource.getMessage(Message.USER_TOOLS_FORM_CAPTION));
-		
-		addBtn = new Button(messageSource.getMessage(Message.ADD),userToolsForm,"commit");
+        userToolsForm.setComponentError(null);
+        userToolsForm.setWriteThrough(false);
+        userToolsForm.setInvalidCommitted(false);
+        userToolsForm.setValidationVisibleOnCommit(false);
+
+        addBtn = new Button(messageSource.getMessage(Message.ADD));
 		addBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-        editBtn = new Button(messageSource.getMessage(Message.EDIT),userToolsForm,"commit");
+        editBtn = new Button(messageSource.getMessage(Message.EDIT));
 		editBtn.setEnabled(false);
 		editBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
@@ -472,7 +465,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				@Override
 				public void validate(Object value) throws InvalidValueException {
 					if (!this.isValid(value)) {
-						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
+                        throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_INVALID_URL));
 					} else {
 						filePicker.setComponentError(null);
 						
