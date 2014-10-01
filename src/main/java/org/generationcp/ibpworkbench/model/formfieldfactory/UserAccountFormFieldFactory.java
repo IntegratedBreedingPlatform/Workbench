@@ -127,6 +127,16 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         passwordConfirmation.setStyleName("hide-caption");
         securityQuestion.setStyleName("hide-caption");
         securityAnswer.setStyleName("hide-caption");
+        
+        firstName.setDebugId("firstName");
+        lastName.setDebugId("lastName");
+        middleName.setDebugId("middleName");
+        email.setDebugId("email");
+        username.setDebugId("username");
+        password.setDebugId("password");
+        passwordConfirmation.setDebugId("passwordConfirmation");
+        securityQuestion.setDebugId("securityQuestion");
+        securityAnswer.setDebugId("securityAnswer");
     }
 
     @Override
