@@ -350,7 +350,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     public boolean validate(){
         boolean success = true;
         String projectName = (String) projectNameField.getValue();
-        Date startDate = (Date) startDateField.getValue();
         CropType cropType = (CropType) cropTypeCombo.getValue();
         
         StringBuffer errorDescription = new StringBuffer();
@@ -407,10 +406,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
             
             
         }
-        if (startDate == null){
-            errorDescription.append("Please enter a valid start date. ");
+        
+        String dateValidationMsg = validateDate();
+        if(dateValidationMsg.length() > 0){
+        	errorDescription.append(dateValidationMsg);
             success = false;
         }
+        
         if (cropType == null){
             errorDescription.append("No crop type selected. ");
             success = false;
@@ -423,7 +425,19 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         return success;
     }
     
-    public Project validateAndSave() throws InvalidValueException {
+    private String validateDate() {
+    	String errorMessage = "";
+    	try{
+    		startDateField.validate();
+    	} catch (InvalidValueException e) {
+    		errorMessage = e.getMessage();
+    		LOG.debug(e.getMessage());
+    	}
+    	
+    	return errorMessage;
+	}
+
+	public Project validateAndSave() throws InvalidValueException {
         if (!validate()) {
             throw new InvalidValueException("Failed Validation on BasicDetailsForm");
         }
