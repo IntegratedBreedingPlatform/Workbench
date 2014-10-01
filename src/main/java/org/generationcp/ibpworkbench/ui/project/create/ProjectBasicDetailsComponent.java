@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
@@ -44,7 +45,6 @@ import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -68,7 +68,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     private GridLayout gridLayout;
     private TextField projectNameField;
     private TextField otherCropNameField;
-    private DateField startDateField;
+    private BmsDateField startDateField;
     private ComboBox cropTypeCombo;
     
     private Label lblCrop;
@@ -149,13 +149,11 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         otherCropNameField.setStyleName("hide-caption");
         otherCropNameField.setVisible(false);
         
-        startDateField = new DateField();
+        startDateField = new BmsDateField();
         startDateField.setRequired(true);
-        startDateField.setDateFormat("yyyy-MM-dd");
         startDateField.setRequiredError("Please enter a Start Date.");
 		startDateField.setStyleName("project-data-time");
 		startDateField.setStyleName("hide-caption");
-        startDateField.setResolution(DateField.RESOLUTION_DAY);
         startDateField.setWidth("250px");
 
         cropTypeCombo = createCropTypeComboBox();
