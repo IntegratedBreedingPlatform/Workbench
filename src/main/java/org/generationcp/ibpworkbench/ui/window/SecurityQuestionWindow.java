@@ -12,10 +12,10 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.ui.ForgotPasswordUsernamePanel;
+
+import com.vaadin.ui.themes.Reindeer;
 
 public class SecurityQuestionWindow extends BaseSubWindow {
     
