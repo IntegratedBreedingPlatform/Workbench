@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
 
 public class TestSheetUtil {
 
-    public static final String SHEET_FILE_NAME = "RLWOFE98_1.xls";
-    public static final String CSV_FILE_NAME = "RLWOFE98_1.csv";
+    public static final String SHEET_FILE_NAME = "Test.xls";
+    public static final String CSV_FILE_NAME = "Test.csv";
     public static final String OUTPUT_PATH_PROPERTY = "test.output.directory";
     private Workbook workbook;
     private File outputFile;
