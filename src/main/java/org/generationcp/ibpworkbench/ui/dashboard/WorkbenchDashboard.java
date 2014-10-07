@@ -161,6 +161,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         this.setWidth("100%");
 
         final Label dashboardLbl = new Label(messageSource.getMessage(Message.DASHBOARD));
+        dashboardLbl.setDebugId("vaadin-home-lbl");
         dashboardLbl.setStyleName(Bootstrap.Typography.H1.styleName());
 
         this.addComponent(dashboardLbl);

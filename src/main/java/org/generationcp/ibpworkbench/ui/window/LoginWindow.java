@@ -119,11 +119,13 @@ public class LoginWindow extends Window implements InitializingBean {
 
     private void initializeComponents() {
         usernameFld = new TextField();
+        usernameFld.setDebugId("vaadin-username-txt");
         usernameFld.setNullRepresentation("");
         usernameFld.setNullSettingAllowed(false);
 
 
         passwordFld = new PasswordField();
+        passwordFld.setDebugId("vaadin-password-txt");
         passwordFld.setNullRepresentation("");
         passwordFld.setNullSettingAllowed(false);
 
@@ -133,6 +135,7 @@ public class LoginWindow extends Window implements InitializingBean {
         registerUserBtn = new Button("<span style='padding-right:10px; position: relative; top: 2px'>" + messageSource.getMessage(Message.REGISTER_USER_ACCOUNT) + "</span>");
         registerUserBtn.setHtmlContentAllowed(true);
         loginBtn = new Button(messageSource.getMessage(Message.SIGNIN));
+        loginBtn.setDebugId("vaadin-login-btn");
     }
 
     private ComponentContainer layoutLoginForm() {
