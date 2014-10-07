@@ -79,18 +79,18 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		List<Location> locationList = null;
 
         Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
-        locationName = (locationName != null) ? locationName : "";
-		
-		Country country = locationDataManager.getCountryById(countryId);
-        locationList = locationDataManager.getLocationsByNameCountryAndType(locationName,country,locationType);
+        Country country = locationDataManager.getCountryById(countryId);
+        locationList = locationDataManager.getLocationsByNameCountryAndType(
+        		(locationName != null) ? locationName : "",country,locationType);
         
         Collections.sort(locationList, Location.LocationNameComparator);
 
         for (Location location : locationList) {
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
 
-            if (locationVModel != null)
+            if (locationVModel != null) {
                 resultsMap.put(location.getLocid(), locationVModel);
+            }
         }
 
         return resultsMap.values();
@@ -100,17 +100,18 @@ public class ProgramLocationsPresenter implements InitializingBean {
         List<Location> locationList = null;
 
         Map<Integer,LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
-        locationName = (locationName != null) ? locationName : "";
-
+        
         Country country = locationDataManager.getCountryById(countryId);
-        locationList = locationDataManager.getLocationsByNameCountryAndType(locationName,country,locationType);
+        locationList = locationDataManager.getLocationsByNameCountryAndType(
+        		(locationName != null) ? locationName : "",country,locationType);
 
         Collections.sort(locationList, Location.LocationNameComparator);
 
         for (Location location : locationList) {
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
-            if (locationVModel != null)
+            if (locationVModel != null) {
                 resultsMap.put(location.getLocid(), locationVModel);
+            }
         }
 
  
@@ -133,23 +134,19 @@ public class ProgramLocationsPresenter implements InitializingBean {
                     locModel.setLatitude(loc.getLatitude());
                     locModel.setLongitude(loc.getLongitude());
                     locModel.setAltitude(loc.getAltitude());
-                    //sessionData.getUniqueLocations().add(locModel.getLocationName());
-
-                    //Integer nextKey = app.getSessionData().getProjectLocationData().keySet().size() + 1;
-                    //nextKey = nextKey * -1;
-                    //app.getSessionData().getProjectLocationData().put(nextKey, locModel);
                     sessionData.getProjectLocationData().put(locModel.getLocationId(), locModel);
                 }
             }
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(),e);
         }
     }
 	
 	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException  {
-        if (cropType != null)
+        if (cropType != null) {
             return new ArrayList<LocationViewModel>();
+        }
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
 		List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION);
@@ -157,8 +154,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		for (ProgramFavorite favorite : favorites) {
             LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
 
-            if (locationVModel != null)
+            if (locationVModel != null) {
 			    result.add(locationVModel);
+            }
 		}
 
 		return result;
@@ -178,13 +176,13 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 			return convertFrom(locList.get(0));			
 		} catch (IndexOutOfBoundsException e) {
-			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]");
-			
+			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]", e);
 		} catch (NullPointerException e) {
-            if (cropType == null)
+            if (cropType == null) {
                 LOG.error("Location [locationId="+ locationId +"]  not found in "+ sessionData.getLastOpenedProject().getLocalDbName(),e);
-            else
+            } else {
                 LOG.error("Location [locationId="+ locationId +"]  not found in "+ cropType.getCentralDbName(),e);
+            }
 
         }
         return null;
@@ -204,7 +202,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         * add selected location to local db location table if it does not yet exist
         * add location in workbench_project_loc_map in workbench db
         */
-    	ArrayList<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
+    	List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
         for (LocationViewModel l : selectedLocations) {
         	ProgramFavorite favorite = new ProgramFavorite();
         	favorite.setEntityId(l.getLocationId());
@@ -249,8 +247,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		Country country = locationDataManager.getCountryById(location.getCntryid());
 		UserDefinedField udf = locationDataManager.getUserDefinedFieldByID(location.getLtype());
 	
-		if (country != null)
+		if (country != null) {
 			viewModel.setCntryFullName(country.getIsofull());
+		}
 		if (udf!=null) {
             viewModel.setLtypeStr(udf.getFname());
             viewModel.setLtype(udf.getLfldno());
@@ -272,10 +271,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 				
 			}
 		});
-        /*for (Country c : countryList) {
-            selectLocationCountry.addItem(String.valueOf(c.getCntryid()));
-            selectLocationCountry.setItemCaption(String.valueOf(c.getCntryid()), c.getIsoabbr());
-        }*/
 
         return countryList;
     }
@@ -292,15 +287,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
        return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType(
                 "LOCATION", "LTYPE");
-        
-        /*for (UserDefinedField u : userDefineField) {
-            selectLocationType.addItem(String.valueOf(u.getFldno()));
-            selectLocationType.setItemCaption(String.valueOf(u.getFldno()), u.getFname());
-        }*/
     }
 
 	public Project getProject() {
-		// TODO Auto-generated method stub
 		return project;
 	}
 
@@ -309,9 +298,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
     	
     	gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     	
-        if (this.cropType != null)
+        if (this.cropType != null) {
             this.locationDataManager = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
-        else {
+        } else {
             this.locationDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
             this.onAttachInitialize();
         }
