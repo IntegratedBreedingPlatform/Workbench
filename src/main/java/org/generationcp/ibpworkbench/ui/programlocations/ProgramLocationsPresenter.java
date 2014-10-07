@@ -59,10 +59,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProgramLocationsPresenter(Project project, WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider) {
+	public ProgramLocationsPresenter(Project project, WorkbenchDataManager workbenchDataManager, ManagerFactoryProvider managerFactoryProvider, LocationDataManager locationDataManager) {
 		this.project = project;
-
 		this.workbenchDataManager = workbenchDataManager;
+		this.locationDataManager = locationDataManager;
 	}
 	
 	/**
