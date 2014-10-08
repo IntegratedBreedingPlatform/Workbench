@@ -179,7 +179,7 @@ public abstract class CustomField extends CustomComponent implements Field {
                     // Commits the value to datasource.
                     dataSource.setValue(newValue);
 
-                } catch (final Throwable e) {
+                } catch (final Exception e) {
 
                     // Sets the buffering state.
                     currentBufferedSourceException = new Buffered.SourceException(
@@ -235,7 +235,7 @@ public abstract class CustomField extends CustomComponent implements Field {
                     currentBufferedSourceException = null;
                     requestRepaint();
                 }
-            } catch (final Throwable e) {
+            } catch (final Exception e) {
 
                 // Sets the buffering state
                 currentBufferedSourceException = new Buffered.SourceException(
@@ -443,7 +443,7 @@ public abstract class CustomField extends CustomComponent implements Field {
                     // The buffer is now unmodified
                     modified = false;
 
-                } catch (final Throwable e) {
+                } catch (final Exception e) {
 
                     // Sets the buffering state
                     currentBufferedSourceException = new Buffered.SourceException(
@@ -498,6 +498,7 @@ public abstract class CustomField extends CustomComponent implements Field {
         try {
             discard();
         } catch (final Buffered.SourceException ignored) {
+            // Do nothing
         }
 
         // Stops listening the old data source changes
@@ -517,7 +518,7 @@ public abstract class CustomField extends CustomComponent implements Field {
                         .toString() : dataSource.getValue());
             }
             modified = false;
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             currentBufferedSourceException = new Buffered.SourceException(this,
                     e);
             modified = true;
