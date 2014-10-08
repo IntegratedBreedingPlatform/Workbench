@@ -95,7 +95,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 assemble();
             }
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
@@ -179,7 +179,6 @@ public class GermplasmListPreview extends VerticalLayout {
         this.toolbar.addComponent(renameFolderBtn);
         this.toolbar.addComponent(deleteFolderBtn);
 
-        //this.toolbar.setSizeFull();
         this.toolbar.setWidth("100%");
 
         initializeToolbarActions();
@@ -390,10 +389,7 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     protected void initializeComponents() {
-        //treeView = new Tree("");
-        //this.setHeight("400px");
-        //this.setHeight("100%");
-        //this.addComponent(treeView);
+
     }
 
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
@@ -452,7 +448,6 @@ public class GermplasmListPreview extends VerticalLayout {
         treeView.addListener(new GermplasmListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
         treeView.setImmediate(true);
-        //return germplasmListTree;
     }
 
     /**
@@ -515,7 +510,6 @@ public class GermplasmListPreview extends VerticalLayout {
             treeView.setSelectable(true);
 
         }
-        //System.out.println("add node " + itemId);
         LOG.trace("Add node {0}", itemId);
         treeView.select(itemId);
         lastItemId = itemId;
