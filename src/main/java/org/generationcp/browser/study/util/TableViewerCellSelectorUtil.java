@@ -1,13 +1,5 @@
 package org.generationcp.browser.study.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.generationcp.browser.study.pojos.CellCoordinate;
-import org.generationcp.browser.study.pojos.CellCoordinateColorAssignment;
-
 import com.vaadin.addon.colorpicker.ColorPicker;
 import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.event.ItemClickEvent;
@@ -17,8 +9,15 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.generationcp.browser.study.pojos.CellCoordinate;
+import org.generationcp.browser.study.pojos.CellCoordinateColorAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class TableViewerCellSelectorUtil {
 
@@ -120,16 +119,6 @@ public class TableViewerCellSelectorUtil {
 					contextWindowDisplayed = false;
 				}
 				
-				
-				//System.out.println("Clicked");
-				//System.out.println("Row: "+event.getItemId());
-				//System.out.println("Column: "+event.getPropertyId());
-				//System.out.println("Ctrl Pressed: "+event.isCtrlKey());
-				//System.out.println("Shift Pressed: "+event.isShiftKey());
-				//System.out.println("");
-				
-				//table.getItem(event.getItemId()).getItemProperty(event.getPropertyId()).addStyleName("highlighted");
-				
 				if(event.getButton()==ItemClickEvent.BUTTON_RIGHT){
 					if(highlightedCellCoordinates.size()==0){
 						@SuppressWarnings("unused")
@@ -159,7 +148,6 @@ public class TableViewerCellSelectorUtil {
 					contextWindow.setResizable(false);
 					
 					cp = new ColorPicker("Select color for the cells");
-					//cp.setPopupStyle(ColorPicker.PopupStyle.POPUP_SIMPLE);
 					cp.setPosition(event.getClientX(), event.getClientY());
 					
 					
@@ -167,8 +155,6 @@ public class TableViewerCellSelectorUtil {
 					contextWindow.addComponent(cp);
 					
 					if(source instanceof Window){
-						//((Window) source).getApplication().getMainWindow().addWindow(contextWindow);
-						//((Window) source).getApplication().getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME).addWindow(contextWindow);
 						if(!contextWindowDisplayed)
 							((Window) source).getParent().getWindow().addWindow(contextWindow);
 						contextWindowDisplayed = true;
@@ -314,21 +300,17 @@ public class TableViewerCellSelectorUtil {
 							!isHighlighted
 							){
 						hasColorSet = true;
-						//System.out.println("Setting cell style to - "+cellCoordinateColorAssigments.get(i).getCssClassName());
 						return cellCoordinateColorAssigments.get(i).getCssClassName();
 					}
 				}
 				
 				if(hasColorSet == false){
 					if(currentColumn!=null && currentColumn.equals(propertyId) && currentRow!=null && currentRow.equals(itemId.toString())){
-						//System.out.println("Setting cell style to - currentlySelected");
 						return "currentlyselected";
 					} else {
 						if(isHighlighted){
-							//System.out.println("Setting cell style to - highlighted");
 							return "highlighted";
 						} else {
-							//System.out.println("Setting cell style to - [null]");
 							return null;
 						}
 					}
@@ -380,7 +362,6 @@ public class TableViewerCellSelectorUtil {
 		for(int i=0;i<highlightedCellCoordinates.size();i++){
 			Boolean inColorAssigmentsList = false;
 			for(int x=0;x<cellCoordinateColorAssigments.size();x++){
-				//if(cellCoordinateColorAssigments.get(x).getCellCoordinate().equals(highlightedCellCoordinates.get(i))){
 				if(cellCoordinateColorAssigments.get(x).getCellCoordinate().getX().equals(highlightedCellCoordinates.get(i).getX()) &&
 				   cellCoordinateColorAssigments.get(x).getCellCoordinate().getY().equals(highlightedCellCoordinates.get(i).getY()) 
 						){

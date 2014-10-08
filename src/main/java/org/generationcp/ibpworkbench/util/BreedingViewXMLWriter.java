@@ -13,8 +13,8 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.commons.breedingview.xml.BreedingViewProject;
-import org.generationcp.commons.breedingview.xml.*;
+import org.generationcp.commons.breedingview.xml.SSAParameters;
+import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.sea.xml.*;
 import org.generationcp.ibpworkbench.SessionData;
@@ -38,7 +38,6 @@ import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 

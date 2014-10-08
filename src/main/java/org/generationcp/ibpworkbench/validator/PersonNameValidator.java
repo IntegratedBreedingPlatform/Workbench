@@ -86,7 +86,6 @@ public class PersonNameValidator extends AbstractValidator{
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-//            return false;
         }
     }
     

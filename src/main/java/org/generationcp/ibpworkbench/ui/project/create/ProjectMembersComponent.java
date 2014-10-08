@@ -322,7 +322,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         try {
             WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-        	//Role managerRole = workbenchDataManager.getRoleByNameAndWorkflowTemplate(Role.MANAGER_ROLE_NAME, managerTemplate);
 
             // BY DEFAULT, current user has all the roles
             for (Role role : workbenchDataManager.getAllRoles()) {

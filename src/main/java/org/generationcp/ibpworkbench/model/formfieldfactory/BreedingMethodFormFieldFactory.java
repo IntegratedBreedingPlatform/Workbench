@@ -11,15 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import java.util.Map;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -31,6 +28,8 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Map;
 
 
 /**
@@ -57,8 +56,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     
     private Boolean isEditMode;
 
-    // For new item handling and listener of crop type combo box
-    //private MethodTypeComboAction methodTypeComboAction;
+
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -210,7 +208,6 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodSelectType.setItemCaption("DER", "Derivative");
         methodSelectType.addItem("MAN");
         methodSelectType.setItemCaption("MAN", "Maintenance");
-        /*methodSelectType.select("GEN");*/
         methodSelectType.setNullSelectionAllowed(false);
         methodSelectType.setRequired(true);
         methodSelectType.setRequiredError("Please select a Generation Advancement Type");
@@ -291,20 +288,15 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         Field field = super.createField(item, propertyId, uiContext);
 
         if ("mname".equals(propertyId)) {
-       //     messageSource.setCaption(methodName, Message.BREED_METH_NAME);
             return methodName;
 
         } else if ("mdesc".equals(propertyId)) {
-        //    messageSource.setCaption(methodDescription, Message.BREED_METH_DESC);
             return methodDescription;
         } else if ("mcode".equals(propertyId)) {
-        //    messageSource.setCaption(methodCode, Message.BREED_METH_CODE);
             return methodCode;
         } else if ("mtype".equals(propertyId)) {
-        //    messageSource.setCaption(methodSelectType, Message.BREED_METH_TYPE);
             return methodSelectType;
         } else if ("mgrp".equals(propertyId)) {
-        //    messageSource.setCaption(methodSelectGroup, Message.BREED_METH_GRP);
             return methodSelectGroup;
         } else if ("geneq".equals(propertyId)) {
             return methodSelectClass;

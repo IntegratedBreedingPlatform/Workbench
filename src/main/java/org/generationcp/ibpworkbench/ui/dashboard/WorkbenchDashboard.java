@@ -20,12 +20,10 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -289,7 +287,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         final Label programDescLbl = new Label(messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
         programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());
 
-        final Button addProgramBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));//"Add a Program");
+        final Button addProgramBtn = new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> " + messageSource.getMessage(Message.ADD_A_PROGRAM));
         addProgramBtn.setHtmlContentAllowed(true);
         addProgramBtn.addListener(new OpenNewProjectAction());
         addProgramBtn.addStyleName(Bootstrap.Buttons.INFO.styleName());

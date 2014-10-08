@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -42,8 +41,6 @@ public class WorkflowPreviewWindow extends BaseSubWindow implements Initializing
     
     private Integer roleId;
     private Role role;
-    
-    //private VerticalLayout layout;
     
     public WorkflowPreviewWindow(Integer roleId) {
         this.roleId = roleId;

@@ -114,8 +114,7 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
                 Validator validator = validatorIterator.next();
                 try {
                     validator.validate(newItemCaption);
-                }
-                catch (InvalidValueException e) {
+                } catch (InvalidValueException e) {
                     LOG.error("Invalid value for Crop: " + newItemCaption , e);
 
                     MessageNotifier.showRequiredFieldError(cropTypeComboBox.getWindow(), ValidationUtil.getMessageFor(e));
@@ -132,8 +131,6 @@ public class CropTypeComboAction implements ValueChangeListener, NewItemHandler{
 
             // set the combo box value to the newly added crop
             cropTypeComboBox.setValue(cropType);
-
-            //sourceComponent.setCropType(cropType);
 
             if (sourceComponent != null){
                 sourceComponent.refreshVisibleItems();

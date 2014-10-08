@@ -76,8 +76,6 @@ public class LoginPresenter {
         }
         
         if (!valid) {
-            
-            // loginForm.getMessageLabel().setVisible(true);
             MessageNotifier.showError(event.getComponent().getWindow(),
                     messageSource.getMessage(Message.LOGIN_ERROR), 
                     "<br />" + messageSource.getMessage(Message.ERROR_LOGIN_INVALID));
@@ -108,7 +106,6 @@ public class LoginPresenter {
                         new Cookie(CookieUtils.LoginCookieProperties.USERNAME,""),
                         new Cookie(CookieUtils.LoginCookieProperties.PASSWORD,"")
                 );
-            	//CookieUtils.removeCookies(LoginCookieProperties.REMEMBER_OPT,LoginCookieProperties.USERNAME,LoginCookieProperties.PASSWORD);
             }
 
             // save the currently logged user
@@ -133,7 +130,6 @@ public class LoginPresenter {
         WorkbenchMainView newWindow = null;
         try {
             newWindow = new WorkbenchMainView();
-            //application.removeWindow(application.getMainWindow());
 
             event.getComponent().getApplication().getMainWindow().open(new ExternalResource(event.getComponent().getApplication().getURL()));
 

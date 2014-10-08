@@ -102,10 +102,8 @@ public class GxeTable extends Table {
 		List<String> factorsList = new ArrayList<String>(factors.values());
 		List<String> variatesList = new ArrayList<String>(variates.values());
 		
-		//Collections.sort(factorsList);
 		Collections.sort(variatesList);
-		
-		
+
 		columnNames.add(" ");
 		columnNames.addAll(factorsList);
 		columnNames.addAll(variatesList);
@@ -229,7 +227,6 @@ public class GxeTable extends Table {
 					
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					//VariableTypeList trialEnvFactors = meansDataSet.getFactorsByPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 					VariableTypeList trialEnvFactors = meansDataSet.getVariableTypes().getFactors();
 					
 					for(VariableType f : trialEnvFactors.getVariableTypes()){
@@ -393,8 +390,7 @@ public class GxeTable extends Table {
 				Environment environment = new Environment();
 				environment.setName(((Label)location_column.getValue()).getValue().toString());
 				environment.setActive(true);
-				//environment.setId(i+1);
-				environment.setTrialno(((Label) trialno_column.getValue()).getValue().toString()); 
+				environment.setTrialno(((Label) trialno_column.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}

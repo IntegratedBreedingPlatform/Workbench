@@ -12,22 +12,19 @@
 
 package org.generationcp.browser.study;
 
-import org.generationcp.ibpworkbench.Message;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
 
 @Configurable
 public class StudyDetailComponent extends GridLayout implements InitializingBean, InternationalizableComponent {
@@ -117,12 +114,7 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 
     @Override
     public void updateLabels() {
-/*        messageSource.setCaption(lblName, Message.name_label);
-        messageSource.setCaption(lblTitle, Message.title_label);
-        messageSource.setCaption(lblObjective, Message.objective_label);
-        messageSource.setCaption(lblType, Message.type_label);
-        messageSource.setCaption(lblStartDate, Message.start_date_label);
-        messageSource.setCaption(lblEndDate, Message.end_date_label);*/
+        // does nothing
     }
     
     private String setStudyDetailValue(String value){

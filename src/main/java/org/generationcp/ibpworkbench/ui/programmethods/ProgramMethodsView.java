@@ -1,16 +1,15 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -23,30 +22,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
   * Created with IntelliJ IDEA.
@@ -77,7 +56,6 @@ import com.vaadin.ui.Window;
     static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         //tableColumns.put("mid","Id");
          tableColumns.put("gMname","Method Name");
          tableColumns.put("desc","Description");
          tableColumns.put("mgrp","Group");
@@ -293,7 +271,6 @@ import com.vaadin.ui.Window;
                          return newDf.format(df.parse(((MethodView) itemId).getMdate().toString()));
                      } catch (ParseException e) {
                          return "N/A";
-                         //e.printStackTrace();
                      }
                  } else
                      return "N/A";
@@ -504,10 +481,6 @@ import com.vaadin.ui.Window;
          table.setVisibleColumns(tableColumns.keySet().toArray());
          table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
 
-         //Field[] fields = LocationViewModel.class.getDeclaredFields();
-         //table.setColumnWidth("select",20);
-         //table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],1.0F);
-
          for (String col : tableColumnSizes.keySet())
          {
              table.setColumnWidth(col,tableColumnSizes.get(col));
@@ -650,8 +623,6 @@ import com.vaadin.ui.Window;
 
          resultCountLbl = new Label("");
          resultCountLbl.setStyleName("loc-resultcnt");
-         //root.addComponent(resultCountLbl);
-         //root.setExpandRatio(resultCountLbl,1.0f);
 
          return container;
      }
@@ -745,7 +716,6 @@ import com.vaadin.ui.Window;
 
 			@Override
              public void buttonClick(Button.ClickEvent event) {
-                 //ProgramMethodsView.this.presenter.doAddMethodAction();
                  event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
              }
          });

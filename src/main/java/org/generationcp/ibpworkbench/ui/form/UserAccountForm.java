@@ -185,10 +185,7 @@ public class UserAccountForm extends Form {
     	}
         if (grid.getComponent(0, 6) == null) grid.addComponent(lblSecurityQuestion, 0, 6);
         if (grid.getComponent(0, 7) == null) grid.addComponent(lblSecurityAnswer, 0, 7);
-    	
-    
-        //grid.setColumnExpandRatio(0, 2f);
-        
+
 		super.attach();
 		
 	}

@@ -1,15 +1,14 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -27,29 +26,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import java.util.*;
 
 @Configurable
  public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {
@@ -67,7 +44,6 @@ import com.vaadin.ui.Window;
      static {
          tableColumns = new LinkedHashMap<String,String>();
          tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         //tableColumns.put("locationId","id");
          tableColumns.put("locationName","Name");
          tableColumns.put("locationAbbreviation","abbr.");
          tableColumns.put("latitude","Lat");
@@ -164,8 +140,6 @@ import com.vaadin.ui.Window;
 
 			@Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 //ProgramLocationsView.this.LOG.debug("onUpdateAvailableTableOnFilter:");
-
                  Country selectedCountry = (Country) countryFilter.getValue();
                  UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
                  String locationName = (String) searchField.getValue();
@@ -561,8 +535,6 @@ import com.vaadin.ui.Window;
 
          resultCountLbl = new Label("");
          resultCountLbl.setStyleName("loc-resultcnt");
-         //root.addComponent(resultCountLbl);
-         //root.setExpandRatio(resultCountLbl,1.0f);
 
          return container;
      }
@@ -571,16 +543,10 @@ import com.vaadin.ui.Window;
          table.setVisibleColumns(tableColumns.keySet().toArray());
          table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
 
-         //Field[] fields = LocationViewModel.class.getDeclaredFields();
          table.setColumnWidth("select",20);
          table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
          table.setColumnExpandRatio(tableColumns.keySet().toArray()[6],0.3F);
 
-             /*
-             for (String col : tableColumnSizes.keySet())
-             {
-                 table.setColumnWidth(col,tableColumnSizes.get(col));
-             }*/
      }
 
      private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
@@ -707,13 +673,11 @@ import com.vaadin.ui.Window;
          if (index != null) {
              
                  availableTableContainer.addItemAt(index,item);
-                 //availableTable.select(item);
                  favoritesTableContainer.addItemAt(index,item);
              
          } else {
              
                  availableTableContainer.addItem(item);
-                 //availableTable.select(item);
                  favoritesTableContainer.addItem(item);
              
          }
@@ -731,15 +695,6 @@ import com.vaadin.ui.Window;
 
          this.setSizeFull();
 
-         // special actions added to save and cancel btns
-              /*final Button.ClickListener execCloseFrameJS =  new Button.ClickListener() {
-                            @Override
-                            public void buttonClick(Button.ClickEvent clickEvent) {
-                                parentWindow.executeJavaScript("window.parent.closeLocationFrame();");
-                            }
-                        };
-              */
-         //saveBtn.addListener(execCloseFrameJS);
      }
 
      @Override

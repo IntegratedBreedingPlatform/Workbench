@@ -62,7 +62,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
     private Label breedingDecisionTitle;
 
     //links for tools
-    //private Button browseGermplasmButton;
     private Button browseStudiesButton;
     private Button browseGermplasmListsButton;
     private Button gdmsButton;
@@ -74,15 +73,13 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
     private Button optimasButton;
     private Button browseGenotypingDataButton;
     private Button makeCrossesButton;
-    //private Button headToHeadButton;
-    //private Button headToHeadButton2;
+
     private Button mainHeadToHeadButton;
     private Button mainHeadToHeadButton2;
     private Button breedingPlannerButton;
     private Button queryForAdaptedGermplasmButton;
     private Button queryForAdaptedGermplasmButton2;
-    //private Button breedingManagerListManager;
-    
+
     private Embedded downArrowImage1;
     private Embedded downArrowImage2;
     private Embedded downArrowImage3;
@@ -128,28 +125,22 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
 
         projectPlanningTitle = new Label(messageSource.getMessage(Message.PROJECT_PLANNING));
         projectPlanningTitle.setStyleName("gcp-section-title-large");
-        //projectPlanningTitle.setSizeUndefined();
 
         populationDevelopmentTitle = new Label(messageSource.getMessage(Message.POPULATION_DEVELOPMENT));
         populationDevelopmentTitle.setStyleName("gcp-section-title-large");
-        //populationDevelopmentTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label(messageSource.getMessage(Message.FIELD_TRIAL_MANAGEMENT));
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
-        //fieldTrialManagementTitle.setSizeUndefined();
 
         genotypingTitle = new Label(messageSource.getMessage(Message.GENOTYPING));
         genotypingTitle.setStyleName("gcp-section-title-large");
-        //genotypingTitle.setSizeUndefined();
 
         statisticalAnalysisTitle = new Label(messageSource.getMessage(Message.STATISTICAL_ANALYSIS));
         statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
-        //statisticalAnalysisTitle.setSizeUndefined();
 
         breedingDecisionTitle = new Label(messageSource.getMessage(Message.BREEDING_DECISION));
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
-        //breedingDecisionTitle.setSizeUndefined();
-        
+
         breedingPlannerButton = new Button("Breeding Planner");
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
@@ -169,12 +160,7 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton2.setSizeUndefined();
         germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
-        /*
-        browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER));
-        */
+
         browseStudiesButton = new Button(messageSource.getMessage(Message.BROWSE_STUDIES_AND_DATASETS));
         browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         browseStudiesButton.setSizeUndefined();
@@ -245,17 +231,7 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrowImage4 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         twoHeadedArrowImage = new Embedded("", new ThemeResource(TWO_HEADED_ARROW_THEME_RESOURCE));
-        /*
-        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton.setSizeUndefined();
-        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-        
-        headToHeadButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton2.setSizeUndefined();
-        headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-          */
+
         mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
         mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mainHeadToHeadButton.setSizeUndefined();
@@ -275,12 +251,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
-
-        /*breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_BROWSE_FOR_GERMPLASMS_AND_LISTS));
-        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        breedingManagerListManager.setSizeUndefined();
-        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
-        */
 
         ontologyBrowserFBBtn = new Button("Manage Ontologies");
         ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -411,11 +381,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         planMasTimelineButton.setHeight("20px");
         layout.setComponentAlignment(planMasTimelineButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(planMasTimelineButton, 0);
-        
-        /* layout.addComponent(breedingPlannerButton);
-        breedingPlannerButton.setHeight("20px");
-        layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingPlannerButton, 0); */
 
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
@@ -433,12 +398,7 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
-        /*
-        layout.addComponent(headToHeadButton2);
-        headToHeadButton2.setHeight("20px");
-        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton2, 0);
-          */
+
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
@@ -449,11 +409,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
         
-        /*layout.addComponent(breedingManagerListManager);
-        breedingManagerListManager.setHeight("20px");
-        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerListManager, 0);
-        */
         return layout;
     }
 
@@ -472,11 +427,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        //layout.addComponent(germplasmImportButton);
-        //germplasmImportButton.setHeight("20px");
-        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(germplasmImportButton, 0);
-
         layout.addComponent(germplasmImportButton2);
         germplasmImportButton2.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
@@ -595,16 +545,7 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-        /*
-        layout.addComponent(optimasButton);
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
-        */
-         /*
-        layout.addComponent(headToHeadButton);
-        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton, 0);
-           */
+
         layout.addComponent(mainHeadToHeadButton);
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
@@ -661,12 +602,9 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
 
             planMasTimelineButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
-            //headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
-            //headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
-            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER)); 
 
-            //browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
@@ -688,7 +626,6 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
             
             queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
             queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            //breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
 
             metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,null));
             ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
@@ -718,11 +655,5 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         } else {
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
-        
-        /*
-        messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
-        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
-        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
-        */
     }
 }

@@ -4,9 +4,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -17,7 +15,6 @@ import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +72,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 	
 	private void updateLabels(){
-		 //messageSource.setValue(lblPageTitle, Message.TITLE_GXE);;
-	}
+	    // currently does nothing
+    }
 
 	protected void assemble() {
 
@@ -233,7 +230,6 @@ public class AddProgramView extends Panel implements InitializingBean {
     }
 
     public void disableOptionalTabsAndFinish() {
-        // disable program methods + locations view when crop type is changed;
         tabSheet.getTab(programMethodsContainer).setEnabled(false);
         tabSheet.getTab(programLocationsContainer).setEnabled(false);
 

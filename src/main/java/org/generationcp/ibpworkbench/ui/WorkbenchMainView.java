@@ -99,7 +99,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        //this.sessionProvider.setSessionData(sessionData);
         assemble();
 
         // initialize other operations on load (
@@ -131,11 +130,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         collapseButton.setHtmlContentAllowed(true);
         collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
 
-        //crumbTrail = new CrumbTrail();
-        //crumbTrail.setMargin(true, true, true, true);
-        //crumbTrail.setSpacing(false);
-        //crumbTrail.setSizeUndefined();
-
         uriFragUtil = new UriFragmentUtility();
         uriChangeListener = new NavUriFragmentChangedListener();
 
@@ -163,7 +157,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         final VerticalLayout memberPopup = new VerticalLayout();
         memberPopup.setStyleName("bms-memberpopup");
         memberPopup.setSizeUndefined();
-        //memberPopup.setWidth("250px");
 
         signoutButton = new Button(messageSource.getMessage(Message.SIGNOUT));
         signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -251,7 +244,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
             @Override
             public void buttonClick(ClickEvent event) {
-                //WorkbenchMainView.this.open(new ExternalResource(HELP_LINK),"_blank");
                 thisWindow.addWindow(new HelpWindow());
             }
         });
@@ -277,20 +269,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 toggleSidebarIcon();
             }
         });
-
-        /*
-        createProjectButton.addListener(new OpenNewProjectAction());
-        createProjectButton.addListener(new Button.ClickListener() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                WorkbenchMainView.this.addTitle(messageSource.getMessage(Message.PROJECT_CREATE_TITLE));
-            }
-        });
-
-        createContactButton.addListener(new CreateContactAction());
-        */
 
     }
 
@@ -385,14 +363,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     public void showContent(Component content) {
 
-        // contentAreaSplitPanel.removeComponent(contentAreaSplitPanel.getSecondComponent());
-        // contentAreaSplitPanel.addComponent(content);
-
-        //if (mainContent.getComponentCount() > 1)
             mainContent.removeAllComponents();
 
         if (content instanceof Embedded) {
-            //mainContent.setSizeFull();
             mainContent.addComponent(content);
             mainContent.setExpandRatio(content, 1.0F);
 
@@ -462,18 +435,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
     public void updateLabels() {
         IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
-        //String title =  "<h1>"+messageSource.getMessage(Message.WORKBENCH_TITLE) + "</h1> <h2>" + VERSION + "</h2>";
-        //workbenchTitle.setValue(title);
-        //workbenchTitle.setContentMode(Label.CONTENT_XHTML);
-
-        //messageSource.setCaption(memberButton, Message.SIGNOUT);
-
         String signoutName = appSession.getSessionData().getUserData().getName();
         if (signoutName.length() > 10)
             signoutName = signoutName.substring(0,9) + "...";
 
         memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
-       //memberButton.setDescription(messageSource.getMessage(Message.LOGGED_IN) + " " + appSession.getSessionData().getUserData().getPerson().getFirstName() + " " + appSession.getSessionData().getUserData().getPerson().getLastName());
 
     }
 

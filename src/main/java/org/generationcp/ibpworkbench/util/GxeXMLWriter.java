@@ -13,13 +13,8 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.commons.breedingview.xml.BreedingViewProjectType;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.gxe.xml.GxeData;
-import org.generationcp.commons.gxe.xml.GxeEnvironment;
-import org.generationcp.commons.gxe.xml.GxePhenotypic;
-import org.generationcp.commons.gxe.xml.GxeProject;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.sea.xml.*;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -32,7 +27,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
 import java.io.FileWriter;
 import java.io.Serializable;
 
@@ -141,9 +135,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         
         //write the xml
         try{
-        	
-        	//new File(outputDirectory).mkdirs();
-            final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath());
+        	final FileWriter fileWriter = new FileWriter(gxeInput.getDestXMLFilePath());
             marshaller.marshal(bvSession, fileWriter);
             fileWriter.flush();
             fileWriter.close();

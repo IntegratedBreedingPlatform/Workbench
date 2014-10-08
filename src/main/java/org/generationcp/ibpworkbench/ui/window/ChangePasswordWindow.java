@@ -137,6 +137,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 
     @Override
     public void updateLabels() {
+        // currently does nothing
     }
 
 }

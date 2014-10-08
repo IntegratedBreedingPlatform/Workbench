@@ -17,7 +17,6 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;

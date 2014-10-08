@@ -12,10 +12,7 @@
 package org.generationcp.ibpworkbench.ui.form;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.Buffered;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.*;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;

@@ -53,11 +53,6 @@ public class AddLocationsWindow extends BaseSubWindow {
 
     protected void initializeComponents() {
 
-        //newLocationTitle = new Label("Add Location");
-        //newLocationTitle.setStyleName("gcp-content-title");
-
-        //layout.addComponent(newLocationTitle);
-
         addLocationForm = new AddLocationForm(programLocationsPresenter);
 
         cancelButton = new Button("Cancel");

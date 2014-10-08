@@ -1,13 +1,14 @@
 package org.generationcp.ibpworkbench.ui;
 
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.*;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -87,7 +88,6 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
             });
 
             tblCrops.setVisibleColumns(new String[]{"cropName", "gVersion"});
-            //tblCrops.setColumnWidth("gVersion",80);
             tblCrops.setColumnHeaders(new String[]{"Crop Name", "Version"});
             tblCrops.setColumnExpandRatio("cropName",0.7F);
             tblCrops.setColumnExpandRatio("gVersion",0.3F);
@@ -121,7 +121,6 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
                     addedToolNames.add(tool.getTitle());
                     
                     toolContainer.addBean(tool);
-                    //System.out.println(tool);
                     toolId++;
                 }
 
@@ -137,8 +136,6 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
                  t.setPath(props.getProperty("tool_name."+name));
                  t.setToolId(toolId);
                  t.setTitle(props.getProperty("tool_name."+name));
-                 //System.out.println(props.getProperty("tool_name."+name) + " : " + props.getProperty("tool_version."+name));
-                 //System.out.println(t);
                  toolContainer.addBean(t);
             }
            

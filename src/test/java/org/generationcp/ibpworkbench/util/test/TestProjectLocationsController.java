@@ -1,9 +1,5 @@
 package org.generationcp.ibpworkbench.util.test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
@@ -18,6 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class TestProjectLocationsController {
 

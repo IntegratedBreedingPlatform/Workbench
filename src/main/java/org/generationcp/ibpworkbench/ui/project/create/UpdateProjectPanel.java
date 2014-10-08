@@ -97,23 +97,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         this.setStyleName(Reindeer.PANEL_LIGHT);
     }
 
-/*
-    protected Component createMainPanel() {
-        HorizontalLayout panel = new HorizontalLayout();
-        panel.setSpacing(false);
-
-        panel.addComponent(projectBasicDetailsComponent);
-        panel.addComponent(deleteProgramButton);
-
-        panel.setComponentAlignment(projectBasicDetailsComponent, Alignment.MIDDLE_LEFT);
-        panel.setComponentAlignment(deleteProgramButton, Alignment.MIDDLE_CENTER);
-
-        panel.setSizeFull();
-
-        return panel;
-    }
-*/
-
     @Override
     protected void initializeValues() {
         // initialize component values

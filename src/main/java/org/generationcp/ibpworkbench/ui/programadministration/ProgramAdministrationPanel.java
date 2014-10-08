@@ -45,8 +45,8 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 	
 	private void updateLabels(){
-		 //messageSource.setValue(lblPageTitle, Message.TITLE_GXE);;
-	}
+	    // do nothing
+    }
 
 	protected void assemble() {
 

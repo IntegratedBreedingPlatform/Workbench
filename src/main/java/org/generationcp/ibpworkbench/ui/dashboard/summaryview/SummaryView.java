@@ -188,7 +188,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 SummaryView.LOG.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
                 export.export();
 
-                //MessageNotifier.showMessage(IBPWorkbenchApplication.get().getMainWindow(),"Exporting " + tableName,export.getExportFileName() + " will be downloaded in a moment.");
 
             }
         });
@@ -308,8 +307,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
             container.addBean(activity);
         }
 
-        //TODO: update label
-        //lblActivity.setValue(messageSource.getMessage(Message.ACTIVITIES) + " [" + activityList.size() + "]");
         activityCount = activityList.size();
 
 
@@ -397,7 +394,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
             root.setSizeUndefined();
             root.setWidth("200px");
-            //root.setMargin(new MarginInfo(true,false,true,false));
 
         }
 
@@ -414,7 +410,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         public Integer getSelectedItem() {
             int value = selectedItem;
 
-            selectedItem = -1;  // reset the selected item;
+            // reset the selected item
+            selectedItem = -1;
 
             return value;
         }

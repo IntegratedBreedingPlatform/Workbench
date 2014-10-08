@@ -109,7 +109,6 @@ public class UserAccountPanel extends Panel {
         buttonLayout.setWidth("140px");
         buttonLayout.setMargin(true, false, false, false);
       
-        //rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootLayout.setSpacing(true);
         lblTitle = new Label("Register a New User Account");
         lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
@@ -157,6 +156,5 @@ public class UserAccountPanel extends Panel {
     	messageSource.setValue(lblBanner,Message.LOGIN_TITLE);
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
-        //messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
     }
 }

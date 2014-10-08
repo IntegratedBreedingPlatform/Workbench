@@ -69,7 +69,6 @@ public class QtlAnalysisWindow extends Window{
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-        // buttonLayout.setMargin(false, false, true, false);
 
         buttonLayout.addComponent(runButton);
 

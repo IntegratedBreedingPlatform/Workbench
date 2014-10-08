@@ -17,7 +17,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -97,14 +96,12 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        //BeanItem<Project> item = (BeanItem<Project>) event.getItem();
-
         this.doAction((Long) event.getProperty().getValue(),tblProject.getWindow());
 
     }
 
     public void doAction(Long projectId,Window workbenchDashboardWin) {
-        Project project = null; //item.getBean();
+        Project project = null;
         if (projectId != null)
             for(Project tempProject : projects){
                 if(tempProject.getProjectId().longValue()  == projectId.longValue()){
@@ -142,10 +139,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
             workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
             if (workbenchDashboardwindow != null)
                 workbenchDashboardwindow.addTitle(project.getProjectName());
-
-            //if (WorkbenchSidebar.thisInstance != null)
-            //    WorkbenchSidebar.thisInstance.populateLinks();
-
 
             // retieve sidebar instance from app
             if (workbenchDashboardWin instanceof WorkbenchMainView) {

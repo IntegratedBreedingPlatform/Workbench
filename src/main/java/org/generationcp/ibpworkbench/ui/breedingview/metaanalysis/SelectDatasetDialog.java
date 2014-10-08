@@ -1,8 +1,11 @@
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -10,11 +13,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.FolderReference;
-import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
@@ -24,18 +23,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configurable
 public class SelectDatasetDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -91,7 +80,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		this.setClosable(true);
 		this.setScrollable(false);
 		this.setStyleName(Reindeer.WINDOW_LIGHT);
-		//setCaption("Study Information");
 		// center window within the browser
 		center();
 		
@@ -284,7 +272,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-			// LOG.error(e.toString() + "\n" + e.getStackTrace());
 			e.printStackTrace();
 			MessageNotifier
 			.showWarning(
@@ -353,7 +340,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-			// LOG.error(e.toString() + "\n" + e.getStackTrace());
 			e.printStackTrace();
 			MessageNotifier
 			.showWarning(
@@ -393,7 +379,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 			children = getStudyDataManager().getChildrenOfFolder(folderId);
 		} catch (MiddlewareQueryException e) {
-			// LOG.error(e.toString() + "\n" + e.getStackTrace());
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -424,7 +409,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 			children = getStudyDataManager().getDatasetReferences(folderId);
 		} catch (MiddlewareQueryException e) {
-			// LOG.error(e.toString() + "\n" + e.getStackTrace());
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -452,7 +436,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		messageSource.setCaption(this,
 				Message.BV_STUDY_TREE_TITLE);
 		
-		//messageSource.setValue(lblStudyTreeDetailDescription, Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
 	}
 
 	private StudyDataManagerImpl getStudyDataManager() {

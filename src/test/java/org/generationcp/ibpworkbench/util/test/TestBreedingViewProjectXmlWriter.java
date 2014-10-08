@@ -1,16 +1,9 @@
 package org.generationcp.ibpworkbench.util.test;
 
 
-import org.generationcp.commons.breedingview.xml.Blocks;
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.ProjectType;
-import org.generationcp.commons.breedingview.xml.Replicates;
-import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.middleware.manager.DatabaseConnectionParameters;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

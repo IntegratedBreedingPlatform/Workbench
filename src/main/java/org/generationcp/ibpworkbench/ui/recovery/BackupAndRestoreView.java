@@ -107,9 +107,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
         uploadFrm.setDeleteCaption(messageSource.getMessage("CLEAR"));
         uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
-
-        //uploadFrm.setButtonCaption("Click to Restore from SQL file");
-        //uploadFrm.setImmediate(true);
         restoreBtn = new Button(messageSource.getMessage("RESTORE_BMS_BUTTON"));
         restoreList = new ListSelect();
 

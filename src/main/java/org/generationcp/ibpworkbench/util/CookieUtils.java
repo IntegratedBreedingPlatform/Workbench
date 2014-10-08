@@ -51,7 +51,7 @@ public class CookieUtils {
         		}
         	}	
     	} catch (Exception e) {
-    		// do nothing;
+    		// do nothing
     	}
 		return "";
     }

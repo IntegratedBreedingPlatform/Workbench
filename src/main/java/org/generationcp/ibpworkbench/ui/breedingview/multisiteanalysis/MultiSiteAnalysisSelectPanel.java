@@ -12,14 +12,12 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -29,13 +27,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -45,20 +37,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -170,9 +150,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         messageSource.setValue(lblEnvironmentGroupsDescription, Message.GXE_ENVIRONMENT_GROUPS_DESCRIPTION);
         messageSource.setValue(lblEnvironmentGroupsSpecify, Message.GXE_ENVIRONMENT_GROUPS_SPECIFY);
         messageSource.setValue(lblReviewSelectedDataset, Message.GXE_REVIEW_SELECTED_DATASET);
-//        messageSource.setValue(lblFactorTableHeader, Message.GXE_FACTOR_TABLE_HEADER);
         messageSource.setValue(lblFactorTableDescription, Message.GXE_FACTOR_TABLE_DESCRIPTION);
-//        messageSource.setValue(lblVariateTableHeader, Message.GXE_TRAIT_TABLE_HEADER);
         messageSource.setValue(lblVariateTableDescription, Message.GXE_TRAIT_TABLE_DESCRIPTION);
     }
     
@@ -324,8 +302,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 				refreshing = true;
 				variates.refreshRowCache();
 				refreshing = false;
-				//variatesCheckboxState.put(vm.getName(), val);
-				//vm.setActive(val);
 			}
         	
         };
@@ -577,7 +553,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         variates.setVisibleColumns(columns);
         variates.setColumnHeaders(columnHeaders);
         variates.setColumnWidth("", 18);
-        //variates.refreshRowCache();
 
     }
    
@@ -713,7 +688,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         
         this.variates.setVisibleColumns(new String[]{ "","displayName", "description","testedin"});
         this.variates.setColumnHeaders(new String[]{ "<span class='glyphicon glyphicon-ok'></span>", "Name", "Description", "Tested In"});
-        //this.variates.refreshRowCache();
     }
 	
 	private int getTestedIn(String envFactorName, List<String> environmentNames , Integer variableId , Integer meansDataSetId ,TrialEnvironments trialEnvironments){

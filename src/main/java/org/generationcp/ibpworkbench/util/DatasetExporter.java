@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
-
 import org.generationcp.commons.util.ObjectUtil;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;

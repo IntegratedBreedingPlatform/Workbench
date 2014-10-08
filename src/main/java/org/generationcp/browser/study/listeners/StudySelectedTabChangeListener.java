@@ -12,14 +12,13 @@
 
 package org.generationcp.browser.study.listeners;
 
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import org.generationcp.browser.study.StudyAccordionMenu;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 
 public class StudySelectedTabChangeListener implements TabSheet.SelectedTabChangeListener{
     

@@ -2,7 +2,6 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Location;
-
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 

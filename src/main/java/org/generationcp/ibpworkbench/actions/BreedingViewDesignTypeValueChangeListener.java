@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.actions;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.GridLayout;
-
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 

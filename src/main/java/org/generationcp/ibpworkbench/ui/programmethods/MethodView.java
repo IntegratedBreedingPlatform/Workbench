@@ -71,7 +71,6 @@ import org.generationcp.middleware.pojos.Method;
     public MethodView copyMethodView(){
     	
     	MethodView methodView = new MethodView();
-    	//methodView.setMid(getMid());
     	methodView.setMtype(getMtype());
     	methodView.setMgrp(getMgrp());
     	methodView.setMcode(getMcode());

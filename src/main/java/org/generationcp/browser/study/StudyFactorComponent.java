@@ -12,19 +12,18 @@
 
 package org.generationcp.browser.study;
 
-import org.generationcp.ibpworkbench.Message;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Table;
 import org.generationcp.browser.study.containers.StudyDataIndexContainer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Table;
 
 @Configurable
 public class StudyFactorComponent extends Table implements InitializingBean, InternationalizableComponent{
@@ -48,7 +47,7 @@ public class StudyFactorComponent extends Table implements InitializingBean, Int
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-    public StudyFactorComponent(StudyDataManagerImpl studyDataManager, int studyId) { //throws QueryException {
+    public StudyFactorComponent(StudyDataManagerImpl studyDataManager, int studyId) {
         this.studyDataManager = studyDataManager;
         this.studyId = studyId;
     }

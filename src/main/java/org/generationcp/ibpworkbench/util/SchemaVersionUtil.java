@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import org.generationcp.commons.util.ResourceFinder;
+import org.generationcp.ibpworkbench.database.IBDBGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import org.generationcp.commons.util.ResourceFinder;
-import org.generationcp.ibpworkbench.database.IBDBGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class SchemaVersionUtil {

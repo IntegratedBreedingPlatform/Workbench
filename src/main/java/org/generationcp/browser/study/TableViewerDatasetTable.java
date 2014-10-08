@@ -11,20 +11,13 @@
  *******************************************************************************/
 package org.generationcp.browser.study;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.browser.study.listeners.GidLinkButtonClickListener;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Table;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -34,10 +27,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.BaseTheme;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mark Agarrado
@@ -196,15 +188,8 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 	                    	String stringValue = variable.getDisplayValue();
 	                    	if (stringValue != null) {
 	                    		stringValue = stringValue.trim();
-	                    		// display value as Link if GID, else display as string
-		                    	//if ("GID".equals(variable.getVariableType().getLocalName().trim())) {
-	                            //    Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
-	                            //    gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-	                            //    gidButton.setDescription("Click to view Germplasm information");
-	                            //    item.getItemProperty(columnId).setValue(gidButton);
-		                    	//} else {
-			                    	item.getItemProperty(columnId).setValue(stringValue);
-		                    	//}
+	                    			item.getItemProperty(columnId).setValue(stringValue);
+
 	                    	}
 	                    }
 	                }

@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.CssLayout;
@@ -149,32 +148,7 @@ public class WorkbenchSidebar extends CssLayout {
 
         sidebarTree.setSelectable(true);
         sidebarTree.addListener(treeClickListener);
-//        sidebarTree.addListener(new Property.ValueChangeListener() {
-//
-//            @Override
-//            public void valueChange(Property.ValueChangeEvent event) {
-//                LOG.trace("valueChange");
-//
-//                // expand category if not yet expanded
-//
-//                Object parentItem = sidebarTree.getParent(event.getProperty().getValue());
-//
-//                if (parentItem != null && !sidebarTree.isExpanded(parentItem)) {
-//                    sidebarTree.expandItem(sidebarTree.getParent(event.getProperty().getValue()));
-//
-//                }
-//
-//                // item is category, expand or collapse this
-//                if (event.getProperty() != null || event.getProperty().getValue() != null) {
-//                    if (sidebarTree.isExpanded(event.getProperty().getValue()))
-//                        sidebarTree.collapseItem(event.getProperty().getValue());
-//                    else
-//                        sidebarTree.expandItem(event.getProperty().getValue());
-//                }
-//
-//
-//            }
-//        });
+
         this.addComponent(sidebarTree);
     }
 
@@ -267,7 +241,6 @@ public class WorkbenchSidebar extends CssLayout {
                             }
                             super.showWorkflowDashboard(super.project,role1,(IContentWindow)window);
 
-                            //NavManager.navigateApp(window,String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", super.project.getProjectId(), role1.getRoleId()), isLinkAccessed, role1.getLabel());
                         }
                     };
                 }

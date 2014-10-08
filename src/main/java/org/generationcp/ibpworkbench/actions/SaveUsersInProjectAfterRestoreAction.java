@@ -89,11 +89,6 @@ public class SaveUsersInProjectAfterRestoreAction implements ActionListener {
 		}
          
          try {
-             //delete existing project user roles on this project
-             //for (ProjectUserRole oldProjectUserRole : workbenchDataManager.getProjectUserRolesByProject(project)) {
-             //    workbenchDataManager.deleteProjectUserRole(oldProjectUserRole);
-             //}
-
              List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
 
              // add project user roles to the list

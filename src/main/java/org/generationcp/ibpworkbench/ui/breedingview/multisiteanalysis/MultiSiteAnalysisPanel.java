@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -40,16 +39,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Multisite analysis component
@@ -61,8 +54,6 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 								InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
-
-	// private TwinColSelect select;
 
 	private Map<Integer, Table> studyTables = new HashMap<Integer, Table>();
 	private TabSheet studiesTabsheet;
@@ -283,7 +274,6 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		tab.setImmediate(true);
 		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
 		tab.setStyleName("panel-border");
-		//tab.setSizeFull();
 		tab.setHeight("100%");
 
 		return tab;

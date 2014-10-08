@@ -44,8 +44,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
         
     // Components
 	private ComponentContainer rootLayout;
-	//private FormLayout formLayout;
-	//private Select select;
 	private Button cancelBtn;
 	private Button saveBtn;
 	
@@ -94,21 +92,9 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	            projectContainer.addBean(project);
 	        }
     	
-	        //select.setContainerDataSource(projectContainer);
-	        //select.setValue(select.getItemIds().iterator().next());
-	        
 	        projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
 	        projectBackupContainer.setBeanIdProperty("projectBackupId");
-	        
-	        /*
-	        String _log = "";
-	        for (String i : projectBackupContainer.getContainerPropertyIds()) {
-	        	_log +=  i + ", ";
-	        }
-	        
-	        LOG.debug(_log);
-	        */
-	        
+
 	        table.setContainerDataSource(projectBackupContainer);
 	        table.setVisibleColumns(new String[] {"backupTime","backupPath"});
 	        table.setColumnHeader("backupTime","Backup Time");
@@ -133,17 +119,10 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
     }
     
     protected void initializeComponents() throws Exception {
-		//select = new Select("Choose a project to restore");
-		//select.setNullSelectionAllowed(false);
-		//select.setNewItemsAllowed(false);
-		//select.setFilteringMode(Select.FILTERINGMODE_OFF);
-		//select.setImmediate(true);
-		
 		saveBtn = new Button("Restore");
         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		saveBtn.setSizeUndefined();
-		//saveBtn.setEnabled(false);
-		
+
 		cancelBtn = new Button("Cancel");
 		cancelBtn.setSizeUndefined();
     
@@ -180,20 +159,13 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		this.setModal(true);
 				
 		rootLayout = this.getContent();
-		
-		//formLayout = new FormLayout();
-		//formLayout.setMargin(true);
-		//formLayout.setSizeFull();
-		
-		//rootLayout.addComponent(formLayout);
-		
+
 		rootLayout.addComponent(new Label(messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
 		
 		rootLayout.addComponent(table);
 		
 		// bind components to layout
-		//formLayout.addComponent(select);
-		
+
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setWidth("100%");
 		hl.setSpacing(true);
@@ -248,41 +220,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 			}
 		});
     	
-    	//saveBtn.addListener(new RestoreIBDBSaveAction(select,table));
-    	
-    	// Select action
-    	/*
-    	select.addListener(new Property.ValueChangeListener() {
-			
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				RestoreIBDBWindow.LOG.info("Select > Item selected : " + event.getProperty().getValue());
-				
-				Project p = ((BeanItem<Project>)select.getItem(select.getValue())).getBean();
-				
-				projectBackupContainer.removeAllItems();
-				
-				try {
-					for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
-			        	projectBackupContainer.addBean(pb);
-			        }
-					
-					if (table.getItemIds().size() > 0)
-						table.setValue(table.firstItemId());
-					
-				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-			}
-		});
-    	*/
-    	
     	// Table actions
     	table.addListener(new Property.ValueChangeListener() {
 
@@ -294,8 +231,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 			}
     	});
     	
-    	//upload.setReceiver(restoreAction);
-    	//upload.addListener(restoreAction);
     }
 
     protected void assemble() throws Exception {
@@ -315,7 +250,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	@Override
 	public void updateLabels() {
 		messageSource.setCaption(this, Message.RESTORE_IBDB_WINDOW_CAPTION);
-		//messageSource.setCaption(select, Message.RESTORE_IBDB_TABLE_SELECT_CAPTION);
 		messageSource.setCaption(saveBtn,Message.RESTORE);
 		messageSource.setCaption(cancelBtn,Message.CANCEL);
 		

@@ -50,7 +50,7 @@ public class CreateContactAction implements ClickListener, ActionListener {
      */
     @Override
     public void doAction(Event event) {
-       //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
 
     /**
@@ -66,7 +66,6 @@ public class CreateContactAction implements ClickListener, ActionListener {
         
         w.showContent(contactBookPanel);
         
-        //NavManager.navigateApp(window, "/CreateContacts", isLinkAccessed);
     }
 
 }

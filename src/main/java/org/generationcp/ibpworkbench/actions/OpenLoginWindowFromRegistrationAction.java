@@ -41,26 +41,8 @@ public class OpenLoginWindowFromRegistrationAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        //LoginWindow window = new LoginWindow();
-        //new LoginPresenter(window);
         final Application app = event.getComponent().getApplication();
-        
-        //window.setWidth("100%");
-        //window.center();
-        //window.setPositionY(0);
-        //window.setClosable(false);
-        //window.setDraggable(false);
-        //window.setHeight("100%");
-        //window.setBorder(0);       
-        
-        //app.getMainWindow().removeAllComponents();
-        //app.getMainWindow().addWindow(window);
-        
-        //app.removeWindow(app.getMainWindow());
-        //app.setMainWindow(window);
-        
-        //event.getComponent().getApplication().close(); // closes the app then reloads if logout url is not set
-        
+
         ConfirmDialog.show(app.getMainWindow(),messageSource.getMessage(Message.REGISTER_SUCCESS),messageSource.getMessage(Message.REGISTER_SUCCESS_DESCRIPTION),messageSource.getMessage(Message.OK),null,new ConfirmDialog.Listener() {
 			@Override
 			public void onClose(ConfirmDialog dialog) {

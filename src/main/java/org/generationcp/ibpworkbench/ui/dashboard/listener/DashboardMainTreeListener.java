@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author Efficio.Daniel
  *
  */
-public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListener{ //Property.ValueChangeListener{
+public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListener{
 
     private Project project;
     private Component source;
@@ -42,14 +42,7 @@ public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListen
      */
     @Override
     public void itemClick(ItemClickEvent event) {
-        /*
-        if(event.getProperty()==null || event.getProperty().getValue() ==null ) {
-            GermplasmListPreview preview = ((GermplasmListPreview)source);
-            preview.test();
-            return;
-        }*/
-        
-        
+
         if(source instanceof GermplasmListPreview){
             GermplasmListPreview preview = ((GermplasmListPreview)source);
             

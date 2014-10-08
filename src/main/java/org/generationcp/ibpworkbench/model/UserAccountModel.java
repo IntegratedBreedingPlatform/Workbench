@@ -31,7 +31,6 @@ public class UserAccountModel implements Serializable{
     private String firstName;
     private String lastName;
     private String middlename;
-    //private String positionTitle;
     private String email;
     
     private String username;
@@ -47,7 +46,6 @@ public class UserAccountModel implements Serializable{
         firstName = "";
         lastName = "";
         middlename = "";
-        //positionTitle = "";
         email = "";
         
         username = "";
@@ -80,14 +78,6 @@ public class UserAccountModel implements Serializable{
     public void setMiddleName(String ioname) {
         this.middlename = ioname;
     }
-    
-    /*public String getPositionTitle() {
-        return positionTitle;
-    }
-    
-    public void setPositionTitle(String positionTitle) {
-        this.positionTitle = positionTitle;
-    }*/
     
     public String getEmail() {
         return email;
@@ -141,7 +131,6 @@ public class UserAccountModel implements Serializable{
         firstName = firstName.trim();
         lastName = lastName.trim();
         middlename = middlename.trim();
-        //positionTitle = positionTitle.trim();
         email = email.trim();
         
         username = username.trim();

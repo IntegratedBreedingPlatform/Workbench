@@ -112,7 +112,6 @@ public class UpdateProjectAction implements Button.ClickListener  {
                 workbenchDataManager.addProjectUserRole(sessionData.getSelectedProject(),sessionData.getUserData(),projectUserRole.getRole());
             }
 
-            //MessageNotifier.showMessage(projectPanel.getWindow(),String.format("Successfully updated %s",projectPanel.getProject().getProjectName()),"");
             MessageNotifier.showMessage(projectPanel.getWindow(),"Program update is successful",String.format("%s is updated.", StringUtils.abbreviate(sessionData.getSelectedProject().getProjectName(),50)));
 
             ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getSelectedProject().getProjectId().intValue()),sessionData.getSelectedProject(),"Update Program", "Updated Program - " + sessionData.getSelectedProject().getProjectName(),sessionData.getUserData(), new Date());
@@ -127,8 +126,6 @@ public class UpdateProjectAction implements Button.ClickListener  {
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         try {
-            //WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-
             // BY DEFAULT, current user has all the roles
             for (Role role : workbenchDataManager.getAllRoles()) {
                 ProjectUserRole projectUserRole = new ProjectUserRole();

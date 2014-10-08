@@ -11,18 +11,12 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -41,11 +35,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +43,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 @Configurable
 public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListener, ActionListener {
@@ -200,7 +190,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
     
     @Override
@@ -372,11 +362,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                         browser.setStyleName("gcp-embedded");
                         browser.setType(Embedded.TYPE_BROWSER);
                         browser.setSizeFull();
-                        //browser.setHeight("800px");
-                        //browser.setWidth("100%");
-                        
-                        //NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
-                        
+
                         IContentWindow contentWindow = (IContentWindow) window;
                         contentWindow.showContent(browser);
                     }
@@ -426,7 +412,6 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 // we need to reconfigure and deploy the GermplasmBrowser webapp too
                 if (Util.isOneOf(tool.getToolName()
                                  ,ToolName.bm_list_manager.name()
-                                 //,ToolName.bm_list_manager_main.name()
                                  ,ToolName.crossing_manager.name()
                                  ,ToolName.germplasm_import.name()
                                  ,ToolName.list_manager.name()
@@ -468,11 +453,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
                 
                 browser.setType(Embedded.TYPE_BROWSER);
                 browser.setSizeFull();
-                //browser.setHeight("800px");
-                //browser.setWidth("100%");
-                
-                //NavManager.navigateApp(window, "/" + toolName, isLinkAccessed);
-                
+
                 IContentWindow contentWindow = (IContentWindow) window;
                 contentWindow.showContent(browser);
             }

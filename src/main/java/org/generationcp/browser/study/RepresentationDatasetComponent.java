@@ -12,17 +12,13 @@
 
 package org.generationcp.browser.study;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.generationcp.ibpworkbench.Message;
+import com.vaadin.ui.*;
 import org.generationcp.browser.study.containers.RepresentationDatasetQueryFactory;
 import org.generationcp.browser.study.listeners.StudyButtonClickListener;
-import org.generationcp.commons.util.FileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -35,16 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import com.vaadin.addon.tableexport.CsvExport;
-import com.vaadin.addon.tableexport.TableExport;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-//import org.generationcp.middleware.domain.dms.TermId;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
  * 
@@ -98,16 +86,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
                 String confirmDialogCaption=messageSource.getMessage(Message.TABLE_VIEWER_CAPTION);
                 String confirmDialogMessage=messageSource.getMessage(Message.CONFIRM_DIALOG_MESSAGE_OPEN_TABLE_VIEWER); 
 
-                /**ConfirmDialog.show(this.getWindow(),confirmDialogCaption ,confirmDialogMessage ,
-                    messageSource.getMessage(Message.TABLE_VIEWER_OK_LABEL), messageSource.getMessage(Message.CANCEL_LABEL), new ConfirmDialog.Listener() {
-                    private static final long serialVersionUID = 1L;
 
-                    public void onClose(ConfirmDialog dialog) {
-                        if (dialog.isConfirmed()) {
-                            openTableViewer();
-                        }
-                    }
-                });**/
             } else {
                 openTableViewer();
             }
@@ -151,14 +130,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	        
 	        HorizontalLayout buttonLayout = new HorizontalLayout();
 	        buttonLayout.setSpacing(true);
-	        //TODO uncomment this when the feature of exporting to CSV is working properly
-	        //buttonLayout.addComponent(exportCsvButton);
 	        //only show Fieldbook Export to Excel button if study page not accessed directly from URL
 	        if (!fromUrl) {
 	            buttonLayout.addComponent(openTableViewerButton);
 	        }
 	
-	        //addComponent(buttonLayout);
         }
     }
     
@@ -212,9 +188,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
         datasetTable.setPageLength(15); // number of rows to display in the Table
         datasetTable.setSizeFull(); // to make scrollbars appear on the Table component
 
-        // Use cell selector utility on datasetTable
-        //TableViewerCellSelectorUtil tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, datasetTable);
-        
         // set column headers for the Table
         for (VariableType variable : variables) {
             String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();

@@ -89,9 +89,6 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
         
         String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", project.getProjectId(), role.getRoleId());
         String workflowName = role.getLabel();
-        // NavManager.navigateApp(window, url, true, project.getProjectName());
-        
-        //NavManager.navigateApp(window, url, true, workflowName);
     }
     
     @Override
@@ -102,7 +99,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
     
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
     
     @Override
@@ -128,10 +125,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
                     "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
         }
         
-        //NavManager.navigateApp(window, uriFragment, isLinkAccessed, project.getProjectName());
-        
         String workflowName = role.getLabel();
-        //NavManager.navigateApp(window, uriFragment, isLinkAccessed, workflowName);
     }
     
     protected void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {

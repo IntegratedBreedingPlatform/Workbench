@@ -42,9 +42,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	private ProjectBackup projectBackup;
 
-	//@Autowired
-	//private MySQLUtil mysqlUtil;
-	
 	@Autowired
     private BackupIBDBService backupIBDBService;
 
@@ -71,9 +68,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
             backupFile = backupIBDBService.backupIBDB(selectedProject.getProjectId().toString(),selectedProject.getLocalDbName());
             
             // TODO: remove test code
-            //byte[] contents = FileUtils.contentsOfFile(backupFile);
-            //FileUtils.writeToFile(new File(backupFile.getAbsoluteFile() + ".bak"), contents);
-            
+
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             User user = app.getSessionData().getUserData();
 

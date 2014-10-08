@@ -12,14 +12,16 @@
 
 package org.generationcp.browser.study;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.generationcp.ibpworkbench.Message;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.browser.study.listeners.StudyValueChangedListener;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
@@ -29,11 +31,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 

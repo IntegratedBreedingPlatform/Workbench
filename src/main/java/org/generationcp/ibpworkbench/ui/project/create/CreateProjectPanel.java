@@ -21,9 +21,6 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
-import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -32,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.util.List;
 
 /**
  * The create project panel 
@@ -74,23 +69,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         this.presenter = presenter;
 	}
 
-
-    /*
-    This should be moved to the presenter code
-
-    public List<ProjectUserRole> getProjectMembers(){
-    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
-        return projectMembersComponent.getProjectMembers();
-    }
-    
-    public List<ProjectUserRole> getProjectUserRoles(){
-    	ProjectMembersComponent projectMembersComponent = (ProjectMembersComponent) tabSheet.getTab(1).getComponent();
-        return projectMembersComponent.getProjectUserRoles();
-    }
-    */
-    
-
- 
     @Override
     public void afterPropertiesSet() {
         assemble();
@@ -131,7 +109,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
 
     protected void initializeActions() {
 
-        //saveProjectButton.addListener(new SaveNewProjectAction(this));
         saveProjectButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

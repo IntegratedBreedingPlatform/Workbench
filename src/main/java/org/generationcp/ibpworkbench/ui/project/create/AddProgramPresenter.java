@@ -74,7 +74,6 @@ public class AddProgramPresenter {
     public boolean validateAndSaveBasicDetails() {
         LOG.debug("Do validate basic details");
         try {
-            //this.users = view.programMembersPanel.validateAndSave();
             this.program = view.createProjectPanel.projectBasicDetailsComponent.validateAndSave();
             return true;
         } catch (Exception e) {
@@ -148,9 +147,6 @@ public class AddProgramPresenter {
 
 
         if (isGenerationSuccess) {
-            //generator.addCachedLocations(app.getSessionData().getProjectLocationData());
-            //generator.addCachedBreedingMethods(app.getSessionData().getProjectBreedingMethodData());
-
             User currentUser = app.getSessionData().getUserData();
             User user = currentUser.copy();
 
@@ -412,7 +408,6 @@ public class AddProgramPresenter {
             projectUserRole.setProject(project);
 
             //do not insert manager role, for some reason.. nageerror ng unique constraints
-            //  if(!projectUserRole.getRole().getName().equalsIgnoreCase(Role.MANAGER_ROLE_NAME))
             workbenchDataManager.addProjectUserRole(projectUserRole);
 
             // Save User to local db

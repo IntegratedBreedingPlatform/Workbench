@@ -172,16 +172,12 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         
         dummy.addComponent(btnLogin);
         
-        //btnLogin.addStyleName("primary");
         loginPanelLayout.addComponent(dummy);
         loginPanelLayout.setComponentAlignment(dummy, Alignment.TOP_CENTER);
-        
-        
-        
+
         HorizontalLayout subLinksLayout = new HorizontalLayout();
         subLinksLayout.setWidth("290px");
         subLinksLayout.setHeight("30px");
-        //subLinksLayout.setMargin(true,false,true,false);
         subLinksLayout.setSpacing(true);
         
         
@@ -232,7 +228,6 @@ public class LoginForm extends CustomComponent implements InitializingBean, Inte
         gridLayout.addComponent(pfPassword);
         gridLayout.addComponent(new Label());
         gridLayout.addComponent(rememberChk);
-        //gridLayout.addComponent(messageArea, 0, 2, 1, 2);
 
         lblMessage.setVisible(false);
         

@@ -1,15 +1,17 @@
 package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
-
-import com.vaadin.ui.*;
-
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.TextField;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -104,11 +106,9 @@ public class GxeUtility {
 	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,String genotypeName ,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
 		ArrayList<String[]> tableItems = new ArrayList<String[]>();
 		
-		//Hashtable<Integer,Integer> variableTypeIdToColNoMap = new Hashtable<Integer, Integer>();
 		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
 		
 		int i = 0, j = 0;
-		//Integer datasetTypeFactorId = null;
 		// create header row
 		List<String> headerRow = new ArrayList<String>();
 		// site no && site code insert to columnMap
@@ -147,7 +147,6 @@ public class GxeUtility {
 		
 		// create table content
 		for (Experiment experiment : experiments) {
-			//List<String> row = new ArrayList<String>(2 + traitToColNoMap.size());
 			String[] row = new String[headerRow.size()];
 			
 			
@@ -170,8 +169,7 @@ public class GxeUtility {
 		
 			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
-				//Variable traitVar = experiment.getVariates().findByLocalName(traitMapEntry`)
-				
+
 				if (var == null) {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}

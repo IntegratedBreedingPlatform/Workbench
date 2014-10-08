@@ -70,7 +70,6 @@ public class UsernameValidator extends AbstractValidator{
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage());
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-//            return false;
         }
         
     	return true;

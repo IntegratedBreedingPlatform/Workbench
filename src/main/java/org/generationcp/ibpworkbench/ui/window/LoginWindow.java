@@ -55,13 +55,6 @@ public class LoginWindow extends Window implements InitializingBean {
         presenter = new LoginPresenter(this);
     }
 
-    /*
-    @Override
-    public void attach() {
-        super.attach();
-
-    }*/
-
     private void initializeActions() {
         loginBtn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         loginBtn.addListener(new Button.ClickListener() {
@@ -159,7 +152,6 @@ public class LoginWindow extends Window implements InitializingBean {
         loginFrmLayout.setSpacing(true);
 
         final Label dummyLabel = new Label(" ",Label.CONTENT_XHTML);
-        //dummyLabel.setHeight("80px");
 
         final Label usernameLbl = new Label("<b>" + (messageSource.getMessage(Message.USERNAME) + ":").toUpperCase(),Label.CONTENT_XHTML);
         final Label passwordLbl = new Label("<b>" + (messageSource.getMessage(Message.PASSWORD)+ ":").toUpperCase() + "</b>",Label.CONTENT_XHTML);

@@ -24,7 +24,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
@@ -83,15 +82,11 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
     private SimpleResourceBundleMessageSource messageSource;
 
 	private Button backupIBDBButton;
-	private Link backupIBDBLink;
 	private Button restoreIBDBButton;
 
 	private Button breedingViewMultiSiteAnalysisButton;
 
 	private Button manageGermplasmListsButton;
-	
-	@Autowired
-    private WorkbenchDataManager workbenchDataManager;
 
 	private Button breedingManagerButton;
 
@@ -136,28 +131,22 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
 
         administrationTitle = new Label("Administration & Configuration");
         administrationTitle.setStyleName("gcp-section-title-large");
-        //administrationTitle.setSizeUndefined();
 
         genoTypingTitle = new Label("Genotyping");
         genoTypingTitle.setStyleName("gcp-section-title-large");
-        //genoTypingTitle.setSizeUndefined();
 
         projectPlanningTitle = new Label("Program Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
-        //projectPlanningTitle.setSizeUndefined();
-        
+
         breedingManagementTitle = new Label("Breeding Management");
         breedingManagementTitle.setStyleName("gcp-section-title-large");
-        //breedingManagementTitle.setSizeUndefined();
 
         analysisPipelineTitle = new Label("Analysis Pipeline");
         analysisPipelineTitle.setStyleName("gcp-section-title-large");
-        //analysisPipelineTitle.setSizeUndefined();
 
         decisionSupportTitle = new Label("Decision Support");
         decisionSupportTitle.setStyleName("gcp-section-title-large");
-        //decisionSupportTitle.setSizeUndefined();
-        
+
         membersButton = new Button("Members");
         membersButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         membersButton.setSizeUndefined();
@@ -451,31 +440,12 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
-        
-        //layout.addComponent(browseGermplasmButton);
-        //browseGermplasmButton.setHeight("20px");
-        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(browseGermplasmButton, 0);
-        
-        //layout.addComponent(browseGermplasmListsButton);
-        //browseGermplasmListsButton.setHeight("20px");
-        //layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(browseGermplasmListsButton, 0);
 
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
-        
-        //layout.addComponent(crossStudyBrowserButton2);
-        //crossStudyBrowserButton2.setHeight("20px");
-        //layout.setComponentAlignment(crossStudyBrowserButton2, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(crossStudyBrowserButton2, 0);
-        /*
-        layout.addComponent(gdmsButton);
-        layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(gdmsButton, 0);
-        */
+
         layout.addComponent(mainHeadToHeadButton);
         mainHeadToHeadButton.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
@@ -534,11 +504,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(projectLocationButton, 0);
         
-        //layout.addComponent(createTemplatesButton);
-        //createTemplatesButton.setHeight("20px");
-        //layout.setComponentAlignment(createTemplatesButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(createTemplatesButton, 0);
-
         layout.addComponent(userToolsButton);
         userToolsButton.setHeight("20px");
         layout.setComponentAlignment(userToolsButton, Alignment.TOP_CENTER);
@@ -580,18 +545,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         layout.setComponentAlignment(gdmsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(gdmsButton, 0);
 
-        
-        /*
-        layout.addComponent(projectMethodsButton);
-        projectMethodsButton.setHeight("20px");
-        layout.setComponentAlignment(projectMethodsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectMethodsButton, 0);
-        
-        layout.addComponent(projectLocationButton);
-        browseGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(projectLocationButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectLocationButton, 0);
-         */
         return layout;
     }
 
@@ -609,7 +562,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
 
-        
         layout.addComponent(germplasmImportButton);
         germplasmImportButton.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
@@ -619,28 +571,16 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         germplasmImportButton2.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
-        
-        
-        /**layout.addComponent(manageGermplasmListsButton);
-        manageGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(manageGermplasmListsButton, 0);**/
-                
+
         layout.addComponent(makeCrossesButton);
         makeCrossesButton.setHeight("20px");
         layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(makeCrossesButton, 0);
 
         layout.addComponent(nurseryManagerButton);
-        //nurseryManagerButton.setHeight("20px");
         layout.setComponentAlignment(nurseryManagerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(nurseryManagerButton, 0);
-        
-        /*
-        layout.addComponent(breedingManagerButton);
-        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerButton, 0);
-        */
+
         return layout;
     }
 
@@ -662,18 +602,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
-        
-        /*layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
-        breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		*/
-        /*
-        layout.addComponent(breedingViewGxeAnalysisLocalButton);
-        breedingViewGxeAnalysisLocalButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewGxeAnalysisLocalButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewGxeAnalysisLocalButton, 0);
-        */
 
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
@@ -686,7 +614,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         layout.setExpandRatio(metaAnalysisBtn, 0);
 
         layout.addComponent(breedingViewButton);
-        //breedingViewMultiSiteAnalysisButton.setHeight("28px");
         layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewButton, 0);
         
@@ -716,11 +643,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         optimasButton.setHeight("20px");
         layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(optimasButton, 0);
-        
-        //layout.addComponent(crossStudyBrowserButton);
-        //crossStudyBrowserButton.setHeight("20px");
-        //layout.setComponentAlignment(crossStudyBrowserButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(crossStudyBrowserButton, 0);
         
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
@@ -853,7 +775,6 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         messageSource.setCaption(gdmsButton,Message.GDMS_LINK);
         
         messageSource.setValue(breedingManagementTitle,Message.BREEDING_MANAGEMENT_TITLE);
-        //messageSource.setCaption(fieldbookButton,Message.FIELDBOOK);
         messageSource.setCaption(nurseryManagerButton,Message.NURSERY_MANAGER_LINK);
 
         messageSource.setValue(decisionSupportTitle,Message.DECISION_SUPPORT_TITLE);

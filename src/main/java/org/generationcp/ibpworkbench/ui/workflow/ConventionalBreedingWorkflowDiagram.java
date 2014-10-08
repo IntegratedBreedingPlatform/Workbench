@@ -42,7 +42,6 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
     private static final int WORKFLOW_STEP_WIDTH = 270;
     private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
     private static final int ARROW_IMAGE_HEIGHT = 30;
-    //private static final int ARROW_IMAGE_WIDTH = 40;
     private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     
@@ -69,8 +68,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
     private Button fieldbookButton;
     private Button browseGenotypingDataButton;
     private Button optimasButton;
-    //private Button headToHeadButton;
-    //private Button headToHeadButton2;
+
     private Button mainHeadToHeadButton;
     private Button mainHeadToHeadButton2;
     
@@ -125,24 +123,19 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
 
         projectPlanningTitle = new Label(messageSource.getMessage(Message.PROJECT_PLANNING));
         projectPlanningTitle.setStyleName("gcp-section-title-large");
-        //projectPlanningTitle.setSizeUndefined();
 
         populationDevelopmentTitle = new Label(messageSource.getMessage(Message.POPULATION_DEVELOPMENT));
         populationDevelopmentTitle.setStyleName("gcp-section-title-large");
-        //populationDevelopmentTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label(messageSource.getMessage(Message.FIELD_TRIAL_MANAGEMENT));
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
-        //fieldTrialManagementTitle.setSizeUndefined();
 
         statisticalAnalysisTitle = new Label(messageSource.getMessage(Message.STATISTICAL_ANALYSIS));
         statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
-        //statisticalAnalysisTitle.setSizeUndefined();
 
         breedingDecisionTitle = new Label(messageSource.getMessage(Message.BREEDING_DECISION));
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
-        //breedingDecisionTitle.setSizeUndefined();
-        
+
         breedingPlannerButton = new Button("Breeding Planner");
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingPlannerButton.setSizeUndefined();
@@ -157,7 +150,6 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         germplasmImportButton2.setSizeUndefined();
         germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
-        
         
         browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
         browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -213,17 +205,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
-        /*
-        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton.setSizeUndefined();
-        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-        
-        headToHeadButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton2.setSizeUndefined();
-        headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-          */
+
         mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
         mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mainHeadToHeadButton.setSizeUndefined();
@@ -369,12 +351,6 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserFBBtn, 0);
 
-        
-        //layout.addComponent(browseGermplasmButton);
-        //browseGermplasmButton.setHeight("20px");
-        //layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(browseGermplasmButton, 0);
-
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
@@ -389,12 +365,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
-         /*
-        layout.addComponent(headToHeadButton);
-        headToHeadButton.setHeight("20px");
-        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton, 0);
-           */
+
         layout.addComponent(mainHeadToHeadButton);
         mainHeadToHeadButton.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
@@ -405,11 +376,6 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
         
-        /*layout.addComponent(breedingManagerListManager);
-        breedingManagerListManager.setHeight("20px");
-        layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerListManager, 0);
-          */
         return layout;
     }
 
@@ -430,20 +396,10 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        //layout.addComponent(germplasmImportButton);
-        //germplasmImportButton.setHeight("20px");
-        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(germplasmImportButton, 0);
-
         layout.addComponent(germplasmImportButton2);
         germplasmImportButton2.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
-        
-        /**layout.addComponent(manageGermplasmListsButton);
-        manageGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(manageGermplasmListsButton, 0);**/
         
         layout.addComponent(makeCrossesButton);
         makeCrossesButton.setHeight("20px");
@@ -529,11 +485,7 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         emptyLabel.setHeight("20px");
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
-          /*
-        layout.addComponent(headToHeadButton2);
-        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton2, 0);
-            */
+
         layout.addComponent(mainHeadToHeadButton2);
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
@@ -589,11 +541,8 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
             
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             
-            //headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
-            //headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
-            //browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
             breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
@@ -643,11 +592,5 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         } else { 
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
-        
-        /*
-        messageSource.setCaption(manageGermplasmListsButton,Message.GERMPLASM_LIST_MANAGER_LINK);
-        messageSource.setCaption(breedingViewMultiSiteAnalysisButton,Message.MULTI_SITE_ANALYSIS_LINK);
-        messageSource.setCaption(breedingViewButton,Message.BREEDING_VIEW_STANDALONE_LINK);
-        */
     }
 }

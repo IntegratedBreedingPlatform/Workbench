@@ -113,7 +113,6 @@ public final class NavManager {
         BreadCrumb b = (BreadCrumb) event.getComponent().getParent();
         
         listener.doAction(b.getWindow(), b.getUriFragment(), true);
-//        navigateApp(event, b.getUriFragment());
     }
 
 }

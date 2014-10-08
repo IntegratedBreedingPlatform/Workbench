@@ -12,11 +12,13 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.*;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
@@ -37,18 +39,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
@@ -158,7 +152,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
         cropTypeCombo = createCropTypeComboBox();
         cropTypeCombo.setWidth("250px");
-        //cropTypeCombo.addValidator(new RegexValidator("Crop name must not contain any of the following: ' \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
         cropTypeCombo.setStyleName("hide-caption");
         
         lblCrop = new Label();
@@ -204,10 +197,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     }
     
     protected void initializeLayoutForUpdate() {
-    	
-        //this.setComponentAlignment(gridLayout,Alignment.TOP_LEFT);
-        
-        CropType selectedCropType = sessionData.getSelectedProject().getCropType();
+    	CropType selectedCropType = sessionData.getSelectedProject().getCropType();
         
         Boolean isCustomCrop = true;
         for (CropType.CropEnum crop : CropType.CropEnum.values()){

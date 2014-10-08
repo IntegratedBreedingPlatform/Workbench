@@ -12,6 +12,12 @@
 
 package org.generationcp.browser.study.listeners;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import org.generationcp.browser.study.TableViewerComponent;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -22,13 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 import java.util.Properties;
 
@@ -67,8 +66,6 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
             tool = workbenchDataManager.getToolWithName(ToolName.germplasm_browser.toString());
         } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
-            /*MessageNotifier.showError(mainWindow, messageSource.getMessage(Message.DATABASE_ERROR),
-                    "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));*/
         }
         
         ExternalResource germplasmBrowserLink = null;
@@ -90,7 +87,6 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
         germplasmInfo.setSizeFull();
         layoutForGermplasm.addComponent(germplasmInfo);
         
-//        germplasmWindow.addComponent(layoutForGermplasm);
         germplasmWindow.setContent(layoutForGermplasm);
         germplasmWindow.setWidth("645px");
         germplasmWindow.setHeight("600px");

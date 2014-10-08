@@ -57,7 +57,6 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         ,FIELDBOOK("fieldbook")
         ,OPTIMAS("optimas")
         ,BREEDING_MANAGER("breeding_manager")
-        //,BREEDING_GXE("breeding_gxe")
         ,BREEDING_VIEW("breeding_view")
         ,MBDT("mbdt")
         ,MEMBER("member")
@@ -147,14 +146,13 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
         
         Window window = event.getComponent().getWindow();
         
-      //  launchTool(windowEnum.getwindowName(), window, true);
         launchWindow(window, windowEnum.getwindowName());
         
     }
 
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
 
     @Override
@@ -186,34 +184,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		windowCaption = mywindow.getCaption();
     	}
-        /*
-    	else if (WindowEnum.BACKUP_IBDB.getwindowName().equals(windowName))
-    	{
-    		//LOG.debug("Add Backup IBDB Window");
-    		//window.addWindow(new BackupIBDBWindow(this.project));
-    		ConfirmDialog.show(window,messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION),
-    				messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_DESC),
-    				messageSource.getMessage(Message.YES),
-    				messageSource.getMessage(Message.CANCEL),
-    				new BackupIBDBSaveAction(this.project, window));
-    		
 
-    		windowCaption = messageSource.getMessage(Message.BACKUP_IBDB_WINDOW_CAPTION);
-    		
-    		windowLaunched = true;
-    	}
-    	else if (WindowEnum.RESTORE_IBDB.getwindowName().equals(windowName))
-    	{
-    		//LOG.debug("Add Restore IBDB Window");
-    		mywindow = new RestoreIBDBWindow(this.project);
-    		window.addWindow(mywindow);
-
-    		windowCaption = mywindow.getCaption();
-    		
-    		windowLaunched = true;
-    		
-    	}
-    	*/
     	else if (WindowEnum.USER_TOOLS.getwindowName().equals(windowName)) {
     		mywindow = new UserToolsManagerWindow();
     		window.addWindow(mywindow);
@@ -268,7 +239,6 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
             } catch (MiddlewareQueryException e1) {
                 MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                //return;
             }
     	}
     }

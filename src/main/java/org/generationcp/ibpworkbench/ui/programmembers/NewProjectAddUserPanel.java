@@ -88,7 +88,6 @@ public class NewProjectAddUserPanel extends Panel {
         vl.setSizeFull();
         vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
         vl.addComponent(userForm);
-        //vl.setMargin(new Layout.MarginInfo(false,true,true,true));
         vl.setSpacing(true);
         
         p.addComponent(vl);
@@ -125,7 +124,6 @@ public class NewProjectAddUserPanel extends Panel {
     protected void initializeLayout() {
         setImmediate(false);
         setStyleName(Reindeer.PANEL_LIGHT);
-        //setWidth("100%");
         setWidth("925px");
         
         
@@ -149,7 +147,6 @@ public class NewProjectAddUserPanel extends Panel {
     public void updateLabels() {
         messageSource.setCaption(saveButton, Message.SAVE);
         messageSource.setCaption(cancelButton, Message.CANCEL);
-        //messageSource.setCaption(userForm, Message.REGISTER_USER_ACCOUNT_FORM);
     }
     
     public UserAccountForm getForm() {

@@ -12,14 +12,12 @@
 
 package org.generationcp.browser.study.listeners;
 
-import org.generationcp.browser.study.RepresentationDatasetComponent;
-import org.generationcp.browser.study.TableViewerComponent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Layout;
+import org.generationcp.browser.study.TableViewerComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StudyButtonClickListener implements Button.ClickListener {
 

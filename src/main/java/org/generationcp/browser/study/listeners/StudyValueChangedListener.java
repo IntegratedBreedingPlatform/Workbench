@@ -14,11 +14,10 @@
 
 package org.generationcp.browser.study.listeners;
 
-import org.generationcp.browser.study.StudyEffectComponent;
-
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Layout;
+import org.generationcp.browser.study.StudyEffectComponent;
 
 public class StudyValueChangedListener implements Property.ValueChangeListener{
 

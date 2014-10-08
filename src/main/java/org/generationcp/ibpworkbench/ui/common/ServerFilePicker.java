@@ -66,11 +66,6 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				
-				//LOG.debug("pause here");
-				
-				
-				//parentWin.addWindow(pickerWindow);
 				parentWin.getParent().addWindow(pickerWindow);
 			}
 		});
@@ -128,7 +123,6 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
         treetable.setImmediate(true);
         treetable.setWidth("100%");
         treetable.setHeight("240px");
-        //treetable.setSizeFull();
         treetable.setSelectable(true);
         treetable.addListener(new Property.ValueChangeListener() {
 
@@ -229,13 +223,11 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 
 	@Override
 	public void setWidth(String width) {
-		//super.setWidth(width);
 		pathFld.setWidth(width);
 	}
 	
 	@Override
 	public void addValidator(Validator validator) {
-		//this.getPathField().addValidator(validator);
 		super.addValidator(validator);
 	}
 		
@@ -262,9 +254,8 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	@Override
 	public void setRequired(boolean required) {
 		super.setRequired(required);
-		//this.getPathField().setRequired(true);
 	}
-	
+
 	@Override
 	public void setRequiredError(String requiredMessage) {
 		super.setRequiredError(requiredMessage);

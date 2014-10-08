@@ -75,7 +75,7 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
     
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
     
     @Override
@@ -104,8 +104,6 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
 
             w.showContent(new ProgramLocationsView(this.project));
 
-            //if (user != null)
-                //NavManager.navigateApp(window, "/program_locations", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

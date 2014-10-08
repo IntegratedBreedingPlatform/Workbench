@@ -75,7 +75,7 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
     
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
     
     @Override
@@ -91,8 +91,7 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
 
 
         try {
-        	//ProjectBreedingMethodsPanel projectMethodsPanel = new ProjectBreedingMethodsPanel(project, role);
-            ProgramMethodsView methodsView = new ProgramMethodsView(project);
+        	ProgramMethodsView methodsView = new ProgramMethodsView(project);
 
             w.showContent(methodsView);
             
@@ -110,8 +109,6 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
 
                 }
 
-            //if (user != null)
-                //NavManager.navigateApp(window, "/program_methods", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

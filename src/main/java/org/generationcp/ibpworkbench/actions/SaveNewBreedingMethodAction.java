@@ -20,10 +20,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
+import org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodForm;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -110,8 +109,6 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 
             LOG.info(sessionData.getProjectBreedingMethodData().toString());
 
-            //newBreedingMethodForm.commit();
-
             if (sessionData.getUserData() != null)
                 newBreedingMethod.setUser(sessionData.getUserData().getUserid());
 
@@ -142,17 +139,6 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 
                 pv.addRow(newBreedingMethod, false, 0);
             }
-
-            /*
-            User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
-            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added a new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
-            try {
-				workbenchDataManager.addProjectActivity(projAct);
-			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} */
 
             window.getParent().removeWindow(window);
 

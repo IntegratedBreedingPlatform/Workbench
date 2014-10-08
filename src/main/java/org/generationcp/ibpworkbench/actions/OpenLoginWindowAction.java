@@ -31,25 +31,9 @@ public class OpenLoginWindowAction implements ClickListener{
     
     @Override
     public void buttonClick(ClickEvent event) {
-    	event.getComponent().getApplication().close(); // closes the app then reloads if logout url is not set
-    
-    	//LoginWindow window = new LoginWindow();
-        //new LoginPresenter(window);
-        //Application app = event.getComponent().getApplication();
-        
-        //window.setWidth("100%");
-        //window.center();
-        //window.setPositionY(0);
-        //window.setClosable(false);
-        //window.setDraggable(false);
-        //window.setHeight("100%");
-        //window.setBorder(0);       
-        
-        //app.getMainWindow().removeAllComponents();
-        //app.getMainWindow().addWindow(window);
-        
-        //app.removeWindow(app.getMainWindow());
-        //app.setMainWindow(window);
+        // closes the app then reloads if logout url is not set
+    	event.getComponent().getApplication().close();
+
     }
 
 }

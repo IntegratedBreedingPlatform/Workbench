@@ -25,10 +25,7 @@ public class OpenSecurityQuestionAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-        //parent.addWindow(new SecurityQuestionWindow());
-    	//event.getComponent().getWindow().addWindow(new SecurityQuestionWindow());
-    	
-    	event.getComponent().getApplication().getMainWindow().addWindow(new SecurityQuestionWindow());
+        event.getComponent().getApplication().getMainWindow().addWindow(new SecurityQuestionWindow());
     }
 
 }

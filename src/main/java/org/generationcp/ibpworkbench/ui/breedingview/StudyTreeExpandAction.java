@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.breedingview;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.TreeTable;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.Reference;

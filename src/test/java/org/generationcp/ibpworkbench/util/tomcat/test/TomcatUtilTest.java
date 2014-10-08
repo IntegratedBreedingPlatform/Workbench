@@ -1,12 +1,12 @@
 package org.generationcp.ibpworkbench.util.tomcat.test;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatus;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
 
 public class TomcatUtilTest {
 

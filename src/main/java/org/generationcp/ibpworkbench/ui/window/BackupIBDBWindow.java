@@ -107,8 +107,8 @@ public class BackupIBDBWindow extends BaseSubWindow implements InitializingBean,
 		
 		saveBtn = new Button("Save");
         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		//saveBtn.setEnabled(false);
-		saveBtn.setSizeUndefined();
+
+        saveBtn.setSizeUndefined();
 		cancelBtn = new Button("Cancel");
 		cancelBtn.setSizeUndefined();
     
@@ -161,16 +161,7 @@ public class BackupIBDBWindow extends BaseSubWindow implements InitializingBean,
 				event.getButton().getWindow().getParent().removeWindow(event.getButton().getWindow());
 			}
 		});
-    	/*
-    	saveBtn.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				final Window sourceWindow = event.getButton().getWindow();
-				
-				ConfirmDialog.show(sourceWindow.getParent(),"Proceed Backup?",new BackupIBDBSaveAction(this.project, sourceWindow));
-			}
-		}); */
+
     }
 
     protected void assemble() throws Exception {

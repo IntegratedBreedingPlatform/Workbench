@@ -20,8 +20,6 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.Window.Notification;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -387,7 +385,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         mainLayout = new VerticalLayout();
         
         lblTitle = new Label();
-        //lblTitle.setContentMode(Label.CONTENT_XHTML);
         lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
         lblTitle.addStyleName("label-bold");
         lblTitle.setHeight("25px");
@@ -1093,13 +1090,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
         messageSource.setValue(lblDatasetName, Message.BV_DATASET_NAME);
         messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
-//        messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER);
-//        messageSource.setValue(lblAnalysisNameHeader, Message.BV_ANALYSIS_NAME_HEADER);
-//        messageSource.setValue(lblChooseEnvironmentHeader, Message.BV_CHOOSE_ENVIRONMENT_HEADER);
         messageSource.setValue(lblChooseEnvironmentDescription, Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
         messageSource.setValue(lblChooseEnvironmentForAnalysisDescription, Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
-//        messageSource.setValue(lblSpecifyDesignDetailsHeader, Message.BV_SPECIFY_DESIGN_DETAILS_HEADER);
-//        messageSource.setValue(getLblSpecifyGenotypesHeader(), Message.BV_SPECIFY_GENOTYPES_HEADER);
     }
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {

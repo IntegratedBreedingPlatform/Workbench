@@ -15,7 +15,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.validator.PersonNameValidator;
 import org.generationcp.ibpworkbench.validator.UserPasswordValidator;

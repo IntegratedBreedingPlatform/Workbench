@@ -12,11 +12,13 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import org.generationcp.browser.study.StudyInfoDialog;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -29,14 +31,7 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -50,21 +45,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 
@@ -141,8 +125,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         messageSource.setCaption(btnNext, Message.NEXT);
         messageSource.setValue(lblPageTitle, Message.TITLE_METAANALYSIS);
         messageSource.setValue(lblBuildNewAnalysisDescription,  Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
-//        messageSource.setValue(lblReviewEnvironments, Message.META_REVIEW_ENVIRONMENTS);
-//        messageSource.setValue(lblSelectDatasetsForAnalysis, Message.META_SELECT_DATASETS_FOR_ANALYSIS);
         messageSource.setValue(lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
     }
     
@@ -311,8 +293,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
         studyDetailsLayout.addComponent(linkCloseAllTab, 8, 0, 9, 0);
         studyDetailsLayout.setComponentAlignment(linkCloseAllTab, Alignment.TOP_RIGHT);
         studyDetailsLayout.addComponent(lblBuildNewAnalysisDescription, 0, 1, 9, 1);
-        //studyDetailsLayout.addComponent(tabSheet, 0, 2, 9, 2);
-        
+
         selectedDataSetEnvironmentLayout = new VerticalLayout();
         selectedDataSetEnvironmentLayout.setMargin(false);
         selectedDataSetEnvironmentLayout.setSpacing(true);

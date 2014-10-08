@@ -5,7 +5,6 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -100,7 +99,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             	fm.setTmname(factor.getStandardVariable().getMethod().getName());
             	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
             	fm.setTrname(factor.getStandardVariable().getName());
-            	//fm.setTrname(factor.getStandardVariable().getProperty().getName());
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 
             	factorList.add(fm);

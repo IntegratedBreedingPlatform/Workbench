@@ -84,7 +84,7 @@ public class HomeAction implements ClickListener, ActionListener{
      */
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
 
     /**
@@ -124,6 +124,5 @@ public class HomeAction implements ClickListener, ActionListener{
             return;
         }
 
-        //NavManager.navigateApp(window, "/Home", isLinkAccessed);
     }
 }

@@ -15,7 +15,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -94,21 +93,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
             }
 
             return false;
-
-        	/*
-            if(WindowEnum.GERMPLASM_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.STUDY_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.GERMPLASM_LIST_BROWSER.getwindowName().equals(windowName) 
-                    || WindowEnum.GDMS.getwindowName().equals(windowName) 
-                    || WindowEnum.FIELDBOOK.getwindowName().equals(windowName) 
-                    || WindowEnum.OPTIMAS.getwindowName().equals(windowName) 
-                    || WindowEnum.BREEDING_MANAGER.getwindowName().equals(windowName) 
-                    || WindowEnum.BREEDING_VIEW.getwindowName().equals(windowName) 
-                    || WindowEnum.MEMBER.getwindowName().equals(windowName)
-                    ) {
-                return true;
-            }   return false;
-            */
         }
     }
 
@@ -158,7 +142,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
     }
 
     @Override
@@ -185,7 +168,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
     public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
         IContentWindow w = (IContentWindow) window;
 
-        //System.out.println("ChangeWindow");
         if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
             try {
                 ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getLastOpenedProject().getProjectId().intValue()), sessionData.getLastOpenedProject(),messageSource.getMessage(Message.MEMBERS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.MEMBERS_LINK)), sessionData.getUserData(), new Date());
@@ -200,11 +182,9 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
             w.showContent(projectLocationPanel);
-            //NavManager.navigateApp(window, "/"+windowName, isLinkAccessed);
 
         } else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
             w.showContent(new BackupAndRestoreView());
-            //NavManager.navigateApp(window,"/"+windowName,isLinkAccessed);
         }
         else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 
@@ -226,7 +206,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
             w.showContent(gxeAnalysisPanel);
-            //NavManager.navigateApp(window, "/BreedingGxE", isLinkAccessed);
 
         } else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
 
@@ -247,8 +226,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(breedingViewPanel);
-            //NavManager.navigateApp(window, "/breeding_view", isLinkAccessed);
-
         } else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
             try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
@@ -267,7 +244,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
             MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
             w.showContent(metaAnalyis);
-            //NavManager.navigateApp(window, "/bv_meta_analysis", isLinkAccessed);
         } else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),

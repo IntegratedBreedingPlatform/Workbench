@@ -34,7 +34,7 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
     
     @Override
     public void doAction(Event event) {
-        //NavManager.breadCrumbClick(this, event);
+        // does nothing
     }
     
     @Override
@@ -46,7 +46,6 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
 
             w.showContent(toolsAndCropVersionsView);
             
-            //NavManager.navigateApp(window, "/ToolsVersion", isLinkAccessed);
         } catch (Exception e) {
             LOG.error("Exception", e);
             if(e.getCause() instanceof InternationalizableException) {

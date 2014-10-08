@@ -6,7 +6,6 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -139,27 +138,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 resultsMap.put(method.getMid(),method);
             }
 
-            // remove items already in favorites
-            //for (MethodView method : existingItems) {
-            //    if (resultsMap.containsKey(method.getMid())) {
-            //        resultsMap.remove(method.getMid());
-            //    }
-            //}
-
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
         }
 
-        /*
-        ArrayList sorted =  new ArrayList<MethodView>(resultsMap.values());
-
-        Collections.sort(sorted,new Comparator<MethodView>() {
-            @Override
-            public int compare(MethodView o1, MethodView o2) {
-                return o1.getMname().toUpperCase().compareTo(o2.getMname().toUpperCase());
-            }
-        });
-        */
         return resultsMap.values();
     }
 
@@ -173,27 +155,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 resultsMap.put(method.getMid(),method);
             }
 
-            // remove items already in favorites
-            //for (MethodView method : this.getSavedProgramMethods()) {
-            //    if (resultsMap.containsKey(method.getMid())) {
-            //        resultsMap.remove(method.getMid());
-            //    }
-            //}
-
         } catch (MiddlewareQueryException e) {
             e.printStackTrace();
         }
 
-        /*
-        ArrayList sorted =  new ArrayList<MethodView>(resultsMap.values());
-
-        Collections.sort(sorted,new Comparator<MethodView>() {
-            @Override
-            public int compare(MethodView o1, MethodView o2) {
-                return o1.getMname().toUpperCase().compareTo(o2.getMname().toUpperCase());
-            }
-        });
-        */
         return resultsMap.values();
     }
 
@@ -264,16 +229,6 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
             view.addRow(newBreedingMethod,false,0);
 
-            /*
-            User user = app.getSessionData().getUserData();
-            Project currentProject = app.getSessionData().getLastOpenedProject();
-            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Project Methods", "Added a new Breeding Method ("+ newMethod.getMname() + ")", user, new Date());
-            try {
-				workbenchDataManager.addProjectActivity(projAct);
-			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} */
             return newBreedingMethod;
         }
 

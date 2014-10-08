@@ -94,10 +94,9 @@ public class TwoColumnSelect extends HorizontalLayout {
         buttonArea.setWidth("40px");
         buttonArea.setHeight("100%");
         
-        //leftSelect.setSizeFull();
         leftSelect.setWidth("100%");
         leftSelect.setHeight("150px");
-        //rightSelect.setSizeFull();
+
         rightSelect.setWidth("100%");
         rightSelect.setHeight("150px");
     }

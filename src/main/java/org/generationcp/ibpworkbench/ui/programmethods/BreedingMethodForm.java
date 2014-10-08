@@ -16,7 +16,6 @@ import com.vaadin.ui.*;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.BreedingMethodFormFieldFactory;
-import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -95,9 +94,6 @@ public class BreedingMethodForm extends Form {
         setWriteThrough(false);
         setInvalidCommitted(false);
         setValidationVisibleOnCommit(false);
-
-        //grid.setWidth("100%");
-
 
     }
 

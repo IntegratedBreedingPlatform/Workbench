@@ -12,21 +12,20 @@
 
 package org.generationcp.browser.study;
 
-import org.generationcp.ibpworkbench.Message;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.browser.study.listeners.StudySelectedTabChangeListener;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class StudyAccordionMenu extends Accordion implements InitializingBean, InternationalizableComponent {
@@ -66,22 +65,19 @@ public class StudyAccordionMenu extends Accordion implements InitializingBean, I
         Component selected = this.getSelectedTab();
         Tab tab = this.getTab(selected);
         if (tab.getComponent() instanceof VerticalLayout) {
-            //if (tab.getCaption().equals(layoutFactor.getCaption())) { // "Factors"
             if (((VerticalLayout) tab.getComponent()).getData().equals(STUDY_FACTORS)) {
                 if (layoutFactor.getComponentCount() == 0) {
                     layoutFactor.addComponent(new StudyFactorComponent(studyDataManager, studyId));
                     layoutFactor.setMargin(true);
                     layoutFactor.setSpacing(true);
                 }
-            }// else if (tab.getCaption().equals(layoutVariate.getCaption())) { // "Variates"
-            else if (((VerticalLayout) tab.getComponent()).getData().equals(STUDY_VARIATES)) {
+            } else if (((VerticalLayout) tab.getComponent()).getData().equals(STUDY_VARIATES)) {
                 if (layoutVariate.getComponentCount() == 0) {
                     layoutVariate.addComponent(new StudyVariateComponent(studyDataManager, studyId));
                     layoutVariate.setMargin(true);
                     layoutVariate.setSpacing(true);
                 }
-            }// else if (tab.getCaption().equals(layoutEffect.getCaption())) { // "Datasets"
-            else if (((VerticalLayout) tab.getComponent()).getData().equals(STUDY_EFFECTS)) {
+            } else if (((VerticalLayout) tab.getComponent()).getData().equals(STUDY_EFFECTS)) {
                 if (layoutEffect.getComponentCount() == 0) {
                     layoutEffect.addComponent(new StudyEffectComponent(studyDataManager, studyId, this, fromUrl,h2hCall));
                 }
@@ -121,10 +117,7 @@ public class StudyAccordionMenu extends Accordion implements InitializingBean, I
 
     @Override
     public void updateLabels() {
-        /*messageSource.setCaption(studyDetailComponent, Message.study_details_label);
-        messageSource.setCaption(layoutFactor, Message.factors_text);
-        messageSource.setCaption(layoutVariate, Message.variates_text);
-        messageSource.setCaption(layoutEffect, Message.datasets_text);*/
+        // does nothing
     }
 
 }

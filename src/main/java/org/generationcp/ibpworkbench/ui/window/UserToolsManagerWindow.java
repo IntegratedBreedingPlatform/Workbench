@@ -1,15 +1,20 @@
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.ServerFilePicker;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
@@ -23,28 +28,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.FormFieldFactory;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Configurable
 public class UserToolsManagerWindow extends BaseSubWindow implements InitializingBean {
@@ -54,8 +40,6 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	private Button addBtn;
 	private Button cancelBtn;
 	private ListSelect userToolsListSelect;
-	
-	//private Tool userToolFormData = new Tool();
 	
 	private Window thisWindow;
 	
@@ -121,11 +105,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 					
 					userToolsListContainer.addItemAt(0,newTool);
 					
-					//userToolsListSelect.select(newTool);
 					// clear the form data for new entry
 					userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),Arrays.asList(new String[] {"toolName","title","toolType","version","path","parameter"}));
-					
-					
+
 					MessageNotifier.showMessage(thisWindow,messageSource.getMessage(Message.SUCCESS),messageSource.getMessage(Message.USER_TOOLS_ADDED));
 					
 				} catch (MiddlewareQueryException e) {
@@ -191,7 +173,6 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		};
 		
 		// LISTENERS REGISTRATION
-
 		addBtn.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -2546119785522908833L;
 
@@ -208,7 +189,6 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
                     MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
                     return;
                 }
-
 
 				// TODO FIXME Internationalize the messages
 				ConfirmDialog.show(UserToolsManagerWindow.this.getParent(),
@@ -264,11 +244,8 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			public void valueChange(ValueChangeEvent event) {
 				// event.getProperty returns the itemID of the selected item
 				
-				//Tool selectedTool = (Tool)event.getProperty().getValue();
-			
 				Tool selectedTool = (Tool)event.getProperty().getValue();
-						
-				
+
 				// clone selectedTool to userToolFormData
 				Tool userToolFormData = new Tool();
 				userToolFormData.setParameter(selectedTool.getParameter());
@@ -400,7 +377,6 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		private TextField nameFld;
 		private TextField titleFld;
 		private TextField versionFld;
-		//private TextField pathFld;
 		private TextField parameterFld;
 		private ServerFilePicker filePicker;
 
@@ -429,12 +405,10 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			
 			nameFld.setNullRepresentation("");
 			titleFld.setNullRepresentation("");
-			//pathFld.setNullRepresentation("");
 			parameterFld.setNullRepresentation("");
 			versionFld.setNullRepresentation("");
 
 			// init validators here
-			//pathFld.addValidator(this.initPathValidator());
 			nameFld.addValidator(new Validator() {
 				private static final long serialVersionUID = -2137448642107085498L;
 
@@ -456,9 +430,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			filePicker.setWidth("190px");
 			filePicker.setRequired(true);
 			filePicker.setRequiredError(messageSource.getMessage(Message.FORM_VALIDATION_USER_TOOLS_PATH_REQUIRED));
-			//filePicker.setImmediate(true);
-			
-			
+
 			filePicker.addValidator(new Validator() {
 				private static final long serialVersionUID = -8613371582243919131L;
 

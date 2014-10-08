@@ -2,11 +2,9 @@ package org.generationcp.ibpworkbench.ui.common;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Label;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

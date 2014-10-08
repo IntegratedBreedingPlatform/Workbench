@@ -12,12 +12,12 @@
 
 package org.generationcp.browser.study.containers;
 
-import java.util.List;
-
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
+
+import java.util.List;
 
 /**
  * An implementation of QueryFactory which is needed for using the

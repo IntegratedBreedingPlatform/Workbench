@@ -51,8 +51,6 @@ public class SaveUsersInProjectAction implements ClickListener{
     
     private Project project;
     
-    //private Table tblMembers;
-    
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 
@@ -85,10 +83,6 @@ public class SaveUsersInProjectAction implements ClickListener{
         Collection<User> userList = (Collection<User>) select.getValue();
         
         try {
-            //delete existing project user roles on this project
-            //for (ProjectUserRole oldProjectUserRole : workbenchDataManager.getProjectUserRolesByProject(project)) {
-            //    workbenchDataManager.deleteProjectUserRole(oldProjectUserRole);
-            //}
 
             List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
 

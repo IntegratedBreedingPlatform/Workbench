@@ -12,14 +12,13 @@
 
 package org.generationcp.browser.study.containers;
 
-import java.util.List;
-
 import org.generationcp.middleware.domain.oms.StudyType;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
+
+import java.util.List;
 
 /**
  * A factory that creates a list of study details by implementing QueryFactory

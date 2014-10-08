@@ -72,8 +72,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
     private  List<Role> inheritedRoles;
 
     public ProgramMembersPanel(Project project) {
-    	//LOG.debug("Project is " + project.getProjectName());
-        this.project = project;
+    	this.project = project;
     }
 
 
@@ -109,8 +108,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				//if (((User) itemId).getUserid()  == project.getUserId()) label.setStyleName("label-bold");
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+
+                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
 				return label;
 			}
         	
@@ -124,8 +123,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				//if (((User) itemId).getUserid() == project.getUserId()) label.setStyleName("label-bold");
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+
+                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
 				return label;
 			}
         	
@@ -147,7 +146,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				//select.removeAllSelectedItems();
 				select.removeCheckedSelectedItems();
 			}
 		});
@@ -196,11 +194,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
         	if ((Boolean) cb.getValue() == true) {
                 try {
                     Role role = workbenchDataManager.getRoleById((Integer) cb.getData());
-                    //if (!role.getName().contains(Role.MANAGER_ROLE_NAME)){
                     LOG.debug("getRolesForProjectMembers id : "+cb.getData());
                     LOG.debug("getRolesForProjectMembers name : "+role.getName());
                         roles.add(role);
-                    //}
+
                 } catch (MiddlewareQueryException e) {
                   LOG.error("Error encountered while getting creator user roles", e);
                   throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -244,9 +241,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
             // Add the roles in this order: CB, MAS, MABC, MARS
             List<Role> roles = workbenchDataManager.getAllRolesOrderedByLabel();
             for (Role role: roles){
-              //  if (!role.getName().equals(Role.MANAGER_ROLE_NAME)) {
                     roleList.add(role);
-               // }
+
             }
             
             
@@ -444,8 +440,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
         
         BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
         for (User user : validUserList) {
-            //if (user.getUserid() == project.getUserId()) {
-        	if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
+            if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
               user.setEnabled(false);
             }
             
@@ -466,22 +461,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
             Set<User> members = (Set<User>) select.getValue();
            
             project.setMembers(members);
-           // createProjectPanel.setProject(project);
         }
         return true;    // members not required, so even if there are no values, this returns true
     }
-    
-   
-    
-//    private class NextButtonClickListener implements ClickListener{
-//        private static final long serialVersionUID = 1L;
-//
-//        @Override
-//        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//            createProjectPanel.getCreateProjectAccordion().setFocusToTab(CreateProjectAccordion.FOURTH_TAB_BREEDING_METHODS);
-//        }
-//    }
-   
+
     public List<ProjectUserRole> getProjectMembers() {
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         
@@ -525,8 +508,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
      * 
      */
     public void setInheritedRoles(){
-       // inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
-    	inheritedRoles = getRolesForProjectMembers();
+       inheritedRoles = getRolesForProjectMembers();
     	 
         if (tblMembers != null){
 
@@ -569,7 +551,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
         }
         
         public void setInheritedRoles(Item currentItem, List<Role> myinheritedRoles){
-         //   inheritedRoles = createProjectPanel.getCreateProjectAccordion().getRolesForProjectMembers();
 
             if (tblMembers != null){
 

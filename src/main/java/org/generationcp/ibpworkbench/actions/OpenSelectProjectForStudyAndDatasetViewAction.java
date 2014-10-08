@@ -15,7 +15,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
-
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
@@ -70,12 +69,9 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
         if (currentProject != null) {
             
             w.showContent(new SingleSiteAnalysisPanel(currentProject, Database.LOCAL));
-            //NavManager.navigateApp(window, uriFragment, isLinkAccessed);
         } else if (lastOpenedProject != null) {
             
         	w.showContent(new SingleSiteAnalysisPanel(lastOpenedProject, Database.LOCAL));
-        	//NavManager.navigateApp(window, uriFragment, isLinkAccessed);
-            
         } else {
         	MessageNotifier.showWarning(window, "Error", "Please select a Project first.");
             
@@ -85,7 +81,7 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
 
 	@Override
 	public void doAction(Event event) {
-		//NavManager.breadCrumbClick(this, event);
+        // does nothing
 	}
     
 }

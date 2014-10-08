@@ -12,28 +12,21 @@
 
 package org.generationcp.browser.study.containers;
 
-import java.util.List;
-
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Season;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
-import org.generationcp.middleware.domain.search.StudyResultSet;
-import org.generationcp.middleware.domain.search.filter.BrowseStudyQueryFilter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.search.StudyResultSet;
+import org.generationcp.middleware.domain.search.filter.BrowseStudyQueryFilter;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Season;
+import org.generationcp.middleware.manager.StudyDataManagerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class StudyDataIndexContainer{
     

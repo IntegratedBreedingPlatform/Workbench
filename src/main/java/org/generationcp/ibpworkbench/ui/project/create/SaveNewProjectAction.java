@@ -24,14 +24,19 @@ import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.*;
+import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 @Deprecated
@@ -44,12 +49,12 @@ public class SaveNewProjectAction implements ClickListener{
     private static final int PROJECT_USER_STATUS = 1;
     private static final int PROJECT_USER_ACCESS_NUMBER_CENTRAL = 150;
     private static final int PROJECT_USER_TYPE_CENTRAL = 420;
-    
-    private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
+
+    // instalid of installation inserted, default value is -1
+    private int projectUserInstalId = -1;
     
     private CreateProjectPanel createProjectPanel;
-//    private Project project;
-    
+
     private Map<Integer, String> idAndNameOfProjectMembers;
 
     @Autowired
@@ -63,8 +68,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-//    private Project projectSaved;
-    
+
     public SaveNewProjectAction(CreateProjectPanel createProjectPanel) {
         this.createProjectPanel = createProjectPanel;
     }
@@ -72,7 +76,7 @@ public class SaveNewProjectAction implements ClickListener{
 
     @Override
     public void buttonClick(ClickEvent event) {
-    	
+        // does nothing
     }
 
     private void saveProjectUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
@@ -108,7 +112,6 @@ public class SaveNewProjectAction implements ClickListener{
             projectUserRole.setProject(project);
             
             //do not insert manager role, for some reason.. nageerror ng unique constraints
-          //  if(!projectUserRole.getRole().getName().equalsIgnoreCase(Role.MANAGER_ROLE_NAME))
             	workbenchDataManager.addProjectUserRole(projectUserRole);
 
             // Save User to local db

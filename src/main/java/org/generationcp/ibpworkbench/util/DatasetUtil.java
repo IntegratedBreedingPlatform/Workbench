@@ -1,13 +1,13 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.util.List;
-
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+
+import java.util.List;
 
 public class DatasetUtil {
 
@@ -56,7 +56,9 @@ public class DatasetUtil {
     	List<DataSet> plotDatasets = studyDataManager.getDataSetsByType(studyId, DataSetType.PLOT_DATA);
     	for (DataSet dataSet : plotDatasets) {
             String name = dataSet.getName();
-            if (name != null && (name.startsWith(OLD_PLOT_DATASET_NAME_PREFIX) || name.endsWith(NEW_PLOT_DATASET_NAME_SUFFIX))) {//old or new name for measurements/plot
+
+            //old or new name for measurements/plot
+            if (name != null && (name.startsWith(OLD_PLOT_DATASET_NAME_PREFIX) || name.endsWith(NEW_PLOT_DATASET_NAME_SUFFIX))) {
             	return dataSet.getId();
             } else if (name != null && (name.startsWith(OLD_SUMMARY_DATASET_NAME_PREFIX) || name.endsWith(NEW_SUMMARY_DATASET_NAME_SUFFIX))) {
                 continue;

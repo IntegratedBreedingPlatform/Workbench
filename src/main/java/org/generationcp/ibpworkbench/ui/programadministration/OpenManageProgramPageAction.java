@@ -34,7 +34,6 @@ public class OpenManageProgramPageAction  implements Button.ClickListener, Actio
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-
     @Override
     public void buttonClick(Button.ClickEvent event) {
         doAction(event.getComponent().getWindow(), null, true);

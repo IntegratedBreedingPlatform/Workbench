@@ -63,12 +63,8 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
     private Label statisticalAnalysisTitle;
     private Label breedingDecisionTitle;
 
-    //links for tools
+    // links for tools
     // GCP-6394
-    /*private Button browseGermplasmButton;*/
-    /*private Button browseGermplasmListsButton;*/
-    /*private Button headToHeadButton;
-      private Button headToHeadButton2;*/
     private Button browseStudiesButton;
     private Button gdmsButton;
     private Button breedingViewButton;
@@ -102,7 +98,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
     //GCP-6394
     private Button ontologyBrowserButton;
     private Button metaAnalysisButton;
-    /*private Button browseGermplasmAndListsButton;*/
 
     private Button breedingPlannerButton;
 
@@ -137,27 +132,21 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
         projectPlanningTitle = new Label("Program Planning");
         projectPlanningTitle.setStyleName("gcp-section-title-large");
-        //projectPlanningTitle.setSizeUndefined();
 
         backcrossingTitle = new Label("Backcrossing");
         backcrossingTitle.setStyleName("gcp-section-title-large");
-        //backcrossingTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label("Field Trial Management");
         fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
-        //fieldTrialManagementTitle.setSizeUndefined();
 
         genotypingTitle = new Label("Genotyping");
         genotypingTitle.setStyleName("gcp-section-title-large");
-        //genotypingTitle.setSizeUndefined();
 
         statisticalAnalysisTitle = new Label("Statistical Analysis");
         statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
-        //statisticalAnalysisTitle.setSizeUndefined();
 
         breedingDecisionTitle = new Label("Breeding Decision");
         breedingDecisionTitle.setStyleName("gcp-section-title-large");
-        //breedingDecisionTitle.setSizeUndefined();
 
         breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_MABC));
         breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -186,25 +175,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
         // GCP-6394
-        /*browseGermplasmButton = new Button("Browse Germplasm Information");
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription("Click to launch Germplasm Browser");*/
-
-        /*browseGermplasmListsButton = new Button("Browse Germplasm Lists");
-                browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-                browseGermplasmListsButton.setSizeUndefined();
-                browseGermplasmListsButton.setDescription("Click to launch Germplasm List Browser");*/
-        /*headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-                headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-                headToHeadButton.setSizeUndefined();
-                headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-
-                headToHeadButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-                headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-                headToHeadButton2.setSizeUndefined();
-                headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));*/
-
         ontologyBrowserButton = new Button(messageSource.getMessage(Message.MANAGE_ONTOLOGIES));
         ontologyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         ontologyBrowserButton.setSizeUndefined();
@@ -214,11 +184,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         metaAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         metaAnalysisButton.setSizeUndefined();
         metaAnalysisButton.setDescription(messageSource.getMessage(Message.META_ANALYSIS));
-
-        /*browseGermplasmAndListsButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_AND_LISTS));
-        browseGermplasmAndListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        browseGermplasmAndListsButton.setSizeUndefined();
-        browseGermplasmAndListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_AND_LIST_BROWSER));*/
 
         manageGermplasmListsButton = new Button("Manage Germplasm Lists");
         manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
@@ -419,48 +384,21 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.setExpandRatio(breedingPlannerButton, 0);
 
         // GCP-6394
-        /*layout.addComponent(browseGermplasmButton);
-        browseGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmButton, 0);*/
-
         layout.addComponent(browseStudiesButton);
         browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
-
-        //layout.addComponent(germplasmImportButton);
-        //germplasmImportButton.setHeight("20px");
-        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(germplasmImportButton, 0);
-
 
         layout.addComponent(germplasmImportButton2);
         germplasmImportButton2.setHeight("20px");
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
 
-        /**layout.addComponent(manageGermplasmListsButton);
-         manageGermplasmListsButton.setHeight("20px");
-         layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-         layout.setExpandRatio(manageGermplasmListsButton, 0);**/
-          
-        /*layout.addComponent(browseGermplasmListsButton);
-        browseGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmListsButton, 0);*/
-
         layout.addComponent(browseGenotypingDataButton);
         browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
         
-        /*layout.addComponent(headToHeadButton2);
-        headToHeadButton2.setHeight("20px");
-        layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton2, 0);
-        */
-
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
@@ -470,11 +408,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         ontologyBrowserButton.setHeight("20px");
         layout.setComponentAlignment(ontologyBrowserButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserButton, 0);
-
-        /*layout.addComponent(browseGermplasmAndListsButton);
-        ontologyBrowserButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmAndListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmAndListsButton, 0);*/
 
         layout.addComponent(queryForAdaptedGermplasmButton2);
         queryForAdaptedGermplasmButton2.setHeight("20px");
@@ -590,13 +523,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         metaAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(metaAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(metaAnalysisButton, 0);
-        
-        /*
-        layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
-        breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-		*/
 
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
         breedingViewMultiSiteAnalysisButton.setHeight("20px");
@@ -624,11 +550,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-
-        /*layout.addComponent(headToHeadButton);
-        layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(headToHeadButton, 0);*/
-
         layout.addComponent(mainHeadToHeadButton);
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
@@ -636,12 +557,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.addComponent(queryForAdaptedGermplasmButton);
         layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
-        
-        /*
-        layout.addComponent(optimasButton);
-        layout.setComponentAlignment(optimasButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(optimasButton, 0);
-        */
+
         return layout;
     }
 
@@ -688,18 +604,13 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
             germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.IBFB_GERMPLASM_IMPORT));
             germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
 
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
-            /*headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
-            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));*/
+            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER));
             mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
 
             mbdtButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MBDT));
-            /*browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));*/
-            /*browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_LIST_BROWSER));*/
             ontologyBrowserButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
             metaAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS, this.project, null));
-            /*browseGermplasmAndListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));*/
             browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
             gdmsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
             breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));

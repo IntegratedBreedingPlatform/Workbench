@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
@@ -60,7 +59,7 @@ public class NewProjectAddUserWindow extends BaseSubWindow {
     }
     
     protected void initializeActions() {
-        
+        // currently does nothing
     }
     
     protected void assemble() {

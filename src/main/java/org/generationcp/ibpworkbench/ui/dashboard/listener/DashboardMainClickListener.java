@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
 import java.util.Date;
 
 /**
@@ -104,7 +105,6 @@ public class DashboardMainClickListener implements ClickListener{
             // page change to list manager, with parameter passed
             (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
 
-            //System.out.println("Open list manager" + this.projectId);
         } catch (InternationalizableException e){
             LOG.error(e.toString() + "\n" + e.getStackTrace());
             e.printStackTrace();

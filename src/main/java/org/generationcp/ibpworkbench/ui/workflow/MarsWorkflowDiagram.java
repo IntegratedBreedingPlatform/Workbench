@@ -48,8 +48,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
     private Label populationDevelopmentTitle;
     private Label fieldTrialManagementTitle;
     private Label genotypingTitle;
-    //private Button headToHeadButton;
-    //private Button headToHeadButton2;
     private Button mainHeadToHeadButton;
     private Button mainHeadToHeadButton2;
     private Label phenotypicAnalysisTitle;
@@ -143,43 +141,33 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         // project planning
         projectPlanningTitle = new Label();
         projectPlanningTitle.setStyleName("gcp-section-title");
-        //projectPlanningTitle.setSizeUndefined();
 
         populationDevelopmentTitle = new Label();
         populationDevelopmentTitle.setStyleName("gcp-section-title");
-        //populationDevelopmentTitle.setSizeUndefined();
 
         fieldTrialManagementTitle = new Label();
         fieldTrialManagementTitle.setStyleName("gcp-section-title");
-        //fieldTrialManagementTitle.setSizeUndefined();
 
         genotypingTitle = new Label();
         genotypingTitle.setStyleName("gcp-section-title");
-        //genotypingTitle.setSizeUndefined();
 
         phenotypicAnalysisTitle = new Label();
         phenotypicAnalysisTitle.setStyleName("gcp-section-title");
-        //phenotypicAnalysisTitle.setSizeUndefined();
-        
+
         qtlAnalysisTitle = new Label();
         qtlAnalysisTitle.setStyleName("gcp-section-title");
-        //qtlAnalysisTitle.setSizeUndefined();
-        
+
         singleSiteAnalysisTitle = new Label();
         singleSiteAnalysisTitle.setStyleName("gcp-section-title");
-        //singleSiteAnalysisTitle.setSizeUndefined();
-        
+
         qtlSelectionTitle = new Label();
         qtlSelectionTitle.setStyleName("gcp-section-title");
-        //qtlSelectionTitle.setSizeUndefined();
-        
+
         recombinationCycleTitle = new Label();
         recombinationCycleTitle.setStyleName("gcp-section-title");
-        //recombinationCycleTitle.setSizeUndefined();
-        
+
         finalBreedingDecisionTitle = new Label();
         finalBreedingDecisionTitle.setStyleName("gcp-section-title");
-        //finalBreedingDecisionTitle.setSizeUndefined();
 
         // project planning buttons
         browseGermplasmButton = new Button();
@@ -286,17 +274,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         
         downArrow31 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
         downArrow32 = new Embedded(null, new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        /*
-        headToHeadButton = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton.setSizeUndefined();
-        headToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
 
-        headToHeadButton2 = new Button(messageSource.getMessage(Message.HEAD_TO_HEAD_LAUNCH));
-        headToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
-        headToHeadButton2.setSizeUndefined();
-        headToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_HEAD_TO_HEAD));
-          */
         mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
         mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         mainHeadToHeadButton.setSizeUndefined();
@@ -430,12 +408,10 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setExpandRatio(emptyLabel, 100);
 
         layout.addComponent(breedingPlannerButton);
-        //breedingPlannerButton.setHeight("20px");
         layout.setComponentAlignment(breedingPlannerButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingPlannerButton, 0);
 
         layout.addComponent(browseStudiesButton);
-        //browseStudiesButton.setHeight("20px");
         layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseStudiesButton, 0);
         
@@ -449,31 +425,18 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserFBBtn, 0);
 
-
         layout.addComponent(browseGenotypingDataButton);
-       // browseGenotypingDataButton.setHeight("20px");
         layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGenotypingDataButton, 0);
 
-        //layout.addComponent(headToHeadButton2);
-        //headToHeadButton2.setHeight("20px");
-        //layout.setComponentAlignment(headToHeadButton2, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(headToHeadButton2, 0);
-        
         layout.addComponent(mainHeadToHeadButton2);
-        //headToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton2, 0);
         
         layout.addComponent(queryForAdaptedGermplasmButton2);
-        //queryForAdaptedGermplasmButton2.setHeight("20px");
         layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
 
-        //layout.addComponent(breedingManagerListManager);
-        //layout.setComponentAlignment(breedingManagerListManager, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(breedingManagerListManager, 0);
-        
         return layout;
     }
 
@@ -491,19 +454,10 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        //layout.addComponent(germplasmImportButton);
-        //layout.setComponentAlignment(germplasmImportButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(germplasmImportButton, 0);
-        
         layout.addComponent(germplasmImportButton2);
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
         
-        
-        /**layout.addComponent(manageGermplasmListsButton);
-        layout.setComponentAlignment(manageGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(manageGermplasmListsButton, 0);**/
-
         layout.addComponent(makeCrossesButton);
         layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(makeCrossesButton, 0);
@@ -584,7 +538,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
     protected ComponentContainer layoutPhenotypicAnalysis() {
         VerticalLayout layout = new VerticalLayout();
         configureWorkflowStepLayout(layout);
-        //layout.setHeight("145px");
 
         layout.addComponent(phenotypicAnalysisTitle);
         layout.setComponentAlignment(phenotypicAnalysisTitle, Alignment.TOP_CENTER);
@@ -597,25 +550,14 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
-        //breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
-        
-        
-        //layout.addComponent(breedingViewSingleSiteAnalysisCentralButton);
-        //breedingViewSingleSiteAnalysisCentralButton.setHeight("20px");
-        //layout.setComponentAlignment(breedingViewSingleSiteAnalysisCentralButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(breedingViewSingleSiteAnalysisCentralButton, 0);
-        
-        
+
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
-        //multiSiteAnalysisButton.setHeight("20px");
         layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
 
         layout.addComponent(metaAnalysisBtn2);
-        //breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
-        layout.setComponentAlignment(metaAnalysisBtn2, Alignment.TOP_CENTER);
         layout.setExpandRatio(metaAnalysisBtn2, 0);
 
         layout.addComponent(phenotypicBreedingViewButton);
@@ -679,7 +621,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
     protected Component layoutMarkerImplementationArea() {
         VerticalLayout layout = new VerticalLayout();
         layout.setHeight("750px");
-        //layout.setWidth("274px");
         layout.setMargin(new Layout.MarginInfo(true,false,false,false));
         layout.setSpacing(true);
 
@@ -769,10 +710,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.addComponent(emptyLabel);
         layout.setExpandRatio(emptyLabel, 100);
         
-        //layout.addComponent(headToHeadButton);
-        //layout.setComponentAlignment(headToHeadButton, Alignment.TOP_CENTER);
-        //layout.setExpandRatio(headToHeadButton, 0);
-        
         layout.addComponent(mainHeadToHeadButton);
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(mainHeadToHeadButton, 0);
@@ -828,10 +765,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
             
             breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER)); //TODO
             
-            /*headToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));
-            headToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.HEAD_TO_HEAD_BROWSER));  
-              */
-            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));      
+            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
             mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));  
 
             browseGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_BROWSER));
@@ -922,17 +856,11 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         messageSource.setCaption(browseGermplasmListsButton, Message.BROWSE_GERMPLAM_LISTS);
         messageSource.setDescription(browseGermplasmListsButton, Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER);
 
-        //messageSource.setCaption(browseGenotypingDataButton, Message.BROWSE_GENOTYPING_DATA);
-        //messageSource.setDescription(browseGenotypingDataButton, Message.CLICK_TO_LAUNCH_GENOTYPING_DATA);
-    
         messageSource.setCaption(breedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(breedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
         
         messageSource.setCaption(recomBreedingManagerButton, Message.BREEDING_MANAGER);
         messageSource.setDescription(recomBreedingManagerButton, Message.CLICK_TO_LAUNCH_BREEDING_MANAGER);
-        
-        //messageSource.setCaption(fieldBookButton, Message.FIELDBOOK_CREATE);
-        //messageSource.setDescription(fieldBookButton, Message.CLICK_TO_LAUNCH_FIELDBOOK);
         
         messageSource.setCaption(gdmsButton, Message.MANAGE_GENOTYPING_DATA);
         messageSource.setDescription(gdmsButton, Message.CLICK_TO_LAUNCH_GDMS);

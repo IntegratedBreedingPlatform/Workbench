@@ -34,7 +34,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
     protected static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 
     protected Window sourceWindow;
-    //private Select select;
     private ProjectBackup pb;
 	
     public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_\\d+_local_\\d+_\\d+_\\d+_(.*).sql";
@@ -77,7 +76,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
     }
 
     public RestoreIBDBSaveAction(Project project, ProjectBackup pb, Window sourceWindow) {
-        //this.select = select;
         this.pb = pb;
         this.sourceWindow = sourceWindow;
         this.project = project;
@@ -115,14 +113,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 toolUtil.closeAllNativeTools();
 
-                // UPDATE: currentDBBackup creation should be on restore
-                //currentDbBackupFile = mysqlUtil.createCurrentDbBackupFile(project.getLocalDbName());
-
-                //drop schema version
-                //we need the schema version inserted from the backup file, not from the previous upgrade
-                // UPDATE: depricated ff code as we are already dropping the schema on restore
-                //mysqlUtil.dropSchemaVersion(project.getLocalDbName());
-
                 // restore the database
                 mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, new Callable<Boolean>() {
                     @Override
@@ -143,9 +133,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
                 File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
                 mysqlUtil.upgradeDatabase(project.getLocalDbName(), schemaDir);
-
-                //GCP-7958 - since users and persons tables are no longer restored, the line below is no longer needed - uncomment if it's no longer the case
-                //new SaveUsersInProjectAfterRestoreAction(project).doAction(null);
 
                 MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
@@ -177,7 +164,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
         StringBuilder sb = new StringBuilder();
         if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
-            //sb.append(fileName.substring(0, fileName.lastIndexOf(".")) + "_1.sql");
             for (int x = 1; x < 10000; x++) {
                 String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
                 if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
