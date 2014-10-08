@@ -362,7 +362,7 @@ public class NurseryListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         try {
                             presenter.renameNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
-                        } catch (Error e) {
+                        } catch (Exception e) {
                             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
                             return;
                         }
@@ -399,7 +399,7 @@ public class NurseryListPreview extends VerticalLayout {
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), ROOT_FOLDER);
                             else
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
-                        } catch (Error e) {
+                        } catch (Exception e) {
                             MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
@@ -457,7 +457,7 @@ public class NurseryListPreview extends VerticalLayout {
 
                 try {
                     id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
-                } catch (Error e) {
+                } catch (Exception e) {
                     MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
@@ -484,7 +484,7 @@ public class NurseryListPreview extends VerticalLayout {
                                             processToolbarButtons(parent.getProjectId());
                                         }
                                         treeView.setImmediate(true);
-                                    } catch (Error e) {
+                                    } catch (Exception e) {
                                         MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                                     }
                                 }
