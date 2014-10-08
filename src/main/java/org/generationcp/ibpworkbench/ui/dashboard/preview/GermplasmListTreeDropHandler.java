@@ -15,6 +15,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.GermplasmList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -29,6 +31,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class GermplasmListTreeDropHandler implements DropHandler {
     private final Tree tree;
     private final GermplasmListPreviewPresenter presenter;
+    private static final Logger LOG = LoggerFactory.getLogger(GermplasmListTreeDropHandler.class);
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -136,8 +139,8 @@ public class GermplasmListTreeDropHandler implements DropHandler {
             	container.moveAfterSibling(sourceItemId, null);
             }
             
-        } catch (Error error) {
-            error.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception error) {
+            LOG.error(error.getLocalizedMessage(),error);
         }
 
 
