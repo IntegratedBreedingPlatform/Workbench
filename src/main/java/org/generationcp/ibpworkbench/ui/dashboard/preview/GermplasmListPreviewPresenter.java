@@ -103,11 +103,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             germplasmListChildren = this.getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderIdBatched(parentGermplasmListId, BATCH_SIZE);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
-            e.printStackTrace();/*
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
-                    */
+            e.printStackTrace();
             germplasmListChildren = new ArrayList<GermplasmList>();
         }
         
@@ -126,11 +122,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             listChildren = getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(listId, 0, 1);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
-            /*
-            MessageNotifier.showWarning(getWindow(), 
-                    messageSource.getMessage(Message.ERROR_DATABASE), 
-                    messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LISTS_BY_PARENT_FOLDER_ID));
-                    */
             listChildren = new ArrayList<GermplasmList>();
         }
         
@@ -166,8 +157,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     }
 
     public GermplasmList getGermplasmListParent(Integer id) throws Error {
-        //GermplasmListManagerImpl.getGermplasmListById(id) then from the resulting GermplasmList, check getParent()!=null?getParent().getId():null
-
         try {
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id).getParent();
 
@@ -289,10 +278,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
-        /**
-        if (!gpList.isFolder()) {
-            throw new Error(NOT_FOLDER);
-        }**/
 
         try {
             if (hasChildren(gpList.getId())) {
@@ -324,8 +309,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         try {
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
-            /*if (!gpList.isFolder())
-                 throw new Error(NOT_FOLDER);*/
 
             if (parentId != null) {
                 GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
