@@ -656,7 +656,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return variatesCheckboxState;
 	}
 	
-	public void setVariatesCheckboxState(HashMap<String, Boolean> hashMap) {
+	public void setVariatesCheckboxState(Map<String, Boolean> hashMap) {
 			this.variatesCheckboxState = hashMap;
 	}
 
