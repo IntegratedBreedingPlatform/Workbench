@@ -5,6 +5,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -75,21 +76,6 @@ public class NurseryListPreviewPresenterTest  {
     }
 
     @Test
-    public void testGenerateInitialTreeNodes() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
-    public void testGetManagerFactory() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
-    public void testSetManagerFactory() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
     public void testIsFolder() throws Exception {
         presenter.isFolder(folderId);
         verify(studyDataManager).isStudy(folderId);
@@ -106,22 +92,12 @@ public class NurseryListPreviewPresenterTest  {
 
         try {
             presenter.renameNurseryListFolder(null,0);
-            assertTrue("should throw an error",false);
-        } catch (Exception e) {
+            fail("should throw an error when newFolderName = null");
+        } catch (NurseryListPreviewException e) {
 
             verify(messageSource).getMessage(Message.INVALID_ITEM_NAME);
         }
 
-    }
-
-    @Test
-    public void testDeleteNurseryListFolder() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
-    public void testGetStudyNodeParent() throws Exception {
-        //TODO: ADD TEST
     }
 
     @Test
@@ -130,7 +106,16 @@ public class NurseryListPreviewPresenterTest  {
         presenter.moveNurseryListFolder(sourceId,targetId,isAStudy);
         verify(studyDataManager).moveDmsProject(sourceId,targetId,isAStudy);
 
-        //TODO: simulate middleware error case
+        // simulate middleware error
+        when(studyDataManager.moveDmsProject(-100,-100,false)).thenThrow(MiddlewareQueryException.class);
+
+        try {
+            presenter.moveNurseryListFolder(-100, -100, false);
+            fail("should throw an NurseryListPreviewException exception");
+        } catch (NurseryListPreviewException e) {
+            assertTrue("should throw an NurseryListPreviewException exception",true);
+        }
+
     }
 
     @Test
@@ -140,22 +125,22 @@ public class NurseryListPreviewPresenterTest  {
         // 1st scenario name is null or empty
         try {
             presenter.addNurseryListFolder(null,studyId);
-            assertTrue("should throw an exception",false);
-        } catch (Exception e) {
+            fail("should throw an exception if name = null");
+        } catch (NurseryListPreviewException e) {
             assertTrue(e.getLocalizedMessage().contains("Folder name cannot be blank"));
         }
 
         // 2nd scenario name == MY_STUDIES || SHARED_STUDIES
         try {
             presenter.addNurseryListFolder(view.MY_STUDIES,studyId);
-            assertTrue("should throw an exception",false);
-        } catch (Exception e) {
+            fail("should throw an exception if name = view.MY_STUDIES");
+        } catch (NurseryListPreviewException e) {
             assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
 
             try {
                 presenter.addNurseryListFolder(view.SHARED_STUDIES,studyId);
-                assertTrue("should throw an exception",false);
-            } catch (Exception e2) {
+                assertTrue("should throw an exception if name = view.SHARED_STUDIES",false);
+            } catch (NurseryListPreviewException e2) {
                 assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
             }
 
@@ -166,11 +151,11 @@ public class NurseryListPreviewPresenterTest  {
         when(studyDataManager.isStudy(studyId)).thenReturn(true);
         when(studyDataManager.getParentFolder(studyId)).thenReturn(dmsProject);
         when(dmsProject.getProjectId()).thenReturn(parentFolderId);
-
         presenter.addNurseryListFolder(newFolderName,studyId);
 
+
         // verify that addSubFolder is called with the correct order of parameters
-        verify(studyDataManager.addSubFolder(parentFolderId,newFolderName,newFolderName));
+        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName);
     }
 
     @Test
@@ -178,8 +163,8 @@ public class NurseryListPreviewPresenterTest  {
         // if id is null, expect exception
         try {
             presenter.validateForDeleteNurseryList(null);
-            assertTrue("Should throw an exception",false);
-        } catch (Exception e) {
+            fail("Should throw an exception if id is null");
+        } catch (NurseryListPreviewException e) {
             assertTrue(e.getLocalizedMessage().contains("Please select a folder item"));
         }
 
@@ -197,26 +182,11 @@ public class NurseryListPreviewPresenterTest  {
 
         try {
             presenter.validateForDeleteNurseryList(studyIdWithMultipleChildren);
-            assertTrue("Should throw an exception",false);
-        } catch(Exception e) {
-            assertTrue(e.getLocalizedMessage().contains(NurseryListPreviewPresenter.HAS_CHILDREN));
+            fail("Should throw an exception if NurseryListPreviewException.HAS_CHILDREN");
+        } catch(NurseryListPreviewException e) {
+            assertTrue(e.getLocalizedMessage().contains(NurseryListPreviewException.HAS_CHILDREN));
         }
 
         assertEquals("Folder has no children, can be deleted",Integer.valueOf(studyIdWithNoChildren),presenter.validateForDeleteNurseryList(studyIdWithNoChildren));
-    }
-
-    @Test
-    public void testAddChildrenNode() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
-    public void testUpdateProjectLastOpenedDate() throws Exception {
-        //TODO: ADD TEST
-    }
-
-    @Test
-    public void testGetStudyType() throws Exception {
-        //TODO: ADD TEST
     }
 }
