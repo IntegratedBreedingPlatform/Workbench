@@ -34,7 +34,6 @@ import java.util.List;
  * Time: 7:21 PM
  * To change this template use File | Settings | File Templates.
  */
-@Component
 @Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
 
@@ -42,7 +41,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
 
     private Project project;
-    // TODO, move to message source    
+    // TODO, move to message source
     private static final String NO_SELECTION = "Please select a folder item";
     public final static String NOT_FOLDER = "Selected item is not a folder.";
     public final static String HAS_CHILDREN = "Folder has child items.";
@@ -112,11 +111,11 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         return false;
     }
 
-    public void renameNurseryListFolder(String newFolderName, Integer folderId) throws Error {
+    public void renameNurseryListFolder(String newFolderName, Integer folderId) throws Exception {
         try {
 
             if (newFolderName == null || newFolderName.isEmpty()) {
-                throw new Error(messageSource.getMessage(Message.INVALID_ITEM_NAME));
+                throw new Exception(messageSource.getMessage(Message.INVALID_ITEM_NAME));
             }
 
             this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);
@@ -142,45 +141,45 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws Error {
+    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws Exception {
 
 
         try {
             return getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
-            throw new Error(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public Integer addNurseryListFolder(String name, Integer id) throws Error {
+    public Integer addNurseryListFolder(String name, Integer id) throws Exception {
         try {
             if (name == null || name.trim().equals("")) {
-                throw new Error(BLANK_NAME);
+                throw new Exception(BLANK_NAME);
             }
             if (name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
-                throw new Error(INVALID_NAME);
+                throw new Exception(INVALID_NAME);
             }
             Integer parentFolderId = id;
             if (!isFolder(id)) {
                 //get parent
                 DmsProject project = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
                 if (project == null) {
-                    throw new Error("Parent folder cannot be null");
+                    throw new Exception("Parent folder cannot be null");
                 }
                 parentFolderId = project.getProjectId();
             }
             return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString() + "\n" + e.getStackTrace());
-            throw new Error(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public Integer validateForDeleteNurseryList(Integer id) throws Error {
+    public Integer validateForDeleteNurseryList(Integer id) throws Exception {
         LOG.info("id = " + id);
         if (id == null) {
-            throw new Error(NO_SELECTION);
+            throw new Exception(NO_SELECTION);
         }
         DmsProject project = null;
 
@@ -188,19 +187,19 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             project = this.getManagerFactory().getStudyDataManager().getProject(id);
 
         } catch (MiddlewareQueryException e) {
-            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+            throw new Exception(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
         if (project == null) {
-            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+            throw new Exception(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
         try {
             if (hasChildren(id)) {
-                throw new Error(HAS_CHILDREN);
+                throw new Exception(HAS_CHILDREN);
             }
         } catch (MiddlewareQueryException e) {
-            throw new Error(messageSource.getMessage(Message.ERROR_DATABASE));
+            throw new Exception(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
         return id;
@@ -261,7 +260,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             LOG.error(e.toString(), e);
         }
     }
-    
+
     public StudyType getStudyType(int studyId) {
         try {
         	Study study = this.getManagerFactory().getStudyDataManager().getStudy(studyId);
