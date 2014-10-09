@@ -243,11 +243,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	}
     }
    
-    private String getCutOffDate() {
+    public String getCutOffDate() {
+		//Mar 31, 2015
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, 2014);
-		cal.set(Calendar.MONTH,11);
-		cal.set(Calendar.DATE,31);//Dec 31, 2014
+		cal.set(Calendar.YEAR, 2015);
+		cal.set(Calendar.MONTH,2);
+		cal.set(Calendar.DATE,31);
 		Date cutOffDate = cal.getTime();
 		DateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy");
 		return sdf.format(cutOffDate);
