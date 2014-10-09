@@ -175,17 +175,14 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	Boolean windowLaunched = false;
     	String windowCaption = "";
 
-    	if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) )
-    	{
+    	if(WindowEnum.CHANGE_PASSWORD.getwindowName().equals(windowName) ) {
     		mywindow = new ChangePasswordWindow();
 
             window.addWindow(mywindow);
     		windowLaunched = false;
     		
     		windowCaption = mywindow.getCaption();
-    	}
-
-    	else if (WindowEnum.USER_TOOLS.getwindowName().equals(windowName)) {
+    	} else if (WindowEnum.USER_TOOLS.getwindowName().equals(windowName)) {
     		mywindow = new UserToolsManagerWindow();
     		window.addWindow(mywindow);
 
@@ -193,8 +190,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		
     		windowLaunched = true;
     		
-    	} else if (WindowEnum.SOFTWARE_LICENSING_AGREEMENT.getwindowName().equals(windowName))
-    	{
+    	} else if (WindowEnum.SOFTWARE_LICENSING_AGREEMENT.getwindowName().equals(windowName)) {
     		ConfirmDialog dialog = ConfirmDialog.show(window,messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT),
                     messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT_DETAILS,getCutOffDate()),
                     messageSource.getMessage(Message.DONE), null, new ConfirmDialog.Listener() {
@@ -207,7 +203,6 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
                     	window.removeWindow(dialog);
                     }
 
-
                 }
             });
     		dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
@@ -215,17 +210,14 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     		windowCaption = messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT);
     		
     		windowLaunched = true;
-    	}
-    	else
-    	{
+    	} else {
             LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
             MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR), 
             messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
         }
     	
     	// Add to Project Activity logs the launched windows
-    	if (windowLaunched)
-    	{
+    	if (windowLaunched) {
     		try {
                 IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
                 User user = app.getSessionData().getUserData();
