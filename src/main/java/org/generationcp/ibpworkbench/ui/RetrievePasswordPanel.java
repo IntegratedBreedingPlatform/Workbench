@@ -61,7 +61,7 @@ public class RetrievePasswordPanel extends VerticalLayout implements Initializin
         Label securityQuestionLabel = new Label(securityQuestion.getSecurityQuestion());
         addComponent(securityQuestionLabel);
         securityAnswerField = new TextField();
-        securityAnswerField.setDebugId("vaadin-answer-txt");
+        securityAnswerField.setDebugId("vaadin-answer-forgotpassword");
         addComponent(securityAnswerField);
         
         retrieveBtn = new Button(messageSource.getMessage(Message.BTN_RETRIEVE));
