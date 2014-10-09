@@ -235,7 +235,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
     	}
     }
    
-    public String getCutOffDate() {
+    protected String getCutOffDate() {
 		//Mar 31, 2015
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, 2015);
