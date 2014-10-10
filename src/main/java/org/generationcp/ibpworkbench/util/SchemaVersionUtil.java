@@ -28,43 +28,32 @@ import java.util.StringTokenizer;
 @Configurable
 public class SchemaVersionUtil {
 	
-	private static Logger LOG = LoggerFactory.getLogger(SchemaVersionUtil.class);
+    public static final String MINIMUM_CROP_VERSION = "gcp.minimum.crop.version";
+    private final static String WORKBENCH_PROP_FILEPATH = IBDBGenerator.WORKBENCH_PROP;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(SchemaVersionUtil.class);
 
+	private SchemaVersionUtil() {
+		//Utility class should have a private constructor
+	}
+	
 	public static boolean checkIfVersionIsSupported(String currentCropVersion, String minimumCropVersion) {
-		//check BMS minimum support crop version against the crop version of the project
-    	//if crop version is below the minimum supported crop version, display a warning
-		if(minimumCropVersion==null || minimumCropVersion.trim().equals("")) {
-    		return true;
-    	}
-		if(currentCropVersion==null || currentCropVersion.trim().equals("")) {
-    		return false;
-    	}
-    	StringTokenizer currentTokens = new StringTokenizer(currentCropVersion,".");
-		StringTokenizer minimumTokens = new StringTokenizer(minimumCropVersion,".");
-		
-		String currentToken = "";
-		String minimumToken = "";
-		while(currentTokens.hasMoreTokens()) {
-			currentToken = currentTokens.nextToken();
-			if(minimumTokens.hasMoreTokens()) {
-				minimumToken = minimumTokens.nextToken();
-				try {
-					if(Integer.parseInt(currentToken) == Integer.parseInt(minimumToken)) {
-						continue;
-					} else if(Integer.parseInt(currentToken) < Integer.parseInt(minimumToken)) {
-						return false;
-					} else if(Integer.parseInt(currentToken) > Integer.parseInt(minimumToken)) {
-						return true;
-					}
-				} catch(NumberFormatException e) {
-					if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())==0) {
-						continue;
-					} else if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())<0) {
-						return false;
-					} else if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())>0) {
-						return true;
-					}
-				}
+		StringTokenizer currentTokens = new StringTokenizer(
+    			currentCropVersion==null?"":currentCropVersion,".");
+		StringTokenizer minimumTokens = new StringTokenizer(
+				minimumCropVersion==null?"":minimumCropVersion,".");
+		return parseAndCompareTokens(currentTokens,minimumTokens);
+	}
+
+	private static boolean parseAndCompareTokens(StringTokenizer currentTokens,
+			StringTokenizer minimumTokens) {
+		while(currentTokens.hasMoreTokens() && minimumTokens.hasMoreTokens()) {
+			String currentToken = currentTokens.nextToken();
+			String minimumToken = minimumTokens.nextToken();
+			if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())<0) {
+				return false;
+			} else if(currentToken.toUpperCase().compareTo(minimumToken.toUpperCase())>0) {
+				return true;
 			}
 		}
 		if(minimumTokens.hasMoreTokens()) {
@@ -72,59 +61,59 @@ public class SchemaVersionUtil {
 		}
 		return true;
 	}
-	
-	public static String getMinimumCropVersion() {
-		String minimumCropVersion = null;
-		Properties properties = new Properties();
+
+	public static Properties loadPropertiesFile(String filename) {
+		Properties properties = null;
 		InputStream in = null;
-        try {
-        	try {
-                in = new FileInputStream(new File(ResourceFinder.locateFile(IBDBGenerator.WORKBENCH_PROP).toURI()));
+		try {
+			try {
+	            in = new FileInputStream(new File(ResourceFinder.locateFile(filename).toURI()));
 	        } catch (IllegalArgumentException ex) {
-	            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(IBDBGenerator.WORKBENCH_PROP);
+	        	LOG.error(ex.getMessage(),ex);
+	        	//It is expected that a property file can be retrieved as a resource instead
+	            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	        } catch (Exception ex) {
+				LOG.error(ex.getMessage(),ex);
+				//return null if properties file cannot be found
+				return null;
+			}
+		
+			try {
+	        	if(in!=null) {
+	        		properties = new Properties();
+	    			properties.load(in);
+	        	}
+	        } catch(Exception e) {
+	        	LOG.error(e.getMessage(),e);
+	        	//return null if properties file cannot be loaded
+	        	return null;
 	        } 
-        	if(in!=null) {
-        		properties.load(in);
-        	}
-        } catch(Exception e) {
-        	LOG.error(e.getMessage(),e);
-        	return minimumCropVersion;
-        } finally {
+		} finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    // intentionally empty
+                    // exception not thrown intentionally
+                	LOG.error(e.getMessage(),e);
                 }
             }
         }
-        String version = properties.getProperty("gcp.minimum.crop.version", "");
-        LOG.debug("gcp.minimum.crop.version="+version);
-        if(version!=null) {
-            minimumCropVersion = version.trim();
-        }
+        return properties;
+	}
+	
+	public static String getMinimumCropVersion() {
+		return getMinimumCropVersionFromFile(WORKBENCH_PROP_FILEPATH);
+	}
+	
+	public static String getMinimumCropVersionFromFile(String workbenchPropertiesFilepath) {
+		String minimumCropVersion = null;
+		Properties properties = loadPropertiesFile(workbenchPropertiesFilepath);
+		if(properties!=null) {
+			String version = properties.getProperty(MINIMUM_CROP_VERSION, "");
+			if(version!=null) {
+	            minimumCropVersion = version.trim();
+	        }
+		}
         return minimumCropVersion;        
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(checkIfVersionIsSupported("3.0.0","2.1.3"));
-		System.out.println(checkIfVersionIsSupported("3.0.0.release","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.0.0.%*^&^","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.0.0.RELEASE","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.0.1.RELEASE","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.0.0.RELEASE","3.0.1.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.1","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("3.0.1","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("2.1.1","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("2.1","3.0.0.RELEASE"));
-		System.out.println(checkIfVersionIsSupported("2.0.1","3.0.0"));
-		System.out.println(checkIfVersionIsSupported("2.0.1.5","3.0.0"));
-		System.out.println(checkIfVersionIsSupported("2","3.0.0.5"));
-		System.out.println(checkIfVersionIsSupported("3.0.1","3.0.0"));
-		System.out.println(checkIfVersionIsSupported("3.0.0","3.0.1"));
-		System.out.println(checkIfVersionIsSupported("3.0.0","3.0.0.1"));
-		System.out.println(checkIfVersionIsSupported("3.0.0.1","3.0.0"));
-	}
-	
-	
 }
