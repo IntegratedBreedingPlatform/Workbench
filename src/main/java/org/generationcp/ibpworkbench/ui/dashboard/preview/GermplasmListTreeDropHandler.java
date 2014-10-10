@@ -108,24 +108,23 @@ public class GermplasmListTreeDropHandler implements DropHandler {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
-        
-        if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
-        	GermplasmList parentFolder = (GermplasmList)presenter.getGermplasmListParent((Integer) targetItemId);
-        	if(parentFolder != null){
-        		targetItemId = parentFolder.getId();
-        	} else {
-        		targetItemId = GermplasmListPreview.MY_LIST;
-        	}
-        }
 
         try {
-        	
+
+            if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
+                GermplasmList parentFolder = presenter.getGermplasmListParent((Integer) targetItemId);
+                if(parentFolder != null){
+                    targetItemId = parentFolder.getId();
+                } else {
+                    targetItemId = GermplasmListPreview.MY_LIST;
+                }
+            }
+
         	Object previousTargetItemId = container.getParent(sourceItemId);
             if(previousTargetItemId.equals(targetItemId)) {
             	return;
             }
-            
-            
+
             if (targetItemId instanceof String) {
                 presenter.dropGermplasmListToParent((Integer) sourceItemId, null);
             } else {

@@ -261,36 +261,40 @@ public class GermplasmListPreview extends VerticalLayout {
                         newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), null);
                     else
                         newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), (Integer) treeView.getValue());
+
+                    //update UI
+                    if (newItem != null) {
+                        treeView.addItem(newItem);
+                        treeView.setItemCaption(newItem, addFolderPopup.getFieldVal());
+                        treeView.setChildrenAllowed(newItem, true);
+                        treeView.setItemIcon(newItem, folderResource);
+
+                        GermplasmList parent = presenter.getGermplasmListParent(newItem);
+                        if (parent != null) {
+                            treeView.setParent(newItem, parent.getId());
+                        } else {
+                            treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
+                        }
+
+                        if (parent != null) {
+                            if (!treeView.isExpanded(parent.getId()))
+                                expandTree(parent.getId());
+                        } else
+                            treeView.expandItem(MY_LIST);
+
+                        treeView.select(newItem);
+                        lastItemId = newItem;
+                        treeView.setImmediate(true);
+                        processToolbarButtons(newItem);
+                    }
+
+
                 } catch (Exception e) {
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
 
-                //update UI
-                if (newItem != null) {
-                    treeView.addItem(newItem);
-                    treeView.setItemCaption(newItem, addFolderPopup.getFieldVal());
-                    treeView.setChildrenAllowed(newItem, true);
-                    treeView.setItemIcon(newItem, folderResource);
 
-                    GermplasmList parent = presenter.getGermplasmListParent(newItem);
-                    if (parent != null) {
-                        treeView.setParent(newItem, parent.getId());
-                    } else {
-                        treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
-                    }
-
-                    if (parent != null) {
-                        if (!treeView.isExpanded(parent.getId()))
-                            expandTree(parent.getId());
-                    } else
-                        treeView.expandItem(MY_LIST);
-
-                    treeView.select(newItem);
-                    lastItemId = newItem;
-                    treeView.setImmediate(true);
-                    processToolbarButtons(newItem);
-                }
 
                 // close popup
                 IBPWorkbenchApplication.get().getMainWindow().removeWindow(clickEvent.getComponent().getWindow());
