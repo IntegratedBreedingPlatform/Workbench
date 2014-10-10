@@ -203,7 +203,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             if (id != null) {
                 gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
-                if (!gpList.isFolder()) {
+                if (null != gpList && !gpList.isFolder()) {
                     newList = new GermplasmList(null, folderName, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), FOLDER, userId, folderName, gpList.getParent(), 0);
                 } else {
                     newList = new GermplasmList(null, folderName, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), FOLDER, userId, folderName, gpList, 0);
