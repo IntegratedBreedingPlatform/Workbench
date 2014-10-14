@@ -123,6 +123,7 @@ public class LoginWindow extends Window implements InitializingBean {
         passwordFld.setNullSettingAllowed(false);
 
         rememberChk = new CheckBox();
+        rememberChk.setDebugId("vaadin_rememberme_chk");
 
         forgotPasswordBtn = new Button(messageSource.getMessage(Message.FORGOT_PASSWORD));
         registerUserBtn = new Button("<span style='padding-right:10px; position: relative; top: 2px'>" + messageSource.getMessage(Message.REGISTER_USER_ACCOUNT) + "</span>");
