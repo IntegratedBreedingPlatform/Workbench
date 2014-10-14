@@ -15,7 +15,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
@@ -54,9 +53,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel; 
     
-    @Autowired 
-    private ManagerFactoryProvider managerFactoryProvider;
-    
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -74,8 +70,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         Project project = selectDatasetForBreedingViewPanel.getCurrentProject();
 
         Integer studyId = selectDatasetForBreedingViewPanel.getCurrentStudy().getId();
-        String studyName = selectDatasetForBreedingViewPanel.getCurrentStudy().getName();
-        
         Integer dataSetId = selectDatasetForBreedingViewPanel.getCurrentDataSetId();
         String datasetName = selectDatasetForBreedingViewPanel.getCurrentDatasetName();
         
@@ -126,23 +120,25 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
             LOG.info("Destination XML File Path: " + destXMLFilePath);
 
-            BreedingViewInput breedingViewInput = new BreedingViewInput(project
-                                                                        , breedingViewProjectName
-                                                                        , studyId
-                                                                        , dataSetId
-                                                                        , breedingViewTool.getVersion()
-                                                                        , sourceCSVFile
-                                                                        , destXMLFilePath
-                                                                        , ProjectType.FIELD_TRIAL.getName());
-            
+            BreedingViewInput breedingViewInput = new BreedingViewInput();
+            breedingViewInput.setProject(project);
+            breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
+            breedingViewInput.setStudyId(studyId);
+            breedingViewInput.setDatasetId(dataSetId);
+            breedingViewInput.setVersion(breedingViewTool.getVersion());
+            breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
+            breedingViewInput.setDestXMLFilePath(destXMLFilePath);
+            breedingViewInput.setProjectType(ProjectType.FIELD_TRIAL.getName());
             breedingViewInput.setBreedingViewAnalysisName(breedingViewAnalysisName);
             breedingViewInput.setDatasetName(selectDatasetForBreedingViewPanel.getCurrentDatasetName());
             breedingViewInput.setDatasetSource(selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
             breedingViewInput.setVariatesActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
             List<DataSet> meansDs = selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
-            	if (meansDs.size() > 0){
-            		if (meansDs.get(0) != null) breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
+            	if (!meansDs.isEmpty()){
+            		if (meansDs.get(0) != null) {
+            			breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
+            		}
             	}else{
             	 breedingViewInput.setOutputDatasetId(0);
             	}
@@ -161,8 +157,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             
             
 
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (MiddlewareQueryException e) {
+        	LOG.error(e.getMessage(), e);
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }
     }
