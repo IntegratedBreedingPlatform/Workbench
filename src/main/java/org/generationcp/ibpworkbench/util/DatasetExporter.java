@@ -78,10 +78,6 @@ public class DatasetExporter {
 
 			String variateName = variate.getLocalName();
 
-			if(variateName != null) {
-				variateName = variateName.trim();
-			}
-
 			//get only the selected traits
 			if (breedingViewInput.getVariatesActiveState().get(variateName).booleanValue()){
 				//add entry to columns mapping
@@ -244,9 +240,6 @@ public class DatasetExporter {
 				Variable variateVariable = experiment.getVariates().findByLocalName(variateColumnsMap.get(key));
 				if (variateVariable != null){
 					variateName = variateVariable.getVariableType().getLocalName();
-					if(variateName != null){
-						variateName = variateName.trim();
-					}
 				}else{
 					row.add("");
 					continue;

@@ -84,7 +84,11 @@ public class BreedingViewInput implements Serializable {
         this.columns = null;
     }
 
-    public Project getProject() {
+    public BreedingViewInput() {
+		
+	}
+
+	public Project getProject() {
         return project;
     }
 
