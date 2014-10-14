@@ -39,7 +39,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public static final String FOLDER = "FOLDER";
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreviewPresenter.class);
     private static final int BATCH_SIZE = 50;
-    private final GermplasmListPreview view;
+    private GermplasmListPreview view;
     private Project project;
     @Autowired
     private WorkbenchDataManager manager;
@@ -59,6 +59,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
             setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
         }
     }
+
+    public GermplasmListPreviewPresenter() {
+    }
+
 
     public void generateInitialTreeNode() {
         List<GermplasmList> germplasmListParentLocal;
@@ -309,5 +313,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         } catch (MiddlewareQueryException e) {
             LOG.error(e.toString(), e);
         }
+    }
+
+    public void setView(GermplasmListPreview view) {
+        this.view = view;
     }
 }

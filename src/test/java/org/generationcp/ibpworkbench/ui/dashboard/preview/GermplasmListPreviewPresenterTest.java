@@ -14,16 +14,19 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class GermplasmListPreviewPresenterTest {
 
     public static final String SOME_RANDOM_FOLDER_NAME = "some random folder name";
@@ -77,12 +80,11 @@ public class GermplasmListPreviewPresenterTest {
         LIST_ID_NOT_A_FOLDER = 4,
         LIST_ID_A_FOLDER = 5;
 
-    private GermplasmListPreviewPresenter presenter;
+    @InjectMocks
+    private GermplasmListPreviewPresenter presenter = new GermplasmListPreviewPresenter();
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         when(view.getManagerFactoryProvider()).thenReturn(managerFactoryProvider);
         when((managerFactoryProvider.getManagerFactoryForProject(project))).thenReturn(managerFactory);
         when(managerFactory.getGermplasmListManager()).thenReturn(germplasmListManager);
@@ -106,10 +108,6 @@ public class GermplasmListPreviewPresenterTest {
         GermplasmListPreview.MY_LIST = PROGRAM_LISTS;
         GermplasmListPreview.SHARED_LIST =PUBLIC_LISTS;
 
-        presenter = new GermplasmListPreviewPresenter(view,project);
-        ReflectionTestUtils.setField(presenter,"messageSource",messageSource);
-        ReflectionTestUtils.setField(presenter,"manager",manager);
-        ReflectionTestUtils.setField(presenter,"sessionData",sessionData);
     }
 
     @Test

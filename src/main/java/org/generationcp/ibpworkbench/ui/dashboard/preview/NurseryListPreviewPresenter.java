@@ -36,7 +36,7 @@ import java.util.List;
 public class NurseryListPreviewPresenter implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
 
-    private final NurseryListPreview view;
+    private NurseryListPreview view;
     private Project project;
 
     @Autowired
@@ -54,6 +54,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         if (this.project != null && view.getManagerFactoryProvider() != null) {
             setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
         }
+    }
+
+    public NurseryListPreviewPresenter() {
 
     }
 
@@ -170,7 +173,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         if (id == null) {
             throw new NurseryListPreviewException(NurseryListPreviewException.NO_SELECTION);
         }
-        DmsProject dmsProject = null;
+        DmsProject dmsProject;
 
         try {
             dmsProject = this.getManagerFactory().getStudyDataManager().getProject(id);
@@ -195,12 +198,12 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     private boolean hasChildren(Integer id) throws MiddlewareQueryException {
-        List<Reference> studyChildren = null;
+        List<Reference> studyChildren;
 
         try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(id));
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
+            LOG.error(e.getMessage(),e);
             throw e;
         }
         if (studyChildren != null && !studyChildren.isEmpty()) {
@@ -213,10 +216,10 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     }
 
     public void addChildrenNode(int parentId) {
-        List<Reference> studyChildren = new ArrayList<Reference>();
+        List<Reference> studyChildren;
 
         try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(new Integer(parentId));
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getLocalizedMessage(),e);
             studyChildren = new ArrayList<Reference>();
@@ -261,5 +264,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             LOG.error(e.getLocalizedMessage(),e);
             return null;
         }
+    }
+
+    public void setView(NurseryListPreview view) {
+        this.view = view;
     }
 }

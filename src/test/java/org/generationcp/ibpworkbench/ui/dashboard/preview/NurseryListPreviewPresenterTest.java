@@ -13,9 +13,10 @@ import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NurseryListPreviewPresenterTest  {
     @Mock
     private Project project;
@@ -48,7 +50,8 @@ public class NurseryListPreviewPresenterTest  {
     @Mock
     private DmsProject dmsProject;
 
-    private NurseryListPreviewPresenter presenter;
+    @InjectMocks
+    private NurseryListPreviewPresenter presenter = new NurseryListPreviewPresenter();
 
     private String newFolderName = "folderName";
     private int folderId = 1;
@@ -62,17 +65,14 @@ public class NurseryListPreviewPresenterTest  {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         when(view.getManagerFactoryProvider()).thenReturn(managerFactoryProvider);
         view.SHARED_STUDIES = "Public Studies";
         view.MY_STUDIES = "Program Studies";
 
         when(managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(managerFactory);
         when(managerFactory.getStudyDataManager()).thenReturn(studyDataManager);
-        presenter = new NurseryListPreviewPresenter(view, project);
-        ReflectionTestUtils.setField(presenter,"messageSource",messageSource);
-        ReflectionTestUtils.setField(presenter,"manager",manager);
+
+        presenter.setManagerFactory(managerFactory);
     }
 
     @Test
