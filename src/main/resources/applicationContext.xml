@@ -173,21 +173,6 @@
         <property name="password"           value="${tomcat.manager.password}"/>
     </bean>
 
-    <bean id="traitsAndMeansCVSUtil" class="org.generationcp.ibpworkbench.util.TraitsAndMeansCSVUtil">
-        <property name="columnMapping">
-            <map>
-                <entry key="Environments!" value="environments" />
-                <entry key="Genotypes!" value="genotypes" />
-                <entry key="MAT50_Means" value="mat50Means" />
-                <entry key="MAT50_UnitErrors" value="mat50UnitErrors" />
-                <entry key="PODWT_Means" value="podwtMeans" />
-                <entry key="PODWT_UnitErrors" value="podwtUnitErrors" />
-                <entry key="SEEDWT_Means" value="seedwtMeans" />
-                <entry key="SEEDWT_UnitErrors" value="seedwtUnitErrors" />
-            </map>
-        </property>
-    </bean>
-
     <bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
 
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
