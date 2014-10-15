@@ -141,6 +141,7 @@ public class DatasetExporterTest {
 			when(bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
 			when(bvInput.getReplicates()).thenReturn(mock(Replicates.class));
 			when(bvInput.getReplicates().getName()).thenReturn("REP");
+			when(bvInput.getTrialInstanceName()).thenReturn("SITE_NO");
 			
 			when(workbenchDataManager.getWorkbenchSetting()).thenReturn(mock(WorkbenchSetting.class));
 			when(workbenchDataManager.getWorkbenchSetting().getInstallationDirectory()).thenReturn("");
@@ -241,6 +242,7 @@ public class DatasetExporterTest {
 			when(bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
 			when(bvInput.getReplicates()).thenReturn(mock(Replicates.class));
 			when(bvInput.getReplicates().getName()).thenReturn("REP");
+			when(bvInput.getTrialInstanceName()).thenReturn("SITE_NO");
 			
 			when(workbenchDataManager.getWorkbenchSetting()).thenReturn(mock(WorkbenchSetting.class));
 			when(workbenchDataManager.getWorkbenchSetting().getInstallationDirectory()).thenReturn("");
@@ -336,6 +338,7 @@ public class DatasetExporterTest {
 			when(bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
 			when(bvInput.getReplicates()).thenReturn(mock(Replicates.class));
 			when(bvInput.getReplicates().getName()).thenReturn("REP");
+			when(bvInput.getTrialInstanceName()).thenReturn(testFactorName);
 			
 			when(workbenchDataManager.getWorkbenchSetting()).thenReturn(mock(WorkbenchSetting.class));
 			when(workbenchDataManager.getWorkbenchSetting().getInstallationDirectory()).thenReturn("");
