@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.util;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import org.generationcp.commons.util.ObjectUtil;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -58,6 +59,7 @@ public class DatasetExporter {
 		List<VariableType> factorVariableTypes = dataset.getVariableTypes().getFactors()
 				.getVariableTypes();
 
+		
 		for (VariableType factor : factorVariableTypes) {
 
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET){
@@ -139,7 +141,14 @@ public class DatasetExporter {
 	public void exportToCSVForBreedingView(String filename, String selectedFactor,
 			List<String> selectedEnvironment, BreedingViewInput breedingViewInput)
 			throws DatasetExporterException {
-
+		
+		Map<Integer, String> selectEnvironmentsMap = new HashMap<Integer, String>();
+		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
+			for (SeaEnvironmentModel model : breedingViewInput.getSelectedEnvironments()) {
+				selectEnvironmentsMap.put(model.getLocationId(), model.getEnvironmentName());
+			}
+		}
+		
 		DataSet dataset = getDataSet(datasetId);
 
 		if (dataset == null){
@@ -154,6 +163,11 @@ public class DatasetExporter {
 		String dummyReplicates = "_REPLICATES_";
 		if (breedingViewInput.getReplicates().getName().equals(dummyReplicates)) {
 			columnsMap.put(dummyReplicates, Integer.valueOf(observationSheetColumnIndex));
+			observationSheetColumnIndex++;
+		}
+		
+		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
+			columnsMap.put(selectedFactor, Integer.valueOf(observationSheetColumnIndex));
 			observationSheetColumnIndex++;
 		}
 
@@ -172,10 +186,11 @@ public class DatasetExporter {
 
 		for (Experiment experiment : experiments) {
 
+			
 			boolean outerBreak = true;
 			for (Variable factorVariables1 : experiment.getFactors().getVariables()) {
 				if (factorVariables1.getVariableType().getLocalName().trim()
-						.equalsIgnoreCase(selectedFactor)
+						.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())
 						&& selectedEnvironment.contains(factorVariables1.getValue())) {
 					outerBreak = false;
 				}
@@ -351,6 +366,10 @@ public class DatasetExporter {
 
 			if (breedingViewInput.getReplicates().getName().equals(dummyReplicates)) {
 				row.add("1");
+			}
+			
+			if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
+				row.add(selectEnvironmentsMap.get(experiment.getLocationId()));
 			}
 
 			getTableItems().add(row.toArray(new String[0]));

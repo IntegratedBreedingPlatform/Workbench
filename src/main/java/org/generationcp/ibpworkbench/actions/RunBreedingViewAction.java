@@ -233,7 +233,7 @@ public class RunBreedingViewAction implements ClickListener {
 			
         	List<String> selectedEnvironments = new ArrayList<String>();
         	for (SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()){
-        		selectedEnvironments.add(m.getEnvironmentName());
+        		selectedEnvironments.add(m.getTrialno());
         	}
         	
         	datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
