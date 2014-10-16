@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
@@ -369,6 +370,141 @@ public class DatasetExporterTest {
 		assertEquals("EPP@ ", headerAliasMap.get("EPP_"));
 
 	}
+	
+	@Test
+	public void testExportToCSVForBreedingView_TheSelectedFactorIsNotTrialInstance() {
+
+		Term numeric = new Term();
+		numeric.setName(DatasetExporter.NUMERIC_VARIABLE);
+
+		List<String> selectedEnvironments = new ArrayList<String>();
+		selectedEnvironments.add("1");
+		
+		List<SeaEnvironmentModel> selectedEnvironmentsList = new ArrayList<SeaEnvironmentModel>();
+		SeaEnvironmentModel envModel = new SeaEnvironmentModel();
+		envModel.setLocationId(1);
+		envModel.setEnvironmentName("CIMMYT Harrare");
+		selectedEnvironmentsList.add(envModel);
+
+		List<VariableType> factors = new ArrayList<VariableType>();
+		VariableType trial = new VariableType();
+		trial.setLocalName("TRIAL");
+		trial.setRank(1);
+		trial.setStandardVariable(createStardardVariable(PhenotypicType.TRIAL_ENVIRONMENT,
+				"TRIAL", numeric));
+		factors.add(trial);
+		List<VariableType> variates = new ArrayList<VariableType>();
+		VariableType epp = new VariableType();
+		epp.setLocalName("EPP");
+		epp.setRank(1);
+		epp.setStandardVariable(createStardardVariable(PhenotypicType.VARIATE, "EPP", numeric));
+		variates.add(epp);
+		VariableType ph = new VariableType();
+		ph.setLocalName("PH");
+		ph.setRank(1);
+		ph.setStandardVariable(createStardardVariable(PhenotypicType.VARIATE, "PH", numeric));
+		variates.add(ph);
+		VariableType earh = new VariableType();
+		earh.setLocalName("EARH");
+		earh.setRank(1);
+		earh.setStandardVariable(createStardardVariable(PhenotypicType.VARIATE, "EARH", numeric));
+		variates.add(earh);
+
+		HashMap<String, Boolean> variatesActiveState = new HashMap<String, Boolean>();
+		variatesActiveState.put("EARH", false);
+		variatesActiveState.put("EPP", true);
+		variatesActiveState.put("PH", true);
+		
+
+		List<Experiment> experiments = new ArrayList<Experiment>();
+		experiments.add(experiment);
+
+		List<Variable> factorVariables = new ArrayList<Variable>();
+		Variable trialNoVariable = new Variable();
+		trialNoVariable.setValue("1");
+		trialNoVariable.setVariableType(trial);
+		factorVariables.add(trialNoVariable);
+
+		List<Variable> variateVariables = new ArrayList<Variable>();
+		Variable eppVariable = new Variable();
+		eppVariable.setValue("76.223");
+		eppVariable.setVariableType(epp);
+		variateVariables.add(eppVariable);
+		Variable phVariable = new Variable();
+		phVariable.setValue("7.5");
+		phVariable.setVariableType(ph);
+		variateVariables.add(phVariable);
+		Variable earhVariable = new Variable();
+		earhVariable.setValue("1111.0");
+		earhVariable.setVariableType(earh);
+		variateVariables.add(earhVariable);
+
+		try {
+			when(manager.getDataSet(anyInt())).thenReturn(dataSet);
+			when(manager.getExperiments(anyInt(), anyInt(), anyInt())).thenReturn(experiments);
+
+			when(experiment.getFactors()).thenReturn(mock(VariableList.class));
+			when(experiment.getFactors().getVariables()).thenReturn(factorVariables);
+			when(experiment.getVariates()).thenReturn(mock(VariableList.class));
+			when(experiment.getVariates().findByLocalName("EPP")).thenReturn(eppVariable);
+			when(experiment.getVariates().findByLocalName("PH")).thenReturn(phVariable);
+			when(experiment.getVariates().findByLocalName("EARH")).thenReturn(earhVariable);
+			when(experiment.getVariates().getVariables()).thenReturn(variateVariables);
+			when(experiment.getLocationId()).thenReturn(1);
+
+			when(dataSet.getVariableTypes()).thenReturn(mock(VariableTypeList.class));
+			when(dataSet.getVariableTypes().getFactors()).thenReturn(mock(VariableTypeList.class));
+			when(dataSet.getVariableTypes().getVariates()).thenReturn(mock(VariableTypeList.class));
+			when(dataSet.getVariableTypes().getFactors().getVariableTypes()).thenReturn(factors);
+			when(dataSet.getVariableTypes().getVariates().getVariableTypes()).thenReturn(variates);
+
+			when(bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
+			when(bvInput.getReplicates()).thenReturn(mock(Replicates.class));
+			when(bvInput.getReplicates().getName()).thenReturn("REP");
+			when(bvInput.getTrialInstanceName()).thenReturn("TRIAL");
+			when(bvInput.getSelectedEnvironments()).thenReturn(selectedEnvironmentsList);
+			
+			when(workbenchDataManager.getWorkbenchSetting()).thenReturn(mock(WorkbenchSetting.class));
+			when(workbenchDataManager.getWorkbenchSetting().getInstallationDirectory()).thenReturn("");
+
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
+		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
+		exporter.setWorkbenchDataManager(workbenchDataManager);
+		try {
+			exporter.exportToCSVForBreedingView("datasetExporterTest.csv", "SITE_NAME",
+					selectedEnvironments, bvInput);
+		} catch (DatasetExporterException e) {
+
+			fail(e.getMessage());
+		}
+
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+
+		//header
+		assertEquals("TRIAL", tableItems.get(0)[0]);
+		assertEquals("EPP", tableItems.get(0)[1]);
+		assertEquals("PH", tableItems.get(0)[2]);
+		assertEquals("SITE_NAME", tableItems.get(0)[3]);
+		assertFalse(ArrayUtils.contains(tableItems.get(0), "EARH"));
+		
+		//data
+		assertEquals("1", tableItems.get(1)[0]);
+		assertEquals("76.223", tableItems.get(1)[1]);
+		assertEquals("7.5", tableItems.get(1)[2]);
+		assertEquals("CIMMYT Harrare", tableItems.get(1)[3]);
+		
+		assertEquals("TRIAL", headerAliasMap.get("TRIAL"));
+		assertEquals("EPP", headerAliasMap.get("EPP"));
+		assertEquals("PH", headerAliasMap.get("PH"));
+		assertEquals("SITE_NAME", headerAliasMap.get("SITE_NAME"));
+		assertNull(headerAliasMap.get("EARH"));
+
+	}
+
 
 	private StandardVariable createStardardVariable(PhenotypicType type, String name, Term dataType) {
 
