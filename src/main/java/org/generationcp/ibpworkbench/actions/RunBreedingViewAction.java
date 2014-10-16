@@ -53,7 +53,7 @@ import java.util.Properties;
 public class RunBreedingViewAction implements ClickListener {
     private static final long serialVersionUID = 1L;
     
-    private final static Logger log = LoggerFactory.getLogger(RunBreedingViewAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
     
     private SingleSiteAnalysisDetailsPanel source;
     
@@ -77,8 +77,6 @@ public class RunBreedingViewAction implements ClickListener {
         this.source = selectDetailsForBreedingViewWindow;
         this.project = project;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
     
     @Override
     public void buttonClick(final ClickEvent event) {
@@ -108,7 +106,7 @@ public class RunBreedingViewAction implements ClickListener {
             Environment environment = new Environment();
             environment.setName(envFactor.trim());
             
-            if(breedingViewInput.getSelectedEnvironments().size() == 0){
+            if(breedingViewInput.getSelectedEnvironments().isEmpty()){
                 event.getComponent().getWindow().showNotification("Please select environment for analysis.", Notification.TYPE_ERROR_MESSAGE);
                 return;
             } else{
@@ -206,11 +204,9 @@ public class RunBreedingViewAction implements ClickListener {
 					plotName = source.getManagerFactory().getNewStudyDataManager().getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NNO.getId());
 				}
 			} catch (ConfigException e) {
-				
-				e.printStackTrace();
+				LOG.error("ERROR: ", e);
 			} catch (MiddlewareQueryException e) {
-				
-				e.printStackTrace();
+				LOG.error("ERROR: ", e);
 			} 
 			
 			Genotypes genotypes = new Genotypes();
@@ -239,7 +235,7 @@ public class RunBreedingViewAction implements ClickListener {
         	datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
         	
         } catch (DatasetExporterException e1) {
-			e1.printStackTrace();
+        	LOG.error("ERROR: ", e1);
 		}
        
 		launchBV(event);
@@ -274,11 +270,11 @@ public class RunBreedingViewAction implements ClickListener {
              pb.start();
              
          } catch (BreedingViewXMLWriterException e) {
-             log.debug("Cannot write Breeding View input XML", e);
+             LOG.debug("Cannot write Breeding View input XML", e);
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          } catch (IOException e) {
-             log.debug("Cannot write Breeding View input XML", e);
+             LOG.debug("Cannot write Breeding View input XML", e);
              
              MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
          }
@@ -295,13 +291,13 @@ public class RunBreedingViewAction implements ClickListener {
         boolean changedConfig = false;
         try {
             changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
-        }
-        catch (IOException e1) {
+        } catch (IOException e1) {
+        	LOG.error("ERROR: ", e1);
             MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
                                       "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return false;
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (MiddlewareQueryException e) {
+        	LOG.error("ERROR: ", e);
             MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
                                       "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return false;
@@ -320,8 +316,8 @@ public class RunBreedingViewAction implements ClickListener {
                 
                 
             }
-        }
-        catch (Exception e1) {
+        } catch (Exception e1) {
+        	LOG.error("ERROR: ", e1);
             MessageNotifier.showError(window, "Cannot get webapp status.",
                                       "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return false;
@@ -336,18 +332,16 @@ public class RunBreedingViewAction implements ClickListener {
                     if (!deployed) {
                         // deploy the webapp
                         tomcatUtil.deployLocalWar(contextPath, localWarPath);
-                    }
-                    else if (running) {
+                    } else if (running) {
                         // reload the webapp
                         tomcatUtil.reloadWebApp(contextPath);
-                    }
-                    else {
+                    } else {
                         // start the webapp
                         tomcatUtil.startWebApp(contextPath);
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
+            	LOG.error("ERROR: ", e);
                 MessageNotifier.showError(window, "Cannot load tool: " + tool.getToolName(),
                                           "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
                 return false;
