@@ -369,7 +369,7 @@ public class DatasetExporter {
 			}
 			
 			if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
-				row.add(selectEnvironmentsMap.get(experiment.getLocationId()));
+				row.add(selectEnvironmentsMap.get(experiment.getLocationId()).trim().replace(",", ";"));
 			}
 
 			getTableItems().add(row.toArray(new String[0]));
