@@ -132,6 +132,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
         projectNameField.setStyleName("hide-caption");
         projectNameField.setWidth("250px");
+        projectNameField.setDebugId("vaadin_projectname_txt");
         
         otherCropNameField = new TextField();
         otherCropNameField.setImmediate(true);
@@ -153,6 +154,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         cropTypeCombo = createCropTypeComboBox();
         cropTypeCombo.setWidth("250px");
         cropTypeCombo.setStyleName("hide-caption");
+        cropTypeCombo.setDebugId("vaadin_croptype_combo");
         
         lblCrop = new Label();
         lblCrop.setValue(messageSource.getMessage(Message.BASIC_DETAILS_CROP));

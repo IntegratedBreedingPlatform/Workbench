@@ -112,6 +112,7 @@ public class AddProgramView extends Panel implements InitializingBean {
         finishButton = new Button("Finish");
         finishButton.setEnabled(false);
         finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        finishButton.setDebugId("vaadin_finish_btn");
 
         // finish button
         cancelBtn = new Button("Cancel");
