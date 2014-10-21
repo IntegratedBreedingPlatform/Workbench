@@ -26,6 +26,12 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NurseryListPreviewPresenterTest  {
+    public static final String MORE_THAN_255_CHAR_STRING = "the quick brown fox jumps over the lazy dog. " +
+            "the quick brown fox jumps over the lazy dog. " +
+            "the quick brown fox jumps over the lazy dog. " +
+            "the quick brown fox jumps over the lazy dog. " +
+            "the quick brown fox jumps over the lazy dog. " +
+            "the quick brown fox jumps over the lazy dog. ";
     @Mock
     private Project project;
 
@@ -94,8 +100,7 @@ public class NurseryListPreviewPresenterTest  {
             presenter.renameNurseryListFolder(null,0);
             fail("should throw an error when newFolderName = null");
         } catch (NurseryListPreviewException e) {
-
-            verify(messageSource).getMessage(Message.INVALID_ITEM_NAME);
+            assertTrue(e.getMessage().contains(NurseryListPreviewException.BLANK_NAME));
         }
 
     }
@@ -188,5 +193,47 @@ public class NurseryListPreviewPresenterTest  {
         }
 
         assertEquals("Folder has no children, can be deleted",Integer.valueOf(studyIdWithNoChildren),presenter.validateForDeleteNurseryList(studyIdWithNoChildren));
+    }
+
+    @Test
+    public void testValidateStudyFolderName() throws Exception {
+        try {
+            presenter.validateStudyFolderName(newFolderName);
+        } catch (NurseryListPreviewException e) {
+            fail("We should not expect an exception since the input is valid");
+        }
+    }
+
+    @Test (expected = NurseryListPreviewException.class)
+    public void testValidateStudyFolderNameNull() throws Exception {
+        presenter.validateStudyFolderName(null);
+        fail("We are expecting an exception since the input is NOT valid");
+    }
+
+    @Test (expected = NurseryListPreviewException.class)
+    public void testValidateStudyFolderNameBlank() throws Exception {
+        presenter.validateStudyFolderName("");
+        fail("We are expecting an exception since the input is NOT valid");
+
+    }
+
+    @Test (expected = NurseryListPreviewException.class)
+    public void testValidateStudyFolderNameInvalidProgramStudies() throws Exception {
+        presenter.validateStudyFolderName(NurseryListPreview.MY_STUDIES);
+        fail("We are expecting an exception since the input is NOT valid");
+
+    }
+
+    @Test (expected = NurseryListPreviewException.class)
+    public void testValidateStudyFolderNameInvalidPublicStudies() throws Exception {
+        presenter.validateStudyFolderName(NurseryListPreview.SHARED_STUDIES);
+        fail("We are expecting an exception since the input is NOT valid");
+    }
+
+
+    @Test (expected = NurseryListPreviewException.class)
+    public void testValidateStudyFolderNameTooLong() throws Exception {
+        presenter.validateStudyFolderName(MORE_THAN_255_CHAR_STRING);
+        fail("We are expecting an exception since the input is NOT valid");
     }
 }

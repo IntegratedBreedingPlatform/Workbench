@@ -35,6 +35,7 @@ import java.util.List;
 @Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
+    public static final int MAX_STUDY_FOLDER_NAME_LENGTH = 255;
 
     private NurseryListPreview view;
     private Project project;
@@ -70,7 +71,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
             view.generateTopListOfTree(centralRootFolders, localRootFolders);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(e.getMessage(),e);
         }
     }
 
@@ -97,7 +98,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             LOG.info("isFolder = " + !isStudy);
             return !isStudy;
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(e.getMessage(),e);
         }
 
         return false;
@@ -106,13 +107,11 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     public void renameNurseryListFolder(String newFolderName, Integer folderId) throws NurseryListPreviewException {
         try {
 
-            if (newFolderName == null || newFolderName.isEmpty()) {
-                throw new NurseryListPreviewException(messageSource.getMessage(Message.INVALID_ITEM_NAME));
-            }
+            validateStudyFolderName(newFolderName);
 
             this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(e.getMessage(),e);
         }
     }
 
@@ -120,7 +119,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         try {
             this.getManagerFactory().getStudyDataManager().deleteEmptyFolder(id);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(e.getMessage(),e);
         }
     }
 
@@ -128,43 +127,51 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         try {
             return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(e.getMessage(),e);
             return null;
         }
     }
 
     public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws NurseryListPreviewException {
-
-
         try {
             return getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
-            throw new NurseryListPreviewException(e.getLocalizedMessage());
+            LOG.error(e.getMessage(),e);
+            throw new NurseryListPreviewException(e.getMessage());
         }
     }
 
     public Integer addNurseryListFolder(String name, Integer id) throws NurseryListPreviewException {
         try {
-            if (name == null || "".equals(name.trim())) {
-                throw new NurseryListPreviewException(NurseryListPreviewException.BLANK_NAME);
-            }
-            if (name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
-                throw new NurseryListPreviewException(NurseryListPreviewException.INVALID_NAME);
-            }
+
+            validateStudyFolderName(name);
+
             Integer parentFolderId = id;
             if (!isFolder(id)) {
                 //get parent
                 DmsProject dmsProject = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
                 if (dmsProject == null) {
-                    throw new NurseryListPreviewException("Parent folder cannot be null");
+                    throw new NurseryListPreviewException(NurseryListPreviewException.NO_PARENT);
                 }
                 parentFolderId = dmsProject.getProjectId();
             }
             return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
-            throw new NurseryListPreviewException(e.getLocalizedMessage());
+            LOG.error(e.getMessage(),e);
+            throw new NurseryListPreviewException(e.getMessage());
+        }
+    }
+
+    protected void validateStudyFolderName(String name) throws NurseryListPreviewException {
+        if (name == null || "".equals(name.trim())) {
+            throw new NurseryListPreviewException(NurseryListPreviewException.BLANK_NAME);
+        }
+        if (name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
+            throw new NurseryListPreviewException(NurseryListPreviewException.INVALID_NAME);
+        }
+
+        if (name.length() > MAX_STUDY_FOLDER_NAME_LENGTH) {
+            throw new NurseryListPreviewException(NurseryListPreviewException.TOO_LONG);
         }
     }
 
@@ -186,25 +193,21 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE));
         }
 
-        try {
-            if (hasChildren(id)) {
-                throw new NurseryListPreviewException(NurseryListPreviewException.HAS_CHILDREN);
-            }
-        } catch (MiddlewareQueryException e) {
-            throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
+        if (hasChildren(id)) {
+            throw new NurseryListPreviewException(NurseryListPreviewException.HAS_CHILDREN);
         }
 
         return id;
     }
 
-    private boolean hasChildren(Integer id) throws MiddlewareQueryException {
+    private boolean hasChildren(Integer id) throws NurseryListPreviewException {
         List<Reference> studyChildren;
 
         try {
             studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
-            throw e;
+            throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
         }
         if (studyChildren != null && !studyChildren.isEmpty()) {
             LOG.info("hasChildren = true");
@@ -221,7 +224,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         try {
             studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId);
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE),e);
             studyChildren = new ArrayList<Reference>();
         }
 
@@ -249,7 +252,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             app.getSessionData().setLastOpenedProject(project);
 
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString(), e);
+            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE), e);
         }
     }
 
@@ -261,7 +264,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
             }
             return null;
         } catch (MiddlewareQueryException e) {
-            LOG.error(e.getLocalizedMessage(),e);
+            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE),e);
             return null;
         }
     }

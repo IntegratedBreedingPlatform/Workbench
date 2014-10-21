@@ -9,6 +9,8 @@ public class NurseryListPreviewException extends Exception {
     public static final String HAS_CHILDREN = "Folder has child items.";
     public static final String BLANK_NAME = "Folder name cannot be blank";
     public static final String INVALID_NAME = "Please choose a different name";
+    public static final String NO_PARENT = "Parent folder cannot be null";
+    public static final String TOO_LONG = "Folder name is too long";
 
     public NurseryListPreviewException() {
         // empty constructor

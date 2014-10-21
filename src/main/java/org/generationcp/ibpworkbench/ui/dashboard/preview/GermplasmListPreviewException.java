@@ -11,6 +11,7 @@ public class GermplasmListPreviewException extends Exception {
     public static final String BLANK_NAME = "Folder name cannot be blank";
     public static final String INVALID_NAME = "Please choose a different name";
     public static final String NAME_NOT_UNIQUE = "Name is not unique";
+    public static final String LONG_NAME = "Folder name is too long";
 
     public GermplasmListPreviewException() {
     }

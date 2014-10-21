@@ -39,6 +39,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public static final String FOLDER = "FOLDER";
     private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreviewPresenter.class);
     private static final int BATCH_SIZE = 50;
+    public static final int MAX_LIST_FOLDER_NAME_LENGTH = 50;
     private GermplasmListPreview view;
     private Project project;
     @Autowired
@@ -162,9 +163,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public boolean renameGermplasmListFolder(String newName, Integer id) throws GermplasmListPreviewException {
         try {
 
-            if (newName == null || newName.isEmpty()) {
-                throw new GermplasmListPreviewException(messageSource.getMessage(Message.INVALID_ITEM_NAME));
-            }
+            validateGermplasmListFolderName(newName);
 
             GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
@@ -172,7 +171,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
                 throw new GermplasmListPreviewException(GermplasmListPreviewException.NOT_FOLDER);
             }
 
-            checkIfUnique(newName);
             gpList.setName(newName);
 
             this.getManagerFactory().getGermplasmListManager().updateGermplasmList(gpList);
@@ -190,16 +188,10 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
      * @return ID of the newly added germplasmList, null if not successful
      */
     public Integer addGermplasmListFolder(String folderName, Integer id) throws GermplasmListPreviewException {
-        if (folderName == null || "".equals(folderName.trim())) {
-            throw new GermplasmListPreviewException(GermplasmListPreviewException.BLANK_NAME);
-        } else if (folderName.equals(GermplasmListPreview.MY_LIST) || folderName.equals(GermplasmListPreview.SHARED_LIST)) {
-            throw new GermplasmListPreviewException(GermplasmListPreviewException.INVALID_NAME);
-        }
-
         GermplasmList gpList, newList;
         try {
 
-            checkIfUnique(folderName);
+            validateGermplasmListFolderName(folderName);
 
             Integer userId = manager.getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                     sessionData.getSelectedProject().getProjectId());
@@ -235,6 +227,20 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
         if (localDuplicate != null && !localDuplicate.isEmpty()) {
             throw new GermplasmListPreviewException(GermplasmListPreviewException.NAME_NOT_UNIQUE);
         }
+    }
+
+    protected void validateGermplasmListFolderName(String germplasmListFolderName) throws MiddlewareQueryException, GermplasmListPreviewException {
+
+        if (germplasmListFolderName == null || germplasmListFolderName.trim().isEmpty()) {
+            throw new GermplasmListPreviewException(GermplasmListPreviewException.BLANK_NAME);
+        } else if (germplasmListFolderName.equals(GermplasmListPreview.MY_LIST) || germplasmListFolderName.equals(GermplasmListPreview.SHARED_LIST)) {
+            throw new GermplasmListPreviewException(GermplasmListPreviewException.INVALID_NAME);
+        } else if (germplasmListFolderName.trim().length() > MAX_LIST_FOLDER_NAME_LENGTH) {
+            throw new GermplasmListPreviewException(GermplasmListPreviewException.LONG_NAME);
+        }
+
+        checkIfUnique(germplasmListFolderName);
+
     }
 
     public GermplasmList validateForDeleteGermplasmList(Integer id) throws GermplasmListPreviewException {
