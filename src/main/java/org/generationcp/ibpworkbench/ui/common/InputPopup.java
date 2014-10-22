@@ -75,6 +75,8 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
         okBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         cancelBtn = new Button(messageSource.getMessage(Message.CANCEL));
 
+        //set debug ids
+        field.setDebugId("vaadin-itemname-txt");
     }
 
     private void initializeLayout() {
