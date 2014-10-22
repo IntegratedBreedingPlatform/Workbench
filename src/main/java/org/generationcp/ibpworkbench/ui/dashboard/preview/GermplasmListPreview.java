@@ -5,7 +5,6 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -38,8 +37,11 @@ import java.util.List;
  */
 @Configurable
 public class GermplasmListPreview extends VerticalLayout {
-    private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1941905235449423109L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
+	
     @Autowired
     private SessionData sessionData;
 
@@ -50,7 +52,7 @@ public class GermplasmListPreview extends VerticalLayout {
     private ManagerFactoryProvider managerFactoryProvider;
 
     private GermplasmListPreviewPresenter presenter;
-    private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
+    
     private Tree treeView;
 
     private Project project;
@@ -84,7 +86,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 assemble();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	LOG.error(e.getMessage(), e);
         }
 
         folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
@@ -196,9 +198,9 @@ public class GermplasmListPreview extends VerticalLayout {
                 LOG.trace("selecting sidebar");
                 WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 
-                if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list"))
+                if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")){
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
-
+                }
                 // page change to list manager, with parameter passed
                 (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, sessionData.getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
 
@@ -227,11 +229,14 @@ public class GermplasmListPreview extends VerticalLayout {
 
                 final InputPopup w = new InputPopup(messageSource.getMessage(Message.RENAME_ITEM),messageSource.getMessage(Message.ITEM_NAME),treeView.getItemCaption(lastItemId));
                 w.setOkListener(new Button.ClickListener(){
-                    @Override
+					private static final long serialVersionUID = -242570054807727077L;
+
+					@Override
                     public void buttonClick(Button.ClickEvent event1) {
                         try {
                             presenter.renameGermplasmListFolder(w.getFieldVal(), (Integer) lastItemId);
                         } catch (Exception e) {
+                        	LOG.error(e.getMessage(), e);
                             MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getMessage());
                             return;
                         }
@@ -252,15 +257,18 @@ public class GermplasmListPreview extends VerticalLayout {
 
         final InputPopup addFolderPopup = new InputPopup(messageSource.getMessage(Message.ADD_FOLDER),messageSource.getMessage(Message.ITEM_NAME),"");
         addFolderPopup.setOkListener(new Button.ClickListener() {
-            @Override
+			private static final long serialVersionUID = 2842797806931785183L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 Integer newItem = null;
                 try {
 
-                    if (treeView.getValue() instanceof String)
+                    if (treeView.getValue() instanceof String){
                         newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), null);
-                    else
+                    } else {
                         newItem = presenter.addGermplasmListFolder(addFolderPopup.getFieldVal(), (Integer) treeView.getValue());
+                    }
 
                     //update UI
                     if (newItem != null) {
@@ -276,11 +284,11 @@ public class GermplasmListPreview extends VerticalLayout {
                             treeView.setParent(newItem, messageSource.getMessage(Message.PROGRAM_LIST));
                         }
 
-                        if (parent != null) {
-                            if (!treeView.isExpanded(parent.getId()))
-                                expandTree(parent.getId());
-                        } else
+                        if (parent != null && !treeView.isExpanded(parent.getId())){
+                        	expandTree(parent.getId());
+                        } else {
                             treeView.expandItem(MY_LIST);
+                        }
 
                         treeView.select(newItem);
                         lastItemId = newItem;
@@ -290,6 +298,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 
                 } catch (Exception e) {
+                	LOG.error(e.getMessage(), e);
                     MessageNotifier.showError(clickEvent.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
@@ -328,6 +337,7 @@ public class GermplasmListPreview extends VerticalLayout {
                 try {
                     gpList = presenter.validateForDeleteGermplasmList((Integer) lastItemId);
                 } catch (Exception e) {
+                	LOG.error(e.getMessage(), e);
                     MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.ERROR), e.getMessage());
                     return;
                 }
@@ -358,6 +368,7 @@ public class GermplasmListPreview extends VerticalLayout {
                                         }
                                         treeView.setImmediate(true);
                                     } catch (Exception e) {
+                                    	LOG.error(e.getMessage(), e);
                                         MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                                     }
                                 }
@@ -382,7 +393,7 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     protected void initializeComponents() {
-
+    	// do nothing
     }
 
     public void generateTree(List<GermplasmList> germplasmListParentLocal, List<GermplasmList> germplasmListParentCentral) {
@@ -481,7 +492,7 @@ public class GermplasmListPreview extends VerticalLayout {
         openListManagerBtn.setEnabled(enabled);
     }
 
-    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId) throws InternationalizableException {
+    public void addGermplasmListNode(int parentGermplasmListId, List<GermplasmList> germplasmListChildren, Object itemId) {
 
         for (GermplasmList listChild : germplasmListChildren) {
 
@@ -524,12 +535,12 @@ public class GermplasmListPreview extends VerticalLayout {
     }
 
     protected void initializeActions() {
-
+    	// do nothing
     }
 
     public void processToolbarButtons(Object treeItem) {
-        boolean isSharedListNode = (treeItem instanceof String && treeItem.equals(GermplasmListPreview.SHARED_LIST));
-        boolean isCentralGermplasmList = (treeItem instanceof Integer && ((Integer) treeItem).intValue() > 0);
+        boolean isSharedListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.SHARED_LIST);
+        boolean isCentralGermplasmList = treeItem instanceof Integer && ((Integer) treeItem).intValue() > 0;
         boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.MY_LIST);
         boolean isFolder = treeItem instanceof String || getPresenter().isFolder((Integer) treeItem);
 

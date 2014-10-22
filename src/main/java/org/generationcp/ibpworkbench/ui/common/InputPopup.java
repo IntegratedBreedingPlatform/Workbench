@@ -6,6 +6,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -16,6 +18,10 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Configurable
 public class InputPopup extends BaseSubWindow implements InitializingBean {
+	
+	private static final long serialVersionUID = -6445403140342610657L;
+	private static final Logger LOG = LoggerFactory.getLogger(InputPopup.class);
+	
     private Label label;
     private TextField field;
     private String windowName, defaultFieldValue, fieldName;
@@ -38,7 +44,7 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
         try {
             assemble();
         } catch (Exception e) {
-            e.printStackTrace();
+           LOG.error(e.getMessage(),e);
         }
     }
 
@@ -114,7 +120,9 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
     protected void initializeActions() {
         // cancelBtn
         cancelBtn.addListener(new Button.ClickListener() {
-            @Override
+			private static final long serialVersionUID = 7893112609017442016L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 clickEvent.getComponent().getWindow().getParent().removeWindow(InputPopup.this);
             }
