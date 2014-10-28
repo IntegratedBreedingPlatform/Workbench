@@ -377,4 +377,9 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         throw new InternationalizableException(e, 
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+    
 }
