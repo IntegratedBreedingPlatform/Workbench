@@ -62,6 +62,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
     private static final String BACKUP_DIR = "temp";
 
     private boolean isUpload = false;
+    
+    //this would be the indicator if there is an error during the restore process
+    private boolean hasRestoreError = false;
 
 
     public RestoreIBDBSaveAction(Project project, Table table, Window sourceWindow) {
@@ -87,7 +90,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
     @Override
     public void onClose(ConfirmDialog dialog) {
-
+    	hasRestoreError = false;
         if (pb != null)
             LOG.debug("selected backup: " + pb.getProjectBackupId());
 
@@ -110,14 +113,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                                         return;
                                     }
                                 }
-
-                toolUtil.closeAllNativeTools();
+                if(toolUtil != null) {
+                	toolUtil.closeAllNativeTools();
+                }
 
                 // restore the database
                 mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         IBDBGeneratorLocalDb generateLocalDB = new IBDBGeneratorLocalDb(sessionData.getLastOpenedProject().getCropType(),sessionData.getLastOpenedProject().getProjectId());
+                        generateLocalDB.setWorkbenchDataManager(workbenchDataManager);
                         return generateLocalDB.generateDatabase();
                     }
                 });
@@ -125,8 +130,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 Integer userId = workbenchDataManager.
                         getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                                 project.getProjectId());
-
-                mysqlUtil.updateOwnerships(project.getLocalDbName(), userId);
+                
+                if(userId != null) {
+                	mysqlUtil.updateOwnerships(project.getLocalDbName(), userId);
+                }
 
                 // the restored database may be old
                 // and needs to be upgraded for it to be usable
@@ -138,15 +145,22 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
                 // LOG to project activity
                 //TODO: internationalize this
-                ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(), sessionData.getUserData(), new Date());
-                workbenchDataManager.addProjectActivity(projAct);
+                // if there is no user id, it means there is no user data
+                if(userId != null) {
+	                ProjectActivity projAct = new ProjectActivity(new Integer(project.getProjectId().intValue()), project, "Program Local Database Restore", "Restore performed on " + project.getProjectName(), sessionData.getUserData(), new Date());
+	                workbenchDataManager.addProjectActivity(projAct);
+                }
 
-
+                hasRestoreError = false;
             } catch(Exception e) {
+            	LOG.error(e.getMessage(), e);
                 MessageNotifier.showError(sourceWindow, "Cannot perform restore operation", e.getMessage());
+                hasRestoreError = true;
             }
 
 
+        } else {
+        	hasRestoreError = true;
         }
     }
 
@@ -187,4 +201,30 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
     public void setIsUpload(boolean value) {
         isUpload = value;
     }
+
+    //for unit testing to be able to inject test attribute
+	public void setMysqlUtil(MySQLUtil mysqlUtil) {
+		this.mysqlUtil = mysqlUtil;
+	}
+
+	public void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public boolean isHasRestoreError() {
+		return hasRestoreError;
+	} 	
+	
 }
