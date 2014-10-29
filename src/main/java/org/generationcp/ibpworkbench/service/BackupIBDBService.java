@@ -44,8 +44,9 @@ public class BackupIBDBService {
 
     public void checkBackupDir() throws Exception {
         File saveDir = new File(BACKUP_DIR);
-        if (!saveDir.exists() || !saveDir.isDirectory())
+        if (!saveDir.exists() || !saveDir.isDirectory()) {
             saveDir.mkdirs();
+        }
 
         mysqlUtil.setBackupDir(BACKUP_DIR);
 

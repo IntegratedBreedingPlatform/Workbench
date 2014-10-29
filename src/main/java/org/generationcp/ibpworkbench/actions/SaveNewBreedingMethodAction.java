@@ -109,8 +109,9 @@ public class SaveNewBreedingMethodAction implements ClickListener {
 
             LOG.info(sessionData.getProjectBreedingMethodData().toString());
 
-            if (sessionData.getUserData() != null)
+            if (sessionData.getUserData() != null) {
                 newBreedingMethod.setUser(sessionData.getUserData().getUserid());
+            }
 
             newBreedingMethod.setMattr(0);
             newBreedingMethod.setMprgn(0);

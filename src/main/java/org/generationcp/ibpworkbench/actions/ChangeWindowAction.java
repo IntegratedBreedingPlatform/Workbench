@@ -78,8 +78,9 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
         public static WindowEnums equivalentWindowEnum(String windowName) {
             for (WindowEnums window : WindowEnums.values()) {
-                if (window.getwindowName().equals(windowName))
+                if (window.getwindowName().equals(windowName)) {
                     return window;
+                }
             }
             return null;
         }

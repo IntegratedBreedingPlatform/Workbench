@@ -84,7 +84,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public void validate(Object value) throws InvalidValueException {
 				
-				if (value == null) return;
+				if (value == null) {
+                    return;
+                }
 				
 				if (!isValid(value)){
 					throw new InvalidValueException(String.format("Breeding Method \"%s\" already exists.", value.toString())); 
@@ -94,7 +96,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public boolean isValid(Object value) {
 				
-				if (value == null) return true;
+				if (value == null) {
+                    return true;
+                }
 				
 				SessionData sessionData = null;
 				
@@ -149,7 +153,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public void validate(Object value) throws InvalidValueException {
 				
-				if (value == null) return;
+				if (value == null) {
+                    return;
+                }
 				
 				if (!isValid(value)){
 					throw new InvalidValueException(String.format("Breeding Method with Code \"%s\" already exists.", value.toString())); 
@@ -159,7 +165,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public boolean isValid(Object value) {
 				
-				if (value == null) return true;
+				if (value == null) {
+                    return true;
+                }
 				
 				SessionData sessionData = null;
 				

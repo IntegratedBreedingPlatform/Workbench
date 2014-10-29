@@ -282,7 +282,9 @@ import java.util.*;
              
              if (source.getData().toString().equals("available")){
             	 targetDataContainer.addItemAt(0, itemId);
-            	 if (counter < 100) target.unselect(itemId);
+            	 if (counter < 100) {
+                     target.unselect(itemId);
+                 }
              }else{
             	 sourceDataContainer.removeItem(itemId);
              }
@@ -391,8 +393,9 @@ import java.util.*;
                  "select entries from the Available Locations table at the top and drag them " +
                  "into the lower table.";
 
-         if (!cropOnly)
+         if (!cropOnly) {
              content += " You can also add any new locations that you need for managing your program.";
+         }
 
 
          final Label headingDesc = new Label(content);
@@ -413,8 +416,9 @@ import java.util.*;
 
          root.addComponent(selectedLocationsTitle);
 
-         if (!cropOnly)
-            root.addComponent(saveBtn);
+         if (!cropOnly) {
+             root.addComponent(saveBtn);
+         }
 
          root.setExpandRatio(selectedLocationsTitle,1.0F);
 
@@ -573,19 +577,20 @@ import java.util.*;
                                  .getValue();
 
                          ((LocationViewModel)itemId).setActive(val);
-                         if (val)
+                         if (val) {
                              source.select(itemId);
-                         else {
+                         } else {
                              source.unselect(itemId);
                              assocSelectAll.setValue(val);
                          }
                      }
                  });
 
-                 if (((LocationViewModel)itemId).isActive())
+                 if (((LocationViewModel)itemId).isActive()) {
                      select.setValue(true);
-                 else
+                 } else {
                      select.setValue(false);
+                 }
 
 
                  return select;
@@ -632,8 +637,9 @@ import java.util.*;
              public void drop(DragAndDropEvent dragAndDropEvent) {
                  DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
-                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
+                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
                      return;
+                 }
 
                  ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
                  

@@ -174,8 +174,9 @@ public class GxeUtility {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 				
-				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)"))
-					row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
+                    row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+                }
 				
 			}
 			
@@ -186,8 +187,9 @@ public class GxeUtility {
 		
 		try {
 
-			if (currentProject == null)
-				throw new Exception("currentProject is null");
+			if (currentProject == null) {
+                throw new Exception("currentProject is null");
+            }
 
 			String dir = "workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 
@@ -280,8 +282,9 @@ public class GxeUtility {
 	
 		try {
 
-			if (currentProject == null)
-				throw new Exception("currentProject is null");
+			if (currentProject == null) {
+                throw new Exception("currentProject is null");
+            }
 
 			String dir = "workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator + "input";
 

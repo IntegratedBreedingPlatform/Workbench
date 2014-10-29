@@ -109,24 +109,29 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         Design design = new Design();
         design.setType(breedingViewInput.getDesignType());
         
-        if (breedingViewInput.getBlocks() != null)
-        	breedingViewInput.getBlocks().setName(breedingViewInput.getBlocks().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        if (breedingViewInput.getBlocks() != null) {
+            breedingViewInput.getBlocks().setName(breedingViewInput.getBlocks().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setBlocks(breedingViewInput.getBlocks());
         
-        if (breedingViewInput.getReplicates() != null)
-        	breedingViewInput.getReplicates().setName(breedingViewInput.getReplicates().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        if (breedingViewInput.getReplicates() != null) {
+            breedingViewInput.getReplicates().setName(breedingViewInput.getReplicates().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setReplicates(breedingViewInput.getReplicates());
         
-        if (breedingViewInput.getColumns() != null)
-        	breedingViewInput.getColumns().setName(breedingViewInput.getColumns().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        if (breedingViewInput.getColumns() != null) {
+            breedingViewInput.getColumns().setName(breedingViewInput.getColumns().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setColumns(breedingViewInput.getColumns());
         
-        if (breedingViewInput.getRows() != null)
-        	breedingViewInput.getRows().setName(breedingViewInput.getRows().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        if (breedingViewInput.getRows() != null) {
+            breedingViewInput.getRows().setName(breedingViewInput.getRows().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setRows(breedingViewInput.getRows());
         
-        if (breedingViewInput.getPlot() != null)
-        	breedingViewInput.getPlot().setName(breedingViewInput.getPlot().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        if (breedingViewInput.getPlot() != null) {
+            breedingViewInput.getPlot().setName(breedingViewInput.getPlot().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setPlot(breedingViewInput.getPlot());
         
         Environments environments = new Environments();
@@ -136,7 +141,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
         	env.setName(s.getEnvironmentName().replace(",",";"));
         	env.setActive(true);
-        	if (s.getActive()) environments.add(env);
+        	if (s.getActive()) {
+                environments.add(env);
+            }
         }
         
         //create the DataConfiguration element

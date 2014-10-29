@@ -637,8 +637,9 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         initializeLayout();
         initializeActions();
         
-        if (workflowPreview)
-        	this.setStyleName("gcp-removelink");
+        if (workflowPreview) {
+            this.setStyleName("gcp-removelink");
+        }
         
     }
     

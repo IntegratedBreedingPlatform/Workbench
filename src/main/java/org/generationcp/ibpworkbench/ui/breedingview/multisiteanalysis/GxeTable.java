@@ -259,8 +259,9 @@ public class GxeTable extends Table {
 						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
 								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + v.getLocalName().replace("_UnitErrors", "") + ")") 
 								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
-							if (variatesCheckBoxState.get(v.getLocalName()))
-								variateLocalNames.put(v.getRank(), v.getLocalName());
+							if (variatesCheckBoxState.get(v.getLocalName())) {
+                                variateLocalNames.put(v.getRank(), v.getLocalName());
+                            }
 						}
 					}
 					
@@ -276,7 +277,9 @@ public class GxeTable extends Table {
 						
 						String locationValTrial = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
 						String locationVal = exp.getFactors().findByLocalName(selectedEnvFactorName).getValue();
-						if (envNames.contains(locationVal)) continue;
+						if (envNames.contains(locationVal)) {
+                            continue;
+                        }
 						
 						
 						TableItems[] row = new TableItems[factorLocalNames.size()+variateLocalNames.size()+1];

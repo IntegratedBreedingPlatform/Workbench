@@ -111,7 +111,9 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				if (treeTable.getValue() == null) return;
+				if (treeTable.getValue() == null) {
+                    return;
+                }
 				DatasetReference datasetRef = (DatasetReference) treeTable.getValue();
 				int dataSetId = datasetRef.getId();
 				metaAnalysisPanel.generateTab(dataSetId);
@@ -360,8 +362,9 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			cells[1] = "";
 			cells[2] = "";
 
-			if (r instanceof DatasetReference)
-				LOG.debug("r is DatasetReference");
+			if (r instanceof DatasetReference) {
+                LOG.debug("r is DatasetReference");
+            }
 
 			tr.addItem(cells, r);
 			tr.setParent(r, parentFolderReference);

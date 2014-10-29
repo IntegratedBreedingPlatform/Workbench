@@ -99,12 +99,14 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 				if (pathName.isDirectory()) {
 					
 					for (File children : pathName.listFiles()) {
-						 if (this.accept(pathName,children.getName()))
-							 return true;
+						 if (this.accept(pathName,children.getName())) {
+                             return true;
+                         }
 					}
 					
-				} else if (pathName.getName().endsWith(".exe") || pathName.getName().endsWith(".bat") || pathName.getName().endsWith(".com") || pathName.getName().endsWith(".sh") )
-					return true;
+				} else if (pathName.getName().endsWith(".exe") || pathName.getName().endsWith(".bat") || pathName.getName().endsWith(".com") || pathName.getName().endsWith(".sh") ) {
+                    return true;
+                }
 				
 				return false;
 			}
@@ -135,8 +137,9 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 				
 				if (!(new File(filePath)).isDirectory()) {
 					pathLbl.setValue((new File(filePath)).getAbsolutePath());
-				} else
-					pathLbl.setValue("");
+				} else {
+                    pathLbl.setValue("");
+                }
 			}
 			
 		});

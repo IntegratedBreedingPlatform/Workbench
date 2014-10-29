@@ -86,8 +86,9 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
             project = sessionData.getLastOpenedProject();
         }
 
-        if (user == null)
+        if (user == null) {
             user = sessionData.getUserData();
+        }
 
         try {
 

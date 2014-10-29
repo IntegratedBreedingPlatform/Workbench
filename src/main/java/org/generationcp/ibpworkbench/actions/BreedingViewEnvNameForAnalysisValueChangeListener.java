@@ -24,7 +24,9 @@ public class BreedingViewEnvNameForAnalysisValueChangeListener implements ValueC
     public void valueChange(ValueChangeEvent event) {
         String value = (String) event.getProperty().getValue();
         
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         
         TrialEnvironments trialEnvironments;
 		try {

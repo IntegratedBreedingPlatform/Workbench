@@ -101,10 +101,11 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				for (Object itemId : getTableLeft().getItemIds()){
 					((T)itemId).setActive(val);
 					
-					if (val && ((T)itemId).isEnabled())
-						table.select(itemId);
-					else
-						table.unselect(itemId);
+					if (val && ((T)itemId).isEnabled()) {
+                        table.select(itemId);
+                    } else {
+                        table.unselect(itemId);
+                    }
 				}
 				
 				table.requestRepaint();
@@ -123,10 +124,11 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				for (Object itemId : getTableRight().getItemIds()){
 					((T)itemId).setActive(val);
 					
-					if (val && ((T)itemId).isEnabled())
-						table.select(itemId);
-					else
-						table.unselect(itemId);
+					if (val && ((T)itemId).isEnabled()) {
+                        table.select(itemId);
+                    } else {
+                        table.unselect(itemId);
+                    }
 				}
 				
 				table.requestRepaint();
@@ -176,18 +178,22 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	
 	private void setLeftContainerDataSource(Container container){
 		getTableLeft().setContainerDataSource(container);
-		if (visibleColumns!=null)
-			setVisibleColumns(this.visibleColumns);
-		if (columnHeaders!=null)
-			setColumnHeaders(this.columnHeaders);
+		if (visibleColumns!=null) {
+            setVisibleColumns(this.visibleColumns);
+        }
+		if (columnHeaders!=null) {
+            setColumnHeaders(this.columnHeaders);
+        }
 	}
 	
 	private void setRightContainerDataSource(Container container){
 		getTableRight().setContainerDataSource(container);
-		if (visibleColumns!=null)
-			setVisibleColumns(this.visibleColumns);
-		if (columnHeaders!=null)
-			setColumnHeaders(this.columnHeaders);
+		if (visibleColumns!=null) {
+            setVisibleColumns(this.visibleColumns);
+        }
+		if (columnHeaders!=null) {
+            setColumnHeaders(this.columnHeaders);
+        }
 	}
 	
 	
@@ -209,8 +215,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
         
             	 Collection<T> sourceItemIds = (Collection<T>) source.getValue();
                  for (T itemId : sourceItemIds){
-                	 if (itemId.isEnabled())
-                		 itemId.setActive(true);
+                	 if (itemId.isEnabled()) {
+                         itemId.setActive(true);
+                     }
                  }
                 
                  ((Table)event.getProperty()).requestRepaint();
@@ -249,9 +256,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 								.getValue();
 						
 						bean.setActive(val);
-						if (val && bean.isEnabled())
-							source.select(itemId);
-						else {
+						if (val && bean.isEnabled()) {
+                            source.select(itemId);
+                        } else {
 							source.unselect(itemId);
 							if (source.getData().equals("left")){
 								chkSelectAllLeft.setValue(val);
@@ -288,8 +295,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				
                 DataBoundTransferable t = (DataBoundTransferable) dropEvent.getTransferable();
                 
-                if (t.getSourceComponent() == dropEvent.getTargetDetails().getTarget())
+                if (t.getSourceComponent() == dropEvent.getTargetDetails().getTarget()) {
                     return;
+                }
                 
                 Table source =  ((Table)t.getSourceComponent());
                 Table target =  ((Table)dropEvent.getTargetDetails().getTarget());
@@ -396,10 +404,12 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	public void setContainerDataSource(Container container){
 		getTableLeft().setContainerDataSource(container);
 		getTableRight().removeAllItems();
-		if (visibleColumns!=null)
-			setVisibleColumns(this.visibleColumns);
-		if (columnHeaders!=null)
-			setColumnHeaders(this.columnHeaders);
+		if (visibleColumns!=null) {
+            setVisibleColumns(this.visibleColumns);
+        }
+		if (columnHeaders!=null) {
+            setColumnHeaders(this.columnHeaders);
+        }
 		chkSelectAllLeft.setValue(false);
 		chkSelectAllRight.setValue(false);
 	}

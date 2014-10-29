@@ -121,16 +121,18 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
                     sessionData.setLastOpenedProject(presenter.program);
                     sessionData.setSelectedProject(presenter.program);
 
-                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView)
+                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
                         ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+                    }
 
                     presenter.enableProgramMethodsAndLocationsTab();
 
 
                 } catch (Exception e) {
 
-                    if (e.getMessage().equals("basic_details_invalid"))
+                    if (e.getMessage().equals("basic_details_invalid")) {
                         return;
+                    }
 
                     LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
 

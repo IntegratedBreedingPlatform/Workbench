@@ -45,9 +45,9 @@ public class WorkbenchSidebar extends CssLayout {
 
         @Override
         public void itemClick(ItemClickEvent event) {
-            if (event.getItemId() == null)
+            if (event.getItemId() == null) {
                 return;
-            else {
+            } else {
                 LOG.trace(event.getItemId().toString());
 
                 TreeItem treeItem = (TreeItem) event.getItemId();
@@ -159,8 +159,9 @@ public class WorkbenchSidebar extends CssLayout {
     }
 
     public void clearLinks() {
-        if (sidebarTree != null)
+        if (sidebarTree != null) {
             sidebarTree.setContainerDataSource(new HierarchicalContainer());
+        }
     }
 
     public void selectItem(TreeItem item) {
@@ -204,7 +205,9 @@ public class WorkbenchSidebar extends CssLayout {
     }
 
     private ActionListener getLinkActions(final String toolName,Project project) {
-        if (toolName == null) return null;
+        if (toolName == null) {
+            return null;
+        }
 
         if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
             return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),project,null);

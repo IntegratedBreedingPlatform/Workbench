@@ -421,10 +421,11 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 				
 				
 				
-				if (isXLS)
-					gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
-				else
-					gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
+				if (isXLS) {
+                    gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
+                } else {
+                    gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
+                }
 			
 				gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
 				gxeInput.setTraits(selectedTraits);
@@ -648,7 +649,9 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     }
     
     public StudyDataManager getStudyDataManager() {
-    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+    	if (this.studyDataManager == null) {
+            this.studyDataManager = managerFactory.getNewStudyDataManager();
+        }
 		return this.studyDataManager;
 	}
 

@@ -103,8 +103,9 @@ public class UpdateProjectAction implements Button.ClickListener  {
             List<ProjectUserRole> deleteRoles = workbenchDataManager.getProjectUserRolesByProject(sessionData.getSelectedProject());
             // remove all previous roles assigned to current user
             for(ProjectUserRole projectUserRole : deleteRoles){
-                if (projectUserRole.getUserId().intValue() == sessionData.getUserData().getUserid())
+                if (projectUserRole.getUserId().intValue() == sessionData.getUserData().getUserid()) {
                     workbenchDataManager.deleteProjectUserRole(projectUserRole);
+                }
             }
 
             // add the newly updated roles
@@ -117,8 +118,9 @@ public class UpdateProjectAction implements Button.ClickListener  {
             ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getSelectedProject().getProjectId().intValue()),sessionData.getSelectedProject(),"Update Program", "Updated Program - " + sessionData.getSelectedProject().getProjectName(),sessionData.getUserData(), new Date());
             workbenchDataManager.addProjectActivity(projAct);
 
-            if (IBPWorkbenchApplication.get().getMainWindow() instanceof  WorkbenchMainView)
-                ((WorkbenchMainView)(IBPWorkbenchApplication.get().getMainWindow())).addTitle(sessionData.getSelectedProject().getProjectName());
+            if (IBPWorkbenchApplication.get().getMainWindow() instanceof  WorkbenchMainView) {
+                ((WorkbenchMainView) (IBPWorkbenchApplication.get().getMainWindow())).addTitle(sessionData.getSelectedProject().getProjectName());
+            }
         }
     }
 

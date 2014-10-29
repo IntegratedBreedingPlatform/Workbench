@@ -113,7 +113,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				if (treeTable.getValue() == null) return;
+				if (treeTable.getValue() == null) {
+                    return;
+                }
 				Reference studyRef = (Reference) treeTable.getValue();
 				openStudy(studyRef);
 			}
@@ -403,8 +405,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			cells[1] = "";
 			cells[2] = "";
 
-			if (r instanceof DatasetReference)
-				LOG.debug("r is DatasetReference");
+			if (r instanceof DatasetReference) {
+                LOG.debug("r is DatasetReference");
+            }
 
 			tr.addItem(cells, r);
 			tr.setParent(r, parentFolderReference);

@@ -186,7 +186,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
         sessionData.setLastOpenedProject(lastOpenedProject);
 
-        if (currentProject == null) currentProject = lastOpenedProject;
+        if (currentProject == null) {
+            currentProject = lastOpenedProject;
+        }
 
         sessionData.setSelectedProject(currentProject);
 
@@ -220,8 +222,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             tblProject.addItem(new Object[]{project.getProjectName(),project.getCropType().getCropName(), button}, project.getProjectId());
         }
 
-        if (lastOpenedProject != null)
+        if (lastOpenedProject != null) {
             tblProject.select(lastOpenedProject.getProjectId());
+        }
 
     }
 
@@ -381,8 +384,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     public ShowProjectDetailAction initializeDashboardContents(Project selectProgram) {
 
         // set this program as selected in dashboard
-        if (selectProgram != null)
+        if (selectProgram != null) {
             tblProject.select(selectProgram.getProjectId());
+        }
 
         // update other pards
         return new ShowProjectDetailAction(tblProject, summaryView, selectDatasetForBreedingViewButton, new OpenSelectProjectForStudyAndDatasetViewAction(null),lastOpenedProject, germplasmListPreview, nurseryListPreview, previewTab, projects);

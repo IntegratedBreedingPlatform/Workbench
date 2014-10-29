@@ -306,8 +306,9 @@ public class NurseryListPreview extends VerticalLayout {
                 LOG.trace("selecting sidebar");
                 WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 
-                if (null != WorkbenchSidebar.sidebarTreeMap.get("study_browser"))
+                if (null != WorkbenchSidebar.sidebarTreeMap.get("study_browser")) {
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("study_browser"));
+                }
 
                 // launch tool
                 int studyId = ((Integer) value).intValue();
@@ -387,9 +388,11 @@ public class NurseryListPreview extends VerticalLayout {
                         Integer newItem = null;
                         try {
                             if (treeView.getValue() instanceof String)//top folder
+                            {
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), ROOT_FOLDER);
-                            else
+                            } else {
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
+                            }
                         } catch (Exception e) {
                             MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
@@ -411,10 +414,12 @@ public class NurseryListPreview extends VerticalLayout {
                             }
 
                             if (!isRoot) {
-                                if (!treeView.isExpanded(parent.getProjectId()))
+                                if (!treeView.isExpanded(parent.getProjectId())) {
                                     expandTree(parent.getProjectId());
-                            } else
+                                }
+                            } else {
                                 treeView.expandItem(MY_STUDIES);
+                            }
 
                             treeView.select(newItem);
                             treeView.setImmediate(true);

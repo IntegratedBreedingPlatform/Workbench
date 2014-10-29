@@ -91,8 +91,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
     @Override
     public void onClose(ConfirmDialog dialog) {
     	hasRestoreError = false;
-        if (pb != null)
+        if (pb != null) {
             LOG.debug("selected backup: " + pb.getProjectBackupId());
+        }
 
         if (dialog.isConfirmed()) {
             LOG.debug("onClick > do Restore IBDB");
@@ -101,8 +102,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
             try {
 
-                if (!this.isUpload())
+                if (!this.isUpload()) {
                     restoreFile = new File(pb.getBackupPath());
+                }
 
                 Matcher matcher = BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
                                 if (matcher.matches()) {

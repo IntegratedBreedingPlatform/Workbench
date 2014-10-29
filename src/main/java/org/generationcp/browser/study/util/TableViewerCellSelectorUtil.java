@@ -155,12 +155,14 @@ public class TableViewerCellSelectorUtil {
 					contextWindow.addComponent(cp);
 					
 					if(source instanceof Window){
-						if(!contextWindowDisplayed)
-							((Window) source).getParent().getWindow().addWindow(contextWindow);
+						if(!contextWindowDisplayed) {
+                            ((Window) source).getParent().getWindow().addWindow(contextWindow);
+                        }
 						contextWindowDisplayed = true;
 					} else {
-						if(!contextWindowDisplayed)
-							table.getWindow().addWindow(contextWindow);
+						if(!contextWindowDisplayed) {
+                            table.getWindow().addWindow(contextWindow);
+                        }
 						contextWindowDisplayed = true;
 					}
 					
@@ -288,8 +290,9 @@ public class TableViewerCellSelectorUtil {
 
 				Boolean isHighlighted = false;
 				for(int i=0;i<highlightedCellCoordinates.size();i++){
-					if(highlightedCellCoordinates.get(i).getX().equals(propertyId) && highlightedCellCoordinates.get(i).getY().equals(itemId.toString()))
-						isHighlighted = true;
+					if(highlightedCellCoordinates.get(i).getX().equals(propertyId) && highlightedCellCoordinates.get(i).getY().equals(itemId.toString())) {
+                        isHighlighted = true;
+                    }
 				}
 				
 				Boolean hasColorSet = false;

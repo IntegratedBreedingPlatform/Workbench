@@ -812,8 +812,9 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         initializeLayout();
         initializeActions();
         
-        if (workflowPreview)
+        if (workflowPreview) {
             this.setStyleName("gcp-removelink");
+        }
     }
     
     @Override

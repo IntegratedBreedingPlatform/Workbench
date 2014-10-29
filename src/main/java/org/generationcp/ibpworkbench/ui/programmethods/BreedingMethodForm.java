@@ -120,23 +120,29 @@ public class BreedingMethodForm extends Form {
     @Override
     public  void attach() {
 
-        if (grid.getComponent(0, 0) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_NAME),true),0,0);
+        if (grid.getComponent(0, 0) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_NAME), true), 0, 0);
+        }
 
-        if (grid.getComponent(0, 1) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_CODE),true),0,1);
+        if (grid.getComponent(0, 1) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_CODE), true), 0, 1);
+        }
 
-        if (grid.getComponent(0, 2) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_DESC),true),0,2);
+        if (grid.getComponent(0, 2) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_DESC), true), 0, 2);
+        }
 
-        if (grid.getComponent(0, 3) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_TYPE),true),0,3);
+        if (grid.getComponent(0, 3) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_TYPE), true), 0, 3);
+        }
 
-        if (grid.getComponent(0, 4) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_GRP)),0,4);
+        if (grid.getComponent(0, 4) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_GRP)), 0, 4);
+        }
 
-        if (grid.getComponent(0, 5) == null)
-        grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_CLASS),true),0,5);
+        if (grid.getComponent(0, 5) == null) {
+            grid.addComponent(createLabel(messageSource.getMessage(Message.BREED_METH_CLASS), true), 0, 5);
+        }
 
         super.attach();
 
@@ -152,10 +158,11 @@ public class BreedingMethodForm extends Form {
         label.setContentMode(Label.CONTENT_XHTML);
         label.setWidth("220px");
 
-        if (!required)
-            label.setValue(String.format("<b>%s</b>",caption));
-        else
-            label.setValue(String.format("<b>%s</b> <span style='color: red'>*</span>",caption));
+        if (!required) {
+            label.setValue(String.format("<b>%s</b>", caption));
+        } else {
+            label.setValue(String.format("<b>%s</b> <span style='color: red'>*</span>", caption));
+        }
 
         return label;
     }

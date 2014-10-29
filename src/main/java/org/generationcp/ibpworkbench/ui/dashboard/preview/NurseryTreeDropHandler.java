@@ -122,8 +122,9 @@ class NurseryTreeDropHandler implements DropHandler {
         }
         
         Integer sourceId = null;
-    	if(sourceItemId!=null && sourceItemId instanceof Integer)
-    		sourceId = Integer.valueOf(sourceItemId.toString());
+    	if(sourceItemId!=null && sourceItemId instanceof Integer) {
+            sourceId = Integer.valueOf(sourceItemId.toString());
+        }
     	
     	if(sourceId!=null && sourceId>0){
 			MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow().getWindow(), 

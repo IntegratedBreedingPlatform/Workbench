@@ -102,8 +102,9 @@ public class AddProgramPresenter {
 
         // Validate and Save (to memory) both basic details and program members
 
-        if (!validateAndSave())
+        if (!validateAndSave()) {
             throw new Exception("basic_details_invalid");
+        }
 
         // retrieve results from locations / methods
         retrievceLocationsAndMethods();
@@ -274,8 +275,9 @@ public class AddProgramPresenter {
     }
 
     private List<ProjectUserRole> getCurrentUserRoles() throws MiddlewareQueryException {
-        if (allRolesList == null)
+        if (allRolesList == null) {
             allRolesList = workbenchDataManager.getAllRoles();
+        }
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 
@@ -290,15 +292,17 @@ public class AddProgramPresenter {
     }
 
     private List<ProjectUserRole> getProgamMemberUserRoles() throws MiddlewareQueryException  {
-        if (allRolesList == null)
+        if (allRolesList == null) {
             allRolesList = workbenchDataManager.getAllRoles();
+        }
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 
         for (User user : users) {
             // only retrieve selected members that's not the current user.
-            if (user.getUserid().equals(sessionData.getUserData().getUserid()))
+            if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
                 continue;
+            }
 
             for (Role role : allRolesList) {
                 ProjectUserRole projectUserRole = new ProjectUserRole();
@@ -322,8 +326,9 @@ public class AddProgramPresenter {
 
     private void saveProgramUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
 
-        if (allRolesList == null)
+        if (allRolesList == null) {
             allRolesList = workbenchDataManager.getAllRoles();
+        }
 
         IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         Integer userId = app.getSessionData().getUserData().getUserid();

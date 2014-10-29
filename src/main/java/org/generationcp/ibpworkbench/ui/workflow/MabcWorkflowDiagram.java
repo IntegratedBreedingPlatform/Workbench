@@ -639,8 +639,9 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         initializeLayout();
         initializeActions();
 
-        if (workflowPreview)
+        if (workflowPreview) {
             this.setStyleName("gcp-removelink");
+        }
     }
 
     @Override

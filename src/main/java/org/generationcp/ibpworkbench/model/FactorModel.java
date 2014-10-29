@@ -156,58 +156,79 @@ public class FactorModel implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         FactorModel other = (FactorModel) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         if (scaleid == null) {
-            if (other.scaleid != null)
+            if (other.scaleid != null) {
                 return false;
-        } else if (!scaleid.equals(other.scaleid))
+            }
+        } else if (!scaleid.equals(other.scaleid)) {
             return false;
+        }
         if (scname == null) {
-            if (other.scname != null)
+            if (other.scname != null) {
                 return false;
-        } else if (!scname.equals(other.scname))
+            }
+        } else if (!scname.equals(other.scname)) {
             return false;
+        }
         if (tmethid == null) {
-            if (other.tmethid != null)
+            if (other.tmethid != null) {
                 return false;
-        } else if (!tmethid.equals(other.tmethid))
+            }
+        } else if (!tmethid.equals(other.tmethid)) {
             return false;
+        }
         if (tmname == null) {
-            if (other.tmname != null)
+            if (other.tmname != null) {
                 return false;
-        } else if (!tmname.equals(other.tmname))
+            }
+        } else if (!tmname.equals(other.tmname)) {
             return false;
+        }
         if (traitid == null) {
-            if (other.traitid != null)
+            if (other.traitid != null) {
                 return false;
-        } else if (!traitid.equals(other.traitid))
+            }
+        } else if (!traitid.equals(other.traitid)) {
             return false;
+        }
         if (trname == null) {
-            if (other.trname != null)
+            if (other.trname != null) {
                 return false;
-        } else if (!trname.equals(other.trname))
+            }
+        } else if (!trname.equals(other.trname)) {
             return false;
+        }
         if (description == null) {
-            if (other.description != null)
+            if (other.description != null) {
                 return false;
-        } else if (!description.equals(other.description))
+            }
+        } else if (!description.equals(other.description)) {
             return false;
+        }
         return true;
     }
 

@@ -113,7 +113,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid()))label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
+                    label.setStyleName("label-bold");
+                }
 				return label;
 			}
         	
@@ -127,7 +129,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid()))label.setStyleName("label-bold");
+				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
+                    label.setStyleName("label-bold");
+                }
 				return label;
 			}
         	
@@ -173,7 +177,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             	}
             }
             
-            if (selectItem != null) select.select(selectItem);
+            if (selectItem != null) {
+                select.select(selectItem);
+            }
             
 
         }
@@ -231,16 +237,18 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
                     sessionData.setLastOpenedProject(presenter.program);
                     sessionData.setSelectedProject(presenter.program);
 
-                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView)
+                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
                         ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+                    }
 
                     presenter.enableProgramMethodsAndLocationsTab();
 
 
                 } catch (Exception e) {
 
-                    if (e.getMessage().equals("basic_details_invalid"))
+                    if (e.getMessage().equals("basic_details_invalid")) {
                         return;
+                    }
 
                     LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
 
@@ -309,8 +317,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
     public Set<User> validateAndSave(){
 
-        if(!validate())
+        if(!validate()) {
             return new HashSet<User>();
+        }
 
         return select.getValue();
     }

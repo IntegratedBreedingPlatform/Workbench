@@ -574,8 +574,9 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         initializeLayout();
         initializeActions();
         
-        if (workflowPreview)
+        if (workflowPreview) {
             this.setStyleName("gcp-removelink");
+        }
         
     }
     

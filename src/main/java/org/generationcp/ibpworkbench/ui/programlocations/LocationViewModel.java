@@ -201,18 +201,23 @@ public class LocationViewModel implements BeanFormState {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		LocationViewModel other = (LocationViewModel) obj;
 		if (locationId == null) {
-			if (other.locationId != null)
-				return false;
-		} else if (!locationId.equals(other.locationId))
-			return false;
+			if (other.locationId != null) {
+                return false;
+            }
+		} else if (!locationId.equals(other.locationId)) {
+            return false;
+        }
 		return true;
 	}
 	

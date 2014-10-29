@@ -748,8 +748,9 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
         
         initializeLabels();
         
-        if (workflowPreview)
-        	this.setStyleName("gcp-removelink");
+        if (workflowPreview) {
+            this.setStyleName("gcp-removelink");
+        }
         
     }
     

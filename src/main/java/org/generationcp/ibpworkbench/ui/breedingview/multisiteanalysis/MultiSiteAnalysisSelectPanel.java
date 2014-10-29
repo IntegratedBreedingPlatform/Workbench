@@ -238,7 +238,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         try {
 			trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
 			for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
-				if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
+				if (var.getValue() != null && var.getValue() != "") {
+                    environmentNames.add(var.getValue());
+                }
 			}
         } catch (MiddlewareQueryException e) {
 			
@@ -261,14 +263,18 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 					variates.removeAllItems();
 					environmentNames.clear();
 					
-					if (selectSpecifyEnvironment.getValue() == null) return;
+					if (selectSpecifyEnvironment.getValue() == null) {
+                        return;
+                    }
 					
 				}catch(Exception e){}
 					
 				 try {
 						trialEnvironments = getStudyDataManager().getTrialEnvironmentsInDataset(getCurrentDataSetId());
 						for (Variable var : trialEnvironments.getVariablesByLocalName(selectSpecifyEnvironment.getValue().toString())){
-							if (var.getValue() != null && var.getValue() != "") environmentNames.add(var.getValue());			
+							if (var.getValue() != null && var.getValue() != "") {
+                                environmentNames.add(var.getValue());
+                            }
 						}
 			        } catch (MiddlewareQueryException e) {
 						
@@ -580,7 +586,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
         	DataSet ds = DatasetUtil.getMeansDataSet(studyDataManager, study.getId());
             DataSet trialDs = DatasetUtil.getTrialDataSet(studyDataManager,study.getId());
         	
-            if (ds==null || trialDs==null) return;
+            if (ds==null || trialDs==null) {
+                return;
+            }
             
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();
@@ -702,7 +710,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 						,te.getId()
 						,variableId
 							);
-					if (count > 0) counter++;
+					if (count > 0) {
+                        counter++;
+                    }
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -764,7 +774,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	}
 	
     public StudyDataManager getStudyDataManager() {
-    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+    	if (this.studyDataManager == null) {
+            this.studyDataManager = managerFactory.getNewStudyDataManager();
+        }
 		return this.studyDataManager;
 	}
 

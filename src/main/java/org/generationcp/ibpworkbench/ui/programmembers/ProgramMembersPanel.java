@@ -109,7 +109,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
 
-                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
+                    label.setStyleName("label-bold");
+                }
 				return label;
 			}
         	
@@ -124,7 +126,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
 
-                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) label.setStyleName("label-bold");
+                if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
+                    label.setStyleName("label-bold");
+                }
 				return label;
 			}
         	
@@ -539,8 +543,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
                 for (Role inheritedRole : inheritedRoles) {
                     String propertyId = "role_" + inheritedRole.getRoleId();
                     Property property = item.getItemProperty(propertyId);
-                    if (property.getType() == Boolean.class)
+                    if (property.getType() == Boolean.class) {
                         property.setValue(Boolean.TRUE);
+                    }
 
                 }
             }
@@ -583,8 +588,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
                         LOG.debug("inheritedRole " + inheritedRole);
                         LOG.debug("currentItem " + currentItem);
                         Property property = currentItem.getItemProperty(propertyId);
-                        if (property.getType() == Boolean.class)
+                        if (property.getType() == Boolean.class) {
                             property.setValue(Boolean.TRUE);
+                        }
 
                     }
                 

@@ -206,7 +206,9 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
         Collection<File> files = FileUtils.listFiles(baseDirFile, new RegexFileFilter("index.html$"),
                 DirectoryFileFilter.DIRECTORY);
 
-        if (files.size() == 0) return "";
+        if (files.size() == 0) {
+            return "";
+        }
 
         for (File f : files) {
         	File parentFile = f.getParentFile();

@@ -98,8 +98,9 @@ public class DashboardMainClickListener implements ClickListener{
 
             mainWindow.addTitle(project.getProjectName());
 
-            if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list"))
+            if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
                 mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+            }
 
 
             // page change to list manager, with parameter passed

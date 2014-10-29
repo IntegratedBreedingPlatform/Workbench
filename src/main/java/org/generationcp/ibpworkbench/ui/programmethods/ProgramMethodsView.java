@@ -200,19 +200,20 @@ import java.util.*;
                                  .getValue();
 
                          ((MethodView)itemId).setActive(val);
-                         if (val)
+                         if (val) {
                              source.select(itemId);
-                         else {
+                         } else {
                              source.unselect(itemId);
                              assocSelectAll.setValue(val);
                          }
                      }
                  });
 
-                 if (((MethodView)itemId).isActive())
+                 if (((MethodView)itemId).isActive()) {
                      select.setValue(true);
-                 else
+                 } else {
                      select.setValue(false);
+                 }
 
 
                  return select;
@@ -272,8 +273,9 @@ import java.util.*;
                      } catch (ParseException e) {
                          return "N/A";
                      }
-                 } else
+                 } else {
                      return "N/A";
+                 }
              }
          });
 
@@ -334,8 +336,9 @@ import java.util.*;
              public void drop(DragAndDropEvent dragAndDropEvent) {
                  DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
-                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget())
+                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
                      return;
+                 }
 
                  ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
                  
@@ -386,7 +389,9 @@ import java.util.*;
              itemId.setActive(false);
              if (source.getData().toString().equals("available")){
             	 targetDataContainer.addItemAt(0, itemId);
-            	 if (counter < 100) target.unselect(itemId);
+            	 if (counter < 100) {
+                     target.unselect(itemId);
+                 }
             	 
             	 target.setValue(null); //reset value
             	 
@@ -485,8 +490,9 @@ import java.util.*;
          {
              table.setColumnWidth(col,tableColumnSizes.get(col));
 
-             if (tableColumnSizes.get(col) < 75)
-                 table.setColumnAlignment(col,Table.ALIGN_CENTER);
+             if (tableColumnSizes.get(col) < 75) {
+                 table.setColumnAlignment(col, Table.ALIGN_CENTER);
+             }
 
          }
 
@@ -560,8 +566,9 @@ import java.util.*;
 
          root.addComponent(favoriteMethodsTitle);
 
-         if (!cropOnly)
-            root.addComponent(saveBtn);
+         if (!cropOnly) {
+             root.addComponent(saveBtn);
+         }
 
          root.setExpandRatio(favoriteMethodsTitle,1.0F);
 
@@ -649,8 +656,9 @@ import java.util.*;
 
          String content = "To choose Favorite Breeding Methods for your program, select entries from the Available Breeding Methods table at the top and drag them onto the lower table.";
 
-         if (!cropOnly)
+         if (!cropOnly) {
              content += " You can also add any new methods that you need for managing your program.";
+         }
 
          final Label headingDesc = new Label(content);
 
@@ -744,10 +752,11 @@ import java.util.*;
 			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
 
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                      availableTable.setValue(availableTable.getItemIds());
-                 else
+                 } else {
                      availableTable.setValue(null);
+                 }
 
 
              }
@@ -758,10 +767,11 @@ import java.util.*;
 
 			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue())
+                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                      favoritesTable.setValue(favoritesTable.getItemIds());
-                 else
+                 } else {
                      favoritesTable.setValue(null);
+                 }
 
              }
          });

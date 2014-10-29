@@ -67,8 +67,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
                         for (Role role : roles) {
                             //we dont include the tools anymore
-                            if(!role.getName().equalsIgnoreCase("Manager"))
-                                categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,role.getWorkflowTemplate().getName(),role.getLabel()));
+                            if(!role.getName().equalsIgnoreCase("Manager")) {
+                                categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, role.getWorkflowTemplate().getName(), role.getLabel()));
+                            }
                         }
                     }
                 }
@@ -88,11 +89,13 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
             }
 
             for (WorkbenchSidebarCategoryLink link : categoryLinks) {
-                if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null)
-                    sidebarLinks.put(link.getWorkbenchSidebarCategory(),new ArrayList<WorkbenchSidebarCategoryLink>());
+                if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+                    sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+                }
 
-                if (link.getTool() == null)
-                    link.setTool(new Tool(link.getSidebarLinkName(),link.getSidebarLinkTitle(),""));
+                if (link.getTool() == null) {
+                    link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+                }
 
 
                 sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);

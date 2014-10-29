@@ -77,10 +77,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
             @Override
             public void validate() throws Validator.InvalidValueException {
-                if (this.getLastFileName() == null)
+                if (this.getLastFileName() == null) {
                     throw new Validator.InvalidValueException("NO_FILE");
-                else if (!this.isValid())
+                } else if (!this.isValid()) {
                     throw new Validator.InvalidValueException("NOT_VALID");
+                }
             }
 
             @Override
@@ -93,11 +94,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                 String ext = null;
                 int i = f.lastIndexOf('.');
 
-                if (i > 0 && i < f.length() - 1)
-                    ext = f.substring(i+1).toLowerCase();
+                if (i > 0 && i < f.length() - 1) {
+                    ext = f.substring(i + 1).toLowerCase();
+                }
 
-                if(ext == null)
+                if(ext == null) {
                     return "";
+                }
                 return ext;
             }
         };
@@ -166,8 +169,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
             public void onClose(ConfirmDialog dialog) {
                 super.onClose(dialog);
 
-                if (dialog.isConfirmed())
+                if (dialog.isConfirmed()) {
                     BackupAndRestoreView.this.populateRestoreList();
+                }
             }
         };
 

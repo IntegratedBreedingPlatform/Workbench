@@ -471,8 +471,9 @@ public class ToolUtil {
         throws MiddlewareQueryException {
         WorkbenchSetting workbenchSetting = workbenchDataManager
             .getWorkbenchSetting();
-        if (workbenchSetting == null)
+        if (workbenchSetting == null) {
             return;
+        }
 
         String installationDirectory = workbenchSetting
             .getInstallationDirectory();
@@ -482,7 +483,9 @@ public class ToolUtil {
         File projectDir = new File(installationDirectory + File.separator
                                    + workspaceDirectory, projectDirName);
         
-        if (projectDir.exists()) return;
+        if (projectDir.exists()) {
+            return;
+        }
         
         projectDir.mkdirs();
 
@@ -500,8 +503,9 @@ public class ToolUtil {
 
     public void renameOldWorkspaceDirectoryToNewFormat(long projectId,String oldProjectName) throws MiddlewareQueryException {
         WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-        if (workbenchSetting == null)
+        if (workbenchSetting == null) {
             return;
+        }
 
         String installationDirectory = workbenchSetting
                 .getInstallationDirectory();

@@ -73,8 +73,9 @@ public class HomeAction implements ClickListener, ActionListener{
 
         }
 
-        else
+        else {
             doAction(window, "/Home", true);
+        }
     }
 
     /**
@@ -109,9 +110,9 @@ public class HomeAction implements ClickListener, ActionListener{
 
             // reinitialize dashboard with default values
 
-            if (sessionData.getLastOpenedProject() != null)
-                workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(),IBPWorkbenchApplication.get().getMainWindow());
-            else {
+            if (sessionData.getLastOpenedProject() != null) {
+                workbenchDashboard.initializeDashboardContents(newProgram).doAction(sessionData.getLastOpenedProject().getProjectId(), IBPWorkbenchApplication.get().getMainWindow());
+            } else {
                 workbenchDashboard.initializeDashboardContents(newProgram).doAction(null,IBPWorkbenchApplication.get().getMainWindow());
             }
 

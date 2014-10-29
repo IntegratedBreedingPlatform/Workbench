@@ -78,10 +78,11 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
                 public Object generateCell(Table source, Object itemId, Object colId) {
                     final CropType beanItem = ((BeanContainer<Long,CropType>) source.getContainerDataSource()).getItem(itemId).getBean();
 
-                    if (beanItem.getVersion() == null || beanItem.getVersion().trim().isEmpty())
-                        return new Label("<em>Not Available</em>",Label.CONTENT_XHTML);
-                    else
+                    if (beanItem.getVersion() == null || beanItem.getVersion().trim().isEmpty()) {
+                        return new Label("<em>Not Available</em>", Label.CONTENT_XHTML);
+                    } else {
                         return beanItem.getVersion().trim();
+                    }
 
 
                 }

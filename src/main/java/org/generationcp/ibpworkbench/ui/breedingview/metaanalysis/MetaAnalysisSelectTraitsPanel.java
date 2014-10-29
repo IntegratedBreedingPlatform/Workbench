@@ -202,7 +202,9 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
 				VariableType varType = dataSets.get(item.getDataSetId()).findVariableTypeByLocalName(columnId.toString());
 				
-				if (varType == null) return "0";
+				if (varType == null) {
+                    return "0";
+                }
 				
 				try {
 					
@@ -313,13 +315,17 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					
 					for (VariableType f : ds.getVariableTypes().getFactors().getVariableTypes()){
 						if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
-		            			) continue;
+		            			) {
+                            continue;
+                        }
 						
 						Boolean isGidOrDesig = false;
 						
 						if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId() ||
 								f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()
-		            			) isGidOrDesig = true;
+		            			) {
+                            isGidOrDesig = true;
+                        }
 						
 						try{
 							factorsAnalysisTable.addGeneratedColumn(f.getLocalName(), generatedFactorColumn);
@@ -371,15 +377,17 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		 visibleCols.add("dataSetName");
 		 visibleCols.add("trial");
 		 visibleCols.add("environment");
-		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet())
-			 	visibleCols.add(s.getKey());
+		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet()) {
+             visibleCols.add(s.getKey());
+         }
 		 factorsAnalysisTable.setVisibleColumns(visibleCols.toArray());
 		 visibleCols.clear();
 		 visibleCols.add("Dataset Name");
 		 visibleCols.add("Trial");
 		 visibleCols.add("Environment");
-		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet())
-			 	visibleCols.add(s.getKey());
+		 for (Entry<String, Boolean>  s : factorsColumnList.entrySet()) {
+             visibleCols.add(s.getKey());
+         }
 		 factorsAnalysisTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 		 
 		 Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener(){
@@ -585,7 +593,9 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 						
 						managerFactory.close();
 						
-						if (file == null) return;
+						if (file == null) {
+                            return;
+                        }
 						
 						FileResource fr = new FileResource(file, event.getComponent().getWindow().getApplication()) {
 							private static final long serialVersionUID = 765143030552676513L;
@@ -660,18 +670,32 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 							headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");	
 							headerRow.createCell(cellCounter++).setCellValue("TRIALID");	
 							headerRow.createCell(cellCounter++).setCellValue("ENTRYID");	
-							if (desigFactorName!="") headerRow.createCell(cellCounter++).setCellValue(desigFactorName);  else  headerRow.createCell(cellCounter++).setCellValue("DESIG");	
-							if (gidFactorName!="") headerRow.createCell(cellCounter++).setCellValue(gidFactorName);	else headerRow.createCell(cellCounter++).setCellValue("GID");
+							if (desigFactorName!="") {
+                                headerRow.createCell(cellCounter++).setCellValue(desigFactorName);
+                            } else {
+                                headerRow.createCell(cellCounter++).setCellValue("DESIG");
+                            }
+							if (gidFactorName!="") {
+                                headerRow.createCell(cellCounter++).setCellValue(gidFactorName);
+                            } else {
+                                headerRow.createCell(cellCounter++).setCellValue("GID");
+                            }
 							supressColumnList.add(desigFactorName);
 							supressColumnList.add(gidFactorName);
 							for (Entry<String, Boolean> entry : factorsCheckBoxState.entrySet()){
 								//suppress the desig and gid columns
-								if (supressColumnList.contains(entry.getKey())) continue;
+								if (supressColumnList.contains(entry.getKey())) {
+                                    continue;
+                                }
 								
-								if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
+								if (entry.getValue()) {
+                                    headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
+                                }
 							}
 							for (Entry<String, Boolean> entry : variatesCheckBoxState.entrySet()){
-								if (entry.getValue()) headerRow.createCell(cellCounter++).setCellValue(entry.getKey());	
+								if (entry.getValue()) {
+                                    headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
+                                }
 							}
 							
 							headerRowCreated = true;
@@ -679,8 +703,12 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 						
 						
 						Variable trialVariable = exp.getFactors().findByLocalName(envModel.getTrialFactorName());
-						if (trialVariable == null) continue;
-						if (!trialVariable.getValue().equalsIgnoreCase(envModel.getTrial())) continue;
+						if (trialVariable == null) {
+                            continue;
+                        }
+						if (!trialVariable.getValue().equalsIgnoreCase(envModel.getTrial())) {
+                            continue;
+                        }
 						
 						cellCounter = 0;
 						Row row = defaultSheet.createRow(rowCounter++);
@@ -688,16 +716,30 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 						row.createCell(cellCounter++).setCellValue(envModel.getStudyName());	//STUDYNAME
 						row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial()));	//TRIALID	
 						Variable varEntryNo = exp.getFactors().findByLocalName(entrynoFactorName); ////ENTRYID
-						if (varEntryNo != null) row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue())); else row.createCell(cellCounter++).setCellValue(""); 
+						if (varEntryNo != null) {
+                            row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue()));
+                        } else {
+                            row.createCell(cellCounter++).setCellValue("");
+                        }
 						Variable varDesig = exp.getFactors().findByLocalName(desigFactorName); //DESIG
-						if (varDesig != null) row.createCell(cellCounter++).setCellValue(varDesig.getValue()); else row.createCell(cellCounter++).setCellValue(""); 		
+						if (varDesig != null) {
+                            row.createCell(cellCounter++).setCellValue(varDesig.getValue());
+                        } else {
+                            row.createCell(cellCounter++).setCellValue("");
+                        }
 						Variable varGid = exp.getFactors().findByLocalName(gidFactorName); //GID
-						if (varGid != null) row.createCell(cellCounter++).setCellValue(varGid.getValue()); else row.createCell(cellCounter++).setCellValue(""); 
+						if (varGid != null) {
+                            row.createCell(cellCounter++).setCellValue(varGid.getValue());
+                        } else {
+                            row.createCell(cellCounter++).setCellValue("");
+                        }
 						
 						for (Entry<String, Boolean> entry : factorsCheckBoxState.entrySet()){
 							
 							//suppress the desig and gid columns
-							if (supressColumnList.contains(entry.getKey())) continue;
+							if (supressColumnList.contains(entry.getKey())) {
+                                continue;
+                            }
 							
 							if (entry.getValue()) {
 								Variable var = exp.getFactors().findByLocalName(entry.getKey());
@@ -784,7 +826,9 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	    }
 	
 	public StudyDataManager getStudyDataManager() {
-	    	if (this.studyDataManager == null) this.studyDataManager = getManagerFactory().getNewStudyDataManager();
+	    	if (this.studyDataManager == null) {
+                this.studyDataManager = getManagerFactory().getNewStudyDataManager();
+            }
 			return this.studyDataManager;
 	}
 

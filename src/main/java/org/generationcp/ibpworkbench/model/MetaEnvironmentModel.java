@@ -65,21 +65,27 @@ public class MetaEnvironmentModel {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		
 		MetaEnvironmentModel other = (MetaEnvironmentModel) obj;
 
-		if (studyId != other.studyId)
-			return false;
-		if (dataSetId != other.dataSetId)
-			return false;
-		if (!trial.equals(other.trial))
-			return false;
+		if (studyId != other.studyId) {
+            return false;
+        }
+		if (dataSetId != other.dataSetId) {
+            return false;
+        }
+		if (!trial.equals(other.trial)) {
+            return false;
+        }
 		
 		return true;
 	}

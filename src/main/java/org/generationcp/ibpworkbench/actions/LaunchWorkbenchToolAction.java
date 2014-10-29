@@ -98,8 +98,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         
         public static boolean isCorrectTool(String toolName) {
         	for (ToolEnum tool : ToolEnum.values()) {
-        		if (tool.getToolName().equals(toolName))
-        			return true;
+        		if (tool.getToolName().equals(toolName)) {
+                    return true;
+                }
         	}
         	
         	return false;
@@ -107,8 +108,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         
         public static ToolEnum equivalentToolEnum(String toolName) {
         	for (ToolEnum tool : ToolEnum.values()) {
-        		if (tool.getToolName().equals(toolName))
-        			return tool;
+        		if (tool.getToolName().equals(toolName)) {
+                    return tool;
+                }
         	}
         	
         	return null;

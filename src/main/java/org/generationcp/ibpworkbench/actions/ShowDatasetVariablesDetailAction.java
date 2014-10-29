@@ -61,12 +61,16 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
     public void itemClick(ItemClickEvent event) {
 
     	
-    	if (!(event.getItemId() instanceof DatasetReference)) return;
+    	if (!(event.getItemId() instanceof DatasetReference)) {
+            return;
+        }
 
     	DatasetReference datasetRef = (DatasetReference) event.getItemId();
         Integer dataSetId = datasetRef.getId();
 
-        if (dataSetId == null) return;
+        if (dataSetId == null) {
+            return;
+        }
 
         try {
             
@@ -88,7 +92,9 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
             for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
             	
             	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
-            			) continue;
+            			) {
+                    continue;
+                }
             	
             	FactorModel fm = new FactorModel();
             	fm.setId(factor.getRank());

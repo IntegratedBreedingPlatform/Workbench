@@ -65,10 +65,11 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (cropType != null)
+        if (cropType != null) {
             this.gdm = managerFactoryProvider.getManagerFactoryForCropType(cropType).getGermplasmDataManager();
-        else
+        } else {
             this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        }
     }
 
     public void doMoveToSelectedMethod(Integer id) {
@@ -107,8 +108,9 @@ public class ProgramMethodsPresenter implements InitializingBean {
     }
 
     public List<MethodView> getSavedProgramMethods() {
-        if (cropType != null)
+        if (cropType != null) {
             return new ArrayList<MethodView>();
+        }
 
         List<Method> result = new ArrayList<Method>();
         try {
@@ -117,8 +119,9 @@ public class ProgramMethodsPresenter implements InitializingBean {
             for (ProgramFavorite favorite : favorites) {
                 Method m = gdm.getMethodByID(favorite.getEntityId());
 
-                if (m != null)
+                if (m != null) {
                     result.add(m);
+                }
             }
 
         } catch (MiddlewareQueryException e) {
@@ -204,8 +207,9 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
             LOG.info(sessionData.getProjectBreedingMethodData().toString());
 
-            if (sessionData.getUserData() != null)
+            if (sessionData.getUserData() != null) {
                 newBreedingMethod.setUser(sessionData.getUserData().getUserid());
+            }
 
             newBreedingMethod.setLmid(0);
             newBreedingMethod.setMattr(0);
@@ -250,12 +254,15 @@ public class ProgramMethodsPresenter implements InitializingBean {
                 boolean m_exists = false;
 
                 for (ProgramFavorite favorite : favorites) {
-                    if (favorite.getEntityId().equals(m.getMid())) m_exists = true;
+                    if (favorite.getEntityId().equals(m.getMid())) {
+                        m_exists = true;
+                    }
                 }
 
                 if (!m_exists) {
-                    if (sessionData.getUserData() != null)
-                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(),project,"Project Methods",String.format("Added a Breeding Method (%s) to the project",m.getMname()), sessionData.getUserData(),new Date()));
+                    if (sessionData.getUserData() != null) {
+                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(), project, "Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()), sessionData.getUserData(), new Date()));
+                    }
                 }
             }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 

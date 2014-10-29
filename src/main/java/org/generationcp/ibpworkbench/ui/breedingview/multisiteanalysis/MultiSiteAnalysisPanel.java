@@ -200,7 +200,9 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	public void generateTabContent(Study study, String selectedEnvFactorName,String selectedGenotypeFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
 
-		if (selectedEnvFactorName == null || selectedEnvFactorName == "") return;
+		if (selectedEnvFactorName == null || selectedEnvFactorName == "") {
+            return;
+        }
 
 		MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(getStudyDataManager(), project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedGenotypeFactorName ,selectedEnvGroupFactorName, variatesCheckboxState);
 		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
@@ -232,7 +234,9 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		try {
 
 			
-			if (study==null) return;
+			if (study==null) {
+                return;
+            }
 			LOG.debug("selected from folder tree:" + study.toString());
 			
 			List<DataSet> dataSets = null;

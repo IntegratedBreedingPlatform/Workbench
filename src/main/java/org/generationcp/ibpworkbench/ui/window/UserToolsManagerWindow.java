@@ -79,8 +79,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			@Override
 			public void onClose(ConfirmDialog dialog) {
 				// USER did not continue
-				if (!dialog.isConfirmed())
-					return;
+				if (!dialog.isConfirmed()) {
+                    return;
+                }
 
 				@SuppressWarnings("unchecked")
 				BeanItem<Tool> userToolBeanItem = (BeanItem<Tool>) userToolsForm.getItemDataSource();
@@ -90,13 +91,15 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				
 				userToolFormData.setToolId(null);
 
-				if (userToolFormData.getParameter() == null)
-					userToolFormData.setParameter("");
+				if (userToolFormData.getParameter() == null) {
+                    userToolFormData.setParameter("");
+                }
 			
 				userToolFormData.setUserTool(true);
 				
-				if (userToolFormData.getVersion() == null)
-					userToolFormData.setVersion("");
+				if (userToolFormData.getVersion() == null) {
+                    userToolFormData.setVersion("");
+                }
 
 				try {
 					workbenchDataManager.getToolDao().save(userToolFormData);
@@ -125,8 +128,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			public void onClose(ConfirmDialog dialog) {
 				
 				// USER did not continue
-				if (!dialog.isConfirmed())
-					return;
+				if (!dialog.isConfirmed()) {
+                    return;
+                }
 				
 				final Tool selected = (Tool) userToolsListSelect.getValue();
 
@@ -147,10 +151,11 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 					
 					selected.setToolId(userToolFormData.getToolId());
 					
-					if (userToolFormData.getParameter() == null)
-						selected.setParameter("");
-					else
-						selected.setParameter(userToolFormData.getParameter());
+					if (userToolFormData.getParameter() == null) {
+                        selected.setParameter("");
+                    } else {
+                        selected.setParameter(userToolFormData.getParameter());
+                    }
 						selected.setPath(userToolFormData.getPath());
 						selected.setTitle(userToolFormData.getTitle());
 						selected.setToolName(userToolFormData.getToolName());
@@ -335,8 +340,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	}
 
 	private void initializeComponents() {
-		if (thisWindow == null)
-			thisWindow = this;
+		if (thisWindow == null) {
+            thisWindow = this;
+        }
 		
 		this.setResizable(false);
 		
@@ -414,8 +420,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 
 				@Override
 				public void validate(Object value) throws InvalidValueException {
-					if (!this.isValid(value))
-						throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_ALPHANUM_ONLY));
+					if (!this.isValid(value)) {
+                        throw new InvalidValueException(messageSource.getMessage(Message.FORM_VALIDATION_ALPHANUM_ONLY));
+                    }
 					
 				}
 

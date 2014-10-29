@@ -106,8 +106,9 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	        	projectBackupContainer.addBean(pb);
 	        }
 	        
-	        if (table.getItemIds().isEmpty())
-	        	saveBtn.setEnabled(false);
+	        if (table.getItemIds().isEmpty()) {
+                saveBtn.setEnabled(false);
+            }
 	        
 	        table.setValue(table.firstItemId());
 	        

@@ -86,8 +86,9 @@ public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListen
             project = sessionData.getLastOpenedProject();
         }
 
-        if (user == null)
+        if (user == null) {
             user = sessionData.getUserData();
+        }
 
 
         try {

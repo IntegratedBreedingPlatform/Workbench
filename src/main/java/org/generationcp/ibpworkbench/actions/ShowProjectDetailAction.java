@@ -102,14 +102,14 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
     public void doAction(Long projectId,Window workbenchDashboardWin) {
         Project project = null;
-        if (projectId != null)
-            for(Project tempProject : projects){
-                if(tempProject.getProjectId().longValue()  == projectId.longValue()){
+        if (projectId != null) {
+            for (Project tempProject : projects) {
+                if (tempProject.getProjectId().longValue() == projectId.longValue()) {
                     project = tempProject;
                     break;
                 }
             }
-        else {
+        } else {
             project = sessionData.getLastOpenedProject();
         }
 
@@ -137,15 +137,17 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
 
             workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
-            if (workbenchDashboardwindow != null)
+            if (workbenchDashboardwindow != null) {
                 workbenchDashboardwindow.addTitle(project.getProjectName());
+            }
 
             // retieve sidebar instance from app
             if (workbenchDashboardWin instanceof WorkbenchMainView) {
                 WorkbenchMainView main =  (WorkbenchMainView) workbenchDashboardWin;
 
-                if (main.getSidebar() != null)
+                if (main.getSidebar() != null) {
                     main.getSidebar().populateLinks();
+                }
             }
 
             tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(tblProject, project));

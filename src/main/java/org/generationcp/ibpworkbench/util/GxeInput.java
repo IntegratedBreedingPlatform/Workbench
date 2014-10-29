@@ -241,69 +241,94 @@ public class GxeInput implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         GxeInput other = (GxeInput) obj;
         if (BreedingViewProjectName == null) {
-            if (other.BreedingViewProjectName != null)
+            if (other.BreedingViewProjectName != null) {
                 return false;
+            }
         } else if (!BreedingViewProjectName
-                .equals(other.BreedingViewProjectName))
+                .equals(other.BreedingViewProjectName)) {
             return false;
+        }
         if (blocks == null) {
-            if (other.blocks != null)
+            if (other.blocks != null) {
                 return false;
-        } else if (!blocks.equals(other.blocks))
+            }
+        } else if (!blocks.equals(other.blocks)) {
             return false;
+        }
         if (datasetId == null) {
-            if (other.datasetId != null)
+            if (other.datasetId != null) {
                 return false;
-        } else if (!datasetId.equals(other.datasetId))
+            }
+        } else if (!datasetId.equals(other.datasetId)) {
             return false;
+        }
         if (designType == null) {
-            if (other.designType != null)
+            if (other.designType != null) {
                 return false;
-        } else if (!designType.equals(other.designType))
+            }
+        } else if (!designType.equals(other.designType)) {
             return false;
+        }
         if (destXMLFilePath == null) {
-            if (other.destXMLFilePath != null)
+            if (other.destXMLFilePath != null) {
                 return false;
-        } else if (!destXMLFilePath.equals(other.destXMLFilePath))
+            }
+        } else if (!destXMLFilePath.equals(other.destXMLFilePath)) {
             return false;
+        }
         if (environmentName == null) {
-            if (other.environmentName != null)
+            if (other.environmentName != null) {
                 return false;
-        } else if (!environmentName.equals(other.environmentName))
+            }
+        } else if (!environmentName.equals(other.environmentName)) {
             return false;
+        }
         if (project == null) {
-            if (other.project != null)
+            if (other.project != null) {
                 return false;
-        } else if (!project.equals(other.project))
+            }
+        } else if (!project.equals(other.project)) {
             return false;
+        }
         if (projectType == null) {
-            if (other.projectType != null)
+            if (other.projectType != null) {
                 return false;
-        } else if (!projectType.equals(other.projectType))
+            }
+        } else if (!projectType.equals(other.projectType)) {
             return false;
+        }
         if (replicates == null) {
-            if (other.replicates != null)
+            if (other.replicates != null) {
                 return false;
-        } else if (!replicates.equals(other.replicates))
+            }
+        } else if (!replicates.equals(other.replicates)) {
             return false;
+        }
         if (sourceXLSFilePath == null) {
-            if (other.sourceXLSFilePath != null)
+            if (other.sourceXLSFilePath != null) {
                 return false;
-        } else if (!sourceXLSFilePath.equals(other.sourceXLSFilePath))
+            }
+        } else if (!sourceXLSFilePath.equals(other.sourceXLSFilePath)) {
             return false;
+        }
         if (version == null) {
-            if (other.version != null)
+            if (other.version != null) {
                 return false;
-        } else if (!version.equals(other.version))
+            }
+        } else if (!version.equals(other.version)) {
             return false;
+        }
         return true;
     }
 

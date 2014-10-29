@@ -166,25 +166,45 @@ public class UserAccountForm extends Form {
         lblSecurityAnswer = createLabel();
         lblSecurityAnswer.setValue(messageSource.getMessage(Message.SECURITY_ANSWER));
         
-        if (grid.getComponent(0, 0) == null) grid.addComponent(lblName, 0, 0);
-        if (grid.getComponent(1, 1) == null) grid.addComponent(lblFirstName, 1, 1);
+        if (grid.getComponent(0, 0) == null) {
+            grid.addComponent(lblName, 0, 0);
+        }
+        if (grid.getComponent(1, 1) == null) {
+            grid.addComponent(lblFirstName, 1, 1);
+        }
         grid.setComponentAlignment(lblFirstName, Alignment.TOP_LEFT);
-        if (grid.getComponent(2, 1) == null) grid.addComponent(lblMiddleName, 2, 1);
+        if (grid.getComponent(2, 1) == null) {
+            grid.addComponent(lblMiddleName, 2, 1);
+        }
         grid.setComponentAlignment(lblMiddleName, Alignment.TOP_LEFT);
-        if (grid.getComponent(3, 1) == null) grid.addComponent(lblLastName, 3, 1);
+        if (grid.getComponent(3, 1) == null) {
+            grid.addComponent(lblLastName, 3, 1);
+        }
         grid.setComponentAlignment(lblLastName, Alignment.TOP_LEFT);
         
         
-        if (grid.getComponent(0, 2) == null) grid.addComponent(lblEmail, 0, 2);
-        if (grid.getComponent(0, 3) == null) grid.addComponent(lblUserName, 0, 3);
+        if (grid.getComponent(0, 2) == null) {
+            grid.addComponent(lblEmail, 0, 2);
+        }
+        if (grid.getComponent(0, 3) == null) {
+            grid.addComponent(lblUserName, 0, 3);
+        }
         if (this.getVisibleItemProperties().contains("password")){
-    		if (grid.getComponent(0, 4) == null) grid.addComponent(lblPassword, 0, 4);
+    		if (grid.getComponent(0, 4) == null) {
+                grid.addComponent(lblPassword, 0, 4);
+            }
     	}
         if (this.getVisibleItemProperties().contains("passwordConfirmation")){
-    		if (grid.getComponent(0, 5) == null) grid.addComponent(lblPasswordConfirmation, 0, 5);
+    		if (grid.getComponent(0, 5) == null) {
+                grid.addComponent(lblPasswordConfirmation, 0, 5);
+            }
     	}
-        if (grid.getComponent(0, 6) == null) grid.addComponent(lblSecurityQuestion, 0, 6);
-        if (grid.getComponent(0, 7) == null) grid.addComponent(lblSecurityAnswer, 0, 7);
+        if (grid.getComponent(0, 6) == null) {
+            grid.addComponent(lblSecurityQuestion, 0, 6);
+        }
+        if (grid.getComponent(0, 7) == null) {
+            grid.addComponent(lblSecurityAnswer, 0, 7);
+        }
 
 		super.attach();
 		

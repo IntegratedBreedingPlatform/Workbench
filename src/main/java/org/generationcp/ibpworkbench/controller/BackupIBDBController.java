@@ -44,8 +44,9 @@ public class BackupIBDBController {
             // only add .sql extension if backupFile.getName() does not already have this
             if (!getExtension(backupFile).toLowerCase().contains("sql")) {
             	resp.addHeader("Content-Disposition","attachment; filename=\"" + backupFile.getName() + ".sql\"");
-            } else
-            	resp.addHeader("Content-Disposition","attachment; filename=\"" + backupFile.getName() + "\"");
+            } else {
+                resp.addHeader("Content-Disposition", "attachment; filename=\"" + backupFile.getName() + "\"");
+            }
             
             out.write(allBackup.getBytes());
             out.flush();
@@ -66,11 +67,13 @@ public class BackupIBDBController {
 	String s = f.getName();
 	int i = s.lastIndexOf('.');
 
-	if (i > 0 && i < s.length() - 1)
-	ext = s.substring(i+1).toLowerCase();
+	if (i > 0 && i < s.length() - 1) {
+        ext = s.substring(i + 1).toLowerCase();
+    }
 
-	if(ext == null)
-	return "";
+	if(ext == null) {
+        return "";
+    }
 	return ext;
 	}
 

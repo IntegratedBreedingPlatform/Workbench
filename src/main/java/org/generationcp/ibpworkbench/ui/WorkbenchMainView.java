@@ -309,8 +309,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
 
-        if (sessionData.getLastOpenedProject() != null)
-            workbenchDashboard.initializeDashboardContents(null).doAction(sessionData.getLastOpenedProject().getProjectId(),this);
+        if (sessionData.getLastOpenedProject() != null) {
+            workbenchDashboard.initializeDashboardContents(null).doAction(sessionData.getLastOpenedProject().getProjectId(), this);
+        }
 
     }
 
@@ -381,9 +382,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
                 wrap.setSizeFull();
                 wrap.setScrollable(true);
 
-                if (content instanceof  ComponentContainer)
+                if (content instanceof  ComponentContainer) {
                     wrap.setContent((ComponentContainer) content);
-                else {
+                } else {
                     VerticalLayout vl = new VerticalLayout();
                     vl.addComponent(content);
                     vl.setSizeUndefined();
@@ -395,10 +396,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             }
         }
 
-        if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView))
-            root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
-        else
-            root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
+        if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView)) {
+            root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
+        } else {
+            root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+        }
 
         toggleSidebarIcon();
     }
@@ -416,10 +418,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     public void addTitle(String myTitle)
     {
-        if (myTitle.length() > 50)
+        if (myTitle.length() > 50) {
             workbenchTitle.setDescription(myTitle);
-        else
+        } else {
             workbenchTitle.setDescription("");
+        }
 
         if (myTitle != null && !myTitle.isEmpty()) {
             myTitle = StringUtils.abbreviate(myTitle, 50);
@@ -436,8 +439,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
         String signoutName = appSession.getSessionData().getUserData().getName();
-        if (signoutName.length() > 10)
-            signoutName = signoutName.substring(0,9) + "...";
+        if (signoutName.length() > 10) {
+            signoutName = signoutName.substring(0, 9) + "...";
+        }
 
         memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
 

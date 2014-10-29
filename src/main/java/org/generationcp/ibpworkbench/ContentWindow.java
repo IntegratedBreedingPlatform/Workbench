@@ -97,13 +97,17 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
                     Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
 
-                    if (project == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    if (project == null) {
+                        throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    }
 
-                    if (appSession.getSessionData().getLastOpenedProject() == null)
+                    if (appSession.getSessionData().getLastOpenedProject() == null) {
                         appSession.getSessionData().setLastOpenedProject(project);
+                    }
 
-                    if (appSession.getSessionData().getSelectedProject() == null)
+                    if (appSession.getSessionData().getSelectedProject() == null) {
                         appSession.getSessionData().setSelectedProject(project);
+                    }
 
                     new OpenProgramLocationsAction(project ,null).doAction(this,"/" + path,false);   // execute
 
@@ -116,13 +120,17 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
                     Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
 
-                    if (project == null) throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    if (project == null) {
+                        throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
+                    }
 
-                    if (appSession.getSessionData().getLastOpenedProject() == null)
+                    if (appSession.getSessionData().getLastOpenedProject() == null) {
                         appSession.getSessionData().setLastOpenedProject(project);
+                    }
 
-                    if (appSession.getSessionData().getSelectedProject() == null)
+                    if (appSession.getSessionData().getSelectedProject() == null) {
                         appSession.getSessionData().setSelectedProject(project);
+                    }
 
                     new OpenProgramMethodsAction(project ,null).doAction(this,"/" + path,false);
 

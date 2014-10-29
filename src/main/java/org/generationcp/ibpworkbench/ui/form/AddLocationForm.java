@@ -153,10 +153,11 @@ public class AddLocationForm extends Form {
 	    label.setContentMode(Label.CONTENT_XHTML);
 	    label.setWidth("220px");
 	
-	    if (!required)
-	        label.setValue(String.format("<b>%s</b>",caption));
-	    else
-	        label.setValue(String.format("<b>%s</b> <span style='color: red'>*</span>",caption));
+	    if (!required) {
+            label.setValue(String.format("<b>%s</b>", caption));
+        } else {
+            label.setValue(String.format("<b>%s</b> <span style='color: red'>*</span>", caption));
+        }
 	
 	    return label;
 	    
@@ -168,10 +169,11 @@ public class AddLocationForm extends Form {
 	    label.setContentMode(Label.CONTENT_XHTML);
 	    label.setWidth("80px");
 	
-	    if (!required)
-	        label.setValue(String.format("<i>%s</i>",caption));
-	    else
-	        label.setValue(String.format("<i>%s</i> <span style='color: red'>*</span>",caption));
+	    if (!required) {
+            label.setValue(String.format("<i>%s</i>", caption));
+        } else {
+            label.setValue(String.format("<i>%s</i> <span style='color: red'>*</span>", caption));
+        }
 	
 	    return label;
 	    

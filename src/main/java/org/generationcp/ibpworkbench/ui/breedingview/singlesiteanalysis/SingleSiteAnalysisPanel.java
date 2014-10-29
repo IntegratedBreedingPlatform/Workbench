@@ -505,9 +505,10 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	}
 
 	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null)
-			this.studyDataManager = getManagerFactory()
-					.getNewStudyDataManager();
+		if (this.studyDataManager == null) {
+            this.studyDataManager = getManagerFactory()
+                    .getNewStudyDataManager();
+        }
 		return this.studyDataManager;
 	}
 
@@ -558,7 +559,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	            for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
 	            	
 	            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
-	            			) continue;
+	            			) {
+                        continue;
+                    }
 	            	
 	            	FactorModel fm = new FactorModel();
 	            	fm.setId(factor.getRank());

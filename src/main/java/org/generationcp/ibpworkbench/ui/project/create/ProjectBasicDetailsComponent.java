@@ -283,8 +283,12 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				
-				if (event.getProperty() == null) return;
-				if (event.getProperty().getValue() == null) return;
+				if (event.getProperty() == null) {
+                    return;
+                }
+				if (event.getProperty().getValue() == null) {
+                    return;
+                }
 				
 				if (((CropType)event.getProperty().getValue()).getCropName().equals(GENERIC_CROP_DESCRIPTION)){
 					otherCropNameField.setVisible(true);
@@ -335,8 +339,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
        this.startDateField.setValue(project.getStartDate());
        this.cropTypeCombo.setValue(project.getCropType());
        
-       if (isUpdate)
-       initializeLayoutForUpdate();
+       if (isUpdate) {
+           initializeLayoutForUpdate();
+       }
     }
     
     public boolean validate(){

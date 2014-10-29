@@ -86,33 +86,44 @@ public class RepresentationModel implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RepresentationModel other = (RepresentationModel) obj;
         if (effectId == null) {
-            if (other.effectId != null)
+            if (other.effectId != null) {
                 return false;
-        } else if (!effectId.equals(other.effectId))
+            }
+        } else if (!effectId.equals(other.effectId)) {
             return false;
+        }
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         if (userFriendlyName == null) {
-            if (other.userFriendlyName != null)
+            if (other.userFriendlyName != null) {
                 return false;
-        } else if (!userFriendlyName.equals(other.userFriendlyName))
+            }
+        } else if (!userFriendlyName.equals(other.userFriendlyName)) {
             return false;
+        }
         return true;
     }
 

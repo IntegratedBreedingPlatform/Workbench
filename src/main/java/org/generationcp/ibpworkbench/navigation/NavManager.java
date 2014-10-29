@@ -63,8 +63,9 @@ public final class NavManager {
      * @param breadCrumbLabel the bread crumb label
      */
     public static void navigateApp(Window window, String viewId, boolean isLinkAccessed, String breadCrumbLabel) {
-        if (!(window instanceof WorkbenchMainView))
+        if (!(window instanceof WorkbenchMainView)) {
             return;
+        }
 
         WorkbenchMainView workbenchWindow = (WorkbenchMainView) window;
         CrumbTrail crumbTrail = null;

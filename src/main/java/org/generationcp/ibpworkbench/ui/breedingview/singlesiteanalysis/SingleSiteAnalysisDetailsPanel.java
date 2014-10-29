@@ -335,7 +335,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 							Iterator<String> itr = this.listIterator();
 							while (itr.hasNext()){
 								sb.append("\"" + itr.next()  + "\"");
-								if (itr.hasNext()) sb.append(",");
+								if (itr.hasNext()) {
+                                    sb.append(",");
+                                }
 							}
 							return sb.toString();
 						}
@@ -574,7 +576,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     
     private void populateChoicesForEnvironmentFactor(){
     	
-    	if (this.trialVariablesInDataset == null) return;
+    	if (this.trialVariablesInDataset == null) {
+            return;
+        }
     	
     	for (VariableType factor : trialVariablesInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT){
@@ -654,7 +658,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 						if (trialVar != null && selectedEnvVar != null){
 							
 							TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
-							if (temp == null) continue;
+							if (temp == null) {
+                                continue;
+                            }
 							
 							SeaEnvironmentModel bean = new SeaEnvironmentModel();
 							bean.setActive(false);	
@@ -1153,7 +1159,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		List<SeaEnvironmentModel> envs = new ArrayList<SeaEnvironmentModel>();
 		for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();){
 			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
-			if (m.getActive()) envs.add(m);
+			if (m.getActive()) {
+                envs.add(m);
+            }
 		}
 		return envs;
 	}

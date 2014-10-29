@@ -146,8 +146,9 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                             // dont care
                         }
 
-                    } else
+                    } else {
                         return;
+                    }
 
                     switch (selection) {
                         case 0:
@@ -435,22 +436,24 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     private void updateHeaderAndTableControls(String label,int count,PagedTable table) {
         if (this.getComponent(1).equals(table)) {
 
-            if (count > 0)
+            if (count > 0) {
                 header.setValue(label + " [" + count + "]");
-            else
+            } else {
                 header.setValue(label);
+            }
 
-            if (this.getComponentCount() > 2)
+            if (this.getComponentCount() > 2) {
                 SummaryView.this.replaceComponent(this.getComponent(2), table.createControls());
-            else if (this.getComponentCount() == 2) {
+            } else if (this.getComponentCount() == 2) {
                 SummaryView.this.addComponent(table.createControls());
             }
 
 
         }
 
-        if (sessionData.getSelectedProject() != null)
+        if (sessionData.getSelectedProject() != null) {
             exportBtn.setEnabled(true);
+        }
 
         table.setPageLength(10);
     }

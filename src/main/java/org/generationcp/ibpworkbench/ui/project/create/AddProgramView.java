@@ -258,15 +258,17 @@ public class AddProgramView extends Panel implements InitializingBean {
 
     public Collection<Location> getFavoriteLocations() {
 
-        if (programLocationsView != null)
+        if (programLocationsView != null) {
             return programLocationsView.getFavoriteLocations();
+        }
 
         return new ArrayList<Location>();
     }
 
     public Collection<Method> getFavoriteMethods() {
-        if (programMethodsView != null)
+        if (programMethodsView != null) {
             return programMethodsView.getFavoriteMethods();
+        }
 
         return new ArrayList<Method>();
     }

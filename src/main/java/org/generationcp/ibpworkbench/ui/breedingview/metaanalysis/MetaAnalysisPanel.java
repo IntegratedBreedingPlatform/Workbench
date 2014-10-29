@@ -400,7 +400,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
     }
 
     public StudyDataManager getStudyDataManager() {
-    	if (this.studyDataManager == null) this.studyDataManager = managerFactory.getNewStudyDataManager();
+    	if (this.studyDataManager == null) {
+            this.studyDataManager = managerFactory.getNewStudyDataManager();
+        }
     	return this.studyDataManager;
 		
 	}
@@ -629,7 +631,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		        for (VariableType factor : dataSet.getVariableTypes().getFactors().getVariableTypes()){
 		        	
 		        	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
-	            			) continue;
+	            			) {
+                        continue;
+                    }
 		        	
 			        FactorModel fm = new FactorModel();
 	            	fm.setId(factor.getRank());
@@ -697,12 +701,16 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				
 				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
 						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
-					if (environmentFactorName == null) environmentFactorName = f.getLocalName();
+					if (environmentFactorName == null) {
+                        environmentFactorName = f.getLocalName();
+                    }
 				}
 				
 			}
 			
-			if (environmentFactorName == null) environmentFactorName = trialInstanceFactorName;
+			if (environmentFactorName == null) {
+                environmentFactorName = trialInstanceFactorName;
+            }
 			
 			try {
 				TrialEnvironments envs = MetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(dataSet.getId());
