@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Properties;
 import java.util.UUID;
@@ -193,7 +192,7 @@ public class RestoreUtilTest {
 		        generator.setWorkbenchDataManager(workbenchDataManager);
 		        generator.generateDatabase();
 		        
-				String fullFilePath = Paths.get(getClass().getResource("/"+filename).toURI()).toString();
+				String fullFilePath = new File(ResourceFinder.locateFile(filename).toURI()).getAbsolutePath();
 				
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 				
