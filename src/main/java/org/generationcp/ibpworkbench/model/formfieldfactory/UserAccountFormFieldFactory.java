@@ -127,15 +127,15 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory{
         securityQuestion.setStyleName("hide-caption");
         securityAnswer.setStyleName("hide-caption");
         
-        firstName.setDebugId("firstName");
-        lastName.setDebugId("lastName");
-        middleName.setDebugId("middleName");
-        email.setDebugId("email");
-        username.setDebugId("username");
-        password.setDebugId("password");
-        passwordConfirmation.setDebugId("passwordConfirmation");
-        securityQuestion.setDebugId("securityQuestion");
-        securityAnswer.setDebugId("securityAnswer");
+        firstName.setDebugId("vaadin-firstName-txt");
+        lastName.setDebugId("vaadin-lastName-txt");
+        middleName.setDebugId("vaadin-middleName-txt");
+        email.setDebugId("vaadin-email-txt");
+        username.setDebugId("vaadin-username-txt");
+        password.setDebugId("vaadin-password-txt");
+        passwordConfirmation.setDebugId("vaadin-passwordConfirmation-txt");
+        securityQuestion.setDebugId("vaadin-securityQuestion-txt");
+        securityAnswer.setDebugId("vaadin-securityAnswer-txt");
     }
 
     @Override
