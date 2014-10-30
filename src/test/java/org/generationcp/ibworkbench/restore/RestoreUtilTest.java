@@ -34,6 +34,7 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 import com.vaadin.ui.Window;
 
+@Ignore
 public class RestoreUtilTest {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(RestoreUtilTest.class);
