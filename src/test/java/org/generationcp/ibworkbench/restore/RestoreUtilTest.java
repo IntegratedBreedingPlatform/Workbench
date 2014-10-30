@@ -2,6 +2,7 @@ package org.generationcp.ibworkbench.restore;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -35,6 +36,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc2.SvnCheckout;
@@ -45,6 +48,8 @@ import com.vaadin.ui.Window;
 
 public class RestoreUtilTest {
 
+	protected static final Logger LOG = LoggerFactory.getLogger(RestoreUtilTest.class);
+	
 	private HibernateUtil hibernateUtil;
     private WorkbenchDataManagerImpl workbenchDataManager;	
     
@@ -56,7 +61,7 @@ public class RestoreUtilTest {
 	private static final String cropType = CropType.MAIZE;
 	
 	private static final String filename = "Maize_Tutorial_002-20140806.sql";
-	private static final String prefixDirectory = "updatedIbdbScripts";
+	private static final String prefixDirectory = "/updatedIbdbScripts";
 	
 	private static final String DEFAULT_IBDB_GIT_URL = "https://github.com/digitalabs/IBDBScripts";
 	
@@ -150,6 +155,24 @@ public class RestoreUtilTest {
 		} finally {
     	    svnOperationFactory.dispose();
     	}
+    	
+    }
+    
+    private String copyRestoreFile(){
+    	File newRestoreFile = null;
+    	try {
+			File restoreFile = new File(ResourceFinder.locateFile(filename).toURI());
+			//copy to the checkout directory
+			newRestoreFile = new File(tempInstallationDir.getAbsolutePath(), filename);
+			FileUtils.copyFile(restoreFile, newRestoreFile);
+		} catch (FileNotFoundException e) {
+			LOG.error(e.getMessage(), e);
+		} catch (URISyntaxException e) {
+			LOG.error(e.getMessage(), e);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
+    	return newRestoreFile != null ? newRestoreFile.getAbsolutePath() : ""; 
     }
     private boolean hasInternetConnection(){
     	Socket sock = new Socket();
@@ -192,7 +215,7 @@ public class RestoreUtilTest {
 		        generator.setWorkbenchDataManager(workbenchDataManager);
 		        generator.generateDatabase();
 		        
-				String fullFilePath = new File(ResourceFinder.locateFile(filename).toURI()).getAbsolutePath();
+				String fullFilePath = copyRestoreFile();
 				
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 				
