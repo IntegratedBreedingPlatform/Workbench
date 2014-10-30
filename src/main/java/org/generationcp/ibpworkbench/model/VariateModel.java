@@ -46,6 +46,8 @@ public class VariateModel implements Serializable{
     private String tmname;
     private Boolean active;
     private String datatype;
+    private boolean isNonNumeric;
+    private boolean isNumericCategoricalVariate;
     
     
     /**
@@ -293,5 +295,27 @@ public class VariateModel implements Serializable{
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
+
+	public boolean isNonNumeric() {
+		return isNonNumeric;
+	}
+
+
+	public void setNonNumeric(boolean isNonNumeric) {
+		this.isNonNumeric = isNonNumeric;
+	}
+
+
+	public boolean isNumericCategoricalVariate() {
+		return isNumericCategoricalVariate;
+	}
+
+
+	public void setNumericCategoricalVariate(boolean isNumericCategoricalVariate) {
+		this.isNumericCategoricalVariate = isNumericCategoricalVariate;
+	}
+	
+	
 
 }

@@ -347,7 +347,7 @@ public class DatasetExporter {
 									row.add("");
 								}
 							} else {
-								String value = variateVariable.getValue();
+								String value = variateVariable.getActualValue();
 								if (value != null) {
 									value = value.trim();
 								} else {

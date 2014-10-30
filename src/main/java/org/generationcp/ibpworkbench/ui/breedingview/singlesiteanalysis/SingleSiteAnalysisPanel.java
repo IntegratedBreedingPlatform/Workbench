@@ -102,6 +102,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	private HashMap<String, Boolean> variatesCheckboxState;
 	private int numOfSelectedVariates = 0;
+	private List<FactorModel> factorList;
+    private List<VariateModel> variateList;
 
 	private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
 
@@ -553,8 +555,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		            setCurrentStudy(study);
 	            }
 	            
-	            List<FactorModel> factorList = new ArrayList<FactorModel>();
-	            List<VariateModel> variateList = new ArrayList<VariateModel>();
+	            factorList = new ArrayList<FactorModel>();
+	            variateList = new ArrayList<VariateModel>();
 	            
 	            for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
 	            	
@@ -578,28 +580,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	            }
 	            
 	            for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
-	            	
-	            	VariateModel vm = new VariateModel();
-	            	vm.setId(variate.getRank());
-	            	vm.setName(variate.getLocalName());
-	            	vm.setDescription(variate.getLocalDescription());
-	            	vm.setScname(variate.getStandardVariable().getScale().getName());
-	            	vm.setScaleid(variate.getStandardVariable().getScale().getId());
-	            	vm.setTmname(variate.getStandardVariable().getMethod().getName());
-	            	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-	            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
-	            	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
-	            	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
-	            	
-	            	if (vm.getDatatype().equals(NUMERIC_VARIABLE)){
-	            		vm.setActive(true);
-	            	}
-	            	
-	            	LOG.debug(variate.toString());
+	            	VariateModel vm = transformVariableTypeToVariateModel(variate);
 	            	variateList.add(vm);
-	            	
 	            }
-	            
 	           
 	            setCurrentDatasetName(ds.getName());
 	            setCurrentDataSetId(ds.getId());
@@ -615,6 +598,31 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	        getManagerFactory().close();
 	    }
 	    
+	public VariateModel transformVariableTypeToVariateModel(
+			VariableType variate) {
+		VariateModel vm = new VariateModel();
+		vm.setId(variate.getRank());
+    	vm.setName(variate.getLocalName());
+    	vm.setDescription(variate.getLocalDescription());
+    	vm.setScname(variate.getStandardVariable().getScale().getName());
+    	vm.setScaleid(variate.getStandardVariable().getScale().getId());
+    	vm.setTmname(variate.getStandardVariable().getMethod().getName());
+    	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
+    	vm.setTrname(variate.getStandardVariable().getProperty().getName());
+    	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
+    	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
+    	
+    	if (variate.getStandardVariable().isNumeric()){
+    		vm.setActive(true);
+    		if(variate.getStandardVariable().isNumericCategoricalVariate()) {
+    			vm.setNumericCategoricalVariate(true);
+    		}
+    	} else {
+    		vm.setNonNumeric(true);
+    	}
+    	return vm;
+	}
+
 	private void updateFactorsTable(List<FactorModel> factorList){
 	   Object[] oldColumns = tblFactors.getVisibleColumns();
        String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
@@ -698,4 +706,38 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		this.currentDatasetName = currentDatasetName;
 	}
 
-}// end of SingleSiteAnalysisPanel
+	public List<FactorModel> getFactorList() {
+		return factorList;
+	}
+
+	public List<VariateModel> getVariateList() {
+		return variateList;
+	}
+
+	public void setFactorList(List<FactorModel> factorList) {
+		this.factorList = factorList;
+	}
+
+	public void setVariateList(List<VariateModel> variateList) {
+		this.variateList = variateList;
+	}
+
+	public ManagerFactoryProvider getManagerFactoryProvider() {
+		return managerFactoryProvider;
+	}
+
+	public void setManagerFactoryProvider(
+			ManagerFactoryProvider managerFactoryProvider) {
+		this.managerFactoryProvider = managerFactoryProvider;
+	}
+
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	public void setManagerFactory(ManagerFactory managerFactory) {
+		this.managerFactory = managerFactory;
+	}	
+	
+	
+}

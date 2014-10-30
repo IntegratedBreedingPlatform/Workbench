@@ -15,7 +15,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -39,6 +42,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -59,6 +63,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     @Autowired
     private ToolUtil toolUtil;
     
+    @Autowired
+	private SimpleResourceBundleMessageSource messageSource;
+    
     public OpenSelectDatasetForExportAction(SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
         
         this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
@@ -73,20 +80,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
         Integer dataSetId = selectDatasetForBreedingViewPanel.getCurrentDataSetId();
         String datasetName = selectDatasetForBreedingViewPanel.getCurrentDatasetName();
         
-        // study is required
-        if (selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
-            event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
-            return;
+        if(!validateInput(event, studyId, dataSetId, datasetName)) {
+        	return;
         }
-        
-        // data set is required
-        if (studyId == null 
-            || datasetName == null
-            || dataSetId == null) {
-            event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
-            return;
-        }
-        
+        	
         try {
            
 
@@ -135,12 +132,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             breedingViewInput.setVariatesActiveState(selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
             List<DataSet> meansDs = selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
             if (meansDs != null){
-            	if (!meansDs.isEmpty()){
-            		if (meansDs.get(0) != null) {
-            			breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
-            		}
-            	}else{
-            	 breedingViewInput.setOutputDatasetId(0);
+            	if (!meansDs.isEmpty()) {
+            		breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
+            	} else{
+            		breedingViewInput.setOutputDatasetId(0);
             	}
             }
            
@@ -162,4 +157,64 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
         }
     }
+
+	private boolean validateInput(ClickEvent event, Integer studyId, 
+			Integer dataSetId, String datasetName ) {
+		// study is required
+        if (selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
+            event.getComponent().getWindow().showNotification("Please select a Study first.", 
+            		Notification.TYPE_ERROR_MESSAGE);
+            return false;
+        }
+        
+        // data set is required
+        if (studyId == null 
+            || datasetName == null
+            || dataSetId == null) {
+            event.getComponent().getWindow().showNotification("Please select a Dataset first.", 
+            		Notification.TYPE_ERROR_MESSAGE);
+            return false;
+        }
+        List<VariateModel> variates = selectDatasetForBreedingViewPanel.getVariateList();
+        Map<String, Boolean> variatesCheckboxState = selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
+        boolean includesNonNumeric = 
+        		checkIfNonNumericVarAreIncluded(variates,variatesCheckboxState);
+        if(includesNonNumeric) {
+        	MessageNotifier.showError(event.getComponent().getWindow(),
+        			messageSource.getMessage(Message.INVALID_INPUT),
+        			messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
+        	return false;
+        }
+        boolean includesNumericCategorical = 
+        		checkIfNumericCategoricalVarAreIncluded(
+        				variates,variatesCheckboxState);
+        if(includesNumericCategorical) {
+        	MessageNotifier.showWarning(event.getComponent().getWindow(),
+        			messageSource.getMessage(Message.WARNING),
+        			messageSource.getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING));
+        }
+		return true;
+	}
+
+	protected boolean checkIfNumericCategoricalVarAreIncluded(List<VariateModel> variates,
+			Map<String, Boolean> variatesCheckboxState) {
+		for (VariateModel vm : variates) {
+        	boolean isSelected = variatesCheckboxState.get(vm.getName());
+        	if(isSelected && vm.isNumericCategoricalVariate()) {
+        		return true;
+        	}
+        }
+        return false;
+	}
+
+	protected boolean checkIfNonNumericVarAreIncluded(List<VariateModel> variates,
+			Map<String, Boolean> variatesCheckboxState) {
+		for (VariateModel vm : variates) {
+        	boolean isSelected = variatesCheckboxState.get(vm.getName());
+        	if(isSelected && vm.isNonNumeric()) {
+        		return true;
+        	}
+        }
+        return false;
+	}
 }
