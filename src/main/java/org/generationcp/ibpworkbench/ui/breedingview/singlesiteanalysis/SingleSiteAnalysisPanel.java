@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -63,8 +64,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
-	private static final String NUMERIC_VARIABLE = "Numeric variable";
-	
 	private Button browseLink;
 
 	private Label lblPageTitle;
@@ -100,14 +99,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	private Button btnNext;
 	private Component buttonArea;
 
-	private HashMap<String, Boolean> variatesCheckboxState;
+	private Map<String, Boolean> variatesCheckboxState;
 	private int numOfSelectedVariates = 0;
 	private List<FactorModel> factorList;
     private List<VariateModel> variateList;
 
 	private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
 
-	private final static Logger LOG = LoggerFactory
+	private static final Logger LOG = LoggerFactory
 			.getLogger(SingleSiteAnalysisPanel.class);
 
 	@Autowired
@@ -119,6 +118,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	private StudyDataManager studyDataManager;
 
 	private ManagerFactory managerFactory;
+	
+	private static final String NAMED_COLUMN_1 = "name";
+	private static final String NAMED_COLUMN_2 = "description";
+	private static final String NAMED_COLUMN_3 = "scname";
+	
+	private static final String CAMEL_CASE_NAMED_COLUMN_1 = "Name";
+	private static final String CAMEL_CASE_NAMED_COLUMN_2 = "Description";
+	private static final String CAMEL_CASE_NAMED_COLUMN_3 = "Scale";
 
 	public SingleSiteAnalysisPanel(Project currentProject,
 			Database database) {
@@ -190,8 +197,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	@Override
 	public void initializeValues() {
-		// TODO Auto-generated method stub
-		
+		//no values to initialize
 	}
 
 	@Override
@@ -347,35 +353,26 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		container.setBeanIdProperty("id");
 		table.setContainerDataSource(container);
 
-		String[] columns = new String[] { "name", "description" };
-		String[] columnHeaders = new String[] { "Name", "Description" };
+		String[] columns = new String[] { NAMED_COLUMN_1, NAMED_COLUMN_2 };
+		String[] columnHeaders = new String[] { CAMEL_CASE_NAMED_COLUMN_1, CAMEL_CASE_NAMED_COLUMN_2 };
 		table.setVisibleColumns(columns);
 		table.setColumnHeaders(columnHeaders);
 
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
-
+			private String description = "<span class=\"gcp-table-header-bold\">%s</span><br>" +
+					"<span>Property:</span> %s<br><span>Scale:</span> %s<br>" +
+					"<span>Method:</span> %s<br><span>Data Type:</span> %s";
+			
+			@SuppressWarnings("unchecked")
 			public String generateDescription(Component source, Object itemId,
 					Object propertyId) {
 				BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) table
 						.getContainerDataSource();
 				FactorModel fm = container.getItem(itemId).getBean();
-
-				StringBuilder sb = new StringBuilder();
-				sb.append(String.format(
-						"<span class=\"gcp-table-header-bold\">%s</span><br>",
-						fm.getName()));
-				sb.append(String.format("<span>Property:</span> %s<br>",
-						fm.getTrname()));
-				sb.append(String.format("<span>Scale:</span> %s<br>",
-						fm.getScname()));
-				sb.append(String.format("<span>Method:</span> %s<br>",
-						fm.getTmname()));
-				sb.append(String.format("<span>Data Type:</span> %s",
-						fm.getDataType()));
-
-				return sb.toString();
+				return String.format(description, fm.getName(), fm.getTrname(), 
+						fm.getScname(), fm.getTmname(), fm.getDataType());
 			}
 		});
 
@@ -391,9 +388,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		table.setWidth("100%");
 		table.setHeight("400px");
 		table.setColumnExpandRatio("", 0.5f);
-		table.setColumnExpandRatio("name", 1);
-		table.setColumnExpandRatio("description", 4);
-		table.setColumnExpandRatio("scname", 1);
+		table.setColumnExpandRatio(NAMED_COLUMN_1, 1);
+		table.setColumnExpandRatio(NAMED_COLUMN_2, 4);
+		table.setColumnExpandRatio(NAMED_COLUMN_3, 1);
 		table.addGeneratedColumn("", new Table.ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
@@ -454,26 +451,17 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
-
+			private String description = "<span class=\"gcp-table-header-bold\">%s</span><br>" +
+					"<span>Property:</span> %s<br><span>Scale:</span> %s<br>" +
+					"<span>Method:</span> %s<br><span>Data Type:</span> %s";
+			
+			@SuppressWarnings("unchecked")
 			public String generateDescription(Component source, Object itemId,
 					Object propertyId) {
 				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) table.getContainerDataSource();
 				VariateModel vm = container.getItem(itemId).getBean();
-
-				StringBuilder sb = new StringBuilder();
-				sb.append(String.format(
-						"<span class=\"gcp-table-header-bold\">%s</span><br>",
-						vm.getName()));
-				sb.append(String.format("<span>Property:</span> %s<br>",
-						vm.getTrname()));
-				sb.append(String.format("<span>Scale:</span> %s<br>",
-						vm.getScname()));
-				sb.append(String.format("<span>Method:</span> %s<br>",
-						vm.getTmname()));
-				sb.append(String.format("<span>Data Type:</span> %s",
-						vm.getDatatype()));
-
-				return sb.toString();
+				return String.format(description, vm.getName(), vm.getTrname(), 
+						vm.getScname(), vm.getTmname(), vm.getDatatype());
 			}
 		});
 
@@ -482,9 +470,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		container.setBeanIdProperty("id");
 		table.setContainerDataSource(container);
 
-		String[] columns = new String[] { "", "name", "description", "scname" };
-		String[] columnHeaders = new String[] { "<span class='glyphicon glyphicon-ok'></span>", "Name", "Description",
-				"Scale" };
+		String[] columns = new String[] { "", NAMED_COLUMN_1, NAMED_COLUMN_2, NAMED_COLUMN_3 };
+		String[] columnHeaders = new String[] { "<span class='glyphicon glyphicon-ok'></span>", 
+				CAMEL_CASE_NAMED_COLUMN_1, CAMEL_CASE_NAMED_COLUMN_2, CAMEL_CASE_NAMED_COLUMN_3};
 		table.setVisibleColumns(columns);
 		table.setColumnHeaders(columnHeaders);
 		table.setColumnWidth("", 18);
@@ -492,7 +480,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	}
 
 	private Table[] refreshFactorsAndVariatesTable() {
-		Table toreturn[] = new Table[2];
+		Table[] toreturn = new Table[2];
 		
 		tblFactorContainer.removeAllComponents();
 		tblVariateContainer.removeAllComponents();
@@ -518,12 +506,12 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		return managerFactory;
 	}
 
-	public HashMap<String, Boolean> getVariatesCheckboxState() {
+	public Map<String, Boolean> getVariatesCheckboxState() {
 		return variatesCheckboxState;
 	}
 
 	public void setVariatesCheckboxState(
-			HashMap<String, Boolean> variatesCheckboxState) {
+			Map<String, Boolean> variatesCheckboxState) {
 		this.variatesCheckboxState = variatesCheckboxState;
 	}
 
@@ -545,9 +533,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	            
 	            DataSet ds = studyDataManager.getDataSet(dataSetId);
 	            
-	            Study currentStudy = getCurrentStudy();
-	         
-	            if (currentStudy == null){
+	            if (getCurrentStudy() == null){
 	            	Study study = studyDataManager.getStudy(ds.getStudyId());
 		            setCurrentStudy(study);
 	            }else if (getCurrentStudy().getId() != ds.getStudyId()){
@@ -590,8 +576,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 	            updateFactorsTable(factorList);
 	            updateVariatesTable(variateList);
 
-	        }
-	        catch (MiddlewareQueryException e) {
+	        } catch (MiddlewareQueryException e) {
+	        	LOG.error(e.getMessage(),e);
 	            showDatabaseError(this.getWindow());
 	        }
 	        
@@ -655,8 +641,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
       	   getVariatesCheckboxState().put(v.getName(), v.getActive());
         }
         tblVariates.setContainerDataSource(container);
-        tblVariates.setVisibleColumns(new String[]{"","name", "description", "scname"});
-        tblVariates.setColumnHeaders(new String[]{"<span class='glyphicon glyphicon-ok'></span>","Name", "Description", "Scale"});
+        tblVariates.setVisibleColumns(new String[]{"",NAMED_COLUMN_1, NAMED_COLUMN_2, NAMED_COLUMN_3});
+        tblVariates.setColumnHeaders(new String[]{"<span class='glyphicon glyphicon-ok'></span>",
+        		CAMEL_CASE_NAMED_COLUMN_1, CAMEL_CASE_NAMED_COLUMN_2, CAMEL_CASE_NAMED_COLUMN_3});
     }
 	  
 	private void showDatabaseError(Window window) {

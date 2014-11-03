@@ -74,7 +74,7 @@ public class DatasetExporter {
 
 			// check if factor is already written as a condition
 			Integer temp = columnsMap.get(factorName);
-			if (temp == null && !factorName.equals("STUDY")) {
+			if (temp == null && !"STUDY".equals(factorName)) {
 				// add entry to columns mapping
 				columnsMap.put(factorName, Integer.valueOf(observationSheetColumnIndex));
 				observationSheetColumnIndex++;
