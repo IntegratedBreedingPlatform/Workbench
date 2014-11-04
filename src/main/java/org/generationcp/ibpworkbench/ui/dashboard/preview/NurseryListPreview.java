@@ -17,6 +17,7 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.InputPopup;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainTreeListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.DeleteConfirmDialogListener;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.NurseryListTreeExpandListener;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.domain.dms.FolderReference;
@@ -145,9 +146,7 @@ public class NurseryListPreview extends VerticalLayout {
 
 
     private void addInstanceTree(Tree treeView, List<FolderReference> folders, boolean isCentral) {
-
-
-        String folderName = null;
+    	String folderName = null;
         if (isCentral) {
             folderName = SHARED_STUDIES;
         } else {
@@ -199,7 +198,7 @@ public class NurseryListPreview extends VerticalLayout {
     }
 
     protected void initializeActions() {
-
+    	//empty block of code
     }
 
     protected void assemble() throws Exception {
@@ -387,13 +386,14 @@ public class NurseryListPreview extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent event) {
                         Integer newItem = null;
                         try {
-                            if (treeView.getValue() instanceof String)//top folder
-                            {
+                            if (treeView.getValue() instanceof String) {
+                            	//top folder
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), ROOT_FOLDER);
                             } else {
                                 newItem = presenter.addNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
                             }
                         } catch (Exception e) {
+                        	LOG.error(e.getMessage(), e);
                             MessageNotifier.showError(event.getComponent().getWindow(), messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                             return;
                         }
@@ -454,6 +454,7 @@ public class NurseryListPreview extends VerticalLayout {
                 try {
                     id = presenter.validateForDeleteNurseryList((Integer) treeView.getValue());
                 } catch (Exception e) {
+                	LOG.error(e.getMessage(), e);
                     MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
                     return;
                 }
@@ -462,30 +463,7 @@ public class NurseryListPreview extends VerticalLayout {
                 ConfirmDialog.show(event.getComponent().getWindow(),
                         messageSource.getMessage(Message.DELETE_ITEM),
                         messageSource.getMessage(Message.DELETE_ITEM_CONFIRM),
-                        messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
-                            private static final long serialVersionUID = 1L;
-
-                            @Override
-                            public void onClose(ConfirmDialog dialog) {
-                                if (dialog.isConfirmed()) {
-                                    try {
-                                        DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
-                                        presenter.deleteNurseryListFolder(finalId);
-                                        treeView.removeItem(treeView.getValue());
-                                        if (parent.getProjectId().intValue() == ROOT_FOLDER) {
-                                            treeView.select(MY_STUDIES);
-                                            processToolbarButtons(MY_STUDIES);
-                                        } else {
-                                            treeView.select(parent.getProjectId());
-                                            processToolbarButtons(parent.getProjectId());
-                                        }
-                                        treeView.setImmediate(true);
-                                    } catch (Exception e) {
-                                        MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
-                                    }
-                                }
-                            }
-                });
+                        messageSource.getMessage(Message.YES), messageSource.getMessage(Message.NO), new DeleteConfirmDialogListener(presenter, treeView, finalId, event));
             }
         });
     }
