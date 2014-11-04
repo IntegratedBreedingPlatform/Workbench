@@ -42,23 +42,26 @@ public class DeleteConfirmDialogListener implements ConfirmDialog.Listener{
         }
     }
     
-    protected void deleteStudy(){
-    	 try {
-             DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
-             presenter.deleteNurseryListFolder(finalId);
-             treeView.removeItem(treeView.getValue());
-             if (parent.getProjectId().intValue() == NurseryListPreview.ROOT_FOLDER) {
-                 treeView.select(NurseryListPreview.MY_STUDIES);
-                 presenter.processToolbarButtons(NurseryListPreview.MY_STUDIES);
-             } else {
-                 treeView.select(parent.getProjectId());
-                 presenter.processToolbarButtons(parent.getProjectId());
-             }
-             treeView.setImmediate(true);
-         } catch (Exception e) {
-        	 LOG.error(e.getMessage(), e);
-             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
-         }
+    protected boolean deleteStudy(){
+    	boolean isDeleted = false;
+    	try {
+    		DmsProject parent = (DmsProject) presenter.getStudyNodeParent(finalId);
+            presenter.deleteNurseryListFolder(finalId);
+            treeView.removeItem(treeView.getValue());
+            if (parent.getProjectId().intValue() == NurseryListPreview.ROOT_FOLDER) {
+                treeView.select(NurseryListPreview.MY_STUDIES);
+                presenter.processToolbarButtons(NurseryListPreview.MY_STUDIES);
+            } else {
+                treeView.select(parent.getProjectId());
+                presenter.processToolbarButtons(parent.getProjectId());
+            }
+            treeView.setImmediate(true);
+            isDeleted = true;
+    	} catch (Exception e) {
+    		LOG.error(e.getMessage(), e);
+         	MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_OPERATION), e.getMessage());
+        }
+    	return isDeleted;
     }
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
