@@ -83,7 +83,6 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 
     public ManagerFactory getManagerFactory() {
-
         return managerFactory;
     }
 
@@ -117,7 +116,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     public void deleteNurseryListFolder(Integer id) {
         try {
-            this.getManagerFactory().getStudyDataManager().deleteEmptyFolder(id);
+            this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
         }
@@ -271,5 +270,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     public void setView(NurseryListPreview view) {
         this.view = view;
+    }
+    public void processToolbarButtons(Object treeItem) {
+    	//to be overridden
     }
 }
