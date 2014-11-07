@@ -1,0 +1,25 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Login</title>
+</head>
+<body>
+	<div th:if="${#authorization.expression('isAuthenticated()') == true}">
+		Logged in as: <span sec:authentication="name">User</span>
+		<a id="navLogoutLink" th:href="@{/j_spring_security_logout}">Logout</a>
+	</div>
+	<div th:if="${#authorization.expression('isAuthenticated()') == false}">
+		<form th:action="@{/login}" method="post">
+			<div th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+			  Your login attempt was not successful, try again. Reason: <span th:text="${errorMsg}">Authentication failure.</span> 
+			</div>
+			<div th:if="${param.logout != null}">You have been logged out.</div>
+			<label for="username">Username</label>
+			<input type="text" id="username" name="username" />
+			<label for="password">Password</label>
+			<input type="password" id="password" name="password" />
+			<input id="submit" name="submit" type="submit" value="Login" />
+		</form>
+	</div>
+</body>
+</html>

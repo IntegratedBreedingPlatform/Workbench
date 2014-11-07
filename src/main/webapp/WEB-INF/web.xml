@@ -15,7 +15,10 @@
 	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:applicationContext.xml</param-value>
+		<param-value>
+    		classpath*:applicationContext.xml
+    		/WEB-INF/spring-security.xml
+    	</param-value>
 	</context-param>
 
 	<listener>
@@ -30,6 +33,16 @@
 		<session-timeout>-1</session-timeout>
 	</session-config>
 
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
 	<filter>
 		<filter-name>HTTPRequestAwareFilter</filter-name>
 		<filter-class>org.generationcp.commons.hibernate.HTTPRequestAwareServletFilter</filter-class>
