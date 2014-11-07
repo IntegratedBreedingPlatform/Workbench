@@ -121,13 +121,16 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
             final String pdfFilename = "BMS_User_Manual.pdf";
             final String pdfFilepath = docsDirectory + pdfFilename;
             final String htmlDocUrl = "http://localhost:18080/BMS_HTML/index.html";
-
-
-            String copyTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/BMS_HTML";
-
+            
+            String copyHTMLTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/BMS_HTML";
+            String copyPDFTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/";
+            final String newPdfFilepath = copyPDFTargetPath+pdfFilename;
+            
             try {
-                FileUtils.deleteDirectory(new File(copyTargetPath));
-                FileUtils.copyDirectory(new File(getHtmlFilesLocation(docsDirectory)), new File(copyTargetPath));
+                FileUtils.deleteDirectory(new File(copyHTMLTargetPath));
+                FileUtils.copyDirectory(new File(getHtmlFilesLocation(docsDirectory)), new File(copyHTMLTargetPath));
+                FileUtils.copyFile(new File(pdfFilepath), 
+                		new File(newPdfFilepath));
 
                 String contextPath = TomcatUtil.getContextPathFromUrl(htmlDocUrl);
                 String localWarPath = TomcatUtil.getLocalWarPathFromUrl(htmlDocUrl);
@@ -148,7 +151,7 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
                     StreamSource pdfSource = new StreamResource.StreamSource() {
                         public InputStream getStream() {
                             try {
-                                File f = new File(pdfFilepath);
+                                File f = new File(newPdfFilepath);
                                 FileInputStream fis = new FileInputStream(f);
                                 return fis;
                             } catch (Exception e) {

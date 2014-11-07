@@ -174,7 +174,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
         helpButton.setHtmlContentAllowed(true);
         helpButton.setSizeUndefined();
-
+        helpButton.setDebugId("help-button-icon");
     }
 
     protected void initializeLayout() {
