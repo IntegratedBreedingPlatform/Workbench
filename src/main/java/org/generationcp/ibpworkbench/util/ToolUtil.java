@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
@@ -27,11 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -562,7 +566,12 @@ public class ToolUtil {
     	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
     	SessionData sessionData = app.getSessionData();
 
-    	return ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
+    	String contextParameterString = ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
     			sessionData.getSelectedProject().getProjectId());
+    	
+    	//FIXME: Just passing plain text username as a token for now.. until we get to BMS-61.
+    	String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, 
+    			SecurityUtil.getLoggedInUserName());
+		return contextParameterString + authenticationTokenString;
     }
 }
