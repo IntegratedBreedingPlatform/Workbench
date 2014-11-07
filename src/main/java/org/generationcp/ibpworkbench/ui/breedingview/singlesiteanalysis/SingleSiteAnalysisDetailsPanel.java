@@ -20,6 +20,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table.ColumnGenerator;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -44,6 +45,8 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -52,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -61,6 +65,8 @@ import java.util.List;
 @Configurable
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
+	
     private static final long serialVersionUID = 1L;
     
     private static final String REPLICATION_FACTOR = "replication factor";
@@ -116,7 +122,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     
     private CheckBox footerCheckBox;
     
-    private HashMap<String, Boolean> environmentsCheckboxState;
+    private Map<String, Boolean> environmentsCheckboxState;
     
     private VerticalLayout tblEnvironmentLayout;
     private Table tblEnvironmentSelection;
@@ -210,6 +216,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     }
 
     protected void initialize() {
+    	// not yet implemented
     }
 
     protected void initializeComponents() {
@@ -274,11 +281,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	
 						}
 					} catch (ConfigException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.error(e.getMessage(), e);
 					} catch (MiddlewareQueryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.error(e.getMessage(), e);
 					}
 					
 					
@@ -327,7 +332,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				try{
 					
 					
-					ArrayList<String> invalidEnvs = new ArrayList<String>(){
+					List<String> invalidEnvs = new ArrayList<String>(){
 						
 						@Override
 						public String toString(){
@@ -362,13 +367,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					
 					tblEnvironmentSelection.refreshRowCache();
 					
-					if (invalidEnvs.size() > 0){
+					if (!invalidEnvs.isEmpty()){
 						MessageNotifier.showError(getWindow(), "Invalid Selection", getSelEnvFactor().getValue().toString() + " " + invalidEnvs.toString()  + " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
 					}
 				
 				
 				}catch(Exception e){
-					
+					LOG.error(e.getMessage(), e);
 				}
 
 			}
@@ -592,7 +597,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
     	
         
-        if (this.selEnvFactor.getItemIds().size() < 1) {
+        if (this.selEnvFactor.getItemIds().isEmpty()) {
         	this.selEnvFactor.setEnabled(false);
         }else{
         	this.selEnvFactor.setEnabled(true);
@@ -616,10 +621,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	String trialInstanceFactor = "";
 
     	
-    	try{
+    	try {
         	environmentsCheckboxState.clear();
         	tblEnvironmentSelection.removeAllItems();
-        }catch(Exception e){}	
+        } catch(Exception e) {
+        	LOG.debug(e.getMessage(), e);
+        }	
     	
         String envFactorName = (String) this.selEnvFactor.getValue();   
 		
@@ -669,8 +676,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 							bean.setLocationId(temp.getId());
 							container.addBean(bean);
 
-						}else{
-							continue;
 						}
 						
 				}
@@ -695,11 +700,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				}
 				
 			} catch (ConfigException e) {
-				
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage(), e);
 				
-				e.printStackTrace();
 			}
 
         } 
@@ -726,7 +730,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         	}
         }
         
-        if (this.selReplicates.getItemIds().size() < 1) {
+        if (this.selReplicates.getItemIds().isEmpty()) {
         	this.selReplicates.setEnabled(false);
         }else{
         	this.selReplicates.setEnabled(true);
@@ -813,7 +817,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	        	selDesignType.select((Object) null);
 	    	}
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
     	
     		
@@ -992,7 +996,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			try {
 				
 				dataSets = studyDataManager.getDataSetsByType(breedingViewInput.getStudyId(), DataSetType.MEANS_DATA);
-				if (dataSets.size() > 0){
+				if (!dataSets.isEmpty()){
 					
 					DataSet meansDataSet = dataSets.get(0);
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSet.getId());
@@ -1032,10 +1036,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				
 			} catch (MiddlewareQueryException e) {
 				new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project).buttonClick(event);
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			} catch (Exception e){
 				new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project).buttonClick(event);
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			}
 			
 			
@@ -1144,12 +1148,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblReplicates = lblReplicates;
 	}
 
-	public HashMap<String, Boolean> getEnvironmentsCheckboxState() {
+	public Map<String, Boolean> getEnvironmentsCheckboxState() {
 		return environmentsCheckboxState;
 	}
 
 	public void setEnvironmentsCheckboxState(
-			HashMap<String, Boolean> environmentsCheckboxState) {
+			Map<String, Boolean> environmentsCheckboxState) {
 		this.environmentsCheckboxState = environmentsCheckboxState;
 	}
 	
