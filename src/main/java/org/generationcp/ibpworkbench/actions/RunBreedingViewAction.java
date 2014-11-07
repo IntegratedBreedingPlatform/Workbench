@@ -16,6 +16,7 @@ import com.mysql.jdbc.StringUtils;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
+
 import org.generationcp.commons.breedingview.xml.*;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -50,6 +51,8 @@ import java.util.Properties;
  */
 @Configurable
 public class RunBreedingViewAction implements ClickListener {
+	private static final String ERROR = "ERROR: ";
+
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
@@ -87,7 +90,7 @@ public class RunBreedingViewAction implements ClickListener {
 
 		String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
 		if (StringUtils.isNullOrEmpty(analysisProjectName)) {
-			MessageNotifier.showError(event.getComponent().getWindow(),
+			showErrorMessage(event.getComponent().getWindow(),
 					"Please enter an Analysis Name.", "");
 			return;
 		} else {
@@ -98,7 +101,7 @@ public class RunBreedingViewAction implements ClickListener {
 		String envFactor = (String) this.source.getSelEnvFactor().getValue();
 
 		if (StringUtils.isNullOrEmpty(envFactor)) {
-			MessageNotifier.showError(event.getComponent().getWindow(),
+			showErrorMessage(event.getComponent().getWindow(),
 					"Please select an environment factor.", "");
 			return;
 		}
@@ -108,7 +111,7 @@ public class RunBreedingViewAction implements ClickListener {
 			environment.setName(envFactor.trim());
 
 			if (breedingViewInput.getSelectedEnvironments().isEmpty()) {
-				MessageNotifier.showError(event.getComponent().getWindow(),
+				showErrorMessage(event.getComponent().getWindow(),
 						"Please select environment for analysis.", "");
 				return;
 			} else {
@@ -122,7 +125,7 @@ public class RunBreedingViewAction implements ClickListener {
 
 		String designType = (String) this.source.getSelDesignType().getValue();
 		if (StringUtils.isNullOrEmpty(designType)) {
-			MessageNotifier.showError(event.getComponent().getWindow(),
+			showErrorMessage(event.getComponent().getWindow(),
 					"Please specify design type.", "");
 			return;
 		} else {
@@ -133,7 +136,7 @@ public class RunBreedingViewAction implements ClickListener {
 		if (StringUtils.isNullOrEmpty(replicates)) {
 			if (designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
 					&& this.source.getSelReplicates().isEnabled()) {
-				MessageNotifier.showError(event.getComponent().getWindow(),
+				showErrorMessage(event.getComponent().getWindow(),
 						"Please specify replicates factor.", "");
 				return;
 			} else {
@@ -157,7 +160,7 @@ public class RunBreedingViewAction implements ClickListener {
 		String blocksName = (String) this.source.getSelBlocks().getValue();
 		if (StringUtils.isNullOrEmpty(blocksName)) {
 			if (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
-				MessageNotifier.showError(event.getComponent().getWindow(),
+				showErrorMessage(event.getComponent().getWindow(),
 						"Please specify incomplete block factor.", "");
 				return;
 			} else {
@@ -174,7 +177,7 @@ public class RunBreedingViewAction implements ClickListener {
 		if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			if (StringUtils.isNullOrEmpty(columnName)) {
 
-				MessageNotifier.showError(event.getComponent().getWindow(),
+				showErrorMessage(event.getComponent().getWindow(),
 						"Please specify column factor.", "");
 				return;
 			} else {
@@ -188,7 +191,7 @@ public class RunBreedingViewAction implements ClickListener {
 
 		if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			if (StringUtils.isNullOrEmpty(rowName)) {
-				MessageNotifier.showError(event.getComponent().getWindow(),
+				showErrorMessage(event.getComponent().getWindow(),
 						"Please specify row factor.", "");
 				return;
 			} else {
@@ -200,7 +203,7 @@ public class RunBreedingViewAction implements ClickListener {
 
 		String genotypesName = (String) this.source.getSelGenotypes().getValue();
 		if (StringUtils.isNullOrEmpty(genotypesName)) {
-			MessageNotifier.showError(event.getComponent().getWindow(),
+			showErrorMessage(event.getComponent().getWindow(),
 					"Please specify Genotypes factor.", "");
 			return;
 		} else {
@@ -226,9 +229,9 @@ public class RunBreedingViewAction implements ClickListener {
 									TermId.PLOT_NNO.getId());
 				}
 			} catch (ConfigException e) {
-				LOG.error("ERROR: ", e);
+				LOG.error(ERROR, e);
 			} catch (MiddlewareQueryException e) {
-				LOG.error("ERROR: ", e);
+				LOG.error(ERROR, e);
 			}
 
 			Genotypes genotypes = new Genotypes();
@@ -259,11 +262,15 @@ public class RunBreedingViewAction implements ClickListener {
 					breedingViewInput);
 
 		} catch (DatasetExporterException e1) {
-			LOG.error("ERROR: ", e1);
+			LOG.error(ERROR, e1);
 		}
 
 		launchBV(event);
 
+	}
+	
+	public void showErrorMessage(Window window ,String title, String description){
+		MessageNotifier.showError(window, title, description);
 	}
 
 	private void launchBV(ClickEvent event) {
@@ -297,11 +304,11 @@ public class RunBreedingViewAction implements ClickListener {
 		} catch (BreedingViewXMLWriterException e) {
 			LOG.debug("Cannot write Breeding View input XML", e);
 
-			MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
 		} catch (IOException e) {
 			LOG.debug("Cannot write Breeding View input XML", e);
 
-			MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
+			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
 		}
 
 		source.getManagerFactory().close();
@@ -317,14 +324,14 @@ public class RunBreedingViewAction implements ClickListener {
 		try {
 			changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
 		} catch (IOException e1) {
-			LOG.error("ERROR: ", e1);
-			MessageNotifier.showError(window,
+			LOG.error(ERROR, e1);
+			showErrorMessage(window,
 					"Cannot update configuration for tool: " + tool.getToolName(), "<br />"
 							+ messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
 		} catch (MiddlewareQueryException e) {
-			LOG.error("ERROR: ", e);
-			MessageNotifier.showError(window,
+			LOG.error(ERROR, e);
+			showErrorMessage(window,
 					"Cannot update configuration for tool: " + tool.getToolName(), "<br />"
 							+ messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
@@ -343,8 +350,8 @@ public class RunBreedingViewAction implements ClickListener {
 
 			}
 		} catch (Exception e1) {
-			LOG.error("ERROR: ", e1);
-			MessageNotifier.showError(window, "Cannot get webapp status.",
+			LOG.error(ERROR, e1);
+			showErrorMessage(window, "Cannot get webapp status.",
 					"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
 		}
@@ -367,8 +374,8 @@ public class RunBreedingViewAction implements ClickListener {
 					}
 				}
 			} catch (Exception e) {
-				LOG.error("ERROR: ", e);
-				MessageNotifier.showError(window, "Cannot load tool: " + tool.getToolName(),
+				LOG.error(ERROR, e);
+				showErrorMessage(window, "Cannot load tool: " + tool.getToolName(),
 						"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 				return false;
 			}

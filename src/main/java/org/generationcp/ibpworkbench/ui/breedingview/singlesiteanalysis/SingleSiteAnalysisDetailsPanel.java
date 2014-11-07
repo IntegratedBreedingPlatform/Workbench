@@ -137,8 +137,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    private Property.ValueChangeListener envCheckBoxListener;
+
+	private Property.ValueChangeListener envCheckBoxListener;
     private Property.ValueChangeListener footerCheckBoxListener;
 
     public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
@@ -705,7 +705,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         } 
     }
     
-    private void populateChoicesForGenotypes(){
+    protected void populateChoicesForGenotypes(){
         
     	for (VariableType factor : factorsInDataset){
     		if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
@@ -718,7 +718,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
     	
     }
     
-    private void populateChoicesForReplicates(){
+    protected void populateChoicesForReplicates(){
         for (VariableType factor : this.factorsInDataset){
         	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(REPLICATION_FACTOR)){
         		this.selReplicates.addItem(factor.getLocalName());
@@ -733,7 +733,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         }
     }
     
-    private void populateChoicesForBlocks(){
+    protected void populateChoicesForBlocks(){
         
     	 for (VariableType factor : this.factorsInDataset){
          	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(BLOCKING_FACTOR)){
@@ -745,7 +745,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
     }
     
-    private void populateChoicesForRowFactor(){
+    protected void populateChoicesForRowFactor(){
         
     	 for (VariableType factor : this.factorsInDataset){
           	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(ROW_FACTOR)){
@@ -756,7 +756,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         
     }
     
-    private void populateChoicesForColumnFactor(){
+    protected void populateChoicesForColumnFactor(){
       
     	 for (VariableType factor : this.factorsInDataset){
            	if (factor.getStandardVariable().getProperty().getName().toString().trim().equalsIgnoreCase(COLUMN_FACTOR)){
@@ -793,7 +793,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
         }
     }
     
-    private void checkDesignFactor() {
+    protected void checkDesignFactor() {
     	String designFactor = null;
 		try {
 			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL, TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
@@ -1194,6 +1194,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblSpecifyGenotypesHeader = lblSpecifyGenotypesHeader;
 	}
     
+	public SimpleResourceBundleMessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 
 }
 
