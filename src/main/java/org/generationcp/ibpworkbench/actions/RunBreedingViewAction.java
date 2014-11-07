@@ -16,7 +16,6 @@ import com.mysql.jdbc.StringUtils;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.*;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -87,7 +86,7 @@ public class RunBreedingViewAction implements ClickListener {
         
         String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
         if(StringUtils.isNullOrEmpty(analysisProjectName)){
-            event.getComponent().getWindow().showNotification("Please enter an Analysis Name.", Notification.TYPE_ERROR_MESSAGE);
+            MessageNotifier.showError(event.getComponent().getWindow(), "Please enter an Analysis Name.", "");
             return;
         } else{
 
@@ -97,7 +96,7 @@ public class RunBreedingViewAction implements ClickListener {
         String envFactor = (String) this.source.getSelEnvFactor().getValue();
         
         if (StringUtils.isNullOrEmpty(envFactor)){
-        	event.getComponent().getWindow().showNotification("Please select an environment factor.", Notification.TYPE_ERROR_MESSAGE);
+        	MessageNotifier.showError(event.getComponent().getWindow(), "Please select an environment factor.", "");
         	return;
         }
         
@@ -107,7 +106,7 @@ public class RunBreedingViewAction implements ClickListener {
             environment.setName(envFactor.trim());
             
             if(breedingViewInput.getSelectedEnvironments().isEmpty()){
-                event.getComponent().getWindow().showNotification("Please select environment for analysis.", Notification.TYPE_ERROR_MESSAGE);
+            	MessageNotifier.showError(event.getComponent().getWindow(), "Please select environment for analysis.", "");
                 return;
             } else{
                
@@ -120,7 +119,7 @@ public class RunBreedingViewAction implements ClickListener {
                 
         String designType = (String) this.source.getSelDesignType().getValue();
         if(StringUtils.isNullOrEmpty(designType)){
-            event.getComponent().getWindow().showNotification("Please specify design type.", Notification.TYPE_ERROR_MESSAGE);
+        	MessageNotifier.showError(event.getComponent().getWindow(), "Please specify design type.", "");
             return;
         } else{
             breedingViewInput.setDesignType(designType);
@@ -129,7 +128,7 @@ public class RunBreedingViewAction implements ClickListener {
         String replicates = (String) this.source.getSelReplicates().getValue();
         if(StringUtils.isNullOrEmpty(replicates)){
             if(designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source.getSelReplicates().isEnabled()){
-                event.getComponent().getWindow().showNotification("Please specify replicates factor.", Notification.TYPE_ERROR_MESSAGE);
+            	MessageNotifier.showError(event.getComponent().getWindow(), "Please specify replicates factor.", "");
                 return;
             } else{
             	Replicates reps = new Replicates();
@@ -151,7 +150,7 @@ public class RunBreedingViewAction implements ClickListener {
         String blocksName = (String) this.source.getSelBlocks().getValue();
         if(StringUtils.isNullOrEmpty(blocksName)){
             if(designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())){
-                event.getComponent().getWindow().showNotification("Please specify incomplete block factor.", Notification.TYPE_ERROR_MESSAGE);
+                MessageNotifier.showError(event.getComponent().getWindow(), "Please specify incomplete block factor.", "");
                 return;
             } else{
                 breedingViewInput.setBlocks(null);
@@ -167,7 +166,7 @@ public class RunBreedingViewAction implements ClickListener {
         if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
             if(StringUtils.isNullOrEmpty(columnName)){
 
-                event.getComponent().getWindow().showNotification("Please specify column factor.", Notification.TYPE_ERROR_MESSAGE);
+                MessageNotifier.showError(event.getComponent().getWindow(), "Please specify column factor.", "");
                 return;
             } else{
                 Columns columns = new Columns();
@@ -180,7 +179,7 @@ public class RunBreedingViewAction implements ClickListener {
         
         if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())){
             if(StringUtils.isNullOrEmpty(rowName)){
-                event.getComponent().getWindow().showNotification("Please specify row factor.", Notification.TYPE_ERROR_MESSAGE);
+                MessageNotifier.showError(event.getComponent().getWindow(), "Please specify row factor.", "");
                 return;
             } else{
                 Rows rows = new Rows();
@@ -191,7 +190,7 @@ public class RunBreedingViewAction implements ClickListener {
             	
         String genotypesName = (String) this.source.getSelGenotypes().getValue();
         if(StringUtils.isNullOrEmpty(genotypesName)){
-            event.getComponent().getWindow().showNotification("Please specify Genotypes factor.", Notification.TYPE_ERROR_MESSAGE);
+            MessageNotifier.showError(event.getComponent().getWindow(), "Please specify Genotypes factor.", "");
             return;
         } else{
            
