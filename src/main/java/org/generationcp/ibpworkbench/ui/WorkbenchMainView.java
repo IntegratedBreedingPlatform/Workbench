@@ -109,7 +109,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         this.showContent(workbenchDashboard);
     }
 
-    protected void initializeComponents() throws Exception {
+    protected void initializeComponents() {
         // workbench header components
         initializeHeaderComponents();
 
@@ -227,8 +227,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         if ( root.getSplitPosition() == 0) {
             collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
 
-        }
-        else {
+        } else {
             collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
         }
     }
@@ -261,8 +260,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             public void buttonClick(ClickEvent clickEvent) {
                 if ( root.getSplitPosition() > 0) {
                     root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
-                }
-                else {
+                } else {
                     root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
                 }
                 // change icon here
@@ -272,7 +270,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     }
 
-    protected void assemble() throws Exception {
+    protected void assemble() {
         initializeComponents();
         initializeLayout();
         initializeActions();
@@ -287,24 +285,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         }
 
         try {
-            UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
-            if (userInfo == null || userInfo.getLoginCount() < 1) {
-                if (user.getName().equals((user.getPassword())) && userInfo != null){
-                    OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-                    ow.launchWindow(this, "change_password");
-                }
-
-                if (userInfo == null) {
-                    userInfo = new UserInfo();
-                }
-                userInfo.setUserId(user.getUserid());
-                userInfo.setLoginCount(1);
-                workbenchDataManager.insertOrUpdateUserInfo(userInfo);
-
-            }
+            UserInfo userInfo = updateUserInfoIfNecessary(user);
             workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (MiddlewareQueryException e) {
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
 
@@ -315,7 +298,26 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
     }
 
-    private Component layoutWorkbenchHeader() {
+    private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
+    	UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
+        if (userInfo == null || userInfo.getLoginCount() < 1) {
+            if (user.getName().equals(user.getPassword()) && userInfo != null){
+                OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+                ow.launchWindow(this, "change_password");
+            }
+
+            if (userInfo == null) {
+                userInfo = new UserInfo();
+            }
+            userInfo.setUserId(user.getUserid());
+            userInfo.setLoginCount(1);
+            workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+
+        }
+        return userInfo;
+	}
+
+	private Component layoutWorkbenchHeader() {
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setStyleName("bms-header");
         headerLayout.setWidth("100%");
@@ -416,21 +418,18 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         updateLabels();
     }
 
-    public void addTitle(String myTitle)
-    {
+    public void addTitle(String myTitle){
         if (myTitle.length() > 50) {
             workbenchTitle.setDescription(myTitle);
         } else {
             workbenchTitle.setDescription("");
         }
-
+        String pageTitle = "";
         if (myTitle != null && !myTitle.isEmpty()) {
-            myTitle = StringUtils.abbreviate(myTitle, 50);
-        } else {
-            myTitle = "";
+        	pageTitle = StringUtils.abbreviate(myTitle, 50);
         }
 
-        workbenchTitle.setValue(String.format("<h1>%s</h1>",myTitle));
+        workbenchTitle.setValue(String.format("<h1>%s</h1>",pageTitle));
 
     }
 

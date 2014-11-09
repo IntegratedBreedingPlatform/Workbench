@@ -5,12 +5,12 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
@@ -35,20 +35,19 @@ import java.util.Properties;
 public class HelpWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(HelpWindow.class);
-
     private static final long serialVersionUID = 1L;
-
+    private static final String PDF_FILE_NAME = "BMS_User_Manual.pdf";
+    private static final String HTML_DOC_URL = "http://localhost:18080/BMS_HTML/index.html";
+    private static final String BMS_INSTALLATION_DIR_POSTFIX = "infrastructure/tomcat/webapps/";
+    private static final String BMS_HTML = "BMS_HTML";
 
     // Components
     private ComponentContainer rootLayout;
 
-
     private static final String WINDOW_WIDTH = "640px";
     private static final String WINDOW_HEIGHT = "415px";
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-
+	
     @Autowired
     @Qualifier("workbenchProperties")
     private Properties workbenchProperties;
@@ -71,7 +70,6 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
         assemble();
     }
 
-    @SuppressWarnings("serial")
     protected void initializeLayout() {
         this.setWidth(WINDOW_WIDTH);
         this.setHeight(WINDOW_HEIGHT);
@@ -88,120 +86,142 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
         rootLayout.addComponent(version);
 
         Panel panel = new Panel();
-        panel.setWidth("600px");//fix for IE
+        //fix for IE
+        panel.setWidth("600px");
         rootLayout.addComponent(panel);
 
         //detect if docs are installed 
         //if not, show a message prompting them to download and install it first
-        WorkbenchSetting setting = null;
+        String installationDirectory = getInstallationDirectory();
+        
+        if (!isDocumentsFolderFound(installationDirectory)) {
+            // if the document directory does not exist,
+            // it means that the BMS Documentation has not been installed
+        	CustomLayout helpLayout = new CustomLayout("help_not_installed");
+            panel.setContent(helpLayout);
+            return;
+        } else {
+        	CustomLayout helpLayout = new CustomLayout("help");
+            panel.setContent(helpLayout);
+            
+            deployDocumentsToTomcat(installationDirectory);
+            
+            String targetPDFPath = installationDirectory + File.separator + 
+            		BMS_INSTALLATION_DIR_POSTFIX + PDF_FILE_NAME;
+            Link pdfLink = buildPDFLink(targetPDFPath);
+            helpLayout.addComponent(pdfLink, "pdf_link");
+
+            Link htmlLink = buildHTMLLink();
+            helpLayout.addComponent(htmlLink, "html_link");
+        }
+    }
+    
+    private boolean isDocumentsFolderFound(String installationDirectory) {
+    	String docsDirectory = installationDirectory + File.separator + 
+    			"Documents" + File.separator;
+        File docsDirectoryFile = new File(docsDirectory);
+        if (docsDirectoryFile.exists() && docsDirectoryFile.isDirectory()) {
+        	return true;
+        }
+		return false;
+	}
+
+	private void deployDocumentsToTomcat(String installationDirectory) {
+		String docsDirectory = installationDirectory + File.separator + 
+				"Documents" + File.separator;
+        String pdfFilepath = docsDirectory + PDF_FILE_NAME;
+        String targetHTMLPath = installationDirectory + File.separator + 
+        		BMS_INSTALLATION_DIR_POSTFIX + BMS_HTML;
+        String targetPDFPath = installationDirectory + File.separator + 
+        		BMS_INSTALLATION_DIR_POSTFIX;
+    	try {
+    		FileUtils.deleteDirectory(new File(targetHTMLPath));
+    		FileUtils.copyDirectory(new File(getHtmlFilesLocation(docsDirectory)), 
+            		new File(targetHTMLPath));
+            FileUtils.copyFile(new File(pdfFilepath), 
+            		new File(targetPDFPath+File.separator+PDF_FILE_NAME));
+            String contextPath = TomcatUtil.getContextPathFromUrl(HTML_DOC_URL);
+            String localWarPath = TomcatUtil.getLocalWarPathFromUrl(HTML_DOC_URL);
+            tomcatUtil.deployLocalWar(contextPath, localWarPath);
+        } catch (IOException e) {
+        	LOG.error(e.getMessage(),e);
+        }
+	}
+
+	private Link buildHTMLLink() {
+    	Link htmlLink = new Link();
+        htmlLink.setResource(new ExternalResource(HTML_DOC_URL));
+        htmlLink.setCaption("BMS Manual HTML Version");
+        htmlLink.setTargetName("_blank");
+        htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));
+        htmlLink.addStyleName("gcp-html-link");
+        return htmlLink;
+	}
+
+	private Link buildPDFLink(String targetPDFPath) {
+    	Link pdfLink = new PDFLink(targetPDFPath);
+        pdfLink.setCaption("BMS Manual PDF Version");
+        pdfLink.setTargetName("_blank");
+        pdfLink.setIcon(new ThemeResource("../gcp-default/images/pdf_icon.png"));
+        pdfLink.addStyleName("gcp-pdf-link");
+        return pdfLink;
+	}
+
+	private String getInstallationDirectory() {
+    	WorkbenchSetting setting = null;
         try {
             setting = workbenchDataManager.getWorkbenchSetting();
         } catch (MiddlewareQueryException e) {
             throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
         }
-
         String installationDirectory = "";
         if (setting != null) {
             installationDirectory = setting.getInstallationDirectory();
         }
+        return installationDirectory;
+	}
 
-        final String docsDirectory = installationDirectory + File.separator + "Documents" + File.separator;
-        File docsDiretoryFile = new File(docsDirectory);
-
-        CustomLayout helpLayout = new CustomLayout("help");
-        if (!docsDiretoryFile.exists() || !docsDiretoryFile.isDirectory()) {
-            // if the document directory does not exist,
-            // it means that the BMS Documentation has not been installed
-            helpLayout = new CustomLayout("help_not_installed");
-            panel.setContent(helpLayout);
-            return;
-        } else {
-            panel.setContent(helpLayout);
-
-            final String pdfFilename = "BMS_User_Manual.pdf";
-            final String pdfFilepath = docsDirectory + pdfFilename;
-            final String htmlDocUrl = "http://localhost:18080/BMS_HTML/index.html";
-            
-            String copyHTMLTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/BMS_HTML";
-            String copyPDFTargetPath = installationDirectory + File.separator + "infrastructure/tomcat/webapps/";
-            final String newPdfFilepath = copyPDFTargetPath+pdfFilename;
-            
-            try {
-                FileUtils.deleteDirectory(new File(copyHTMLTargetPath));
-                FileUtils.copyDirectory(new File(getHtmlFilesLocation(docsDirectory)), new File(copyHTMLTargetPath));
-                FileUtils.copyFile(new File(pdfFilepath), 
-                		new File(newPdfFilepath));
-
-                String contextPath = TomcatUtil.getContextPathFromUrl(htmlDocUrl);
-                String localWarPath = TomcatUtil.getLocalWarPathFromUrl(htmlDocUrl);
-
-                tomcatUtil.deployLocalWar(contextPath, localWarPath);
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-
-            Link pdfLink = new Link() {
-                @Override
-                public void attach() {
-                    super.attach();
-
-                    StreamSource pdfSource = new StreamResource.StreamSource() {
-                        public InputStream getStream() {
-                            try {
-                                File f = new File(newPdfFilepath);
-                                FileInputStream fis = new FileInputStream(f);
-                                return fis;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                LOG.error(e.getMessage());
-                                return null;
-                            }
-                        }
-                    };
-                    StreamResource pdfResource = new StreamResource(pdfSource,
-                            pdfFilename, getApplication());
-                    pdfResource.getStream().setParameter(
-                            "Content-Disposition", "attachment;filename=\"" + pdfFilename + "\"");
-                    pdfResource.setMIMEType("application/pdf");
-                    pdfResource.setCacheTime(0);
-                    setResource(pdfResource);
+	class PDFLink extends Link {
+    	
+		private static final long serialVersionUID = -6907837759113491854L;
+		private String pdfFilepath;
+		
+		public PDFLink(String pdfFilepath) {
+			this.pdfFilepath = pdfFilepath;
+		}
+		
+		@Override
+        public void attach() {
+            super.attach();
+            StreamSource pdfSource = new StreamResource.StreamSource() {
+                private static final long serialVersionUID = -8955404385754536528L;
+				public InputStream getStream() {
+                    try {
+                        File f = new File(pdfFilepath);
+                        return new FileInputStream(f);
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(),e);
+                        return null;
+                    }
                 }
             };
-            pdfLink.setCaption("BMS Manual PDF Version");
-            pdfLink.setTargetName("_blank");
-            pdfLink.setIcon(new ThemeResource("../gcp-default/images/pdf_icon.png"));
-            pdfLink.addStyleName("gcp-pdf-link");
-            helpLayout.addComponent(pdfLink, "pdf_link");
-
-            Link htmlLink = new Link() {
-
-            };
-            htmlLink.setResource(new ExternalResource(htmlDocUrl));
-            htmlLink.setCaption("BMS Manual HTML Version");
-            htmlLink.setTargetName("_blank");
-            htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));
-            htmlLink.addStyleName("gcp-html-link");
-            helpLayout.addComponent(htmlLink, "html_link");
+            StreamResource pdfResource = new StreamResource(pdfSource,
+            		PDF_FILE_NAME, getApplication());
+            pdfResource.getStream().setParameter(
+                    "Content-Disposition", "attachment;filename=\"" + PDF_FILE_NAME + "\"");
+            pdfResource.setMIMEType("application/pdf");
+            pdfResource.setCacheTime(0);
+            setResource(pdfResource);
         }
-
-
     }
 
-    protected void assemble() throws Exception {
+    protected void assemble() {
         initializeLayout();
     }
 
     @Override
-    public void attach() {
-        super.attach();
-    }
-
-    @Override
     public void updateLabels() {
-
+    	//not implemented
     }
 
     private String getHtmlFilesLocation(String baseDir) {
@@ -209,7 +229,7 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
         Collection<File> files = FileUtils.listFiles(baseDirFile, new RegexFileFilter("index.html$"),
                 DirectoryFileFilter.DIRECTORY);
 
-        if (files.size() == 0) {
+        if (files.isEmpty()) {
             return "";
         }
 
