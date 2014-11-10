@@ -35,6 +35,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import javax.servlet.http.Cookie;
 
 @Configurable
+@Deprecated
+//TODO Remove once the usage from the referring screens is removed.
 public class LoginPresenter {
 
     private static final long serialVersionUID = 1L;

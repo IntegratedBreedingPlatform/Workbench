@@ -12,14 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.Properties;
+
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -28,6 +25,7 @@ import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.LoginPresenter;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -38,20 +36,39 @@ import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import java.util.Properties;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
 
@@ -99,15 +116,39 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        assemble();
-
-        // initialize other operations on load (
+    	doPostLoginActionsLoginPresenterUsedToDo();
+    	
+    	assemble();
         workbenchDashboard = new WorkbenchDashboard();
         onLoadOperations();
-
-        // show dashboard
         this.showContent(workbenchDashboard);
     }
+
+   
+    /**
+     * TODO Temporary place for holding actions that {@link LoginPresenter} used to perform on successful login.
+     * Need to refactor out into a separate spring security based "login success handler" away from Vaadin component setup.
+     */
+	private void doPostLoginActionsLoginPresenterUsedToDo() throws MiddlewareQueryException {
+		//1. Populate Session Data
+    	String username = SecurityUtil.getLoggedInUserName(); 
+    	User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+        user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
+        sessionData.setUserData(user);
+        
+        //2. Remember Me. TODO under BMS-84.
+        // See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
+        // We want this replaced using Spring Security's "Remember Me services" options.
+        
+        //3. Update WorkbenchRuntimeData
+        WorkbenchRuntimeData data = workbenchDataManager.getWorkbenchRuntimeData();
+        if (data == null) {
+            data = new WorkbenchRuntimeData();
+        }
+        data.setUserId(user.getUserid());
+        
+        workbenchDataManager.updateWorkbenchRuntimeData(data);
+	}
 
     protected void initializeComponents() {
         // workbench header components
