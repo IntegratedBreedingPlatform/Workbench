@@ -638,7 +638,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			environmentsCheckboxState.clear();
 			tblEnvironmentSelection.removeAllItems();
 		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		String envFactorName = (String) this.selEnvFactor.getValue();
