@@ -30,7 +30,9 @@
     <bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
           scope="prototype" />
 
-    <bean id="sessionData" class="org.generationcp.ibpworkbench.SessionData" scope="session" />
+    <bean id="sessionData" class="org.generationcp.ibpworkbench.SessionData" scope="session">
+    	<aop:scoped-proxy/>
+    </bean>
 
     <!-- Reuseable UI components can be declared here, but don't do it just 
         so you can have auto-wiring. Add @Configurable annotation to your class if 

@@ -193,6 +193,13 @@
 			<version>${spring.security.version}</version>
 		</dependency>
 		
+		<!-- For AOP Proxying -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
 		<!--ThymeLeaf Dependencies -->
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
