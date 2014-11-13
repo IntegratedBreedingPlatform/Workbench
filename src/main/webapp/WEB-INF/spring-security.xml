@@ -18,7 +18,9 @@
         <logout logout-success-url="/controller/auth/login?logout"/>         
 	</http>
 	
-	<bean:bean id="workbenchUserDetailsService" class="org.generationcp.commons.security.WorkbenchUserDetailsService" />
+	<bean:bean id="workbenchUserDetailsService" class="org.generationcp.commons.security.WorkbenchUserDetailsService">
+		<bean:property name="workbenchDataManager" ref="workbenchDataManager" />
+	</bean:bean>
 	
 	<bean:bean id="workbenchAuthenticationSuccessHandler" class="org.generationcp.ibpworkbench.security.WorkbenchAuthenticationSuccessHandler" />
 	
