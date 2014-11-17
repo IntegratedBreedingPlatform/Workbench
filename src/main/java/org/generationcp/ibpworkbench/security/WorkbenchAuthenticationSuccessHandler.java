@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.slf4j.Logger;
@@ -52,20 +52,21 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 			LOGGER.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
-		populateWorkbenchSessionData();
+		populateWorkbenchSessionData(authentication);
 		clearAuthenticationAttributes(request);
         redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
 	
     /**
-     * Actions that the old {@link LoginPresenter} used to perform on successful login.
+     * Actions that the old org.generationcp.ibpworkbench.actions.LoginPresenter used to perform on successful login.
      */
-	private void populateWorkbenchSessionData() {
+	private void populateWorkbenchSessionData(Authentication authentication) {
 		try {
 			//1. Populate Session Data
-			String username = SecurityUtil.getLoggedInUserName(); 
+			String username = authentication.getName(); 
 			User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-			user.setPerson(workbenchDataManager.getPersonById(user.getPersonid()));
+			Person person = workbenchDataManager.getPersonById(user.getPersonid());
+			user.setPerson(person);
 			sessionData.setUserData(user);
 			
 			//2. Remember Me. TODO under BMS-84.
@@ -98,5 +99,15 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 	public void setDefaultTargetUrl(String defaultTargetUrl) {
 		this.defaultTargetUrl = defaultTargetUrl;
+	}
+
+	
+	public void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
 	}
 }
