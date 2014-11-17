@@ -1,0 +1,1 @@
+!function(){"use strict";function e(){l.hasClass(n)?l.removeClass(n):l.addClass(n)}var l=$(".js-login-check"),n="fa fa-check";$(".js-login-checkbox-control").on("click",".js-login-remember-me",function(l){l.preventDefault(),e()}),Modernizr.mq("only all")||$("html").addClass("no-mq"),$("input, textarea").placeholder()}();

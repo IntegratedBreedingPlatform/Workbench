@@ -1,43 +1,57 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Login</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
-	<style type="text/css">body {padding-top: 40px;}</style>
+	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7"></meta>
+	<meta charset="utf-8"></meta>
+	<title>Log In to the BMS</title>
+
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'></link>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"/>
 </head>
 <body>
+	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"></img>
+
 	<div th:if="${#authorization.expression('isAuthenticated()') == true}" class="container">
 		<p>Logged in as: <span sec:authentication="name">User</span></p>
 		<a id="navLogoutLink" th:href="@{/j_spring_security_logout}" class="btn btn-default">Logout</a>
 	</div>
 	<div th:if="${#authorization.expression('isAuthenticated()') == false}" class="container">
-		<form th:action="@{/login}" method="post" class="form-horizontal" role="form">
-			<div class="form-group">
-				<label class="col-sm-2 control-label">&nbsp;</label>
-				<strong th:if="${param.logout != null}" class="col-sm-10">You have been logged out. Login again.</strong>
-				<strong th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="col-sm-10">
-				  Your login attempt was not successful, try again. Reason: <span th:text="${errorMsg}">Authentication failure.</span>. 
-				</strong>
+		<!--
+			The novalidate attribute disables form validation on submit which means that red outlines are not
+			applied to input elements in IE.
+		-->
+		<form class="login-form" novalidate="">
+			<div class="login-form-control">
+				<span class="login-icon fa fa-envelope-o"></span>
+				<input class="login-input login-flat-control" type="email" placeholder="Email"></input>
 			</div>
-			<div class="form-group">
-				<label for="username" class="col-sm-2 control-label">Username</label>
-				<div class="col-sm-10">
-					<input type="text" id="username" name="username" class="form-control" placeholder="Username" />
+			<div class="login-form-control login-password-control">
+				<span class="login-icon fa fa-key login-icon"></span>
+				<input class="login-input login-flat-control" type="password" placeholder="Password"></input>
+			</div>
+
+			<div class="login-form-control login-grid login-help">
+				<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
+					<button class="js-login-remember-me login-checkbox login-clickable">
+						<span class="js-login-check fa fa-check"></span>
+					</button><span class="js-login-remember-me login-checkbox-label login-unselectable">Remember Me</span>
+				</div>
+				<div class="login-input-inline login-input-right">
+					<a class="login-link login-unselectable" href="#">Can't Log In?</a>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="password" class="col-sm-2 control-label">Password</label>
-				<div class="col-sm-10">
-					<input type="password" id="password" name="password" class="form-control" placeholder="Password" />
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<input id="submit" name="submit" type="submit" value="Login" class="btn btn-default" />
-				</div>
-			</div>
+			<button class="login-submit login-flat-control login-clickable" type="submit" formnovalidate="">Sign In</button>
 		</form>
+		<div class="login-mode-toggle">
+			<a class="js-login-create-account login-link login-unselectable" href="#">Create Account</a>
+		</div>
 	</div>
+
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/main.js}"></script>
 </body>
 </html>

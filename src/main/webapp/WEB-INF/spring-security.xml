@@ -2,29 +2,30 @@
 <bean:beans xmlns:bean="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
-	
+
 	<http auto-config="true" use-expressions="true">
 		<intercept-url pattern="/controller/auth/*" access="permitAll" />
-		
+		<intercept-url pattern="/controller/static/**" access="permitAll" />
+
 		<intercept-url pattern="/**" access="isAuthenticated()" />
-		
-		<form-login login-page="/controller/auth/login" 
-            login-processing-url="/login" 
-            username-parameter="username" 
-            password-parameter="password" 
-            authentication-failure-url="/controller/auth/login?error" 
-            authentication-success-handler-ref="workbenchAuthenticationSuccessHandler"/>    
-            
-        <logout logout-success-url="/controller/auth/login?logout"/>         
+
+		<form-login login-page="/controller/auth/login"
+            login-processing-url="/login"
+            username-parameter="username"
+            password-parameter="password"
+            authentication-failure-url="/controller/auth/login?error"
+            authentication-success-handler-ref="workbenchAuthenticationSuccessHandler"/>
+
+        <logout logout-success-url="/controller/auth/login?logout"/>
 	</http>
-	
+
 	<bean:bean id="workbenchUserDetailsService" class="org.generationcp.commons.security.WorkbenchUserDetailsService">
 		<bean:property name="workbenchDataManager" ref="workbenchDataManager" />
 	</bean:bean>
-	
+
 	<bean:bean id="workbenchAuthenticationSuccessHandler" class="org.generationcp.ibpworkbench.security.WorkbenchAuthenticationSuccessHandler" />
-	
-	<authentication-manager>	
+
+	<authentication-manager>
 		<authentication-provider user-service-ref="workbenchUserDetailsService"/>
-	</authentication-manager>	
+	</authentication-manager>
 </bean:beans>
