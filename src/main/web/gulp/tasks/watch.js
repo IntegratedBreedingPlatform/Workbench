@@ -8,4 +8,5 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch('src/pages/**', ['html']);
 	gulp.watch('src/fonts/**', ['fonts']);
 	gulp.watch('src/js/**', ['js']);
+	gulp.watch('../webapp/WEB-INF/**', ['hotswap']);
 });

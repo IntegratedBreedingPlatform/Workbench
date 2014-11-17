@@ -1,8 +1,8 @@
 'use strict';
 
 var gulp = require('gulp'),
-	rimraf = require('rimraf');
+	del = require('del');
 
 gulp.task('clean', function(cb) {
-	rimraf('../webapp/WEB-INF/static', cb);
+	del(['../webapp/WEB-INF/static', '../webapp/WEB-INF/pages'], {force: true}, cb);
 });

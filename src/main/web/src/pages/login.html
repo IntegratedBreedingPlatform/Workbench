@@ -1,46 +1,46 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7"/>
-	<title>New Login Screen</title>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-	<link href="lib/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/styles.css">
+	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7"></meta>
+	<meta charset="utf-8"></meta>
+	<title>Log In to the BMS</title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"/>
 </head>
 <body>
-	<img class="login-logo" src="images/logo.png">
+	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"></img>
 
 	<!--
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	-->
-	<form class="js-login-form login-form" novalidate="">
-
+	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="">
 		<div class="login-form-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user"></span>
-			<input class="login-input login-flat-control" type="text" placeholder="First Name">
+			<input class="login-input login-flat-control" type="text" placeholder="First Name"></input>
 		</div
 		><div class="login-form-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa fa-user"></span>
-			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name">
+			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name"></input>
 		</div>
 		<div class="login-form-control">
-			<span class="login-icon fa fa-envelope-o"></span>
-			<input class="login-input login-flat-control" type="email" placeholder="Email">
+			<span class="login-icon fa fa-leaf"></span>
+			<input class="login-input login-flat-control" type="text" placeholder="Username" name="username"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-key login-icon"></span>
-			<input class="login-input login-flat-control" type="password" placeholder="Password">
+			<input class="login-input login-flat-control" type="password" placeholder="Password" name="password"></input>
 		</div>
 		<div class="login-form-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon"></span>
-			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password">
+			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password"></input>
 		</div>
 
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
-				<button class="js-login-remember-me login-checkbox login-clickable">
+				<button class="js-login-remember-me login-checkbox login-clickable" type="button">
 					<span class="js-login-check fa fa-check"></span>
 				</button
 				><span class="js-login-remember-me login-checkbox-label login-unselectable">Remember Me</span>
@@ -50,15 +50,20 @@
 			</div>
 		</div>
 
+		<div th:if="${param.logout != null}">You have been logged out. Please log in again.</div>
+		<div th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+			Your login attempt was not successful (<span th:text="${errorMsg}"></span>). Please try again.
+		</div>
+
 		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">Sign In</button>
 	</form>
 	<div class="login-mode-toggle">
 		<a class="js-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
 
-	<script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="js/lib/modernizr-custom.js"></script>
-	<script type="text/javascript" src="js/lib/jquery.placeholder.js"></script>
-	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/main.js}"></script>
 </body>
 </html>

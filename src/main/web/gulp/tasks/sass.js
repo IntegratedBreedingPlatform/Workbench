@@ -17,12 +17,12 @@ gulp.task('clientSass', function() {
 	// TODO Add in source maps when this issue is resolved
 	return gulp.src('src/sass/*.scss')
 		.pipe(cache('sass'))
-        .pipe(sass())
-        .pipe(prefix('last 2 versions', 'ie 8'))
-        .pipe(pixrem())
-        .pipe(gulpif(argv.prod, minifyCSS()))
-        .pipe(gulp.dest('../webapp/WEB-INF/static/css'))
-        .on('error', handleErrors);
+		.pipe(sass())
+		.pipe(prefix('last 2 versions', 'ie 8'))
+		.pipe(pixrem())
+		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(gulp.dest('../webapp/WEB-INF/static/css'))
+		.on('error', handleErrors);
 });
 
 gulp.task('libSass', function() {
@@ -30,8 +30,8 @@ gulp.task('libSass', function() {
 	// TODO Add in source maps when this issue is resolved
 	return gulp.src('src/sass/lib/**')
 		.pipe(cache('sass'))
-        .pipe(sass())
-        .pipe(gulpif(argv.prod, minifyCSS()))
-        .pipe(gulp.dest('../webapp/WEB-INF/static/lib'))
-        .on('error', handleErrors);
+		.pipe(sass())
+		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(gulp.dest('../webapp/WEB-INF/static/lib'))
+		.on('error', handleErrors);
 });

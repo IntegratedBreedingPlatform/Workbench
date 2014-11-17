@@ -1,7 +1,7 @@
 'use strict';
 
 var changed = require('gulp-changed'),
-	dest = '../webapp/WEB-INF/static',
+	dest = '../webapp/WEB-INF/pages',
 	gulp = require('gulp');
 
 gulp.task('html', function() {
