@@ -1,1 +1,222 @@
-html{min-height:100%;font-size:100%;background:url(../images/background-mobile.jpg) center center/cover no-repeat fixed}body{font-family:'Open Sans',sans-serif;font-size:16px;font-size:1rem;color:#fff}button::-moz-focus-inner{padding:0;border:none}button,input{box-sizing:border-box;font-family:'Open Sans',sans-serif;font-size:16px;font-size:1rem;color:#fff}.login-unselectable{-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.login-link{color:#fff;text-decoration:none}.login-link:focus,.login-link:hover{color:#F58120}.login-link:focus{outline:0}.login-logo{display:block;width:128px;width:8rem;margin:2rem auto 0;border-radius:4rem}.login-form{margin-top:2rem;padding:0 .5rem;box-sizing:border-box;width:90%;margin-left:5%}.login-form .login-input,.login-form .login-submit,.login-form>div{width:100%}.login-form .login-form-control{position:relative;margin-top:1rem}.login-form .login-form-control:first-child{margin-top:0}.login-form .login-confirm-password-control,.login-form .login-name-control,.login-form.create-account .login-grid{display:none}.login-form.create-account .login-name-control{display:inline-block}.login-form.create-account .login-confirm-password-control{display:block}.login-form .login-icon{position:absolute;top:14px;top:.9rem;left:14px;left:.9rem}.login-form .login-flat-control{padding:.5rem;font-size:16px;font-size:1rem;line-height:24px;line-height:1.5rem;background-color:transparent;border-radius:5px;border:2px solid #fff}.login-form .login-input{padding:.5rem .5rem .5rem 2.5rem;-webkit-transition:border-color 200ms ease-out;transition:border-color 200ms ease-out}.login-form .login-input:focus{border-color:#F58120;outline:0}.login-form .login-input::-webkit-input-placeholder{color:#fff;opacity:1}.login-form .login-input::-moz-placeholder{color:#fff;opacity:1}.login-form .login-input:-ms-input-placeholder{color:#fff;opacity:1}.login-form .login-input::placeholder{color:#fff;opacity:1}.login-form .login-input:-moz-ui-invalid,.login-form .login-input:invalid{box-shadow:none}.login-form .login-grid{display:table;margin-bottom:2rem}.login-form .login-checkbox-control:hover .login-checkbox{border-color:#F58120}.login-form .login-checkbox{height:24px;height:1.5rem;width:24px;width:1.5rem;padding:0;vertical-align:middle;line-height:1;box-shadow:none;border:2px solid #fff;border-radius:4px;background-color:transparent;-webkit-transition:border-color 200ms ease-out;transition:border-color 200ms ease-out;cursor:pointer}.login-form .login-checkbox:focus{border-color:#F58120;outline:0}.login-form .login-checkbox-label{padding-left:.5rem;vertical-align:middle;cursor:pointer}.login-form .login-input-inline{display:table-cell;width:1%;vertical-align:middle}.login-form .login-input-right{text-align:right}.login-form .login-submit{margin-top:1rem;border-color:#F58120;background-color:#F58120;-webkit-transition:background-color 200ms ease-out,border-color 200ms ease-out;transition:background-color 200ms ease-out,border-color 200ms ease-out}.login-form .login-submit:hover{background-color:#e87413;border-color:#e87413}.login-form .login-submit:focus{border-color:#fff;outline:0}.login-mode-toggle{margin-top:1rem;padding-bottom:1rem;width:100%;text-align:center}@media only screen and (min-width:768px){html{background:url(../images/background-tablet.jpg) center center/cover no-repeat fixed}.login-form{width:60%;margin-top:3rem;margin-left:20%}.login-logo{margin-top:3rem}.login-form .login-name-control{box-sizing:border-box;width:50%}.login-form .login-first-name-control{padding-right:.5em}.login-form .login-last-name-control{padding-left:.5em}.login-form .login-last-name-icon{display:none}.login-form .login-last-name-input{padding-left:.9rem}}@media only screen and (min-width:992px){html{background:url(../images/background-desktop.jpg) center center/cover no-repeat fixed}.login-form{width:40%;margin-top:4rem;margin-left:30%}.login-logo{margin-top:4rem}}.no-mq{background:url(../images/background-desktop.jpg) center center/cover no-repeat fixed}.no-mq .login-form{width:40%;margin-top:4rem;margin-left:30%}.no-mq .login-logo{margin-top:4rem}.no-backgroundsize{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');-ms-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')"}
+html {
+  min-height: 100%;
+  font-size: 100%;
+  background: url(../images/background-mobile.jpg) no-repeat center center fixed;
+  background-size: cover; }
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-size: 1rem;
+  color: white; }
+
+button::-moz-focus-inner {
+  padding: 0px;
+  border: none; }
+
+button, input {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-size: 1rem;
+  color: white; }
+
+.login-unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
+
+.login-link {
+  color: white;
+  text-decoration: none; }
+  .login-link:hover, .login-link:focus {
+    color: #F58120; }
+  .login-link:focus {
+    outline: none; }
+
+.login-logo {
+  display: block;
+  width: 128px;
+  width: 8rem;
+  margin: 32px auto 0;
+  margin: 2rem auto 0;
+  border-radius: 64px;
+  border-radius: 4rem; }
+
+.login-form {
+  margin-top: 32px;
+  margin-top: 2rem;
+  padding: 0 8px;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  width: 90%;
+  margin-left: 5%; }
+  .login-form > div, .login-form .login-input, .login-form .login-submit {
+    width: 100%; }
+  .login-form .login-form-control {
+    position: relative;
+    margin-top: 16px;
+    margin-top: 1rem; }
+    .login-form .login-form-control:first-child {
+      margin-top: 0; }
+  .login-form .login-name-control, .login-form .login-confirm-password-control {
+    display: none; }
+  .login-form.create-account .login-grid {
+    display: none; }
+  .login-form.create-account .login-name-control {
+    display: inline-block; }
+  .login-form.create-account .login-confirm-password-control {
+    display: block; }
+  .login-form .login-icon {
+    position: absolute;
+    top: 14px;
+    top: 0.9rem;
+    left: 14px;
+    left: 0.9rem; }
+  .login-form .login-flat-control {
+    padding: 8px;
+    padding: 0.5rem;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 24px;
+    line-height: 1.5rem;
+    background-color: transparent;
+    border-radius: 5px;
+    border: solid 2px white; }
+  .login-form .login-input {
+    padding: 8px 8px 8px 40px;
+    padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+    -webkit-transition: border-color 200ms ease-out;
+            transition: border-color 200ms ease-out; }
+    .login-form .login-input:focus {
+      border-color: #F58120;
+      outline: none; }
+    .login-form .login-input::-webkit-input-placeholder {
+      color: white;
+      opacity: 1; }
+    .login-form .login-input::-moz-placeholder {
+      color: white;
+      opacity: 1; }
+    .login-form .login-input:-ms-input-placeholder {
+      color: white;
+      opacity: 1; }
+    .login-form .login-input::placeholder {
+      color: white;
+      opacity: 1; }
+    .login-form .login-input:invalid, .login-form .login-input:-moz-ui-invalid {
+      box-shadow: none; }
+  .login-form .login-grid {
+    display: table;
+    margin-bottom: 32px;
+    margin-bottom: 2rem; }
+  .login-form .login-checkbox-control:hover .login-checkbox {
+    border-color: #F58120; }
+  .login-form .login-checkbox {
+    height: 24px;
+    height: 1.5rem;
+    width: 24px;
+    width: 1.5rem;
+    padding: 0;
+    vertical-align: middle;
+    line-height: 1;
+    box-shadow: none;
+    border: solid 2px white;
+    border-radius: 4px;
+    background-color: transparent;
+    -webkit-transition: border-color 200ms ease-out;
+            transition: border-color 200ms ease-out;
+    cursor: pointer; }
+    .login-form .login-checkbox:focus {
+      border-color: #F58120;
+      outline: none; }
+  .login-form .login-checkbox-label {
+    padding-left: 8px;
+    padding-left: 0.5rem;
+    vertical-align: middle;
+    cursor: pointer; }
+  .login-form .login-input-inline {
+    display: table-cell;
+    width: 1%;
+    vertical-align: middle; }
+  .login-form .login-input-right {
+    text-align: right; }
+  .login-form .login-submit {
+    margin-top: 16px;
+    margin-top: 1rem;
+    border-color: #F58120;
+    background-color: #F58120;
+    -webkit-transition: background-color 200ms ease-out, border-color 200ms ease-out;
+            transition: background-color 200ms ease-out, border-color 200ms ease-out; }
+    .login-form .login-submit:hover {
+      background-color: #e87413;
+      border-color: #e87413; }
+    .login-form .login-submit:focus {
+      border-color: white;
+      outline: none; }
+
+.login-mode-toggle {
+  margin-top: 16px;
+  margin-top: 1rem;
+  padding-bottom: 16px;
+  padding-bottom: 1rem;
+  width: 100%;
+  text-align: center; }
+
+/* Small Devices, Tablets */
+@media only screen and (min-width: 768px) {
+  html {
+    background: url(../images/background-tablet.jpg) no-repeat center center fixed;
+    background-size: cover; }
+  .login-form {
+    width: 60%;
+    margin-top: 48px;
+    margin-top: 3rem;
+    margin-left: 20%; }
+  .login-logo {
+    margin-top: 48px;
+    margin-top: 3rem; }
+  .login-form .login-name-control {
+    box-sizing: border-box;
+    width: 50%; }
+  .login-form .login-first-name-control {
+    padding-right: 0.5em; }
+  .login-form .login-last-name-control {
+    padding-left: 0.5em; }
+  .login-form .login-last-name-icon {
+    display: none; }
+  .login-form .login-last-name-input {
+    padding-left: 14px;
+    padding-left: 0.9rem; } }
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width: 992px) {
+  html {
+    background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+    background-size: cover; }
+  .login-form {
+    width: 40%;
+    margin-top: 64px;
+    margin-top: 4rem;
+    margin-left: 30%; }
+  .login-logo {
+    margin-top: 64px;
+    margin-top: 4rem; } }
+
+.no-mq {
+  background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+  background-size: cover; }
+  .no-mq .login-form {
+    width: 40%;
+    margin-top: 64px;
+    margin-top: 4rem;
+    margin-left: 30%; }
+  .no-mq .login-logo {
+    margin-top: 64px;
+    margin-top: 4rem; }
+
+.no-backgroundsize {
+  /* If you experience dead links / scrollbar issues in IE, try and set above rules on a fixed position div with 100% width and height. */
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')"; }
