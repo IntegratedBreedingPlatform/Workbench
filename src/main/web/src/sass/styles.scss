@@ -1,0 +1,254 @@
+$orange: #F58120;
+
+$text-color: white;
+$border-color: white;
+$button-border-color: $orange;
+
+$button-hover-color: #e87413;
+$checkbox-hover-color: $orange;
+$link-hover-color: $orange;
+
+$button-focus-color: white;
+$input-focus-color: $orange;
+
+$border-transition: border-color 200ms ease-out;
+
+html {
+	min-height:100%;
+	font-size: 100%;
+
+	background: url(../images/background-mobile.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1rem;
+	color: $text-color;
+}
+
+button::-moz-focus-inner {
+	padding: 0px;
+	border: none;
+}
+button,
+input {
+	box-sizing: border-box;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1rem;
+	color: $text-color;
+}
+
+.login-unselectable {
+	-webkit-touch-callout: none;
+	user-select: none;
+}
+
+.login-link {
+	color: $text-color;
+	text-decoration: none;
+
+	&:hover,
+	&:focus {
+		color: $link-hover-color;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.login-logo {
+	display: block;
+	width: 8rem;
+	margin: 2rem auto 0;
+	border-radius: 4rem;
+}
+
+.login-form {
+	margin-top: 2rem;
+	padding: 0 0.5rem;
+	box-sizing: border-box;
+
+	width: 90%;
+	margin-left: 5%;
+
+	& > div,
+	.login-input,
+	.login-submit {
+		width: 100%;
+	}
+
+	.login-form-control {
+		position: relative;
+		margin-top: 1rem;
+
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+
+	.login-name-control,
+	.login-confirm-password-control {
+		display: none;
+	}
+
+	&.create-account {
+		.login-grid {
+			display: none;
+		}
+		.login-name-control {
+			display: inline-block;
+		}
+		.login-confirm-password-control {
+			display: block;
+		}
+	}
+
+	.login-icon {
+		position: absolute;
+		top: 0.9rem;
+		left: 0.9rem;
+	}
+
+	.login-flat-control {
+		padding: 0.5rem;
+		font-size: 1rem;
+		line-height: 1.5rem;
+		background-color: transparent;
+		border-radius: 5px;
+		border: solid 2px $border-color;
+	}
+
+	.login-input {
+		padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+		transition: $border-transition;
+
+		&:focus {
+			border-color: $input-focus-color;
+			outline: none;
+		}
+		&::placeholder {
+			color: $text-color;
+			opacity: 1;
+		}
+		// Remove red outline applied by Firefox around email input when email is invalid
+		&:invalid,
+		&:-moz-ui-invalid {
+			box-shadow: none;
+		}
+	}
+
+	.login-grid {
+		display: table;
+		margin-bottom: 2rem;
+	}
+
+	.login-checkbox-control {
+		&:hover {
+			.login-checkbox {
+				border-color: $checkbox-hover-color;
+			}
+		}
+	}
+
+	.login-checkbox {
+		height: 1.5rem;
+		width: 1.5rem;
+		padding: 0;
+		vertical-align: middle;
+		line-height: 1;
+
+		box-shadow: none;
+		border: solid 2px $border-color;
+		border-radius: 4px;
+
+		background-color: transparent;
+		transition: $border-transition;
+		cursor: pointer;
+
+		&:focus {
+			border-color: $checkbox-hover-color;
+			outline: none;
+		}
+	}
+
+	.login-checkbox-label {
+		padding-left: 0.5rem;
+		vertical-align: middle;
+		cursor: pointer;
+	}
+
+	.login-input-inline {
+		display: table-cell;
+		width: 1%;
+		vertical-align: middle;
+	}
+
+	.login-input-right {
+		text-align: right;
+	}
+
+	.login-submit {
+		margin-top: 1rem;
+		border-color: $button-border-color;
+		background-color: $orange;
+		transition: background-color 200ms ease-out, $border-transition;
+
+		&:hover {
+			background-color: $button-hover-color;
+			border-color: $button-hover-color;
+		}
+
+		&:focus {
+			border-color: $button-focus-color;
+			outline: none;
+		}
+	}
+
+}
+
+.login-mode-toggle {
+	margin-top: 1rem;
+	padding-bottom: 1rem;
+	width: 100%;
+	text-align: center;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+
+	html {
+		background: url(../images/background-tablet.jpg) no-repeat center center fixed;
+		background-size: cover;
+	}
+
+	@import 'tablet';
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+
+	html {
+		background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+		background-size: cover;
+	}
+
+	@import 'desktop';
+}
+
+// Give anything that doesn't support MQs the desktop view
+.no-mq {
+
+	background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+	background-size: cover;
+
+	@import 'desktop';
+}
+
+.no-backgroundsize {
+
+	/* If you experience dead links / scrollbar issues in IE, try and set above rules on a fixed position div with 100% width and height. */
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')";
+}

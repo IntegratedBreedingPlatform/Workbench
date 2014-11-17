@@ -1,0 +1,44 @@
+{
+  "name": "login-page",
+  "version": "0.0.1",
+  "description": "A new login page for the BMS",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leafn0de/login-page"
+  },
+  "keywords": [
+    "login"
+  ],
+  "author": "goodforenergy and lisaq-leafnode",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leafn0de/login-page/issues"
+  },
+  "homepage": "https://github.com/leafn0de/login-page",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^1.0.1",
+    "gulp-cached": "^1.0.1",
+    "gulp-changed": "^1.0.0",
+    "gulp-if": "^1.2.5",
+    "gulp-imagemin": "^1.2.1",
+    "gulp-jshint": "^1.9.0",
+    "gulp-minify-css": "^0.3.11",
+    "gulp-mocha": "^1.1.1",
+    "gulp-notify": "^2.0.1",
+    "gulp-pixrem": "^0.1.1",
+    "gulp-sass": "^1.1.0",
+    "gulp-uglify": "^1.0.1",
+    "gulp-util": "^3.0.1",
+    "jshint-stylish": "^1.0.0",
+    "lazypipe": "^0.2.2",
+    "path": "^0.4.9",
+    "pretty-hrtime": "^0.2.2",
+    "rimraf": "^2.2.8",
+    "yargs": "^1.3.2"
+  }
+}
