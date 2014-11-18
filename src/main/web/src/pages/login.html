@@ -12,10 +12,10 @@
 <body>
 	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"></img>
 
-	<!--
+	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
-	-->
+	*/-->
 	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="">
 		<div class="login-form-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user"></span>
