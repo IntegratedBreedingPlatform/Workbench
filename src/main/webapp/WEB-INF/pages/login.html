@@ -4,10 +4,23 @@
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7"></meta>
 	<meta charset="utf-8"></meta>
+
+	<!-- IE 10+ 'Metro' Tiles - 144x144 pixels in size -->
+	<meta name="msapplication-TileColor" content="#f58120"></meta>
+	<meta name="msapplication-TileImage" content="@{/controller/static/images/favicon-144.png}"></meta>
+
 	<title>Log In to the BMS</title>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'/>
-	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
-	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"/>
+
+	<!-- For IE 9 and below. ICO should be 32x32 pixels in size -->
+	<!--[if IE]><link rel="shortcut icon" href="@{/controller/static/images/favicon-32.png}"><![endif]-->
+
+	<!-- Firefox, Chrome, Safari, IE 11+ and Opera. 96x96 pixels in size. -->
+	<link rel="icon" href="@{/controller/static/images/favicon-96.png}"></link>
+	<link rel="apple-touch-icon-precomposed" href="@{/controller/static/images/favicon-152.png}"></link>
+
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'></link>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"></link>
+	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"></link>
 </head>
 <body>
 	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"></img>
