@@ -569,9 +569,9 @@ public class ToolUtil {
     	String contextParameterString = ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
     			sessionData.getSelectedProject().getProjectId());
     	
-    	//FIXME: Just passing plain text username as a token for now.. until we get to BMS-61.
+    	//FIXME: Just passing Base64 encoded username as a token for now.. until we get to BMS-61 where we need a proper secure token scheme.
     	String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, 
-    			SecurityUtil.getLoggedInUserName());
+    			SecurityUtil.getEncodedToken());
 		return contextParameterString + authenticationTokenString;
     }
 }
