@@ -30,7 +30,7 @@
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="">
+	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="" autocomplete="off">
 		<div class="login-form-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
 			<input class="login-input login-flat-control" type="text" placeholder="First Name"></input>
