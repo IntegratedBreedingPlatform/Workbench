@@ -6,7 +6,7 @@ var gulp = require('gulp'),
 	shell = require('gulp-shell');
 
 gulp.task('webdriver-update', shell.task([
-	'./node_modules/protractor/bin/webdriver-manager update'
+	'node node_modules/protractor/bin/webdriver-manager update'
 ]));
 
 gulp.task('test', function() {
