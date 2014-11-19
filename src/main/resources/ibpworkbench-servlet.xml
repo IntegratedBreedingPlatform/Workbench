@@ -27,6 +27,7 @@
 		<property name="additionalDialects">
 			<set>
 				<bean class="org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect" />
+				<bean class="org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect" />
 			</set>
 		</property>
 	</bean>
