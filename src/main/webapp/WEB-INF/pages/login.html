@@ -7,7 +7,7 @@
 
 	<!-- IE 10+ 'Metro' Tiles - 144x144 pixels in size -->
 	<meta name="msapplication-TileColor" content="#f58120"></meta>
-	<meta name="msapplication-TileImage" content="@{/controller/static/images/favicon-144.png}"></meta>
+	<meta name="msapplication-TileImage" th:content="@{/controller/static/images/favicon-144.png}"></meta>
 
 	<title>Log In to the BMS</title>
 	<link th:href='@{/VAADIN/themes/vaadin-retro/fonts/font-min.css}' rel='stylesheet'/>
@@ -16,8 +16,8 @@
 	<!--[if IE]><link rel="shortcut icon" href="@{/controller/static/images/favicon-32.png}"><![endif]-->
 
 	<!-- Firefox, Chrome, Safari, IE 11+ and Opera. 96x96 pixels in size. -->
-	<link rel="icon" href="@{/controller/static/images/favicon-96.png}"></link>
-	<link rel="apple-touch-icon-precomposed" href="@{/controller/static/images/favicon-152.png}"></link>
+	<link th:href="@{/controller/static/images/favicon-96.png}" rel="icon"></link>
+	<link th:href="@{/controller/static/images/favicon-152.png}" rel="apple-touch-icon-precomposed"></link>
 
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'></link>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"></link>
