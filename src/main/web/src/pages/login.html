@@ -68,7 +68,10 @@
 			Your login attempt was not successful (<span th:text="${errorMsg}"></span>). Please try again.
 		</div>
 
-		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">Sign In</button>
+		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">
+			<span class="login-submit-label">Sign In</span>
+			<span class="throbber"></span>
+		</button>
 	</form>
 	<div class="login-mode-toggle">
 		<a class="js-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>

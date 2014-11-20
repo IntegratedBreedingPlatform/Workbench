@@ -1,0 +1,43 @@
+$transparent-blue: rgba(34, 85, 145, 0.2);
+$blue: #225591;
+
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.throbber {
+	display: inline-block;
+	width: 1.5rem;
+	height: 1.5rem;
+	vertical-align: middle;
+	border-radius: 0.75rem;
+	box-sizing: border-box;
+	border: solid 2px rgba(255, 255, 255, 0.2);
+	border-top-color: #FFF;
+	animation: spin 1s infinite linear;
+}
+
+.throbber-sm {
+	width: 1rem;
+	height: 1rem;
+	border-radius: 0.5rem;
+}
+
+.throbber-lg {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 1rem;
+}
+
+.throbber-2x {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 1.25rem;
+}
+
+.throbber-blue {
+	border-color: $transparent-blue;
+	border-top-color: $blue;
+}

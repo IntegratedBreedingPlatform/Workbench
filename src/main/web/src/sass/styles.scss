@@ -13,6 +13,8 @@ $input-focus-color: $orange;
 
 $border-transition: border-color 200ms ease-out;
 
+@import 'throbber';
+
 html {
 	min-height:100%;
 	font-size: 100%;
@@ -33,6 +35,7 @@ button::-moz-focus-inner {
 	padding: 0px;
 	border: none;
 }
+
 button,
 input {
 	box-sizing: border-box;
@@ -209,6 +212,31 @@ input {
 		&:focus {
 			border-color: $button-focus-color;
 			outline: none;
+		}
+
+		& > span {
+			vertical-align: middle;
+		}
+
+		.login-submit-label {
+			margin-left: 1.5rem;
+			transition: margin 0.5s ease-in;
+		}
+
+		.throbber {
+			visibility: hidden;
+			opacity: 0;
+			transition: visibility 0.5s ease-in, opacity 0.5s ease-in;
+		}
+
+		&.loading .login-submit-label {
+			margin-left: 2rem;
+			margin-right: 0.5rem;
+		}
+
+		&.loading .throbber {
+			visibility: visible;
+			opacity: 1;
 		}
 	}
 
