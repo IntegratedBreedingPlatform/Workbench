@@ -65,14 +65,19 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         
         try {
             createConnection();
-            createLocalDatabase();
-            createManagementSystems();
-            
+            //createLocalDatabase();
+            //createManagementSystems();
+            generatedDatabaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
+            connection.setCatalog(generatedDatabaseName);            
             isGenerationSuccess = true;
         } catch (InternationalizableException e) {
             isGenerationSuccess = false;            
             throw e;
-        } 
+        } catch (SQLException e) {
+        	isGenerationSuccess = false;
+        	handleDatabaseError(e);
+		} 
+
         finally {
             closeConnection();
         }
