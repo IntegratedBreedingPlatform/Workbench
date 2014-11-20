@@ -5,7 +5,7 @@
     <artifactId>ibpworkbench</artifactId>
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.1.0.SNAPSHOT</version>
     <developers>
         <developer>
             <id>gmarintes</id>
@@ -18,7 +18,7 @@
         <vaadin.version>6.8.13</vaadin.version>
         <gwt.version>2.5.1</gwt.version>
         <gwt.plugin.version>2.5.1</gwt.plugin.version>
-        <ibpcommons.version>3.1.0-SNAPSHOT</ibpcommons.version>
+        <ibpcommons.version>3.1.0.SNAPSHOT</ibpcommons.version>
         <spring.version>3.1.1.RELEASE</spring.version>
     </properties>
 
