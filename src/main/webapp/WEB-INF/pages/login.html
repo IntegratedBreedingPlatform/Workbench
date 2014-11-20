@@ -19,7 +19,6 @@
 	<link th:href="@{/controller/static/images/favicon-96.ico}" rel="icon"></link>
 	<link th:href="@{/controller/static/images/favicon-152.png}" rel="apple-touch-icon-precomposed"></link>
 
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'></link>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"></link>
 	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"></link>
 </head>
@@ -41,11 +40,11 @@
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-leaf" title="Username"></span>
-			<input class="login-input login-flat-control" type="text" placeholder="Username" name="username" autofocus=""></input>
+			<input class="js-login-username js-login-input login-input login-flat-control" type="text" placeholder="Username" name="username" autofocus=""></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-key login-icon" title="Password"></span>
-			<input class="login-input login-flat-control" type="password" placeholder="Password" name="password"></input>
+			<input class="js-login-password js-login-input login-input login-flat-control" type="password" placeholder="Password" name="password"></input>
 		</div>
 		<div class="login-form-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon" title="Confirm Password"></span>
@@ -64,8 +63,8 @@
 			</div>
 		</div>
 
-		<div th:if="${param.logout != null}">You have been logged out. Please log in again.</div>
-		<div th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+		<div class="js-login-error login-error"></div>
+		<div class="js-th-login-error login-error" th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
 			Your login attempt was not successful (<span th:text="${errorMsg}"></span>). Please try again.
 		</div>
 

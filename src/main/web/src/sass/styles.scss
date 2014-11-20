@@ -191,6 +191,10 @@ input {
 		text-align: right;
 	}
 
+	.login-validation-error {
+		border-color: red;
+	}
+
 	.login-submit {
 		margin-top: 1rem;
 		border-color: $button-border-color;

@@ -142,6 +142,8 @@ button, input {
     vertical-align: middle; }
   .login-form .login-input-right {
     text-align: right; }
+  .login-form .login-validation-error {
+    border-color: red; }
   .login-form .login-submit {
     margin-top: 16px;
     margin-top: 1rem;
