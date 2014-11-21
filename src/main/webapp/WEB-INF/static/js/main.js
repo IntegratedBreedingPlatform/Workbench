@@ -95,18 +95,19 @@
 		toggleCheckbox();
 	});
 
-	$('.js-login-form').on('submit', function(e) {
+	$loginForm.on('submit', function(e) {
 		e.preventDefault();
 		clearServerErrors();
 
 		// Perform validation on input fields
 		if (inputsValidate()) {
+			$loginSubmit.addClass('loading').delay(200);
 			// Continue with form submit
 			this.submit();
 		}
 	});
 
-	$('.js-login-form').on('focusin', '.login-validation-error', function() {
+	$loginForm.on('focusin', '.login-validation-error', function() {
 		clearClientErrors();
 	});
 

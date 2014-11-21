@@ -218,18 +218,13 @@ button, input {
     .login-form .login-submit .login-submit-label {
       margin-left: 24px;
       margin-left: 1.5rem;
-      -webkit-transition: margin 0.5s ease-in;
-              transition: margin 0.5s ease-in; }
+      margin-right: 8px;
+      margin-right: 0.5rem; }
     .login-form .login-submit .throbber {
       visibility: hidden;
       opacity: 0;
       -webkit-transition: visibility 0.5s ease-in, opacity 0.5s ease-in;
               transition: visibility 0.5s ease-in, opacity 0.5s ease-in; }
-    .login-form .login-submit.loading .login-submit-label {
-      margin-left: 32px;
-      margin-left: 2rem;
-      margin-right: 8px;
-      margin-right: 0.5rem; }
     .login-form .login-submit.loading .throbber {
       visibility: visible;
       opacity: 1; }

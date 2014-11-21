@@ -224,18 +224,13 @@ input {
 
 		.login-submit-label {
 			margin-left: 1.5rem;
-			transition: margin 0.5s ease-in;
+			margin-right: 0.5rem;
 		}
 
 		.throbber {
 			visibility: hidden;
 			opacity: 0;
 			transition: visibility 0.5s ease-in, opacity 0.5s ease-in;
-		}
-
-		&.loading .login-submit-label {
-			margin-left: 2rem;
-			margin-right: 0.5rem;
 		}
 
 		&.loading .throbber {
