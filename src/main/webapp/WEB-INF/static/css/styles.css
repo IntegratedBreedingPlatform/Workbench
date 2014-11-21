@@ -116,6 +116,9 @@ button, input {
       margin-top: 0; }
   .login-form .login-name-control, .login-form .login-confirm-password-control {
     display: none; }
+  .login-form .login-confirm-password-control {
+    margin-bottom: 32px;
+    margin-bottom: 2rem; }
   .login-form.create-account .login-grid {
     display: none; }
   .login-form.create-account .login-name-control {
@@ -258,7 +261,8 @@ button, input {
   .login-form .login-first-name-control {
     padding-right: 0.5em; }
   .login-form .login-last-name-control {
-    padding-left: 0.5em; }
+    padding-left: 0.5em;
+    margin-top: 0; }
   .login-form .login-last-name-icon {
     display: none; }
   .login-form .login-last-name-input {

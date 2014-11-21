@@ -26,8 +26,12 @@
 		}
 	}
 
+	function isLoginDisplayed() {
+		return !$loginForm.hasClass(createAccount);
+	}
+
 	function toggleLoginCreateAccount() {
-		var loginDisplayed = !$loginForm.hasClass(createAccount);
+		var loginDisplayed = isLoginDisplayed();
 
 		$loginForm.toggleClass(createAccount, loginDisplayed);
 		$loginModeToggle.text(loginDisplayed ?  signInText : createAccountText);
@@ -43,9 +47,8 @@
 		$error.empty();
 	}
 
-	function inputsValidate() {
+	function validateSignInInputs() {
 		var isUsernameEmpty = !$username.val(),
-			validates = !isUsernameEmpty,
 			errorMessage;
 
 		if (isUsernameEmpty) {
@@ -55,12 +58,36 @@
 		if (!$password.val()) {
 			$password.addClass(validationError);
 			errorMessage = isUsernameEmpty ? 'Please provide a username and password.' : 'Please provide a password.';
-			validates = false;
 		}
 
-		$error.text(errorMessage);
+		return errorMessage;
+	}
 
-		return validates;
+	function validateCreateAccountInputs() {
+		var errorMessage;
+
+		// Add validation error styling to all empty inputs
+		$('.js-login-form input').each(function(index, input) {
+			var $input = $(input);
+			$input.toggleClass(validationError, !$input.val());
+		});
+		// Set the error message if there's a validation error
+		if ($('.' + validationError).length > 0) {
+			errorMessage = 'Please fill in all required fields.';
+		}
+
+		return errorMessage;
+	}
+
+	function inputsValidate() {
+		var errorMessage = isLoginDisplayed() ? validateSignInInputs() : validateCreateAccountInputs();
+
+		if (errorMessage) {
+			$error.text(errorMessage);
+		}
+
+		// If there is an error message returned then the inputs do not validate
+		return !errorMessage;
 	}
 
 	$('.js-login-checkbox-control').on('click', '.js-login-remember-me', function(e) {
