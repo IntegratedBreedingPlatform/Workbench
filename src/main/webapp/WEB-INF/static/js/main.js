@@ -33,6 +33,9 @@
 	function toggleLoginCreateAccount() {
 		var loginDisplayed = isLoginDisplayed();
 
+		// Once we have the create account post, change the form action to be stored on a data attribute, and toggle the URL stored
+		// when we toggle.
+
 		$loginForm.toggleClass(createAccount, loginDisplayed);
 		$loginModeToggle.text(loginDisplayed ?  signInText : createAccountText);
 		$loginSubmit.text(loginDisplayed ? createAccountText : signInText);

@@ -30,13 +30,17 @@
 		applied to input elements in IE.
 	*/-->
 	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="" autocomplete="off">
-		<div class="login-form-control login-name-control login-first-name-control">
+		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
 			<input class="login-input login-flat-control" type="text" placeholder="First Name"></input>
 		</div
-		><div class="login-form-control login-name-control login-last-name-control">
+		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa fa-user" title="Last Name"></span>
 			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name"></input>
+		</div>
+		<div class="login-form-control login-create-account-control">
+			<span class="login-icon fa fa-envelope" title="Email"></span>
+			<input class="login-input login-flat-control" type="email" placeholder="Email" name="email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-leaf" title="Username"></span>
@@ -46,11 +50,10 @@
 			<span class="login-icon fa fa-key login-icon" title="Password"></span>
 			<input class="js-login-password login-input login-flat-control" type="password" placeholder="Password" name="password"></input>
 		</div>
-		<div class="login-form-control login-confirm-password-control">
+		<div class="login-form-control login-create-account-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon" title="Confirm Password"></span>
 			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password"></input>
 		</div>
-
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
 				<button class="js-login-remember-me login-checkbox login-clickable" type="button">

@@ -114,14 +114,14 @@ button, input {
     margin-top: 1rem; }
     .login-form .login-form-control:first-child {
       margin-top: 0; }
-  .login-form .login-name-control, .login-form .login-confirm-password-control {
+  .login-form .login-create-account-control {
     display: none; }
   .login-form .login-confirm-password-control {
     margin-bottom: 32px;
     margin-bottom: 2rem; }
   .login-form.create-account .login-grid {
     display: none; }
-  .login-form.create-account .login-name-control {
+  .login-form.create-account .login-create-account-control {
     display: inline-block; }
   .login-form.create-account .login-confirm-password-control {
     display: block; }
