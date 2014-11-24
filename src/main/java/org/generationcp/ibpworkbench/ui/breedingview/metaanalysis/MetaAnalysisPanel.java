@@ -12,14 +12,12 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import org.generationcp.browser.study.StudyInfoDialog;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,7 +29,14 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -45,10 +50,21 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * 
@@ -497,16 +513,18 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				}
 			});
 			
-			linkFullStudyDetails.addListener(new Button.ClickListener() {
+//			linkFullStudyDetails.addListener(new Button.ClickListener() {
+//			
+//				private static final long serialVersionUID = 1425892265723948423L;
+//
+//				@Override
+//				public void buttonClick(ClickEvent event) {	
+////					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), dataSet.getStudyId() ,false, (StudyDataManagerImpl) getStudyDataManager());
+////					event.getComponent().getWindow().addWindow(dialog);
+//				}
+//			});
 			
-				private static final long serialVersionUID = 1425892265723948423L;
-
-				@Override
-				public void buttonClick(ClickEvent event) {	
-					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), dataSet.getStudyId() ,false, (StudyDataManagerImpl) getStudyDataManager());
-					event.getComponent().getWindow().addWindow(dialog);
-				}
-			});
+			linkFullStudyDetails.addListener(new ViewStudyDetailsButtonClickListener(dataSet.getStudyId(), studyName));
 
             final HorizontalLayout buttonContainer = new HorizontalLayout();
             buttonContainer.setSpacing(true);
