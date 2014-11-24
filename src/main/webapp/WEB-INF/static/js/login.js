@@ -128,10 +128,4 @@
 
 	// Initialise placeholder polyfill plugin
 	$('input, textarea').placeholder();
-
-	// If browser supports placeholder attribute
-	if ($.fn.placeholder.input) {
-		$username.focus();
-	}
-
 }());
