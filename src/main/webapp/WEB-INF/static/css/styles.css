@@ -110,21 +110,15 @@ button, input {
     width: 100%; }
   .login-form .login-form-control {
     position: relative;
-    margin-top: 16px;
-    margin-top: 1rem; }
-    .login-form .login-form-control:first-child {
-      margin-top: 0; }
+    height: 56px;
+    height: 3.5rem; }
   .login-form .login-create-account-control {
-    display: none; }
-  .login-form .login-confirm-password-control {
-    margin-bottom: 32px;
-    margin-bottom: 2rem; }
-  .login-form.create-account .login-grid {
-    display: none; }
-  .login-form.create-account .login-create-account-control {
-    display: inline-block; }
-  .login-form.create-account .login-confirm-password-control {
-    display: block; }
+    height: 0;
+    opacity: 0;
+    -webkit-transition: height 500ms ease-out, opacity 500ms ease-in;
+            transition: height 500ms ease-out, opacity 500ms ease-in;
+    -webkit-transition-delay: 100ms, 0;
+            transition-delay: 100ms, 0; }
   .login-form .login-icon {
     position: absolute;
     top: 14px;
@@ -164,9 +158,12 @@ button, input {
     .login-form .login-input:invalid, .login-form .login-input:-moz-ui-invalid {
       box-shadow: none; }
   .login-form .login-grid {
-    display: table;
-    margin-bottom: 32px;
-    margin-bottom: 2rem; }
+    margin-bottom: 16px;
+    margin-bottom: 1rem;
+    -webkit-transition: height 500ms ease-out, opacity 500ms ease-in, margin 500ms ease-out;
+            transition: height 500ms ease-out, opacity 500ms ease-in, margin 500ms ease-out;
+    -webkit-transition-delay: 100ms, 0;
+            transition-delay: 100ms, 0; }
   .login-form .login-checkbox-control:hover .login-checkbox {
     border-color: #F58120; }
   .login-form .login-checkbox {
@@ -198,6 +195,17 @@ button, input {
     vertical-align: middle; }
   .login-form .login-input-right {
     text-align: right; }
+  .login-form.create-account .login-grid {
+    height: 0;
+    margin: 0;
+    opacity: 0; }
+  .login-form.create-account .login-create-account-control {
+    height: 56px;
+    height: 3.5rem;
+    opacity: 1; }
+  .login-form.create-account .login-confirm-password-control {
+    margin-bottom: 32px;
+    margin-bottom: 2rem; }
   .login-form .login-validation-error {
     border-color: red; }
   .login-form .login-submit {
@@ -254,10 +262,14 @@ button, input {
     box-sizing: border-box;
     width: 50%; }
   .login-form .login-first-name-control {
+    float: left;
     padding-right: 0.5em; }
   .login-form .login-last-name-control {
+    float: right;
     padding-left: 0.5em;
     margin-top: 0; }
+  .login-form .login-clear-float {
+    clear: both; }
   .login-form .login-last-name-icon {
     display: none; }
   .login-form .login-last-name-input {

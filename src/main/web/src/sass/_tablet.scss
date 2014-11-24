@@ -15,12 +15,18 @@
 	}
 
 	.login-first-name-control {
+		float: left;
 		padding-right: 0.5em;
 	}
 
 	.login-last-name-control {
+		float: right;
 		padding-left: 0.5em;
 		margin-top: 0;
+	}
+
+	.login-clear-float  {
+		clear: both;
 	}
 
 	.login-last-name-icon {

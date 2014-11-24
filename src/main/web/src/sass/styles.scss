@@ -86,31 +86,15 @@ input {
 
 	.login-form-control {
 		position: relative;
-		margin-top: 1rem;
-
-		&:first-child {
-			margin-top: 0;
-		}
+		height: 3.5rem;
 	}
 
 	.login-create-account-control {
-		display: none;
-	}
+		height: 0;
+		opacity: 0;
 
-	.login-confirm-password-control {
-		margin-bottom: 2rem;
-	}
-
-	&.create-account {
-		.login-grid {
-			display: none;
-		}
-		.login-create-account-control {
-			display: inline-block;
-		}
-		.login-confirm-password-control {
-			display: block;
-		}
+		transition: height 500ms ease-out, opacity 500ms ease-in;
+		transition-delay: 100ms, 0;
 	}
 
 	.login-icon {
@@ -148,8 +132,9 @@ input {
 	}
 
 	.login-grid {
-		display: table;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
+		transition: height 500ms ease-out, opacity 500ms ease-in, margin 500ms ease-out;
+		transition-delay: 100ms, 0;
 	}
 
 	.login-checkbox-control {
@@ -195,6 +180,24 @@ input {
 
 	.login-input-right {
 		text-align: right;
+	}
+
+	&.create-account {
+		.login-grid {
+			height: 0;
+			margin: 0;
+			opacity: 0;
+		}
+
+		.login-create-account-control {
+			height: 3.5rem;
+			opacity: 1;
+		}
+
+		.login-confirm-password-control {
+			margin-bottom: 2rem;
+		}
+
 	}
 
 	.login-validation-error {
