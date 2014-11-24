@@ -132,7 +132,6 @@ input {
 	}
 
 	.login-grid {
-		margin-bottom: 1rem;
 		transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
 		transition-delay: 0, 100ms, 0;
 	}
@@ -195,7 +194,7 @@ input {
 		}
 
 		.login-confirm-password-control {
-			margin-bottom: 2rem;
+			margin-bottom: 1.5rem;
 		}
 
 	}

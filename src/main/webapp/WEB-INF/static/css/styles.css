@@ -158,8 +158,6 @@ button, input {
     .login-form .login-input:invalid, .login-form .login-input:-moz-ui-invalid {
       box-shadow: none; }
   .login-form .login-grid {
-    margin-bottom: 16px;
-    margin-bottom: 1rem;
     -webkit-transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
             transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
     -webkit-transition-delay: 0, 100ms, 0;
@@ -204,8 +202,8 @@ button, input {
     height: 3.5rem;
     opacity: 1; }
   .login-form.create-account .login-confirm-password-control {
-    margin-bottom: 32px;
-    margin-bottom: 2rem; }
+    margin-bottom: 24px;
+    margin-bottom: 1.5rem; }
   .login-form .login-validation-error {
     border-color: red; }
   .login-form .login-submit {
