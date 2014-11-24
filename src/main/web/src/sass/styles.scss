@@ -93,8 +93,8 @@ input {
 		height: 0;
 		opacity: 0;
 
-		transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-		transition-delay: 0, 200ms, 0;
+		transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+		transition-delay: 0, 100ms, 0;
 	}
 
 	.login-icon {
@@ -133,8 +133,8 @@ input {
 
 	.login-grid {
 		margin-bottom: 1rem;
-		transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-		transition-delay: 0, 200ms, 0;
+		transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+		transition-delay: 0, 100ms, 0;
 	}
 
 	.login-checkbox-control {

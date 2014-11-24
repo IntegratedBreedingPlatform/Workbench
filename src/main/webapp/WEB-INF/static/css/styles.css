@@ -115,10 +115,10 @@ button, input {
   .login-form .login-create-account-control {
     height: 0;
     opacity: 0;
-    -webkit-transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-            transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-    -webkit-transition-delay: 0, 200ms, 0;
-            transition-delay: 0, 200ms, 0; }
+    -webkit-transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+            transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+    -webkit-transition-delay: 0, 100ms, 0;
+            transition-delay: 0, 100ms, 0; }
   .login-form .login-icon {
     position: absolute;
     top: 14px;
@@ -160,10 +160,10 @@ button, input {
   .login-form .login-grid {
     margin-bottom: 16px;
     margin-bottom: 1rem;
-    -webkit-transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-            transition: height 500ms ease-in, opacity 500ms ease-in, margin 500ms ease-in;
-    -webkit-transition-delay: 0, 200ms, 0;
-            transition-delay: 0, 200ms, 0; }
+    -webkit-transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+            transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+    -webkit-transition-delay: 0, 100ms, 0;
+            transition-delay: 0, 100ms, 0; }
   .login-form .login-checkbox-control:hover .login-checkbox {
     border-color: #F58120; }
   .login-form .login-checkbox {
