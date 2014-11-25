@@ -180,7 +180,7 @@ input {
 		text-align: right;
 	}
 
-	&.create-account {
+	&.login-create-account {
 		.login-grid {
 			height: 0;
 			margin: 0;
@@ -291,6 +291,7 @@ input {
 	background: url(../images/background-desktop.jpg) no-repeat center center fixed;
 	background-size: cover;
 
+	@import 'tablet';
 	@import 'desktop';
 }
 
@@ -299,4 +300,20 @@ input {
 	/* If you experience dead links / scrollbar issues in IE, try and set above rules on a fixed position div with 100% width and height. */
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')";
+}
+
+.no-csstransitions {
+	.login-create-account-control {
+		display: none;
+	}
+
+	.login-create-account {
+		.login-create-account-control {
+			display: inline-block;
+		}
+
+		.login-grid {
+			display: none;
+		}
+	}
 }

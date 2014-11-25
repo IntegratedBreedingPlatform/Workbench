@@ -12,7 +12,7 @@
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
 
-		createAccount = 'create-account',
+		createAccount = 'login-create-account',
 		tick = 'fa fa-check',
 		validationError = 'login-validation-error',
 

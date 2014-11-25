@@ -194,15 +194,15 @@ button, input {
     vertical-align: middle; }
   .login-form .login-input-right {
     text-align: right; }
-  .login-form.create-account .login-grid {
+  .login-form.login-create-account .login-grid {
     height: 0;
     margin: 0;
     opacity: 0; }
-  .login-form.create-account .login-create-account-control {
+  .login-form.login-create-account .login-create-account-control {
     height: 56px;
     height: 3.5rem;
     opacity: 1; }
-  .login-form.create-account .login-confirm-password-control {
+  .login-form.login-create-account .login-confirm-password-control {
     margin-bottom: 24px;
     margin-bottom: 1.5rem; }
   .login-form .login-validation-error input {
@@ -302,6 +302,31 @@ button, input {
   background: url(../images/background-desktop.jpg) no-repeat center center fixed;
   background-size: cover; }
   .no-mq .login-form {
+    width: 60%;
+    margin-top: 48px;
+    margin-top: 3rem;
+    margin-left: 20%; }
+  .no-mq .login-logo {
+    margin-top: 48px;
+    margin-top: 3rem; }
+  .no-mq .login-form .login-name-control {
+    box-sizing: border-box;
+    width: 50%; }
+  .no-mq .login-form .login-first-name-control {
+    float: left;
+    padding-right: 0.5em; }
+  .no-mq .login-form .login-last-name-control {
+    float: right;
+    padding-left: 0.5em;
+    margin-top: 0; }
+  .no-mq .login-form .login-clear-float {
+    clear: both; }
+  .no-mq .login-form .login-last-name-icon {
+    display: none; }
+  .no-mq .login-form .login-last-name-input {
+    padding-left: 14px;
+    padding-left: 0.9rem; }
+  .no-mq .login-form {
     width: 40%;
     margin-top: 64px;
     margin-top: 4rem;
@@ -314,3 +339,10 @@ button, input {
   /* If you experience dead links / scrollbar issues in IE, try and set above rules on a fixed position div with 100% width and height. */
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');
   -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')"; }
+
+.no-csstransitions .login-create-account-control {
+  display: none; }
+.no-csstransitions .login-create-account .login-create-account-control {
+  display: inline-block; }
+.no-csstransitions .login-create-account .login-grid {
+  display: none; }
