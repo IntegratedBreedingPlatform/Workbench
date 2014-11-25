@@ -88,11 +88,16 @@
 
 		$(function() {
 			// Look for forms
-			$(document).delegate('form', 'submit.placeholder', function() {
+			$(document).delegate('form', 'submit.placeholder', function(e) {
 				// Clear the placeholder values so they don't get submitted
-				var $inputs = $('.placeholder', this).each(clearPlaceholder);
+				var $inputs = $('.placeholder', this).each(function() {
+					clearPlaceholder.call(this, e);
+				});
 				setTimeout(function() {
-					$inputs.each(setPlaceholder);
+					$inputs.each(function() {
+						var realPasswordInput = $(this).data('placeholder-password');
+						setPlaceholder.call(realPasswordInput ? realPasswordInput.get(0) : this);
+					});
 				}, 10);
 			});
 		});
@@ -128,7 +133,9 @@
 				if (event === true) {
 					return $input[0].value = value;
 				}
-				$input.focus();
+				if (event && event.type !== 'submit') {
+					$input.focus();
+				}
 			} else {
 				input.value = '';
 				$input.removeClass('placeholder');
