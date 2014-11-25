@@ -62,7 +62,7 @@
     
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
+        <property name="configLocation" value="classpath:ibpmidware_hib.cfg.xml"/>
     </bean>
     
     <bean id="hibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
@@ -130,12 +130,12 @@
     
      <bean id="localSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="localDataSource"/>
-        <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
+        <property name="configLocation" value="classpath:ibpmidware_hib.cfg.xml"/>
     </bean>
     
     <bean id="centralSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="centralDataSource"/>
-        <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
+        <property name="configLocation" value="classpath:ibpmidware_hib.cfg.xml"/>
     </bean>
     
    
