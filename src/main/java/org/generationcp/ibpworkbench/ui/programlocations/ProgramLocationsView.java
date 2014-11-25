@@ -41,8 +41,8 @@ import java.util.*;
      public static final Map<String,String> TABLE_COLUMNS;
      public static final Map<String,Integer> TABLE_COLUMN_SIZES;
      
-     private static final String AVAILABLE = "available";
- 	 private static final String FAVORITES = "favorites";
+     protected static final String AVAILABLE = "available";
+     protected static final String FAVORITES = "favorites";
  	 private static final String FIELD = "field";
  	 private static final String SELECT = "select";
  	 private static final String LOCATION_NAME = "locationName";
@@ -274,7 +274,7 @@ import java.util.*;
      }
 
      @SuppressWarnings("unchecked")
-	private void moveSelectedItems(Table source,Table target) {
+	protected void moveSelectedItems(Table source,Table target) {
          List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
@@ -297,13 +297,14 @@ import java.util.*;
              counter++;
          }
          
-         
          if (counter >= 100 & target.getData().toString().equals(FAVORITES)){
         	 target.setValue(null);
          }
          
+         Table favoritesTable = source;
          if (source.getData().toString().equals(AVAILABLE)){
         	 source.setValue(null);
+        	 favoritesTable = target;
          }
          
          source.refreshRowCache();
@@ -312,8 +313,8 @@ import java.util.*;
          source.setValue(null);
          
          //refresh the fav location table
-         updateNoOfEntries(favTotalEntriesLabel, source);
-         updateSelectedNoOfEntries(favSelectedEntriesLabel, source);
+         updateNoOfEntries(favTotalEntriesLabel, favoritesTable);
+         updateSelectedNoOfEntries(favSelectedEntriesLabel, favoritesTable);
      }
 
      private void initializeLayout() {
@@ -730,7 +731,29 @@ import java.util.*;
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-     
-     
+
+	public Label getFavTotalEntriesLabel() {
+		return favTotalEntriesLabel;
+	}
+
+	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
+		this.favTotalEntriesLabel = favTotalEntriesLabel;
+	}
+
+	public Label getFavSelectedEntriesLabel() {
+		return favSelectedEntriesLabel;
+	}
+
+	public void setFavSelectedEntriesLabel(Label favSelectedEntriesLabel) {
+		this.favSelectedEntriesLabel = favSelectedEntriesLabel;
+	}
+
+	public Label getAvailSelectedEntriesLabel() {
+		return availSelectedEntriesLabel;
+	}
+
+	public void setAvailSelectedEntriesLabel(Label availSelectedEntriesLabel) {
+		this.availSelectedEntriesLabel = availSelectedEntriesLabel;
+	}
 
  }

@@ -4,11 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
@@ -16,19 +21,24 @@ public class ProgramLocationsViewTest {
 
     private ProgramLocationsView view;
     private SimpleResourceBundleMessageSource messageSource;
+    private Label favTotalEntriesLabel;
+    private Label favSelectedEntriesLabel;
     private static final String TABLE_ROW = "TABLE_ROW_";
-    private static final int NO_OF_ROWS = 5;
+    private static final int NO_OF_ROWS = 101;
 
     @Before
     public void setUp() {
+    	favTotalEntriesLabel = new Label();
+    	favSelectedEntriesLabel = new Label();
     	view = new ProgramLocationsView(new Project());
     	messageSource = mock(SimpleResourceBundleMessageSource.class);
     	view.setMessageSource(messageSource);
+    	view.setFavTotalEntriesLabel(favTotalEntriesLabel);
+    	view.setFavSelectedEntriesLabel(favSelectedEntriesLabel);
     }
 
 	@Test
     public void testUpdateNoOfEntries() throws Exception {
-		Label favTotalEntriesLabel = new Label();
 		
 		Table customTable = createTableTestData();
 		view.updateNoOfEntries(favTotalEntriesLabel, customTable);
@@ -71,9 +81,100 @@ public class ProgramLocationsViewTest {
 
 	private Table createTableTestData() {
 		Table table = new Table();
+		BeanItemContainer<String> containerDataSource = new BeanItemContainer<String>(String.class);
+		table.setContainerDataSource(containerDataSource);
 		for(int i = 0; i < NO_OF_ROWS; i++) {
-			table.addItem(TABLE_ROW+i);
+			String item = TABLE_ROW+i;
+			table.addItem(item);
+			containerDataSource.addBean(item);
 		}
+		return table;
+	}
+	
+	@Test
+    public void testMoveSelectedItems() {
+		Table availableTable = createTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
+		Table favoritesTable = createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
+		
+		selectAllItems(availableTable);
+		view.moveSelectedItems(availableTable, favoritesTable);
+		
+		int expectedNoOfEntries = NO_OF_ROWS;
+		int actualNoOfEntries = getNoOfEntries(favoritesTable);
+		int expectedSelectedNoOfEntries = 0;
+		assertEquals("The number of rows must be equal to "+expectedNoOfEntries, expectedNoOfEntries, 
+				actualNoOfEntries);
+		assertTrue("The number of entries must be "+expectedNoOfEntries,
+				String.valueOf(favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
+		assertTrue("The number of selected entries must be "+expectedSelectedNoOfEntries,
+				String.valueOf(favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
+		
+		selectItems(favoritesTable,2);
+		view.moveSelectedItems(favoritesTable, availableTable);
+		
+		expectedNoOfEntries -= 2;
+		actualNoOfEntries = getNoOfEntries(favoritesTable);
+		assertEquals("The number of rows must be equal to "+expectedNoOfEntries, expectedNoOfEntries, 
+				actualNoOfEntries);
+		assertTrue("The number of entries must be "+expectedNoOfEntries,
+				String.valueOf(favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
+		assertTrue("The number of selected entries must be "+expectedSelectedNoOfEntries,
+				String.valueOf(favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
+		
+		selectAllItems(favoritesTable);
+		view.moveSelectedItems(favoritesTable, availableTable);
+		
+		expectedNoOfEntries = 0;
+		actualNoOfEntries = getNoOfEntries(favoritesTable);
+		assertEquals("The number of rows must be equal to "+expectedNoOfEntries, expectedNoOfEntries, 
+				actualNoOfEntries);
+		assertTrue("The number of entries must be "+expectedNoOfEntries,
+				String.valueOf(favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
+		assertTrue("The number of selected entries must be "+expectedSelectedNoOfEntries,
+				String.valueOf(favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
+		
+			
+	}
+	
+	private void selectAllItems(Table table) {
+		table.setValue(table.getItemIds());
+	}
+	
+	private void selectItems(Table table, int noOfItems) {
+		List<Object> items = new ArrayList<Object>();
+		@SuppressWarnings("unchecked")
+		Iterator<Integer> itemIterator = (Iterator<Integer>) table.getItemIds().iterator();
+		for (int i = 0; i < noOfItems; i++) {
+			items.add(itemIterator.next());
+		}
+		table.setValue(items);
+	}
+
+	private Table createTableLocationViewModelTestData(String data) {
+		Table table = new Table();
+		table.setSelectable(true);
+        table.setMultiSelect(true);
+        table.setData(data);
+		BeanItemContainer<LocationViewModel> containerDataSource = 
+				new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		table.setContainerDataSource(containerDataSource);
+		for(int itemId = 0; itemId < NO_OF_ROWS; itemId++) {
+			table.addItem(itemId);
+			LocationViewModel model = new LocationViewModel();
+			model.setLocationId(itemId);
+			containerDataSource.addBean(model);
+		}
+		return table;
+	}
+
+	private Table createEmptyTableLocationViewModelTestData(String data) {
+		Table table = new Table();
+		table.setSelectable(true);
+        table.setMultiSelect(true);
+        table.setData(data);
+		BeanItemContainer<LocationViewModel> containerDataSource = 
+				new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		table.setContainerDataSource(containerDataSource);
 		return table;
 	}
 }
