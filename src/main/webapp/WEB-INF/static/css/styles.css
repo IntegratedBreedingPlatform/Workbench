@@ -210,14 +210,19 @@ button, input {
   .login-form .login-valid {
     display: none; }
   .login-form .login-warning-icon {
-    width: 1em;
-    height: 1em;
-    line-height: 1em;
-    margin-right: 3px;
-    margin-right: 0.2rem;
-    color: #FF3D00; }
-  .login-form .login-warning-contrast {
-    color: white; }
+    width: 22px;
+    width: 1.4rem;
+    height: 22px;
+    height: 1.4rem;
+    margin-right: 4px;
+    margin-right: 0.25rem;
+    padding-top: 4px;
+    padding-top: 0.25rem;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 11px;
+    border-radius: 0.7rem;
+    background-color: #FF3D00; }
   .login-form .login-submit {
     margin-top: 16px;
     margin-top: 1rem;
