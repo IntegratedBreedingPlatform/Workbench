@@ -8,6 +8,7 @@
 		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
 		$error = $('.js-login-error'),
+		$errorText = $('.js-login-error-text'),
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
 
@@ -47,7 +48,8 @@
 
 	function clearClientErrors() {
 		$('.' + validationError).removeClass(validationError);
-		$error.empty();
+		$errorText.empty();
+		$error.addClass('login-valid');
 	}
 
 	function validateSignInInputs() {
@@ -55,11 +57,11 @@
 			errorMessage;
 
 		if (isUsernameEmpty) {
-			$username.addClass(validationError);
+			$username.parent('.login-form-control').addClass(validationError);
 			errorMessage = 'Please provide a username.';
 		}
 		if (!$password.val()) {
-			$password.addClass(validationError);
+			$password.parent('.login-form-control').addClass(validationError);
 			errorMessage = isUsernameEmpty ? 'Please provide a username and password.' : 'Please provide a password.';
 		}
 
@@ -70,9 +72,9 @@
 		var errorMessage;
 
 		// Add validation error styling to all empty inputs
-		$('.js-login-form input').each(function(index, input) {
+		$('.js-login-form .login-form-control input').each(function(index, input) {
 			var $input = $(input);
-			$input.toggleClass(validationError, !$input.val());
+			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
 		});
 		// Set the error message if there's a validation error
 		if ($('.' + validationError).length > 0) {
@@ -86,7 +88,8 @@
 		var errorMessage = isLoginDisplayed() ? validateSignInInputs() : validateCreateAccountInputs();
 
 		if (errorMessage) {
-			$error.text(errorMessage);
+			$errorText.text(errorMessage);
+			$error.removeClass('login-valid');
 		}
 
 		// If there is an error message returned then the inputs do not validate

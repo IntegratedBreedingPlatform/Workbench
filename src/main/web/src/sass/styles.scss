@@ -1,17 +1,18 @@
 $orange: #F58120;
+$orange-red: #FF3D00;
 
 $text-color: white;
 $border-color: white;
 $button-border-color: $orange;
 
-$button-hover-color: #e87413;
+$button-hover-color: white;
 $checkbox-hover-color: $orange;
 $link-hover-color: $orange;
 
 $button-focus-color: white;
 $input-focus-color: $orange;
 
-$border-transition: border-color 200ms ease-in;
+$validation-color: $orange-red;
 
 @import 'throbber';
 
@@ -114,7 +115,6 @@ input {
 
 	.login-input {
 		padding: 0.5rem 0.5rem 0.5rem 2.5rem;
-		transition: $border-transition;
 
 		&:focus {
 			border-color: $input-focus-color;
@@ -156,7 +156,6 @@ input {
 		border-radius: 4px;
 
 		background-color: transparent;
-		transition: $border-transition;
 		cursor: pointer;
 
 		&:focus {
@@ -199,19 +198,27 @@ input {
 
 	}
 
-	.login-validation-error {
-		border-color: red;
+	.login-validation-error input {
+		border-color: $validation-color;
+	}
+
+	.login-valid {
+		display: none;
+	}
+
+	.login-warning-icon {
+		padding-right: 0.5rem;
+		color: $validation-color;
 	}
 
 	.login-submit {
 		margin-top: 1rem;
 		border-color: $button-border-color;
 		background-color: $orange;
-		transition: background-color 200ms ease-in, $border-transition;
 
 		&:hover {
-			background-color: $button-hover-color;
 			border-color: $button-hover-color;
+			cursor: pointer;
 		}
 
 		&:focus {

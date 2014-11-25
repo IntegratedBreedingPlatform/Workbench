@@ -137,9 +137,7 @@ button, input {
     border: solid 2px white; }
   .login-form .login-input {
     padding: 8px 8px 8px 40px;
-    padding: 0.5rem 0.5rem 0.5rem 2.5rem;
-    -webkit-transition: border-color 200ms ease-in;
-            transition: border-color 200ms ease-in; }
+    padding: 0.5rem 0.5rem 0.5rem 2.5rem; }
     .login-form .login-input:focus {
       border-color: #F58120;
       outline: none; }
@@ -176,8 +174,6 @@ button, input {
     border: solid 2px white;
     border-radius: 4px;
     background-color: transparent;
-    -webkit-transition: border-color 200ms ease-in;
-            transition: border-color 200ms ease-in;
     cursor: pointer; }
     .login-form .login-checkbox:focus {
       border-color: #F58120;
@@ -204,18 +200,22 @@ button, input {
   .login-form.create-account .login-confirm-password-control {
     margin-bottom: 24px;
     margin-bottom: 1.5rem; }
-  .login-form .login-validation-error {
-    border-color: red; }
+  .login-form .login-validation-error input {
+    border-color: #FF3D00; }
+  .login-form .login-valid {
+    display: none; }
+  .login-form .login-warning-icon {
+    padding-right: 8px;
+    padding-right: 0.5rem;
+    color: #FF3D00; }
   .login-form .login-submit {
     margin-top: 16px;
     margin-top: 1rem;
     border-color: #F58120;
-    background-color: #F58120;
-    -webkit-transition: background-color 200ms ease-in, border-color 200ms ease-in;
-            transition: background-color 200ms ease-in, border-color 200ms ease-in; }
+    background-color: #F58120; }
     .login-form .login-submit:hover {
-      background-color: #e87413;
-      border-color: #e87413; }
+      border-color: white;
+      cursor: pointer; }
     .login-form .login-submit:focus {
       border-color: white;
       outline: none; }
