@@ -205,9 +205,14 @@ button, input {
   .login-form .login-valid {
     display: none; }
   .login-form .login-warning-icon {
-    padding-right: 8px;
-    padding-right: 0.5rem;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    margin-right: 3px;
+    margin-right: 0.2rem;
     color: #FF3D00; }
+  .login-form .login-warning-contrast {
+    color: white; }
   .login-form .login-submit {
     margin-top: 16px;
     margin-top: 1rem;

@@ -207,8 +207,15 @@ input {
 	}
 
 	.login-warning-icon {
-		padding-right: 0.5rem;
+		width: 1em;
+		height: 1em;
+		line-height: 1em;
+		margin-right: 0.2rem;
 		color: $validation-color;
+	}
+
+	.login-warning-contrast {
+		color: white;
 	}
 
 	.login-submit {

@@ -66,8 +66,19 @@
 			</div>
 		</div>
 
-		<div class="js-login-error login-valid"><span class="fa login-warning-icon">&#xf06a;</span><span class="js-login-error-text"></span></div>
-		<div class="js-th-login-error" th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"><span class="fa login-warning-icon">&#xf06a;</span>Your login attempt was not successful. Please try again.
+		<div class="js-login-error login-valid">
+			<span class="fa-stack login-warning-icon">
+				<span class="fa fa-stack-1x login-warning-contrast">&#xf111;</span>
+				<span class="fa fa-stack-1x">&#xf06a;</span>
+			</span>
+			<span class="js-login-error-text"></span>
+		</div>
+		<div class="js-th-login-error" th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+			<span class="fa-stack login-warning-icon">
+				<span class="fa fa-stack-1x login-warning-contrast">&#xf111;</span>
+				<span class="fa fa-stack-1x">&#xf06a;</span>
+			</span>
+			<span>Your login attempt was not successful. Please try again.</span>
 		</div>
 
 		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">
