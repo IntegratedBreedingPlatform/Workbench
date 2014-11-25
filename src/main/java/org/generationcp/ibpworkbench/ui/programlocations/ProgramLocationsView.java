@@ -38,24 +38,34 @@ import java.util.*;
 
      private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
 
-     public final static Map<String,String> tableColumns;
-     public final static Map<String,Integer> tableColumnSizes;
+     public static final Map<String,String> TABLE_COLUMNS;
+     public static final Map<String,Integer> TABLE_COLUMN_SIZES;
+     
+     private static final String AVAILABLE = "available";
+ 	 private static final String FAVORITES = "favorites";
+ 	 private static final String FIELD = "field";
+ 	 private static final String SELECT = "select";
+ 	 private static final String LOCATION_NAME = "locationName";
+ 	 private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
+ 	 private static final String LATITUDE = "latitude";
+ 	 private static final String LONGITUDE = "longitude";
+ 	 private static final String ALTITUDE = "altitude";
+ 	 private static final String LTYPE_STR = "ltypeStr";
 
      static {
-         tableColumns = new LinkedHashMap<String,String>();
-         tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         tableColumns.put("locationName","Name");
-         tableColumns.put("locationAbbreviation","abbr.");
-         tableColumns.put("latitude","Lat");
-         tableColumns.put("longitude","Long");
-         tableColumns.put("altitude","Alt");
-         tableColumns.put("ltypeStr","Type");
+         TABLE_COLUMNS = new LinkedHashMap<String,String>();
+         TABLE_COLUMNS.put(SELECT,"<span class='glyphicon glyphicon-ok'></span>");
+         TABLE_COLUMNS.put(LOCATION_NAME,"Name");
+         TABLE_COLUMNS.put(LOCATION_ABBREVIATION,"abbr.");
+         TABLE_COLUMNS.put(LATITUDE,"Lat");
+         TABLE_COLUMNS.put(LONGITUDE,"Long");
+         TABLE_COLUMNS.put(ALTITUDE,"Alt");
+         TABLE_COLUMNS.put(LTYPE_STR,"Type");
 
-         tableColumnSizes = new HashMap<String, Integer>();
-         tableColumnSizes.put("select",20);
-         tableColumnSizes.put("locationAbbreviation",80);
-         tableColumnSizes.put("ltypeStr",240);
-
+         TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
+         TABLE_COLUMN_SIZES.put(SELECT,20);
+         TABLE_COLUMN_SIZES.put(LOCATION_ABBREVIATION,80);
+         TABLE_COLUMN_SIZES.put(LTYPE_STR,240);
      }
 
      private Button addNewLocationsBtn;
@@ -104,17 +114,17 @@ import java.util.*;
          favoriteSelectAll = new CheckBox("Select All");
          favoriteSelectAll.setImmediate(true);
          
-         availTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
-         favTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
+         availTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+         favTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
          availSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
          favSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
          
          // TABLES!
          availableTable = buildCustomTable(availableSelectAll, availTotalEntriesLabel, availSelectedEntriesLabel);
-         availableTable.setData("available");
+         availableTable.setData(AVAILABLE);
 
          favoritesTable = buildCustomTable(favoriteSelectAll, favTotalEntriesLabel, favSelectedEntriesLabel);
-         favoritesTable.setData("favorites");
+         favoritesTable.setData(FAVORITES);
 
          addToFavoriteBtn = new Button("Add to Favorite Locations");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -156,8 +166,7 @@ import java.util.*;
                      updateNoOfEntries(availTotalEntriesLabel, availableTable);
                      updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
                  } catch (MiddlewareQueryException e) {
-                     // show error message
-                     e.printStackTrace();
+                     LOG.error(e.getMessage(),e);
                  }
              }
          };
@@ -172,10 +181,9 @@ import java.util.*;
 			@Override
              public void buttonClick(ClickEvent clickEvent) {
 
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
+                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
                      availableTable.setValue(availableTable.getItemIds());
-                 }
-                 else{
+                 }else{
                      availableTable.setValue(null);
                  }
                  
@@ -189,10 +197,9 @@ import java.util.*;
 
 			@Override
              public void buttonClick(ClickEvent clickEvent) {
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
+                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
                      favoritesTable.setValue(favoritesTable.getItemIds());
-                 }
-                 else{
+                 }else{
                      favoritesTable.setValue(null);
                  }
                  
@@ -230,8 +237,7 @@ import java.util.*;
                      }
 
                  } catch (MiddlewareQueryException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
+                	 LOG.error(e.getMessage(),e);
                  }
                  LOG.debug("onSaveProgramLocations:");
              }
@@ -269,7 +275,7 @@ import java.util.*;
 
      @SuppressWarnings("unchecked")
 	private void moveSelectedItems(Table source,Table target) {
-         LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
+         List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
          BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
@@ -280,7 +286,7 @@ import java.util.*;
              LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
              itemId.setActive(false);
              
-             if (source.getData().toString().equals("available")){
+             if (source.getData().toString().equals(AVAILABLE)){
             	 targetDataContainer.addItemAt(0, itemId);
             	 if (counter < 100) {
                      target.unselect(itemId);
@@ -292,20 +298,18 @@ import java.util.*;
          }
          
          
-         if (counter >= 100){
-        	 if (target.getData().toString().equals("favorites")){
-            	 target.setValue(null);
-             }
+         if (counter >= 100 & target.getData().toString().equals(FAVORITES)){
+        	 target.setValue(null);
          }
          
-         if (source.getData().toString().equals("available")){
+         if (source.getData().toString().equals(AVAILABLE)){
         	 source.setValue(null);
          }
          
          source.refreshRowCache();
          target.refreshRowCache();
          
-         source.setValue(null); //reset value
+         source.setValue(null);
          
          //refresh the fav location table
          updateNoOfEntries(favTotalEntriesLabel, source);
@@ -370,14 +374,14 @@ import java.util.*;
 	}
 
 	private Component buildPageTitle() {
-         final VerticalLayout root = new VerticalLayout();
-         root.setMargin(new Layout.MarginInfo(false,false,true,false));
-         root.setWidth("100%");
+         final VerticalLayout layout = new VerticalLayout();
+         layout.setMargin(new Layout.MarginInfo(false,false,true,false));
+         layout.setWidth("100%");
 
          final HorizontalLayout titleContainer = new HorizontalLayout();
          titleContainer.setSizeUndefined();
          titleContainer.setWidth("100%");
-         titleContainer.setMargin(true, false, false, false);	// move this to css
+         titleContainer.setMargin(true, false, false, false);
 
          final Label heading = new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations",Label.CONTENT_XHTML);
          heading.setStyleName(Bootstrap.Typography.H4.styleName());
@@ -400,29 +404,29 @@ import java.util.*;
 
          final Label headingDesc = new Label(content);
 
-         root.addComponent(titleContainer);
-         root.addComponent(headingDesc);
+         layout.addComponent(titleContainer);
+         layout.addComponent(headingDesc);
 
-         return root;
+         return layout;
      }
 
      private Component buildSelectedLocationsTitle() {
-         final HorizontalLayout root = new HorizontalLayout();
-         root.setWidth("100%");
-         root.setMargin(true, false, false, false);
+         final HorizontalLayout layout = new HorizontalLayout();
+         layout.setWidth("100%");
+         layout.setMargin(true, false, false, false);
 
          final Label selectedLocationsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_LOCATIONS));
          selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
-         root.addComponent(selectedLocationsTitle);
+         layout.addComponent(selectedLocationsTitle);
 
          if (!cropOnly) {
-             root.addComponent(saveBtn);
+        	 layout.addComponent(saveBtn);
          }
 
-         root.setExpandRatio(selectedLocationsTitle,1.0F);
+         layout.setExpandRatio(selectedLocationsTitle,1.0F);
 
-         return root;
+         return layout;
      }
 
 
@@ -504,7 +508,7 @@ import java.util.*;
 
 
          final HorizontalLayout field1 = new HorizontalLayout();
-         field1.addStyleName("field");
+         field1.addStyleName(FIELD);
          field1.setSpacing(true);
          field1.setSizeUndefined();
          field1.addComponent(searchLbl);
@@ -513,7 +517,7 @@ import java.util.*;
          container.addComponent(field1);
 
          final HorizontalLayout field2 = new HorizontalLayout();
-         field2.addStyleName("field");
+         field2.addStyleName(FIELD);
          field2.setSpacing(true);
          field2.setSizeUndefined();
          field2.addComponent(filterLbl);
@@ -521,7 +525,7 @@ import java.util.*;
 
 
          final HorizontalLayout field3 = new HorizontalLayout();
-         field3.addStyleName("field");
+         field3.addStyleName(FIELD);
          field3.setSpacing(true);
          field3.setSizeUndefined();
          field3.addComponent(locationTypeFilter);
@@ -544,12 +548,12 @@ import java.util.*;
      }
 
      private void setupTableFields(Table table) {
-         table.setVisibleColumns(tableColumns.keySet().toArray());
-         table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
+         table.setVisibleColumns(TABLE_COLUMNS.keySet().toArray());
+         table.setColumnHeaders(TABLE_COLUMNS.values().toArray(new String[]{}));
 
-         table.setColumnWidth("select",20);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[1],0.7F);
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[6],0.3F);
+         table.setColumnWidth(SELECT,20);
+         table.setColumnExpandRatio(TABLE_COLUMNS.keySet().toArray()[1],0.7F);
+         table.setColumnExpandRatio(TABLE_COLUMNS.keySet().toArray()[6],0.3F);
 
      }
 
@@ -561,7 +565,7 @@ import java.util.*;
          table.setMultiSelect(true);
          table.setDragMode(Table.TableDragMode.MULTIROW);
 
-         table.addGeneratedColumn("select", new Table.ColumnGenerator() {
+         table.addGeneratedColumn(SELECT, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = 346170573915290251L;
 
 			@Override
@@ -604,7 +608,7 @@ import java.util.*;
 			@SuppressWarnings("unchecked")
 			@Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 Table source = ((Table) valueChangeEvent.getProperty());
+                 Table source = (Table) valueChangeEvent.getProperty();
                  BeanItemContainer<LocationViewModel> container = (BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
 
                  // disable previously selected items
@@ -647,16 +651,16 @@ import java.util.*;
                  Object itemIdOver = t.getItemId();
                  Set<Object> sourceItemIds = (Set<Object>)((Table) t.getSourceComponent()).getValue();
                  
-                 if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
+                 if (itemIdOver!=null && sourceItemIds.isEmpty()) {
                  	if (((LocationViewModel)itemIdOver).isEnabled()){
-                 		if (((Table) t.getSourceComponent()).getData().toString().equals("favorites")){
+                 		if (((Table) t.getSourceComponent()).getData().toString().equals(FAVORITES)){
                  			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
-                 			updateNoOfEntries(favTotalEntriesLabel, ((Table) t.getSourceComponent()));
+                 			updateNoOfEntries(favTotalEntriesLabel, (Table) t.getSourceComponent());
                  		}
                  		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                  	}
                  }else{
-                	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
+                	 moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
                  }
 
 
