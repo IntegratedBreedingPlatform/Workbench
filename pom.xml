@@ -21,6 +21,7 @@
         <ibpcommons.version>3.0.0.RELEASE</ibpcommons.version>
         <spring.version>3.1.1.RELEASE</spring.version>
         <spring.security.version>3.1.7.RELEASE</spring.security.version>
+        <webapp.path>C:/Breeding Management System/infrastructure/tomcat/webapps</webapp.path>
     </properties>
 
     <repositories>
@@ -449,7 +450,7 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
-                        <id>default-cli</id>
+                        <id>copy-properties</id>
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
@@ -458,11 +459,20 @@
                                         <include name="workbench.properties"/>
                                     </fileset>
                                 </copy>
-                                <copy todir="src/test/resources" overwrite="true">
-                                    <fileset dir="pipeline/config/${envConfig}" id="fromDir">
-                                        <include name="testDatabaseConfig.properties"/>
-                                        <include name="test.properties"/>
-                                    </fileset>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-cli</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${webapp.path}/${project.artifactId}"/>
+                                <copy todir="${webapp.path}/${project.artifactId}">
+                                    <fileset dir="target/${project.artifactId}" includes="**/*"/>
                                 </copy>
                             </tasks>
                         </configuration>
