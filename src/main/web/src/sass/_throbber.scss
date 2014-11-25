@@ -41,3 +41,15 @@ $blue: #225591;
 	border-color: $transparent-blue;
 	border-top-color: $blue;
 }
+
+.no-cssanimations {
+	.throbber {
+		background: url(../images/loading-white-on-orange.gif) no-repeat;
+	}
+
+	.throbber-blue {
+		background-image: url(../images/loading-blue-on-white.gif);
+	}
+}
+
+

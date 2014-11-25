@@ -51,6 +51,11 @@
   border-color: rgba(34, 85, 145, 0.2);
   border-top-color: #225591; }
 
+.no-cssanimations .throbber {
+  background: url(../images/loading-white-on-orange.gif) no-repeat; }
+.no-cssanimations .throbber-blue {
+  background-image: url(../images/loading-blue-on-white.gif); }
+
 html {
   min-height: 100%;
   font-size: 100%;
