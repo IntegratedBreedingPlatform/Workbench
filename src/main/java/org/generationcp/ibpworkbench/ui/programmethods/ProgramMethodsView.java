@@ -350,6 +350,7 @@ import java.util.*;
                   		
                   		if (((Table) t.getSourceComponent()).getData().toString().equals("favorites")){
                  			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 			updateNoOfEntries(favTotalEntriesLabel, ((Table) t.getSourceComponent()));
                  		}
                   		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                   		
@@ -851,7 +852,7 @@ import java.util.*;
           });
      }
 
-	private void updateNoOfEntries(Label totalEntries, Table table){
+	protected void updateNoOfEntries(Label totalEntries, Table table){
 		 int count = 0;
 		 count = table.getItemIds().size();
 		 
@@ -886,6 +887,14 @@ import java.util.*;
 
 	public void setAvailableTableContainer(BeanItemContainer<MethodView> availableTableContainer) {
 		this.availableTableContainer = availableTableContainer;
+	}
+
+	public SimpleResourceBundleMessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
  }
