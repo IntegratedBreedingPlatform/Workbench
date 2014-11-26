@@ -65,31 +65,13 @@
     
     <bean id="hibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
         <property name="sessionFactory" ref="sessionFactory"/>
-        
         <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
     
-    <!--
-    <bean id="hibernateUtil" class="org.generationcp.middleware.util.HibernateUtil" destroy-method="shutdown">
-        <constructor-arg value="ibpworkbench_hib.cfg.xml" />
-        <constructor-arg value="${workbench.host}" />
-        <constructor-arg value="${workbench.port}" />
-        <constructor-arg value="${workbench.dbname}" />
-        <constructor-arg value="${workbench.username}" />
-        <constructor-arg value="${workbench.password}" />
-    </bean>
-    -->
-	 <!-- The data source configuration -->
+	<!-- The data source configuration -->
     <bean id="localDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
        <property name="driverClassName" value="${workbench.driver}"/>
-        <property name="url" value="${workbench.url}"/>
-        <property name="username" value="${workbench.username}"/>
-        <property name="password" value="${workbench.password}"/>
-    </bean>
-    
-    <bean id="centralDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${workbench.driver}"/>
         <property name="url" value="${workbench.url}"/>
         <property name="username" value="${workbench.username}"/>
         <property name="password" value="${workbench.password}"/>
@@ -107,43 +89,24 @@
     	<property name="centralPort"     value="${workbench.port}"/>
     </bean>
 
-    <bean id="workbenchDataManager"
-        class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
+    <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
         <constructor-arg ref="hibernateSessionProvider" />
     </bean>
     
     <bean id="localHibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
         <property name="sessionFactory" ref="localSessionFactory"/>
-        
         <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
     
-    <bean id="centralHibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
-        <property name="sessionFactory" ref="centralSessionFactory"/>
-        
-        <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
-        <aop:scoped-proxy proxy-target-class="false"/>
-    </bean>
-    
-     <bean id="localSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <bean id="localSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="localDataSource"/>
         <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
     </bean>
-    
-    <bean id="centralSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="centralDataSource"/>
-        <property name="configLocation" value="classpath:ibpworkbench_hib.cfg.xml"/>
-    </bean>
-    
-   
-    
+        
     <bean id="studyDataManager" class="org.generationcp.middleware.manager.StudyDataManagerImpl">
         <property name="sessionProviderForLocal" ref="localHibernateSessionProvider"/>
-        <property name="sessionProviderForCentral" ref="centralHibernateSessionProvider"/>
     </bean>
-   
-    
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
         <property name="mysqlDriver" value="${workbench.driver}"/>

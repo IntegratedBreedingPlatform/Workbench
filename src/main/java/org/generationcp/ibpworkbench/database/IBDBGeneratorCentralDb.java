@@ -152,6 +152,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
      * @param projectName
      * @return instalid of the installation created. 0 otherwise (default instalid)
      */
+    //TODO BMS-148 : Review usage in org.generationcp.ibpworkbench.ui.project.create.AddProgramPresenter.doAddNewProgram() and cleanup.
     public int addCentralInstallationRecord(String projectName, int localUserId) {
 
    
