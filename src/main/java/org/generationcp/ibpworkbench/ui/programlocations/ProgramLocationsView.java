@@ -301,10 +301,10 @@ import java.util.*;
         	 target.setValue(null);
          }
          
-         Table favoritesTable = source;
+         Table favoritesTableRef = source;
          if (source.getData().toString().equals(AVAILABLE)){
         	 source.setValue(null);
-        	 favoritesTable = target;
+        	 favoritesTableRef = target;
          }
          
          source.refreshRowCache();
@@ -313,8 +313,8 @@ import java.util.*;
          source.setValue(null);
          
          //refresh the fav location table
-         updateNoOfEntries(favTotalEntriesLabel, favoritesTable);
-         updateSelectedNoOfEntries(favSelectedEntriesLabel, favoritesTable);
+         updateNoOfEntries(favTotalEntriesLabel, favoritesTableRef);
+         updateSelectedNoOfEntries(favSelectedEntriesLabel, favoritesTableRef);
      }
 
      private void initializeLayout() {
@@ -693,8 +693,13 @@ import java.util.*;
                  favoritesTableContainer.addItem(item);
              
          }
-
+         updateNoOfEntries();
      }
+     
+     private void updateNoOfEntries() {
+    	 updateNoOfEntries(favTotalEntriesLabel,favoritesTable);
+         updateNoOfEntries(availTotalEntriesLabel,availableTable);
+	}
 
      @Override
      public void fitToContainer(final Window parentWindow) {
@@ -756,4 +761,47 @@ import java.util.*;
 		this.availSelectedEntriesLabel = availSelectedEntriesLabel;
 	}
 
+	public Table getAvailableTable() {
+		return availableTable;
+	}
+
+	public void setAvailableTable(Table availableTable) {
+		this.availableTable = availableTable;
+	}
+
+	public Table getFavoritesTable() {
+		return favoritesTable;
+	}
+
+	public void setFavoritesTable(Table favoritesTable) {
+		this.favoritesTable = favoritesTable;
+	}
+
+	public Label getAvailTotalEntriesLabel() {
+		return availTotalEntriesLabel;
+	}
+
+	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
+		this.availTotalEntriesLabel = availTotalEntriesLabel;
+	}
+
+	public BeanItemContainer<LocationViewModel> getAvailableTableContainer() {
+		return availableTableContainer;
+	}
+
+	public void setAvailableTableContainer(
+			BeanItemContainer<LocationViewModel> availableTableContainer) {
+		this.availableTableContainer = availableTableContainer;
+	}
+
+	public BeanItemContainer<LocationViewModel> getFavoritesTableContainer() {
+		return favoritesTableContainer;
+	}
+
+	public void setFavoritesTableContainer(
+			BeanItemContainer<LocationViewModel> favoritesTableContainer) {
+		this.favoritesTableContainer = favoritesTableContainer;
+	}
+
+	
  }

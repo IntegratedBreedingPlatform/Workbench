@@ -23,6 +23,7 @@ public class ProgramLocationsViewTest {
     private SimpleResourceBundleMessageSource messageSource;
     private Label favTotalEntriesLabel;
     private Label favSelectedEntriesLabel;
+    private Label availTotalEntriesLabel;
     private static final String TABLE_ROW = "TABLE_ROW_";
     private static final int NO_OF_ROWS = 101;
 
@@ -30,11 +31,13 @@ public class ProgramLocationsViewTest {
     public void setUp() {
     	favTotalEntriesLabel = new Label();
     	favSelectedEntriesLabel = new Label();
+    	availTotalEntriesLabel = new Label();
     	view = new ProgramLocationsView(new Project());
     	messageSource = mock(SimpleResourceBundleMessageSource.class);
     	view.setMessageSource(messageSource);
     	view.setFavTotalEntriesLabel(favTotalEntriesLabel);
     	view.setFavSelectedEntriesLabel(favSelectedEntriesLabel);
+    	view.setAvailTotalEntriesLabel(availTotalEntriesLabel);
     }
 
 	@Test
@@ -176,5 +179,79 @@ public class ProgramLocationsViewTest {
 				new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
 		table.setContainerDataSource(containerDataSource);
 		return table;
+	}
+	
+	@Test
+    public void testAddRow() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		LocationViewModel model = createLocationViewModelTestData();
+		view.addRow(model, true, 0);
+		expectedNoOfAvailableEntries++;
+		expectedNoOfFavoritesEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		
+    }
+	
+	@Test
+    public void testAddRowNullIndex() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		LocationViewModel model = createLocationViewModelTestData();
+		view.addRow(model, true, null);
+		expectedNoOfAvailableEntries++;
+		expectedNoOfFavoritesEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		
+    }
+	
+	private LocationViewModel createLocationViewModelTestData() {
+		LocationViewModel model = new LocationViewModel();
+		model.setLocationId(new Double(Math.random()*10).intValue());
+		return model;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setUpTables() {
+		Table availableTable = createEmptyTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
+		view.setAvailableTable(availableTable);
+		view.setAvailableTableContainer(
+				(BeanItemContainer<LocationViewModel>)availableTable.getContainerDataSource());
+		Table favoritesTable = createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
+		view.setFavoritesTable(favoritesTable);
+		view.setFavoritesTableContainer(
+				(BeanItemContainer<LocationViewModel>)favoritesTable.getContainerDataSource());
 	}
 }
