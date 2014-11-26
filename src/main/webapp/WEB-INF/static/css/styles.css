@@ -59,7 +59,7 @@
 html {
   min-height: 100%;
   font-size: 100%;
-  background: url(../images/background-mobile.jpg) no-repeat center center fixed;
+  background: url(../images/background-desktop.jpg) no-repeat center center fixed;
   background-size: cover; }
 
 body {
@@ -258,11 +258,8 @@ button, input {
   width: 100%;
   text-align: center; }
 
-/* Small Devices, Tablets */
+/* Tablets */
 @media only screen and (min-width: 768px) {
-  html {
-    background: url(../images/background-tablet.jpg) no-repeat center center fixed;
-    background-size: cover; }
   .login-form {
     width: 60%;
     margin-top: 48px;
@@ -291,9 +288,6 @@ button, input {
 
 /* Medium Devices, Desktops */
 @media only screen and (min-width: 992px) {
-  html {
-    background: url(../images/background-desktop.jpg) no-repeat center center fixed;
-    background-size: cover; }
   .login-form {
     width: 40%;
     margin-top: 64px;
@@ -302,6 +296,23 @@ button, input {
   .login-logo {
     margin-top: 64px;
     margin-top: 4rem; } }
+
+/* Responsive images */
+@media only screen and (max-width: 1024px) and (max-height: 679px) {
+  html {
+    background: url(../images/background-tablet-landscape.jpg) no-repeat center center fixed; } }
+
+@media only screen and (max-width: 899px) and (max-height: 1140px) {
+  html {
+    background: url(../images/background-tablet-portrait.jpg) no-repeat center center fixed; } }
+
+@media only screen and (max-width: 500px) and (max-height: 332px) {
+  html {
+    background: url(../images/background-mobile-landscape.jpg) no-repeat center center fixed; } }
+
+@media only screen and (max-width: 395px) and (max-height: 500px) {
+  html {
+    background: url(../images/background-mobile-portrait.jpg) no-repeat center center fixed; } }
 
 .no-mq {
   background: url(../images/background-desktop.jpg) no-repeat center center fixed;
