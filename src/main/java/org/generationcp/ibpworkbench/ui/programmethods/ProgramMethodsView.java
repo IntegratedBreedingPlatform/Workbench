@@ -52,8 +52,8 @@ import java.util.*;
 	public static final Map<String,String> TABLE_COLUMNS;
 	public static final Map<String,Integer> TABLE_COLUMN_SIZES;
 
-	private static final String AVAILABLE = "available";
-	private static final String FAVORITES = "favorites";
+	public static final String AVAILABLE = "available";
+	public static final String FAVORITES = "favorites";
 	private static final String SELECT = "select";
 	private static final String GMNAME = "gMname";
 	private static final String DESC = "desc";
@@ -697,27 +697,13 @@ import java.util.*;
                  favoritesTableContainer.addItem(item);
              }
          }
+         updateNoOfEntries();
      }
 
-     public void addRow(Method item,boolean atAvailableTable,Integer index) {
-         if (index != null) {
-             if (atAvailableTable) {
-                 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
-
-             } else {
-            	 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
-                 favoritesTableContainer.addItemAt(index,presenter.convertMethod(item));
-             }
-         } else {
-             if (atAvailableTable) {
-                 getAvailableTableContainer().addItem(presenter.convertMethod(item));
-
-             } else {
-            	 getAvailableTableContainer().addItem(presenter.convertMethod(item));
-                 favoritesTableContainer.addItem(presenter.convertMethod(item));
-             }
-         }
-     }
+    private void updateNoOfEntries() {
+    	 updateNoOfEntries(favTotalEntriesLabel,favoritesTable);
+         updateNoOfEntries(availTotalEntriesLabel,availableTable);
+	}
 
     private void initializeActions() {
 
@@ -900,5 +886,50 @@ import java.util.*;
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+
+	public Table getAvailableTable() {
+		return availableTable;
+	}
+
+	public void setAvailableTable(Table availableTable) {
+		this.availableTable = availableTable;
+	}
+
+	public Table getFavoritesTable() {
+		return favoritesTable;
+	}
+
+	public void setFavoritesTable(Table favoritesTable) {
+		this.favoritesTable = favoritesTable;
+	}
+
+	public BeanItemContainer<MethodView> getFavoritesTableContainer() {
+		return favoritesTableContainer;
+	}
+
+	public void setFavoritesTableContainer(
+			BeanItemContainer<MethodView> favoritesTableContainer) {
+		this.favoritesTableContainer = favoritesTableContainer;
+	}
+
+	public Label getAvailTotalEntriesLabel() {
+		return availTotalEntriesLabel;
+	}
+
+	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
+		this.availTotalEntriesLabel = availTotalEntriesLabel;
+	}
+
+	public Label getFavTotalEntriesLabel() {
+		return favTotalEntriesLabel;
+	}
+
+	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
+		this.favTotalEntriesLabel = favTotalEntriesLabel;
+	}
+	
+	
+	
+	
 
  }

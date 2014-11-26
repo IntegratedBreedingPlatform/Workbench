@@ -9,6 +9,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
@@ -21,9 +22,13 @@ public class ProgramMethodsViewTest {
 
     @Before
     public void setUp() {
+    	Label favTotalEntriesLabel = new Label();
+    	Label availTotalEntriesLabel = new Label();
     	view = new ProgramMethodsView(new Project());
     	messageSource = mock(SimpleResourceBundleMessageSource.class);
     	view.setMessageSource(messageSource);
+    	view.setFavTotalEntriesLabel(favTotalEntriesLabel);
+		view.setAvailTotalEntriesLabel(availTotalEntriesLabel);
     }
 
 	@Test
@@ -73,6 +78,145 @@ public class ProgramMethodsViewTest {
 		for(int i = 0; i < NO_OF_ROWS; i++) {
 			table.addItem(TABLE_ROW+i);
 		}
+		return table;
+	}
+	
+	@Test
+    public void testAddRow() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		MethodView model = createMethodViewModelTestData();
+		view.addRow(model, false, 0);
+		expectedNoOfAvailableEntries++;
+		expectedNoOfFavoritesEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		model = createMethodViewModelTestData();
+    }
+	
+	private MethodView createMethodViewModelTestData() {
+		MethodView model = new MethodView();
+		model.setMid(new Double(Math.random()*10).intValue());
+		return model;
+	}
+	
+	@Test
+    public void testAddRowNullIndex() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		MethodView model = createMethodViewModelTestData();
+		view.addRow(model, false, null);
+		expectedNoOfAvailableEntries++;
+		expectedNoOfFavoritesEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		model = createMethodViewModelTestData();
+    }
+
+	@Test
+    public void testAddRowAtAvailableTable() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		MethodView model = createMethodViewModelTestData();
+		view.addRow(model, true, 0);
+		expectedNoOfAvailableEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		model = createMethodViewModelTestData();
+    }
+	
+	@Test
+    public void testAddRowNullIndexAtAvailableTable() throws Exception {
+		setUpTables();
+		int expectedNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		
+		MethodView model = createMethodViewModelTestData();
+		view.addRow(model, true, null);
+		expectedNoOfAvailableEntries++;
+		
+		int actualNoOfAvailableEntries = getNoOfEntries(view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfAvailableEntries,
+				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfAvailableEntries,
+				String.valueOf(view.getAvailTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfAvailableEntries)));
+		
+		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
+		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
+		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
+					contains(String.valueOf(expectedNoOfFavoritesEntries)));
+		
+		model = createMethodViewModelTestData();
+    }
+
+	
+	@SuppressWarnings("unchecked")
+	private void setUpTables() {
+		Table availableTable = createEmptyTableMethodViewModelTestData(ProgramMethodsView.AVAILABLE);
+		view.setAvailableTable(availableTable);
+		view.setAvailableTableContainer(
+				(BeanItemContainer<MethodView>)availableTable.getContainerDataSource());
+		Table favoritesTable = createEmptyTableMethodViewModelTestData(ProgramMethodsView.FAVORITES);
+		view.setFavoritesTable(favoritesTable);
+		view.setFavoritesTableContainer(
+				(BeanItemContainer<MethodView>)favoritesTable.getContainerDataSource());
+	}
+	private Table createEmptyTableMethodViewModelTestData(String data) {
+		Table table = new Table();
+		table.setSelectable(true);
+        table.setMultiSelect(true);
+        table.setData(data);
+		BeanItemContainer<MethodView> containerDataSource = 
+				new BeanItemContainer<MethodView>(MethodView.class);
+		table.setContainerDataSource(containerDataSource);
 		return table;
 	}
 }
