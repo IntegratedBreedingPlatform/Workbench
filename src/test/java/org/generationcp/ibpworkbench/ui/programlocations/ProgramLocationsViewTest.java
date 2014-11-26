@@ -200,9 +200,9 @@ public class ProgramLocationsViewTest {
 					contains(String.valueOf(expectedNoOfAvailableEntries)));
 		
 		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
-		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+		assertEquals("The number of rows for favorites locations must be equal to "+expectedNoOfFavoritesEntries,
 				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
-		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+		assertTrue("The number of entries for favorites locations must be "+expectedNoOfFavoritesEntries,
 				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
 					contains(String.valueOf(expectedNoOfFavoritesEntries)));
 		
@@ -228,9 +228,9 @@ public class ProgramLocationsViewTest {
 					contains(String.valueOf(expectedNoOfAvailableEntries)));
 		
 		int actualNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
-		assertEquals("The number of rows for available locations must be equal to "+expectedNoOfFavoritesEntries,
+		assertEquals("The number of rows for favorites locations must be equal to "+expectedNoOfFavoritesEntries,
 				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
-		assertTrue("The number of entries for available locations must be "+expectedNoOfFavoritesEntries,
+		assertTrue("The number of entries for favorites locations must be "+expectedNoOfFavoritesEntries,
 				String.valueOf(view.getFavTotalEntriesLabel().getValue()).
 					contains(String.valueOf(expectedNoOfFavoritesEntries)));
 		
