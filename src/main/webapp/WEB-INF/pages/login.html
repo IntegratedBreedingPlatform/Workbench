@@ -20,6 +20,7 @@
 	<link th:href="@{/controller/static/images/favicon-152.png}" rel="apple-touch-icon-precomposed"></link>
 
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"></link>
+	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"></link>
 	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"></link>
 </head>
 <body>
@@ -39,6 +40,16 @@
 			<input class="js-login-create-account-input login-last-name-input login-input login-flat-control" disabled="disabled" name="last-name" placeholder="Last Name" type="text"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-clear-float">
+			<span class="login-icon fa fa-lock" title="Role"></span>
+			<span class="fa fa-arrow-down login-select-icon"></span>
+			<select class="login-select login-flat-control">
+				<option></option>
+				<option>Admin</option>
+				<option>Breeder</option>
+				<option>Technician</option>
+			</select>
+		</div>
+		<div class="login-form-control login-create-account-control">
 			<span class="login-icon fa fa-envelope" title="Email"></span>
 			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
 		</div>
@@ -87,6 +98,7 @@
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/select2.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/login.js}"></script>
 </body>
 </html>

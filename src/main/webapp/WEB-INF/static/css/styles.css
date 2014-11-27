@@ -72,7 +72,7 @@ button::-moz-focus-inner {
   padding: 0px;
   border: none; }
 
-button, input {
+button, input, select {
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
@@ -111,7 +111,7 @@ button, input {
   box-sizing: border-box;
   width: 90%;
   margin-left: 5%; }
-  .login-form > div, .login-form .login-input, .login-form .login-submit {
+  .login-form > div, .login-form .login-flat-control {
     width: 100%; }
   .login-form .login-form-control {
     position: relative;
@@ -131,8 +131,8 @@ button, input {
     left: 14px;
     left: 0.9rem; }
   .login-form .login-flat-control {
-    padding: 8px;
-    padding: 0.5rem;
+    padding: 8px 8px 8px 40px;
+    padding: 0.5rem 0.5rem 0.5rem 2.5rem;
     font-size: 16px;
     font-size: 1rem;
     line-height: 24px;
@@ -140,26 +140,45 @@ button, input {
     background-color: transparent;
     border-radius: 5px;
     border: solid 2px white; }
-  .login-form .login-input {
-    padding: 8px 8px 8px 40px;
-    padding: 0.5rem 0.5rem 0.5rem 2.5rem; }
-    .login-form .login-input:focus {
+    .login-form .login-flat-control:focus {
       border-color: #F58120;
       outline: none; }
-    .login-form .login-input::-webkit-input-placeholder {
+    .login-form .login-flat-control::-webkit-input-placeholder {
       color: white;
       opacity: 1; }
-    .login-form .login-input::-moz-placeholder {
+    .login-form .login-flat-control::-moz-placeholder {
       color: white;
       opacity: 1; }
-    .login-form .login-input:-ms-input-placeholder {
+    .login-form .login-flat-control:-ms-input-placeholder {
       color: white;
       opacity: 1; }
-    .login-form .login-input::placeholder {
+    .login-form .login-flat-control::placeholder {
       color: white;
       opacity: 1; }
-    .login-form .login-input:invalid, .login-form .login-input:-moz-ui-invalid {
+    .login-form .login-flat-control:invalid, .login-form .login-flat-control:-moz-ui-invalid {
       box-shadow: none; }
+  .login-form .login-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer; }
+    .login-form .login-select option {
+      color: black;
+      background-color: light-grey; }
+    .login-form .login-select.select2-container-active, .login-form .login-select.select2-dropdown-open {
+      border-color: #F58120; }
+    .login-form .login-select.select2-dropdown-open {
+      border-radius: 5px 5px 0 0;
+      border-bottom: none; }
+    .login-form .login-select:focus {
+      outline: none; }
+    .login-form .login-select::-moz-focus-inner {
+      border: 0; }
+  .login-form .login-select-icon {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    padding: 12px;
+    padding: 0.75rem; }
   .login-form .login-grid {
     -webkit-transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
             transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
@@ -207,7 +226,7 @@ button, input {
   .login-form.login-create-account .login-confirm-password-control {
     margin-bottom: 24px;
     margin-bottom: 1.5rem; }
-  .login-form .login-validation-error input {
+  .login-form .login-validation-error input, .login-form .login-validation-error .login-select {
     border-color: #FF3D00; }
   .login-form .login-valid {
     display: none; }
@@ -364,3 +383,26 @@ button, input {
   display: inline-block; }
 .no-csstransitions .login-create-account .login-grid {
   display: none; }
+
+.select2-container .select2-choice {
+  padding: 0;
+  color: white; }
+  .select2-container .select2-choice.select2-default {
+    color: white !important; }
+  .select2-container .select2-choice, .select2-container .select2-choice .select2-arrow {
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    -webkit-filter: none;
+            filter: none; }
+
+.select2-drop-active {
+  border: 2px solid #F58120;
+  border-top: none; }
+
+.select2-results .select2-highlighted {
+  background: #F58120; }
+
+.select2-container .select2-choice abbr, .select2-container .select2-choice .select2-arrow b, .select2-search input, html[dir="rtl"] .select2-search input, .select2-search-choice-close {
+  background-image: none !important; }

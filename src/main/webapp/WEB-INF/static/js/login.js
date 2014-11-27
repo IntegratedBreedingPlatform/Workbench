@@ -13,6 +13,7 @@
 		$errorText = $('.js-login-error-text'),
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
+		$select = $('.login-select'),
 
 		createAccount = 'login-create-account',
 		tick = 'fa fa-check',
@@ -91,6 +92,9 @@
 			var $input = $(input);
 			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
 		});
+
+		$('.select2-container').parent('.login-form-control').toggleClass(validationError, !$select.select2('val'));
+
 		// Set the error message if there's a validation error
 		if ($('.' + validationError).length > 0) {
 			errorMessage = 'Please fill in all required fields.';
@@ -128,7 +132,7 @@
 		}
 	});
 
-	$loginForm.on('focusin', '.login-validation-error', function() {
+	$loginForm.on('focusin click', '.login-validation-error', function() {
 		clearClientErrors();
 	});
 
@@ -138,6 +142,18 @@
 		clearServerErrors();
 		toggleLoginCreateAccount();
 	});
+
+	$select.select2({
+		placeholder: 'Role',
+		minimumResultsForSearch: -1
+	}).on('select2-focus', clearClientErrors);
+
+	$('.select2-container').on('click', function() {
+		$('.select2-container').toggleClass('select2-container-active', true);
+		$select.select2('open');
+	});
+
+	$('.select2-container').attr('tabindex', 1);
 
 	// Record whether media queries are supported in this browser as a class
 	if (!Modernizr.mq('only all')) {
