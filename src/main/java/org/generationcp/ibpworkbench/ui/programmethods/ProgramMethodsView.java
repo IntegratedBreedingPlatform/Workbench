@@ -45,33 +45,46 @@ import java.util.*;
     @Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public final static String[][] methodTypes = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
-	public final static String[][] methodGroups = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
+	public static final String[][] METHOD_TYPES = {{"GEN","Generative"},{"DER","Derivative"},{"MAN","Maintenance"}};
+	public static final String[][] METHOD_GROUPS = {{"S","Self Fertilizing"},{"O","Cross Pollinating"},{"C","Clonally Propagating"},{"G","All System"}};
 	private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
      
-	public final static Map<String,String> tableColumns;
-	public final static Map<String,Integer> tableColumnSizes;
+	public static final Map<String,String> TABLE_COLUMNS;
+	public static final Map<String,Integer> TABLE_COLUMN_SIZES;
+
+	public static final String AVAILABLE = "available";
+	public static final String FAVORITES = "favorites";
+	private static final String SELECT = "select";
+	private static final String GMNAME = "gMname";
+	private static final String DESC = "desc";
+	private static final String MGRP = "mgrp";
+	private static final String MCODE = "mcode";
+	private static final String MTYPE = "mtype";
+	private static final String DATE = "date";
+	private static final String CLASS = "class";	
+	private static final String FIELD = "field";
+	
     private Button.ClickListener editMethodListener;
 
     static {
-         tableColumns = new LinkedHashMap<String,String>();
-         tableColumns.put("select","<span class='glyphicon glyphicon-ok'></span>");
-         tableColumns.put("gMname","Method Name");
-         tableColumns.put("desc","Description");
-         tableColumns.put("mgrp","Group");
-         tableColumns.put("mcode","Code");
-         tableColumns.put("mtype","Type");
-         tableColumns.put("date","Date");
-         tableColumns.put("class","Class");
+    	 TABLE_COLUMNS = new LinkedHashMap<String,String>();
+         TABLE_COLUMNS.put(SELECT,"<span class='glyphicon glyphicon-ok'></span>");
+         TABLE_COLUMNS.put(GMNAME,"Method Name");
+         TABLE_COLUMNS.put(DESC,"Description");
+         TABLE_COLUMNS.put(MGRP,"Group");
+         TABLE_COLUMNS.put(MCODE,"Code");
+         TABLE_COLUMNS.put(MTYPE,"Type");
+         TABLE_COLUMNS.put(DATE,"Date");
+         TABLE_COLUMNS.put(CLASS,"Class");
 
-         tableColumnSizes = new HashMap<String, Integer>();
-         tableColumnSizes.put("select",20);
-         tableColumnSizes.put("gMname",210);
-         tableColumnSizes.put("mgrp",45);
-         tableColumnSizes.put("mcode",40);
-         tableColumnSizes.put("mtype",40);
-         tableColumnSizes.put("date",70);
-         tableColumnSizes.put("class",45);
+         TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
+         TABLE_COLUMN_SIZES.put(SELECT,20);
+         TABLE_COLUMN_SIZES.put(GMNAME,210);
+         TABLE_COLUMN_SIZES.put(MGRP,45);
+         TABLE_COLUMN_SIZES.put(MCODE,40);
+         TABLE_COLUMN_SIZES.put(MTYPE,40);
+         TABLE_COLUMN_SIZES.put(DATE,70);
+         TABLE_COLUMN_SIZES.put(CLASS,45);
      }
 
      private Button addNewMethodsBtn;
@@ -141,16 +154,16 @@ import java.util.*;
          favoriteSelectAll = new CheckBox("Select All");
          favoriteSelectAll.setImmediate(true);
          
-         availTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
-         favTotalEntriesLabel = new Label((messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>"), Label.CONTENT_XHTML);
+         availTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+         favTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
          availSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
          favSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
          
          // TABLES!
          availableTable = buildCustomTable(availableSelectAll, availTotalEntriesLabel, availSelectedEntriesLabel);
-         availableTable.setData("available");
+         availableTable.setData(AVAILABLE);
          favoritesTable = buildCustomTable(favoriteSelectAll, favTotalEntriesLabel, favSelectedEntriesLabel);
-         favoritesTable.setData("favorites");
+         favoritesTable.setData(FAVORITES);
 
          addToFavoriteBtn = new Button("Add to Favorite Methods");
          addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -184,7 +197,7 @@ import java.util.*;
          table.setMultiSelect(true);
          table.setDragMode(Table.TableDragMode.MULTIROW);
 
-         table.addGeneratedColumn("select", new Table.ColumnGenerator() {
+         table.addGeneratedColumn(SELECT, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = -2712621177075270647L;
 
 			@Override
@@ -220,7 +233,7 @@ import java.util.*;
              }
          });
 
-         table.addGeneratedColumn("gMname", new Table.ColumnGenerator() {
+         table.addGeneratedColumn(GMNAME, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = -9087436773196724575L;
 
 			@Override
@@ -230,7 +243,7 @@ import java.util.*;
 
                      final Button mNameBtn = new Button(((MethodView)itemId).getMname());
                      mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-                     mNameBtn.setData(((MethodView)itemId));
+                     mNameBtn.setData((MethodView)itemId);
                      mNameBtn.addListener(editMethodListener);
 
                      return mNameBtn;
@@ -243,7 +256,7 @@ import java.util.*;
 
 
 
-         table.addGeneratedColumn("class", new Table.ColumnGenerator() {
+         table.addGeneratedColumn(CLASS, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = -9208828919595982878L;
 
 			@Override
@@ -259,7 +272,7 @@ import java.util.*;
          });
 
 
-         table.addGeneratedColumn("date",new Table.ColumnGenerator() {
+         table.addGeneratedColumn(DATE,new Table.ColumnGenerator() {
 			private static final long serialVersionUID = -8704716382416470975L;
 
 			@Override
@@ -279,7 +292,7 @@ import java.util.*;
              }
          });
 
-         table.addGeneratedColumn("desc", new Table.ColumnGenerator() {
+         table.addGeneratedColumn(DESC, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = 6278117387128053730L;
 
 			@Override
@@ -303,7 +316,7 @@ import java.util.*;
 			@SuppressWarnings("unchecked")
 			@Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 Table source = ((Table) valueChangeEvent.getProperty());
+                 Table source = (Table) valueChangeEvent.getProperty();
                  BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
 
                  // disable previously selected items
@@ -345,17 +358,18 @@ import java.util.*;
                  Object itemIdOver = t.getItemId();
                  Set<Object> sourceItemIds = (Set<Object>)((Table) t.getSourceComponent()).getValue();
 
-                 if (itemIdOver!=null && (sourceItemIds.size() <= 0)) {
+                 if (itemIdOver!=null && sourceItemIds.isEmpty()) {
                   	if (((MethodView)itemIdOver).isEnabled()){
                   		
-                  		if (((Table) t.getSourceComponent()).getData().toString().equals("favorites")){
+                  		if (((Table) t.getSourceComponent()).getData().toString().equals(FAVORITES)){
                  			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+                 			updateNoOfEntries(favTotalEntriesLabel, (Table) t.getSourceComponent());
                  		}
                   		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
                   		
                   	}
                   }else{
-                 	 moveSelectedItems(((Table) t.getSourceComponent()), ((Table) dragAndDropEvent.getTargetDetails().getTarget()));
+                 	 moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
                   }
 
 
@@ -376,7 +390,7 @@ import java.util.*;
 
      @SuppressWarnings("unchecked")
 	private void moveSelectedItems(Table source, Table target) {
-         LinkedList<Object> sourceItems = new LinkedList<Object>(((Collection<Object>) source.getValue()));
+         List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
          ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
          BeanItemContainer<MethodView> targetDataContainer = (BeanItemContainer<MethodView>) target.getContainerDataSource();
@@ -387,20 +401,20 @@ import java.util.*;
          while (sourceItemsIterator.hasPrevious()) {
              MethodView itemId = (MethodView) sourceItemsIterator.previous();
              itemId.setActive(false);
-             if (source.getData().toString().equals("available")){
+             if (source.getData().toString().equals(AVAILABLE)){
             	 targetDataContainer.addItemAt(0, itemId);
             	 if (counter < 100) {
                      target.unselect(itemId);
                  }
             	 
-            	 target.setValue(null); //reset value
+            	 target.setValue(null);
             	 
                  //refresh the fav location table
                  updateNoOfEntries(favTotalEntriesLabel, target);
                  updateSelectedNoOfEntries(favSelectedEntriesLabel, target);
              }else{
             	 sourceDataContainer.removeItem(itemId);
-            	 source.setValue(null); //reset value
+            	 source.setValue(null);
             	 
                  //refresh the fav location table
                  updateNoOfEntries(favTotalEntriesLabel, source);
@@ -409,13 +423,11 @@ import java.util.*;
              counter++;
          }
          
-         if (counter >= 100){
-        	 if (target.getData().toString().equals("favorites")){
-            	 target.setValue(null);
-             }
+         if (counter >= 100 && target.getData().toString().equals(FAVORITES)){
+        	 target.setValue(null);
          }
          
-         if (source.getData().toString().equals("available")){
+         if (source.getData().toString().equals(AVAILABLE)){
         	 source.setValue(null);
          }
          
@@ -439,7 +451,7 @@ import java.util.*;
          typeFilter.addItem("");
          typeFilter.setItemCaption("","All Generation Advancement Types");
 
-         for (String[] methodType : methodTypes) {
+         for (String[] methodType : METHOD_TYPES) {
              typeFilter.addItem(methodType[0]);
              typeFilter.setItemCaption(methodType[0], methodType[1]);
          }
@@ -448,7 +460,7 @@ import java.util.*;
 
          groupFilter.addItem("");
          groupFilter.setItemCaption("", "All Crop Reproductive Systems");
-         for(String[] methodGroup : methodGroups) {
+         for(String[] methodGroup : METHOD_GROUPS) {
              groupFilter.addItem(methodGroup[0]);
              groupFilter.setItemCaption(methodGroup[0],methodGroup[1]);
          }
@@ -483,20 +495,19 @@ import java.util.*;
 	}
 
 	private void setupTableFields(Table table) {
-         table.setVisibleColumns(tableColumns.keySet().toArray());
-         table.setColumnHeaders(tableColumns.values().toArray(new String[]{}));
+         table.setVisibleColumns(TABLE_COLUMNS.keySet().toArray());
+         table.setColumnHeaders(TABLE_COLUMNS.values().toArray(new String[]{}));
 
-         for (String col : tableColumnSizes.keySet())
-         {
-             table.setColumnWidth(col,tableColumnSizes.get(col));
+         for (String col : TABLE_COLUMN_SIZES.keySet()) {
+             table.setColumnWidth(col,TABLE_COLUMN_SIZES.get(col));
 
-             if (tableColumnSizes.get(col) < 75) {
+             if (TABLE_COLUMN_SIZES.get(col) < 75) {
                  table.setColumnAlignment(col, Table.ALIGN_CENTER);
              }
 
          }
 
-         table.setColumnExpandRatio(tableColumns.keySet().toArray()[2],1.0F);
+         table.setColumnExpandRatio(TABLE_COLUMNS.keySet().toArray()[2],1.0F);
      }
 
      private void initializeLayout() {
@@ -557,22 +568,22 @@ import java.util.*;
 	}
 
      private Component buildFavoriteTableTitle() {
-         final HorizontalLayout root = new HorizontalLayout();
-         root.setWidth("100%");
-         root.setMargin(true, false, false, false);
+         final HorizontalLayout layout = new HorizontalLayout();
+         layout.setWidth("100%");
+         layout.setMargin(true, false, false, false);
 
          final Label favoriteMethodsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
          favoriteMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
-         root.addComponent(favoriteMethodsTitle);
+         layout.addComponent(favoriteMethodsTitle);
 
          if (!cropOnly) {
-             root.addComponent(saveBtn);
+        	 layout.addComponent(saveBtn);
          }
 
-         root.setExpandRatio(favoriteMethodsTitle,1.0F);
+         layout.setExpandRatio(favoriteMethodsTitle,1.0F);
 
-         return root;
+         return layout;
      }
 
      private Component buildFilterForm() {
@@ -595,7 +606,7 @@ import java.util.*;
 
 
          final HorizontalLayout field1 = new HorizontalLayout();
-         field1.addStyleName("field");
+         field1.addStyleName(FIELD);
          field1.setSpacing(true);
          field1.setSizeUndefined();
          field1.addComponent(searchLbl);
@@ -604,7 +615,7 @@ import java.util.*;
          container.addComponent(field1);
 
          final HorizontalLayout field2 = new HorizontalLayout();
-         field2.addStyleName("field");
+         field2.addStyleName(FIELD);
          field2.setSpacing(true);
          field2.setSizeUndefined();
          field2.addComponent(filterLbl);
@@ -612,7 +623,7 @@ import java.util.*;
 
 
          final HorizontalLayout field3 = new HorizontalLayout();
-         field3.addStyleName("field");
+         field3.addStyleName(FIELD);
          field3.setSpacing(true);
          field3.setSizeUndefined();
          field3.addComponent(groupFilter);
@@ -635,14 +646,14 @@ import java.util.*;
      }
 
      private Component buildPageTitle() {
-         final VerticalLayout root = new VerticalLayout();
-         root.setMargin(new Layout.MarginInfo(false,false,true,false));
-         root.setWidth("100%");
+         final VerticalLayout layout = new VerticalLayout();
+         layout.setMargin(new Layout.MarginInfo(false,false,true,false));
+         layout.setWidth("100%");
 
          final HorizontalLayout titleContainer = new HorizontalLayout();
          titleContainer.setSizeUndefined();
          titleContainer.setWidth("100%");
-         titleContainer.setMargin(true, false, false, false);	// move this to css
+         titleContainer.setMargin(true, false, false, false);
 
          final Label heading = new Label("<span class='bms-methods' style='color: #B8D432; font-size: 23px'></span>&nbsp;Breeding Methods",Label.CONTENT_XHTML);
          heading.setStyleName(Bootstrap.Typography.H4.styleName());
@@ -662,10 +673,10 @@ import java.util.*;
 
          final Label headingDesc = new Label(content);
 
-         root.addComponent(titleContainer);
-         root.addComponent(headingDesc);
+         layout.addComponent(titleContainer);
+         layout.addComponent(headingDesc);
 
-         return root;
+         return layout;
      }
 
      public void addRow(MethodView item,boolean atAvailableTable,Integer index) {
@@ -686,27 +697,13 @@ import java.util.*;
                  favoritesTableContainer.addItem(item);
              }
          }
+         updateNoOfEntries();
      }
 
-     public void addRow(Method item,boolean atAvailableTable,Integer index) {
-         if (index != null) {
-             if (atAvailableTable) {
-                 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
-
-             } else {
-            	 getAvailableTableContainer().addItemAt(index,presenter.convertMethod(item));
-                 favoritesTableContainer.addItemAt(index,presenter.convertMethod(item));
-             }
-         } else {
-             if (atAvailableTable) {
-                 getAvailableTableContainer().addItem(presenter.convertMethod(item));
-
-             } else {
-            	 getAvailableTableContainer().addItem(presenter.convertMethod(item));
-                 favoritesTableContainer.addItem(presenter.convertMethod(item));
-             }
-         }
-     }
+    private void updateNoOfEntries() {
+    	 updateNoOfEntries(favTotalEntriesLabel,favoritesTable);
+         updateNoOfEntries(availTotalEntriesLabel,availableTable);
+	}
 
     private void initializeActions() {
 
@@ -752,7 +749,7 @@ import java.util.*;
 			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
 
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
+                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                      availableTable.setValue(availableTable.getItemIds());
                  } else {
                      availableTable.setValue(null);
@@ -767,7 +764,7 @@ import java.util.*;
 
 			@Override
              public void buttonClick(Button.ClickEvent clickEvent) {
-                 if (true == (Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
+                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()) {
                      favoritesTable.setValue(favoritesTable.getItemIds());
                  } else {
                      favoritesTable.setValue(null);
@@ -803,8 +800,6 @@ import java.util.*;
              public void buttonClick(Button.ClickEvent event) {
                  if (ProgramMethodsView.this.presenter.saveFavoriteBreedingMethod(favoritesTableContainer.getItemIds())) {
                      MessageNotifier.showMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.METHODS_SUCCESSFULLY_CONFIGURED));
-                 } else {    // should never happen
-
                  }
              }
          });
@@ -815,9 +810,7 @@ import java.util.*;
 
 			@Override
 			public Action[] getActions(Object target, Object sender) {
-				// TODO Auto-generated method stub
-				Action[] actions = new Action[] { copyBreedingMethodAction };
-				return actions;
+				return new Action[] { copyBreedingMethodAction };
 			}
 
 			@Override
@@ -835,9 +828,7 @@ import java.util.*;
 
 			@Override
  			public Action[] getActions(Object target, Object sender) {
- 				// TODO Auto-generated method stub
- 				Action[] actions = new Action[] { copyBreedingMethodAction };
- 				return actions;
+ 				return new Action[] { copyBreedingMethodAction };
  			}
 
  			@Override
@@ -851,7 +842,7 @@ import java.util.*;
           });
      }
 
-	private void updateNoOfEntries(Label totalEntries, Table table){
+	protected void updateNoOfEntries(Label totalEntries, Table table){
 		 int count = 0;
 		 count = table.getItemIds().size();
 		 
@@ -887,5 +878,58 @@ import java.util.*;
 	public void setAvailableTableContainer(BeanItemContainer<MethodView> availableTableContainer) {
 		this.availableTableContainer = availableTableContainer;
 	}
+
+	public SimpleResourceBundleMessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public Table getAvailableTable() {
+		return availableTable;
+	}
+
+	public void setAvailableTable(Table availableTable) {
+		this.availableTable = availableTable;
+	}
+
+	public Table getFavoritesTable() {
+		return favoritesTable;
+	}
+
+	public void setFavoritesTable(Table favoritesTable) {
+		this.favoritesTable = favoritesTable;
+	}
+
+	public BeanItemContainer<MethodView> getFavoritesTableContainer() {
+		return favoritesTableContainer;
+	}
+
+	public void setFavoritesTableContainer(
+			BeanItemContainer<MethodView> favoritesTableContainer) {
+		this.favoritesTableContainer = favoritesTableContainer;
+	}
+
+	public Label getAvailTotalEntriesLabel() {
+		return availTotalEntriesLabel;
+	}
+
+	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
+		this.availTotalEntriesLabel = availTotalEntriesLabel;
+	}
+
+	public Label getFavTotalEntriesLabel() {
+		return favTotalEntriesLabel;
+	}
+
+	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
+		this.favTotalEntriesLabel = favTotalEntriesLabel;
+	}
+	
+	
+	
+	
 
  }
