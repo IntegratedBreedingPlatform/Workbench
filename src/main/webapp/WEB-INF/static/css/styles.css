@@ -188,6 +188,8 @@ button, input {
     padding-left: 0.5rem;
     vertical-align: middle;
     cursor: pointer; }
+  .login-form .login-checkbox-input {
+    display: none; }
   .login-form .login-input-inline {
     display: table-cell;
     width: 1%;

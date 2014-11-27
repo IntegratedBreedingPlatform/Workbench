@@ -32,11 +32,12 @@
 	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="" autocomplete="off">
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
-			<input class="login-input login-flat-control" type="text" placeholder="First Name"></input>
+			<input class="login-input login-flat-control" type="text" placeholder="First Name
+			" name="first-name"></input>
 		</div
 		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa fa-user" title="Last Name"></span>
-			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name"></input>
+			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name" name="last-name"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-clear-float">
 			<span class="login-icon fa fa-envelope" title="Email"></span>
@@ -52,17 +53,18 @@
 		</div>
 		<div class="login-form-control login-create-account-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon" title="Confirm Password"></span>
-			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password"></input>
+			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password" name="confirm-password"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
-				<button class="js-login-remember-me login-checkbox login-clickable" type="button">
+				<input class="js-login-checkbox-input login-checkbox-input" type="checkbox" checked="checked" name="remember-me"></input>
+				<button class="js-login-remember-me ac-login-remember-me login-checkbox login-clickable" type="button">
 					<span class="js-login-check fa fa-check"></span>
 				</button
 				><span class="js-login-remember-me login-checkbox-label login-unselectable">Remember Me</span>
 			</div>
 			<div class="login-input-inline login-input-right">
-				<a class="login-link login-unselectable" href="#">Can't Log In?</a>
+				<a class="ac-login-forgot-password login-link login-unselectable" href="#">Can't Log In?</a>
 			</div>
 		</div>
 		<div class="js-login-error login-valid">
@@ -71,7 +73,7 @@
 		</div>
 		<div class="js-th-login-error" th:if="${param.error != null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
 			<span class="fa login-warning-icon">&#xf12a;</span>
-			<span>Your login attempt was not successful. Please try again.</span>
+			<span class="ac-th-login-error-text">Your login attempt was not successful. Please try again.</span>
 		</div>
 
 		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">
@@ -80,7 +82,7 @@
 		</button>
 	</form>
 	<div class="login-mode-toggle">
-		<a class="js-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
+		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>

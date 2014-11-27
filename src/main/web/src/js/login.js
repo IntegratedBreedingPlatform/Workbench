@@ -3,7 +3,8 @@
 (function() {
 	'use strict';
 
-	var $check = $('.js-login-check'),
+	var $checkButton = $('.js-login-check'),
+		$checkInput = $('.js-login-checkbox-input'),
 		$loginForm = $('.js-login-form'),
 		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
@@ -20,10 +21,12 @@
 		signInText = 'Sign In';
 
 	function toggleCheckbox() {
-		if ($check.hasClass(tick)) {
-			$check.removeClass(tick);
+		if ($checkButton.hasClass(tick)) {
+			$checkButton.removeClass(tick);
+			$checkInput.prop('checked', false);
 		} else {
-			$check.addClass(tick);
+			$checkButton.addClass(tick);
+			$checkInput.prop('checked', true);
 		}
 	}
 
