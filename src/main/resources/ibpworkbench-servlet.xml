@@ -64,4 +64,6 @@
 		<property name="templateEngine" ref="templateEngine" />
 	</bean>
 
+	<bean id="userAccountValidator" class="org.generationcp.ibpworkbench.validator.UserAccountValidator" />
+
 </beans>
