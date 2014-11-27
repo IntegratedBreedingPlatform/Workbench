@@ -15,8 +15,9 @@
             login-processing-url="/login"
             username-parameter="username"
             password-parameter="password"
+			authentication-details-source-ref="workbenchAuthenticationDetailsSource"
             authentication-failure-url="/controller/auth/login?error"
-            authentication-success-handler-ref="workbenchAuthenticationSuccessHandler"/>
+            authentication-success-handler-ref="workbenchAuthenticationSuccessHandler" />
 
         <logout logout-success-url="/controller/auth/login?logout"/>
 	</http>
@@ -25,6 +26,7 @@
 		<bean:property name="workbenchDataManager" ref="workbenchDataManager" />
 	</bean:bean>
 
+	<bean:bean id="workbenchAuthenticationDetailsSource" class="org.generationcp.ibpworkbench.security.WorkbenchAuthenticationDetailsSource" />
 	<bean:bean id="workbenchAuthenticationSuccessHandler" class="org.generationcp.ibpworkbench.security.WorkbenchAuthenticationSuccessHandler" />
 
 	<authentication-manager>
