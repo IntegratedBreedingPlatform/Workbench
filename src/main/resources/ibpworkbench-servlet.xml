@@ -9,11 +9,37 @@
 			http://www.springframework.org/schema/context
 			http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:component-scan base-package="org.generationcp.ibpworkbench.controller" />
 
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<!-- **************************************************************** -->
+	<!--  RESOURCE FOLDERS CONFIGURATION                                  -->
+	<!--  Dispatcher configuration for serving static resources           -->
+	<!-- **************************************************************** -->
+	<mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
 
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	<!-- **************************************************************** -->
+	<!--  SPRING ANNOTATION PROCESSING                                    -->
+	<!-- **************************************************************** -->
+	<mvc:annotation-driven />
+	<context:component-scan base-package="org.generationcp.ibpworkbench.controller" />
+
+	<bean id="messageSource"
+		  class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>/WEB-INF/i18n/Messages</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="1"/>
+		<property name="useCodeAsDefaultMessage" value="true"/>
+	</bean>
+
+	<bean id="nonCachableMessageResolver"
+		  class="org.thymeleaf.spring3.messageresolver.SpringNonCacheableMessageResolver"/>
+
+	<!-- **************************************************************** -->
+	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
+	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->
+	<!-- **************************************************************** -->
 
 	<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
 		<property name="prefix" value="/WEB-INF/pages/" />
@@ -30,11 +56,12 @@
 				<bean class="org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect" />
 			</set>
 		</property>
+		<property name="messageResolver" ref="nonCachableMessageResolver" />
+
 	</bean>
 
 	<bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
 		<property name="templateEngine" ref="templateEngine" />
 	</bean>
 
-	<mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
 </beans>
