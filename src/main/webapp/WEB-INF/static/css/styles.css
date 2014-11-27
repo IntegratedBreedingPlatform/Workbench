@@ -259,7 +259,7 @@ button, input {
   text-align: center; }
 
 /* Tablets */
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 650px) {
   .login-form {
     width: 60%;
     margin-top: 48px;
@@ -287,7 +287,7 @@ button, input {
     padding-left: 0.9rem; } }
 
 /* Medium Devices, Desktops */
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 1024px) {
   .login-form {
     width: 40%;
     margin-top: 64px;
