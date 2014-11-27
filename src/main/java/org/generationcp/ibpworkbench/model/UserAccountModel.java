@@ -27,6 +27,11 @@ public class UserAccountModel implements Serializable {
 
 	private static final long serialVersionUID = 7669967119863861617L;
 
+	public static String[] ROLES = {"ADMIN","BREEDER","TECHNICIAN"};
+	public static String ADMIN_ROLE = ROLES[0];
+	public static String BREEDER_ROLE = ROLES[1];
+	public static String TECHNICIAN_ROLE = ROLES[2];
+
 	private String firstName;
 	private String lastName;
 	private String middlename;
@@ -55,6 +60,9 @@ public class UserAccountModel implements Serializable {
 		passwordConfirmation = "";
 		securityQuestion = "";
 		securityAnswer = "";
+
+		// default, replace when we set an enum standard
+		role = TECHNICIAN_ROLE;
 	}
 
 	public String getFirstName() {
