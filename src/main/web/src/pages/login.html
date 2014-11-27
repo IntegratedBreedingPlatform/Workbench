@@ -29,35 +29,34 @@
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" method="post" class="js-login-form login-form" novalidate="" autocomplete="off">
+	<form th:action="@{/login}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="">
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
-			<input class="login-input login-flat-control" type="text" placeholder="First Name
-			" name="first-name"></input>
+			<input class="login-input login-flat-control" name="first-name" placeholder="First Name" type="text"></input>
 		</div
 		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa fa-user" title="Last Name"></span>
-			<input class="login-last-name-input login-input login-flat-control" type="text" placeholder="Last Name" name="last-name"></input>
+			<input class="login-last-name-input login-input login-flat-control" name="last-name" placeholder="Last Name" type="text"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-clear-float">
 			<span class="login-icon fa fa-envelope" title="Email"></span>
-			<input class="login-input login-flat-control" type="email" placeholder="Email" name="email"></input>
+			<input class="login-input login-flat-control" name="email" placeholder="Email" type="email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-leaf" title="Username"></span>
-			<input class="js-login-username login-input login-flat-control" type="text" placeholder="Username" name="username"></input>
+			<input class="js-login-username login-input login-flat-control" name="username" placeholder="Username" type="text"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-key login-icon" title="Password"></span>
-			<input class="js-login-password login-input login-flat-control" type="password" placeholder="Password" name="password"></input>
+			<input class="js-login-password login-input login-flat-control" name="password" placeholder="Password" type="password"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon" title="Confirm Password"></span>
-			<input class="login-input login-flat-control" type="password" placeholder="Confirm Password" name="confirm-password"></input>
+			<input class="login-input login-flat-control" name="confirm-password" placeholder="Confirm Password" type="password"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
-				<input class="js-login-checkbox-input login-checkbox-input" type="checkbox" checked="checked" name="remember-me"></input>
+				<input class="js-login-checkbox-input login-checkbox-input" checked="checked" name="remember-me" type="checkbox"></input>
 				<button class="js-login-remember-me ac-login-remember-me login-checkbox login-clickable" type="button">
 					<span class="js-login-check fa fa-check"></span>
 				</button
@@ -76,7 +75,7 @@
 			<span class="ac-th-login-error-text">Your login attempt was not successful. Please try again.</span>
 		</div>
 
-		<button class="js-login-submit login-submit login-flat-control login-clickable" type="submit" formnovalidate="">
+		<button class="js-login-submit login-submit login-flat-control login-clickable" formnovalidate="" type="submit">
 			<span class="login-submit-label">Sign In</span>
 			<span class="throbber"></span>
 		</button>
