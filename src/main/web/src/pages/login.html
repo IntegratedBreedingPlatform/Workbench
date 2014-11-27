@@ -32,15 +32,15 @@
 	<form th:action="@{/login}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="">
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
-			<input class="login-input login-flat-control" name="first-name" placeholder="First Name" type="text"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="first-name" placeholder="First Name" type="text"></input>
 		</div
 		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa fa-user" title="Last Name"></span>
-			<input class="login-last-name-input login-input login-flat-control" name="last-name" placeholder="Last Name" type="text"></input>
+			<input class="js-login-create-account-input login-last-name-input login-input login-flat-control" disabled="disabled" name="last-name" placeholder="Last Name" type="text"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-clear-float">
 			<span class="login-icon fa fa-envelope" title="Email"></span>
-			<input class="login-input login-flat-control" name="email" placeholder="Email" type="email"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa fa-leaf" title="Username"></span>
@@ -52,7 +52,7 @@
 		</div>
 		<div class="login-form-control login-create-account-control login-confirm-password-control">
 			<span class="login-icon fa fa-key login-icon" title="Confirm Password"></span>
-			<input class="login-input login-flat-control" name="confirm-password" placeholder="Confirm Password" type="password"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="confirm-password" placeholder="Confirm Password" type="password"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
