@@ -31,6 +31,10 @@
 		applied to input elements in IE.
 	*/-->
 	<form th:action="@{/login}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="">
+		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
+		<input type="text" value="" style="display: none"/>
+		<input type="password" value="" style="display: none"/>
+
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa fa-user" title="First Name"></span>
 			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="first-name" placeholder="First Name" type="text"></input>
