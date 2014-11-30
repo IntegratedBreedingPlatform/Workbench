@@ -159,7 +159,7 @@
 	});
 
 	// Clear error messages if the user focuses a form input
-	$('body').delegate('.login-form-invalid .login-form-control', 'focusin click', function() {
+	$('body').delegate('.login-form-invalid .login-form-control, .login-form-invalid .login-submit', 'focusin click', function() {
 		clearErrors();
 	});
 
