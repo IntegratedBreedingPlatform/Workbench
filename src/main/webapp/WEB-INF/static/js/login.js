@@ -19,11 +19,9 @@
 		formInvalid = 'login-form-invalid',
 
 		createAccountText = 'Create Account',
-		signInText = 'Sign In';
+		signInText = 'Sign In',
 
-	function isFormInvalid() {
-		return $loginForm.hasClass(formInvalid);
-	}
+		altAction = $loginForm.data('alt-action');
 
 	function toggleCheckbox() {
 		var tick = $checkButton.text() !== '';
@@ -36,33 +34,24 @@
 		return !$loginForm.hasClass(createAccount);
 	}
 
-	function toggleDisabledInputs(switchingToCreateAccount) {
-		var $createAccountInputs = $('.js-login-create-account-input');
-		if (switchingToCreateAccount) {
-			$createAccountInputs.prop('disabled', false);
-			$checkInput.prop('disabled', true);
-			$select.select2('enable', true);
-		} else {
-			$createAccountInputs.prop('disabled', true);
-			$checkInput.prop('disabled', false);
-			$select.select2('enable', false);
-		}
-	}
-
 	function toggleLoginCreateAccount() {
-		var loginDisplayed = isLoginDisplayed(),
-			currentFormAction = $loginForm.attr('action');
+		var switchToCreate = isLoginDisplayed(),
+			$createAccountInputs = $('.js-login-create-account-input'),
+			prevAction = $loginForm.attr('action');
 
 		// Once we have the create account post, change the form action to be stored on a data attribute, and toggle the URL stored
 		// when we toggle.
+		$loginForm.attr('action', altAction);
+		altAction = prevAction;
 
-		$loginForm.attr('action', $loginForm.data('alt-action'));
-		$loginForm.data('alt-action', currentFormAction);
+		$loginForm.toggleClass(createAccount, switchToCreate);
+		$loginModeToggle.text(switchToCreate ?  signInText : createAccountText);
+		$loginSubmit.text(switchToCreate ? createAccountText : signInText);
 
-		$loginForm.toggleClass(createAccount, loginDisplayed);
-		$loginModeToggle.text(loginDisplayed ?  signInText : createAccountText);
-		$loginSubmit.text(loginDisplayed ? createAccountText : signInText);
-		toggleDisabledInputs(loginDisplayed);
+		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
+		$createAccountInputs.prop('disabled', !switchToCreate);
+		$checkInput.prop('disabled', switchToCreate);
+		$select.select2('enable', switchToCreate);
 	}
 
 	function displayClientError(errorMessage) {
@@ -71,21 +60,18 @@
 		$loginForm.addClass(formInvalid);
 	}
 
-	function clearServerErrors() {
-		$('.js-th-login-error').empty();
-	}
-
-	function clearClientErrors() {
-		$('.' + validationError).removeClass(validationError);
-		$errorText.empty();
-		$error.addClass('login-valid');
-	}
-
 	function clearErrors() {
-		// Double check, as this function may ocassionally be called unnecessarily
-		if (isFormInvalid()) {
-			clearServerErrors();
-			clearClientErrors();
+		// Double check if form is actually invalid, as this function may ocassionally be called unnecessarily
+		if ($loginForm.hasClass(formInvalid)) {
+
+			// Clear server errors
+			$('.js-th-login-error').empty();
+
+			// Clear client errors
+			$('.' + validationError).removeClass(validationError);
+			$errorText.empty();
+			$error.addClass('login-valid');
+
 			$loginForm.removeClass(formInvalid);
 		}
 	}
@@ -123,6 +109,17 @@
 		}
 
 		return errorMessage;
+	}
+
+	// Expects an object, the keys of which are names of invalid form inputs
+	function applyValidationErrors(errors) {
+		var errorMessage = '';
+
+		$.each(errors, function(key, value) {
+			$loginForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
+			errorMessage +=  errorMessage ? (', ' + value) : value;
+		});
+		displayClientError(errorMessage);
 	}
 
 	// Record whether media queries are supported in this browser as a class
@@ -169,17 +166,6 @@
 		clearErrors();
 		toggleLoginCreateAccount();
 	});
-
-	// Expects an object, the keys of which are names of invalid form inputs
-	function applyValidationErrors(errors) {
-		var errorMessage = '';
-
-		$.each(errors, function(key, value) {
-			$loginForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
-			errorMessage +=  errorMessage ? (', ' + value) : value;
-		});
-		displayClientError(errorMessage);
-	}
 
 	$loginForm.on('submit', function(e) {
 		// Prevent default submit behaviour and implement our own post / response handler
