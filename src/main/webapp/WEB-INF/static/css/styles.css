@@ -247,6 +247,8 @@ button, input, select {
   .login-form .login-submit {
     margin-top: 16px;
     margin-top: 1rem;
+    padding-left: 8px;
+    padding-left: 0.5rem;
     border-color: #F58120;
     background-color: #F58120; }
     .login-form .login-submit:hover {
