@@ -5,7 +5,6 @@
 
 	var $checkButton = $('.js-login-check'),
 		$checkInput = $('.js-login-checkbox-input'),
-		$createAccountInputs = $('.js-login-create-account-input'),
 		$loginForm = $('.js-login-form'),
 		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
@@ -41,8 +40,9 @@
 		return !$loginForm.hasClass(createAccount);
 	}
 
-	function toggleDisabledInputs(loginDisplayed) {
-		if (loginDisplayed)  {
+	function toggleDisabledInputs(switchingToCreateAccount) {
+		var $createAccountInputs = $('.js-login-create-account-input');
+		if (switchingToCreateAccount) {
 			$createAccountInputs.prop('disabled', false);
 			$checkInput.prop('disabled', true);
 		} else {
