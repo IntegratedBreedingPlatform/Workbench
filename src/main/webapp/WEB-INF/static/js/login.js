@@ -41,9 +41,11 @@
 		if (switchingToCreateAccount) {
 			$createAccountInputs.prop('disabled', false);
 			$checkInput.prop('disabled', true);
+			$select.select2('enable', true);
 		} else {
 			$createAccountInputs.prop('disabled', true);
 			$checkInput.prop('disabled', false);
+			$select.select2('enable', false);
 		}
 	}
 
@@ -143,6 +145,9 @@
 		$('.select2-container').toggleClass('select2-container-active', true);
 		$select.select2('open');
 	});
+
+	// Disable the select until create account page is shown
+	$select.select2('enable', false);
 
 	// Giving the select container the ability to be focused
 	$('.select2-container').attr('tabindex', 1);
