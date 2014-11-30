@@ -12,14 +12,13 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import org.generationcp.browser.study.StudyInfoDialog;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,7 +30,14 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
@@ -45,10 +51,21 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * 
@@ -87,9 +104,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
     private Button btnNext;
     private Component buttonArea;
 
-    private HashMap<String, Boolean> variatesCheckboxState;
+    private Map<String, Boolean> variatesCheckboxState;
     
-    private final static Logger LOG = LoggerFactory.getLogger(MetaAnalysisPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetaAnalysisPanel.class);
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -190,8 +207,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 	@Override
 	public void initializeValues() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -205,8 +220,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
             public void selectedTabChange(SelectedTabChangeEvent event) {
                 if(tabSheet.getComponentCount() <= 1){
                     linkCloseAllTab.setVisible(false);
-                }
-                else{
+                } else {
                 	linkCloseAllTab.setVisible(true);
                 }
             }
@@ -260,7 +274,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 						metaEnvironments.add(itr.next());
 					}
 					
-					if (metaEnvironments.size() > 0){
+					if (!metaEnvironments.isEmpty()){
 						IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 						w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments, MetaAnalysisPanel.this, managerFactory));
 					}
@@ -354,7 +368,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 
 		}catch(Exception e){
-			e.printStackTrace();
+			LOG.error("Error generating dataset tab for id = " + dataSetId, e);
 		}
 	}// end of generateTab
 
@@ -407,7 +421,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		
 	}
 
-	public HashMap<String, Boolean> getVariatesCheckboxState() {
+	public Map<String, Boolean> getVariatesCheckboxState() {
 		return variatesCheckboxState;
 	}
 
@@ -468,8 +482,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			try {
 				studyName = MetaAnalysisPanel.this.getStudyDataManager().getStudy(dataSet.getStudyId()).getName();
 			} catch (MiddlewareQueryException e) {
-				
-				e.printStackTrace();
+				LOG.error("Error getting study name", e);
 			}
 
 			lblFactors = new Label("<span class='bms-factors' style='color: #39B54A; font-size: 20px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",Label.CONTENT_XHTML);
@@ -497,16 +510,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				}
 			});
 			
-			linkFullStudyDetails.addListener(new Button.ClickListener() {
-			
-				private static final long serialVersionUID = 1425892265723948423L;
-
-				@Override
-				public void buttonClick(ClickEvent event) {	
-					StudyInfoDialog dialog = new StudyInfoDialog(event.getComponent().getWindow(), dataSet.getStudyId() ,false, (StudyDataManagerImpl) getStudyDataManager());
-					event.getComponent().getWindow().addWindow(dialog);
-				}
-			});
+			linkFullStudyDetails.addListener(new ViewStudyDetailsButtonClickListener(dataSet.getStudyId(), studyName));
 
             final HorizontalLayout buttonContainer = new HorizontalLayout();
             buttonContainer.setSpacing(true);
@@ -695,15 +699,14 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				}
 				
 				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& f.getStandardVariable().getScale().getName().equalsIgnoreCase("abbreviation")){
+						&& "abbreviation".equalsIgnoreCase(f.getStandardVariable().getScale().getName())){
 					environmentFactorName = f.getLocalName();
 				}
 				
 				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
-					if (environmentFactorName == null) {
-                        environmentFactorName = f.getLocalName();
-                    }
+						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId() 
+						&& environmentFactorName == null) {
+                    environmentFactorName = f.getLocalName();
 				}
 				
 			}
@@ -731,43 +734,39 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				}
 					
 				for (Variable var : variables){
-					if (var != null){
-						if (var.getValue() != ""){
-								//
-								TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+					if (var != null && var.getValue() != ""){
+						//
+						TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+						
+						if (env!=null){
 								
-								if (env!=null){
-										
-										String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
-										String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
-										
-										MetaEnvironmentModel bean = new MetaEnvironmentModel();
-										bean.setTrial(trialNo);
-										bean.setEnvironment(envName);
-										bean.setDataSetId(dataSet.getId());
-										bean.setDataSetName(dataSet.getName());
-										bean.setStudyId(dataSet.getStudyId());
-										bean.setStudyName(studyName);
-										bean.setTrialFactorName(trialInstanceFactorName);
-										if (dataSet.getDataSetType() == null){
-											bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
-										}else{
-											bean.setDataSetTypeId(dataSet.getDataSetType().getId());
-										}
-										
-										
-										container.addBean(bean);
+								String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+								String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
+								
+								MetaEnvironmentModel bean = new MetaEnvironmentModel();
+								bean.setTrial(trialNo);
+								bean.setEnvironment(envName);
+								bean.setDataSetId(dataSet.getId());
+								bean.setDataSetName(dataSet.getName());
+								bean.setStudyId(dataSet.getStudyId());
+								bean.setStudyName(studyName);
+								bean.setTrialFactorName(trialInstanceFactorName);
+								if (dataSet.getDataSetType() == null){
+									bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
+								}else{
+									bean.setDataSetTypeId(dataSet.getDataSetType().getId());
 								}
+								
+								
+								container.addBean(bean);
 						}
 					}
 				}
 				
 			} catch (MiddlewareQueryException e) {
-				
-				e.printStackTrace();
+				LOG.error("Error getting trial environments for dataset", e);
 			} catch (Exception e){
-				
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			}
 			
 			managerFactory.close();

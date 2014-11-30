@@ -19,7 +19,7 @@
         <gwt.version>2.5.1</gwt.version>
         <gwt.plugin.version>2.5.1</gwt.plugin.version>
         <ibpcommons.version>3.1.0.SNAPSHOT</ibpcommons.version>
-        <spring.version>3.1.1.RELEASE</spring.version>
+        <spring.version>3.2.11.RELEASE</spring.version>
     </properties>
 
     <distributionManagement>
@@ -149,11 +149,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-asm</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
