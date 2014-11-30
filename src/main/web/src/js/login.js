@@ -15,7 +15,6 @@
 		$select = $('.login-select'),
 
 		createAccount = 'login-create-account',
-		tick = 'fa fa-check',
 		validationError = 'login-validation-error',
 		formInvalid = 'login-form-invalid',
 
@@ -27,13 +26,10 @@
 	}
 
 	function toggleCheckbox() {
-		if ($checkButton.hasClass(tick)) {
-			$checkButton.removeClass(tick);
-			$checkInput.prop('checked', false);
-		} else {
-			$checkButton.addClass(tick);
-			$checkInput.prop('checked', true);
-		}
+		var tick = $checkButton.text() !== '';
+
+		$checkButton.text(tick ? '' : '\uF00C');
+		$checkInput.prop('checked', !tick);
 	}
 
 	function isLoginDisplayed() {
