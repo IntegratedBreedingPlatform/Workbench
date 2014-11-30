@@ -179,6 +179,8 @@
 			return;
 		}
 
+		$loginSubmit.addClass('loading').delay(200);
+
 		// Continue with form submit - login is currently handled server side
 		if (login) {
 			this.submit();
