@@ -149,6 +149,12 @@ select {
 			border-bottom: none;
 		}
 
+		&.select2-dropdown-open.select2-drop-above {
+			border-radius: 0 0 5px 5px;
+			border-bottom: 2px solid $orange;
+			border-top-color: transparent;
+		}
+
 		// Getting rid of gross focus styling on the select in firefox
 		&:focus {
 			outline:none;
@@ -388,7 +394,8 @@ select {
 	}
 }
 
-.select2-container {
+.select2-container,
+.select2-dropdown-open.select2-drop-above {
 	.select2-choice {
 
 		padding: 0;
@@ -400,7 +407,8 @@ select {
 		}
 
 		&,
-		& .select2-arrow {
+		& .select2-arrow,
+		.select2-dropdown-open.select2-drop-above {
 			background-image: none;
 			background-color: transparent;
 			border: none;
@@ -415,6 +423,11 @@ select {
 	border-top: none;
 }
 
+.select2-drop.select2-drop-above.select2-drop-active {
+	border-top: 2px solid $orange;
+	border-bottom: none;
+}
+
 .select2-results .select2-highlighted {
 	background: $orange;
 }
@@ -423,7 +436,9 @@ select {
 .select2-container .select2-choice .select2-arrow b,
 .select2-search input,
 html[dir="rtl"] .select2-search input,
-.select2-search-choice-close {
+.select2-search-choice-close,
+.select2-dropdown-open.select2-drop-above .select2-choice,
+.select2-dropdown-open.select2-drop-above .select2-choices {
 	background-image: none !important;
 }
 

@@ -169,6 +169,10 @@ button, input, select {
     .login-form .login-select.select2-dropdown-open {
       border-radius: 5px 5px 0 0;
       border-bottom: none; }
+    .login-form .login-select.select2-dropdown-open.select2-drop-above {
+      border-radius: 0 0 5px 5px;
+      border-bottom: 2px solid #F58120;
+      border-top-color: transparent; }
     .login-form .login-select:focus {
       outline: none; }
     .login-form .login-select::-moz-focus-inner {
@@ -386,12 +390,12 @@ button, input, select {
 .no-csstransitions .login-create-account .login-grid {
   display: none; }
 
-.select2-container .select2-choice {
+.select2-container .select2-choice, .select2-dropdown-open.select2-drop-above .select2-choice {
   padding: 0;
   color: white; }
-  .select2-container .select2-choice.select2-default {
+  .select2-container .select2-choice.select2-default, .select2-dropdown-open.select2-drop-above .select2-choice.select2-default {
     color: white !important; }
-  .select2-container .select2-choice, .select2-container .select2-choice .select2-arrow {
+  .select2-container .select2-choice, .select2-container .select2-choice .select2-arrow, .select2-container .select2-choice .select2-dropdown-open.select2-drop-above, .select2-dropdown-open.select2-drop-above .select2-choice, .select2-dropdown-open.select2-drop-above .select2-choice .select2-arrow, .select2-dropdown-open.select2-drop-above .select2-choice .select2-dropdown-open.select2-drop-above {
     background-image: none;
     background-color: transparent;
     border: none;
@@ -403,10 +407,14 @@ button, input, select {
   border: 2px solid #F58120;
   border-top: none; }
 
+.select2-drop.select2-drop-above.select2-drop-active {
+  border-top: 2px solid #F58120;
+  border-bottom: none; }
+
 .select2-results .select2-highlighted {
   background: #F58120; }
 
-.select2-container .select2-choice abbr, .select2-container .select2-choice .select2-arrow b, .select2-search input, html[dir="rtl"] .select2-search input, .select2-search-choice-close {
+.select2-container .select2-choice abbr, .select2-container .select2-choice .select2-arrow b, .select2-search input, html[dir="rtl"] .select2-search input, .select2-search-choice-close, .select2-dropdown-open.select2-drop-above .select2-choice, .select2-dropdown-open.select2-drop-above .select2-choices {
   background-image: none !important; }
 
 .select2-container.select2-container-disabled .select2-choice, .select2-container.select2-container-disabled .select2-choice .select2-arrow {
