@@ -1,0 +1,39 @@
+.login-form {
+	width: 60%;
+	margin-top: 3rem;
+	margin-left: 20%;
+}
+
+.login-logo {
+	margin-top: 3rem;
+}
+
+.login-form {
+	.login-name-control {
+		box-sizing: border-box;
+		width: 50%;
+	}
+
+	.login-first-name-control {
+		float: left;
+		padding-right: 0.5em;
+	}
+
+	.login-last-name-control {
+		float: right;
+		padding-left: 0.5em;
+		margin-top: 0;
+	}
+
+	.login-clear-float  {
+		clear: both;
+	}
+
+	.login-last-name-icon {
+		display: none;
+	}
+
+	.login-last-name-input {
+		padding-left: 0.9rem;
+	}
+}

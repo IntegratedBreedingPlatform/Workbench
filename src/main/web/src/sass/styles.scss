@@ -1,0 +1,452 @@
+$orange: #F58120;
+$orange-red: #FF3D00;
+
+$text-color: white;
+$border-color: white;
+$button-border-color: $orange;
+
+$button-hover-color: white;
+$checkbox-hover-color: $orange;
+$link-hover-color: $orange;
+
+$button-focus-color: white;
+$input-focus-color: $orange;
+
+$validation-color: $orange-red;
+
+@import 'throbber';
+
+html {
+	min-height:100%;
+	font-size: 100%;
+
+	// To enable responsive images, the backgrounds need to be applied desktop first, unlike the rest of our styling.
+	// Image from http://pixabay.com/en/clouds-summer-storm-clouds-form-194840/
+	// Covered under Creative Commons Deed CCO License http://creativecommons.org/publicdomain/zero/1.0/deed.en
+	background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1rem;
+	color: $text-color;
+}
+
+button::-moz-focus-inner {
+	padding: 0px;
+	border: none;
+}
+
+button,
+input,
+select {
+	box-sizing: border-box;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1rem;
+	color: $text-color;
+}
+
+.login-unselectable {
+	-webkit-touch-callout: none;
+	user-select: none;
+}
+
+.login-link {
+	color: $text-color;
+	text-decoration: none;
+
+	&:hover,
+	&:focus {
+		color: $link-hover-color;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.login-logo {
+	display: block;
+	width: 8rem;
+	margin: 2rem auto 0;
+	border-radius: 4rem;
+}
+
+.login-form {
+	margin-top: 2rem;
+	padding: 0 0.5rem;
+	box-sizing: border-box;
+
+	width: 90%;
+	margin-left: 5%;
+
+	& > div,
+	.login-flat-control {
+		width: 100%;
+	}
+
+	.login-form-control {
+		position: relative;
+		height: 3.5rem;
+	}
+
+	.login-create-account-control {
+		height: 0;
+		opacity: 0;
+
+		transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+		transition-delay: 0, 100ms, 0;
+	}
+
+	.login-icon {
+		position: absolute;
+		top: 0.9rem;
+		left: 0.9rem;
+	}
+
+	.login-flat-control {
+		padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+		font-size: 1rem;
+		line-height: 1.5rem;
+		background-color: transparent;
+		border-radius: 5px;
+		border: solid 2px $border-color;
+
+		&:focus {
+			border-color: $input-focus-color;
+			outline: none;
+		}
+		&::placeholder {
+			color: $text-color;
+			opacity: 1;
+		}
+		// Remove red outline applied by Firefox around email input when email is invalid
+		&:invalid,
+		&:-moz-ui-invalid {
+			box-shadow: none;
+		}
+	}
+
+	.login-select {
+		-moz-appearance: none;
+		-webkit-appearance : none;
+
+		cursor: pointer;
+
+		& option {
+			color: black;
+			background-color: light-grey;
+		}
+
+		&.select2-container-active,
+		&.select2-dropdown-open {
+			border-color: $orange;
+		}
+
+		&.select2-dropdown-open {
+			border-radius: 5px 5px 0 0;
+			border-bottom: none;
+		}
+
+		&.select2-dropdown-open.select2-drop-above {
+			border-radius: 0 0 5px 5px;
+			border-bottom: 2px solid $orange;
+			border-top-color: transparent;
+		}
+
+		// Getting rid of gross focus styling on the select in firefox
+		&:focus {
+			outline:none;
+		}
+		&::-moz-focus-inner {
+			border: 0;
+		}
+	}
+
+	.login-select-icon {
+		position: absolute;
+
+		// Account for border
+		top: 2px;
+		right: 0;
+		padding: 0.75rem;
+	}
+
+	.login-grid {
+		transition: height 500ms ease-in, opacity 300ms ease-in, margin 500ms ease-in;
+		transition-delay: 0, 100ms, 0;
+	}
+
+	.login-checkbox-control {
+		&:hover {
+			.login-checkbox {
+				border-color: $checkbox-hover-color;
+			}
+		}
+	}
+
+	.login-checkbox {
+		height: 1.5rem;
+		width: 1.5rem;
+		padding: 0;
+		vertical-align: middle;
+		line-height: 1;
+
+		box-shadow: none;
+		border: solid 2px $border-color;
+		border-radius: 4px;
+
+		background-color: transparent;
+		cursor: pointer;
+
+		&:focus {
+			border-color: $checkbox-hover-color;
+			outline: none;
+		}
+	}
+
+	.login-checkbox-label {
+		padding-left: 0.5rem;
+		vertical-align: middle;
+		cursor: pointer;
+	}
+
+	.login-checkbox-input {
+		display: none;
+	}
+
+	.login-input-inline {
+		display: table-cell;
+		width: 1%;
+		vertical-align: middle;
+	}
+
+	.login-input-right {
+		text-align: right;
+	}
+
+	&.login-create-account {
+		.login-grid {
+			height: 0;
+			margin: 0;
+			opacity: 0;
+		}
+
+		.login-create-account-control {
+			height: 3.5rem;
+			opacity: 1;
+		}
+
+		.login-confirm-password-control {
+			margin-bottom: 1.5rem;
+		}
+
+	}
+
+	.login-validation-error {
+		& input,
+		& .login-select {
+			border-color: $validation-color;
+		}
+	}
+
+	.login-valid {
+		display: none;
+	}
+
+	.login-warning-icon {
+		width: 1.4rem;
+		height: 1.4rem;
+		margin-right: 0.25rem;
+		padding-top: 0.25rem;
+		box-sizing: border-box;
+
+		text-align: center;
+
+		border-radius: 0.7rem;
+		background-color: $validation-color;
+	}
+
+	.login-submit {
+		margin-top: 1rem;
+		padding-left: 0.5rem;
+		border-color: $button-border-color;
+		background-color: $orange;
+
+		&:hover {
+			border-color: $button-hover-color;
+			cursor: pointer;
+		}
+
+		&:focus {
+			border-color: $button-focus-color;
+			outline: none;
+		}
+
+		& > span {
+			vertical-align: middle;
+		}
+
+		.login-submit-label {
+			margin-left: 1.5rem;
+			margin-right: 0.5rem;
+		}
+
+		.throbber {
+			visibility: hidden;
+			opacity: 0;
+			transition: visibility 0.5s ease-in, opacity 0.5s ease-in;
+		}
+
+		&.loading .throbber {
+			visibility: visible;
+			opacity: 1;
+		}
+	}
+
+}
+
+.login-mode-toggle {
+	margin-top: 1rem;
+	padding-bottom: 1rem;
+	width: 100%;
+	text-align: center;
+}
+
+/* Tablets */
+@media only screen and (min-width : 650px) {
+	@import 'tablet';
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 1024px) {
+	@import 'desktop';
+}
+
+/* Responsive images */
+
+// Image sizes
+// 1899 x 1260 (desktop)
+// 1024 × 679 (tablet landscape)
+// 899 × 1140 (tablet portrait)
+// 500 × 332 (mobile-landscape)
+// 395 × 500 (mobile portrait)
+
+// Tablets landscape
+@media only screen and (max-width: 1024px) and (max-height: 679px) {
+	html {
+		background: url(../images/background-tablet-landscape.jpg) no-repeat center center fixed;
+	}
+}
+
+// Tablets portrait
+@media only screen and (max-width: 899px) and (max-height: 1140px) {
+	html {
+		background: url(../images/background-tablet-portrait.jpg) no-repeat center center fixed;
+	}
+}
+
+// Mobile landscape
+@media only screen and (max-width: 500px) and (max-height: 332px) {
+	html {
+		background: url(../images/background-mobile-landscape.jpg) no-repeat center center fixed;
+	}
+}
+
+// Mobile portrait
+@media only screen and (max-width: 395px) and (max-height: 500px) {
+	html {
+		background: url(../images/background-mobile-portrait.jpg) no-repeat center center fixed;
+	}
+}
+
+// Give anything that doesn't support MQs the desktop view
+.no-mq {
+
+	background: url(../images/background-desktop.jpg) no-repeat center center fixed;
+	background-size: cover;
+
+	@import 'tablet';
+	@import 'desktop';
+}
+
+.no-backgroundsize {
+
+	/* If you experience dead links / scrollbar issues in IE, try and set above rules on a fixed position div with 100% width and height. */
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/background-desktop.jpg', sizingMethod='scale')";
+}
+
+.no-csstransitions {
+	.login-create-account-control {
+		display: none;
+	}
+
+	.login-create-account {
+		.login-create-account-control {
+			display: inline-block;
+		}
+
+		.login-grid {
+			display: none;
+		}
+	}
+}
+
+.select2-container,
+.select2-dropdown-open.select2-drop-above {
+	.select2-choice {
+
+		padding: 0;
+		color: white;
+
+		// Stupid select 2 using !important in it's styles
+		&.select2-default {
+			color: white !important;
+		}
+
+		&,
+		& .select2-arrow,
+		.select2-dropdown-open.select2-drop-above {
+			background-image: none;
+			background-color: transparent;
+			border: none;
+			box-shadow: none;
+			filter: none;
+		}
+	}
+}
+
+.select2-drop-active {
+	border: 2px solid $orange;
+	border-top: none;
+}
+
+.select2-drop.select2-drop-above.select2-drop-active {
+	border-top: 2px solid $orange;
+	border-bottom: none;
+}
+
+.select2-results .select2-highlighted {
+	background: $orange;
+}
+
+.select2-container .select2-choice abbr,
+.select2-container .select2-choice .select2-arrow b,
+.select2-search input,
+html[dir="rtl"] .select2-search input,
+.select2-search-choice-close,
+.select2-dropdown-open.select2-drop-above .select2-choice,
+.select2-dropdown-open.select2-drop-above .select2-choices {
+	background-image: none !important;
+}
+
+.select2-container.select2-container-disabled .select2-choice {
+	&,
+	& .select2-arrow {
+		background-color: transparent;
+		border: none;
+		cursor: pointer;
+	}
+}
