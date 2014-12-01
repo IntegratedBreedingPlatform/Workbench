@@ -17,12 +17,12 @@ import org.springframework.validation.Validator;
 @Configurable
 public class UserAccountValidator implements Validator {
 
-	public static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
-	public static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";
-	public static final String SIGNUP_FIELD_PASSWORD_NOT_MATCH = "signup.field.password.not.match";
-	public static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
-	public static final String DATABASE_ERROR = "database.error";
-	public static final String SIGNUP_FIELD_PERSON_EXISTS = "signup.field.person.exists";
+	protected static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
+	protected static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";
+	protected static final String SIGNUP_FIELD_PASSWORD_NOT_MATCH = "signup.field.password.not.match";
+	protected static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
+	protected static final String DATABASE_ERROR = "database.error";
+	protected static final String SIGNUP_FIELD_PERSON_EXISTS = "signup.field.person.exists";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;

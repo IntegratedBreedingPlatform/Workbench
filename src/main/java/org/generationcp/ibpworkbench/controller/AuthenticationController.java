@@ -7,7 +7,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +54,10 @@ public class AuthenticationController {
 
 			Map<String, String> errors = new LinkedHashMap<String, String>();
 			for (FieldError error : result.getFieldErrors()) {
-				errors.put(error.getField(), messageSource.getMessage(error.getCode(),error.getArguments(),error.getDefaultMessage(),
-						LocaleContextHolder.getLocale()));
+				errors.put(error.getField(), messageSource
+						.getMessage(error.getCode(), error.getArguments(),
+								error.getDefaultMessage(),
+								LocaleContextHolder.getLocale()));
 			}
 
 			out.put("success", Boolean.FALSE);
