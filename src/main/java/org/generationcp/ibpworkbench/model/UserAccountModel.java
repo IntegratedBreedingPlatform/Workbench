@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model;
 
+import org.generationcp.commons.security.Role;
+
 import java.io.Serializable;
 
 /**
@@ -26,11 +28,6 @@ import java.io.Serializable;
 public class UserAccountModel implements Serializable {
 
 	private static final long serialVersionUID = 7669967119863861617L;
-
-	public static String[] ROLES = {"ADMIN","BREEDER","TECHNICIAN"};
-	public static String ADMIN_ROLE = ROLES[0];
-	public static String BREEDER_ROLE = ROLES[1];
-	public static String TECHNICIAN_ROLE = ROLES[2];
 
 	private String firstName;
 	private String lastName;
@@ -61,8 +58,8 @@ public class UserAccountModel implements Serializable {
 		securityQuestion = "";
 		securityAnswer = "";
 
-		// default, replace when we set an enum standard
-		role = TECHNICIAN_ROLE;
+		// default
+		role = Role.TECHNICIAN.name();
 	}
 
 	public String getFirstName() {
