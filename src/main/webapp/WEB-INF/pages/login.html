@@ -23,14 +23,16 @@
 	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"></link>
 	<link th:href="@{/controller/static/css/styles.css}" rel="stylesheet"></link>
 </head>
-<body>
+<body ng-app="loginApp" ng-controller="formController" th:attr="ng-init='setActions(\''+@{/login}+'\', \''+@{/controller/auth/signup}+'\');'">
+
 	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"></img>
 
 	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
+
+	<form autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid" ng-submit="processForm()">
 
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
 		<input type="text" value="" style="display: none"/>
@@ -38,16 +40,16 @@
 
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa" title="First Name">&#xf007;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="firstName" placeholder="First Name" type="text"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="firstName" placeholder="First Name" type="text" ng-model="formData.firstName"></input>
 		</div
 		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
 			<span class="login-icon login-last-name-icon fa" title="Last Name">&#xf007;</span>
-			<input class="js-login-create-account-input login-last-name-input login-input login-flat-control" disabled="disabled" name="lastName" placeholder="Last Name" type="text"></input>
+			<input class="js-login-create-account-input login-last-name-input login-input login-flat-control" disabled="disabled" name="lastName" placeholder="Last Name" type="text" ng-model="formData.lastName"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-clear-float">
 			<span class="login-icon fa" title="Role">&#xf023;</span>
 			<span class="fa login-select-icon">&#xf063;</span>
-			<select class="login-select login-flat-control" name="role">
+			<select class="login-select login-flat-control" name="role" ng-model="formData.role">
 				<option></option>
 				<option value="ADMIN">Admin</option>
 				<option value="BREEDER">Breeder</option>
@@ -56,23 +58,23 @@
 		</div>
 		<div class="login-form-control login-create-account-control">
 			<span class="login-icon fa" title="Email">&#xf0e0;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email" ng-model="formData.email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa" title="Username">&#xf06c;</span>
-			<input class="js-login-username login-input login-flat-control" name="username" placeholder="Username" type="text"></input>
+			<input class="js-login-username login-input login-flat-control" name="username" placeholder="Username" type="text" ng-model="formData.username"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa login-icon" title="Password">&#xf084;</span>
-			<input class="js-login-password login-input login-flat-control" name="password" placeholder="Password" type="password"></input>
+			<input class="js-login-password login-input login-flat-control" name="password" placeholder="Password" type="password" ng-model="formData.password"></input>
 		</div>
 		<div class="login-form-control login-create-account-control login-confirm-password-control">
 			<span class="login-icon fa login-icon" title="Confirm Password">&#xf084;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="passwordConfirmation" placeholder="Confirm Password" type="password"></input>
+			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="passwordConfirmation" placeholder="Confirm Password" type="password" ng-model="formData.passwordConfirmation"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
-				<input class="js-login-checkbox-input login-checkbox-input" checked="checked" name="remember-me" type="checkbox"></input>
+				<input class="js-login-checkbox-input login-checkbox-input" checked="checked" name="rememberMe" type="checkbox" ng-model="formData.rememberMe"></input>
 				<button class="js-login-remember-me ac-login-remember-me login-checkbox login-clickable" type="button">
 					<span class="js-login-check fa">&#xf00c;</span>
 				</button
@@ -103,8 +105,8 @@
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
-	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/select2.min.js}"></script>
-	<script type="text/javascript" th:src="@{/controller/static/js/login.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/login-angular.js}"></script>
 </body>
 </html>
