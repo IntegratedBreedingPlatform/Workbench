@@ -49,20 +49,20 @@ public class UserAccountValidator implements Validator {
 
 	protected void validateFieldsEmptyOrWhitespace(Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.FIRST_NAME,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[] {"First Name"});
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.LAST_NAME,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[] {"Last Name"});
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.EMAIL,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[]{"Email"});
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.USERNAME,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[]{"Username"});
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.PASSWORD,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[]{"Password"});
 		ValidationUtils
 				.rejectIfEmptyOrWhitespace(errors,
 						UserAccountFields.PASSWORD_CONFIRMATION, SIGNUP_FIELD_REQUIRED);
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.ROLE,
-				SIGNUP_FIELD_REQUIRED);
+				SIGNUP_FIELD_REQUIRED,new String[]{"Confirmation Password"});
 	}
 
 	protected void validateUserRole(Errors errors, UserAccountModel userAccount) {
@@ -88,7 +88,7 @@ public class UserAccountValidator implements Validator {
 		try {
 			if (workbenchDataManager.isUsernameExists(userAccount.getUsername())) {
 				errors.rejectValue(UserAccountFields.USERNAME,
-						SIGNUP_FIELD_USERNAME_EXISTS);
+						SIGNUP_FIELD_USERNAME_EXISTS,new String[]{userAccount.getUsername()},null);
 			}
 		} catch (MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, DATABASE_ERROR);
@@ -100,7 +100,7 @@ public class UserAccountValidator implements Validator {
 			if (workbenchDataManager
 					.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())) {
 				errors.rejectValue(UserAccountFields.FIRST_NAME,
-						SIGNUP_FIELD_PERSON_EXISTS);
+						SIGNUP_FIELD_PERSON_EXISTS,new String[] {userAccount.getFirstName(),userAccount.getLastName()},null);
 			}
 		} catch (MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.FIRST_NAME, DATABASE_ERROR);

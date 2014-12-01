@@ -6,6 +6,9 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.tmatesoft.svn.core.internal.io.dav.http.HTTPStatus;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
@@ -33,6 +35,9 @@ public class AuthenticationController {
 	@Resource
 	private UserAccountValidator userAccountValidator;
 
+	@Resource
+	private MessageSource messageSource;
+
 	@RequestMapping(value = "/login")
 	public String getLoginPage() {
 		return "login";
@@ -40,7 +45,7 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> saveUserAccount(
+	public ResponseEntity<Map<String, Object>> saveUserAccount(
 			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
@@ -50,7 +55,8 @@ public class AuthenticationController {
 
 			Map<String, String> errors = new LinkedHashMap<String, String>();
 			for (FieldError error : result.getFieldErrors()) {
-				errors.put(error.getField(), error.getCode());
+				errors.put(error.getField(), messageSource.getMessage(error.getCode(),error.getArguments(),error.getDefaultMessage(),
+						LocaleContextHolder.getLocale()));
 			}
 
 			out.put("success", Boolean.FALSE);
@@ -73,6 +79,6 @@ public class AuthenticationController {
 			}
 		}
 
-		return new ResponseEntity<Map<String,Object>>(out,isSuccess);
+		return new ResponseEntity<Map<String, Object>>(out, isSuccess);
 	}
 }
