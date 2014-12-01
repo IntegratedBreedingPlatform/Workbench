@@ -6,6 +6,8 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.tmatesoft.svn.core.internal.io.dav.http.HTTPStatus;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
@@ -37,10 +40,10 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public Map<String, Object> saveUserAccount(
+	public ResponseEntity<Map<String,Object>> saveUserAccount(
 			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
-
+		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 		userAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
@@ -58,6 +61,7 @@ public class AuthenticationController {
 			try {
 				workbenchUserService.saveUserAccount(model);
 
+				isSuccess = HttpStatus.OK;
 				out.put("success", Boolean.TRUE);
 
 			} catch (MiddlewareQueryException e) {
@@ -69,6 +73,6 @@ public class AuthenticationController {
 			}
 		}
 
-		return out;
+		return new ResponseEntity<Map<String,Object>>(out,isSuccess);
 	}
 }
