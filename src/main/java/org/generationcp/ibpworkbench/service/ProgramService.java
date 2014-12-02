@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
@@ -22,11 +20,8 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -52,12 +47,9 @@ public class ProgramService {
 	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 	
-    @Autowired
-    private SessionData sessionData;
-	
-    private Set<User> users;
-    private Collection<Location> favoriteLocations;
-    private Collection<Method> favoriteMethods;
+    private Set<User> selectedUsers;
+    
+    private User currentUser;
 
     private List<Role> allRolesList;
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
@@ -172,10 +164,6 @@ public class ProgramService {
 			if ((projectMembers != null) && (!projectMembers.isEmpty())) {
 				saveProjectMembers(managerFactory.getUserDataManager(), projectMembers, program);
 			}
-
-			// save locations and methods
-			saveProjectLocation(managerFactory, favoriteLocations, program);
-			saveProjectMethods(managerFactory, favoriteMethods, program);
 
 			managerFactory.close();
 
@@ -348,9 +336,9 @@ public class ProgramService {
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 
-        for (User user : users) {
+        for (User user : selectedUsers) {
             // only retrieve selected members that's not the current user.
-            if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
+            if (user.getUserid().equals(currentUser.getUserid())) {
                 continue;
             }
 
@@ -365,59 +353,6 @@ public class ProgramService {
         return projectUserRoles;
     }
 
-    private void saveProjectMethods(ManagerFactory managerFactory, Collection<Method> methods, Project projectSaved) throws MiddlewareQueryException {
-
-        List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
-        int mID = 0;
-        for (Method m : methods) {
-        	ProgramFavorite favorite = new ProgramFavorite();
-            if(m.getMid() < 1){
-                //save the added  method to the local database created
-                mID = managerFactory.getGermplasmDataManager().addMethod(new Method(m.getMid(), m.getMtype(), m.getMgrp(),
-                        m.getMcode(), m.getMname(), m.getMdesc(),0, 0, 0,0, 0,0, 0, 0));
-            }else{
-                mID=m.getMid();
-            }
-            favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
-            favorite.setEntityId(mID);
-            list.add(favorite);
-        }
-        managerFactory.getGermplasmDataManager().saveProgramFavorites(list);
-
-    }
-
-    private void saveProjectLocation(ManagerFactory managerFactory, Collection<Location> locations, Project projectSaved) throws MiddlewareQueryException {
-
-        List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
-        long locID=0;
-        for (Location l : locations) {
-        	ProgramFavorite favorite = new ProgramFavorite();
-            if(l.getLocid() < 1){
-                //save the added new location to the local database created
-                Location location = new Location();
-                location.setLocid(l.getLocid());
-                location.setCntryid(0);
-                location.setLabbr(l.getLabbr());
-                location.setLname(l.getLname());
-                location.setLrplce(0);
-                location.setLtype(0);
-                location.setNllp(0);
-                location.setSnl1id(0);
-                location.setSnl2id(0);
-                location.setSnl3id(0);
-
-                locID= managerFactory.getLocationDataManager().addLocation(location);
-            }else{
-                locID=l.getLocid();
-            }
-            favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
-            favorite.setEntityId((int) locID);
-            list.add(favorite);
-        }
-
-        managerFactory.getGermplasmDataManager().saveProgramFavorites(list);
-    }	
-	
     private Integer getCurrentDate(){
         Calendar now = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -426,16 +361,11 @@ public class ProgramService {
         return dateNowInt;
     }
 
-	public void setFavoriteLocations(Collection<Location> favoriteLocations) {
-		this.favoriteLocations = favoriteLocations;
+	public void setSelectedUsers(Set<User> users) {
+		this.selectedUsers = users;
 	}
-
 	
-	public void setFavoriteMethods(Collection<Method> favoriteMethods) {
-		this.favoriteMethods = favoriteMethods;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
 	}
 }

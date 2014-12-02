@@ -55,9 +55,8 @@ public class AddProgramPresenter {
             throw new Exception("basic_details_invalid");
         }
 
-        programService.setFavoriteLocations(view.getFavoriteLocations());
-        programService.setFavoriteMethods(view.getFavoriteMethods());
-        programService.setUsers(this.users);
+        programService.setCurrentUser(this.sessionData.getUserData());
+        programService.setSelectedUsers(this.users);
         programService.createNewProgram(this.program);
     }
 
