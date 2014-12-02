@@ -35,6 +35,10 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
+    public IBDBGeneratorCentralDb() {
+    	
+    }
+    
     public IBDBGeneratorCentralDb(CropType cropType) {
         this.cropType = cropType;
     }
@@ -252,5 +256,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         return installId;
     }
 
-
+	public void setCropType(CropType cropType) {
+		this.cropType = cropType;
+	}
 }

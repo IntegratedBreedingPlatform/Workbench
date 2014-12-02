@@ -47,6 +47,9 @@ public class ProgramService {
 	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 	
+	private IBDBGeneratorCentralDb centralDbGenerator;
+	private IBDBGeneratorLocalDb localDbGenerator;
+	
     private Set<User> selectedUsers;
     
     private User currentUser;
@@ -65,36 +68,16 @@ public class ProgramService {
 		boolean isGenerationSuccess = false;
 		boolean isMysqlAccountGenerationSuccess = false;
 		
-		program.setUserId(this.currentUser.getUserid());
-
-		// TODO: REMOVE Once template is no longer required in Project
-		CropType cropType = workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
-		if (cropType == null) {
-			workbenchDataManager.addCropType(program.getCropType());
-		}
-		program.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
-
-		program.setLastOpenDate(null);
-		workbenchDataManager.addProject(program);
-
-		// set the project's local database name
-		String localDatabaseName = program.getCropType().getLocalDatabaseNameWithProject(program);
-		String centralDatabaseName = program.getCropType().getCentralDbName();
-		program.setLocalDbName(localDatabaseName);
-		program.setCentralDbName(centralDatabaseName);
-
-		workbenchDataManager.saveOrUpdateProject(program);
+		saveBasicDetails(program);
 		// create the project's workspace directories
 		toolUtil.createWorkspaceDirectoriesForProject(program);
 
-		// create central database
-		IBDBGeneratorCentralDb centralDbGenerator;
-		centralDbGenerator = new IBDBGeneratorCentralDb(program.getCropType());
-		isGenerationSuccess = centralDbGenerator.generateDatabase();
+		this.centralDbGenerator.setCropType(program.getCropType());
+		isGenerationSuccess = this.centralDbGenerator.generateDatabase();
 
-		IBDBGeneratorLocalDb generator;
-		generator = new IBDBGeneratorLocalDb(program.getCropType(), program.getProjectId());
-		isGenerationSuccess = generator.generateDatabase();
+		this.localDbGenerator.setCropType(program.getCropType());
+		this.localDbGenerator.setProjectId(program.getProjectId());
+		isGenerationSuccess = this.localDbGenerator.generateDatabase();
 
 		if (isGenerationSuccess) {
 			User user = this.currentUser.copy();
@@ -142,7 +125,7 @@ public class ProgramService {
 			this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
 
 			// Add the installation record in the local db with the given project name and the newly added local user
-			programUserInstalId = generator.addLocalInstallationRecord(program.getProjectName(), localUserId);
+			programUserInstalId = this.localDbGenerator.addLocalInstallationRecord(program.getProjectName(), localUserId);
 
 			// Set the instalId of the local user
 			user.setInstalid(Integer.valueOf(programUserInstalId));
@@ -211,6 +194,28 @@ public class ProgramService {
 		LOG.info(program.getProjectId() + "  " + program.getProjectName() + " " + program.getStartDate() + " " + program.getTemplate().getTemplateId());
 		LOG.info("IBDB Local Generation Successful?: " + isGenerationSuccess);
 		LOG.info("Mysql Accounts Generation Successful?: " + isMysqlAccountGenerationSuccess);
+	}
+
+	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
+		program.setUserId(this.currentUser.getUserid());
+
+		// TODO: REMOVE Once template is no longer required in Project
+		CropType cropType = workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
+		if (cropType == null) {
+			workbenchDataManager.addCropType(program.getCropType());
+		}
+		program.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
+
+		program.setLastOpenDate(null);
+		workbenchDataManager.addProject(program);
+
+		// set the project's local database name - only assignable after project is persisted because id is part of local db name.
+		String localDatabaseName = program.getCropType().getLocalDatabaseNameWithProject(program);
+		String centralDatabaseName = program.getCropType().getCentralDbName();
+		program.setLocalDbName(localDatabaseName);
+		program.setCentralDbName(centralDatabaseName);
+
+		workbenchDataManager.saveOrUpdateProject(program);
 	}
 	
     /**
@@ -366,17 +371,21 @@ public class ProgramService {
 		this.currentUser = currentUser;
 	}
 
-	
-	WorkbenchDataManager getWorkbenchDataManager() {
-		return workbenchDataManager;
-	}
-
-	
 	void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
+	}
+
+	
+	public void setCentralDbGenerator(IBDBGeneratorCentralDb centralDbGenerator) {
+		this.centralDbGenerator = centralDbGenerator;
+	}
+
+	
+	public void setLocalDbGenerator(IBDBGeneratorLocalDb localDbGenerator) {
+		this.localDbGenerator = localDbGenerator;
 	}
 }

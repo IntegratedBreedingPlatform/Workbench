@@ -12,10 +12,18 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
+import java.io.File;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.model.LocationModel;
-import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -24,15 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.File;
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 
@@ -43,8 +42,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
-    private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-    private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private CropType cropType;
@@ -52,6 +49,10 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
+    
+    public IBDBGeneratorLocalDb() {
+    	
+    }
 
     public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
         this.cropType = cropType;
@@ -144,141 +145,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
         }
-    }
-    
-    public boolean addCachedLocations(Map<Integer, LocationModel> cachedLocations) {
-    	
-    	boolean areLocationsAdded = false;
-    	
-    	PreparedStatement preparedStatement = null;
-    	try {
-    		
-		    connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-    	
-		    connection.setCatalog(generatedDatabaseName);
-    	
-    	    Set<Integer> keySet = cachedLocations.keySet();
-    	
-    	    Iterator<Integer> keyIter = keySet.iterator();
-    	
-    	    LocationModel location;
-    	
-    	    preparedStatement = connection.prepareStatement(DEFAULT_INSERT_LOCATIONS);
-    	
-    	    while(keyIter.hasNext()) {
-    		
-    	    	location = cachedLocations.get(keyIter.next());
-    		
-    		    preparedStatement.setInt(1, location.getLocationId());
-    		    preparedStatement.setInt(2, 0);
-    		    preparedStatement.setInt(3, 0);
-    		    preparedStatement.setString(4, location.getLocationName());
-    		    preparedStatement.setString(5, location.getLocationAbbreviation());
-    		    preparedStatement.setInt(6, 0);
-    		    preparedStatement.setInt(7, 0);
-    		    preparedStatement.setInt(8, 0);
-    		    preparedStatement.setInt(9, 0);
-    		    preparedStatement.setInt(10, 0);
-    		    preparedStatement.setInt(11, 0);
-    		    
-    		    preparedStatement.executeUpdate();
-    	    }
-    	    
-    	    areLocationsAdded = true;
-
-		} catch (SQLException e) {
-		    handleDatabaseError(e);
-		}
-    	finally {
-    	    if (preparedStatement != null) {
-    	        try {
-                    preparedStatement.close();
-                }
-                catch (SQLException e) {
-                }
-    	    }
-    	    closeConnection();
-    	}
-    	
-    	return areLocationsAdded;
-    	
-    }
-    
-    public boolean addCachedBreedingMethods(Map<Integer, MethodView> cachedBreedingMethods) {
-        
-        boolean areBreedingMethodsAdded = false;
-        
-        PreparedStatement preparedStatement = null;
-        try {
-            
-            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-        
-            connection.setCatalog(generatedDatabaseName);
-        
-            Set<Integer> keySet = cachedBreedingMethods.keySet();
-        
-            Iterator<Integer> keyIter = keySet.iterator();
-        
-            MethodView breedingMethod;
-        
-            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_BREEDING_METHODS);
-        
-            while(keyIter.hasNext()) {
-            
-                breedingMethod = cachedBreedingMethods.get(keyIter.next());
-            
-   /*             mid int
-                mtype combo string
-                mgrp string 3  -
-                mcode string 8
-                mname string 50
-                mdesc string 255
-                mref int 0
-                mprgn int 0
-                mfprg int 0
-                mattr int 0
-                geneq int 0
-                muid int 0
-                lmid int 0
-                mdate int*/
-                
-                preparedStatement.setInt(1, breedingMethod.getMid());
-                preparedStatement.setString(2, breedingMethod.getMtype());
-                preparedStatement.setString(3, breedingMethod.getMgrp());
-                preparedStatement.setString(4, breedingMethod.getMcode());
-                preparedStatement.setString(5, breedingMethod.getMname());
-                preparedStatement.setString(6, breedingMethod.getMdesc());
-                preparedStatement.setInt(7, 0);
-                preparedStatement.setInt(8, 0);
-                preparedStatement.setInt(9, 0);
-                preparedStatement.setInt(10, 0);
-                preparedStatement.setInt(11, 0);
-                preparedStatement.setInt(12, 0);
-                preparedStatement.setInt(13, 0);
-                
-                preparedStatement.setInt(14, 0);
-                
-                preparedStatement.executeUpdate();
-            
-            }
-            
-            areBreedingMethodsAdded = true;
-        } catch (SQLException e) {
-            handleDatabaseError(e);
-        }
-        finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                }
-                catch (SQLException e) {
-                }
-            }
-            closeConnection();
-        }
-        
-        return areBreedingMethodsAdded;
-        
     }
     
     /**
@@ -381,5 +247,15 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
-    
+
+	
+	public void setCropType(CropType cropType) {
+		this.cropType = cropType;
+	}
+
+	
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
 }

@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.Set;
 
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -57,6 +59,8 @@ public class AddProgramPresenter {
 
         programService.setCurrentUser(this.sessionData.getUserData());
         programService.setSelectedUsers(this.users);
+        programService.setCentralDbGenerator(new IBDBGeneratorCentralDb());
+        programService.setLocalDbGenerator(new IBDBGeneratorLocalDb());
         programService.createNewProgram(this.program);
     }
 
