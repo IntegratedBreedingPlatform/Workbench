@@ -64,10 +64,8 @@ public class ProgramService {
 	public void createNewProgram(Project program) throws Exception {
 		boolean isGenerationSuccess = false;
 		boolean isMysqlAccountGenerationSuccess = false;
-
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
-		program.setUserId(app.getSessionData().getUserData().getUserid());
+		
+		program.setUserId(this.currentUser.getUserid());
 
 		// TODO: REMOVE Once template is no longer required in Project
 		CropType cropType = workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
@@ -99,8 +97,7 @@ public class ProgramService {
 		isGenerationSuccess = generator.generateDatabase();
 
 		if (isGenerationSuccess) {
-			User currentUser = app.getSessionData().getUserData();
-			User user = currentUser.copy();
+			User user = this.currentUser.copy();
 
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
@@ -367,5 +364,19 @@ public class ProgramService {
 	
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
+	}
+
+	
+	WorkbenchDataManager getWorkbenchDataManager() {
+		return workbenchDataManager;
+	}
+
+	
+	void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	void setToolUtil(ToolUtil toolUtil) {
+		this.toolUtil = toolUtil;
 	}
 }
