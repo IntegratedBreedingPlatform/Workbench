@@ -98,8 +98,7 @@ public class UserAccountValidatorTest {
 
 		partialValidator.validatePasswordConfirmationIfEquals(errors, userAccount);
 
-		verifyZeroInteractions(errors);
-
+		verify(errors,never()).rejectValue(anyString(),anyString());
 	}
 
 	@Test
@@ -155,7 +154,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUsernameIfExists(errors, userAccount);
 
-		verifyZeroInteractions(errors);
+		verify(errors,never()).rejectValue(anyString(),anyString());
 	}
 
 	@Test
@@ -214,7 +213,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validatePersonIfExists(errors, userAccount);
 
-		verifyZeroInteractions(errors);
+		verify(errors,never()).rejectValue(anyString(),anyString());
 	}
 
 	@Test
@@ -225,7 +224,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUserRole(errors, userAccount);
 
-		verifyZeroInteractions(errors);
+		verify(errors,never()).rejectValue(anyString(),anyString());
 	}
 
 	@Test
