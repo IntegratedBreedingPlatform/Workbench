@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -30,19 +30,23 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -50,7 +54,6 @@ import java.util.Set;
  * 
  * @author Joyce Avestro
  */
-@SuppressWarnings("unchecked")
 @Configurable
 public class ProjectMembersComponent extends VerticalLayout implements InitializingBean{
     
@@ -107,6 +110,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         
         Table.ColumnGenerator generator1 = new Table.ColumnGenerator(){
 
+        	private static final long serialVersionUID = 1L;
+
 			@Override
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
@@ -122,6 +127,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         	
         };
         Table.ColumnGenerator generator2 = new Table.ColumnGenerator(){
+			
+        	private static final long serialVersionUID = 1L;
 
 			@Override
 			public Object generateCell(Table source, Object itemId,
@@ -151,19 +158,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         select.setLeftLinkCaption("");
         select.setRightLinkCaption("Remove Selected Members");
         select.addRightLinkListener(new Button.ClickListener() {
-			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				select.removeCheckedSelectedItems();
 			}
 		});
-        
-       
         buttonArea = layoutButtonArea();
-        
-        
     }
-
 
     protected void initializeValues() {
         try {
@@ -180,7 +183,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
             if (selectItem != null) {
                 select.select(selectItem);
             }
-            
 
         }
         catch (MiddlewareQueryException e) {
@@ -226,7 +228,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
 
         btnSave.addListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(ClickEvent clickEvent) {
                 try {
                     presenter.doAddNewProgram();
@@ -260,7 +264,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         });
 
         btnCancel.addListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(ClickEvent clickEvent) {
                 presenter.resetProgramMembers();
                 presenter.disableProgramMethodsAndLocationsTab();
@@ -322,28 +328,5 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         }
 
         return select.getValue();
-    }
-
-
-    
-    public List<ProjectUserRole> getProjectUserRoles() {
-
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        try {
-            WorkflowTemplate managerTemplate = workbenchDataManager.getWorkflowTemplateByName(WorkflowTemplate.MANAGER_NAME).get(0);
-
-            // BY DEFAULT, current user has all the roles
-            for (Role role : workbenchDataManager.getAllRoles()) {
-                ProjectUserRole projectUserRole = new ProjectUserRole();
-                projectUserRole.setRole(role);
-                projectUserRoles.add(projectUserRole);
-
-            }
-
-        } catch (MiddlewareQueryException e) {
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-
-        return projectUserRoles;
     }
 }
