@@ -66,7 +66,6 @@ public class UserAccountValidatorTest {
 
 	}
 
-
 	@Test
 	public void testValidatePasswordConfirmationIfEquals() throws Exception {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
@@ -81,7 +80,7 @@ public class UserAccountValidatorTest {
 
 		verify(errors).rejectValue(arg1.capture(), arg2.capture());
 		assertEquals("error should output password confirmation field",
-				UserAccountValidator.UserAccountFields.PASSWORD_CONFIRMATION, arg1.getValue());
+				UserAccountFields.PASSWORD_CONFIRMATION, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.SIGNUP_FIELD_PASSWORD_NOT_MATCH,
 				arg2.getValue());
@@ -98,7 +97,7 @@ public class UserAccountValidatorTest {
 
 		partialValidator.validatePasswordConfirmationIfEquals(errors, userAccount);
 
-		verify(errors,never()).rejectValue(anyString(),anyString());
+		verify(errors, never()).rejectValue(anyString(), anyString());
 	}
 
 	@Test
@@ -114,9 +113,10 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUsernameIfExists(errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(),arg2.capture(),any(String[].class),anyString());
+		verify(errors)
+				.rejectValue(arg1.capture(), arg2.capture(), any(String[].class), anyString());
 		assertEquals("error should output username field",
-				UserAccountValidator.UserAccountFields.USERNAME, arg1.getValue());
+				UserAccountFields.USERNAME, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS,
 				arg2.getValue());
@@ -136,9 +136,9 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUsernameIfExists(errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(),arg2.capture());
+		verify(errors).rejectValue(arg1.capture(), arg2.capture());
 		assertEquals("error should output username field",
-				UserAccountValidator.UserAccountFields.USERNAME, arg1.getValue());
+				UserAccountFields.USERNAME, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.DATABASE_ERROR,
 				arg2.getValue());
@@ -154,7 +154,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUsernameIfExists(errors, userAccount);
 
-		verify(errors,never()).rejectValue(anyString(),anyString());
+		verify(errors, never()).rejectValue(anyString(), anyString());
 	}
 
 	@Test
@@ -166,15 +166,17 @@ public class UserAccountValidatorTest {
 		userAccount.setFirstName("firstName");
 		userAccount.setLastName("lastName");
 
-		when(workbenchDataManager.isPersonExists(userAccount.getFirstName(),userAccount.getLastName())).thenReturn(true);
+		when(workbenchDataManager
+				.isPersonExists(userAccount.getFirstName(), userAccount.getLastName()))
+				.thenReturn(true);
 
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validatePersonIfExists(errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(),arg2.capture(),any(String[].class),
-		anyString());
+		verify(errors).rejectValue(arg1.capture(), arg2.capture(), any(String[].class),
+				anyString());
 		assertEquals("error should output first_name field",
-				UserAccountValidator.UserAccountFields.FIRST_NAME, arg1.getValue());
+				UserAccountFields.FIRST_NAME, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.SIGNUP_FIELD_PERSON_EXISTS,
 				arg2.getValue());
@@ -189,14 +191,16 @@ public class UserAccountValidatorTest {
 		userAccount.setFirstName("firstName");
 		userAccount.setLastName("lastName");
 
-		when(workbenchDataManager.isPersonExists(userAccount.getFirstName(),userAccount.getLastName())).thenThrow(MiddlewareQueryException.class);
+		when(workbenchDataManager
+				.isPersonExists(userAccount.getFirstName(), userAccount.getLastName()))
+				.thenThrow(MiddlewareQueryException.class);
 
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validatePersonIfExists(errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(),arg2.capture());
+		verify(errors).rejectValue(arg1.capture(), arg2.capture());
 		assertEquals("error should output first_name field",
-				UserAccountValidator.UserAccountFields.FIRST_NAME, arg1.getValue());
+				UserAccountFields.FIRST_NAME, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.DATABASE_ERROR,
 				arg2.getValue());
@@ -208,12 +212,14 @@ public class UserAccountValidatorTest {
 		userAccount.setFirstName("firstName");
 		userAccount.setLastName("lastName");
 
-		when(workbenchDataManager.isPersonExists(userAccount.getFirstName(),userAccount.getLastName())).thenReturn(false);
+		when(workbenchDataManager
+				.isPersonExists(userAccount.getFirstName(), userAccount.getLastName()))
+				.thenReturn(false);
 
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validatePersonIfExists(errors, userAccount);
 
-		verify(errors,never()).rejectValue(anyString(),anyString());
+		verify(errors, never()).rejectValue(anyString(), anyString());
 	}
 
 	@Test
@@ -224,7 +230,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUserRole(errors, userAccount);
 
-		verify(errors,never()).rejectValue(anyString(),anyString());
+		verify(errors, never()).rejectValue(anyString(), anyString());
 	}
 
 	@Test
@@ -232,17 +238,16 @@ public class UserAccountValidatorTest {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
-
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setRole("NON_EXISTING_ROLE");
 
 		UserAccountValidator partialValidator = spy(validator);
 		partialValidator.validateUserRole(errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(),arg2.capture());
+		verify(errors).rejectValue(arg1.capture(), arg2.capture());
 
 		assertEquals("error should output role field",
-				UserAccountValidator.UserAccountFields.ROLE, arg1.getValue());
+				UserAccountFields.ROLE, arg1.getValue());
 		assertEquals("show correct error code",
 				UserAccountValidator.SIGNUP_FIELD_INVALID_ROLE,
 				arg2.getValue());
