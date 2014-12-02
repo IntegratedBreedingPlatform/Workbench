@@ -21,8 +21,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class UpdateProjectPanel extends CreateProjectPanel {
 
+	private static final long serialVersionUID = 1L;
 
-    @Autowired
+	@Autowired
     private WorkbenchDataManager workbenchDataManager;
 
     @Autowired
@@ -42,7 +43,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
         super.saveProjectButton.setCaption("Save");
         cancelButton.addListener(new Button.ClickListener() {
 
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(ClickEvent event) {
                 projectBasicDetailsComponent.updateProjectDetailsFormField(sessionData.getSelectedProject());
 

@@ -1,7 +1,8 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -16,20 +17,24 @@ import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
 	
 	private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(AddProgramView.class);
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -120,7 +125,10 @@ public class AddProgramView extends Panel implements InitializingBean {
 	
 	protected void initializeActions() {
 	    finishButton.addListener(new Button.ClickListener() {
-            @Override
+       
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(),presenter.program.getProjectId()).buttonClick(clickEvent);
             }
