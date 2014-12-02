@@ -434,25 +434,19 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     	return errorMessage;
 	}
 
-	public Project validateAndSave() throws InvalidValueException {
+	public Project getProjectDetails() throws InvalidValueException {
         if (!validate()) {
             throw new InvalidValueException("Failed Validation on BasicDetailsForm");
         }
 
         Project project = new Project();
-
         String projectName = (String) projectNameField.getValue();
         if (projectName != null) {
             projectName = projectName.trim();
         }
-
         project.setProjectName(projectName);
         project.setStartDate((Date) startDateField.getValue());
-
         project.setCropType(getCropTypeBasedOnInput());
-        
-        
-        
         return project;
     }
     

@@ -12,7 +12,6 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -316,17 +315,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
         return beanItemContainer;
     }
 
-
-    public boolean validate(){
-        return true;
-    }
-
-    public Set<User> validateAndSave(){
-
-        if(!validate()) {
-            return new HashSet<User>();
-        }
-
+    public Set<User> getSelectedUsers(){
         return select.getValue();
     }
 }

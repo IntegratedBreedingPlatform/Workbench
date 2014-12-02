@@ -90,7 +90,7 @@ public class UpdateProjectAction implements Button.ClickListener  {
             toolUtil.renameOldWorkspaceDirectoryToNewFormat(sessionData.getSelectedProject().getProjectId(),projectPanel.getOldProjectName());
 
             // update the project
-            Project updatedProject = projectPanel.projectBasicDetailsComponent.validateAndSave();
+            Project updatedProject = projectPanel.projectBasicDetailsComponent.getProjectDetails();
             sessionData.getSelectedProject().setProjectName(updatedProject.getProjectName());
             sessionData.getSelectedProject().setStartDate(updatedProject.getStartDate());
             workbenchDataManager.saveOrUpdateProject(sessionData.getSelectedProject());
