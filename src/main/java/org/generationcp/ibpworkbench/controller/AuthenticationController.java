@@ -26,6 +26,10 @@ import java.util.Map;
 @RequestMapping(AuthenticationController.URL)
 public class AuthenticationController {
 	public static final String URL = "/auth";
+
+	public static final String SUCCESS = "success";
+	public static final String ERRORS = "errors";
+
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
 	@Resource
@@ -60,8 +64,8 @@ public class AuthenticationController {
 								LocaleContextHolder.getLocale()));
 			}
 
-			out.put("success", Boolean.FALSE);
-			out.put("errors", errors);
+			out.put(SUCCESS, Boolean.FALSE);
+			out.put(ERRORS, errors);
 
 		} else {
 			// attempt to save the user to the database
@@ -69,12 +73,12 @@ public class AuthenticationController {
 				workbenchUserService.saveUserAccount(model);
 
 				isSuccess = HttpStatus.OK;
-				out.put("success", Boolean.TRUE);
+				out.put(SUCCESS, Boolean.TRUE);
 
 			} catch (MiddlewareQueryException e) {
 
-				out.put("success", Boolean.FALSE);
-				out.put("errors", e.getMessage());
+				out.put(SUCCESS, Boolean.FALSE);
+				out.put(ERRORS, e.getMessage());
 
 				LOG.error(e.getMessage(), e);
 			}

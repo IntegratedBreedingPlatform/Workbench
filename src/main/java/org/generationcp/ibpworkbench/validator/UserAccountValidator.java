@@ -4,6 +4,8 @@ import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.validation.Errors;
@@ -23,6 +25,8 @@ public class UserAccountValidator implements Validator {
 	protected static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
 	protected static final String DATABASE_ERROR = "database.error";
 	protected static final String SIGNUP_FIELD_PERSON_EXISTS = "signup.field.person.exists";
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserAccountValidator.class);
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -49,20 +53,20 @@ public class UserAccountValidator implements Validator {
 
 	protected void validateFieldsEmptyOrWhitespace(Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.FIRST_NAME,
-				SIGNUP_FIELD_REQUIRED,new String[] {"First Name"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "First Name" });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.LAST_NAME,
-				SIGNUP_FIELD_REQUIRED,new String[] {"Last Name"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "Last Name" });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.EMAIL,
-				SIGNUP_FIELD_REQUIRED,new String[]{"Email"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "Email" });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.USERNAME,
-				SIGNUP_FIELD_REQUIRED,new String[]{"Username"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "Username" });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.PASSWORD,
-				SIGNUP_FIELD_REQUIRED,new String[]{"Password"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "Password" });
 		ValidationUtils
 				.rejectIfEmptyOrWhitespace(errors,
 						UserAccountFields.PASSWORD_CONFIRMATION, SIGNUP_FIELD_REQUIRED);
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.ROLE,
-				SIGNUP_FIELD_REQUIRED,new String[]{"Confirmation Password"});
+				SIGNUP_FIELD_REQUIRED, new String[] { "Confirmation Password" });
 	}
 
 	protected void validateUserRole(Errors errors, UserAccountModel userAccount) {
@@ -88,10 +92,12 @@ public class UserAccountValidator implements Validator {
 		try {
 			if (workbenchDataManager.isUsernameExists(userAccount.getUsername())) {
 				errors.rejectValue(UserAccountFields.USERNAME,
-						SIGNUP_FIELD_USERNAME_EXISTS,new String[]{userAccount.getUsername()},null);
+						SIGNUP_FIELD_USERNAME_EXISTS, new String[] { userAccount.getUsername() },
+						null);
 			}
 		} catch (MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, DATABASE_ERROR);
+			LOG.error(e.getMessage(),e);
 		}
 	}
 
@@ -100,14 +106,17 @@ public class UserAccountValidator implements Validator {
 			if (workbenchDataManager
 					.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())) {
 				errors.rejectValue(UserAccountFields.FIRST_NAME,
-						SIGNUP_FIELD_PERSON_EXISTS,new String[] {userAccount.getFirstName(),userAccount.getLastName()},null);
+						SIGNUP_FIELD_PERSON_EXISTS,
+						new String[] { userAccount.getFirstName(), userAccount.getLastName() },
+						null);
 			}
 		} catch (MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.FIRST_NAME, DATABASE_ERROR);
+			LOG.error(e.getMessage(),e);
 		}
 	}
 
-	public interface UserAccountFields {
+	public class UserAccountFields {
 		public static final String FIRST_NAME = "firstName";
 		public static final String LAST_NAME = "lastName";
 		public static final String EMAIL = "email";
