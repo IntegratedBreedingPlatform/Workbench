@@ -132,14 +132,14 @@ public class ProgramService {
 			managerFactory.getUserDataManager().updateUser(user);
 
 			// save current user roles to the program
-			List<ProjectUserRole> projectUserRoles = this.getCurrentUserRoles();
+			List<ProjectUserRole> projectUserRoles = getCurrentUserRoles();
 
 			if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
 				saveProgramUserRoles(projectUserRoles, program);
 			}
 
 			// save user roles for the rest of program members
-			List<ProjectUserRole> projectMembers = this.getProgamMemberUserRoles();
+			List<ProjectUserRole> projectMembers = getProgamMemberUserRoles();
 
 			if ((projectMembers != null) && (!projectMembers.isEmpty())) {
 				saveProjectMembers(managerFactory.getUserDataManager(), projectMembers, program);
@@ -387,5 +387,9 @@ public class ProgramService {
 	
 	public void setLocalDbGenerator(IBDBGeneratorLocalDb localDbGenerator) {
 		this.localDbGenerator = localDbGenerator;
+	}
+	
+	void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
+		this.managerFactoryProvider = managerFactoryProvider;
 	}
 }
