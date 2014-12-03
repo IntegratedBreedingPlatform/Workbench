@@ -141,25 +141,23 @@ public class ProgramService {
 			managerFactory.close();
 
 			// create mysql user accounts for members of the project
-			if (isGenerationSuccess) {
-				Set<User> projectMembersSet = new HashSet<User>();
-				projectMembersSet.add(currentUser);
+			Set<User> projectMembersSet = new HashSet<User>();
+			projectMembersSet.add(currentUser);
 
-				for (ProjectUserRole projectUserRole : projectUserRoles) {
-					try {
-						User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
-						projectMembersSet.add(member);
-					} catch (MiddlewareQueryException ex) {
-						// do nothing because getting the User will not fail
-					}
+			for (ProjectUserRole projectUserRole : projectUserRoles) {
+				try {
+					User member = this.workbenchDataManager.getUserById(projectUserRole.getUserId());
+					projectMembersSet.add(member);
+				} catch (MiddlewareQueryException ex) {
+					// do nothing because getting the User will not fail
 				}
-
-				MysqlAccountGenerator mysqlAccountGenerator =
-						new MysqlAccountGenerator(program.getCropType(), program.getProjectId(), this.idAndNameOfProgramMembers, this.workbenchDataManager);
-
-				isMysqlAccountGenerationSuccess = mysqlAccountGenerator.generateMysqlAccounts();
-
 			}
+
+			MysqlAccountGenerator mysqlAccountGenerator =
+					new MysqlAccountGenerator(program.getCropType(), program.getProjectId(), this.idAndNameOfProgramMembers, this.workbenchDataManager);
+
+			isMysqlAccountGenerationSuccess = mysqlAccountGenerator.generateMysqlAccounts();
+
 
 			// Create records for workbench_project_user_info table
 			for (Map.Entry<Integer, String> e : idAndNameOfProgramMembers.entrySet()) {
