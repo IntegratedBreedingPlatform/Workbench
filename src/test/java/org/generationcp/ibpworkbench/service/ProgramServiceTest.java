@@ -1,5 +1,9 @@
 package org.generationcp.ibpworkbench.service;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +11,7 @@ import java.util.Set;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
+import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -22,10 +27,6 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 public class ProgramServiceTest {
@@ -79,6 +80,8 @@ public class ProgramServiceTest {
 		IBDBGeneratorLocalDb localDBGenerator = mock(IBDBGeneratorLocalDb.class);
 		when(localDBGenerator.generateDatabase()).thenReturn(true);
 		
+		MysqlAccountGenerator mySQLAccountGenerator = Mockito.mock(MysqlAccountGenerator.class);
+		
 		ManagerFactoryProvider managerFactoryProvider = mock(ManagerFactoryProvider.class);
 		ManagerFactory managerFactory = mock(ManagerFactory.class);
 		when(managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(managerFactory);
@@ -90,6 +93,7 @@ public class ProgramServiceTest {
 		programService.setToolUtil(toolUtil);
 		programService.setCentralDbGenerator(centralDBGenerator);
 		programService.setLocalDbGenerator(localDBGenerator);
+		programService.setMySQLAccountGenerator(mySQLAccountGenerator);
 		programService.setManagerFactoryProvider(managerFactoryProvider);
 		programService.setCurrentUser(loggedInUser);
 		programService.setSelectedUsers(programMembers);
@@ -110,6 +114,7 @@ public class ProgramServiceTest {
 		verify(userDataManager).addUser(Mockito.any(User.class));
 		
 		verify(workbenchDataManager, Mockito.times(allRolesList.size())).addProjectUserRole(Mockito.any(ProjectUserRole.class));
+		verify(mySQLAccountGenerator).generateMysqlAccounts();
 		verify(workbenchDataManager).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 	}
 

@@ -47,6 +47,7 @@ public class ProgramService {
 	
 	private IBDBGeneratorCentralDb centralDbGenerator;
 	private IBDBGeneratorLocalDb localDbGenerator;
+	private MysqlAccountGenerator mySQLAccountGenerator;
 	
     private Set<User> selectedUsers;
     
@@ -276,9 +277,11 @@ public class ProgramService {
 	
 	private void createMySQLAccounts(Project program) {
 		// create mysql user accounts for members of the project
-		MysqlAccountGenerator mysqlAccountGenerator =
-				new MysqlAccountGenerator(program.getCropType(), program.getProjectId(), this.idAndNameOfProgramMembers, this.workbenchDataManager);
-		mysqlAccountGenerator.generateMysqlAccounts();
+		mySQLAccountGenerator.setCropType(program.getCropType());
+		mySQLAccountGenerator.setProjectId(program.getProjectId());
+		mySQLAccountGenerator.setIdAndNameOfProjectMembers(this.idAndNameOfProgramMembers);
+		mySQLAccountGenerator.setDataManager(this.workbenchDataManager);
+		mySQLAccountGenerator.generateMysqlAccounts();
 	}
     
     private List<ProjectUserRole> getCurrentUserRoles() throws MiddlewareQueryException {
@@ -341,7 +344,11 @@ public class ProgramService {
 	public void setLocalDbGenerator(IBDBGeneratorLocalDb localDbGenerator) {
 		this.localDbGenerator = localDbGenerator;
 	}
-	
+
+	public void setMySQLAccountGenerator(MysqlAccountGenerator mySQLAccountGenerator) {
+		this.mySQLAccountGenerator = mySQLAccountGenerator;
+	}
+
 	void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
 		this.managerFactoryProvider = managerFactoryProvider;
 	}
