@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
 import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
@@ -79,18 +78,18 @@ public class ProgramService {
 		isGenerationSuccess = this.localDbGenerator.generateDatabase();
 
 		if (isGenerationSuccess) {
-			User user = this.currentUser.copy();
+			User currentUserCopy = this.currentUser.copy();
 
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
 			// create the project's local person and user data
 			Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
-			Person person = currentPerson.copy();
+			Person currentPersonCopy = currentPerson.copy();
 
 			// add the person to the project's local database
-			managerFactory.getUserDataManager().addPerson(person);
+			managerFactory.getUserDataManager().addPerson(currentPersonCopy);
 
-			// add the user ,person and instln to the central database if creating a new custom crop
+			// add the user, person to the central database if creating a new custom crop
 			if (!centralDbGenerator.isAlreadyExists()) {
 				currentPerson.setInstituteId(1);
 
@@ -98,31 +97,33 @@ public class ProgramService {
 				centralPerson.setId(currentPerson.getId());
 				managerFactory.getUserDataManager().addPersonToCentral(centralPerson);
 
-				currentUser.setAccess(PROJECT_USER_ACCESS_NUMBER_CENTRAL);
-				currentUser.setType(PROJECT_USER_TYPE_CENTRAL);
-				currentUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-				currentUser.setAdate(getCurrentDate());
-				currentUser.setInstalid(1);
-				managerFactory.getUserDataManager().addUserToCentral(currentUser.copy());
+				currentUserCopy.setAccess(PROJECT_USER_ACCESS_NUMBER_CENTRAL);
+				currentUserCopy.setType(PROJECT_USER_TYPE_CENTRAL);
+				currentUserCopy.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+				currentUserCopy.setAdate(getCurrentDate());
+				currentUserCopy.setInstalid(1);
+				managerFactory.getUserDataManager().addUserToCentral(currentUserCopy);
 			}
 
 			// add a user to project's local database
-			String newUserName = person.getInitialsWithTimestamp();
+			String newUserName = currentPersonCopy.getInitialsWithTimestamp();
 			// password should be 11 chars long only
 			String newPassword = newUserName.substring(0, 11);
 
-			user.setName(newUserName);
-			user.setPassword(newPassword);
-			user.setPersonid(person.getId());
-			user.setAccess(PROJECT_USER_ACCESS_NUMBER);
-			user.setType(PROJECT_USER_TYPE);
-			user.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-			user.setAdate(getCurrentDate());
-			user.setInstalid(Integer.valueOf(-1));
-			managerFactory.getUserDataManager().addUser(user);
+			currentUserCopy.setName(newUserName);
+			currentUserCopy.setPassword(newPassword);
+			currentUserCopy.setPersonid(currentPersonCopy.getId());
+			currentUserCopy.setAccess(PROJECT_USER_ACCESS_NUMBER);
+			currentUserCopy.setType(PROJECT_USER_TYPE);
+			currentUserCopy.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+			currentUserCopy.setAdate(getCurrentDate());
+			currentUserCopy.setInstalid(Integer.valueOf(-1));
+			managerFactory.getUserDataManager().addUser(currentUserCopy);
 			// add to map of project members
 			this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
 
+			this.allRolesList = workbenchDataManager.getAllRoles();
+			
 			// save current user roles to the program
 			List<ProjectUserRole> projectUserRoles = getCurrentUserRoles();
 
@@ -178,7 +179,7 @@ public class ProgramService {
 			IbdbUserMap ibdbUserMap = new IbdbUserMap();
 			ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
 			ibdbUserMap.setProjectId(program.getProjectId());
-			ibdbUserMap.setIbdbUserId(user.getUserid());
+			ibdbUserMap.setIbdbUserId(currentUserCopy.getUserid());
 			workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 
 		}
@@ -290,16 +291,9 @@ public class ProgramService {
     
     private void saveProgramUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
 
-        if (allRolesList == null) {
-            allRolesList = workbenchDataManager.getAllRoles();
-        }
-
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        Integer userId = app.getSessionData().getUserData().getUserid();
-
         for (ProjectUserRole projectUserRole : projectUserRoles){
             projectUserRole.setProject(projectSaved);
-            projectUserRole.setUserId(userId);
+            projectUserRole.setUserId(this.currentUser.getUserid());
 
             workbenchDataManager.addProjectUserRole(projectUserRole);
         }
@@ -307,9 +301,6 @@ public class ProgramService {
     }
     
     private List<ProjectUserRole> getCurrentUserRoles() throws MiddlewareQueryException {
-        if (allRolesList == null) {
-            allRolesList = workbenchDataManager.getAllRoles();
-        }
 
         List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 
@@ -324,11 +315,8 @@ public class ProgramService {
     }
 
     private List<ProjectUserRole> getProgamMemberUserRoles() throws MiddlewareQueryException  {
-        if (allRolesList == null) {
-            allRolesList = workbenchDataManager.getAllRoles();
-        }
 
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+    	List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 
         for (User user : selectedUsers) {
             // only retrieve selected members that's not the current user.
