@@ -56,8 +56,7 @@ public class ProgramService {
 
     private List<Role> allRolesList;
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
-    private int programUserInstalId = -1; // instalid of installation inserted, default value is -1
-	
+    
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
@@ -105,7 +104,6 @@ public class ProgramService {
 				currentUser.setAdate(getCurrentDate());
 				currentUser.setInstalid(1);
 				managerFactory.getUserDataManager().addUserToCentral(currentUser.copy());
-				centralDbGenerator.addCentralInstallationRecord(program.getProjectName(), currentUser.getUserid());
 			}
 
 			// add a user to project's local database
@@ -120,16 +118,10 @@ public class ProgramService {
 			user.setType(PROJECT_USER_TYPE);
 			user.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
 			user.setAdate(getCurrentDate());
-			int localUserId = managerFactory.getUserDataManager().addUser(user);
+			user.setInstalid(Integer.valueOf(-1));
+			managerFactory.getUserDataManager().addUser(user);
 			// add to map of project members
 			this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
-
-			// Add the installation record in the local db with the given project name and the newly added local user
-			programUserInstalId = this.localDbGenerator.addLocalInstallationRecord(program.getProjectName(), localUserId);
-
-			// Set the instalId of the local user
-			user.setInstalid(Integer.valueOf(programUserInstalId));
-			managerFactory.getUserDataManager().updateUser(user);
 
 			// save current user roles to the program
 			List<ProjectUserRole> projectUserRoles = getCurrentUserRoles();
@@ -276,7 +268,7 @@ public class ProgramService {
                     localUser.setPersonid(localPerson.getId());
                     localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
                     localUser.setType(PROJECT_USER_TYPE);
-                    localUser.setInstalid(Integer.valueOf(programUserInstalId));
+                    localUser.setInstalid(Integer.valueOf(-1));
                     localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
                     localUser.setAdate(getCurrentDate());
                     Integer userId = userDataManager.addUser(localUser);

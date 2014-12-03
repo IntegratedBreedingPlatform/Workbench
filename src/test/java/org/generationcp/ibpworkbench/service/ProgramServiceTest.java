@@ -96,8 +96,6 @@ public class ProgramServiceTest {
 		verify(centralDBGenerator).generateDatabase();
 		verify(localDBGenerator).generateDatabase();
 		
-		verify(localDBGenerator).addLocalInstallationRecord(Mockito.anyString(), Mockito.anyInt());
-		
 		verify(workbenchDataManager).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 	}
 

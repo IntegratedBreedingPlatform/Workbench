@@ -13,14 +13,8 @@
 package org.generationcp.ibpworkbench.database;
 
 import java.io.File;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
@@ -41,8 +35,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
-
-    private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private CropType cropType;
     private Long projectId;
@@ -145,91 +137,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
         }
-    }
-    
-    /**
-     * @param projectName
-     * @return instalid of the installation created. -1 otherwise (default instalid)
-     */
-    public int addLocalInstallationRecord(String projectName, int localUserId) {
-
-        int installId = -1;
-
-        PreparedStatement preparedStatement = null;
-        Statement stmt = null;
-        ResultSet resultSet = null;
-        try {
-            
-            connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
-        
-            connection.setCatalog(generatedDatabaseName);
-            
-            stmt = connection.createStatement();
-            resultSet = stmt.executeQuery("SELECT MIN(instalid) FROM instln");
-            
-            if (resultSet.next()) {
-                installId = resultSet.getInt(1);
-                installId--;
-            }
-            
-            preparedStatement = connection.prepareStatement(DEFAULT_INSERT_INSTALLATION);
-            
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            Date date = new Date();
-            dateFormat.format(date);
-            
-            preparedStatement.setInt(1, installId); // instalid
-            preparedStatement.setInt(2, localUserId);        // admin
-            preparedStatement.setInt(3, Integer.parseInt(dateFormat.format(date))); // udate
-            preparedStatement.setInt(4, 0);         // ugid
-            preparedStatement.setInt(5, 0);         // ulocn
-            preparedStatement.setInt(6, 0);         // ucid
-            preparedStatement.setInt(7, 0);         // unid
-            preparedStatement.setInt(8, 0);         // uaid
-            preparedStatement.setInt(9, 0);         // uldid
-            preparedStatement.setInt(10, 0);        // umethn
-            preparedStatement.setInt(11, 0);        // ufldno
-            preparedStatement.setInt(12, 0);        // urefno
-            preparedStatement.setInt(13, 0);        // upid
-            preparedStatement.setString(14, projectName);   // idesc
-            preparedStatement.setInt(15, 0);        // ulistid
-            preparedStatement.setInt(16, 0);        // dms_status
-            preparedStatement.setInt(17, 0);        // ulrecid
-            
-            preparedStatement.executeUpdate();
-            
-            preparedStatement = null;
-
-            
-        } catch (SQLException e) {
-            handleDatabaseError(e);
-        }
-        finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                }
-                catch (SQLException e) {
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                }
-                catch (SQLException e) {
-                }
-            }
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                }
-                catch (SQLException e) {
-                }
-            }
-            closeConnection();
-        }
-        
-        return installId;
     }
     
     public static void handleDatabaseError(Exception e) throws InternationalizableException {
