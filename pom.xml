@@ -6,13 +6,6 @@
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
     <version>3.1.0.SNAPSHOT</version>
-    <developers>
-        <developer>
-            <id>gmarintes</id>
-            <name>Glenn Marintes</name>
-            <email>glenn@efficio.us.com</email>
-        </developer>
-    </developers>
 
     <properties>
         <vaadin.version>6.8.13</vaadin.version>
