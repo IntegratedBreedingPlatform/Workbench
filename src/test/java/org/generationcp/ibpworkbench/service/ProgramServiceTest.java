@@ -17,6 +17,8 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -61,6 +63,14 @@ public class ProgramServiceTest {
 		ProjectUserInfoDAO puiDao = mock(ProjectUserInfoDAO.class);
 		when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
 		
+		ArrayList<Role> allRolesList = new ArrayList<Role>();
+		allRolesList.add(new Role(1, "CB Breeder", null));
+		allRolesList.add(new Role(2, "MAS Breeder", null));
+		allRolesList.add(new Role(3, "MABC Breeder", null));
+		allRolesList.add(new Role(4, "MARS Breeder", null));
+		allRolesList.add(new Role(5, "Manager", null));
+		when(workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
+		
 		ToolUtil toolUtil = mock(ToolUtil.class);
 		
 		IBDBGeneratorCentralDb centralDBGenerator = mock(IBDBGeneratorCentralDb.class);
@@ -96,6 +106,10 @@ public class ProgramServiceTest {
 		verify(centralDBGenerator).generateDatabase();
 		verify(localDBGenerator).generateDatabase();
 		
+		verify(userDataManager).addPerson(Mockito.any(Person.class));
+		verify(userDataManager).addUser(Mockito.any(User.class));
+		
+		verify(workbenchDataManager, Mockito.times(allRolesList.size())).addProjectUserRole(Mockito.any(ProjectUserRole.class));
 		verify(workbenchDataManager).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 	}
 
