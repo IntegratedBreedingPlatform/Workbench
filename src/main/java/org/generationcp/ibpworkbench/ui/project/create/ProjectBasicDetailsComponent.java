@@ -434,25 +434,19 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     	return errorMessage;
 	}
 
-	public Project validateAndSave() throws InvalidValueException {
+	public Project getProjectDetails() throws InvalidValueException {
         if (!validate()) {
             throw new InvalidValueException("Failed Validation on BasicDetailsForm");
         }
 
         Project project = new Project();
-
         String projectName = (String) projectNameField.getValue();
         if (projectName != null) {
             projectName = projectName.trim();
         }
-
         project.setProjectName(projectName);
         project.setStartDate((Date) startDateField.getValue());
-
         project.setCropType(getCropTypeBasedOnInput());
-        
-        
-        
         return project;
     }
     
@@ -486,15 +480,15 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	public void setAlignment(Alignment alignment){
-    	
     	this.setComponentAlignment(gridLayout, alignment);
     }
 	
 	private class ValueRangeValidator extends AbstractValidator{
 
+		private static final long serialVersionUID = 1L;
+
 		public ValueRangeValidator(String errorMessage) {
 			super(errorMessage);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -507,11 +501,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					return false;
 				}
 			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
 			
 			for (CropType.CropEnum crop : CropType.CropEnum.values()){
 				if (crop.toString().equalsIgnoreCase((value.toString().trim()))){
@@ -520,9 +511,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 				}
 			}
 			
-			
 			return true;
 		}
-		
 	}
 }

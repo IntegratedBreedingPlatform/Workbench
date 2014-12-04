@@ -6,13 +6,6 @@
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
     <version>3.1.0.SNAPSHOT</version>
-    <developers>
-        <developer>
-            <id>gmarintes</id>
-            <name>Glenn Marintes</name>
-            <email>glenn@efficio.us.com</email>
-        </developer>
-    </developers>
 
     <properties>
         <vaadin.version>6.8.13</vaadin.version>
@@ -20,6 +13,8 @@
         <gwt.plugin.version>2.5.1</gwt.plugin.version>
         <ibpcommons.version>3.1.0.SNAPSHOT</ibpcommons.version>
         <spring.version>3.2.11.RELEASE</spring.version>
+        <spring.security.version>3.2.5.RELEASE</spring.security.version>
+        <webapp.path>C:/Breeding Management System/infrastructure/tomcat/webapps</webapp.path>
     </properties>
 
     <distributionManagement>
@@ -172,7 +167,75 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
+        <!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+        <!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-aspects</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<!-- For AOP Proxying -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<!--ThymeLeaf Dependencies -->
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+			<version>2.1.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring3</artifactId>
+			<version>2.1.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity3</artifactId>
+			<version>2.1.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-conditionalcomments</artifactId>
+			<version>2.1.1.RELEASE</version>
+		</dependency>
+
         <!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -211,7 +274,7 @@
             <artifactId>poi-ooxml-schemas</artifactId>
             <version>3.8</version>
         </dependency>
-        
+
         <!-- Logging dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -227,22 +290,22 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>1.1.2</version>
-		</dependency>		
-        
+		</dependency>
+
         <!-- JUnit Dependency for Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
-        </dependency>       
+        </dependency>
         <!-- to be used in unit testing the restore functionality, we would dynamically do a git (svn) checkout -->
         <dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
 			<version>1.8.5</version>
 		</dependency>
-		        
+
         <!-- IBPCommons Dependency -->
         <dependency>
             <groupId>org.generationcp</groupId>
@@ -282,7 +345,7 @@
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
-        
+
         <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -341,6 +404,7 @@
                             </dependency>
                         </dependencies>
                     </plugin>
+
                     <plugin>
                         <groupId>com.vaadin</groupId>
                         <artifactId>vaadin-maven-plugin</artifactId>
@@ -399,7 +463,7 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
-                        <id>default-cli</id>
+                        <id>copy-properties</id>
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
@@ -408,11 +472,19 @@
                                         <include name="workbench.properties"/>
                                     </fileset>
                                 </copy>
-                                <copy todir="src/test/resources" overwrite="true">
-                                    <fileset dir="pipeline/config/${envConfig}" id="fromDir">
-                                        <include name="testDatabaseConfig.properties"/>
-                                        <include name="test.properties"/>
-                                    </fileset>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${webapp.path}/${project.artifactId}"/>
+                                <copy todir="${webapp.path}/${project.artifactId}">
+                                    <fileset dir="target/${project.artifactId}" includes="**/*"/>
                                 </copy>
                             </tasks>
                         </configuration>
@@ -462,7 +534,60 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>             
+			</plugin>
+
+			<!-- Gulp Plugin for Web Development -->
+	        <plugin>
+		        <groupId>com.github.eirslett</groupId>
+		        <artifactId>frontend-maven-plugin</artifactId>
+		        <version>0.0.16</version>
+
+		        <configuration>
+		        	<workingDirectory>src/main/web</workingDirectory>
+		        </configuration>
+
+		        <executions>
+		        	<execution>
+					    <id>install node and npm</id>
+					    <goals>
+					        <goal>install-node-and-npm</goal>
+					    </goals>
+					    <configuration>
+					        <nodeVersion>v0.10.33</nodeVersion>
+					        <npmVersion>2.1.7</npmVersion>
+					    </configuration>
+					</execution>
+
+					<execution>
+					    <id>npm install</id>
+					    <goals>
+					        <goal>npm</goal>
+					    </goals>
+					</execution>
+					<execution>
+					    <id>gulp clean</id>
+					    <goals>
+					        <goal>gulp</goal>
+					    </goals>
+
+					    <configuration>
+					    	<arguments>clean</arguments>
+					    </configuration>
+					</execution>
+					<execution>
+					    <id>gulp build</id>
+					    <goals>
+					        <goal>gulp</goal>
+					    </goals>
+
+					    <configuration>
+					    	<!-- Add dash dash prod after 'build' below to get a production build with
+					    	minified files. -->
+					    	<arguments>build</arguments>
+					    </configuration>
+					</execution>
+				</executions>
+		    </plugin>
         </plugins>
     </build>
 </project>

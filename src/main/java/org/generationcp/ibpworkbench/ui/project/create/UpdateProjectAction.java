@@ -55,11 +55,6 @@ public class UpdateProjectAction implements Button.ClickListener  {
     private SimpleResourceBundleMessageSource messageSource;
 
     private static final long serialVersionUID = 1L;
-    private static final int PROJECT_USER_ACCESS_NUMBER = 100;
-    private static final int PROJECT_USER_TYPE = 422;
-    private static final int PROJECT_USER_STATUS = 1;
-    private static final int PROJECT_USER_ACCESS_NUMBER_CENTRAL = 150;
-    private static final int PROJECT_USER_TYPE_CENTRAL = 420;
 
     public UpdateProjectAction(UpdateProjectPanel projectPanel) {
         this.projectPanel = projectPanel;
@@ -90,7 +85,7 @@ public class UpdateProjectAction implements Button.ClickListener  {
             toolUtil.renameOldWorkspaceDirectoryToNewFormat(sessionData.getSelectedProject().getProjectId(),projectPanel.getOldProjectName());
 
             // update the project
-            Project updatedProject = projectPanel.projectBasicDetailsComponent.validateAndSave();
+            Project updatedProject = projectPanel.projectBasicDetailsComponent.getProjectDetails();
             sessionData.getSelectedProject().setProjectName(updatedProject.getProjectName());
             sessionData.getSelectedProject().setStartDate(updatedProject.getStartDate());
             workbenchDataManager.saveOrUpdateProject(sessionData.getSelectedProject());

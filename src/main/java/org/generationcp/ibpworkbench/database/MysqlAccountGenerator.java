@@ -74,7 +74,11 @@ public class MysqlAccountGenerator implements Serializable{
         this.dataManager = dataManager;
     }
     
-    public boolean generateMysqlAccounts() throws InternationalizableException {
+    public MysqlAccountGenerator() {
+	
+    }
+
+	public boolean generateMysqlAccounts() throws InternationalizableException {
         boolean isGenerationSuccess = false;
         
         try{
@@ -254,4 +258,24 @@ public class MysqlAccountGenerator implements Serializable{
         throw new InternationalizableException(e, 
                 Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
+
+	
+	public void setCropType(CropType cropType) {
+		this.cropType = cropType;
+	}
+
+	
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	
+	public void setIdAndNameOfProjectMembers(Map<Integer, String> idAndNameOfProjectMembers) {
+		this.idAndNameOfProjectMembers = idAndNameOfProjectMembers;
+	}
+
+	
+	public void setDataManager(WorkbenchDataManager dataManager) {
+		this.dataManager = dataManager;
+	}
 }

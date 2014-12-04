@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
+@Deprecated
+//TODO Remove once LoginPresenter is removed.
 public class LoginWindow extends Window implements InitializingBean {
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;

@@ -12,12 +12,8 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.Properties;
+
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -48,10 +44,27 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import java.util.Properties;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
     private static final long serialVersionUID = 1L;
 
@@ -99,13 +112,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        assemble();
-
-        // initialize other operations on load (
+    	assemble();
         workbenchDashboard = new WorkbenchDashboard();
         onLoadOperations();
-
-        // show dashboard
         this.showContent(workbenchDashboard);
     }
 

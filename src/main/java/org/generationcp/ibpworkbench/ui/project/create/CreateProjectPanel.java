@@ -110,7 +110,10 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
     protected void initializeActions() {
 
         saveProjectButton.addListener(new Button.ClickListener() {
-            @Override
+            
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
                     presenter.doAddNewProgram();
@@ -144,7 +147,10 @@ public class CreateProjectPanel extends Panel implements InitializingBean{
         });
 
         cancelButton.addListener(new Button.ClickListener() {
-            @Override
+           
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(Button.ClickEvent clickEvent) {
 
                 presenter.resetBasicDetails();

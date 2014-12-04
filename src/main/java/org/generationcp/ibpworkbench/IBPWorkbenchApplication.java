@@ -12,26 +12,24 @@
 
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.window.LoginWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.ui.Window;
 
 public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
     private static final long serialVersionUID = 1L;
     private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
-
-    private LoginWindow loginWindow;
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -105,7 +103,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     }
 
     protected void initializeComponents() {
-        loginWindow = new LoginWindow();
+        
     }
 
     protected void initializeLayout() {
@@ -123,7 +121,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
         initializeLayout();
         initializeActions();
 
-        setMainWindow(loginWindow);
+        setMainWindow(new WorkbenchMainView());
     }
 
     public void toggleJira() {
