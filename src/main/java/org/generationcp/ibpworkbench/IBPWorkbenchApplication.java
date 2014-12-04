@@ -12,9 +12,11 @@
 
 package org.generationcp.ibpworkbench;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vaadin.terminal.ExternalResource;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -22,6 +24,10 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import com.vaadin.ui.Window;
@@ -31,11 +37,15 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     private static final long serialVersionUID = 1L;
     private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
-    @Autowired
+    @Resource
     private SimpleResourceBundleMessageSource messageSource;
 
-    @Autowired
+    @Resource
     private SessionData sessionData;
+
+    @Resource
+    private LogoutHandler rememberMeServices;
+
 
     private UpdateComponentLabelsAction messageSourceListener;
 
@@ -47,11 +57,19 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
     public void close() {
         super.close();
         // implement this when we need to do something on session timeout
-        messageSource.removeListener(messageSourceListener);     
-        if(this.request != null) {
-        	this.request.getSession().invalidate();
-        }
+        messageSource.removeListener(messageSourceListener);
+
+        this.logout();
+
         LOG.debug("IBPWorkbenchApplication closed");
+    }
+
+    protected void logout() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            rememberMeServices.logout(this.getRequest(),this.getResponse(),auth);
+        }
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     @Override
