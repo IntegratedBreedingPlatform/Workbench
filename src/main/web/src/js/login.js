@@ -117,7 +117,7 @@
 
 		$.each(errors, function(key, value) {
 			$loginForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
-			errorMessage +=  errorMessage ? (', ' + value) : value;
+			errorMessage +=  errorMessage ? (' ' + value) : value;
 		});
 		displayClientError(errorMessage);
 	}
@@ -187,28 +187,21 @@
 
 		// Create Account
 		} else {
-
-			// FIXME: This service needs tweaking - it should return a 400 if there is a client error, and a success should be handled
-			// server side, to log the user in.
 			$.post($loginForm.attr('action'), $loginForm.serialize())
-				.done(function(data) {
-
-					// FIXME: This error handling should happen in a 'fail' handler (see comment above)
-					if (data.errors) {
-						applyValidationErrors(data.errors);
-					} else {
-						// FIXME: User should be automatically logged in after a successful signup (see comment above)
-						// Clear form fields and show the login screen
-						clearErrors();
-						$loginForm.find('input').val('');
-						$select.select2('val', 'Role');
-						toggleLoginCreateAccount();
-					}
+				.done(function() {
+					// FIXME: User should be automatically logged in after a successful signup
+					// Clear form fields and show the login screen
+					clearErrors();
+					$loginForm.find('input').val('');
+					$select.select2('val', 'Role');
+					toggleLoginCreateAccount();
+				})
+				.fail(function(jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 				})
 				.always(function() {
 					$loginSubmit.removeClass('loading');
 				});
 		}
 	});
-
 }());
