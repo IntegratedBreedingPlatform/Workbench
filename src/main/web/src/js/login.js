@@ -10,6 +10,8 @@
 		$loginSubmit = $('.js-login-submit'),
 		$error = $('.js-login-error'),
 		$errorText = $('.js-login-error-text'),
+		$fakeUsername = $('.js-fake-username'),
+		$fakePassword =  $('.js-fake-password'),
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
 		$select = $('.login-select'),
@@ -178,6 +180,12 @@
 			displayClientError(errorMessage);
 			return;
 		}
+
+		// Long story here: we use fake inputs to prevent Chrome's awful yellow autofill styling (see login.html for details). When Chrome
+		// offers to remember a password, it will try and take the value of these fake inputs - and because they're empty, it will never be
+		// satisfied - asking over and over again. So we set their value on submit, Chrome is happy, and everything is right with the World.
+		$fakeUsername.val($username.val());
+		$fakePassword.val($password.val());
 
 		$loginSubmit.addClass('loading').delay(200);
 
