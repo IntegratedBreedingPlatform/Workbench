@@ -52,9 +52,11 @@
   border-top-color: #225591; }
 
 .no-cssanimations .throbber {
-  background: url(../images/loading-white-on-orange.gif) no-repeat; }
+  background: url(../images/loading-white-on-orange.gif) no-repeat;
+  border: none; }
 .no-cssanimations .throbber-blue {
-  background-image: url(../images/loading-blue-on-white.gif); }
+  background-image: url(../images/loading-blue-on-white.gif);
+  border: none; }
 
 html {
   min-height: 100%;
