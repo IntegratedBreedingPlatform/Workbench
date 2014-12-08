@@ -19,6 +19,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.Program;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
@@ -64,13 +65,16 @@ public class ProgramService {
 
 	public void createNewProgram(Project program) throws Exception {
 
-		saveBasicDetails(program);		
+		saveBasicDetails(program);
+		
 		// create the project's workspace directories
 		toolUtil.createWorkspaceDirectoriesForProject(program);
 		boolean isDBGenerationSuccess = generateDatabases(program);
 		
 		if (isDBGenerationSuccess) {
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
+
+			addProgram(program, managerFactory);
 			
 			User currentUserCopy = this.currentUser.copy();
 			addUserRecords(managerFactory, currentUserCopy);
@@ -107,6 +111,13 @@ public class ProgramService {
 		isDBGenerationSuccess = this.localDbGenerator.generateDatabase();
 		
 		return isDBGenerationSuccess;
+	}
+	
+	private void addProgram(Project program, ManagerFactory managerFactory) throws MiddlewareQueryException {
+		Program cropProgram = new Program();
+		cropProgram.setName(program.getProjectName());
+		cropProgram.setStartDate(program.getStartDate());
+		managerFactory.getProgramDataManager().addProgram(cropProgram);
 	}
 
 	private void addUserRecords(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
