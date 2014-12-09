@@ -47,8 +47,6 @@ public class UserAccountPanel extends Panel {
     private Button cancelButton;
     
     private HorizontalLayout buttonLayout;
-    private HorizontalLayout spaceLayout;
-    private HorizontalLayout smallSpaceLayout;
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     private Label lblTitle;

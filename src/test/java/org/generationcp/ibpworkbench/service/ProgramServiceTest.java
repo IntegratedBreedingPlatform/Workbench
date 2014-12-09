@@ -22,7 +22,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.junit.Test;
@@ -31,6 +30,7 @@ import org.mockito.Mockito;
 
 public class ProgramServiceTest {
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAddNewProgram() throws Exception {
 		
@@ -46,10 +46,17 @@ public class ProgramServiceTest {
 		User loggedInUser = new User();
 		loggedInUser.setUserid(1);
 		loggedInUser.setName("mrbreeder");
+		loggedInUser.setPersonid(1);
 		
 		User memberUser = new User();
-		memberUser.setUserid(1);
+		memberUser.setUserid(2);
 		memberUser.setName("mrbreederfriend");
+		memberUser.setPersonid(2);
+		
+		Person memberPerson = new Person();
+		memberPerson.setId(2);
+		memberPerson.setFirstName("John");
+		memberPerson.setLastName("Doe");
 		
 		Set<User> programMembers = new HashSet<User>();
 		programMembers.add(memberUser);
@@ -60,9 +67,13 @@ public class ProgramServiceTest {
 		ArrayList<WorkflowTemplate> workflowTemplates = new ArrayList<WorkflowTemplate>();
 		workflowTemplates.add(new WorkflowTemplate());		
 		when(workbenchDataManager.getWorkflowTemplates()).thenReturn(workflowTemplates);
-		when(workbenchDataManager.getPersonById(Mockito.anyInt())).thenReturn(new Person());
+		
+		when(workbenchDataManager.getUserById(memberUser.getUserid())).thenReturn(memberUser);
+		when(workbenchDataManager.getPersonById(Mockito.anyInt())).thenReturn(memberPerson);
+		
 		ProjectUserInfoDAO puiDao = mock(ProjectUserInfoDAO.class);
 		when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
+		
 		
 		ArrayList<Role> allRolesList = new ArrayList<Role>();
 		allRolesList.add(new Role(1, "CB Breeder", null));
@@ -88,6 +99,8 @@ public class ProgramServiceTest {
 		
 		UserDataManager userDataManager = mock(UserDataManager.class);
 		when(managerFactory.getUserDataManager()).thenReturn(userDataManager);
+		when(userDataManager.addUser(Mockito.any(User.class))).thenReturn(2);
+		when(userDataManager.getUserById(Mockito.anyInt())).thenReturn(memberUser);
 		
 		programService.setWorkbenchDataManager(workbenchDataManager);
 		programService.setToolUtil(toolUtil);
@@ -101,7 +114,6 @@ public class ProgramServiceTest {
 		programService.createNewProgram(project);
 		
 		//Verify that the key database operations for program creation are invoked.
-		
 		verify(workbenchDataManager).addProject(project);
 		verify(workbenchDataManager).saveOrUpdateProject(project);
 		verify(workbenchDataManager).getWorkflowTemplates();
@@ -110,12 +122,15 @@ public class ProgramServiceTest {
 		verify(centralDBGenerator).generateDatabase();
 		verify(localDBGenerator).generateDatabase();
 		
-		verify(userDataManager).addPerson(Mockito.any(Person.class));
-		verify(userDataManager).addUser(Mockito.any(User.class));
+		//Once to add current person and user and once for member person and user.
+		verify(userDataManager, Mockito.times(2)).addPerson(Mockito.any(Person.class));
+		verify(userDataManager, Mockito.times(2)).addUser(Mockito.any(User.class));
 		
-		verify(workbenchDataManager, Mockito.times(allRolesList.size())).addProjectUserRole(Mockito.any(ProjectUserRole.class));
+		//Map is added for both current and membeer user.
+		verify(workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
+		
+		verify(workbenchDataManager).addProjectUserRole(Mockito.anyList());
 		verify(mySQLAccountGenerator).generateMysqlAccounts();
-		verify(workbenchDataManager).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 	}
 
 }

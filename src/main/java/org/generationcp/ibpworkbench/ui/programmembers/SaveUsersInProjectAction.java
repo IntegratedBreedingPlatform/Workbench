@@ -28,8 +28,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -39,13 +37,12 @@ import java.util.*;
 @Configurable
 public class SaveUsersInProjectAction implements ClickListener{
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaveUsersInProjectAction.class);
     private static final long serialVersionUID = 1L;
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
     
-    private final TwinTableSelect select;
+    private final TwinTableSelect<User> select;
 
     private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
     
@@ -79,9 +76,7 @@ public class SaveUsersInProjectAction implements ClickListener{
             return;
         }
         
-        @SuppressWarnings("unchecked")
         Collection<User> userList = (Collection<User>) select.getValue();
-        
         try {
 
             List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();

@@ -33,8 +33,8 @@
 	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
 
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
-		<input type="text" value="" style="display: none"/>
-		<input type="password" value="" style="display: none"/>
+		<input class="js-fake-username" type="text" value="" style="display: none"/>
+		<input class="js-fake-password" type="password" value="" style="display: none"/>
 
 		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
 			<span class="login-icon fa" title="First Name">&#xf007;</span>

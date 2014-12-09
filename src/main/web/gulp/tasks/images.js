@@ -1,8 +1,10 @@
 'use strict';
 
 var changed = require('gulp-changed'),
-	gulp = require('gulp'),
-	imagemin = require('gulp-imagemin');
+	gulp = require('gulp');
+
+	// FIXME (See below)
+	//imagemin = require('gulp-imagemin');
 
 gulp.task('images', ['appImages', 'libImages']);
 
@@ -11,7 +13,9 @@ gulp.task('appImages', function() {
 
 	return gulp.src(['./src/images/**', '!./src/images/{lib,lib/**}'])
 		.pipe(changed(dest))
-		.pipe(imagemin())
+		// FIXME I'm temporarily disabling this until I get time to look at why running the build on windows vs
+		// mac seems to produce png files that differ
+		//.pipe(imagemin())
 		.pipe(gulp.dest(dest));
 });
 
