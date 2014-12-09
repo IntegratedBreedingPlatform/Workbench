@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +54,6 @@ public class ProgramService {
     
     private User currentUser;
 
-    private List<Role> allRolesList;
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
     
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -73,24 +73,17 @@ public class ProgramService {
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 			
 			User currentUserCopy = this.currentUser.copy();
-			addUserRecords(managerFactory, currentUserCopy);
+			copyCurrentUser(managerFactory, currentUserCopy);
+			createIBDBUserMap(program.getProjectId(), this.currentUser.getUserid(), currentUserCopy.getUserid());
 
-			this.allRolesList = workbenchDataManager.getAllRoles();
-			// save current user roles to the program
-			List<ProjectUserRole> projectUserRoles = getCurrentUserRoles();
-			if ((projectUserRoles != null) && (!projectUserRoles.isEmpty())) {
-				saveProgramUserRoles(projectUserRoles, program);
-			}
-			// save user roles for the rest of program members
-			List<ProjectUserRole> projectMembers = getProgamMemberUserRoles();
-			if ((projectMembers != null) && (!projectMembers.isEmpty())) {
-				saveProjectMembers(managerFactory.getUserDataManager(), projectMembers, program);
-			}
+			addProjectUserRoles(program, managerFactory);
+			copyOtherProjectUsers(managerFactory.getUserDataManager(), program);
+
 			managerFactory.close();
 			
 			createMySQLAccounts(program);
 			saveProjectUserInfo(program);
-			createIBDBUserMap(program, currentUserCopy);
+			
 		}
 		LOG.info("Program id:" + program.getProjectId() + " Name:" + program.getProjectName() + " " + program.getStartDate());
 		LOG.info("Database generation successful? " + isDBGenerationSuccess);
@@ -109,7 +102,7 @@ public class ProgramService {
 		return isDBGenerationSuccess;
 	}
 
-	private void addUserRecords(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
+	private void copyCurrentUser(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
 		// create the project's local person and user data
 		Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
 		Person currentPersonCopy = currentPerson.copy();
@@ -146,8 +139,28 @@ public class ProgramService {
 		currentUserCopy.setInstalid(Integer.valueOf(-1));
 		managerFactory.getUserDataManager().addUser(currentUserCopy);
 		
-		// add to map of project members
+		// Add to map of project members
 		this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
+	}
+
+	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
+		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
+        Set<User> allProjectMembers = new HashSet<User>();
+        allProjectMembers.add(this.currentUser);
+        allProjectMembers.addAll(this.selectedUsers);
+        
+        List<Role> allRolesList = workbenchDataManager.getAllRoles();
+        
+        for (User user : allProjectMembers) {
+            for (Role role : allRolesList) {
+                ProjectUserRole projectUserRole = new ProjectUserRole();
+                projectUserRole.setUserId(user.getUserid());
+                projectUserRole.setRole(role);
+                projectUserRole.setProject(project);
+                projectUserRoles.add(projectUserRole);
+            }
+        }
+        workbenchDataManager.addProjectUserRole(projectUserRoles);
 	}
 
 	private void saveProjectUserInfo(Project program) {
@@ -184,133 +197,75 @@ public class ProgramService {
 	}
 	
     /**
-     * Create necessary database entries for each program member.
-     *
-     * @param userDataManager
-     * @param projectUserRoles
-     * @param project
-     * @throws MiddlewareQueryException
+     * Create necessary database entries for selected program members.
      */
-    private void saveProjectMembers(UserDataManager userDataManager, List<ProjectUserRole> projectUserRoles, Project project) throws MiddlewareQueryException {
-        Map<Integer,String> usersAccountedFor = new HashMap<Integer, String>();
-        for (ProjectUserRole projectUserRole : projectUserRoles){
-            // Save role
-            projectUserRole.setProject(project);
+    private void copyOtherProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
+ 
+		for (User user : selectedUsers) {
+			User workbenchUser = workbenchDataManager.getUserById(user.getUserid());
+			User localUser = workbenchUser.copy();
 
-            //do not insert manager role, for some reason.. nageerror ng unique constraints
-            workbenchDataManager.addProjectUserRole(projectUserRole);
+			Person workbenchPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+			Person localPerson = workbenchPerson.copy();
 
-            // Save User to local db
-            //check if this user has already been accounted for, because each user may have many roles so this check is needed
-            if(!usersAccountedFor.containsKey(projectUserRole.getUserId())){
-                User workbenchUser = workbenchDataManager.getUserById(projectUserRole.getUserId());
-                User localUser =  workbenchUser.copy();
+			// Check if the Person record already exists
+			if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())) {
+				userDataManager.addPerson(localPerson);
+			} else {
+				// set localPerson to the existing person
+				List<Person> persons = userDataManager.getAllPersons();
+				for (Person person : persons) {
+					if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase())
+							&& person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())) {
+						localPerson = person;
+						break;
+					}
+				}
+			}
 
-                Person currentPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
-                Person localPerson = currentPerson.copy();
+			// append a timestamp to the username and password
+			// and change the start of the username of be the initials of the user
+			String newUserName = localPerson.getInitialsWithTimestamp();
+			// password must be 11 chars long
+			String newPassword = newUserName.substring(0, 11);
 
-                // Check if the Person record already exists
-                if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())){
-                    userDataManager.addPerson(localPerson);
-                } else {
-                    // set localPerson to the existing person
-                    List<Person> persons = userDataManager.getAllPersons();
-                    for (Person person : persons){
-                        if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) &&
-                                person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
-                            localPerson = person;
-                            break;
-                        }
-                    }
-                }
+			localUser.setName(newUserName);
+			localUser.setPassword(newPassword);
 
-                //append a timestamp to the username and password
-                //and change the start of the username of be the initials of the user
-                String newUserName = localPerson.getInitialsWithTimestamp();
-                //password must be 11 chars long
-                String newPassword = newUserName.substring(0, 11);
-
-                localUser.setName(newUserName);
-                localUser.setPassword(newPassword);
-
-                // If the selected member does not exist yet in the local database, then add
-                if (!userDataManager.isUsernameExists(localUser.getName())){
-                    localUser.setPersonid(localPerson.getId());
-                    localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-                    localUser.setType(PROJECT_USER_TYPE);
-                    localUser.setInstalid(Integer.valueOf(-1));
-                    localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-                    localUser.setAdate(getCurrentDate());
-                    Integer userId = userDataManager.addUser(localUser);
-                    this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), newUserName);
-
-                    // add a workbench user to ibdb user mapping
-                    User ibdbUser = userDataManager.getUserById(userId);
-                    IbdbUserMap ibdbUserMap = new IbdbUserMap();
-                    ibdbUserMap.setWorkbenchUserId(workbenchUser.getUserid());
-                    ibdbUserMap.setProjectId(project.getProjectId());
-                    ibdbUserMap.setIbdbUserId(ibdbUser.getUserid());
-                    workbenchDataManager.addIbdbUserMap(ibdbUserMap);
-
-                }
-                usersAccountedFor.put(projectUserRole.getUserId(), newUserName);
-            }
-        }
+			// If the selected member does not exist yet in the local database, then add
+			if (!userDataManager.isUsernameExists(localUser.getName())) {
+				localUser.setPersonid(localPerson.getId());
+				localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+				localUser.setType(PROJECT_USER_TYPE);
+				localUser.setInstalid(Integer.valueOf(-1));
+				localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+				localUser.setAdate(getCurrentDate());
+				Integer userId = userDataManager.addUser(localUser);
+				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), newUserName);
+				
+				User ibdbUser = userDataManager.getUserById(userId);
+				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(),ibdbUser.getUserid());
+			}
+		}
     }
-    
-    private void saveProgramUserRoles(List<ProjectUserRole> projectUserRoles, Project projectSaved) throws MiddlewareQueryException {
-        for (ProjectUserRole projectUserRole : projectUserRoles){
-            projectUserRole.setProject(projectSaved);
-            projectUserRole.setUserId(this.currentUser.getUserid());
-            workbenchDataManager.addProjectUserRole(projectUserRole);
-        }
-    }
-    
-	private void createIBDBUserMap(Project program, User currentUserCopy) throws MiddlewareQueryException {
-		// add a workbench user to ibdb user mapping
+        
+	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) throws MiddlewareQueryException {
+		// Add the mapping between Workbench user and the ibdb user.
 		IbdbUserMap ibdbUserMap = new IbdbUserMap();
-		ibdbUserMap.setWorkbenchUserId(currentUser.getUserid());
-		ibdbUserMap.setProjectId(program.getProjectId());
-		ibdbUserMap.setIbdbUserId(currentUserCopy.getUserid());
+		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
+		ibdbUserMap.setProjectId(projectId);
+		ibdbUserMap.setIbdbUserId(ibdbUserId);
 		workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 	}
 	
 	private void createMySQLAccounts(Project program) {
-		// create mysql user accounts for members of the project
+		// Create mysql user accounts for members of the project
 		mySQLAccountGenerator.setCropType(program.getCropType());
 		mySQLAccountGenerator.setProjectId(program.getProjectId());
 		mySQLAccountGenerator.setIdAndNameOfProjectMembers(this.idAndNameOfProgramMembers);
 		mySQLAccountGenerator.setDataManager(this.workbenchDataManager);
 		mySQLAccountGenerator.generateMysqlAccounts();
 	}
-    
-    private List<ProjectUserRole> getCurrentUserRoles() throws MiddlewareQueryException {
-        List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        for (Role role : allRolesList) {
-            ProjectUserRole projectUserRole = new ProjectUserRole();
-            projectUserRole.setRole(role);
-            projectUserRoles.add(projectUserRole);
-        }
-        return projectUserRoles;
-    }
-
-    private List<ProjectUserRole> getProgamMemberUserRoles() throws MiddlewareQueryException  {
-    	List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        for (User user : selectedUsers) {
-            // only retrieve selected members that's not the current user.
-            if (user.getUserid().equals(currentUser.getUserid())) {
-                continue;
-            }
-            for (Role role : allRolesList) {
-                ProjectUserRole projectUserRole = new ProjectUserRole();
-                projectUserRole.setUserId(user.getUserid());
-                projectUserRole.setRole(role);
-
-                projectUserRoles.add(projectUserRole);
-            }
-        }
-        return projectUserRoles;
-    }
 
     private Integer getCurrentDate(){
         Calendar now = Calendar.getInstance();
