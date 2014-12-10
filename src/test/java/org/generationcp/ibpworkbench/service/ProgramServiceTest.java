@@ -15,9 +15,11 @@ import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.ProgramDataManager;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.Program;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
@@ -102,6 +104,9 @@ public class ProgramServiceTest {
 		when(userDataManager.addUser(Mockito.any(User.class))).thenReturn(2);
 		when(userDataManager.getUserById(Mockito.anyInt())).thenReturn(memberUser);
 		
+		ProgramDataManager programDataManager = mock(ProgramDataManager.class);
+		when(managerFactory.getProgramDataManager()).thenReturn(programDataManager);
+		
 		programService.setWorkbenchDataManager(workbenchDataManager);
 		programService.setToolUtil(toolUtil);
 		programService.setCentralDbGenerator(centralDBGenerator);
@@ -131,6 +136,9 @@ public class ProgramServiceTest {
 		
 		verify(workbenchDataManager).addProjectUserRole(Mockito.anyList());
 		verify(mySQLAccountGenerator).generateMysqlAccounts();
+		
+		//Crop Program record got added
+		verify(programDataManager).addProgram(Mockito.any(Program.class));
 	}
 
 }

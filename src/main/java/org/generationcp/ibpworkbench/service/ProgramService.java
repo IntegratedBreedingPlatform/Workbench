@@ -54,6 +54,8 @@ public class ProgramService {
     private Set<User> selectedUsers;
     
     private User currentUser;
+    
+    private Set<User> ibdbUsers = new HashSet<User>();
 
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
     
@@ -74,7 +76,7 @@ public class ProgramService {
 		if (isDBGenerationSuccess) {
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
-			addProgram(program, managerFactory);
+			ibdbUsers.clear();
 			
 			User currentUserCopy = this.currentUser.copy();
 			copyCurrentUser(managerFactory, currentUserCopy);
@@ -82,6 +84,8 @@ public class ProgramService {
 
 			addProjectUserRoles(program, managerFactory);
 			copyOtherProjectUsers(managerFactory.getUserDataManager(), program);
+			
+			addProgram(program, managerFactory);
 
 			managerFactory.close();
 			
@@ -110,6 +114,11 @@ public class ProgramService {
 		Program cropProgram = new Program();
 		cropProgram.setName(program.getProjectName());
 		cropProgram.setStartDate(program.getStartDate());
+		
+		for(User ibdbUser : this.ibdbUsers) {
+			cropProgram.addUser(ibdbUser);
+		}
+		
 		managerFactory.getProgramDataManager().addProgram(cropProgram);
 	}
 
@@ -152,6 +161,7 @@ public class ProgramService {
 		
 		// Add to map of project members
 		this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
+		this.ibdbUsers.add(currentUserCopy);
 	}
 
 	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
@@ -211,8 +221,13 @@ public class ProgramService {
      * Create necessary database entries for selected program members.
      */
     private void copyOtherProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
- 
-		for (User user : selectedUsers) {
+
+    	for (User user : selectedUsers) {
+			// Skip current user. We copy it separately.
+			if(user.getUserid().equals(this.currentUser.getUserid())) {
+				continue;
+			}
+			
 			User workbenchUser = workbenchDataManager.getUserById(user.getUserid());
 			User localUser = workbenchUser.copy();
 
@@ -255,6 +270,7 @@ public class ProgramService {
 				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), newUserName);
 				
 				User ibdbUser = userDataManager.getUserById(userId);
+				this.ibdbUsers.add(ibdbUser);
 				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(),ibdbUser.getUserid());
 			}
 		}
