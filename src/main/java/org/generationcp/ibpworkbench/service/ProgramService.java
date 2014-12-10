@@ -201,7 +201,12 @@ public class ProgramService {
      */
     private void copyOtherProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
  
-		for (User user : selectedUsers) {
+    	for (User user : selectedUsers) {
+			// Skip current user. We copy it separately.
+			if(user.getUserid().equals(this.currentUser.getUserid())) {
+				continue;
+			}
+			
 			User workbenchUser = workbenchDataManager.getUserById(user.getUserid());
 			User localUser = workbenchUser.copy();
 
