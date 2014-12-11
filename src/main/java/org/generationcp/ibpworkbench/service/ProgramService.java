@@ -20,7 +20,6 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.Program;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
@@ -55,8 +54,6 @@ public class ProgramService {
     
     private User currentUser;
     
-    private Set<User> ibdbUsers = new HashSet<User>();
-
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
     
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -76,8 +73,6 @@ public class ProgramService {
 		if (isDBGenerationSuccess) {
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
-			ibdbUsers.clear();
-			
 			User currentUserCopy = this.currentUser.copy();
 			copyCurrentUser(managerFactory, currentUserCopy);
 			createIBDBUserMap(program.getProjectId(), this.currentUser.getUserid(), currentUserCopy.getUserid());
@@ -85,8 +80,6 @@ public class ProgramService {
 			addProjectUserRoles(program, managerFactory);
 			copyOtherProjectUsers(managerFactory.getUserDataManager(), program);
 			
-			addProgram(program, managerFactory);
-
 			managerFactory.close();
 			
 			createMySQLAccounts(program);
@@ -110,18 +103,6 @@ public class ProgramService {
 		return isDBGenerationSuccess;
 	}
 	
-	private void addProgram(Project program, ManagerFactory managerFactory) throws MiddlewareQueryException {
-		Program cropProgram = new Program();
-		cropProgram.setName(program.getProjectName());
-		cropProgram.setStartDate(program.getStartDate());
-		
-		for(User ibdbUser : this.ibdbUsers) {
-			cropProgram.addUser(ibdbUser);
-		}
-		
-		managerFactory.getProgramDataManager().addProgram(cropProgram);
-	}
-
 	private void copyCurrentUser(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
 		// create the project's local person and user data
 		Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
@@ -161,7 +142,6 @@ public class ProgramService {
 		
 		// Add to map of project members
 		this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
-		this.ibdbUsers.add(currentUserCopy);
 	}
 
 	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
@@ -270,7 +250,6 @@ public class ProgramService {
 				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), newUserName);
 				
 				User ibdbUser = userDataManager.getUserById(userId);
-				this.ibdbUsers.add(ibdbUser);
 				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(),ibdbUser.getUserid());
 			}
 		}
