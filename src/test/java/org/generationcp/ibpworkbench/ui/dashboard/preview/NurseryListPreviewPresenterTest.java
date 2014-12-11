@@ -160,7 +160,7 @@ public class NurseryListPreviewPresenterTest  {
 
 
         // verify that addSubFolder is called with the correct order of parameters
-        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName);
+        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName, null);
     }
 
     @Test

@@ -154,7 +154,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
                 }
                 parentFolderId = dmsProject.getProjectId();
             }
-            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name);
+            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name, project.getUniqueID());
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
             throw new NurseryListPreviewException(e.getMessage());
