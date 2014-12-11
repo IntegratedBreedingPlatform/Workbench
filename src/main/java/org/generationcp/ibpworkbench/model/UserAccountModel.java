@@ -30,12 +30,17 @@ public class UserAccountModel implements Serializable {
 	private static final long serialVersionUID = 7669967119863861617L;
 
 	private String firstName;
+
 	private String lastName;
+
 	private String middlename;
+
 	private String email;
 
 	private String username;
+
 	private String password;
+
 	private String passwordConfirmation;
 
 	private String role;

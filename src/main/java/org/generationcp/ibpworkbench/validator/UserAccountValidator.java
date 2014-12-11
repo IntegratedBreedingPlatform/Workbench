@@ -12,12 +12,19 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by cyrus on 11/26/14.
  */
 
 @Configurable
 public class UserAccountValidator implements Validator {
+	private static final Logger LOG = LoggerFactory.getLogger(UserAccountValidator.class);
+
+	protected static final String EMAIL_PATTERN =
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	protected static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
 	protected static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";
@@ -25,8 +32,16 @@ public class UserAccountValidator implements Validator {
 	protected static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
 	protected static final String DATABASE_ERROR = "database.error";
 	protected static final String SIGNUP_FIELD_PERSON_EXISTS = "signup.field.person.exists";
+	protected static final String SIGNUP_FIELD_LENGTH_EXCEED = "signup.field.length.exceed";
+	protected static final java.lang.String SIGNUP_FIELD_EMAIL_EXISTS = "signup.field.email.exists";
+	protected static final java.lang.String SIGNUP_FIELD_INVALID_EMAIL_FORMAT = "signup.field.email.invalid";
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserAccountValidator.class);
+	public static final String FIRST_NAME_STR = "First Name";
+	public static final String LAST_NAME_STR = "Last Name";
+	public static final String USERNAME_STR = "Username";
+	public static final String EMAIL_STR = "Email";
+	public static final String PASSWORD_STR = "Password";
+	public static final String CONFIRMATION_PASSWORD_STR = "Confirmation Password";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -42,31 +57,55 @@ public class UserAccountValidator implements Validator {
 
 		validateFieldsEmptyOrWhitespace(errors);
 
+		validateFieldLength(errors, userAccount.getFirstName(), UserAccountFields.FIRST_NAME,
+				FIRST_NAME_STR, 20);
+		validateFieldLength(errors, userAccount.getLastName(), UserAccountFields.LAST_NAME,
+				LAST_NAME_STR, 50);
+		validateFieldLength(errors, userAccount.getUsername(), UserAccountFields.USERNAME,
+				USERNAME_STR, 30);
+
+		validateEmailFormat(errors, userAccount);
+
 		validatePasswordConfirmationIfEquals(errors, userAccount);
 
 		validateUsernameIfExists(errors, userAccount);
 
-		validatePersonIfExists(errors, userAccount);
+		validatePersonEmailIfExists(errors, userAccount);
 
 		validateUserRole(errors, userAccount);
 	}
 
+	protected void validateEmailFormat(Errors errors, UserAccountModel userAccount) {
+		if (!Pattern.compile(EMAIL_PATTERN).matcher(userAccount.getEmail()).matches()) {
+			errors.rejectValue(UserAccountFields.EMAIL,SIGNUP_FIELD_INVALID_EMAIL_FORMAT);
+		}
+	}
+
 	protected void validateFieldsEmptyOrWhitespace(Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.FIRST_NAME,
-				SIGNUP_FIELD_REQUIRED, new String[] { "First Name" });
+				SIGNUP_FIELD_REQUIRED, new String[] { FIRST_NAME_STR });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.LAST_NAME,
-				SIGNUP_FIELD_REQUIRED, new String[] { "Last Name" });
+				SIGNUP_FIELD_REQUIRED, new String[] { LAST_NAME_STR });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.EMAIL,
-				SIGNUP_FIELD_REQUIRED, new String[] { "Email" });
+				SIGNUP_FIELD_REQUIRED, new String[] { EMAIL_STR });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.USERNAME,
-				SIGNUP_FIELD_REQUIRED, new String[] { "Username" });
+				SIGNUP_FIELD_REQUIRED, new String[] { USERNAME_STR });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.PASSWORD,
-				SIGNUP_FIELD_REQUIRED, new String[] { "Password" });
+				SIGNUP_FIELD_REQUIRED, new String[] { PASSWORD_STR });
 		ValidationUtils
 				.rejectIfEmptyOrWhitespace(errors,
 						UserAccountFields.PASSWORD_CONFIRMATION, SIGNUP_FIELD_REQUIRED);
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.ROLE,
-				SIGNUP_FIELD_REQUIRED, new String[] { "Confirmation Password" });
+				SIGNUP_FIELD_REQUIRED, new String[] { CONFIRMATION_PASSWORD_STR });
+	}
+
+	protected void validateFieldLength(Errors errors, String fieldValue, String fieldProperty,
+			String fieldName, Integer maxLength) {
+
+		if (maxLength < fieldValue.length()) {
+			errors.rejectValue(fieldProperty, SIGNUP_FIELD_LENGTH_EXCEED,
+					new String[] { Integer.toString(maxLength), fieldName }, null);
+		}
 	}
 
 	protected void validateUserRole(Errors errors, UserAccountModel userAccount) {
@@ -97,22 +136,20 @@ public class UserAccountValidator implements Validator {
 			}
 		} catch (MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, DATABASE_ERROR);
-			LOG.error(e.getMessage(),e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
-	protected void validatePersonIfExists(Errors errors, UserAccountModel userAccount) {
+	protected void validatePersonEmailIfExists(Errors errors, UserAccountModel userAccount) {
 		try {
 			if (workbenchDataManager
-					.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())) {
-				errors.rejectValue(UserAccountFields.FIRST_NAME,
-						SIGNUP_FIELD_PERSON_EXISTS,
-						new String[] { userAccount.getFirstName(), userAccount.getLastName() },
-						null);
+					.isPersonWithEmailExists(userAccount.getEmail())) {
+				errors.rejectValue(UserAccountFields.EMAIL,
+						SIGNUP_FIELD_EMAIL_EXISTS);
 			}
 		} catch (MiddlewareQueryException e) {
-			errors.rejectValue(UserAccountFields.FIRST_NAME, DATABASE_ERROR);
-			LOG.error(e.getMessage(),e);
+			errors.rejectValue(UserAccountFields.EMAIL, DATABASE_ERROR);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 }
