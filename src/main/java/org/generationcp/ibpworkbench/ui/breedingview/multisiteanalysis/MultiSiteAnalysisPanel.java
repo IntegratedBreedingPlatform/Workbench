@@ -150,7 +150,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), project);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 

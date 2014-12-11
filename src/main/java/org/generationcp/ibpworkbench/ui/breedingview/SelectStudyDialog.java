@@ -6,6 +6,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -20,6 +21,7 @@ import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -57,11 +59,14 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	private ThemeResource dataSetResource;
 
 	private Label lblStudyTreeDetailDescription;
+	
+	private Project currentProject;
 
-	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager){
+	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager, Project currentProject){
 		this.parentWindow = parentWindow;
 		this.studyDataManager = studyDataManager;
 		this.source = source;
+		this.currentProject = currentProject;
 	}
 
 	protected void assemble() {
@@ -187,7 +192,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<FolderReference> folderRef = null;
 
 		try {
-			folderRef = getStudyDataManager().getRootFolders(database);
+			folderRef = getStudyDataManager().getRootFolders(database, currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -315,7 +320,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 
 			childrenReference = getStudyDataManager().getChildrenOfFolder(
-					parentFolderReference.getId());
+					parentFolderReference.getId(), currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
@@ -423,7 +428,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> children = new ArrayList<Reference>();
 
 		try {
-			children = getStudyDataManager().getChildrenOfFolder(folderId);
+			children = getStudyDataManager().getChildrenOfFolder(folderId, currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			MessageNotifier
 			.showWarning(

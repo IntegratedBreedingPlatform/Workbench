@@ -246,7 +246,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			public void buttonClick(ClickEvent event) {
 					
 				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
-					SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+					SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if(event.getComponent()==null){
 					LOG.error("event component is null");

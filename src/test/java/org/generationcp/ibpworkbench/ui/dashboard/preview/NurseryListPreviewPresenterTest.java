@@ -182,8 +182,8 @@ public class NurseryListPreviewPresenterTest  {
         hasMultipleChildren.add(mock(Reference.class));
         hasMultipleChildren.add(mock(Reference.class));
 
-        when(studyDataManager.getChildrenOfFolder(studyIdWithMultipleChildren)).thenReturn(hasMultipleChildren);
-        when(studyDataManager.getChildrenOfFolder(studyIdWithNoChildren)).thenReturn(new ArrayList<Reference>());
+        when(studyDataManager.getChildrenOfFolder(studyIdWithMultipleChildren, anyString())).thenReturn(hasMultipleChildren);
+        when(studyDataManager.getChildrenOfFolder(studyIdWithNoChildren, anyString())).thenReturn(new ArrayList<Reference>());
 
         try {
             presenter.validateForDeleteNurseryList(studyIdWithMultipleChildren);

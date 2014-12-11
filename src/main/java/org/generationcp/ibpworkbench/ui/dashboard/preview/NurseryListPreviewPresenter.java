@@ -66,8 +66,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<FolderReference> centralRootFolders;
         List<FolderReference> localRootFolders;
         try {
-            centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL);
-            localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL);
+            centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL, project.getUniqueID());
+            localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL, project.getUniqueID());
 
             view.generateTopListOfTree(centralRootFolders, localRootFolders);
         } catch (MiddlewareQueryException e) {
@@ -203,7 +203,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<Reference> studyChildren;
 
         try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id);
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id, project.getUniqueID());
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
             throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
@@ -221,7 +221,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         List<Reference> studyChildren;
 
         try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId);
+            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId, project.getUniqueID());
         } catch (MiddlewareQueryException e) {
             LOG.error(messageSource.getMessage(Message.ERROR_DATABASE),e);
             studyChildren = new ArrayList<Reference>();
