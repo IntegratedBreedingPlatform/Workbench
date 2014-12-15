@@ -107,7 +107,7 @@
     </bean>
 
     <bean id="studyDataManager" class="org.generationcp.middleware.manager.StudyDataManagerImpl">
-        <property name="sessionProviderForLocal" ref="localHibernateSessionProvider"/>
+        <property name="sessionProvider" ref="localHibernateSessionProvider"/>
     </bean>
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
