@@ -334,14 +334,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-
-				if ( (! (Boolean) event.getProperty().getValue()) ) {
-					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
-							.getItemIds().iterator(); itr.hasNext();) {
-						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
-						m.setActive(false);
-					}
-					tblEnvironmentSelection.refreshRowCache();
+				boolean selected = (Boolean)event.getProperty().getValue();
+				if (!selected) {
+					disableEnvironmentEntries();
 					return;
 				}
 
@@ -366,7 +361,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
 							.getItemIds().iterator(); itr.hasNext();) {
 						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
-						m.setActive((Boolean) event.getProperty().getValue());
 
 						Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
 								getBreedingViewInput().getDatasetId(), m.getLocationId());
@@ -1273,6 +1267,20 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				getSelReplicates().select(itemId);
 				getSelReplicates().setEnabled(true);
 			}
+		}
+	}
+
+	protected void disableEnvironmentEntries() {
+
+		setEnvironmentEntryValues(false);
+		tblEnvironmentSelection.refreshRowCache();
+	}
+
+	protected void setEnvironmentEntryValues(boolean value) {
+		for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
+				.getItemIds().iterator(); itr.hasNext(); ) {
+			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
+			m.setActive(value);
 		}
 	}
 
