@@ -71,32 +71,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
         
         } else if(value.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())){
         	
-        	GridLayout gLayout = new GridLayout(2,3);
-            gLayout.setColumnExpandRatio(0, 0);
-            gLayout.setColumnExpandRatio(1, 1);
-            gLayout.setWidth("100%");
-            gLayout.setSpacing(true);
-            gLayout.addStyleName("marginTop10");
-            
-        	source.getBlockRowColumnContainer().removeAllComponents();
-        	gLayout.addComponent(this.source.getLblBlocks(), 0, 0);
-        	gLayout.addComponent(this.source.getSelBlocks(), 1, 0);
-        	gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
-        	gLayout.addComponent(this.source.getLblGenotypes(), 0, 2);
-        	gLayout.addComponent(this.source.getSelGenotypes(), 1, 2);
-        	
-        	source.getBlockRowColumnContainer().addComponent(gLayout);
-        	
-        	if (source.getSelReplicates().isEnabled() == false
-        			|| source.getSelReplicates().getItemIds().size() == 0){
-        		
-        		for (Object itemId : source.getSelBlocks().getItemIds()){
-        			source.getSelReplicates().addItem(itemId);
-        			source.getSelReplicates().setItemCaption(itemId,"REPLICATES");
-        			source.getSelReplicates().select(itemId);
-        			source.getSelReplicates().setEnabled(true);
-        		}
-        	}
+        	source.displayIncompleteBlockDesignElements();
         	
             
         } else if(value.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())){
