@@ -458,7 +458,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     	    
     		String newItemCaption = (String) otherCropNameField.getValue();
     		CropType cropType = new CropType(newItemCaption);  	
-            cropType.setCentralDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_central");
+            cropType.setCentralDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
             cropType.setVersion(bmsVersion);
             return cropType;
     	}else{

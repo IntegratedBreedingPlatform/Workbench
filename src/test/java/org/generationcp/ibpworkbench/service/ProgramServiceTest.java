@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorMergedDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
@@ -48,6 +47,11 @@ public class ProgramServiceTest {
 		loggedInUser.setName("mrbreeder");
 		loggedInUser.setPersonid(1);
 		
+		Person loggedInPerson = new Person();
+		loggedInPerson.setId(1);
+		loggedInPerson.setFirstName("Jan");
+		loggedInPerson.setLastName("Erik");
+		
 		User memberUser = new User();
 		memberUser.setUserid(2);
 		memberUser.setName("mrbreederfriend");
@@ -68,12 +72,14 @@ public class ProgramServiceTest {
 		workflowTemplates.add(new WorkflowTemplate());		
 		when(workbenchDataManager.getWorkflowTemplates()).thenReturn(workflowTemplates);
 		
+		when(workbenchDataManager.getUserById(loggedInUser.getUserid())).thenReturn(loggedInUser);
+		when(workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
+		
 		when(workbenchDataManager.getUserById(memberUser.getUserid())).thenReturn(memberUser);
-		when(workbenchDataManager.getPersonById(Mockito.anyInt())).thenReturn(memberPerson);
+		when(workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
 		
 		ProjectUserInfoDAO puiDao = mock(ProjectUserInfoDAO.class);
 		when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
-		
 		
 		ArrayList<Role> allRolesList = new ArrayList<Role>();
 		allRolesList.add(new Role(1, "CB Breeder", null));
@@ -85,11 +91,8 @@ public class ProgramServiceTest {
 		
 		ToolUtil toolUtil = mock(ToolUtil.class);
 		
-		IBDBGeneratorCentralDb centralDBGenerator = mock(IBDBGeneratorCentralDb.class);
-		when(centralDBGenerator.generateDatabase()).thenReturn(true);
-		
-		IBDBGeneratorLocalDb localDBGenerator = mock(IBDBGeneratorLocalDb.class);
-		when(localDBGenerator.generateDatabase()).thenReturn(true);
+		IBDBGeneratorMergedDb mergedDBGenerator = mock(IBDBGeneratorMergedDb.class);
+		when(mergedDBGenerator.generateDatabase()).thenReturn(true);
 		
 		MysqlAccountGenerator mySQLAccountGenerator = Mockito.mock(MysqlAccountGenerator.class);
 		
@@ -104,12 +107,15 @@ public class ProgramServiceTest {
 		
 		programService.setWorkbenchDataManager(workbenchDataManager);
 		programService.setToolUtil(toolUtil);
-		programService.setCentralDbGenerator(centralDBGenerator);
-		programService.setLocalDbGenerator(localDBGenerator);
+		programService.setMergedDbGenerator(mergedDBGenerator);
 		programService.setMySQLAccountGenerator(mySQLAccountGenerator);
 		programService.setManagerFactoryProvider(managerFactoryProvider);
 		programService.setCurrentUser(loggedInUser);
-		programService.setSelectedUsers(programMembers);
+		
+		Set<User> selectedUsers = new HashSet<User>();
+		selectedUsers.add(loggedInUser);
+		selectedUsers.add(memberUser);		
+		programService.setSelectedUsers(selectedUsers);
 		
 		programService.createNewProgram(project);
 		
@@ -119,8 +125,7 @@ public class ProgramServiceTest {
 		verify(workbenchDataManager).getWorkflowTemplates();
 		
 		verify(toolUtil).createWorkspaceDirectoriesForProject(project);
-		verify(centralDBGenerator).generateDatabase();
-		verify(localDBGenerator).generateDatabase();
+		verify(mergedDBGenerator).generateDatabase();
 		
 		//Once to add current person and user and once for member person and user.
 		verify(userDataManager, Mockito.times(2)).addPerson(Mockito.any(Person.class));

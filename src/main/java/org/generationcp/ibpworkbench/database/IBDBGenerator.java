@@ -158,6 +158,7 @@ public class IBDBGenerator {
             
             try {
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
+                LOG.info("Running SQL Script: " + sqlFile.getAbsolutePath());
                 scriptRunner.runScript(br);
             }
             catch (IOException e) {

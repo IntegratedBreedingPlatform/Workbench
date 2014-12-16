@@ -458,7 +458,7 @@ import java.util.*;
 
          locationTypeFilter.setContainerDataSource(udfContainer);
          locationTypeFilter.setItemCaptionPropertyId("fname");
-         locationTypeFilter.select(locationTypes.get(1));
+         locationTypeFilter.select(locationTypes.get(0));
          locationTypeFilter.setNullSelectionItemId(nullUdf);
          locationTypeFilter.setNullSelectionAllowed(true);
 

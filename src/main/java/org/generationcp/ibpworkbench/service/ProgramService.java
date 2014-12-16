@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorCentralDb;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
+import org.generationcp.ibpworkbench.database.IBDBGeneratorMergedDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -46,8 +45,8 @@ public class ProgramService {
 	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 	
-	private IBDBGeneratorCentralDb centralDbGenerator;
-	private IBDBGeneratorLocalDb localDbGenerator;
+	private IBDBGeneratorMergedDb mergedDbGenerator;
+	
 	private MysqlAccountGenerator mySQLAccountGenerator;
 	
     private Set<User> selectedUsers;
@@ -56,11 +55,11 @@ public class ProgramService {
     
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
     
+    // http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
+    
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
-    private static final int PROJECT_USER_ACCESS_NUMBER_CENTRAL = 150;
-    private static final int PROJECT_USER_TYPE_CENTRAL = 420;
 
 	public void createNewProgram(Project program) throws Exception {
 
@@ -73,12 +72,8 @@ public class ProgramService {
 		if (isDBGenerationSuccess) {
 			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
-			User currentUserCopy = this.currentUser.copy();
-			copyCurrentUser(managerFactory, currentUserCopy);
-			createIBDBUserMap(program.getProjectId(), this.currentUser.getUserid(), currentUserCopy.getUserid());
-
 			addProjectUserRoles(program, managerFactory);
-			copyOtherProjectUsers(managerFactory.getUserDataManager(), program);
+			copyProjectUsers(managerFactory.getUserDataManager(), program);
 			
 			managerFactory.close();
 			
@@ -92,58 +87,14 @@ public class ProgramService {
 
 	private boolean generateDatabases(Project program) {
 		boolean isDBGenerationSuccess;
-		
-		this.centralDbGenerator.setCropType(program.getCropType());
-		isDBGenerationSuccess = this.centralDbGenerator.generateDatabase();
 
-		this.localDbGenerator.setCropType(program.getCropType());
-		this.localDbGenerator.setProjectId(program.getProjectId());
-		isDBGenerationSuccess = this.localDbGenerator.generateDatabase();
+		this.mergedDbGenerator.setCropType(program.getCropType());
+		this.mergedDbGenerator.setProjectId(program.getProjectId());
+		isDBGenerationSuccess = this.mergedDbGenerator.generateDatabase();
 		
 		return isDBGenerationSuccess;
 	}
 	
-	private void copyCurrentUser(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
-		// create the project's local person and user data
-		Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
-		Person currentPersonCopy = currentPerson.copy();
-		// add the person to the project's local database
-		managerFactory.getUserDataManager().addPerson(currentPersonCopy);
-
-		// add the user, person to the central database if creating a new custom crop
-		if (!centralDbGenerator.isAlreadyExists()) {
-			currentPerson.setInstituteId(1);
-
-			Person centralPerson = currentPerson.copy();
-			centralPerson.setId(currentPerson.getId());
-			managerFactory.getUserDataManager().addPersonToCentral(centralPerson);
-
-			currentUserCopy.setAccess(PROJECT_USER_ACCESS_NUMBER_CENTRAL);
-			currentUserCopy.setType(PROJECT_USER_TYPE_CENTRAL);
-			currentUserCopy.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-			currentUserCopy.setAdate(getCurrentDate());
-			currentUserCopy.setInstalid(1);
-			managerFactory.getUserDataManager().addUserToCentral(currentUserCopy);
-		}
-
-		// add a user to project's local database
-		String newUserName = currentPersonCopy.getInitialsWithTimestamp();
-		// password should be 11 chars long only
-		String newPassword = newUserName.substring(0, 11);
-		currentUserCopy.setName(newUserName);
-		currentUserCopy.setPassword(newPassword);
-		currentUserCopy.setPersonid(currentPersonCopy.getId());
-		currentUserCopy.setAccess(PROJECT_USER_ACCESS_NUMBER);
-		currentUserCopy.setType(PROJECT_USER_TYPE);
-		currentUserCopy.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-		currentUserCopy.setAdate(getCurrentDate());
-		currentUserCopy.setInstalid(Integer.valueOf(-1));
-		managerFactory.getUserDataManager().addUser(currentUserCopy);
-		
-		// Add to map of project members
-		this.idAndNameOfProgramMembers.put(currentUser.getUserid(), newUserName);
-	}
-
 	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         Set<User> allProjectMembers = new HashSet<User>();
@@ -180,11 +131,11 @@ public class ProgramService {
 
 	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
 		program.setUserId(this.currentUser.getUserid());
-		// TODO: REMOVE Once template is no longer required in Project
 		CropType cropType = workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			workbenchDataManager.addCropType(program.getCropType());
 		}
+		// TODO: REMOVE Once template is no longer required in Project
 		program.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 		program.setLastOpenDate(null);
 		workbenchDataManager.addProject(program);
@@ -200,57 +151,43 @@ public class ProgramService {
     /**
      * Create necessary database entries for selected program members.
      */
-    private void copyOtherProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
+    private void copyProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
 
     	for (User user : selectedUsers) {
-			// Skip current user. We copy it separately.
-			if(user.getUserid().equals(this.currentUser.getUserid())) {
-				continue;
-			}
-			
+					
 			User workbenchUser = workbenchDataManager.getUserById(user.getUserid());
-			User localUser = workbenchUser.copy();
+			User cropDBUser = workbenchUser.copy();
 
 			Person workbenchPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
-			Person localPerson = workbenchPerson.copy();
+			Person cropDBPerson = workbenchPerson.copy();
 
-			// Check if the Person record already exists
-			if (!userDataManager.isPersonExists(localPerson.getFirstName().toUpperCase(), localPerson.getLastName().toUpperCase())) {
-				userDataManager.addPerson(localPerson);
+			if (!userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
+				userDataManager.addPerson(cropDBPerson);
 			} else {
-				// set localPerson to the existing person
 				List<Person> persons = userDataManager.getAllPersons();
 				for (Person person : persons) {
-					if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase())
-							&& person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())) {
-						localPerson = person;
+					if (person.getLastName().toUpperCase().equals(cropDBPerson.getLastName().toUpperCase())
+							&& person.getFirstName().toUpperCase().equals(cropDBPerson.getFirstName().toUpperCase())) {
+						cropDBPerson = person;
 						break;
 					}
 				}
 			}
 
-			// append a timestamp to the username and password
-			// and change the start of the username of be the initials of the user
-			String newUserName = localPerson.getInitialsWithTimestamp();
-			// password must be 11 chars long
-			String newPassword = newUserName.substring(0, 11);
-
-			localUser.setName(newUserName);
-			localUser.setPassword(newPassword);
-
-			// If the selected member does not exist yet in the local database, then add
-			if (!userDataManager.isUsernameExists(localUser.getName())) {
-				localUser.setPersonid(localPerson.getId());
-				localUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-				localUser.setType(PROJECT_USER_TYPE);
-				localUser.setInstalid(Integer.valueOf(-1));
-				localUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-				localUser.setAdate(getCurrentDate());
-				Integer userId = userDataManager.addUser(localUser);
-				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), newUserName);
+			if (!userDataManager.isUsernameExists(cropDBUser.getName())) {
+				cropDBUser.setPersonid(cropDBPerson.getId());
+				//TODO we are setting following fields because they are non nullable. Review and make nullable.
+				// See http://cropwiki.irri.org/icis/index.php/TDM_ICIS_Application_and_Database_Installation for background.
+				cropDBUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
+				cropDBUser.setType(PROJECT_USER_TYPE);
+				cropDBUser.setInstalid(Integer.valueOf(0));
+				cropDBUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
+				cropDBUser.setAdate(getCurrentDate());
+				Integer userId = userDataManager.addUser(cropDBUser);
+				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
 				
 				User ibdbUser = userDataManager.getUserById(userId);
-				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(),ibdbUser.getUserid());
+				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
 			}
 		}
     }
@@ -296,14 +233,9 @@ public class ProgramService {
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
-
-	public void setCentralDbGenerator(IBDBGeneratorCentralDb centralDbGenerator) {
-		this.centralDbGenerator = centralDbGenerator;
-	}
-
 	
-	public void setLocalDbGenerator(IBDBGeneratorLocalDb localDbGenerator) {
-		this.localDbGenerator = localDbGenerator;
+	public void setMergedDbGenerator(IBDBGeneratorMergedDb mergedDbGenerator) {
+		this.mergedDbGenerator = mergedDbGenerator;
 	}
 
 	public void setMySQLAccountGenerator(MysqlAccountGenerator mySQLAccountGenerator) {
