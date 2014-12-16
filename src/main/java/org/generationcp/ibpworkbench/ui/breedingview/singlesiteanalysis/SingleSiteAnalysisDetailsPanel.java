@@ -77,6 +77,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String INVALID_SELECTION_STRING = "Invalid Selection";
 	private static final String LABEL_BOLD_STYLING = "label-bold";
 	private static final String LABEL_WIDTH = "160px";
+	private static final String SELECT_BOX_WIDTH = "191px";
+	private static final String SELECT_COLUMN = "select";
+	private static final String TRIAL_NO_COLUMN = "trialno";
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
@@ -307,7 +310,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		};
 
-		tblEnvironmentSelection.addGeneratedColumn("select", new ColumnGenerator() {
+		tblEnvironmentSelection.addGeneratedColumn(SELECT_COLUMN, new ColumnGenerator() {
 
 			private static final long serialVersionUID = 8164025367842219781L;
 
@@ -549,14 +552,14 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
 		selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-		selDesignType.setWidth("191px");
+		selDesignType.setWidth(SELECT_BOX_WIDTH);
 
 		selReplicates = new Select();
 		selReplicates.setImmediate(true);
 		populateChoicesForReplicates();
 		selReplicates.setNullSelectionAllowed(true);
 		selReplicates.setNewItemsAllowed(false);
-		selReplicates.setWidth("191px");
+		selReplicates.setWidth(SELECT_BOX_WIDTH);
 
 		selBlocks = new Select();
 		selBlocks.setImmediate(true);
@@ -564,21 +567,21 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		populateChoicesForBlocks();
 		selBlocks.setNullSelectionAllowed(false);
 		selBlocks.setNewItemsAllowed(false);
-		selBlocks.setWidth("191px");
+		selBlocks.setWidth(SELECT_BOX_WIDTH);
 
 		selRowFactor = new Select();
 		selRowFactor.setImmediate(true);
 		populateChoicesForRowFactor();
 		selRowFactor.setNullSelectionAllowed(false);
 		selRowFactor.setNewItemsAllowed(false);
-		selRowFactor.setWidth("191px");
+		selRowFactor.setWidth(SELECT_BOX_WIDTH);
 
 		selColumnFactor = new Select();
 		selColumnFactor.setImmediate(true);
 		populateChoicesForColumnFactor();
 		selColumnFactor.setNullSelectionAllowed(false);
 		selColumnFactor.setNewItemsAllowed(false);
-		selColumnFactor.setWidth("191px");
+		selColumnFactor.setWidth(SELECT_BOX_WIDTH);
 
 		refineChoicesForBlocksReplicationRowAndColumnFactos();
 
@@ -587,7 +590,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		populateChoicesForGenotypes();
 		getSelGenotypes().setNullSelectionAllowed(true);
 		getSelGenotypes().setNewItemsAllowed(false);
-		getSelGenotypes().setWidth("191px");
+		getSelGenotypes().setWidth(SELECT_BOX_WIDTH);
 
 		btnRun = new Button();
 		btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -648,85 +651,88 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		VariableType factor = getVariableByLocalName(trialVariablesInDataset, envFactorName);
 
-		if (factor != null) {
+		if (factor == null) {
+			return;
+		}
 
-			try {
+		try {
 
-				BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(
-						SeaEnvironmentModel.class);
-				tblEnvironmentSelection.setContainerDataSource(container);
+			BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(
+					SeaEnvironmentModel.class);
+			tblEnvironmentSelection.setContainerDataSource(container);
 
-				VariableTypeList trialEnvFactors = studyDataManager
-						.getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes()
-						.getFactors();
+			VariableTypeList trialEnvFactors = studyDataManager
+					.getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes()
+					.getFactors();
 
-				for (VariableType f : trialEnvFactors.getVariableTypes()) {
+			for (VariableType f : trialEnvFactors.getVariableTypes()) {
 
-					// Always Show the TRIAL INSTANCE Factor
-					if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE
-							.getId()) {
-						trialInstanceFactor = f.getLocalName();
-					}
-
+				// Always Show the TRIAL INSTANCE Factor
+				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE
+						.getId()) {
+					trialInstanceFactor = f.getLocalName();
 				}
-
-				TrialEnvironments trialEnvironments;
-				trialEnvironments = studyDataManager
-						.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-
-				for (TrialEnvironment env : trialEnvironments.getTrialEnvironments()) {
-
-					Variable trialVar = env.getVariables().findByLocalName(trialInstanceFactor);
-					Variable selectedEnvVar = env.getVariables().findByLocalName(envFactorName);
-
-					if (trialVar != null && selectedEnvVar != null) {
-
-						TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(
-								envFactorName, selectedEnvVar.getValue());
-						if (temp == null) {
-							continue;
-						}
-
-						SeaEnvironmentModel bean = new SeaEnvironmentModel();
-						bean.setActive(false);
-						bean.setEnvironmentName(selectedEnvVar.getValue());
-						bean.setTrialno(trialVar.getValue());
-						bean.setLocationId(temp.getId());
-						container.addBean(bean);
-
-					}
-
-				}
-
-				if (trialInstanceFactor.equalsIgnoreCase(envFactorName)) {
-					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno" });
-					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
-							trialInstanceFactor });
-					tblEnvironmentSelection.setColumnWidth("select", 45);
-					tblEnvironmentSelection.setColumnWidth("trialno", -1);
-					tblEnvironmentSelection.setWidth("45%");
-					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
-				} else {
-					tblEnvironmentSelection.setVisibleColumns(new Object[] { "select", "trialno",
-							"environmentName" });
-					tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
-							trialInstanceFactor, envFactorName });
-					tblEnvironmentSelection.setColumnWidth("select", 45);
-					tblEnvironmentSelection.setColumnWidth("trialno", 60);
-					tblEnvironmentSelection.setColumnWidth("environmentName", 500);
-					tblEnvironmentSelection.setWidth("90%");
-
-					getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
-				}
-
-			} catch (ConfigException e) {
-				LOG.error(e.getMessage(), e);
-			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(), e);
 
 			}
 
+			TrialEnvironments trialEnvironments;
+			trialEnvironments = studyDataManager
+					.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+
+			for (TrialEnvironment env : trialEnvironments.getTrialEnvironments()) {
+
+				Variable trialVar = env.getVariables().findByLocalName(trialInstanceFactor);
+				Variable selectedEnvVar = env.getVariables().findByLocalName(envFactorName);
+
+				if (trialVar == null || selectedEnvVar == null) {
+					continue;
+				}
+
+				TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(
+						envFactorName, selectedEnvVar.getValue());
+
+				if (temp == null) {
+					continue;
+				}
+
+				SeaEnvironmentModel bean = new SeaEnvironmentModel();
+				bean.setActive(false);
+				bean.setEnvironmentName(selectedEnvVar.getValue());
+				bean.setTrialno(trialVar.getValue());
+				bean.setLocationId(temp.getId());
+				container.addBean(bean);
+
+			}
+
+			if (trialInstanceFactor.equalsIgnoreCase(envFactorName)) {
+				tblEnvironmentSelection.setVisibleColumns(new Object[] { SELECT_COLUMN, TRIAL_NO_COLUMN });
+				tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
+						trialInstanceFactor });
+				tblEnvironmentSelection.setColumnWidth(SELECT_COLUMN, 45);
+				tblEnvironmentSelection.setColumnWidth(TRIAL_NO_COLUMN, -1);
+				tblEnvironmentSelection.setWidth("45%");
+				getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+			} else {
+				tblEnvironmentSelection.setVisibleColumns(new Object[] { SELECT_COLUMN, TRIAL_NO_COLUMN,
+						"environmentName" });
+				tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
+						trialInstanceFactor, envFactorName });
+				tblEnvironmentSelection.setColumnWidth(SELECT_COLUMN, 45);
+				tblEnvironmentSelection.setColumnWidth(TRIAL_NO_COLUMN, 60);
+				tblEnvironmentSelection.setColumnWidth("environmentName", 500);
+				tblEnvironmentSelection.setWidth("90%");
+
+				getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+			}
+
+		} catch (ConfigException e) {
+			LOG.error(e.getMessage(), e);
+		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(), e);
+
 		}
+
+
 	}
 
 	protected void populateChoicesForGenotypes() {
@@ -826,7 +832,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		try {
 			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL,
 					TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
-			if (expDesign != null && !expDesign.trim().equals("")
+			if (expDesign != null && !("").equals(expDesign.trim())
 					&& NumberUtils.isNumber(expDesign)) {
 				int designType = Integer.parseInt(expDesign);
 				if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
@@ -1258,8 +1264,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (getSelReplicates().isEnabled() == false
-				|| getSelReplicates().getItemIds().size() == 0) {
+		if (!getSelReplicates().isEnabled()
+				|| !getSelReplicates().getItemIds().isEmpty()) {
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
