@@ -74,6 +74,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String BLOCKING_FACTOR = "blocking factor";
 	private static final String ROW_FACTOR = "row in layout";
 	private static final String COLUMN_FACTOR = "column in layout";
+	private static final String INVALID_SELECTION_STRING = "Invalid Selection";
+	private static final String LABEL_BOLD_STYLING = "label-bold";
+	private static final String LABEL_WIDTH = "160px";
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
@@ -249,7 +252,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				CheckBox chk = (CheckBox) event.getProperty();
 				Boolean val = (Boolean) event.getProperty().getValue();
 
-				if (val == false) {
+				if (!val) {
 					footerCheckBox.removeListener(footerCheckBoxListener);
 					footerCheckBox.setValue(false);
 					footerCheckBox.addListener(footerCheckBoxListener);
@@ -267,7 +270,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 					if (trialEnv == null) {
 
-						MessageNotifier.showError(getWindow(), "Invalid Selection",
+						MessageNotifier.showError(getWindow(), INVALID_SELECTION_STRING,
 								"\"" + model.getEnvironmentName()
 										+ "\" value is not a valid selection for breeding view.");
 						chk.setValue(false);
@@ -282,7 +285,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 							MessageNotifier
 									.showError(
 											getWindow(),
-											"Invalid Selection",
+											INVALID_SELECTION_STRING,
 											getSelEnvFactor().getValue().toString()
 													+ " \""
 													+ model.getEnvironmentName()
@@ -329,7 +332,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 
-				if ((Boolean) event.getProperty().getValue() == false) {
+				if ( (! (Boolean) event.getProperty().getValue()) ) {
 					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
 							.getItemIds().iterator(); itr.hasNext();) {
 						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
@@ -380,7 +383,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 						MessageNotifier
 								.showError(
 										getWindow(),
-										"Invalid Selection",
+										INVALID_SELECTION_STRING,
 										getSelEnvFactor().getValue().toString()
 												+ " "
 												+ invalidEnvs.toString()
@@ -406,58 +409,58 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		lblTitle = new Label();
 		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
-		lblTitle.addStyleName("label-bold");
+		lblTitle.addStyleName(LABEL_BOLD_STYLING);
 		lblTitle.setHeight("25px");
 
 		lblDatasetName = new Label();
 		lblDatasetName.setContentMode(Label.CONTENT_XHTML);
-		lblDatasetName.setStyleName("label-bold");
+		lblDatasetName.setStyleName(LABEL_BOLD_STYLING);
 		lblDatasourceName = new Label();
 		lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
-		lblDatasourceName.setStyleName("label-bold");
+		lblDatasourceName.setStyleName(LABEL_BOLD_STYLING);
 
 		lblVersion = new Label();
-		lblVersion.setStyleName("label-bold");
+		lblVersion.setStyleName(LABEL_BOLD_STYLING);
 		lblProjectType = new Label();
-		lblProjectType.setStyleName("label-bold");
+		lblProjectType.setStyleName(LABEL_BOLD_STYLING);
 		lblProjectType.setWidth("100px");
 		lblAnalysisName = new Label();
 		lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
-		lblAnalysisName.setStyleName("label-bold");
+		lblAnalysisName.setStyleName(LABEL_BOLD_STYLING);
 		lblSiteEnvironment = new Label();
 		lblSpecifyEnvFactor = new Label();
 		lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyEnvFactor.setStyleName("label-bold");
+		lblSpecifyEnvFactor.setStyleName(LABEL_BOLD_STYLING);
 		lblSelectEnvironmentForAnalysis = new Label();
 		lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
-		lblSelectEnvironmentForAnalysis.setStyleName("label-bold");
+		lblSelectEnvironmentForAnalysis.setStyleName(LABEL_BOLD_STYLING);
 		lblSpecifyNameForAnalysisEnv = new Label();
 		lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyNameForAnalysisEnv.setStyleName("label-bold");
+		lblSpecifyNameForAnalysisEnv.setStyleName(LABEL_BOLD_STYLING);
 		lblDesign = new Label();
 		lblDesignType = new Label();
 		lblDesignType.setContentMode(Label.CONTENT_XHTML);
-		lblDesignType.setStyleName("label-bold");
-		lblDesignType.setWidth("160px");
+		lblDesignType.setStyleName(LABEL_BOLD_STYLING);
+		lblDesignType.setWidth(LABEL_WIDTH);
 		lblReplicates = new Label();
 		lblReplicates.setContentMode(Label.CONTENT_XHTML);
-		lblReplicates.setWidth("160px");
-		lblReplicates.setStyleName("label-bold");
+		lblReplicates.setWidth(LABEL_WIDTH);
+		lblReplicates.setStyleName(LABEL_BOLD_STYLING);
 		lblBlocks = new Label();
 		lblBlocks.setContentMode(Label.CONTENT_XHTML);
-		lblBlocks.setWidth("160px");
-		lblBlocks.setStyleName("label-bold");
+		lblBlocks.setWidth(LABEL_WIDTH);
+		lblBlocks.setStyleName(LABEL_BOLD_STYLING);
 		lblSpecifyRowFactor = new Label();
 		lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyRowFactor.setWidth("160px");
-		lblSpecifyRowFactor.setStyleName("label-bold");
+		lblSpecifyRowFactor.setWidth(LABEL_WIDTH);
+		lblSpecifyRowFactor.setStyleName(LABEL_BOLD_STYLING);
 		lblSpecifyColumnFactor = new Label();
 		lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyColumnFactor.setWidth("160px");
-		lblSpecifyColumnFactor.setStyleName("label-bold");
+		lblSpecifyColumnFactor.setWidth(LABEL_WIDTH);
+		lblSpecifyColumnFactor.setStyleName(LABEL_BOLD_STYLING);
 		lblGenotypes = new Label();
-		lblGenotypes.setWidth("160px");
-		lblGenotypes.setStyleName("label-bold");
+		lblGenotypes.setWidth(LABEL_WIDTH);
+		lblGenotypes.setStyleName(LABEL_BOLD_STYLING);
 
 		lblDataSelectedForAnalysisHeader = new Label(
 				"<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
@@ -477,7 +480,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		lblChooseEnvironmentDescription = new Label();
 		lblChooseEnvironmentForAnalysisDescription = new Label();
 		lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
-		lblChooseEnvironmentForAnalysisDescription.setStyleName("label-bold");
+		lblChooseEnvironmentForAnalysisDescription.setStyleName(LABEL_BOLD_STYLING);
 
 		lblSpecifyDesignDetailsHeader = new Label(
 				"<span class='bms-exp-design' style='color: #9A8478; "
@@ -548,8 +551,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
 		selDesignType.setWidth("191px");
 
-		checkDesignFactor();
-
 		selReplicates = new Select();
 		selReplicates.setImmediate(true);
 		populateChoicesForReplicates();
@@ -592,6 +593,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		btnReset = new Button();
 		btnBack = new Button();
+
+		checkDesignFactor();
 
 	}
 
@@ -831,6 +834,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
 						|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
 					designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
+					displayIncompleteBlockDesignElements();
 				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
 						|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
 					designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
@@ -1235,6 +1239,35 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	public void displayIncompleteBlockDesignElements() {
+		GridLayout gLayout = new GridLayout(2, 3);
+		gLayout.setColumnExpandRatio(0, 0);
+		gLayout.setColumnExpandRatio(1, 1);
+		gLayout.setWidth("100%");
+		gLayout.setSpacing(true);
+		gLayout.addStyleName("marginTop10");
+
+		getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(getLblBlocks(), 0, 0);
+		gLayout.addComponent(getSelBlocks(), 1, 0);
+		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
+		gLayout.addComponent(getLblGenotypes(), 0, 2);
+		gLayout.addComponent(getSelGenotypes(), 1, 2);
+
+		getBlockRowColumnContainer().addComponent(gLayout);
+
+		if (getSelReplicates().isEnabled() == false
+				|| getSelReplicates().getItemIds().size() == 0) {
+
+			for (Object itemId : getSelBlocks().getItemIds()) {
+				getSelReplicates().addItem(itemId);
+				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().select(itemId);
+				getSelReplicates().setEnabled(true);
+			}
+		}
 	}
 
 }
