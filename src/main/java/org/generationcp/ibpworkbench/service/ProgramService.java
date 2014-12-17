@@ -59,6 +59,8 @@ public class ProgramService {
 
 	public void createNewProgram(Project program) throws Exception {
 
+		idAndNameOfProgramMembers.clear();
+		
 		saveBasicDetails(program);
 		
 		toolUtil.createWorkspaceDirectoriesForProject(program);
@@ -156,7 +158,6 @@ public class ProgramService {
 				cropDBUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
 				cropDBUser.setAdate(getCurrentDate());
 				Integer userId = userDataManager.addUser(cropDBUser);
-				this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
 				
 				User ibdbUser = userDataManager.getUserById(userId);
 				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
@@ -164,6 +165,7 @@ public class ProgramService {
 				User ibdbUser = userDataManager.getUserByUserName(cropDBUser.getName());
 				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
 			}
+			this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
 		}
     }
         
