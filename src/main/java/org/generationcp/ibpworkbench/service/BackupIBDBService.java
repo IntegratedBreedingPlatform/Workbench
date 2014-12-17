@@ -27,7 +27,7 @@ public class BackupIBDBService {
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
-    public File backupIBDB(String projectId, String localDbName) throws Exception {
+    public File backupIBDB(String projectId, String dbName) throws Exception {
         LOG.debug("onClick > do save backup");
         LOG.debug("Current ProjectID: " + projectId);
 
@@ -35,7 +35,7 @@ public class BackupIBDBService {
         ProjectBackup projectBackup = new ProjectBackup();
         projectBackup.setProjectId(Long.valueOf(projectId));
         projectBackup.setBackupTime(Calendar.getInstance().getTime());
-        File backupFile = mysqlUtil.backupDatabase(localDbName);
+        File backupFile = mysqlUtil.backupDatabase(dbName);
         projectBackup.setBackupPath(backupFile.getAbsolutePath());
         // save result to DB
         workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);

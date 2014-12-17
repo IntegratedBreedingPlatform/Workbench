@@ -162,28 +162,20 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 	
+	//TODO Review this method logic...for merged DB scheme..
 	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
 			
 			List<LocationDetails> locList = locationDataManager.getLocationDetailsByLocId(locationId,0,1);
-			
-			
 			if (locationId < 0) {
 				Location location = locationDataManager.getLocationByID(locationId);
-				
 				return convertFrom(location);
 			}
-
 			return convertFrom(locList.get(0));			
 		} catch (IndexOutOfBoundsException e) {
 			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]", e);
 		} catch (NullPointerException e) {
-            if (cropType == null) {
-                LOG.error("Location [locationId="+ locationId +"]  not found in "+ sessionData.getLastOpenedProject().getLocalDbName(),e);
-            } else {
-                LOG.error("Location [locationId="+ locationId +"]  not found in "+ cropType.getCentralDbName(),e);
-            }
-
+            LOG.error("Location [locationId="+ locationId +"]  not found", e);
         }
         return null;
 	}

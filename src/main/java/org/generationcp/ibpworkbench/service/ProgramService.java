@@ -118,13 +118,6 @@ public class ProgramService {
 		}
 		program.setLastOpenDate(null);
 		workbenchDataManager.addProject(program);
-
-		// set the project's local database name - only assignable after project is persisted because id is part of local db name.
-		String localDatabaseName = program.getCropType().getLocalDatabaseNameWithProject(program);
-		String centralDatabaseName = program.getCropType().getCentralDbName();
-		program.setLocalDbName(localDatabaseName);
-		program.setCentralDbName(centralDatabaseName);
-		workbenchDataManager.saveOrUpdateProject(program);
 	}
 	
     /**
