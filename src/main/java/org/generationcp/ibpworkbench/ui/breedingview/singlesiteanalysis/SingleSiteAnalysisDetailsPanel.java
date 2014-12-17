@@ -831,6 +831,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				int designType = Integer.parseInt(expDesign);
 				if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
 					designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
+					displayRandomizedBlockDesignElements();
 				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
 						|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
 					designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
@@ -838,10 +839,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
 						|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
 					designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
+					displayRowColumnDesignElements();
 				}
+
 				selDesignType.setValue(designFactor);
 			} else {
-				selDesignType.select((Object) null);
+				selDesignType.select(null);
 			}
 		} catch (MiddlewareQueryException e) {
 			LOG.error(e.getMessage(), e);
@@ -1239,6 +1242,62 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	public void displayRowColumnDesignElements() {
+		GridLayout gLayout = new GridLayout(2, 4);
+		gLayout.setColumnExpandRatio(0, 0);
+		gLayout.setColumnExpandRatio(1, 1);
+		gLayout.setWidth("100%");
+		gLayout.setSpacing(true);
+		gLayout.addStyleName("marginTop10");
+
+		getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(getLblSpecifyColumnFactor(), 0, 0);
+		gLayout.addComponent(getSelColumnFactor(), 1, 0);
+		gLayout.addComponent(getLblSpecifyRowFactor(), 0, 1);
+		gLayout.addComponent(getSelRowFactor(), 1, 1);
+		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
+		gLayout.addComponent(getLblGenotypes(), 0, 3);
+		gLayout.addComponent(getSelGenotypes(), 1, 3);
+		getBlockRowColumnContainer().addComponent(gLayout);
+
+		if (getSelReplicates().isEnabled() == false
+				|| getSelReplicates().getItemIds().size() == 0) {
+
+			for (Object itemId : getSelBlocks().getItemIds()) {
+				getSelReplicates().addItem(itemId);
+				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().select(itemId);
+				getSelReplicates().setEnabled(true);
+			}
+		}
+	}
+
+	public void displayRandomizedBlockDesignElements() {
+		GridLayout gLayout = new GridLayout(2, 2);
+		gLayout.setColumnExpandRatio(0, 0);
+		gLayout.setColumnExpandRatio(1, 1);
+		gLayout.setWidth("100%");
+		gLayout.setSpacing(true);
+		gLayout.addStyleName("marginTop10");
+
+		getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+		gLayout.addComponent(getLblGenotypes(), 0, 1);
+		gLayout.addComponent(getSelGenotypes(), 1, 1);
+		getBlockRowColumnContainer().addComponent(gLayout);
+
+		if (getSelReplicates().isEnabled() == false
+				|| getSelReplicates().getItemIds().size() == 0) {
+
+			for (Object itemId : getSelBlocks().getItemIds()) {
+				getSelReplicates().addItem(itemId);
+				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().select(itemId);
+				getSelReplicates().setEnabled(true);
+			}
+		}
 	}
 
 	public void displayIncompleteBlockDesignElements() {
