@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorMergedDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -45,8 +44,6 @@ public class ProgramService {
 	@Autowired
     private ManagerFactoryProvider managerFactoryProvider;
 	
-	private IBDBGeneratorMergedDb mergedDbGenerator;
-	
 	private MysqlAccountGenerator mySQLAccountGenerator;
 	
     private Set<User> selectedUsers;
@@ -55,8 +52,7 @@ public class ProgramService {
     
     private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
     
-    // http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
-    
+    // http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access    
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
@@ -65,36 +61,21 @@ public class ProgramService {
 
 		saveBasicDetails(program);
 		
-		// create the project's workspace directories
 		toolUtil.createWorkspaceDirectoriesForProject(program);
-		boolean isDBGenerationSuccess = generateDatabases(program);
 		
-		if (isDBGenerationSuccess) {
-			ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
+		ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
 
-			addProjectUserRoles(program, managerFactory);
-			copyProjectUsers(managerFactory.getUserDataManager(), program);
+		addProjectUserRoles(program, managerFactory);
+		copyProjectUsers(managerFactory.getUserDataManager(), program);
+		
+		managerFactory.close();
+		
+		createMySQLAccounts(program);
+		saveProjectUserInfo(program);
 			
-			managerFactory.close();
-			
-			createMySQLAccounts(program);
-			saveProjectUserInfo(program);
-			
-		}
-		LOG.info("Program id:" + program.getProjectId() + " Name:" + program.getProjectName() + " " + program.getStartDate());
-		LOG.info("Database generation successful? " + isDBGenerationSuccess);
+		LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program.getStartDate());
 	}
 
-	private boolean generateDatabases(Project program) {
-		boolean isDBGenerationSuccess;
-
-		this.mergedDbGenerator.setCropType(program.getCropType());
-		this.mergedDbGenerator.setProjectId(program.getProjectId());
-		isDBGenerationSuccess = this.mergedDbGenerator.generateDatabase();
-		
-		return isDBGenerationSuccess;
-	}
-	
 	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
         Set<User> allProjectMembers = new HashSet<User>();
@@ -234,10 +215,6 @@ public class ProgramService {
 		this.toolUtil = toolUtil;
 	}
 	
-	public void setMergedDbGenerator(IBDBGeneratorMergedDb mergedDbGenerator) {
-		this.mergedDbGenerator = mergedDbGenerator;
-	}
-
 	public void setMySQLAccountGenerator(MysqlAccountGenerator mySQLAccountGenerator) {
 		this.mySQLAccountGenerator = mySQLAccountGenerator;
 	}

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorMergedDb;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
@@ -91,9 +90,6 @@ public class ProgramServiceTest {
 		
 		ToolUtil toolUtil = mock(ToolUtil.class);
 		
-		IBDBGeneratorMergedDb mergedDBGenerator = mock(IBDBGeneratorMergedDb.class);
-		when(mergedDBGenerator.generateDatabase()).thenReturn(true);
-		
 		MysqlAccountGenerator mySQLAccountGenerator = Mockito.mock(MysqlAccountGenerator.class);
 		
 		ManagerFactoryProvider managerFactoryProvider = mock(ManagerFactoryProvider.class);
@@ -107,7 +103,6 @@ public class ProgramServiceTest {
 		
 		programService.setWorkbenchDataManager(workbenchDataManager);
 		programService.setToolUtil(toolUtil);
-		programService.setMergedDbGenerator(mergedDBGenerator);
 		programService.setMySQLAccountGenerator(mySQLAccountGenerator);
 		programService.setManagerFactoryProvider(managerFactoryProvider);
 		programService.setCurrentUser(loggedInUser);
@@ -125,7 +120,6 @@ public class ProgramServiceTest {
 		verify(workbenchDataManager).getWorkflowTemplates();
 		
 		verify(toolUtil).createWorkspaceDirectoriesForProject(project);
-		verify(mergedDBGenerator).generateDatabase();
 		
 		//Once to add current person and user and once for member person and user.
 		verify(userDataManager, Mockito.times(2)).addPerson(Mockito.any(Person.class));
