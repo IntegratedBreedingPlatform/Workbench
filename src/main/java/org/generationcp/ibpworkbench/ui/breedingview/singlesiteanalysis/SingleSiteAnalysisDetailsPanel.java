@@ -153,6 +153,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Property.ValueChangeListener envCheckBoxListener;
 	private Property.ValueChangeListener footerCheckBoxListener;
 
+	public SingleSiteAnalysisDetailsPanel() {
+		setWidth("100%");
+	}
+
 	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput,
 			List<VariableType> factorsInDataset, List<VariableType> trialVariablesInDataset,
 			Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory,
@@ -513,11 +517,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		valueDatasetName = new Label();
 		valueDatasetName.setWidth("100%");
-		valueDatasetName.setValue(breedingViewInput.getDatasetName());
+		valueDatasetName.setValue(getBreedingViewInput().getDatasetName());
 
 		valueDatasourceName = new Label();
 		valueDatasourceName.setWidth("100%");
-		valueDatasourceName.setValue(breedingViewInput.getDatasetSource());
+		valueDatasourceName.setValue(getBreedingViewInput().getDatasetSource());
 
 		txtAnalysisName = new TextField();
 		txtAnalysisName.setNullRepresentation("");
@@ -795,7 +799,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	private void refineChoicesForBlocksReplicationRowAndColumnFactos() {
+	public void refineChoicesForBlocksReplicationRowAndColumnFactos() {
 		if (this.selReplicates.getValue() != null) {
 			this.selBlocks.removeItem(this.selReplicates.getValue());
 			this.selRowFactor.removeItem(this.selReplicates.getValue());
@@ -821,36 +825,47 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		}
 	}
 
-	protected void checkDesignFactor() {
+	public void checkDesignFactor() {
 		String designFactor = null;
+		int designType = retrieveExperimentalDesignTypeID();
+		if (designType != 0) {
+
+			if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
+				designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
+				displayRandomizedBlockDesignElements();
+			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
+					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
+				designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
+				displayIncompleteBlockDesignElements();
+			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
+					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
+				designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
+				displayRowColumnDesignElements();
+			}
+
+			selDesignType.setValue(designFactor);
+		} else {
+			selDesignType.select(null);
+		}
+
+
+	}
+
+	protected int retrieveExperimentalDesignTypeID() {
 		try {
 			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL,
 					TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
 			if (expDesign != null && !("").equals(expDesign.trim())
 					&& NumberUtils.isNumber(expDesign)) {
-				int designType = Integer.parseInt(expDesign);
-				if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
-					designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
-					displayRandomizedBlockDesignElements();
-				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
-						|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
-					designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
-					displayIncompleteBlockDesignElements();
-				} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
-						|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
-					designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
-					displayRowColumnDesignElements();
-				}
-
-				selDesignType.setValue(designFactor);
-			} else {
-				selDesignType.select(null);
+				return Integer.parseInt(expDesign);
 			}
 		} catch (MiddlewareQueryException e) {
 			LOG.error(e.getMessage(), e);
 		}
 
+		return 0;
 	}
+
 
 	protected void initializeLayout() {
 
@@ -1342,5 +1357,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			m.setActive(value);
 		}
 	}
+
+
 
 }
