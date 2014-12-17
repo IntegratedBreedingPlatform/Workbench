@@ -341,6 +341,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				boolean selected = (Boolean)event.getProperty().getValue();
 				if (!selected) {
 					disableEnvironmentEntries();
+					tblEnvironmentSelection.refreshRowCache();
 					return;
 				}
 
