@@ -169,6 +169,9 @@ public class ProgramService {
 				
 				User ibdbUser = userDataManager.getUserById(userId);
 				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
+			} else {
+				User ibdbUser = userDataManager.getUserByUserName(cropDBUser.getName());
+				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
 			}
 		}
     }
