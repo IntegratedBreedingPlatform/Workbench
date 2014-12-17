@@ -116,8 +116,6 @@ public class ProgramService {
 		if (cropType == null) {
 			workbenchDataManager.addCropType(program.getCropType());
 		}
-		// TODO: REMOVE Once template is no longer required in Project
-		program.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 		program.setLastOpenDate(null);
 		workbenchDataManager.addProject(program);
 

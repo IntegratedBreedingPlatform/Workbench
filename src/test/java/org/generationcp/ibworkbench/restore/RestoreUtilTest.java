@@ -205,7 +205,6 @@ public class RestoreUtilTest {
 			    newProject.setLastOpenDate(new Date());
 			    newProject.setLocalDbName(getLocalDbName()); //assign temp local DB name
 			    newProject.setStartDate(new Date());
-			    newProject.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 			    newProject.setProjectName(getTestProjectName());
 			    newProject.setUserId(1);
 	
@@ -262,7 +261,6 @@ public class RestoreUtilTest {
 			    newProject.setLastOpenDate(new Date());
 			    newProject.setLocalDbName(getLocalDbName()); //assign temp local DB name
 			    newProject.setStartDate(new Date());
-			    newProject.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 			    newProject.setProjectName(getTestProjectName());
 			    newProject.setUserId(1);
 	
