@@ -37,8 +37,8 @@ public class ProgramServiceTest {
 		Project project = new Project();
 		project.setProjectId(1L);
 		project.setProjectName("TestRiceProject");
-		CropType cropType = new CropType(CropType.RICE);
-		cropType.setCentralDbName("ibdbv2_rice_central");
+		CropType cropType = new CropType(CropType.CropEnum.RICE.toString());
+		cropType.setDbName("ibdbv2_rice_merged");
 		project.setCropType(cropType);
 		
 		User loggedInUser = new User();

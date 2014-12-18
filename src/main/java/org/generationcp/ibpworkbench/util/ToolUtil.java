@@ -239,8 +239,10 @@ public class ToolUtil {
      *          <code>false</code>
      */
     public boolean updateToolConfigurationForProject(Tool tool, Project project) throws MiddlewareQueryException, IOException {
-        String centralDbName = project.getCropType().getCentralDbName();
-        String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
+        // FIXME BMS-90 remove the dual DB references - once GDMS and MBDT are supported as well. 
+    	// For now (HACK) provide reference to the same db as both central and local DB!!
+    	String centralDbName = project.getDatabaseName();
+        String localDbName = project.getDatabaseName();
 
         // get mysql user name and password to use
         String username = null;

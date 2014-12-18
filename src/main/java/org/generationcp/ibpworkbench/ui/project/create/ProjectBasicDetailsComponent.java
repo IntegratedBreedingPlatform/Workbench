@@ -212,7 +212,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
         if (isCustomCrop){
         	
     	     CropType genericCropType = new CropType();
-    	     genericCropType.setCentralDbName("generic");
+    	     genericCropType.setDbName("generic");
     	     genericCropType.setCropName(GENERIC_CROP_DESCRIPTION);
     	     cropTypeCombo.addItem(genericCropType);
     	     cropTypeCombo.setValue(genericCropType);
@@ -460,7 +460,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
     	    
     		String newItemCaption = (String) otherCropNameField.getValue();
     		CropType cropType = new CropType(newItemCaption);  	
-            cropType.setCentralDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
+            cropType.setDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
             cropType.setVersion(bmsVersion);
             return cropType;
     	}else{

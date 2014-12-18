@@ -59,7 +59,7 @@ public class RestoreUtilTest {
     
     private SimpleResourceBundleMessageSource messageSource;
     
-	private static final String cropType = CropType.MAIZE;
+	private static final String cropType = CropType.CropEnum.MAIZE.toString();
 	
 	private static final String filename = "Maize_Tutorial_002-20140806.sql";
 	private static final String prefixDirectory = "/updatedIbdbScripts";

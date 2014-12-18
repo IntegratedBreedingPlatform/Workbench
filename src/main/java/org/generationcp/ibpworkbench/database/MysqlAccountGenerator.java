@@ -143,7 +143,7 @@ public class MysqlAccountGenerator implements Serializable{
     private void executeGrantStatements() throws InternationalizableException {
         //execute grant statements
         Statement statement = null;
-        String cropDatabaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
+        String cropDatabaseName = cropType.getDbName();
         
         try{
             statement = this.connection.createStatement();

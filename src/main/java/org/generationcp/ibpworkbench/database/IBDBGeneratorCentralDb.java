@@ -24,7 +24,11 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+/**
+ * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs re-engineering BMS-209) refers to it.
+ */
 @Configurable
+@Deprecated
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
 	private CropType cropType;
@@ -71,7 +75,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("USE " + cropType.getCentralDbName());
+            statement.execute("USE " + cropType.getDbName());
             return true;
         } catch (SQLException e) {
             return false;
@@ -90,7 +94,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         StringBuffer createGrantSyntax = new StringBuffer();
         StringBuffer createFlushSyntax = new StringBuffer();
 
-        String databaseName = cropType.getCentralDbName();
+        String databaseName = cropType.getDbName();
 
         Statement statement = null;
         try {
