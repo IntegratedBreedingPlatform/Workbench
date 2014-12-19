@@ -65,11 +65,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (cropType != null) {
-            this.gdm = managerFactoryProvider.getManagerFactoryForCropType(cropType).getGermplasmDataManager();
-        } else {
-            this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
-        }
+        this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     }
 
     public void doMoveToSelectedMethod(Integer id) {

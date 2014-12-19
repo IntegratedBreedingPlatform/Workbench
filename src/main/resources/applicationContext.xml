@@ -86,9 +86,6 @@
     	<property name="localUsername" value="${local.user}"/>
     	<property name="localPassword" value="${local.password}"/>
     	<property name="localPort"     value="${workbench.port}"/>
-    	<property name="centralUsername" value="${central.user}"/>
-    	<property name="centralPassword" value="${central.password}"/>
-    	<property name="centralPort"     value="${workbench.port}"/>
     </bean>
 
     <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">

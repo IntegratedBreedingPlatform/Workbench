@@ -290,14 +290,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
     	
     	gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     	
-        if (this.cropType != null) {
-            this.locationDataManager = managerFactoryProvider.getManagerFactoryForCropType(cropType).getLocationDataManager();
-        } else {
-            this.locationDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
-            this.onAttachInitialize();
-        }
-
-
+        this.locationDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
+        this.onAttachInitialize();
     }
 
     public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {
