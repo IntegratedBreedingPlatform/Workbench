@@ -223,7 +223,6 @@ public class RestoreUtilTest {
 				restoreAction.onClose(confirmDialog);
 	
 				workbenchDataManager.deleteProject(project);
-				workbenchDataManager.dropLocalDatabase(project);
 				
 				Assert.assertFalse("There is a restore process error", restoreAction.isHasRestoreError());
 				
@@ -266,7 +265,6 @@ public class RestoreUtilTest {
 				restoreAction.onClose(confirmDialog);
 	
 				workbenchDataManager.deleteProject(project);
-				workbenchDataManager.dropLocalDatabase(project);
 				
 				Assert.assertTrue("Should return false since user did not confirm the restore process", restoreAction.isHasRestoreError());
 				

@@ -71,10 +71,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
         final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
         if(app.getMainWindow()!= null)
         {
-            User currentUser = app.getSessionData().getUserData();
             this.currentProject = app.getSessionData().getSelectedProject();
-            if(this.currentProject == null)
-            {
+            if(this.currentProject == null) {
                 MessageNotifier.showError(window,messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
 
             }
@@ -84,40 +82,23 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                     messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
                 @Override
                 public void onClose(ConfirmDialog dialog) {
-
-                    // TODO Auto-generated method stub
                     if (dialog.isConfirmed()) {
-
                         try {
-                        	
                         	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
-
                             manager.deleteProjectDependencies(currentProject);
                             Project newProj = new Project();
                             newProj.setProjectId(currentProject.getProjectId());
                             newProj.setProjectName(currentProject.getProjectName());
-                            manager.dropLocalDatabase(newProj);
                             manager.deleteProject(newProj);
-                            
-                       
                             app.getSessionData().setSelectedProject(manager.getLastOpenedProject(app.getSessionData().getUserData().getUserid()));
-                            
-
                         } catch (MiddlewareQueryException e) {
                             e.printStackTrace();
                         }
-
                         // go back to dashboard
                         (new HomeAction()).doAction(window, "/Home", true);
-
                     }
-
-
                 }
             });
         }
 	}
-
-    
-
 }
