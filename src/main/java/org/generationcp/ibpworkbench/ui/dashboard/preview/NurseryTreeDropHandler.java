@@ -14,6 +14,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.dms.DmsProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 */
 @Configurable
 class NurseryTreeDropHandler implements DropHandler {
+	private static final Logger LOG = LoggerFactory.getLogger(NurseryTreeDropHandler.class);
     private final Tree tree;
     private final NurseryListPreviewPresenter presenter;
 
@@ -54,12 +57,9 @@ class NurseryTreeDropHandler implements DropHandler {
                 .getTargetDetails());
 
         Object sourceItemId = ((DataBoundTransferable) t).getItemId();
-        // FIXME: Why "over", should be "targetItemId" or just
-        // "getItemId"
         Object targetItemId = dropData.getItemIdOver();
 
-        // Location describes on which part of the node the drop took
-        // place
+        // Location describes on which part of the node the drop took place
         VerticalDropLocation location = dropData.getDropLocation();
 
         moveNode(sourceItemId, targetItemId, location);
@@ -130,6 +130,7 @@ class NurseryTreeDropHandler implements DropHandler {
             Integer source = (Integer)sourceItemId;
             success = presenter.moveNurseryListFolder(source, actualTargetId, !presenter.isFolder(source));
         } catch (Exception error) {
+        	LOG.error(error.getMessage(),error);
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.ERROR), error.getMessage());
             success = false;
         }
