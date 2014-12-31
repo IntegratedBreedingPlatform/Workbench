@@ -26,6 +26,7 @@ import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.generationcp.middleware.service.api.OntologyService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,6 +54,9 @@ public class DatasetExporterTest {
 
 	@Mock
 	private Experiment experiment;
+
+	@Mock
+	private OntologyService ontologyService;
 	
 	private static final String FILENAME = "datasetExporterTest.csv";
 	private static final String DEFAULT_TRIAL_INSTANCE_NAME = "SITE_NO";
@@ -128,17 +132,21 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
-		exporter.setWorkbenchDataManager(workbenchDataManager);
+		DatasetExporter dut = spy(exporter);
+
+		doReturn(ontologyService).when(dut).retrieveCurrentOntologyService();
+
+		dut.setWorkbenchDataManager(workbenchDataManager);
 		try {
-			exporter.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
+			dut.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, bvInput);
 		} catch (DatasetExporterException e) {
 
 			fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = exporter.getTableItems();
-		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+		List<String[]> tableItems = dut.getTableItems();
+		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
 
 		//header
 		assertEquals("Expected 1st column header is "+DEFAULT_TRIAL_INSTANCE_NAME,DEFAULT_TRIAL_INSTANCE_NAME, tableItems.get(0)[0]);
@@ -308,17 +316,20 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
-		exporter.setWorkbenchDataManager(workbenchDataManager);
+		DatasetExporter dut = spy(exporter);
+
+		doReturn(ontologyService).when(dut).retrieveCurrentOntologyService();
+		dut.setWorkbenchDataManager(workbenchDataManager);
 		try {
-			exporter.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
+			dut.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, bvInput);
 		} catch (DatasetExporterException e) {
 
 			fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = exporter.getTableItems();
-		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+		List<String[]> tableItems = dut.getTableItems();
+		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
 
 		assertEquals("Expected 1st column header is "+DEFAULT_TRIAL_INSTANCE_NAME,
 				DEFAULT_TRIAL_INSTANCE_NAME, tableItems.get(0)[0]);
@@ -371,17 +382,20 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
-		exporter.setWorkbenchDataManager(workbenchDataManager);
+		DatasetExporter dut = spy(exporter);
+
+		doReturn(ontologyService).when(dut).retrieveCurrentOntologyService();
+		dut.setWorkbenchDataManager(workbenchDataManager);
 		try {
-			exporter.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME+VAR_POST_FIX,
+			dut.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME+VAR_POST_FIX,
 					selectedEnvironments, bvInput);
 		} catch (DatasetExporterException e) {
 
 			fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = exporter.getTableItems();
-		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+		List<String[]> tableItems = dut.getTableItems();
+		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
 
 		assertEquals("Expected 1st column header is "+DEFAULT_TRIAL_INSTANCE_NAME+CLEANED_VAR_POST_FIX,
 				DEFAULT_TRIAL_INSTANCE_NAME+CLEANED_VAR_POST_FIX, tableItems.get(0)[0]);
@@ -448,17 +462,20 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
-		exporter.setWorkbenchDataManager(workbenchDataManager);
+				DatasetExporter dut = spy(exporter);
+
+				doReturn(ontologyService).when(dut).retrieveCurrentOntologyService();
+				dut.setWorkbenchDataManager(workbenchDataManager);
 		try {
-			exporter.exportToCSVForBreedingView(FILENAME, ENV_NAME,
+			dut.exportToCSVForBreedingView(FILENAME, ENV_NAME,
 					selectedEnvironments, bvInput);
 		} catch (DatasetExporterException e) {
 
 			fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = exporter.getTableItems();
-		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+		List<String[]> tableItems = dut.getTableItems();
+		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
 
 		//header
 		assertEquals("Expected 1st column header is "+ALT_TRIAL_INSTANCE_NAME,
@@ -558,17 +575,20 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(manager, 1, 1);
-		exporter.setWorkbenchDataManager(workbenchDataManager);
+		DatasetExporter dut = spy(exporter);
+
+		doReturn(ontologyService).when(dut).retrieveCurrentOntologyService();
+		dut.setWorkbenchDataManager(workbenchDataManager);
 		try {
-			exporter.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
+			dut.exportToCSVForBreedingView(FILENAME, DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, bvInput);
 		} catch (DatasetExporterException e) {
 
 			fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = exporter.getTableItems();
-		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
+		List<String[]> tableItems = dut.getTableItems();
+		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
 
 		//header
 		assertEquals("Expected 1st column header is "+DEFAULT_TRIAL_INSTANCE_NAME,DEFAULT_TRIAL_INSTANCE_NAME, tableItems.get(0)[0]);
