@@ -129,8 +129,8 @@ public class DatasetExporter {
 				String leftKey = (String) left;
 				String rightKey = (String) right;
 
-				Integer leftValue = (Integer) langForComp.get(leftKey);
-				Integer rightValue = (Integer) langForComp.get(rightKey);
+				Integer leftValue = langForComp.get(leftKey);
+				Integer rightValue = langForComp.get(rightKey);
 				return leftValue.compareTo(rightValue);
 			}
 		});
@@ -277,16 +277,11 @@ public class DatasetExporter {
 							.getName().equals(NUMERIC_VARIABLE)) {
 						double elemValue = 0;
 						if (factorVariable.getValue() != null) {
-							try {
+
 
 								if (factorVariable.getValue().isEmpty()
-										&& factorVariable
-										.getVariableType()
-										.getLocalName()
-										.equalsIgnoreCase(
-												breedingViewInput
-														.getReplicates()
-														.getName())) {
+										&& factorVariable.getVariableType().getLocalName().equalsIgnoreCase(
+												breedingViewInput.getReplicates().getName())) {
 									Variable variable = factorsOfExperimentsMap
 											.get(breedingViewInput.getBlocks()
 													.getName());
@@ -297,23 +292,25 @@ public class DatasetExporter {
 									}
 
 								} else {
-									elemValue = Double.valueOf(factorVariable.getValue());
+									try {
+										elemValue = Double.valueOf(factorVariable.getValue());
 
-									if (elemValue == Double.valueOf("-1E+36")) {
-										rowContent.add("");
-									} else {
-										rowContent.add(String.valueOf(factorVariable.getValue()));
+										if (elemValue == Double.valueOf("-1E+36")) {
+											rowContent.add("");
+										} else {
+											rowContent
+													.add(String.valueOf(factorVariable.getValue()));
+										}
+									} catch (NumberFormatException ex) {
+										String value = factorVariable.getValue();
+										if (value != null) {
+											value = value.trim();
+										}
+										rowContent.add(value);
 									}
-
 								}
 
-							} catch (NumberFormatException ex) {
-								String value = factorVariable.getValue();
-								if (value != null) {
-									value = value.trim();
-								}
-								rowContent.add(value);
-							}
+
 						} else {
 							String nullValue = null;
 							rowContent.add(nullValue);
