@@ -74,7 +74,7 @@ public class DatasetExporterTest {
 	private static final String VARIATE_VALUE_1 = "76.223";
 	private static final String VARIATE_VALUE_2 = "7.5";
 	private static final String VARIATE_VALUE_3 = "1111.0";
-	private static final String CATEGORICAL_VARIATE_VALUE = "1";
+	private static final String CATEGORICAL_VARIATE_VALUE = "0";
 	private static final int CATEGORICAL_VARIATE_ENUM_ID = 1;
 	private static final String CATEGORICAL_VARIATE_ENUM_NAME = "5";
 	private static final String CATEGORICAL_VARIATE_ENUM_DESCRIPTION = "Very Severe";
@@ -88,6 +88,8 @@ public class DatasetExporterTest {
 
 	private static final String VAR_POST_FIX = "%#! @";
 	private static final String CLEANED_VAR_POST_FIX = "%_";
+
+	public static final String BV_MISSING_VALUE = "";
 
 	@Before
 	public void setUp() throws Exception {
@@ -605,8 +607,8 @@ public class DatasetExporterTest {
 				VARIATE_VALUE_1, tableItems.get(1)[1]);
 		assertEquals("Expected 3rd column value is "+VARIATE_VALUE_2,
 				VARIATE_VALUE_2, tableItems.get(1)[2]);
-		assertEquals("Expected 4th column value is "+CATEGORICAL_VARIATE_ENUM_NAME,
-				CATEGORICAL_VARIATE_ENUM_NAME, tableItems.get(1)[3]);
+		assertEquals("Expected 4th column value is " + BV_MISSING_VALUE,
+				BV_MISSING_VALUE, tableItems.get(1)[3]);
 		
 		assertEquals("Header name should be "+DEFAULT_TRIAL_INSTANCE_NAME,
 				DEFAULT_TRIAL_INSTANCE_NAME, headerAliasMap.get(DEFAULT_TRIAL_INSTANCE_NAME));
