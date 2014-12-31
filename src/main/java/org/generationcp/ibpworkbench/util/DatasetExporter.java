@@ -37,9 +37,9 @@ public class DatasetExporter {
 	private StudyDataManager studyDataManager;
 	private Integer datasetId;
 	private List<String[]> tableItems;
-	private Map<String, Integer> columnsMap = new HashMap<String, Integer>();
-	private Map<Integer, String> variateColumnsMap = new HashMap<Integer, String>();
-	private Map<String, String> headerNameAliasMap = new HashMap<String, String>();
+	private Map<String, Integer> columnsMap = new HashMap<>();
+	private Map<Integer, String> variateColumnsMap = new HashMap<>();
+	private Map<String, String> headerNameAliasMap = new HashMap<>();
 	private int observationSheetColumnIndex;
 
 	private static final String MISSING_VALUE_STRING = "0";
@@ -50,12 +50,12 @@ public class DatasetExporter {
 	public DatasetExporter(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
 		this.datasetId = datasetId;
-		this.tableItems = new ArrayList<String[]>();
+		this.tableItems = new ArrayList<>();
 	}
 
 	private DataSet getDataSet(int dataSetId) {
 
-		DataSet dataset = null;
+		DataSet dataset;
 		try {
 			dataset = this.studyDataManager.getDataSet(datasetId);
 			return dataset;
@@ -120,7 +120,7 @@ public class DatasetExporter {
 	
 	private List<String> generateRowHeader(Map<String, String> headerNameAliasMap){
 		
-		List<String> keys = new ArrayList<String>(columnsMap.keySet());
+		List<String> keys = new ArrayList<>(columnsMap.keySet());
 
 		// Sort keys by values.
 		final Map<String, Integer> langForComp = columnsMap;
@@ -135,7 +135,7 @@ public class DatasetExporter {
 			}
 		});
 
-		List<String> rowHeader = new ArrayList<String>();
+		List<String> rowHeader = new ArrayList<>();
 		for (Iterator<String> i = keys.iterator(); i.hasNext();) {
 			String k = i.next();
 			Integer columnIndex = columnsMap.get(k).intValue();
@@ -156,7 +156,7 @@ public class DatasetExporter {
 
 		OntologyService ontologyService = retrieveCurrentOntologyService();
 		
-		Map<Integer, String> selectEnvironmentsMap = new HashMap<Integer, String>();
+		Map<Integer, String> selectEnvironmentsMap = new HashMap<>();
 		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
 			for (SeaEnvironmentModel model : breedingViewInput.getSelectedEnvironments()) {
 				selectEnvironmentsMap.put(model.getLocationId(), model.getEnvironmentName());
@@ -185,7 +185,7 @@ public class DatasetExporter {
 			observationSheetColumnIndex++;
 		}
 
-		List<Experiment> experiments = new ArrayList<Experiment>();
+		List<Experiment> experiments = new ArrayList<>();
 
 		try {
 			experiments = this.studyDataManager
@@ -214,7 +214,7 @@ public class DatasetExporter {
 			}
 				
 
-			List<String> row = new ArrayList<String>();
+			List<String> row = new ArrayList<>();
 
 			processFactors(row, experiment, breedingViewInput);
 
@@ -257,7 +257,7 @@ public class DatasetExporter {
 	protected void processFactors(List<String> rowContent, Experiment currentExperiment,
 			BreedingViewInput breedingViewInput) {
 		List<Variable> factorsOfExperiments = currentExperiment.getFactors().getVariables();
-		Map<String, Variable> factorsOfExperimentsMap = new HashMap<String, Variable>();
+		Map<String, Variable> factorsOfExperimentsMap = new HashMap<>();
 		for (Variable factorVariable : factorsOfExperiments) {
 			factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName(),
 					factorVariable);
@@ -356,7 +356,7 @@ public class DatasetExporter {
 	}
 
 	protected void processVariates(List<String> rowContent, Experiment currentExperiment, BreedingViewInput breedingViewInput, OntologyService ontologyService) {
-		List<Integer> variatekeys = new ArrayList<Integer>(variateColumnsMap.keySet());
+		List<Integer> variatekeys = new ArrayList<>(variateColumnsMap.keySet());
 		Collections.sort(variatekeys, new Comparator<Object>() {
 			public int compare(Object left, Object right) {
 				Integer leftKey = (Integer) left;
