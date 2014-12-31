@@ -207,7 +207,7 @@ public class MysqlAccountGenerator implements Serializable{
                 for(Integer userid : this.idAndNameOfProjectMembers.keySet()){
                     User userRecord = this.dataManager.getUserById(userid.intValue());
                     String username = this.idAndNameOfProjectMembers.get(userid);
-                    String password = username.length() > 16 ? username.substring(0, 16) : username;;
+                    String password = username.length() > 16 ? username.substring(0, 16) : username;
                     
                     if(userRecord != null){
                         ProjectUserMysqlAccount mappingRecord = new ProjectUserMysqlAccount();
