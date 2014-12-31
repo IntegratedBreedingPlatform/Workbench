@@ -72,6 +72,7 @@ public enum Message {
     ,MY_STUDIES
     ,SHARED_STUDIES
     ,NURSERIES
+    ,NURSERIES_AND_TRIALS
     ,TRIALS
     
     //General

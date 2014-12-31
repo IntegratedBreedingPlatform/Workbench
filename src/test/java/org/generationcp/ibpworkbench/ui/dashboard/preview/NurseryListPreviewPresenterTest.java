@@ -19,7 +19,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -32,7 +34,9 @@ public class NurseryListPreviewPresenterTest  {
             "the quick brown fox jumps over the lazy dog. " +
             "the quick brown fox jumps over the lazy dog. " +
             "the quick brown fox jumps over the lazy dog. ";
-    @Mock
+
+	private static final String NURSERIES_AND_TRIALS = "Nurseries and Trials";
+    
     private Project project;
 
     @Mock
@@ -72,22 +76,36 @@ public class NurseryListPreviewPresenterTest  {
     @Before
     public void setUp() throws Exception {
         when(view.getManagerFactoryProvider()).thenReturn(managerFactoryProvider);
-        view.SHARED_STUDIES = "Public Studies";
-        view.MY_STUDIES = "Program Studies";
+        NurseryListPreview.NURSERIES_AND_TRIALS = NURSERIES_AND_TRIALS;
+        project = createTestProjectData();
+        view.setProject(project);
 
         when(managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(managerFactory);
         when(managerFactory.getStudyDataManager()).thenReturn(studyDataManager);
 
         presenter.setManagerFactory(managerFactory);
+        presenter.setProject(project);
     }
+    
+    public Project createTestProjectData() {
+		Project project = new Project();
+        project.setUserId(1);
+        int uniqueId = new Random().nextInt(10000);
+        project.setProjectName("Test Project " + uniqueId);
+        project.setStartDate(new Date(System.currentTimeMillis()));
+        project.setLastOpenDate(new Date(System.currentTimeMillis()));
+        project.setUniqueID(Integer.toString(uniqueId));
+		return project;
+	}
 
-    @Test
+	@Test
     public void testIsFolder() throws Exception {
         presenter.isFolder(folderId);
         verify(studyDataManager).isStudy(folderId);
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testRenameNurseryListFolder() throws Exception {
         when(messageSource.getMessage(Message.INVALID_ITEM_NAME)).thenReturn("Blank name not accepted");
         when(studyDataManager.renameSubFolder(null, 0)).thenThrow(MiddlewareException.class);
@@ -105,7 +123,8 @@ public class NurseryListPreviewPresenterTest  {
 
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testMoveNurseryListFolder() throws Exception {
 
         presenter.moveNurseryListFolder(sourceId,targetId,isAStudy);
@@ -135,19 +154,12 @@ public class NurseryListPreviewPresenterTest  {
             assertTrue(e.getLocalizedMessage().contains("Folder name cannot be blank"));
         }
 
-        // 2nd scenario name == MY_STUDIES || SHARED_STUDIES
+        // 2nd scenario name == STUDIES
         try {
-            presenter.addNurseryListFolder(view.MY_STUDIES,studyId);
-            fail("should throw an exception if name = view.MY_STUDIES");
+            presenter.addNurseryListFolder(NurseryListPreview.NURSERIES_AND_TRIALS,studyId);
+            fail("should throw an exception if name = NurseryListPreview.NURSERIES_AND_TRIALS");
         } catch (NurseryListPreviewException e) {
             assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
-
-            try {
-                presenter.addNurseryListFolder(view.SHARED_STUDIES,studyId);
-                assertTrue("should throw an exception if name = view.SHARED_STUDIES",false);
-            } catch (NurseryListPreviewException e2) {
-                assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
-            }
 
         }
 
@@ -160,10 +172,11 @@ public class NurseryListPreviewPresenterTest  {
 
 
         // verify that addSubFolder is called with the correct order of parameters
-        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName, null);
+        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName, project.getUniqueID());
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testValidateForDeleteNurseryList() throws Exception {
         // if id is null, expect exception
         try {
@@ -182,8 +195,8 @@ public class NurseryListPreviewPresenterTest  {
         hasMultipleChildren.add(mock(Reference.class));
         hasMultipleChildren.add(mock(Reference.class));
 
-        when(studyDataManager.getChildrenOfFolder(studyIdWithMultipleChildren, anyString())).thenReturn(hasMultipleChildren);
-        when(studyDataManager.getChildrenOfFolder(studyIdWithNoChildren, anyString())).thenReturn(new ArrayList<Reference>());
+        when(studyDataManager.getChildrenOfFolder(studyIdWithMultipleChildren, project.getUniqueID())).thenReturn(hasMultipleChildren);
+        when(studyDataManager.getChildrenOfFolder(studyIdWithNoChildren, project.getUniqueID())).thenReturn(new ArrayList<Reference>());
 
         try {
             presenter.validateForDeleteNurseryList(studyIdWithMultipleChildren);
@@ -219,15 +232,9 @@ public class NurseryListPreviewPresenterTest  {
 
     @Test (expected = NurseryListPreviewException.class)
     public void testValidateStudyFolderNameInvalidProgramStudies() throws Exception {
-        presenter.validateStudyFolderName(NurseryListPreview.MY_STUDIES);
+        presenter.validateStudyFolderName(NurseryListPreview.NURSERIES_AND_TRIALS);
         fail("We are expecting an exception since the input is NOT valid");
 
-    }
-
-    @Test (expected = NurseryListPreviewException.class)
-    public void testValidateStudyFolderNameInvalidPublicStudies() throws Exception {
-        presenter.validateStudyFolderName(NurseryListPreview.SHARED_STUDIES);
-        fail("We are expecting an exception since the input is NOT valid");
     }
 
 

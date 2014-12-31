@@ -74,9 +74,7 @@ public class NurseryListPreview extends VerticalLayout {
     private Button addFolderBtn;
     private Button deleteFolderBtn;
 
-    public static String SHARED_STUDIES;
-    public static String MY_STUDIES;
-
+    public static String NURSERIES_AND_TRIALS;
     public static final int ROOT_FOLDER = 1;
 
     public NurseryListPreview(Project project) {
@@ -105,9 +103,7 @@ public class NurseryListPreview extends VerticalLayout {
 
         this.project = project;
 
-        MY_STUDIES = messageSource.getMessage(Message.MY_STUDIES);
-        SHARED_STUDIES = messageSource.getMessage(Message.SHARED_STUDIES);
-
+        NURSERIES_AND_TRIALS = messageSource.getMessage(Message.NURSERIES_AND_TRIALS);
         presenter = new NurseryListPreviewPresenter(this, project);
 
         presenter.generateInitialTreeNodes();
@@ -124,18 +120,14 @@ public class NurseryListPreview extends VerticalLayout {
         this.setExpandRatio(panel, 1.0F);
     }
 
-    protected void initializeComponents() {
-    }
-
-    public void generateTopListOfTree(List<FolderReference> centralFolders, List<FolderReference> localFolders) {
+    public void generateTopListOfTree(List<FolderReference> root) {
 
         treeView = new Tree();
         treeView.setContainerDataSource(new HierarchicalContainer());
         treeView.setDropHandler(new NurseryTreeDropHandler(treeView, presenter));
         treeView.setDragMode(TreeDragMode.NODE);
 
-        addInstanceTree(treeView, localFolders, false);
-        addInstanceTree(treeView, centralFolders, true);
+        addInstanceTree(treeView, root);
 
         treeView.addListener(new NurseryListTreeExpandListener(this));
         treeView.addListener(new DashboardMainTreeListener(this, project));
@@ -145,14 +137,8 @@ public class NurseryListPreview extends VerticalLayout {
     }
 
 
-    private void addInstanceTree(Tree treeView, List<FolderReference> folders, boolean isCentral) {
-    	String folderName = null;
-        if (isCentral) {
-            folderName = SHARED_STUDIES;
-        } else {
-            folderName = MY_STUDIES;
-        }
-
+    private void addInstanceTree(Tree treeView, List<FolderReference> folders) {
+    	String folderName = NURSERIES_AND_TRIALS;
         treeView.addItem(folderName);
         treeView.setItemCaption(folderName, folderName);
         treeView.setItemIcon(folderName, folderResource);
@@ -202,7 +188,6 @@ public class NurseryListPreview extends VerticalLayout {
     }
 
     protected void assemble() throws Exception {
-        initializeComponents();
         initializeLayout();
         initializeActions();
     }
@@ -410,7 +395,7 @@ public class NurseryListPreview extends VerticalLayout {
                             if (!isRoot) {
                                 treeView.setParent(newItem, parent.getProjectId());
                             } else {
-                                treeView.setParent(newItem, MY_STUDIES);
+                                treeView.setParent(newItem, NURSERIES_AND_TRIALS);
                             }
 
                             if (!isRoot) {
@@ -418,7 +403,7 @@ public class NurseryListPreview extends VerticalLayout {
                                     expandTree(parent.getProjectId());
                                 }
                             } else {
-                                treeView.expandItem(MY_STUDIES);
+                                treeView.expandItem(NURSERIES_AND_TRIALS);
                             }
 
                             treeView.select(newItem);
@@ -508,27 +493,50 @@ public class NurseryListPreview extends VerticalLayout {
 
     public void processToolbarButtons(Object treeItem) {
 
-        boolean isSharedStudy = treeItem instanceof String && treeItem.equals(NurseryListPreview.SHARED_STUDIES);
-        boolean isCentralStudy = treeItem instanceof Integer && ((Integer) treeItem).intValue() > 0;
-        boolean isMyStudy = treeItem instanceof String && treeItem.equals(NurseryListPreview.MY_STUDIES);
+        boolean isMyStudy = treeItem instanceof String && treeItem.equals(NurseryListPreview.NURSERIES_AND_TRIALS);
         boolean isFolder = treeItem instanceof String || getPresenter().isFolder((Integer) treeItem);
 
         // set the toolbar button state
-        if (isSharedStudy || isCentralStudy) {
-            setToolbarButtonsEnabled(false);
-        } else if (isMyStudy) {
+        if (isMyStudy) {
             setToolbarButtonsEnabled(false);
             setToolbarAddButtonEnabled(true);
-        } else if (!isFolder) {
-            setToolbarButtonsEnabled(false);
-            setToolbarAddButtonEnabled(true);
-            setToolbarDeleteButtonEnabled(true);
         } else {
             setToolbarButtonsEnabled(true);
         }
 
         // set the launch button state
-        setToolbarLaunchButtonEnabled(!isSharedStudy && !isMyStudy && !isFolder);
+        setToolbarLaunchButtonEnabled(!isMyStudy && !isFolder);
     }
 
+
+	public Tree getTreeView() {
+		return treeView;
+	}
+
+
+	public Button getRenameFolderBtn() {
+		return renameFolderBtn;
+	}
+
+
+	public Button getAddFolderBtn() {
+		return addFolderBtn;
+	}
+
+
+	public Button getDeleteFolderBtn() {
+		return deleteFolderBtn;
+	}
+
+
+	public Button getOpenStudyManagerBtn() {
+		return openStudyManagerBtn;
+	}
+
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
 }

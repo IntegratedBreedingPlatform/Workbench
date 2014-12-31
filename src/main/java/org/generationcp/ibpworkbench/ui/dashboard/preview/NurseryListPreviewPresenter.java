@@ -9,7 +9,6 @@ import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -63,13 +62,10 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
     public void generateInitialTreeNodes() {
 
-        List<FolderReference> centralRootFolders;
-        List<FolderReference> localRootFolders;
+        List<FolderReference> root;
         try {
-            centralRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.CENTRAL, project.getUniqueID());
-            localRootFolders = this.getManagerFactory().getStudyDataManager().getRootFolders(Database.LOCAL, project.getUniqueID());
-
-            view.generateTopListOfTree(centralRootFolders, localRootFolders);
+        	root = this.getManagerFactory().getStudyDataManager().getRootFolders(project.getUniqueID());
+            view.generateTopListOfTree(root);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
         }
@@ -114,12 +110,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         }
     }
 
-    public void deleteNurseryListFolder(Integer id) {
-        try {
-            this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-        }
+    public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException {
+        this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
     }
 
     public Object getStudyNodeParent(Integer newItem) {
@@ -165,7 +157,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
         if (name == null || "".equals(name.trim())) {
             throw new NurseryListPreviewException(NurseryListPreviewException.BLANK_NAME);
         }
-        if (name.equals(view.MY_STUDIES) || name.equals(view.SHARED_STUDIES)) {
+        if (name.equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
             throw new NurseryListPreviewException(NurseryListPreviewException.INVALID_NAME);
         }
 
@@ -271,7 +263,12 @@ public class NurseryListPreviewPresenter implements InitializingBean {
     public void setView(NurseryListPreview view) {
         this.view = view;
     }
-    public void processToolbarButtons(Object treeItem) {
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	public void processToolbarButtons(Object treeItem) {
     	//to be overridden
     }
 }

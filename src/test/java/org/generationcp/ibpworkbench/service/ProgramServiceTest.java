@@ -116,7 +116,6 @@ public class ProgramServiceTest {
 		
 		//Verify that the key database operations for program creation are invoked.
 		verify(workbenchDataManager).addProject(project);
-		verify(workbenchDataManager).saveOrUpdateProject(project);
 		
 		verify(toolUtil).createWorkspaceDirectoriesForProject(project);
 		
