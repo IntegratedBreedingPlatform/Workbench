@@ -77,6 +77,8 @@ public class NurseryListPreview extends VerticalLayout {
     public static String NURSERIES_AND_TRIALS;
     public static final int ROOT_FOLDER = 1;
 
+	private static final String ACTION_STYLE_CLASS = "action";
+
     public NurseryListPreview(Project project) {
 
         this.project = project;
@@ -187,7 +189,7 @@ public class NurseryListPreview extends VerticalLayout {
     	//empty block of code
     }
 
-    protected void assemble() throws Exception {
+    protected void assemble() {
         initializeLayout();
         initializeActions();
     }
@@ -237,9 +239,9 @@ public class NurseryListPreview extends VerticalLayout {
         deleteFolderBtn.setDescription(messageSource.getMessage(Message.DELETE_ITEM));
 
         openStudyManagerBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        renameFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
-        addFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
-        deleteFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " action");
+        renameFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " " + ACTION_STYLE_CLASS);
+        addFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " " + ACTION_STYLE_CLASS);
+        deleteFolderBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " " + ACTION_STYLE_CLASS);
 
         openStudyManagerBtn.setWidth("100px");
         renameFolderBtn.setWidth("26px");
@@ -282,7 +284,7 @@ public class NurseryListPreview extends VerticalLayout {
                 presenter.updateProjectLastOpenedDate();
 
                 // page change to list manager, with parameter passed
-                Project project = sessionData.getSelectedProject();
+                Project selectedProject = sessionData.getSelectedProject();
                 Object value = treeView.getValue();
 
 
@@ -298,11 +300,11 @@ public class NurseryListPreview extends VerticalLayout {
                 int studyId = ((Integer) value).intValue();
                 StudyType studyType = presenter.getStudyType(studyId);
                 if(studyType!=null && studyType.getId()==StudyType.T.getId()) {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB, project, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB, selectedProject, studyId).buttonClick(event);
                 } else if(studyType!=null && studyType.getId()==StudyType.N.getId()) {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB, project, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB, selectedProject, studyId).buttonClick(event);
                 } else {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, project, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, selectedProject, studyId).buttonClick(event);
                 }
                 
 
@@ -339,6 +341,7 @@ public class NurseryListPreview extends VerticalLayout {
                         try {
                             presenter.renameNurseryListFolder(w.getFieldVal(), (Integer) treeView.getValue());
                         } catch (Exception e) {
+                        	LOG.error(e.getMessage(), e);
                             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.INVALID_INPUT), e.getMessage());
                             return;
                         }
