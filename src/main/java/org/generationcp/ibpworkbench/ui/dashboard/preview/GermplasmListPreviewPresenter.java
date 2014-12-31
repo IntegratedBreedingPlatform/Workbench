@@ -1,5 +1,11 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -7,7 +13,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -18,12 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 
 
@@ -66,20 +65,16 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 
     public void generateInitialTreeNode() {
-        List<GermplasmList> germplasmListParentLocal;
-        List<GermplasmList> germplasmListParentCentral;
-
+    	List<GermplasmList> germplasmListParent;
+    	
         try {
-            germplasmListParentLocal = this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(BATCH_SIZE, Database.LOCAL);
-            germplasmListParentCentral = this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(BATCH_SIZE, Database.CENTRAL);
+            germplasmListParent = this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(BATCH_SIZE);
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getLocalizedMessage(), e);
-
-            germplasmListParentLocal = new ArrayList<GermplasmList>();
-            germplasmListParentCentral = new ArrayList<GermplasmList>();
+            germplasmListParent = new ArrayList<GermplasmList>();
         }
 
-        view.generateTree(germplasmListParentLocal, germplasmListParentCentral);
+        view.generateTree(germplasmListParent);
 
     }
 
@@ -217,14 +212,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     }
 
     private void checkIfUnique(String folderName) throws MiddlewareQueryException, GermplasmListPreviewException {
-        List<GermplasmList> centralDuplicate = this.getManagerFactory().getGermplasmListManager().
-                getGermplasmListByName(folderName, 0, 1, null, Database.CENTRAL);
-        if (centralDuplicate != null && !centralDuplicate.isEmpty()) {
-            throw new GermplasmListPreviewException(GermplasmListPreviewException.NAME_NOT_UNIQUE);
-        }
-        List<GermplasmList> localDuplicate = this.getManagerFactory().getGermplasmListManager().
-                getGermplasmListByName(folderName, 0, 1, null, Database.LOCAL);
-        if (localDuplicate != null && !localDuplicate.isEmpty()) {
+        List<GermplasmList> duplicate = this.getManagerFactory().getGermplasmListManager().
+                getGermplasmListByName(folderName, 0, 1, null);
+        if (duplicate != null && !duplicate.isEmpty()) {
             throw new GermplasmListPreviewException(GermplasmListPreviewException.NAME_NOT_UNIQUE);
         }
     }
@@ -233,7 +223,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
         if (germplasmListFolderName == null || germplasmListFolderName.trim().isEmpty()) {
             throw new GermplasmListPreviewException(GermplasmListPreviewException.BLANK_NAME);
-        } else if (germplasmListFolderName.equals(GermplasmListPreview.MY_LIST) || germplasmListFolderName.equals(GermplasmListPreview.SHARED_LIST)) {
+        } else if (germplasmListFolderName.equals(GermplasmListPreview.LISTS)) {
             throw new GermplasmListPreviewException(GermplasmListPreviewException.INVALID_NAME);
         } else if (germplasmListFolderName.trim().length() > MAX_LIST_FOLDER_NAME_LENGTH) {
             throw new GermplasmListPreviewException(GermplasmListPreviewException.LONG_NAME);
