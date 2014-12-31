@@ -1,18 +1,24 @@
 package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
-
+import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.ObjectUtil;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
@@ -21,6 +27,7 @@ import java.util.*;
 public class DatasetExporter {
 
 	public static final String NUMERIC_VARIABLE = "Numeric variable";
+	public static final String DUMMY_REPLICATES = "_REPLICATES_";
 	public static final String REGEX_VALID_BREEDING_VIEW_CHARACTERS = "[^a-zA-Z0-9-_%']+";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
@@ -34,6 +41,11 @@ public class DatasetExporter {
 	private Map<Integer, String> variateColumnsMap = new HashMap<Integer, String>();
 	private Map<String, String> headerNameAliasMap = new HashMap<String, String>();
 	private int observationSheetColumnIndex;
+
+	private static final String MISSING_VALUE_STRING = "0";
+
+	@Resource
+	private ManagerFactoryProvider provider;
 
 	public DatasetExporter(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
@@ -141,6 +153,8 @@ public class DatasetExporter {
 	public void exportToCSVForBreedingView(String filename, String selectedFactor,
 			List<String> selectedEnvironment, BreedingViewInput breedingViewInput)
 			throws DatasetExporterException {
+
+		OntologyService ontologyService = retrieveCurrentOntologyService();
 		
 		Map<Integer, String> selectEnvironmentsMap = new HashMap<Integer, String>();
 		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
@@ -160,9 +174,9 @@ public class DatasetExporter {
 		getFactorDetails(dataset);
 		getVariateDetails(dataset, breedingViewInput);
 
-		String dummyReplicates = "_REPLICATES_";
-		if (breedingViewInput.getReplicates().getName().equals(dummyReplicates)) {
-			columnsMap.put(dummyReplicates, Integer.valueOf(observationSheetColumnIndex));
+
+		if (DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
+			columnsMap.put(DUMMY_REPLICATES, Integer.valueOf(observationSheetColumnIndex));
 			observationSheetColumnIndex++;
 		}
 		
@@ -202,169 +216,11 @@ public class DatasetExporter {
 
 			List<String> row = new ArrayList<String>();
 
-			List<Variable> factorsOfExperiments = experiment.getFactors().getVariables();
-			Map<String, Variable> factorsOfExperimentsMap = new HashMap<String, Variable>();
-			for (Variable factorVariable : factorsOfExperiments){
-				factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName(),
-						factorVariable);
-			}
-				
-			for (Variable factorVariable : factorsOfExperiments) {
-				String factorName = factorVariable.getVariableType().getLocalName();
-				if (factorName != null) {
-					factorName = factorName.trim();
-				}
-				Integer columnIndexInteger = columnsMap.get(factorName);
-				if (columnIndexInteger != null) {
-					short columnIndex = columnIndexInteger.shortValue();
-					if (columnIndex >= 0) {
+			processFactors(row, experiment, breedingViewInput);
 
-						if (factorVariable.getVariableType().getStandardVariable().getDataType()
-								.getName().equals(NUMERIC_VARIABLE)) {
-							double elemValue = 0;
-							if (factorVariable.getValue() != null) {
-								try {
+			processVariates(row, experiment, breedingViewInput, ontologyService);
 
-									if (factorVariable.getValue().isEmpty()
-											&& factorVariable
-													.getVariableType()
-													.getLocalName()
-													.equalsIgnoreCase(
-															breedingViewInput.getReplicates()
-																	.getName())) {
-										Variable variable = factorsOfExperimentsMap
-												.get(breedingViewInput.getBlocks().getName());
-										if (variable != null) {
-											row.add(variable.getValue().trim());
-										} else {
-											row.add("");
-										}
-
-									} else {
-										elemValue = Double.valueOf(factorVariable.getValue());
-
-										if (elemValue == Double.valueOf("-1E+36")) {
-											row.add("");
-										} else{
-											row.add(String.valueOf(factorVariable.getValue()));
-										}
-											
-									}
-
-								} catch (NumberFormatException ex) {
-									String value = factorVariable.getValue();
-									if (value != null) {
-										value = value.trim();
-									}
-									row.add(value);
-								}
-							} else {
-								String nullValue = null;
-								row.add(nullValue);
-							}
-						} else {
-							String value = factorVariable.getValue();
-							if (value != null) {
-								if (factorVariable.getVariableType().getStandardVariable()
-										.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-										|| factorVariable.getVariableType().getStandardVariable()
-												.getPhenotypicType() == PhenotypicType.GERMPLASM) {
-									value = value.trim().replace(",", ";");
-
-									if (value.isEmpty()
-											&& factorVariable
-													.getVariableType()
-													.getLocalName()
-													.equalsIgnoreCase(
-															breedingViewInput.getReplicates()
-																	.getName())) {
-										Variable variable = factorsOfExperimentsMap
-												.get(breedingViewInput.getBlocks().getName());
-										if (variable != null) {
-											value = variable.getValue().trim();
-										} else {
-											value = "";
-										}
-
-									}
-
-								} else {
-									value = value.trim();
-								}
-
-							}
-							row.add(value);
-						}
-					}
-				}
-			}
-
-			List<Integer> variatekeys = new ArrayList<Integer>(variateColumnsMap.keySet());
-			Collections.sort(variatekeys, new Comparator<Object>() {
-				public int compare(Object left, Object right) {
-					Integer leftKey = (Integer) left;
-					Integer rightKey = (Integer) right;
-
-					return leftKey.compareTo(rightKey);
-				}
-			});
-
-			for (Object key : variatekeys) {
-				String variateName = "";
-				Variable variateVariable = experiment.getVariates().findByLocalName(
-						variateColumnsMap.get(key));
-				if (variateVariable != null) {
-					variateName = variateVariable.getVariableType().getLocalName();
-					
-					Integer columnIndexInteger = columnsMap.get(variateName);
-					if (columnIndexInteger != null) {
-						short columnIndex = columnIndexInteger.shortValue();
-						if (columnIndex >= 0) {
-
-							if (variateVariable.getVariableType().getStandardVariable().getDataType()
-									.getName().equals(NUMERIC_VARIABLE)) {
-								double elemValue = 0;
-								if (variateVariable.getValue() != null) {
-									try {
-										elemValue = Double.valueOf(variateVariable.getValue());
-
-										if (elemValue == Double.valueOf("-1E+36")) {
-											row.add("");
-										} else{
-											row.add(String.valueOf(elemValue));
-										}
-											
-
-									} catch (NumberFormatException ex) {
-										String value = variateVariable.getValue();
-										if (value != null) {
-											value = value.trim();
-										}
-										row.add(value);
-									}
-								} else {
-
-									row.add("");
-								}
-							} else {
-								String value = variateVariable.getActualValue();
-								if (value != null) {
-									value = value.trim();
-								} else {
-									value = "";
-								}
-								row.add(value);
-							}
-						}
-					}
-					
-				} else {
-					row.add("");
-				}
-
-			}
-
-			if (breedingViewInput.getReplicates().getName().equals(dummyReplicates)) {
+			if (breedingViewInput.getReplicates().getName().equals(DUMMY_REPLICATES)) {
 				row.add("1");
 			}
 			
@@ -398,6 +254,210 @@ public class DatasetExporter {
 
 	}
 
+	protected void processFactors(List<String> rowContent, Experiment currentExperiment,
+			BreedingViewInput breedingViewInput) {
+		List<Variable> factorsOfExperiments = currentExperiment.getFactors().getVariables();
+		Map<String, Variable> factorsOfExperimentsMap = new HashMap<String, Variable>();
+		for (Variable factorVariable : factorsOfExperiments) {
+			factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName(),
+					factorVariable);
+		}
+
+		for (Variable factorVariable : factorsOfExperiments) {
+			String factorName = factorVariable.getVariableType().getLocalName();
+			if (factorName != null) {
+				factorName = factorName.trim();
+			}
+			Integer columnIndexInteger = columnsMap.get(factorName);
+			if (columnIndexInteger != null) {
+				short columnIndex = columnIndexInteger.shortValue();
+				if (columnIndex >= 0) {
+
+					if (factorVariable.getVariableType().getStandardVariable().getDataType()
+							.getName().equals(NUMERIC_VARIABLE)) {
+						double elemValue = 0;
+						if (factorVariable.getValue() != null) {
+							try {
+
+								if (factorVariable.getValue().isEmpty()
+										&& factorVariable
+										.getVariableType()
+										.getLocalName()
+										.equalsIgnoreCase(
+												breedingViewInput
+														.getReplicates()
+														.getName())) {
+									Variable variable = factorsOfExperimentsMap
+											.get(breedingViewInput.getBlocks()
+													.getName());
+									if (variable != null) {
+										rowContent.add(variable.getValue().trim());
+									} else {
+										rowContent.add("");
+									}
+
+								} else {
+									elemValue = Double.valueOf(factorVariable.getValue());
+
+									if (elemValue == Double.valueOf("-1E+36")) {
+										rowContent.add("");
+									} else {
+										rowContent.add(String.valueOf(factorVariable.getValue()));
+									}
+
+								}
+
+							} catch (NumberFormatException ex) {
+								String value = factorVariable.getValue();
+								if (value != null) {
+									value = value.trim();
+								}
+								rowContent.add(value);
+							}
+						} else {
+							String nullValue = null;
+							rowContent.add(nullValue);
+						}
+					} else {
+						String value = factorVariable.getValue();
+						if (value != null) {
+							if (factorVariable.getVariableType().getStandardVariable()
+									.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+									|| factorVariable.getVariableType().getStandardVariable()
+									.getPhenotypicType() == PhenotypicType.GERMPLASM) {
+								value = value.trim().replace(",", ";");
+
+								if (value.isEmpty()
+										&& factorVariable
+										.getVariableType()
+										.getLocalName()
+										.equalsIgnoreCase(
+												breedingViewInput
+														.getReplicates()
+														.getName())) {
+									Variable variable = factorsOfExperimentsMap
+											.get(breedingViewInput.getBlocks()
+													.getName());
+									if (variable != null) {
+										value = variable.getValue().trim();
+									} else {
+										value = "";
+									}
+
+								}
+
+							} else {
+								value = value.trim();
+							}
+
+						}
+						rowContent.add(value);
+					}
+				}
+			}
+		}
+	}
+
+	protected void processVariates(List<String> rowContent, Experiment currentExperiment, BreedingViewInput breedingViewInput, OntologyService ontologyService) {
+		List<Integer> variatekeys = new ArrayList<Integer>(variateColumnsMap.keySet());
+		Collections.sort(variatekeys, new Comparator<Object>() {
+			public int compare(Object left, Object right) {
+				Integer leftKey = (Integer) left;
+				Integer rightKey = (Integer) right;
+
+				return leftKey.compareTo(rightKey);
+			}
+		});
+
+		for (Object key : variatekeys) {
+			String variateName = "";
+			Variable variateVariable = currentExperiment.getVariates().findByLocalName(
+					variateColumnsMap.get(key));
+			if (variateVariable != null) {
+				variateName = variateVariable.getVariableType().getLocalName();
+
+				Integer columnIndexInteger = columnsMap.get(variateName);
+				if (columnIndexInteger != null) {
+					short columnIndex = columnIndexInteger.shortValue();
+					if (columnIndex >= 0) {
+
+						if (variateVariable.getVariableType().getStandardVariable().getDataType()
+								.getName().equals(NUMERIC_VARIABLE)) {
+							double elemValue = 0;
+							if (variateVariable.getValue() != null) {
+								try {
+									elemValue = Double.valueOf(variateVariable.getValue());
+
+									if (elemValue == Double.valueOf("-1E+36")) {
+										rowContent.add("");
+									} else {
+										rowContent.add(String.valueOf(elemValue));
+									}
+
+								} catch (NumberFormatException ex) {
+									String value = variateVariable.getValue();
+									if (value != null) {
+										value = value.trim();
+									}
+									rowContent.add(value);
+								}
+							} else {
+
+								rowContent.add("");
+							}
+						} else if (variateVariable.getVariableType().getStandardVariable().
+								getDataType().getId() == TermId.CATEGORICAL_VARIABLE.getId()) {
+							String value = variateVariable.getActualValue();
+
+							if (value == null) {
+								value = "";
+							} else {
+								try {
+									List<ValueReference> possibleValues = ontologyService
+											.getDistinctStandardVariableValues(
+													variateVariable.getVariableType()
+															.getStandardVariable().getId());
+									if (MISSING_VALUE_STRING.equals(value)
+											&& isCategoricalValueOutOfBounds(value,
+											possibleValues)) {
+										value = "";
+									}
+								} catch (MiddlewareQueryException e) {
+									e.printStackTrace();
+								}
+							}
+
+							rowContent.add(value);
+						} else {
+							String value = variateVariable.getActualValue();
+							if (value != null) {
+								value = value.trim();
+							} else {
+								value = "";
+							}
+							rowContent.add(value);
+						}
+					}
+				}
+
+			} else {
+				rowContent.add("");
+			}
+
+		}
+	}
+
+	protected boolean isCategoricalValueOutOfBounds(String value, List<ValueReference> possibleValues) {
+
+		for (ValueReference ref : possibleValues) {
+			if (ref.getName().equals(value) || ref.getKey().equals(value)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public List<String[]> getTableItems() {
 		return tableItems;
 	}
@@ -412,6 +472,18 @@ public class DatasetExporter {
 
 	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	protected OntologyService retrieveCurrentOntologyService() {
+		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+
+		Project currentProject = app.getSessionData().getSelectedProject();
+		if (currentProject == null) {
+			currentProject = app.getSessionData().getLastOpenedProject();
+		}
+
+		ManagerFactory factory = provider.getManagerFactoryForProject(currentProject);
+		return factory.getOntologyService();
 	}
 
 }
