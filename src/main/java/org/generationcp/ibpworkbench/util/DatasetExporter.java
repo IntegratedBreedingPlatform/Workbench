@@ -231,6 +231,13 @@ public class DatasetExporter {
 			getTableItems().add(row.toArray(new String[0]));
 		}
 
+		serializeHeaderAliasMap();
+
+		writeCSVFile(filename);
+
+	}
+
+	protected void serializeHeaderAliasMap() {
 		try {
 			String tempFolder = String.format("%s\\temp", getWorkbenchDataManager()
 					.getWorkbenchSetting().getInstallationDirectory());
@@ -240,7 +247,9 @@ public class DatasetExporter {
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
+	}
 
+	protected void writeCSVFile(String filename) {
 		try {
 			File csvFile = new File(filename);
 			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile),
@@ -249,9 +258,8 @@ public class DatasetExporter {
 			csvWriter.flush();
 			csvWriter.close();
 		} catch (Exception e) {
-			LOG.error(e.getMessage(),e);
+			LOG.error(e.getMessage(), e);
 		}
-
 	}
 
 	protected void processFactors(List<String> rowContent, Experiment currentExperiment,
