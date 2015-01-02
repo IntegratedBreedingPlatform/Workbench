@@ -42,7 +42,7 @@ public class DatasetExporter {
 	private Map<String, String> headerNameAliasMap = new HashMap<>();
 	private int observationSheetColumnIndex;
 
-	private static final String MISSING_VALUE_STRING = "0";
+	private static final String MISSING_VALUE_STRING = "missing";
 
 	@Resource
 	private ManagerFactoryProvider provider;
