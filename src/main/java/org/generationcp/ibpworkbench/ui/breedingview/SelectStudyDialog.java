@@ -96,7 +96,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 		dataSetResource = new ThemeResource("../vaadin-retro/svg/dataset-icon.svg");
 		
-		treeTable = createStudyTreeTable(Database.LOCAL);
+		treeTable = createStudyTreeTable();
 	}
 
 	protected void initializeActions(){
@@ -133,7 +133,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return DatasetUtil.getPlotDataSetId(getStudyDataManager(),studyId);
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+            LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -181,7 +181,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		assemble();
 	}
 
-	private TreeTable createStudyTreeTable(Database database) {
+	protected TreeTable createStudyTreeTable() {
 
 		final TreeTable tr = new TreeTable();
 
@@ -192,10 +192,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<FolderReference> folderRef = null;
 
 		try {
-			folderRef = getStudyDataManager().getRootFolders(database, currentProject.getUniqueID());
+			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+            LOG.error(e1.getMessage(), e1);
 			if (getWindow() != null) {
 				MessageNotifier
 				.showWarning(
@@ -215,7 +214,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					study = getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
-				e.printStackTrace();
+                LOG.error(e.getMessage(), e);
 			}
 
 			Object[] cells = new Object[3];
@@ -282,7 +281,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return getStudyDataManager().isStudy(r.getId());
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+            LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -301,11 +300,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 				((MultiSiteAnalysisPanel)source).openStudyMeansDataset(study);
 				parentWindow.removeWindow(SelectStudyDialog.this);
 			} catch (MiddlewareQueryException e) {
-				e.printStackTrace();
+                LOG.error(e.getMessage(), e);
 				if (study != null) {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
-				}
-				else {
+				} else {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist", "The selected Study doesn't have an existing MEANS dataset.");
 				}				
 			}	
@@ -323,7 +321,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId(), currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+            LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -343,6 +341,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
+                LOG.error(e.getMessage(), e);
 			}
 
 			cells[0] = " " + r.getName();
@@ -390,7 +389,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+            LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -449,6 +448,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	            boolean isStudy = studyDataManager.isStudy(studyId);
 	            return !isStudy;
 	        } catch (MiddlewareQueryException e) {
+                LOG.error(e.getMessage(), e);
 	        	return false;
 	        }
 	    }
