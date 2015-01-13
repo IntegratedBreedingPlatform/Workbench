@@ -197,12 +197,10 @@
 		} else {
 			$.post($loginForm.attr('action'), $loginForm.serialize())
 				.done(function() {
-					// FIXME: User should be automatically logged in after a successful signup
-					// Clear form fields and show the login screen
+					//  automatically log in after a successful signup
 					clearErrors();
-					$loginForm.find('input').val('');
-					$select.select2('val', 'Role');
-					toggleLoginCreateAccount();
+					$loginForm.toggleClass(createAccount, false);
+					$loginForm.submit();
 				})
 				.fail(function(jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
