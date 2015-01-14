@@ -38,7 +38,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     private Project currentProject;
     private ClickEvent evt;
 
-
     @Autowired
     private WorkbenchDataManager manager;
 
@@ -84,15 +83,16 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                 public void onClose(ConfirmDialog dialog) {
                     if (dialog.isConfirmed()) {
                         try {
+                        	deleteAllProgramStudies();
                         	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
-                            manager.deleteProjectDependencies(currentProject);
+                        	manager.deleteProjectDependencies(currentProject);
                             Project newProj = new Project();
                             newProj.setProjectId(currentProject.getProjectId());
                             newProj.setProjectName(currentProject.getProjectName());
                             manager.deleteProject(newProj);
                             app.getSessionData().setSelectedProject(manager.getLastOpenedProject(app.getSessionData().getUserData().getUserid()));
                         } catch (MiddlewareQueryException e) {
-                            e.printStackTrace();
+                            LOG.error(e.getMessage(),e);
                         }
                         // go back to dashboard
                         (new HomeAction()).doAction(window, "/Home", true);
@@ -100,5 +100,10 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                 }
             });
         }
+	}
+	
+	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
+		managerFactoryProvider.getManagerFactoryForProject(currentProject)
+			.getStudyDataManager().deleteProgramStudies(currentProject.getUniqueID());
 	}
 }
