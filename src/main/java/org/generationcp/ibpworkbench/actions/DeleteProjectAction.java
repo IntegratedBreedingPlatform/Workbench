@@ -17,6 +17,7 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -47,8 +48,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
     @Autowired
     private DefaultManagerFactoryProvider managerFactoryProvider;
     
-    public DeleteProjectAction()
-    {
+    public DeleteProjectAction() {
     }
     
     @Override
@@ -60,16 +60,14 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 
 	@Override
 	public void doAction(Event event) {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void doAction(final Window window, String uriFragment,
 			boolean isLinkAccessed) {
         final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-        if(app.getMainWindow()!= null)
-        {
+        if(app.getMainWindow()!= null) {
             this.currentProject = app.getSessionData().getSelectedProject();
             if(this.currentProject == null) {
                 MessageNotifier.showError(window,messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
@@ -82,15 +80,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
                 @Override
                 public void onClose(ConfirmDialog dialog) {
                     if (dialog.isConfirmed()) {
-                        try {
-                        	deleteAllProgramStudies();
-                        	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
-                        	manager.deleteProjectDependencies(currentProject);
-                            Project newProj = new Project();
-                            newProj.setProjectId(currentProject.getProjectId());
-                            newProj.setProjectName(currentProject.getProjectName());
-                            manager.deleteProject(newProj);
-                            app.getSessionData().setSelectedProject(manager.getLastOpenedProject(app.getSessionData().getUserData().getUserid()));
+                    	try {
+                        	deleteProgram(app.getSessionData());
                         } catch (MiddlewareQueryException e) {
                             LOG.error(e.getMessage(),e);
                         }
@@ -102,6 +93,17 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
         }
 	}
 	
+	protected void deleteProgram(SessionData sessionData) throws MiddlewareQueryException {
+		deleteAllProgramStudies();
+    	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
+    	manager.deleteProjectDependencies(currentProject);
+        Project newProj = new Project();
+        newProj.setProjectId(currentProject.getProjectId());
+        newProj.setProjectName(currentProject.getProjectName());
+        manager.deleteProject(newProj);
+        sessionData.setSelectedProject(manager.getLastOpenedProject(sessionData.getUserData().getUserid()));
+	}
+
 	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
 		managerFactoryProvider.getManagerFactoryForProject(currentProject)
 			.getStudyDataManager().deleteProgramStudies(currentProject.getUniqueID());
