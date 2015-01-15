@@ -110,7 +110,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
         List<Method> result = new ArrayList<Method>();
         try {
-           List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.METHOD);
+           List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.METHOD,project.getUniqueID());
 
             for (ProgramFavorite favorite : favorites) {
                 Method m = gdm.getMethodByID(favorite.getEntityId());
@@ -166,7 +166,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
         try {
             result = convertMethod(gdm.editMethod(method.copy()));
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(),e);
         }
 
         if (!sessionData.getUniqueBreedingMethods().contains(result.getMname())) {
@@ -185,8 +185,6 @@ public class ProgramMethodsPresenter implements InitializingBean {
             sessionData.getUniqueBreedingMethods().add(method.getMname());
 
             Integer nextKey = sessionData.getProjectBreedingMethodData().keySet().size() + 1;
-
-            nextKey = nextKey * -1;
 
             MethodView newBreedingMethod = new MethodView();
 
@@ -216,13 +214,15 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
             newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newBreedingMethod.setMfprg(0);
+            
+            //set program_uuid
+            newBreedingMethod.setUniqueID(project.getUniqueID());
 
             // ADD TO MIDDLEWARE LOCAL
             try {
                 newBreedingMethod.setMid(gdm.addMethod(newBreedingMethod.copy()));
-
             } catch (Exception e) { // we might have null exception, better be prepared
-                e.printStackTrace();
+                LOG.error(e.getMessage(),e);
             }
 
             newBreedingMethod.setIsnew(true);
@@ -242,7 +242,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, SessionData sessionData, WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
         List<ProgramFavorite> favorites = null;
         try {
-        	favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD);
+        	favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD, project.getUniqueID());
 
             //TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
@@ -276,7 +276,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
                     Method m2 = gdm.getMethodByID(m.getMid());
 
                     if (m2 == null) {
-                        Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,m.getMdate());
+                        Method newMethod= new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(),0,0,0,0,0,0,0,m.getMdate(),project.getUniqueID());
                         mID = gdm.addMethod(newMethod);
                     } else {
                         mID = m2.getMid();
@@ -287,6 +287,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
                 favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
                 favorite.setEntityId(mID);
+                favorite.setUniqueID(project.getUniqueID());
                 list.add(favorite);
             }
 

@@ -238,19 +238,12 @@ import java.util.*;
 
 			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
+                 final Button mNameBtn = new Button(((MethodView)itemId).getMname());
+                 mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+                 mNameBtn.setData((MethodView)itemId);
+                 mNameBtn.addListener(editMethodListener);
 
-                 if (((MethodView)itemId).getMid() < 0) {
-
-                     final Button mNameBtn = new Button(((MethodView)itemId).getMname());
-                     mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-                     mNameBtn.setData((MethodView)itemId);
-                     mNameBtn.addListener(editMethodListener);
-
-                     return mNameBtn;
-
-                 } else {
-                     return ((MethodView)itemId).getMname();
-                 }
+                 return mNameBtn;
              }
          });
 

@@ -1,5 +1,13 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -20,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.util.*;
 
 @Configurable
 public class ProgramLocationsPresenter implements InitializingBean {
@@ -149,7 +155,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION);
+		List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
 		
 		for (ProgramFavorite favorite : favorites) {
             LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
@@ -162,15 +168,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 	
-	//TODO Review this method logic...for merged DB scheme..
 	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
 		try {
-			
 			List<LocationDetails> locList = locationDataManager.getLocationDetailsByLocId(locationId,0,1);
-			if (locationId < 0) {
-				Location location = locationDataManager.getLocationByID(locationId);
-				return convertFrom(location);
-			}
 			return convertFrom(locList.get(0));			
 		} catch (IndexOutOfBoundsException e) {
 			LOG.error("Cannot retrieve location info. [locationId=" + locationId +"]", e);
@@ -187,7 +187,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations,Project project,WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
         // Delete existing project locations in the database
-    	List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION);
+    	List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
     	gdm.deleteProgramFavorites(favorites);
 
          /*
@@ -199,6 +199,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         	ProgramFavorite favorite = new ProgramFavorite();
         	favorite.setEntityId(l.getLocationId());
         	favorite.setEntityType(FavoriteType.LOCATION.getName());
+        	favorite.setUniqueID(project.getUniqueID());
         	list.add(favorite);
         }
 
@@ -302,6 +303,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         // if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
         if(!isCropOnly) {
+        	loc.setUniqueID(project.getUniqueID());
             locationDataManager.addLocation(loc);
 
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());

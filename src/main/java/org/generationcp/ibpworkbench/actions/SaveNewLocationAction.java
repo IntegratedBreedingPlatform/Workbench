@@ -119,7 +119,6 @@ public class SaveNewLocationAction implements ClickListener{
 
         // increment key from the session's list of locations (correct id from local db)
         Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
-        nextKey = nextKey * -1;
 
         locModel.setLocationId(nextKey);
 
@@ -133,8 +132,8 @@ public class SaveNewLocationAction implements ClickListener{
             Location loc = programLocationsPresenter.convertLocationViewToLocation(locModel);
 
             programLocationsPresenter.addLocation(loc);
- 		} catch (MiddlewareQueryException e1) {
- 			e1.printStackTrace();
+ 		} catch (MiddlewareQueryException e) {
+ 			LOG.error(e.getMessage(),e);
  		    return;
         }
 
