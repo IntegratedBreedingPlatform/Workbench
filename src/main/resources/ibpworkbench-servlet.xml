@@ -61,5 +61,6 @@
 	</bean>
 
 	<bean id="userAccountValidator" class="org.generationcp.ibpworkbench.validator.UserAccountValidator" />
+	<bean id="forgotPasswordAccountValidator" class="org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator" />
 	<bean id="workbenchUserService" class="org.generationcp.ibpworkbench.service.WorkbenchUserService" />
 </beans>
