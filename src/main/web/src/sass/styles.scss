@@ -91,7 +91,8 @@ select {
 		height: 3.5rem;
 	}
 
-	.login-create-account-control {
+	.login-create-account-control,
+	.login-forgot-password-control {
 		height: 0;
 		opacity: 0;
 
@@ -241,7 +242,23 @@ select {
 		.login-confirm-password-control {
 			margin-bottom: 1.5rem;
 		}
+	}
 
+  	&.login-forgot-password {
+	  .login-grid {
+		height: 0;
+		margin: 0;
+		opacity: 0;
+	  }
+
+	  .login-forgot-password-control {
+		height: 3.5rem;
+		opacity: 1;
+	  }
+
+	  .login-confirm-password-control {
+		margin-bottom: 1.5rem;
+	  }
 	}
 
 	.login-validation-error {
@@ -379,7 +396,7 @@ select {
 }
 
 .no-csstransitions {
-	.login-create-account-control {
+	.login-create-account-control, .login-forgot-password-control {
 		display: none;
 	}
 
@@ -391,6 +408,16 @@ select {
 		.login-grid {
 			display: none;
 		}
+	}
+
+  	.login-forgot-password {
+	  .login-forgot-password-control {
+		display: inline-block;
+	  }
+
+	  .login-grid {
+		display: none;
+	  }
 	}
 }
 

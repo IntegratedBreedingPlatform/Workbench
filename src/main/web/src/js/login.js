@@ -15,15 +15,24 @@
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
 		$select = $('.login-select'),
+		$select2Container = $('.select2-container'),
 
-		createAccount = 'login-create-account',
+
+	createAccount = 'login-create-account',
+		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
 		formInvalid = 'login-form-invalid',
 
 		createAccountText = 'Create Account',
 		signInText = 'Sign In',
+		resetPasswordText = 'Reset Password',
 
-		altAction = $loginForm.data('alt-action');
+		loginAction = $loginForm.attr('action'),
+
+		altAction = $loginForm.data('alt-action'),
+		forgotPasswordAction = $loginForm.data('forgot-password-action');
+
+	var failedLoginAttemptCount = 0;
 
 	function toggleCheckbox() {
 		var tick = $checkButton.text() !== '';
@@ -33,7 +42,26 @@
 	}
 
 	function isLoginDisplayed() {
-		return !$loginForm.hasClass(createAccount);
+		return !($loginForm.hasClass(createAccount) || $loginForm.hasClass(forgotPasswordClass));
+	}
+
+	function isForgotPasswordScreenDisplayed() {
+		return $loginForm.hasClass(forgotPasswordClass);
+	}
+
+	/**
+	 * dynamic selection of toggle closures
+	 * @param toggleFunction
+	 */
+	function toggleLoginPage(toggleFunction) {
+
+		if ($loginForm.hasClass(createAccount) ) {
+			toggleLoginCreateAccount();
+		} else if ($loginForm.hasClass(forgotPasswordClass)) {
+			toggleForgotPasswordScreen();
+		} else {
+			toggleFunction();
+		}
 	}
 
 	function toggleLoginCreateAccount() {
@@ -56,6 +84,28 @@
 		$select.select2('enable', switchToCreate);
 	}
 
+	function toggleForgotPasswordScreen() {
+		var switchToCreate = isLoginDisplayed(),
+			$forgotPasswordInputs = $('.js-login-forgot-password-input'),
+			prevAction = $loginForm.attr('action');
+
+		// Once we have the create account post, change the form action to be stored on a data attribute, and toggle the URL stored
+		// when we toggle.
+		$loginForm.attr('action', forgotPasswordAction);
+		forgotPasswordAction = prevAction;
+
+		$loginForm.toggleClass(forgotPasswordClass, switchToCreate);
+		$loginModeToggle.text(switchToCreate ?  signInText : createAccountText);
+		$loginSubmit.text(switchToCreate ? resetPasswordText : signInText);
+
+		// clear out password field
+		$('.js-login-password').val('');
+
+		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
+		$forgotPasswordInputs.prop('disabled', !switchToCreate);
+		$checkInput.prop('disabled', switchToCreate);
+	}
+
 	function displayClientError(errorMessage) {
 		$errorText.text(errorMessage);
 		$error.removeClass('login-valid');
@@ -63,7 +113,7 @@
 	}
 
 	function clearErrors() {
-		// Double check if form is actually invalid, as this function may ocassionally be called unnecessarily
+		// Double check if form is actually invalid, as this function may occasionally be called unnecessarily
 		if ($loginForm.hasClass(formInvalid)) {
 
 			// Clear server errors
@@ -113,6 +163,23 @@
 		return errorMessage;
 	}
 
+	function validateForgotPasswordInputs() {
+		var errorMessage;
+
+		// Add validation error styling to all empty inputs
+		$('.js-login-username, .js-login-password, .js-login-forgot-password-input').each(function(index, input) {
+			var $input = $(input);
+			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
+		});
+
+		// Set the error message if there's a validation error
+		if ($('.' + validationError).length > 0) {
+			errorMessage = 'Please fill in all required fields.';
+		}
+
+		return errorMessage;
+	}
+
 	// Expects an object, the keys of which are names of invalid form inputs
 	function applyValidationErrors(errors) {
 		var errorMessage = '';
@@ -140,7 +207,7 @@
 	}).on('select2-focus', clearErrors);
 
 	// Making the select container act as though it was all one
-	$('.select2-container').on('click', function() {
+	$select2Container.on('click', function() {
 		$('.select2-container').toggleClass('select2-container-active', true);
 		$select.select2('open');
 	});
@@ -149,7 +216,7 @@
 	$select.select2('enable', false);
 
 	// Giving the select container the ability to be focused
-	$('.select2-container').attr('tabindex', 1);
+	$select2Container.attr('tabindex', 1);
 
 	// Hook up our fake (better looking) checkbox with it's real, submit-able counterpart
 	$('.js-login-checkbox-control').on('click', '.js-login-remember-me', function(e) {
@@ -166,15 +233,25 @@
 	$loginModeToggle.on('click', function(e) {
 		e.preventDefault();
 		clearErrors();
-		toggleLoginCreateAccount();
+		toggleLoginPage(toggleLoginCreateAccount);
+	});
+
+
+	$('.ac-login-forgot-password').on('click',function(e) {
+		e.preventDefault();
+		clearErrors();
+		toggleLoginPage(toggleForgotPasswordScreen);
+
 	});
 
 	$loginForm.on('submit', function(e) {
 		// Prevent default submit behaviour and implement our own post / response handler
 		e.preventDefault();
 
-		var login = isLoginDisplayed(),
-			errorMessage = login ? validateSignInInputs() : validateCreateAccountInputs();
+		var loginFormRef = this;
+		var login = isLoginDisplayed();
+		var isPasswordScreen = isForgotPasswordScreenDisplayed();
+		var errorMessage = isPasswordScreen ? validateForgotPasswordInputs() : (login ? validateSignInInputs() : validateCreateAccountInputs());
 
 		if (errorMessage) {
 			displayClientError(errorMessage);
@@ -191,18 +268,41 @@
 
 		// Continue with form submit - login is currently handled server side
 		if (login) {
-			this.submit();
+			$.post($loginForm.data('validate-login-action'),$loginForm.serialize())
+				.done(function() {
+					clearErrors();
 
-		// Create Account
+					// no login problems! submit
+					loginFormRef.submit();
+				})
+				.fail(function(jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+
+					if (failedLoginAttemptCount < 2) {
+						failedLoginAttemptCount++;
+					} else {
+						toggleForgotPasswordScreen();
+					}
+				})
+				.always(function() {
+						$loginSubmit.removeClass('loading');
+				});
 		} else {
+			// Create account or forgot password
 			$.post($loginForm.attr('action'), $loginForm.serialize())
 				.done(function() {
-					// FIXME: User should be automatically logged in after a successful signup
 					// Clear form fields and show the login screen
 					clearErrors();
-					$loginForm.find('input').val('');
-					$select.select2('val', 'Role');
-					toggleLoginCreateAccount();
+
+					if (isPasswordScreen) {
+						$('.js-login-forgot-password-input, .js-login-password').val('');
+						toggleForgotPasswordScreen();
+					} else {
+						// this will automatically login the user.
+						$loginForm.attr('action',loginAction);
+						loginFormRef.submit();
+					}
+
 				})
 				.fail(function(jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
