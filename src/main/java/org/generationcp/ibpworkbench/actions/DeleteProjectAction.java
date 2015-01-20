@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.List;
+
 import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -19,7 +21,12 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +102,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 	
 	protected void deleteProgram(SessionData sessionData) throws MiddlewareQueryException {
 		deleteAllProgramStudies();
+		deleteAllProgramFavorites();
+		deleteAllProgramLocationsAndMethods();
     	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
     	manager.deleteProjectDependencies(currentProject);
         Project newProj = new Project();
@@ -102,6 +111,28 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
         newProj.setProjectName(currentProject.getProjectName());
         manager.deleteProject(newProj);
         sessionData.setSelectedProject(manager.getLastOpenedProject(sessionData.getUserData().getUserid()));
+	}
+	
+	protected void deleteAllProgramLocationsAndMethods() throws MiddlewareQueryException {
+		ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+		GermplasmDataManager germplasmDataManager = 
+				managerFactory.getGermplasmDataManager();
+		LocationDataManager locationDataManager = managerFactory.getLocationDataManager();
+		locationDataManager.deleteProgramLocationsByUniqueId(currentProject.getUniqueID());
+		germplasmDataManager.deleteProgramMethodsByUniqueId(currentProject.getUniqueID());
+	}
+
+	protected void deleteAllProgramFavorites() throws MiddlewareQueryException {
+		ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+		GermplasmDataManager germplasmDataManager = 
+				managerFactory.getGermplasmDataManager();
+		List<ProgramFavorite> favoriteLocations = 
+				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION,currentProject.getUniqueID());
+		List<ProgramFavorite> favoriteMethods = 
+				germplasmDataManager.getProgramFavorites(FavoriteType.METHOD,currentProject.getUniqueID());
+		germplasmDataManager.deleteProgramFavorites(favoriteLocations);
+		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
+		
 	}
 
 	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
