@@ -724,7 +724,7 @@ import java.util.*;
 			@Override
              public void valueChange(Property.ValueChangeEvent event) {
                  getAvailableTableContainer().removeAllItems();
-                 getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString(),favoritesTableContainer.getItemIds()));
+                 getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
 
                  resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
                  updateNoOfEntries(availTotalEntriesLabel, availableTable);

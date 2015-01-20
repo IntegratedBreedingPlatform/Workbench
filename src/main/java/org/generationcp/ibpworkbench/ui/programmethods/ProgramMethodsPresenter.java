@@ -1,5 +1,13 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
@@ -18,9 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,7 +53,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     @Autowired
     private SessionData sessionData;
 
-    private GermplasmDataManager gdm;
+    private GermplasmDataManager gerplasmDataManager;
 
 
 
@@ -65,28 +70,28 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+        this.gerplasmDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     }
 
     public void doMoveToSelectedMethod(Integer id) {
         Method selectedMethod = null;
         try {
-            selectedMethod = gdm.getMethodByID(id);
+            selectedMethod = gerplasmDataManager.getMethodByID(id);
 
             view.addRow(convertMethod(selectedMethod),false,0);
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e.getMessage(),e);
         }
 
     }
 
     public Method getMethodByID(Integer id) {
         try {
-            return gdm.getMethodByID(id);
+            return gerplasmDataManager.getMethodByID(id);
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e.getMessage(),e);
         }
         return null;
     }
@@ -94,12 +99,12 @@ public class ProgramMethodsPresenter implements InitializingBean {
     public void doRemoveSelectedMethod(Integer id) {
         Method selectedMethod = null;
         try {
-            selectedMethod = gdm.getMethodByID(id);
+            selectedMethod = gerplasmDataManager.getMethodByID(id);
 
             view.addRow(convertMethod(selectedMethod),true,0);
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e.getMessage(),e);
         }
     }
 
@@ -110,10 +115,10 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
         List<Method> result = new ArrayList<Method>();
         try {
-           List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.METHOD,project.getUniqueID());
+           List<ProgramFavorite> favorites = gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD,project.getUniqueID());
 
             for (ProgramFavorite favorite : favorites) {
-                Method m = gdm.getMethodByID(favorite.getEntityId());
+                Method m = gerplasmDataManager.getMethodByID(favorite.getEntityId());
 
                 if (m != null) {
                     result.add(m);
@@ -121,41 +126,26 @@ public class ProgramMethodsPresenter implements InitializingBean {
             }
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e.getMessage(),e);
         }
 
         return convertFrom(result);
-    }
-
-    public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname,Collection<MethodView> existingItems) {
-        Map<Integer,MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
-
-        try {
-            List<MethodView> result = convertFrom(gdm.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
-
-            for (MethodView method : result) {
-                resultsMap.put(method.getMid(),method);
-            }
-
-        } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
-        }
-
-        return resultsMap.values();
     }
 
     public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname) {
         Map<Integer,MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
 
         try {
-            List<MethodView> result = convertFrom(gdm.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
+            List<MethodView> result = convertFrom(gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
 
             for (MethodView method : result) {
-                resultsMap.put(method.getMid(),method);
+            	if(method.getUniqueID() == null || method.getUniqueID().equals(project.getUniqueID())){
+            		resultsMap.put(method.getMid(),method);
+            	}
             }
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(),e);
         }
 
         return resultsMap.values();
@@ -164,7 +154,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     public MethodView editBreedingMethod(MethodView method) {
         MethodView result = null;
         try {
-            result = convertMethod(gdm.editMethod(method.copy()));
+            result = convertMethod(gerplasmDataManager.editMethod(method.copy()));
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
         }
@@ -215,13 +205,13 @@ public class ProgramMethodsPresenter implements InitializingBean {
             newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
             newBreedingMethod.setMfprg(0);
             
-            //set program_uuid
+            //set programUUID
             newBreedingMethod.setUniqueID(project.getUniqueID());
 
             // ADD TO MIDDLEWARE LOCAL
             try {
-                newBreedingMethod.setMid(gdm.addMethod(newBreedingMethod.copy()));
-            } catch (Exception e) { // we might have null exception, better be prepared
+                newBreedingMethod.setMid(gerplasmDataManager.addMethod(newBreedingMethod.copy()));
+            } catch (Exception e) {
                 LOG.error(e.getMessage(),e);
             }
 
@@ -236,7 +226,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
     }
 
     public boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds) {
-        return saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.sessionData, this.workbenchDataManager, this.gdm);
+        return saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.sessionData, this.workbenchDataManager, this.gerplasmDataManager);
     }
 
     public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, SessionData sessionData, WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
@@ -247,22 +237,20 @@ public class ProgramMethodsPresenter implements InitializingBean {
             //TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
             for (Method m : selectedMethodIds) {
-                boolean m_exists = false;
+                boolean mExists = false;
 
                 for (ProgramFavorite favorite : favorites) {
                     if (favorite.getEntityId().equals(m.getMid())) {
-                        m_exists = true;
+                        mExists = true;
                     }
                 }
 
-                if (!m_exists) {
-                    if (sessionData.getUserData() != null) {
-                        workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(), project, "Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()), sessionData.getUserData(), new Date()));
-                    }
+                if (!mExists &&sessionData.getUserData() != null) {
+                	workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(), project, "Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()), sessionData.getUserData(), new Date()));
                 }
-            }   // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
+            }  
+            // code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
 
-            
             gdm.deleteProgramFavorites(favorites);
             
 
@@ -295,8 +283,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
             
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-
+            LOG.error(e.getMessage(),e);
             return false;
         }
 
@@ -310,7 +297,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
             pub.copyProperties(methodView,method);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(),e);
         }
 
         return methodView;
@@ -327,7 +314,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
                 result.add(methodView);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage(),e);
             }
         }
             return result;
@@ -345,17 +332,20 @@ public class ProgramMethodsPresenter implements InitializingBean {
 	public Map<Integer, String> getMethodClasses() {
 		Map<Integer, String> methodClasses = new LinkedHashMap<Integer, String>();
 		try {
-			List<Term> terms = gdm.getMethodClasses();
+			List<Term> terms = gerplasmDataManager.getMethodClasses();
 			if(terms!=null) {
 				for (Term term : terms) {
 					methodClasses.put(term.getId(), term.getName());
 				}
 			}
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
 		
 		return methodClasses;
 	}
-	
+
+	public void setGerplasmDataManager(GermplasmDataManager gerplasmDataManager) {
+		this.gerplasmDataManager = gerplasmDataManager;
+	}
 }

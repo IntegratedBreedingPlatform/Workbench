@@ -35,9 +35,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsPresenter.class);
     private boolean isCropOnly;
     private CropType cropType;
-    private ProgramLocationsView view;
+
+	private ProgramLocationsView view;
     
-    private static GermplasmDataManager gdm;
+    private static GermplasmDataManager germplasmDataManager;
 
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -94,7 +95,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
         for (Location location : locationList) {
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
 
-            if (locationVModel != null) {
+            if (locationVModel != null 
+            		&& (location.getUniqueID() == null || location.getUniqueID().equals(project.getUniqueID()))){
                 resultsMap.put(location.getLocid(), locationVModel);
             }
         }
@@ -115,7 +117,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
         for (Location location : locationList) {
             final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
-            if (locationVModel != null) {
+            if (locationVModel != null 
+            		&& (location.getUniqueID() == null || location.getUniqueID().equals(project.getUniqueID()))) {
                 resultsMap.put(location.getLocid(), locationVModel);
             }
         }
@@ -155,7 +158,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
         }
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		List<ProgramFavorite> favorites = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
 		
 		for (ProgramFavorite favorite : favorites) {
             LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
@@ -187,8 +190,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
     public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations,Project project,WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
         // Delete existing project locations in the database
-    	List<ProgramFavorite> favorites = gdm.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-    	gdm.deleteProgramFavorites(favorites);
+    	List<ProgramFavorite> favorites = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+    	germplasmDataManager.deleteProgramFavorites(favorites);
 
          /*
         * add selected location to local db location table if it does not yet exist
@@ -205,7 +208,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 
         // Add the new set of project locations
-        gdm.saveProgramFavorites(list);
+        germplasmDataManager.saveProgramFavorites(list);
 
         return true;
     }
@@ -289,7 +292,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
     	
-    	gdm = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
+    	germplasmDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getGermplasmDataManager();
     	
         this.locationDataManager = managerFactoryProvider.getManagerFactoryForProject(project).getLocationDataManager();
         this.onAttachInitialize();
@@ -357,4 +360,13 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
         return result;
     }
+
+	public static void setGermplasmDataManager(
+			GermplasmDataManager germplasmDataManager) {
+		ProgramLocationsPresenter.germplasmDataManager = germplasmDataManager;
+	}
+	
+    public void setCropType(CropType cropType) {
+		this.cropType = cropType;
+	}
 }
