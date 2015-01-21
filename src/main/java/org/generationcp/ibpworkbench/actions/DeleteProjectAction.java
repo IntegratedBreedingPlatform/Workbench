@@ -104,7 +104,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener{
 		deleteAllProgramStudies();
 		deleteAllProgramFavorites();
 		deleteAllProgramLocationsAndMethods();
-    	managerFactoryProvider.removeProjectFromLocalSession(currentProject.getProjectId());
+    	managerFactoryProvider.removeProjectFromSessionCache(currentProject.getProjectId());
     	manager.deleteProjectDependencies(currentProject);
         Project newProj = new Project();
         newProj.setProjectId(currentProject.getProjectId());

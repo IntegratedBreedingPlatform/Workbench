@@ -81,9 +81,9 @@
     
     <!-- Manager Factory Provider -->
     <bean id="managerFactoryProvider" class="org.generationcp.commons.hibernate.DefaultManagerFactoryProvider" destroy-method="close">
-    	<property name="localUsername" value="${local.user}"/>
-    	<property name="localPassword" value="${local.password}"/>
-    	<property name="localPort"     value="${workbench.port}"/>
+    	<property name="dbUsername" value="${local.user}"/>
+    	<property name="dbPassword" value="${local.password}"/>
+    	<property name="dbPort"     value="${workbench.port}"/>
     </bean>
 
     <bean id="workbenchDataManager" class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
