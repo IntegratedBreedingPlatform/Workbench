@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,20 +52,22 @@ public class AuthenticationController {
 	}
 
 	@ResponseBody
-	@RequestMapping (value = "/validateLogin", method = RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> validateLogin(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String,Object> out = new LinkedHashMap<>();
+	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> validateLogin(
+			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
+		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
 			if (workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
-				out.put(SUCCESS,Boolean.TRUE);
+				out.put(SUCCESS, Boolean.TRUE);
 			} else {
-				Map<String, String> errors = new LinkedHashMap<String, String>();
+				Map<String, String> errors = new LinkedHashMap<>();
 
 				errors.put(UserAccountFields.USERNAME, messageSource
-						.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,new String[]{},
+						.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
+								new String[] { },
 								"Your login attempt was not successful. Please try again.",
 								LocaleContextHolder.getLocale()));
 
@@ -83,7 +83,6 @@ public class AuthenticationController {
 
 		return new ResponseEntity<>(out, isSuccess);
 	}
-
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -119,14 +118,15 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> forgotPassword(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String,Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> forgotPassword(
+			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
+		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		forgotPasswordAccountValidator.validate(model,result);
+		forgotPasswordAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
-			generateErrors(result,out);
+			generateErrors(result, out);
 		} else {
 			try {
 				// success! apply new password
@@ -142,11 +142,11 @@ public class AuthenticationController {
 			}
 		}
 
-		return new ResponseEntity<>(out,isSuccess);
+		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	protected void generateErrors(BindingResult result, Map<String, Object> out) {
-		Map<String, String> errors = new LinkedHashMap<String, String>();
+		Map<String, String> errors = new LinkedHashMap<>();
 		for (FieldError error : result.getFieldErrors()) {
 			errors.put(error.getField(), messageSource
 					.getMessage(error.getCode(), error.getArguments(),
