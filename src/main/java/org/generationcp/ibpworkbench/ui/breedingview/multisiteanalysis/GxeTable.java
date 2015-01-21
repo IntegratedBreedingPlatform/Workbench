@@ -6,9 +6,11 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.ibpworkbench.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.TableItems;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -227,7 +229,9 @@ public class GxeTable extends Table {
 					
 					TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(meansDataSetId);
 					//get the SITE NAME and SITE NO
-					VariableTypeList trialEnvFactors = meansDataSet.getVariableTypes().getFactors();
+					
+					DataSet trialDataSet = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
+					VariableTypeList trialEnvFactors = trialDataSet.getVariableTypes().getFactors();
 					
 					for(VariableType f : trialEnvFactors.getVariableTypes()){
 						
@@ -269,9 +273,13 @@ public class GxeTable extends Table {
 					initializeHeader(factorLocalNames, variateLocalNames, container);
 					
 					//generate the rows
-					exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
+					//exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
+					DataSet trialDataSet = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
+					Integer trialDataSetId = trialDataSet.getId();
+					exps = studyDataManager.getExperimentsWithTrialEnvironment(trialDataSetId, meansDataSetId, 0, Integer.MAX_VALUE);
 					
 					int rowCounter = 3;
+				
 					
 					for (Experiment exp : exps){
 						
