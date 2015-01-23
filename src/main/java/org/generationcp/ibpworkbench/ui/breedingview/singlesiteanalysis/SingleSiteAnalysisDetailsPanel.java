@@ -1278,8 +1278,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(getSelGenotypes(), 1, 3);
 		getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (getSelReplicates().isEnabled() == false
-				|| getSelReplicates().getItemIds().size() == 0) {
+		if (!getSelReplicates().isEnabled()
+				|| getSelReplicates().getItemIds().isEmpty()) {
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
@@ -1304,8 +1304,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(getSelGenotypes(), 1, 1);
 		getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (getSelReplicates().isEnabled() == false
-				|| getSelReplicates().getItemIds().size() == 0) {
+		if (!getSelReplicates().isEnabled()
+				|| getSelReplicates().getItemIds().isEmpty()) {
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
@@ -1334,7 +1334,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		getBlockRowColumnContainer().addComponent(gLayout);
 
 		if (!getSelReplicates().isEnabled()
-				|| !getSelReplicates().getItemIds().isEmpty()) {
+				|| getSelReplicates().getItemIds().isEmpty()) {
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
