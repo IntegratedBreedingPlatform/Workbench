@@ -24,21 +24,9 @@ import java.util.Map.Entry;
 
 public class GxeTable extends Table {
 
-    private final static Logger LOG = LoggerFactory.getLogger(GxeTable.class);
-	
-	static <K,V extends Comparable<? super V>>
-	SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
-	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
-	        new Comparator<Map.Entry<K,V>>() {
-	            @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
-	                return e1.getValue().compareTo(e2.getValue());
-	            }
-	        }
-	    );
-	    sortedEntries.addAll(map.entrySet());
-	    return sortedEntries;
-	}
-	
+    private static final String LS_BLUPS = "ls blups";
+	private static final String ERROR_ESTIMATE = "error estimate";
+	private static final Logger LOG = LoggerFactory.getLogger(GxeTable.class);	
 	private static final long serialVersionUID = 1274131837702381485L;
 	
 	public static final int CELL_CHECKBOX = 1;
@@ -80,7 +68,18 @@ public class GxeTable extends Table {
 		initializeTable();
 		fillTableWithDataset(studyId);
 	}
-
+	
+	private static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+	        new Comparator<Map.Entry<K,V>>() {
+	            @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+	                return e1.getValue().compareTo(e2.getValue());
+	            }
+	        }
+	    );
+	    sortedEntries.addAll(map.entrySet());
+	    return sortedEntries;
+	}
 
 	private void initializeTable() {
 
@@ -168,14 +167,14 @@ public class GxeTable extends Table {
 					while(itrFactor.hasNext()){
 						VariableType f = itrFactor.next();
 						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
-							trialInstanceFactorName = f.getLocalName(); break;
+							trialInstanceFactorName = f.getLocalName();
 						}
 					}
 					
 					Iterator<VariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
 					while(itrVariates.hasNext()){
 						if (itrVariates.next().getLocalName().contains("_Heritability")){
-							plotDatasets.add(ds); break;
+							plotDatasets.add(ds);
 						}
 					}
 				
@@ -185,8 +184,8 @@ public class GxeTable extends Table {
 			}
 			
 			
-			if (plotDatasets.size() > 0){
-				List<Experiment> exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
+			if (!plotDatasets.isEmpty()){
+				exps = studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
 				for (Experiment exp : exps){
 					
 					String envName = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
@@ -209,21 +208,16 @@ public class GxeTable extends Table {
 			}
 			
 		} catch (MiddlewareQueryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		};
+			LOG.error(e1.getMessage(), e1);
+		}
 		
-		
-		
-		
-		HashSet<String> envNames = new HashSet<String>();
+		Set<String> envNames = new HashSet<String>();
 		
 		try {
 			List<DataSet> meansDataSets = studyDataManager.getDataSetsByType(
 					studyId, DataSetType.MEANS_DATA);
-			if (meansDataSets != null) {
-				if (meansDataSets.size() > 0) {
-					
+			if (meansDataSets != null && !meansDataSets.isEmpty()) {
+				
 					meansDataSet = meansDataSets.get(0);
 					meansDataSetId = meansDataSet.getId();
 					
@@ -233,25 +227,9 @@ public class GxeTable extends Table {
 					DataSet trialDataSet = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
 					VariableTypeList trialEnvFactors = trialDataSet.getVariableTypes().getFactors();
 					
-					for(VariableType f : trialEnvFactors.getVariableTypes()){
+					for(VariableType factor : trialEnvFactors.getVariableTypes()){
 						
-						//Always Show the TRIAL INSTANCE Factor
-						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
-							container.addContainerProperty(f.getLocalName(), Label.class, "");
-							factorLocalNames.put(f.getRank(), f.getLocalName());
-						}
-						
-						//Selected Environment Name
-						if (f.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
-							container.addContainerProperty(f.getLocalName(), Label.class, "");
-							factorLocalNames.put(f.getRank(), f.getLocalName());
-						}
-						
-						//Selected Environment Group Name
-						if (f.getLocalName().equalsIgnoreCase(selectedEnvGroupFactorName)){
-							container.addContainerProperty(f.getLocalName(), Label.class, "");
-							factorLocalNames.put(f.getRank(), f.getLocalName());
-						}
+						addNecessaryFactorsToContainer(factor, container);
 						
 					}
 					
@@ -260,12 +238,13 @@ public class GxeTable extends Table {
 					VariableTypeList variates = meansDataSet.getVariableTypes().getVariates();
 					for(VariableType v : variates.getVariableTypes()){
 						container.addContainerProperty(v.getLocalName(), Label.class, null);
-						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
+						if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase(ERROR_ESTIMATE) 
 								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + v.getLocalName().replace("_UnitErrors", "") + ")") 
-								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
-							if (variatesCheckBoxState.get(v.getLocalName())) {
+								&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase(LS_BLUPS)
+								&& variatesCheckBoxState.get(v.getLocalName())){
+							
                                 variateLocalNames.put(v.getRank(), v.getLocalName());
-                            }
+                            
 						}
 					}
 					
@@ -273,14 +252,10 @@ public class GxeTable extends Table {
 					initializeHeader(factorLocalNames, variateLocalNames, container);
 					
 					//generate the rows
-					//exps = studyDataManager.getExperiments(meansDataSetId, 0, Integer.MAX_VALUE);
-					DataSet trialDataSet = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
-					Integer trialDataSetId = trialDataSet.getId();
-					exps = studyDataManager.getExperimentsWithTrialEnvironment(trialDataSetId, meansDataSetId, 0, Integer.MAX_VALUE);
+					exps = studyDataManager.getExperimentsWithTrialEnvironment(trialDataSet.getId(), meansDataSetId, 0, Integer.MAX_VALUE);
 					
 					int rowCounter = 3;
 				
-					
 					for (Experiment exp : exps){
 						
 						String locationValTrial = exp.getFactors().findByLocalName(trialInstanceFactorName).getValue();
@@ -304,7 +279,10 @@ public class GxeTable extends Table {
 						
 						for (Map.Entry<Integer, String> f : factorLocalNames.entrySet()){
 							String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
-							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) {envNames.add(fValue); colIndexEnvFactorName = cellCounter;}
+							if (f.getValue().equalsIgnoreCase(selectedEnvFactorName)) {
+								envNames.add(fValue); 
+								colIndexEnvFactorName = cellCounter;
+								}
 							row[cellCounter] = new TableItems();
 							row[cellCounter].setLabel(fValue);
 							row[cellCounter].setType(GxeTable.CELL_LABEL);
@@ -323,25 +301,13 @@ public class GxeTable extends Table {
 								varKey = var.getVariableType().getId();
 							}
 							String meansData = "";
-							try{
-								
-								meansData = String.valueOf(studyDataManager.countStocks(
-										meansDataSetId
-										,envs.findOnlyOneByLocalName(selectedEnvFactorName, row[colIndexEnvFactorName].getLabel()).getId()
-										,varKey
-											)
-										);
-								
-								String heritabilityVal = getHeritabilityValues().get(locationValTrial).get(x.getValue());
-								if (heritabilityVal != null){
-									meansData = String.format("%s (%s)", meansData, heritabilityVal);
-								}
-								
-							}catch(Exception e){
-								LOG.debug("Error in getting the means data.");
-								e.printStackTrace();
-							}
+							meansData = getMeansData(meansDataSetId, envs, selectedEnvFactorName, row[colIndexEnvFactorName].getLabel(), varKey);
 							
+							String heritabilityVal = getHeritabilityValues().get(locationValTrial).get(x.getValue());
+							if (heritabilityVal != null){
+								meansData = String.format("%s (%s)", meansData, heritabilityVal);
+							}
+								
 							row[cellCounter].setLabel(meansData);
 							row[cellCounter].setValue(true);
 							row[cellCounter].setType(GxeTable.CELL_LABEL);
@@ -352,16 +318,51 @@ public class GxeTable extends Table {
 						createRow(rowCounter, row, container);
 					}					
 					
-				}
+				
 			}
 
 		} catch (MiddlewareQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 		
 		
 		
+	}
+	
+	protected String getMeansData(int meansDataSetId, TrialEnvironments envs, String envFactorName, String envName, int varKey){
+		try {
+			return String.valueOf(
+					studyDataManager.countStocks(
+					meansDataSetId
+					,envs.findOnlyOneByLocalName(envFactorName, envName).getId()
+					,varKey
+						)
+					);
+		}catch(MiddlewareQueryException e){
+			LOG.error(e.getMessage(), e);
+			return "";
+		}
+		
+	}
+	
+	protected void addNecessaryFactorsToContainer(VariableType factor, Container container){
+		//Always Show the TRIAL INSTANCE Factor
+		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()){
+			container.addContainerProperty(factor.getLocalName(), Label.class, "");
+			factorLocalNames.put(factor.getRank(), factor.getLocalName());
+		}
+		
+		//Selected Environment Name
+		if (factor.getLocalName().equalsIgnoreCase(selectedEnvFactorName)){
+			container.addContainerProperty(factor.getLocalName(), Label.class, "");
+			factorLocalNames.put(factor.getRank(), factor.getLocalName());
+		}
+		
+		//Selected Environment Group Name
+		if (factor.getLocalName().equalsIgnoreCase(selectedEnvGroupFactorName)){
+			container.addContainerProperty(factor.getLocalName(), Label.class, "");
+			factorLocalNames.put(factor.getRank(), factor.getLocalName());
+		}
 	}
 
 
@@ -372,11 +373,11 @@ public class GxeTable extends Table {
 		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
 		
 		for (Integer i = 0; i < obj.length; i++){
-			Property cb_column = this.getContainerProperty(obj[i], " ");
-			Property location_column = this.getContainerProperty(obj[i], selectedEnvFactorName);
-			if((Boolean)((CheckBox) cb_column.getValue()).getValue()){
+			Property cbColumn = this.getContainerProperty(obj[i], " ");
+			Property locationColumn = this.getContainerProperty(obj[i], selectedEnvFactorName);
+			if((Boolean)((CheckBox) cbColumn.getValue()).getValue()){
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
-				environmentLabel.setName(((Label)location_column.getValue()).getValue().toString());
+				environmentLabel.setName(((Label)locationColumn.getValue()).getValue().toString());
 				environmentLabel.setActive(true);
 				environmentLabels.add(environmentLabel);
 			}
@@ -394,14 +395,14 @@ public class GxeTable extends Table {
 		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
 		
 		for (Integer i = 0; i < obj.length; i++){
-			Property cb_column = this.getContainerProperty(obj[i], " ");
-			Property location_column = this.getContainerProperty(obj[i], selectedEnvFactorName);
-			Property trialno_column = this.getContainerProperty(obj[i], trialInstanceFactorName);
-			if((Boolean)((CheckBox) cb_column.getValue()).getValue()){
+			Property cbColumn = this.getContainerProperty(obj[i], " ");
+			Property locationColumn = this.getContainerProperty(obj[i], selectedEnvFactorName);
+			Property trialNoColumn = this.getContainerProperty(obj[i], trialInstanceFactorName);
+			if((Boolean)((CheckBox) cbColumn.getValue()).getValue()){
 				Environment environment = new Environment();
-				environment.setName(((Label)location_column.getValue()).getValue().toString());
+				environment.setName(((Label)locationColumn.getValue()).getValue().toString());
 				environment.setActive(true);
-				environment.setTrialno(((Label) trialno_column.getValue()).getValue().toString());
+				environment.setTrialno(((Label) trialNoColumn.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}
