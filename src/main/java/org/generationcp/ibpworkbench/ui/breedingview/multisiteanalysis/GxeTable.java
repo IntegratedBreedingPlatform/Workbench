@@ -277,7 +277,7 @@ public class GxeTable extends Table {
 	
 	protected Map<String, Map<String, String>> getHeribilityValuesFromPlotDataSet(int studyId){
 		List<DataSet> plotDatasets = new ArrayList<DataSet>();
-		Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
+		Map<String, Map<String, String>> heritabilityValues = new HashMap<String, Map<String, String>>();
 		
 		try {
 			

@@ -147,7 +147,7 @@ public class GxeTableTest {
 	
 
 	private List<DatasetReference> createDataSetRef() {
-		List<DatasetReference> datasetRefs = new ArrayList<>();
+		List<DatasetReference> datasetRefs = new ArrayList<DatasetReference>();
 		datasetRefs.add(new DatasetReference(TRIAL_DATASET_ID, ""));
 		datasetRefs.add(new DatasetReference(MEANS_DATASET_ID, ""));
 		return datasetRefs;
@@ -241,7 +241,7 @@ public class GxeTableTest {
 			List<VariableType> variates,
 			List<Variable> variateVariables) {
 		
-		List<DataSet> dataSets = new ArrayList<>();
+		List<DataSet> dataSets = new ArrayList<DataSet>();
 		dataSets.add(createMeansDataSet(factors, factorVariables, variates, variateVariables));
 		
 		return dataSets;
@@ -252,7 +252,7 @@ public class GxeTableTest {
 			List<VariableType> variates,
 			List<Variable> variateVariables) {
 		
-		List<DataSet> dataSets = new ArrayList<>();
+		List<DataSet> dataSets = new ArrayList<DataSet>();
 		dataSets.add(createTrialDataSet(factors, factorVariables, variates, variateVariables));
 		
 		return dataSets;
@@ -511,7 +511,7 @@ public class GxeTableTest {
 	}
 	
 	private Map<String, Boolean> createVariatesCheckBoxState(List<VariableType> variates) {
-		Map<String, Boolean> map = new HashMap<>();
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		for (VariableType v:variates){
 			map.put(v.getLocalName(), true );
 		}
@@ -528,7 +528,7 @@ public class GxeTableTest {
 	
 	private List<Experiment> createExperimentsWithTrialEnvironment(List<VariableType> factors, List<Variable> factorVariables,
 			List<VariableType> variates, List<Variable> variateVariables) {
-		List<Experiment> experiments = new ArrayList<>();
+		List<Experiment> experiments = new ArrayList<Experiment>();
 		Experiment exp = new Experiment();
 		exp.setId(1);
 		exp.setLocationId(1);
