@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html ng-app="ontology" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -26,10 +26,13 @@
 		</nav>
 	</header>
 
-	<div>
+	<div ng-view="ng-view">
 		Content goes here!
 	</div>
 
+
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-route.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/app/ontologyModule.js}"></script>
 </body>
 </html>

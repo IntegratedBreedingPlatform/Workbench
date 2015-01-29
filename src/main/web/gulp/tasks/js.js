@@ -20,7 +20,7 @@ hintAllTheThings = lazypipe()
 	.pipe(jshint)
 	.pipe(jshint.reporter, jshintStylish);
 
-gulp.task('js', ['libJs', 'clientJs']);
+gulp.task('js', ['libJs', 'clientJs', 'angularJs']);
 
 gulp.task('libJs', function() {
 
@@ -38,6 +38,16 @@ gulp.task('clientJs', function() {
 	var dest = destRoot + '/js';
 
 	return gulp.src('src/js/*')
+		.pipe(hintAllTheThings())
+		.pipe(gulpif(argv.prod, uglify()))
+		.pipe(gulp.dest(dest));
+});
+
+gulp.task('angularJs', function() {
+
+	var dest = destRoot + '/app';
+
+	return gulp.src('src/app/**/*.js')
 		.pipe(hintAllTheThings())
 		.pipe(gulpif(argv.prod, uglify()))
 		.pipe(gulp.dest(dest));
