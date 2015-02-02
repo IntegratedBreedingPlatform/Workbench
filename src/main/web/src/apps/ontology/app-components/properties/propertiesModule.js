@@ -4,34 +4,33 @@
 (function() {
 	var app = angular.module('properties', ['list']);
 
-	app.controller('PropertiesController', ['$scope', 'propertiesProvider', function($scope, propertiesProvider) {
-		this.properties = propertiesProvider.getProperties();
+	app.controller('PropertiesController', ['$scope', 'propertiesService', function($scope, propertiesService) {
+		var ctrl = this;
+		this.properties = [];
+
+		propertiesService.getProperties().then(function(properties) {
+			ctrl.properties = properties;
+		});
 	}]);
 
-	app.provider('propertiesProvider', function() {
-		var getProperties = function() {
-			return [{
-				id: '23',
-				name: 'Alkali Injury',
-				description: 'Condition characterized by discoloration of the leaves ranging from white to reddish brown ' +
-					'starting from the leaf tips.',
-				classes: ['Abiotic Stress', 'Trait'],
-				cropOntologyId: 'CO_192791864'
-			}, {
-				id: '45',
-				name: 'Blast',
-				description: 'A fungus disease of rice caused by the fungus Pyricularia oryzae.',
-				classes: ['Abiotic Stress', 'Trait'],
-				cropOntologyId: 'CO_192791349'
-			}];
-		};
+	app.service('propertiesService', ['$http', '$q', function($http, $q) {
+		function successHandler(response) {
+			return response.data;
+		}
+
+		function failureHandler(response) {
+			if (!angular.isObject(response.data) || !response.data.message) {
+				return $q.reject('An unknown error occurred.');
+			}
+		}
 
 		return {
-			$get: function() {
-				return {
-					getProperties: getProperties
-				};
+			getProperties: function() {
+				// TODO: Change to properties request once JSON is fixed
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/variables');
+
+				return request.then(successHandler, failureHandler);
 			}
 		};
-	});
+	}]);
 }());
