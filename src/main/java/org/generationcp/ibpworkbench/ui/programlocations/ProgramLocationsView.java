@@ -458,7 +458,11 @@ import java.util.*;
 
          locationTypeFilter.setContainerDataSource(udfContainer);
          locationTypeFilter.setItemCaptionPropertyId("fname");
-         locationTypeFilter.select(locationTypes.get(1));
+         if(locationTypes.size()>1) {
+        	 locationTypeFilter.select(locationTypes.get(1));
+         } else {
+        	 locationTypeFilter.select(locationTypes.get(0));
+         }
          locationTypeFilter.setNullSelectionItemId(nullUdf);
          locationTypeFilter.setNullSelectionAllowed(true);
 
@@ -682,21 +686,49 @@ import java.util.*;
 
 
      public void addRow(LocationViewModel item,boolean atAvailableTable,Integer index) {
+    	 Country selectedCountry = (Country) countryFilter.getValue();
+       	 UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
+       	 String locationName = (String) searchField.getValue();
          if (index != null) {
-             
+        	 if(isToBeDisplayedInAvailableLocations(item,
+        			 locationName,selectedCountry,selectedLocationType)) {
                  availableTableContainer.addItemAt(index,item);
-                 favoritesTableContainer.addItemAt(index,item);
-             
+        	 }
+             favoritesTableContainer.addItemAt(index,item);
          } else {
-             
+        	 if(isToBeDisplayedInAvailableLocations(item,
+        			 locationName,selectedCountry,selectedLocationType)) {
                  availableTableContainer.addItem(item);
-                 favoritesTableContainer.addItem(item);
-             
+        	 }
+             favoritesTableContainer.addItem(item);
          }
          updateNoOfEntries();
      }
      
-     private void updateNoOfEntries() {
+     protected boolean isToBeDisplayedInAvailableLocations(LocationViewModel item,
+    		 String locationName, Country selectedCountry, UserDefinedField selectedLocationType) {
+    	
+    	Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
+      	Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
+      	
+      	if(cntryId != null && !cntryId.equals(item.getCntryid())) {
+      		return false;
+      	}
+      	
+      	if(locationTypeId != null && 0 != locationTypeId.intValue() && 
+      			!locationTypeId.equals(item.getLtype())) {
+      		return false;
+      	}
+      	
+      	if(locationName != null && !locationName.isEmpty() && 
+      			!item.getLocationName().toLowerCase().contains(locationName.toLowerCase())) {
+      		return false;
+      	}
+      	
+		return true;
+	}
+
+	private void updateNoOfEntries() {
     	 updateNoOfEntries(favTotalEntriesLabel,favoritesTable);
          updateNoOfEntries(availTotalEntriesLabel,availableTable);
 	}
@@ -803,5 +835,16 @@ import java.util.*;
 		this.favoritesTableContainer = favoritesTableContainer;
 	}
 
+	public void setCountryFilter(Select countryFilter) {
+		this.countryFilter = countryFilter;
+	}
+
+	public void setLocationTypeFilter(Select locationTypeFilter) {
+		this.locationTypeFilter = locationTypeFilter;
+	}
+
+	public void setSearchField(TextField searchField) {
+		this.searchField = searchField;
+	}
 	
  }
