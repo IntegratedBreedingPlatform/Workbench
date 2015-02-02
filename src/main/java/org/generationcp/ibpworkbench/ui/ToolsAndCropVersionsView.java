@@ -117,6 +117,11 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
             List<String> addedToolNames = new ArrayList<String>();
             for (Tool tool : tools) {
 
+            	if("gdms".equals(tool.getToolName())) {
+            		//temporarily hide gdms
+            		continue;
+            	}
+            	
                 if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))
                     && !addedToolNames.contains(tool.getTitle())) {
                     addedToolNames.add(tool.getTitle());

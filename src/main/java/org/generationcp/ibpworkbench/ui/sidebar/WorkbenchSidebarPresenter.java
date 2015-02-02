@@ -75,7 +75,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                 }
                 if (category.getSidebarCategoryName().equals("admin")) {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program Data"));
+                    //categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program Data"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
