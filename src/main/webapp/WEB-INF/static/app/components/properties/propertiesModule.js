@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('properties', []);
+	var app = angular.module('properties', ['list']);
 
 	app.controller('PropertiesController', ['$scope', 'propertiesProvider', function($scope, propertiesProvider) {
 		this.properties = propertiesProvider.getProperties();

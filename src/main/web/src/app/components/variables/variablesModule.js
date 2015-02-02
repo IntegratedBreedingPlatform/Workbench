@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variables', []);
+	var app = angular.module('variables', ['list']);
 
 	app.controller('VariablesController', ['$scope', 'variablesProvider', function($scope, variablesProvider) {
 		this.variables = variablesProvider.getVariables();
