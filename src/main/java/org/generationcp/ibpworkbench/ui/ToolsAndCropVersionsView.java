@@ -43,9 +43,13 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
 
-
     private static final Logger LOG = LoggerFactory.getLogger(ToolsAndCropVersionsView.class);
-
+	private static final String CROP_NAME = "cropName";
+	private static final String G_VERSION = "gVersion";
+	private static final String TITLE = "title";
+	private static final String TOOL_NAME_PREFIX = "tool_name.";
+	private static final String TOOL_VERSION_PREFIX = "tool_version.";
+	private static final String VERSION = "version";
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -67,13 +71,13 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         tblCrops.setColumnCollapsingAllowed(true);
 
         BeanContainer<Long,CropType> cropContainer = new BeanContainer<Long, CropType>(CropType.class);
-        cropContainer.setBeanIdProperty("cropName");
+        cropContainer.setBeanIdProperty(CROP_NAME);
 
         try {
             cropContainer.addAll(workbenchDataManager.getInstalledCentralCrops());
 
             tblCrops.setContainerDataSource(cropContainer);
-            tblCrops.addGeneratedColumn("gVersion", new Table.ColumnGenerator() {
+            tblCrops.addGeneratedColumn(G_VERSION, new Table.ColumnGenerator() {
                 @Override
                 public Object generateCell(Table source, Object itemId, Object colId) {
                     final CropType beanItem = ((BeanContainer<Long,CropType>) source.getContainerDataSource()).getItem(itemId).getBean();
@@ -88,10 +92,10 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
                 }
             });
 
-            tblCrops.setVisibleColumns(new String[]{"cropName", "gVersion"});
-            tblCrops.setColumnHeaders(new String[]{"Crop Name", "Version"});
-            tblCrops.setColumnExpandRatio("cropName",0.7F);
-            tblCrops.setColumnExpandRatio("gVersion",0.3F);
+            tblCrops.setVisibleColumns(new String[]{CROP_NAME, G_VERSION});
+            tblCrops.setColumnHeaders(new String[]{"Crop Name", VERSION});
+            tblCrops.setColumnExpandRatio(CROP_NAME,0.7F);
+            tblCrops.setColumnExpandRatio(G_VERSION,0.3F);
         } catch (MiddlewareQueryException e) {
             LOG.error("Oops, something happened!",e);
         }
@@ -132,32 +136,29 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 
             }
             
-            for(String name: propertyNames)
-            {
+            for(String name: propertyNames) {
             	 toolId++;
             	 Tool t = new Tool();
-                 t.setToolName(props.getProperty("tool_name."+name));
-                 t.setVersion(props.getProperty("tool_version."+name));
-                 t.setParameter(props.getProperty("tool_name."+name));
-                 t.setPath(props.getProperty("tool_name."+name));
+                 t.setToolName(props.getProperty(TOOL_NAME_PREFIX+name));
+                 t.setVersion(props.getProperty(TOOL_VERSION_PREFIX+name));
+                 t.setParameter(props.getProperty(TOOL_NAME_PREFIX+name));
+                 t.setPath(props.getProperty(TOOL_NAME_PREFIX+name));
                  t.setToolId(toolId);
-                 t.setTitle(props.getProperty("tool_name."+name));
+                 t.setTitle(props.getProperty(TOOL_NAME_PREFIX+name));
                  toolContainer.addBean(t);
             }
            
-        }
-        catch (MiddlewareQueryException e) {
-            e.printStackTrace();
-        }
-        catch (IOException ioe) {
-        	ioe.printStackTrace();
+        } catch (MiddlewareQueryException e) {
+            LOG.error(e.getMessage(),e);
+        } catch (IOException ioe) {
+        	LOG.error(ioe.getMessage(),ioe);
         }
 
-        toolContainer.sort(new String[]{"title"},new boolean[] {true});
+        toolContainer.sort(new String[]{TITLE},new boolean[] {true});
 
         tblTools.setContainerDataSource(toolContainer);
         
-        String[] columns = new String[] {"title", "version"};
+        String[] columns = new String[] {TITLE, VERSION};
         tblTools.setVisibleColumns(columns);
     }
     
@@ -187,7 +188,8 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         this.setWidth("100%");
     }
     
-    protected void initializeActions() {
+	protected void initializeActions() {
+		//do nothing
     }
     
     protected void assemble() {
@@ -207,7 +209,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
     public void updateLabels() {
         messageSource.setValue(lblToolVersions, Message.TOOL_VERSIONS);
         
-        messageSource.setColumnHeader(tblTools, "title", Message.TOOL_NAME);
-        messageSource.setColumnHeader(tblTools, "version", Message.VERSION);
+        messageSource.setColumnHeader(tblTools, TITLE, Message.TOOL_NAME);
+        messageSource.setColumnHeader(tblTools, VERSION, Message.VERSION);
     }
 }
