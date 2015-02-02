@@ -13,11 +13,3 @@ gulp.task('pages', function() {
 		.pipe(changed(dest))
 		.pipe(gulp.dest(dest));
 });
-
-gulp.task('angularViews', function() {
-	var dest = destRoot + '/static/views';
-
-	return gulp.src('src/app/**/*.html')
-		.pipe(changed(dest))
-		.pipe(gulp.dest(dest));
-});

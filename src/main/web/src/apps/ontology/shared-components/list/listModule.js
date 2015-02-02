@@ -10,7 +10,7 @@
 			scope: {
 				data: '=data'
 			},
-			templateUrl: '../static/views/shared-components/list/listView.html'
+			templateUrl: '../static/views/ontology/listView.html'
 		};
 	});
 }());
