@@ -21,5 +21,5 @@ gulp.task('test', function() {
 });
 
 gulp.task('autotest', function() {
-	return gulp.watch(['src/app/**/*.js', 'test/**/*.js'], ['test']);
+	return gulp.watch(['src/apps/**/*.js', 'test/**/*.js'], ['test']);
 });

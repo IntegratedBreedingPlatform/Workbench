@@ -9,10 +9,10 @@ describe('Ontology module', function() {
 		inject(function($route) {
 
 			expect($route.routes['/properties'].templateUrl)
-				.toEqual('../static/views/components/properties/propertiesView.html');
+				.toEqual('../static/views/ontology/propertiesView.html');
 
 			expect($route.routes['/variables'].templateUrl)
-				.toEqual('../static/views/components/variables/variablesView.html');
+				.toEqual('../static/views/ontology/variablesView.html');
 		});
 	});
 });
