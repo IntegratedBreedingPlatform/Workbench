@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SingleSiteAnalysisDetailsPanelTest {
 
+	private static final String DEFAULT_REPLICATES = "REPLICATES";
+
 	private SingleSiteAnalysisDetailsPanel dut;
 
 	@Mock
@@ -57,6 +59,16 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		verify(dut).displayIncompleteBlockDesignElements();
 
 		assertTrue(dut.getSelDesignType().getValue().equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
+		
+		if ((!dut.getSelReplicates().isEnabled() || 
+			dut.getSelReplicates().getItemIds().isEmpty()) && 
+			!dut.getSelBlocks().getItemIds().isEmpty()) {
+			assertTrue(dut.getSelReplicates().isEnabled());
+			for (Object itemId : dut.getSelBlocks().getItemIds()) {
+				assertTrue(DEFAULT_REPLICATES.equals(
+						dut.getSelReplicates().getItemCaption(itemId)));
+			}
+		}
 	}
 
 	@Test
@@ -71,6 +83,16 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		assertTrue(dut.getSelDesignType().getValue()
 				.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
+		
+		if ((!dut.getSelReplicates().isEnabled() || 
+			dut.getSelReplicates().getItemIds().isEmpty()) && 
+			!dut.getSelBlocks().getItemIds().isEmpty()) {
+			assertTrue(dut.getSelReplicates().isEnabled());
+			for (Object itemId : dut.getSelBlocks().getItemIds()) {
+				assertTrue(DEFAULT_REPLICATES.equals(
+						dut.getSelReplicates().getItemCaption(itemId)));
+			}
+		}
 	}
 
 	@Test
@@ -84,6 +106,16 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		assertTrue(dut.getSelDesignType().getValue()
 				.equals(DesignType.ROW_COLUMN_DESIGN.getName()));
+		
+		if ((!dut.getSelReplicates().isEnabled() || 
+			dut.getSelReplicates().getItemIds().isEmpty()) && 
+			!dut.getSelBlocks().getItemIds().isEmpty()) {
+			assertTrue(dut.getSelReplicates().isEnabled());
+			for (Object itemId : dut.getSelBlocks().getItemIds()) {
+				assertTrue(DEFAULT_REPLICATES.equals(
+						dut.getSelReplicates().getItemCaption(itemId)));
+			}
+		}
 	}
 
 	@Test
@@ -97,6 +129,16 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		assertTrue(dut.getSelDesignType().getValue()
 				.equals(DesignType.ROW_COLUMN_DESIGN.getName()));
+		
+		if ((!dut.getSelReplicates().isEnabled() || 
+			dut.getSelReplicates().getItemIds().isEmpty()) && 
+			!dut.getSelBlocks().getItemIds().isEmpty()) {
+			assertTrue(dut.getSelReplicates().isEnabled());
+			for (Object itemId : dut.getSelBlocks().getItemIds()) {
+				assertTrue(DEFAULT_REPLICATES.equals(
+						dut.getSelReplicates().getItemCaption(itemId)));
+			}
+		}
 	}
 
 	@Test
@@ -110,6 +152,16 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		assertTrue(dut.getSelDesignType().getValue()
 				.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()));
+		
+		if ((!dut.getSelReplicates().isEnabled() || 
+			dut.getSelReplicates().getItemIds().isEmpty()) && 
+			!dut.getSelBlocks().getItemIds().isEmpty()) {
+			assertTrue(dut.getSelReplicates().isEnabled());
+			for (Object itemId : dut.getSelBlocks().getItemIds()) {
+				assertTrue(DEFAULT_REPLICATES.equals(
+						dut.getSelReplicates().getItemCaption(itemId)));
+			}
+		}
 	}
 
 	@Test
