@@ -21,12 +21,12 @@
         <repository>
             <id>efficio-nexus</id>
             <name>Releases</name>
-            <url>http://gcp.efficio.us.com:8081/nexus/content/repositories/releases/</url>
+            <url>http://apps.leafnode.io:8081/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>efficio-nexus</id>
             <name>Snapshots</name>
-            <url>http://gcp.efficio.us.com:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://apps.leafnode.io:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -37,7 +37,7 @@
         </repository>
         <repository>
             <id>gcp-efficio-repo</id>
-            <url>http://gcp.efficio.us.com:8081/nexus/content/repositories/thirdparty/</url>
+            <url>http://apps.leafnode.io:8081/nexus/content/repositories/thirdparty/</url>
         </repository>
     </repositories>
 
