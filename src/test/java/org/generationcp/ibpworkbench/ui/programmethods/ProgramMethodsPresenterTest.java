@@ -45,14 +45,14 @@ public class ProgramMethodsPresenterTest {
     
     private static final String DUMMY_PROGRAM_UUID = "1234567890";
 	private static final Integer NO_OF_FAVORITES = 2;
-    
+	private Project project;
     
     private ProgramMethodsPresenter controller;
     
 	@Before
 	public void setUp(){
 		MockitoAnnotations.initMocks(this);
-		Project project = getProject(DUMMY_PROGRAM_UUID);
+		project = getProject(DUMMY_PROGRAM_UUID);
 		controller = spy(new ProgramMethodsPresenter(programMethodsView, project));
 		controller.setGerplasmDataManager(gerplasmDataManager);
 	}
@@ -101,6 +101,24 @@ public class ProgramMethodsPresenterTest {
 		}
 
     	Assert.assertTrue("Expecting to return " + NO_OF_FAVORITES + " but returned " + results.size(), NO_OF_FAVORITES == results.size() );
+	}
+	
+	@Test
+	public void testIsExistingMethod_ReturnsTrueForExistingMethod() throws MiddlewareQueryException{
+		String methodName = "My New Method";
+		Method existingMethod = new Method();
+		existingMethod.setMname(methodName);
+		
+		when(gerplasmDataManager.getMethodByName(methodName, project.getUniqueID())).thenReturn(existingMethod);
+		Assert.assertTrue("Expected to return true for existing method but didn't.",controller.isExistingMethod(methodName));
+	}
+	
+	@Test
+	public void testIsExistingMethod_ReturnsFalseForNonExistingMethod() throws MiddlewareQueryException{
+		String methodName = "My New Method";
+		
+		when(gerplasmDataManager.getMethodByName(methodName, project.getUniqueID())).thenReturn(new Method());
+		Assert.assertFalse("Expected to return true for existing method but didn't.",controller.isExistingMethod(methodName));
 	}
 	
 	private void setUpFavoriteMethods(String entityType) throws MiddlewareQueryException {

@@ -17,6 +17,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -26,6 +27,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -114,8 +116,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
-					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString());
+					Project currentProject = sessionData.getSelectedProject();
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString(),currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -184,8 +187,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
-					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString());
+					Project currentProject = sessionData.getSelectedProject();
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
