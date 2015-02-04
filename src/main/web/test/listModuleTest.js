@@ -14,25 +14,48 @@ describe('List module', function() {
 
 	beforeEach(inject(function($rootScope) {
 		scope = $rootScope.$new();
-		scope.testData = [{
-			name: 'Cat',
-			description: 'A fluffy animal that likes to sleep.'
-		}];
 	}));
 
-	function compileDirective(customTemplate) {
-		var defaultTemplate = '<list data="testData"></list>',
-			template = customTemplate ? customTemplate : defaultTemplate;
-
+	function compileDirective() {
 		inject(function($compile) {
-			element = $compile(template)(scope);
+			element = $compile('<list data="testData"></list>')(scope);
 		});
 
 		scope.$digest();
 	}
 
 	it('should contain one list item when passed an array with one item', function() {
+		scope.testData = [{
+			name: 'Cat',
+			description: 'A fluffy animal that likes to sleep.'
+		}];
+
 		compileDirective();
 		expect(element.find('li').length).toEqual(1);
+	});
+
+	it('should contain two list items when passed an array with two items', function() {
+		scope.testData = [{
+			name: 'Cat',
+			description: 'A fluffy animal that likes to sleep.'
+		}, {
+			name: 'Dog',
+			description: 'A playful animal that likes walks'
+		}];
+
+		compileDirective();
+		expect(element.find('li').length).toEqual(2);
+	});
+
+	it('should output the name and description of an item', function() {
+		var NAME = 'Mouse',
+			DESCRIPTION = 'A small animal that likes cheese';
+
+		scope.testData = [{
+			name: NAME,
+			description: DESCRIPTION
+		}];
+		compileDirective();
+		expect(element.find('li').text().trim()).toEqual(NAME + ' - ' + DESCRIPTION);
 	});
 });
