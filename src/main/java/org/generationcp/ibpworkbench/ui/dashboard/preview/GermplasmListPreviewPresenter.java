@@ -42,7 +42,8 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
     public static final int MAX_LIST_FOLDER_NAME_LENGTH = 50;
     private GermplasmListPreview view;
     private Project project;
-    @Autowired
+
+	@Autowired
     private WorkbenchDataManager manager;
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -255,9 +256,22 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
             if (gpList == null) {
                 throw new GermplasmListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE));
-            } else if (hasChildren(gpList.getId())) {
+            }
+
+			Integer cropUserId = manager.getCurrentIbdbUserId(sessionData.getSelectedProject().getProjectId(),sessionData.getUserData().getUserid());
+
+			if (null == cropUserId) {
+				throw new GermplasmListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE));
+			}
+
+			if (!cropUserId.equals(gpList.getUserId())) {
+				throw new GermplasmListPreviewException(GermplasmListPreviewException.NOT_USER);
+			}
+
+			if (hasChildren(gpList.getId())) {
                 throw new GermplasmListPreviewException(GermplasmListPreviewException.HAS_CHILDREN);
             }
+
         } catch (MiddlewareQueryException e) {
             throw new GermplasmListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
         }

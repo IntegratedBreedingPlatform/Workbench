@@ -12,8 +12,9 @@ public class GermplasmListPreviewException extends Exception {
     public static final String INVALID_NAME = "Please choose a different name";
     public static final String NAME_NOT_UNIQUE = "Name is not unique";
     public static final String LONG_NAME = "Folder name is too long";
+	public static final String NOT_USER = "You are not the owner of the list";
 
-    public GermplasmListPreviewException() {
+	public GermplasmListPreviewException() {
     }
 
     public GermplasmListPreviewException(String message) {
