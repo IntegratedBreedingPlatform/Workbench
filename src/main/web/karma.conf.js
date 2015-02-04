@@ -18,7 +18,8 @@ module.exports = function(config) {
 			'src/js/lib/angular-route.min.js',
 			'test/lib/angular-mocks.js',
 			'src/apps/**/*.js',
-			'test/**/*.js'
+			'test/**/*.js',
+			'../webapp/WEB-INF/static/views/**/*.html'
 		],
 
 		// list of files to exclude
@@ -28,6 +29,8 @@ module.exports = function(config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
+			// generate js files from html templates
+			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js'
 		},
 
 		// test results reporter to use
@@ -54,6 +57,17 @@ module.exports = function(config) {
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: false
+		singleRun: false,
+
+		ngHtml2JsPreprocessor: {
+			cacheIdFromPath: function(filepath) {
+				// Convert template path from its file system path to the path expected by the javascript using the template
+				return '../' + filepath.substr(filepath.indexOf('static'), filepath.length);
+			},
+
+			// setting this option will create only a single module that contains templates
+			// from all the files, so you can load them all with module('templates')
+			moduleName: 'templates'
+		}
 	});
 };
