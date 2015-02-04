@@ -26,8 +26,7 @@
 
 		return {
 			getProperties: function() {
-				// TODO: Change to properties request once JSON is fixed
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/variables');
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/properties');
 
 				return request.then(successHandler, failureHandler);
 			}
