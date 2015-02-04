@@ -74,7 +74,7 @@ public class DatasetExporterTest {
 	private static final String VARIATE_VALUE_1 = "76.223";
 	private static final String VARIATE_VALUE_2 = "7.5";
 	private static final String VARIATE_VALUE_3 = "1111.0";
-	private static final String CATEGORICAL_VARIATE_VALUE = "0";
+	private static final String CATEGORICAL_VARIATE_VALUE = "missing";
 	private static final int CATEGORICAL_VARIATE_ENUM_ID = 1;
 	private static final String CATEGORICAL_VARIATE_ENUM_NAME = "5";
 	private static final String CATEGORICAL_VARIATE_ENUM_DESCRIPTION = "Very Severe";
