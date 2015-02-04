@@ -147,7 +147,7 @@ public class SaveNewLocationAction implements ClickListener{
             try {
                 workbenchDataManager.addProjectActivity(projAct);
             } catch (MiddlewareQueryException e) {
-                e.printStackTrace();
+            	LOG.error(e.getMessage(),e);
             }
         }
 
