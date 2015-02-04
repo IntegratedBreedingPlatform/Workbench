@@ -91,11 +91,14 @@ class NurseryTreeDropHandler implements DropHandler {
                 .getContainerDataSource();
         
         if(sourceItemId.equals(NurseryListPreview.NURSERIES_AND_TRIALS)){
-    		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
+    		showError(messageSource.getMessage(Message.INVALID_OPERATION),
+    				messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
             return;
     	}
         if (container.hasChildren(sourceItemId)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
+        	showError(messageSource.getMessage(Message.INVALID_OPERATION),
+        			messageSource.getMessage(
+        					Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
         
@@ -103,7 +106,7 @@ class NurseryTreeDropHandler implements DropHandler {
         if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
         	DmsProject parentFolder = (DmsProject)presenter.getStudyNodeParent((Integer) targetItemId);
         	if(parentFolder != null){
-        		if(((Integer) targetItemId).intValue() < 0 && parentFolder.getProjectId().equals(
+        		if(parentFolder.getProjectId().equals(
         				NurseryListPreview.ROOT_FOLDER)){
         			parentId = NurseryListPreview.NURSERIES_AND_TRIALS;
         		} else {
@@ -123,7 +126,7 @@ class NurseryTreeDropHandler implements DropHandler {
             } else {
                 actualTargetId = (Integer)targetItemId;
             }
-            Object previousTargetItemId = container.getParent(sourceItemId);
+            Object previousTargetItemId = getSourceParentId(container,sourceItemId);
             if(previousTargetItemId.equals(targetItemId)) {
             	return;
             }
@@ -131,7 +134,7 @@ class NurseryTreeDropHandler implements DropHandler {
             success = presenter.moveNurseryListFolder(source, actualTargetId, !presenter.isFolder(source));
         } catch (Exception error) {
         	LOG.error(error.getMessage(),error);
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.ERROR), error.getMessage());
+        	showError(messageSource.getMessage(Message.ERROR), error.getMessage());
             success = false;
         }
 
@@ -145,5 +148,21 @@ class NurseryTreeDropHandler implements DropHandler {
             
         }
     }
+
+	protected Object getSourceParentId(
+			HierarchicalContainer container, Object sourceItemId) {
+		return container.getParent(sourceItemId);
+	}
+
+	protected void showError(String caption, String description) {
+		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),
+				caption,description);
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
+	
 
 }
