@@ -25,101 +25,73 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variables', ['list']);
+	var app = angular.module('properties', ['list']);
 
-	app.controller('VariablesController', ['$scope', 'variablesProvider', function($scope, variablesProvider) {
-		this.variables = variablesProvider.getVariables();
+	app.controller('PropertiesController', ['$scope', 'propertiesService', function($scope, propertiesService) {
+		var ctrl = this;
+		this.properties = [];
+
+		propertiesService.getProperties().then(function(properties) {
+			ctrl.properties = properties;
+		});
 	}]);
 
-	app.provider('variablesProvider', function() {
-		var getVariables = function() {
-			return [{
-				id: 1,
-				name: 'Plant Vigor',
-				alias: '',
-				description: 'A little vigourous',
-				property: {
-					id: '1',
-					name: 'Plant Vigor'
-				},
-				method: {
-					id: '1',
-					name: 'Visual assessment at seedling stage'
-				},
-				scale: {
-					id: '1',
-					name: 'Score',
-					dataType: '2',
-					validValues: {
-						min: '1',
-						max: '5'
-					}
-				},
-				variableType: [
-					'1'
-				],
-				cropOntologyId: 'CO_12397f8',
-				favourite: 'true',
-				metadata: {
-					dateCreated: '2013-10-21T13:28:06.419Z',
-					lastModified: '2013-10-21T13:28:06.419Z',
-					usage: {
-						observations: '200'
-					}
-				},
-				expectedRange: {
-					min: '5',
-					max: '8'
-				}
-			}];
-		};
+	app.service('propertiesService', ['$http', '$q', function($http, $q) {
+		function successHandler(response) {
+			return response.data;
+		}
+
+		function failureHandler(response) {
+			if (!angular.isObject(response.data) || !response.data.message) {
+				return $q.reject('An unknown error occurred.');
+			}
+		}
 
 		return {
-			$get: function() {
-				return {
-					getVariables: getVariables
-				};
+			getProperties: function() {
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/properties');
+
+				return request.then(successHandler, failureHandler);
 			}
 		};
-	});
+	}]);
 }());
 
 /*global angular*/
 'use strict';
 
 (function() {
-	var app = angular.module('properties', ['list']);
+	var app = angular.module('variables', ['list']);
 
-	app.controller('PropertiesController', ['$scope', 'propertiesProvider', function($scope, propertiesProvider) {
-		this.properties = propertiesProvider.getProperties();
+	app.controller('VariablesController', ['$scope', 'variablesService', function($scope, variablesService) {
+		var ctrl = this;
+		this.variables = [];
+
+		variablesService.getVariables().then(function(variables) {
+			ctrl.variables = variables;
+		});
 	}]);
 
-	app.provider('propertiesProvider', function() {
-		var getProperties = function() {
-			return [{
-				id: '23',
-				name: 'Alkali Injury',
-				description: 'Condition characterized by discoloration of the leaves ranging from white to reddish brown ' +
-					'starting from the leaf tips.',
-				classes: ['Abiotic Stress', 'Trait'],
-				cropOntologyId: 'CO_192791864'
-			}, {
-				id: '45',
-				name: 'Blast',
-				description: 'A fungus disease of rice caused by the fungus Pyricularia oryzae.',
-				classes: ['Abiotic Stress', 'Trait'],
-				cropOntologyId: 'CO_192791349'
-			}];
-		};
+	app.service('variablesService', ['$http', '$q', function($http, $q) {
+		function successHandler(response) {
+			return response.data;
+		}
+
+		function failureHandler(response) {
+			if (!angular.isObject(response.data) || !response.data.message) {
+				return $q.reject('An unknown error occurred.');
+			}
+		}
 
 		return {
-			$get: function() {
-				return {
-					getProperties: getProperties
-				};
+			getVariables: function() {
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/variables');
+
+				return request.then(successHandler, failureHandler);
 			}
 		};
-	});
+	}]);
+
 }());
 
 /*global angular*/
