@@ -25,6 +25,23 @@
 'use strict';
 
 (function() {
+	var listModule = angular.module('list', []);
+
+	listModule.directive('list', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				data: '=data'
+			},
+			templateUrl: '../static/views/ontology/listView.html'
+		};
+	});
+}());
+
+/*global angular*/
+'use strict';
+
+(function() {
 	var app = angular.module('properties', ['list']);
 
 	app.controller('PropertiesController', ['$scope', 'propertiesService', function($scope, propertiesService) {
@@ -42,8 +59,13 @@
 		}
 
 		function failureHandler(response) {
-			if (!angular.isObject(response.data) || !response.data.message) {
-				return $q.reject('An unknown error occurred.');
+			var errorMessage = 'An unknown error occurred.';
+
+			if (!angular.isObject(response.data)) {
+				if (response.status === 400) {
+					errorMessage = 'Request was malformed.';
+				}
+				return $q.reject(errorMessage);
 			}
 		}
 
@@ -78,8 +100,13 @@
 		}
 
 		function failureHandler(response) {
-			if (!angular.isObject(response.data) || !response.data.message) {
-				return $q.reject('An unknown error occurred.');
+			var errorMessage = 'An unknown error occurred.';
+
+			if (!angular.isObject(response.data)) {
+				if (response.status === 400) {
+					errorMessage = 'Request was malformed.';
+				}
+				return $q.reject(errorMessage);
 			}
 		}
 
@@ -92,21 +119,4 @@
 		};
 	}]);
 
-}());
-
-/*global angular*/
-'use strict';
-
-(function() {
-	var listModule = angular.module('list', []);
-
-	listModule.directive('list', function() {
-		return {
-			restrict: 'E',
-			scope: {
-				data: '=data'
-			},
-			templateUrl: '../static/views/ontology/listView.html'
-		};
-	});
 }());

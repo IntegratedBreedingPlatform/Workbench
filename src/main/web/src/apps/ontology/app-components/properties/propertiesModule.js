@@ -19,8 +19,13 @@
 		}
 
 		function failureHandler(response) {
-			if (!angular.isObject(response.data) || !response.data.message) {
-				return $q.reject('An unknown error occurred.');
+			var errorMessage = 'An unknown error occurred.';
+
+			if (!angular.isObject(response.data)) {
+				if (response.status === 400) {
+					errorMessage = 'Request was malformed.';
+				}
+				return $q.reject(errorMessage);
 			}
 		}
 
