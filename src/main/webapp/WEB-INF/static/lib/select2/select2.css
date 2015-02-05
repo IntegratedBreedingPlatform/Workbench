@@ -291,7 +291,7 @@ html[dir="rtl"] .select2-dropdown-open .select2-choice .select2-arrow b {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+  -webkit-tap-highlight-color: transparent; }
 
 html[dir="rtl"] .select2-results {
   padding: 0 4px 0 0;
