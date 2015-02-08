@@ -85,7 +85,7 @@
 (function() {
 	var app = angular.module('variables', ['list']);
 
-	app.controller('VariablesController', ['$scope', 'variablesService', function($scope, variablesService) {
+	app.controller('VariablesController', ['variablesService', function(variablesService) {
 		var ctrl = this;
 		this.variables = [];
 
