@@ -4,7 +4,7 @@
 (function() {
 	var app = angular.module('properties', ['list']);
 
-	app.controller('PropertiesController', ['$scope', 'propertiesService', function($scope, propertiesService) {
+	app.controller('PropertiesController', ['propertiesService', function(propertiesService) {
 		var ctrl = this;
 		this.properties = [];
 
