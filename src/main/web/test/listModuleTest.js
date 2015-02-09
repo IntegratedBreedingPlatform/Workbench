@@ -18,7 +18,7 @@ describe('List module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			element = $compile('<list data="testData"></list>')(scope);
+			element = $compile('<omlist omdata="testData"></omlist>')(scope);
 		});
 
 		scope.$digest();

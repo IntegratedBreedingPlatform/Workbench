@@ -27,11 +27,11 @@
 (function() {
 	var listModule = angular.module('list', []);
 
-	listModule.directive('list', function() {
+	listModule.directive('omlist', function() {
 		return {
 			restrict: 'E',
 			scope: {
-				data: '=data'
+				data: '=omdata'
 			},
 			templateUrl: '../static/views/ontology/listView.html'
 		};
