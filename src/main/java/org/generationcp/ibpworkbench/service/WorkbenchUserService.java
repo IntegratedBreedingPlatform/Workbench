@@ -77,4 +77,23 @@ public class WorkbenchUserService {
 		workbenchDataManager.addSecurityQuestion(question);
 
 	}
+
+	/**
+	 * Updates the password of the user
+	 * @param userAccount
+	 * @throws MiddlewareQueryException
+	 */
+	public void updateUserPassword(UserAccountModel userAccount) throws MiddlewareQueryException {
+		workbenchDataManager.changeUserPassword(userAccount.getUsername(),userAccount.getPassword());
+	}
+
+	/**
+	 * Checks validity of user
+	 * @param userAccount
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
+	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
+		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),userAccount.getPassword());
+	}
 }

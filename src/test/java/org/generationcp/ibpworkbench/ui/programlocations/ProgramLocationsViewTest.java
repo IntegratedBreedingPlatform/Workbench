@@ -9,13 +9,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 
 public class ProgramLocationsViewTest {
 
@@ -26,6 +31,9 @@ public class ProgramLocationsViewTest {
     private Label availTotalEntriesLabel;
     private static final String TABLE_ROW = "TABLE_ROW_";
     private static final int NO_OF_ROWS = 101;
+    private static final String LOCATION_NAME = "Phil";
+    private static final Integer PHILIPPINES_CNTRYID = 171;
+    private static final Integer COUNTRY_LTYPEID = 405;
 
     @Before
     public void setUp() {
@@ -38,6 +46,7 @@ public class ProgramLocationsViewTest {
     	view.setFavTotalEntriesLabel(favTotalEntriesLabel);
     	view.setFavSelectedEntriesLabel(favSelectedEntriesLabel);
     	view.setAvailTotalEntriesLabel(availTotalEntriesLabel);
+    	setupFilters();
     }
 
 	@Test
@@ -188,6 +197,7 @@ public class ProgramLocationsViewTest {
 		int expectedNoOfFavoritesEntries = getNoOfEntries(view.getFavoritesTable());
 		
 		LocationViewModel model = createLocationViewModelTestData();
+		
 		view.addRow(model, true, 0);
 		expectedNoOfAvailableEntries++;
 		expectedNoOfFavoritesEntries++;
@@ -209,6 +219,21 @@ public class ProgramLocationsViewTest {
 		
     }
 	
+	private void setupFilters() {
+		Select countryFilter = new Select();
+		countryFilter.setValue(0);
+		view.setCountryFilter(countryFilter);
+		
+		Select locationTypeFilter = new Select();
+		locationTypeFilter.setValue(0);
+		view.setLocationTypeFilter(locationTypeFilter);
+		
+		TextField searchField = new TextField();
+		searchField.setValue("");
+		view.setSearchField(searchField);
+		
+	}
+
 	@Test
     public void testAddRowNullIndex() throws Exception {
 		setUpTables();
@@ -253,5 +278,106 @@ public class ProgramLocationsViewTest {
 		view.setFavoritesTable(favoritesTable);
 		view.setFavoritesTableContainer(
 				(BeanItemContainer<LocationViewModel>)favoritesTable.getContainerDataSource());
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_SameCountryAndTypeAndWithNameKeyword() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = LOCATION_NAME;
+		Country selectedCountry = new Country();
+		selectedCountry.setCntryid(PHILIPPINES_CNTRYID);
+      	UserDefinedField selectedLocationType =  new UserDefinedField();
+      	selectedLocationType.setFldno(COUNTRY_LTYPEID);
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertTrue("The location should be displayed",isToBeDisplayed);	
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndAllTypeAndNoNameKeyword() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = "";
+		Country selectedCountry = null;
+      	UserDefinedField selectedLocationType = null;
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertTrue("The location should be displayed",isToBeDisplayed);	
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndZeroTypeAndNoNameKeyword() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = "";
+		Country selectedCountry = null;
+      	UserDefinedField selectedLocationType =  new UserDefinedField();
+      	selectedLocationType.setFldno(0);
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertTrue("The location should be displayed",isToBeDisplayed);	
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_DiffCountry() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = "";
+		Country selectedCountry = new Country();
+		selectedCountry.setCntryid(1);
+      	UserDefinedField selectedLocationType = null;
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertFalse("The location should not be displayed",isToBeDisplayed);	
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_DiffType() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = "";
+		Country selectedCountry = null;
+      	UserDefinedField selectedLocationType = new UserDefinedField();
+      	selectedLocationType.setFldno(1);
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertFalse("The location should not be displayed",isToBeDisplayed);	
+	}
+	
+	@Test
+	public void testIsToBeDisplayedInAvailableLocations_DiffName() {
+		LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Pre_"+LOCATION_NAME+"_Post");
+		locationViewModel.setCntryid(PHILIPPINES_CNTRYID);
+		locationViewModel.setLtype(COUNTRY_LTYPEID);
+		
+		String locationName = "Test";
+		Country selectedCountry = null;
+      	UserDefinedField selectedLocationType = null;
+      	
+		boolean isToBeDisplayed = view.isToBeDisplayedInAvailableLocations(locationViewModel,
+				locationName,selectedCountry,selectedLocationType);
+		Assert.assertFalse("The location should not be displayed",isToBeDisplayed);	
 	}
 }

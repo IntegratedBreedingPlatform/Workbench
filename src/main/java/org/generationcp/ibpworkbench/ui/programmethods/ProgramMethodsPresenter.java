@@ -168,9 +168,26 @@ public class ProgramMethodsPresenter implements InitializingBean {
 
         return convertMethod(result);
     }
+    
+    public boolean isExistingMethod(String methodName){
+    	Method existingMethod;
+		try {
+			existingMethod = gerplasmDataManager.getMethodByName(methodName, project.getUniqueID());
+			
+			if(existingMethod.getMname() != null && existingMethod.getMname().length() > 0){
+	    		return true;
+	    	}
+			
+		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
+		}
+		
+    	return false;
+    }
 
     public MethodView saveNewBreedingMethod(MethodView method) {
-        if (!sessionData.getUniqueBreedingMethods().contains(method.getMname())) {
+    	
+        if (!isExistingMethod(method.getMname())) {
 
             sessionData.getUniqueBreedingMethods().add(method.getMname());
 

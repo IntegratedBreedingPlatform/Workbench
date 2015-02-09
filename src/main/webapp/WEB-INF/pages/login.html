@@ -30,7 +30,7 @@
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
+	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup},data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
 
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
 		<input class="js-fake-username" type="text" value="" style="display: none"/>
@@ -54,9 +54,9 @@
 				<option value="TECHNICIAN">Technician</option>
 			</select>
 		</div>
-		<div class="login-form-control login-create-account-control">
+		<div class="login-form-control login-create-account-control login-forgot-password-control">
 			<span class="login-icon fa" title="Email">&#xf0e0;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
+			<input class="js-login-create-account-input js-login-forgot-password-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa" title="Username">&#xf06c;</span>
@@ -66,9 +66,9 @@
 			<span class="login-icon fa login-icon" title="Password">&#xf084;</span>
 			<input class="js-login-password login-input login-flat-control" name="password" placeholder="Password" type="password"></input>
 		</div>
-		<div class="login-form-control login-create-account-control login-confirm-password-control">
+		<div class="login-form-control login-create-account-control login-forgot-password-control login-confirm-password-control">
 			<span class="login-icon fa login-icon" title="Confirm Password">&#xf084;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="passwordConfirmation" placeholder="Confirm Password" type="password"></input>
+			<input class="js-login-create-account-input js-login-forgot-password-input login-input login-flat-control" disabled="disabled" name="passwordConfirmation" placeholder="Confirm Password" type="password"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
@@ -79,7 +79,7 @@
 				><span class="js-login-remember-me login-checkbox-label login-unselectable">Remember Me</span>
 			</div>
 			<div class="login-input-inline login-input-right">
-<!-- 				<a class="ac-login-forgot-password login-link login-unselectable" href="#">Can't Log In?</a> -->
+				<a class="ac-login-forgot-password login-link login-unselectable" href="#">Can't Log In?</a>
 			</div>
 		</div>
 		<div class="js-login-error login-valid">

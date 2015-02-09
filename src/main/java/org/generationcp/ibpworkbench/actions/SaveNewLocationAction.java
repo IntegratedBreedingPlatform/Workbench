@@ -86,7 +86,7 @@ public class SaveNewLocationAction implements ClickListener{
             List<Location> existingLocations = programLocationsPresenter.getExistingLocations(location.getLocationName());
 
             // there exists a location with the same name?
-    		if (existingLocations.size() > 0){
+    		if (!existingLocations.isEmpty()){
     			new ConfirmLocationsWindow(window, existingLocations , programLocationsPresenter, new Button.ClickListener() {
 				
 					private static final long serialVersionUID = 1L;
@@ -102,12 +102,14 @@ public class SaveNewLocationAction implements ClickListener{
     		}
     		
     	} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		} catch (Validator.EmptyValueException e) {
             MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+            LOG.error(e.getMessage(),e);
             return;
         } catch (Validator.InvalidValueException e) {
             MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+            LOG.error(e.getMessage(),e);
             return;
         }
     }
@@ -145,7 +147,7 @@ public class SaveNewLocationAction implements ClickListener{
             try {
                 workbenchDataManager.addProjectActivity(projAct);
             } catch (MiddlewareQueryException e) {
-                e.printStackTrace();
+            	LOG.error(e.getMessage(),e);
             }
         }
 

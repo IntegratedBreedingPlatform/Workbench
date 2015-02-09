@@ -25,13 +25,7 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testSaveUserAccount() throws Exception {
-		UserAccountModel userAccount = new UserAccountModel();
-		userAccount.setFirstName("firstName");
-		userAccount.setLastName("lastName");
-		userAccount.setEmail("email@email.com");
-		userAccount.setRole("ADMIN");
-		userAccount.setUsername("username");
-		userAccount.setPassword("password");
+		UserAccountModel userAccount = createUserAccount();
 
 		userService.saveUserAccount(userAccount);
 
@@ -39,4 +33,35 @@ public class WorkbenchUserServiceTest {
 		verify(workbenchDataManager).addUser(any(User.class));
 		verify(workbenchDataManager).addSecurityQuestion(any(SecurityQuestion.class));
 	}
+
+	protected UserAccountModel createUserAccount() {
+		UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setFirstName("firstName");
+		userAccount.setLastName("lastName");
+		userAccount.setEmail("email@email.com");
+		userAccount.setRole("ADMIN");
+		userAccount.setUsername("username");
+		userAccount.setPassword("password");
+		return userAccount;
+	}
+
+	@Test
+	public void testIsValidUserLogin() throws Exception {
+		UserAccountModel userAccount = createUserAccount();
+
+		userService.isValidUserLogin(userAccount);
+
+		verify(workbenchDataManager).isValidUserLogin(userAccount.getUsername(),
+				userAccount.getPassword());
+	}
+
+	@Test
+	public void testUpdateUserPassword() throws Exception {
+		UserAccountModel userAccount = createUserAccount();
+
+		userService.updateUserPassword(userAccount);
+
+		verify(workbenchDataManager).changeUserPassword(userAccount.getUsername(),userAccount.getPassword());
+	}
+
 }

@@ -318,7 +318,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
     }
 
     public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
-        return locationDataManager.getLocationsByName(locationName, Operation.EQUAL);
+        return locationDataManager.getLocationsByName(locationName, Operation.EQUAL, project.getUniqueID());
     }
 
     public Location convertLocationViewToLocation(LocationViewModel lvm) {

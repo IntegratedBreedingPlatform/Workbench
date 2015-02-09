@@ -11,14 +11,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.*;
+import java.util.Map;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.WorkbenchContentApp;
@@ -26,10 +21,23 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Map;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DefaultFieldFactory;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 
 
 /**
@@ -45,7 +53,9 @@ import java.util.Map;
 @Configurable
 public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
-    private static final long serialVersionUID = 3560059243526106791L;
+    private static final String FIELD_WIDTH = "250px";
+	private static final long serialVersionUID = 3560059243526106791L;
+    private static final Logger LOG = LoggerFactory.getLogger(BreedingMethodFormFieldFactory.class);
 
     private Field methodName;
     private Field methodDescription;
@@ -55,11 +65,6 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     private Select methodSelectClass;
     
     private Boolean isEditMode;
-
-
-
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
     
     @Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
@@ -82,7 +87,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodName.addValidator(new Validator(){
         	
 			@Override
-			public void validate(Object value) throws InvalidValueException {
+			public void validate(Object value) {
 				
 				if (value == null) {
                     return;
@@ -104,21 +109,25 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				try{
 					sessionData = WorkbenchContentApp.get().getSessionData();
-				}catch(Exception e){}
+				} catch(Exception e) {
+					LOG.error(e.getMessage(),e);
+				}
 				
 				try{
 					if (sessionData == null){
 						sessionData = IBPWorkbenchApplication.get().getSessionData();
 					}
-				}catch(Exception e){}
+				} catch(Exception e) {
+					LOG.error(e.getMessage(),e);
+				}
 				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
-					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString());
+					Project currentProject = sessionData.getSelectedProject();
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString(),currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOG.error(e.getMessage(),e);
 				}
 				
 				//If Method ID is not null, then Method already exists
@@ -126,7 +135,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 					
 					 if (isEditMode && methodName.isModified()){
 						 return false;
-					 }else if (!isEditMode){
+					 } else if (!isEditMode){
 						 return false;
 					 }
 					
@@ -135,7 +144,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			}
         	
         });
-        methodName.setWidth("250px");
+        methodName.setWidth(FIELD_WIDTH);
 
         methodDescription = new TextArea();
         methodDescription.setRequired(true);
@@ -151,7 +160,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodCode.addValidator(new Validator(){
         	
 			@Override
-			public void validate(Object value) throws InvalidValueException {
+			public void validate(Object value) {
 				
 				if (value == null) {
                     return;
@@ -173,22 +182,26 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				
 				try{
 					sessionData = WorkbenchContentApp.get().getSessionData();
-				}catch(Exception e){}
+				}catch(Exception e){
+					LOG.error(e.getMessage(),e);
+				}
 				
 				try{
 					if (sessionData == null){
 						sessionData = IBPWorkbenchApplication.get().getSessionData();
 					}
-				}catch(Exception e){}
+				}catch(Exception e){
+					LOG.error(e.getMessage(),e);
+				}
 				
 				
 				Method method = null;
 				try {
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(sessionData.getSelectedProject());
-					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString());
+					Project currentProject = sessionData.getSelectedProject();
+					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOG.error(e.getMessage(),e);
 				}
 				
 				//If Method ID is not null, then Method already exists
@@ -209,7 +222,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
         methodSelectType = new Select();
         methodSelectType.setImmediate(true);
-        methodSelectType.setWidth("250px");
+        methodSelectType.setWidth(FIELD_WIDTH);
         methodSelectType.addItem("GEN");
         methodSelectType.setItemCaption("GEN", "Generative");
         methodSelectType.addItem("DER");
@@ -226,36 +239,33 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				methodSelectClass.removeAllItems();
-				if (event.getProperty().getValue().toString().equals("GEN")){
+				if ("GEN".equals(event.getProperty().getValue().toString())){
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
 						
 						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId())
 								|| key.equals(TermId.MUTATION_METHODS_CLASS.getId())
 								|| key.equals(TermId.GENETIC_MODIFICATION_CLASS.getId())
-								|| key.equals(TermId.CYTOGENETIC_MANIPULATION.getId()))
-						{
+								|| key.equals(TermId.CYTOGENETIC_MANIPULATION.getId())) {
 							methodSelectClass.addItem(key);
 							methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				}else if (event.getProperty().getValue().toString().equals("DER")){
+				} else if ("DER".equals(event.getProperty().getValue().toString())){
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
 						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId())
-								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId()))
-						{
+								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())){
 							methodSelectClass.addItem(key);
 							methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				}else if (event.getProperty().getValue().toString().equals("MAN")){
+				}else if ("MAN".equals(event.getProperty().getValue().toString())){
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
 						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId())
 								|| key.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId())
-								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId()))
-						{
+								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())){
 							methodSelectClass.addItem(key);
 							methodSelectClass.setItemCaption(key, value);
 						}
@@ -269,7 +279,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         
 
         methodSelectGroup = new Select();
-        methodSelectGroup.setWidth("250px");
+        methodSelectGroup.setWidth(FIELD_WIDTH);
         methodSelectGroup.addItem("S");
         methodSelectGroup.setItemCaption("S", "Self Fertilizing");
         methodSelectGroup.addItem("O");
@@ -282,7 +292,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
         methodSelectGroup.setNullSelectionAllowed(false);
         
         methodSelectClass = new Select();
-        methodSelectClass.setWidth("250px");
+        methodSelectClass.setWidth(FIELD_WIDTH);
         methodSelectClass.setNullSelectionAllowed(false);
         methodSelectClass.setRequired(true);
         methodSelectClass.setRequiredError("Please select a Class");  

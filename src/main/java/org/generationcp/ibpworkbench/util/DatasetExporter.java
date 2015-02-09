@@ -180,9 +180,12 @@ public class DatasetExporter {
 			observationSheetColumnIndex++;
 		}
 		
-		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
+		boolean trialEnvironmentFactorAlreadyExists = true;
+		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())
+				&& !columnsMap.containsKey(selectedFactor)){
 			columnsMap.put(selectedFactor, Integer.valueOf(observationSheetColumnIndex));
 			observationSheetColumnIndex++;
+			trialEnvironmentFactorAlreadyExists=false;
 		}
 
 		List<Experiment> experiments = new ArrayList<>();
@@ -224,7 +227,7 @@ public class DatasetExporter {
 				row.add("1");
 			}
 			
-			if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())){
+			if (!trialEnvironmentFactorAlreadyExists){
 				row.add(selectEnvironmentsMap.get(experiment.getLocationId()).trim().replace(",", ";"));
 			}
 
@@ -448,7 +451,6 @@ public class DatasetExporter {
 			} else {
 				rowContent.add("");
 			}
-
 		}
 	}
 
