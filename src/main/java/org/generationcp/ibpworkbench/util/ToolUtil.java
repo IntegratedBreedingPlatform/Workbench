@@ -68,6 +68,8 @@ public class ToolUtil {
 
     private String workspaceDirectory = "workspace";
 
+    private String workbenchInstallationDirectory;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
@@ -151,6 +153,14 @@ public class ToolUtil {
         this.workspaceDirectory = workspaceDirectory;
     }
 
+    public String getWorkbenchInstallationDirectory() {
+        return workbenchInstallationDirectory;
+    }
+
+    public void setWorkbenchInstallationDirectory(String installationDirectory) {
+        this.workbenchInstallationDirectory = installationDirectory;
+    }
+
     /**
      * Launch the specified native tool.
      * 
@@ -173,7 +183,18 @@ public class ToolUtil {
             parameter = tool.getParameter();
         }
         
-        ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), parameter);
+        String toolPath = absoluteToolFile.getAbsolutePath();
+
+        // if the tool path is an absolute path
+        // and the workbench installation directory has been set,
+        // launch the tool from the specified installation directory
+        int startIndex = toolPath.indexOf("tools");
+        if (startIndex > 0 && workbenchInstallationDirectory != null) {
+            String newPath = workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
+            toolPath = newPath;
+        }
+
+        ProcessBuilder pb = new ProcessBuilder(toolPath, parameter);
         pb.directory(absoluteToolFile.getParentFile());
         return pb.start();
     }
@@ -455,9 +476,10 @@ public class ToolUtil {
         
         // if we are instructed to include workbench configuration, add it
         if (includeWorkbenchConfig) {
-            String url = "jdbc:mysql://" + jdbcHost + ":" + String.valueOf(jdbcPort) + "/" + workbenchDbName;
+            String jdbcUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, workbenchDbName);
+
             newPropertyValues.put("workbench.driver", "com.mysql.jdbc.Driver");
-            newPropertyValues.put("workbench.url", url);
+            newPropertyValues.put("workbench.url", jdbcUrl);
             newPropertyValues.put("workbench.host", jdbcHost);
             newPropertyValues.put("workbench.port", String.valueOf(jdbcPort));
             newPropertyValues.put("workbench.dbname", workbenchDbName);

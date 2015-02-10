@@ -12,10 +12,6 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -27,6 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
 /**
  * 
  * @author Jeffrey Morales
@@ -36,14 +38,20 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
+    private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
     private CropType cropType;
     private Long projectId;
     
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
+    @Resource
+    private Properties workbenchProperties;
+
     public IBDBGeneratorLocalDb() {
-    	
     }
 
     public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
@@ -77,8 +85,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
         String databaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
         StringBuffer createDatabaseSyntax = new StringBuffer();
-        StringBuffer createGrantSyntax = new StringBuffer();
-        StringBuffer createFlushSyntax = new StringBuffer();
 
         Statement statement = null;
 
@@ -88,18 +94,44 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             
             createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
             
-            statement.executeUpdate(createDatabaseSyntax.toString());
-            
-            createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD).append(DEFAULT_ALL).append(SQL_TO)
-                .append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
-                .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
-            
-            statement.executeUpdate(createGrantSyntax.toString());
-            
-            createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
-            
-            statement.executeUpdate(createFlushSyntax.toString());
-            
+            if (isLanInstallerMode(workbenchProperties)) {
+                statement.addBatch(createDatabaseSyntax.toString());
+
+                String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+
+                // grant the user
+                String allGrant = String.format(grantFormat, databaseName, DEFAULT_LOCAL_USER, "%",
+                        DEFAULT_LOCAL_PASSWORD);
+                String localGrant = String
+                        .format(grantFormat, databaseName, DEFAULT_LOCAL_USER, DEFAULT_LOCAL_HOST,
+                                DEFAULT_LOCAL_PASSWORD);
+
+                statement.execute(allGrant);
+                statement.execute(localGrant);
+                statement.execute("FLUSH PRIVILEGES");
+
+                statement.executeBatch();
+            } else {
+                StringBuffer createGrantSyntax = new StringBuffer();
+                StringBuffer createFlushSyntax = new StringBuffer();
+                statement.executeUpdate(createDatabaseSyntax.toString());
+
+                createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD)
+                        .append(DEFAULT_ALL).append(SQL_TO)
+                        .append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER)
+                        .append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE)
+                        .append(DEFAULT_LOCAL_HOST)
+                        .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE)
+                        .append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
+
+                statement.executeUpdate(createGrantSyntax.toString());
+
+                createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
+
+                statement.executeUpdate(createFlushSyntax.toString());
+            }
+
+
             generatedDatabaseName = databaseName;
             
             connection.setCatalog(databaseName);
@@ -138,31 +170,28 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             handleDatabaseError(e);
         }
     }
-    
+
     public static void handleDatabaseError(Exception e) throws InternationalizableException {
         LOG.error(e.toString(), e);
-        throw new InternationalizableException(e, 
+        throw new InternationalizableException(e,
                 Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
-    
+
     public static void handleConfigurationError(Exception e) throws InternationalizableException {
         LOG.error(e.toString(), e);
-        throw new InternationalizableException(e, 
+        throw new InternationalizableException(e,
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
+    public void setCropType(CropType cropType) {
+        this.cropType = cropType;
+    }
 
-	
-	public void setCropType(CropType cropType) {
-		this.cropType = cropType;
-	}
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
 
-	
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
-
+    public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+        this.workbenchDataManager = workbenchDataManager;
+    }
 }

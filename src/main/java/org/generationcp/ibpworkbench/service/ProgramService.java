@@ -104,7 +104,7 @@ public class ProgramService {
 
 	private void copyCurrentUser(ManagerFactory managerFactory, User currentUserCopy) throws MiddlewareQueryException {
 		// create the project's local person and user data
-		Person currentPerson = workbenchDataManager.getPersonById(currentUser.getUserid());
+		Person currentPerson = workbenchDataManager.getPersonById(currentUser.getPersonid());
 		Person currentPersonCopy = currentPerson.copy();
 		// add the person to the project's local database
 		managerFactory.getUserDataManager().addPerson(currentPersonCopy);

@@ -12,10 +12,6 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -24,12 +20,20 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
 @Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
-
 	private CropType cropType;
     private boolean alreadyExistsFlag = false;
     
+    @Resource
+    private Properties workbenchProperties;
+
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
 
@@ -87,8 +91,6 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 
     private void createDatabase() throws InternationalizableException {
         StringBuffer createDatabaseSyntax = new StringBuffer();
-        StringBuffer createGrantSyntax = new StringBuffer();
-        StringBuffer createFlushSyntax = new StringBuffer();
 
         String databaseName = cropType.getCentralDbName();
 
@@ -98,13 +100,37 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             createDatabaseSyntax.append(SQL_CREATE_DATABASE_IF_NOT_EXISTS).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
             statement.addBatch(createDatabaseSyntax.toString());
 
-            createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD).append(DEFAULT_ALL).append(SQL_TO)
-                    .append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_USER).append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_HOST)
-                    .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_PASSWORD).append(SQL_SINGLE_QUOTE);
+            if (isLanInstallerMode(workbenchProperties)) {
+                String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+
+                // grant the user
+                String allGrant = String
+                        .format(grantFormat, databaseName, DEFAULT_CENTRAL_USER, "%",
+                                DEFAULT_CENTRAL_PASSWORD);
+                String localGrant = String
+                        .format(grantFormat, databaseName, DEFAULT_CENTRAL_USER, DEFAULT_LOCAL_HOST,
+                                DEFAULT_CENTRAL_PASSWORD);
+
+                statement.execute(allGrant);
+                statement.execute(localGrant);
+                statement.execute("FLUSH PRIVILEGES");
+            } else {
+                StringBuffer createGrantSyntax = new StringBuffer();
+                StringBuffer createFlushSyntax = new StringBuffer();
+                createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD)
+                        .append(DEFAULT_ALL).append(SQL_TO)
+                        .append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_USER)
+                        .append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE)
+                        .append(DEFAULT_LOCAL_HOST)
+                        .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE)
+                        .append(DEFAULT_CENTRAL_PASSWORD).append(SQL_SINGLE_QUOTE);
 
             statement.addBatch(createGrantSyntax.toString());
             createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
             statement.addBatch(createFlushSyntax.toString());
+            statement.executeBatch();
+            }
+
             statement.executeBatch();
 
             generatedDatabaseName = databaseName.toString();

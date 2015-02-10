@@ -24,7 +24,9 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -43,6 +45,7 @@ import java.util.Properties;
  * @author Kevin L. Manansala
  *
  */
+@Configurable
 public class MysqlAccountGenerator implements Serializable{
 
     private static final long serialVersionUID = -7078581017175422156L;
@@ -54,6 +57,11 @@ public class MysqlAccountGenerator implements Serializable{
     public static final String SQL_PERCENT_SIGN = "%";
     public static final String SPACE = " ";
     
+    public static final String WORKBENCH_PROP_INSTALLER_MODE = "workbench.installer.mode";
+
+        public static final String INSTALLER_MODE_LAN = "lan";
+        public static final String INSTALLER_MODE_LOCAL = "local";
+
     private CropType cropType;
     private Long projectId;
     private Map<Integer, String> idAndNameOfProjectMembers;
@@ -66,6 +74,9 @@ public class MysqlAccountGenerator implements Serializable{
     private String workbenchURL;
     
     private Connection connection;
+
+    @Resource
+    private Properties workbenchProperties;
 
     public MysqlAccountGenerator(CropType cropType, Long projectId, Map<Integer, String> idAndNameOfProjectMembers, WorkbenchDataManager dataManager){
         this.cropType = cropType;
@@ -149,57 +160,38 @@ public class MysqlAccountGenerator implements Serializable{
         try{
             statement = this.connection.createStatement();
             
+            String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+
             for(Integer id : this.idAndNameOfProjectMembers.keySet()){
                 String username = this.idAndNameOfProjectMembers.get(id);
                 String password = username.substring(0, 11);
-                StringBuilder grantStatementForCentral = new StringBuilder();
-                
-                //grant statement for central IBDB access
-                grantStatementForCentral.append(SQL_GRANT_SELECT_AND_EXECUTE);
-                grantStatementForCentral.append(centralDatabaseName);
-                grantStatementForCentral.append(IBDBGenerator.SQL_PERIOD);
-                grantStatementForCentral.append(IBDBGenerator.DEFAULT_ALL);
-                grantStatementForCentral.append(IBDBGenerator.SQL_TO);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForCentral.append(username);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForCentral.append(IBDBGenerator.SQL_AT_SIGN);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForCentral.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForCentral.append(IBDBGenerator.SQL_IDENTIFIED_BY);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForCentral.append(password);
-                grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                
-                statement.addBatch(grantStatementForCentral.toString());
-                
-                //grant statement for local IBDB access
-                StringBuilder grantStatementForLocal = new StringBuilder();
-                
-                grantStatementForLocal.append(IBDBGenerator.SQL_GRANT_ALL);
-                grantStatementForLocal.append(localDatabaseName);
-                grantStatementForLocal.append(IBDBGenerator.SQL_PERIOD);
-                grantStatementForLocal.append(IBDBGenerator.DEFAULT_ALL);
-                grantStatementForLocal.append(IBDBGenerator.SQL_TO);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForLocal.append(username);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForLocal.append(IBDBGenerator.SQL_AT_SIGN);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForLocal.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForLocal.append(IBDBGenerator.SQL_IDENTIFIED_BY);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatementForLocal.append(password);
-                grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                
-                statement.addBatch(grantStatementForLocal.toString());
+
+                if (isLanInstallerMode()) {
+                    // central grant
+                    String centralAllGrant = String
+                            .format(grantFormat, centralDatabaseName, username, "%", password);
+                    String centralLocalhostGrant = String
+                            .format(grantFormat, centralDatabaseName, username, "localhost",
+                                    password);
+                    String localAllGrant = String
+                            .format(grantFormat, localDatabaseName, username, "%", password);
+                    String localLocalhostGrant = String
+                            .format(grantFormat, localDatabaseName, username, "localhost",
+                                    password);
+
+                    statement.addBatch(centralAllGrant);
+                    statement.addBatch(centralLocalhostGrant);
+                    statement.addBatch(localAllGrant);
+                    statement.addBatch(localLocalhostGrant);
+                } else {
+                    processGrantForLocal(statement, centralDatabaseName, localDatabaseName, username,password);
+                }
+
             }
-            
+
             statement.addBatch("FLUSH PRIVILEGES");
             statement.executeBatch();
-            
+
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -211,6 +203,56 @@ public class MysqlAccountGenerator implements Serializable{
                 }
             }
         }
+    }
+
+    protected void processGrantForLocal(Statement statement, String centralDatabaseName,
+            String localDatabaseName, String username, String password) throws SQLException {
+        StringBuilder grantStatementForCentral = new StringBuilder();
+
+        //grant statement for central IBDB access
+        grantStatementForCentral.append(SQL_GRANT_SELECT_AND_EXECUTE);
+        grantStatementForCentral.append(centralDatabaseName);
+        grantStatementForCentral.append(IBDBGenerator.SQL_PERIOD);
+        grantStatementForCentral.append(IBDBGenerator.DEFAULT_ALL);
+        grantStatementForCentral.append(IBDBGenerator.SQL_TO);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForCentral.append(username);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForCentral.append(IBDBGenerator.SQL_AT_SIGN);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForCentral.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForCentral.append(IBDBGenerator.SQL_IDENTIFIED_BY);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForCentral.append(password);
+        grantStatementForCentral.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+
+        statement.addBatch(grantStatementForCentral.toString());
+
+        //grant statement for local IBDB access
+        StringBuilder grantStatementForLocal = new StringBuilder();
+
+        grantStatementForLocal.append(IBDBGenerator.SQL_GRANT_ALL);
+        grantStatementForLocal.append(localDatabaseName);
+        grantStatementForLocal.append(IBDBGenerator.SQL_PERIOD);
+        grantStatementForLocal.append(IBDBGenerator.DEFAULT_ALL);
+        grantStatementForLocal.append(IBDBGenerator.SQL_TO);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForLocal.append(username);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForLocal.append(IBDBGenerator.SQL_AT_SIGN);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForLocal.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForLocal.append(IBDBGenerator.SQL_IDENTIFIED_BY);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatementForLocal.append(password);
+        grantStatementForLocal.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+
+        statement.addBatch(grantStatementForLocal.toString());
+
+        statement.addBatch("FLUSH PRIVILEGES");
+        statement.executeBatch();
     }
     
     private void storeWokrbenchUserToMysqlAccountMappings() throws InternationalizableException {
@@ -278,4 +320,10 @@ public class MysqlAccountGenerator implements Serializable{
 	public void setDataManager(WorkbenchDataManager dataManager) {
 		this.dataManager = dataManager;
 	}
+
+    protected boolean isLanInstallerMode() {
+        String installerMode = workbenchProperties
+                .getProperty(WORKBENCH_PROP_INSTALLER_MODE, INSTALLER_MODE_LOCAL);
+        return INSTALLER_MODE_LAN.equals(installerMode);
+    }
 }

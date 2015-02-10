@@ -38,6 +38,11 @@ public class IBDBGenerator {
     public static final String WORKBENCH_PROP_USER = "workbench.username";
     public static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
 
+    public static final String WORKBENCH_PROP_INSTALLER_MODE = "workbench.installer.mode";
+
+    public static final String INSTALLER_MODE_LAN = "lan";
+    public static final String INSTALLER_MODE_LOCAL = "local";
+
     protected static final String SQL_CREATE_DATABASE = "CREATE DATABASE ";
     protected static final String SQL_CREATE_DATABASE_IF_NOT_EXISTS = "CREATE DATABASE IF NOT EXISTS ";
     protected static final String SQL_CHAR_SET = " CHARACTER SET ";
@@ -197,5 +202,10 @@ public class IBDBGenerator {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+    }
+
+    protected boolean isLanInstallerMode(Properties properties) {
+        String installerMode = properties.getProperty(WORKBENCH_PROP_INSTALLER_MODE, INSTALLER_MODE_LOCAL);
+        return INSTALLER_MODE_LAN.equals(installerMode);
     }
 }
