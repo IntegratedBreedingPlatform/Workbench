@@ -38,10 +38,6 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
-    private static final String DEFAULT_INSERT_LOCATIONS = "INSERT location VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-    private static final String DEFAULT_INSERT_BREEDING_METHODS = "INSERT methods VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    private static final String DEFAULT_INSERT_INSTALLATION = "INSERT instln VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
     private CropType cropType;
     private Long projectId;
     
