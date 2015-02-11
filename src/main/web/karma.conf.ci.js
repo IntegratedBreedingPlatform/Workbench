@@ -17,7 +17,10 @@ module.exports = function (config) {
 			'src/apps/**/*.js': ['coverage']
 		},
 		junitReporter: {
-			outputFile: 'reports/junit/TESTS-junit.xml'
+			// These will not be interpreted unless the file name starts with TESTS-,
+			// but right now the parsing is failing (see jira.codehaus.org/browse/SONARJS-304)
+			// so I'm "disabling" them for now
+			outputFile: 'reports/junit/js-tests-junit.xml'
 		},
 		coverageReporter: {
 			type: 'lcov',
