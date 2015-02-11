@@ -238,3 +238,5 @@ pip-log.txt
 node_modules
 node
 src/main/web/reports
+src/main/WEB-INF/pages
+src/main/WEB-INF/static
