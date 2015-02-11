@@ -176,23 +176,15 @@ public class ToolUtil {
             throw new IllegalArgumentException("Tool must be a native tool");
         }
         
-        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-        
+
         String parameter = "";
         if (!StringUtil.isEmpty(tool.getParameter())) {
             parameter = tool.getParameter();
         }
         
-        String toolPath = absoluteToolFile.getAbsolutePath();
+        String toolPath = getComputedToolPath(tool);
+        File absoluteToolFile = new File(toolPath);
 
-        // if the tool path is an absolute path
-        // and the workbench installation directory has been set,
-        // launch the tool from the specified installation directory
-        int startIndex = toolPath.indexOf("tools");
-        if (startIndex > 0 && workbenchInstallationDirectory != null) {
-            String newPath = workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
-            toolPath = newPath;
-        }
 
         ProcessBuilder pb = new ProcessBuilder(toolPath, parameter);
         pb.directory(absoluteToolFile.getParentFile());
@@ -227,8 +219,9 @@ public class ToolUtil {
             throw new IllegalArgumentException("Tool must be a native tool");
         }
 
-        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-        String[] pathTokens = absoluteToolFile.getAbsolutePath().split(
+        String toolPath = getComputedToolPath(tool);
+        File absoluteToolFile = new File(toolPath);
+        String[] pathTokens = toolPath.split(
                                                                        "\\" + File.separator);
 
         String executableName = pathTokens[pathTokens.length - 1];
@@ -245,6 +238,23 @@ public class ToolUtil {
         catch (InterruptedException e) {
             LOG.error("Interrupted while waiting for " + tool.getToolName() + " to stop.");
         }
+    }
+
+    protected String getComputedToolPath(Tool tool) {
+        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
+        String toolPath = absoluteToolFile.getAbsolutePath();
+
+        // if the tool path is an absolute path
+        // and the workbench installation directory has been set,
+        // launch the tool from the specified installation directory
+        int startIndex = toolPath.indexOf("tools");
+        if (startIndex > 0 && workbenchInstallationDirectory != null) {
+            String newPath = workbenchInstallationDirectory + File.separator + toolPath
+                    .substring(startIndex);
+            toolPath = newPath;
+
+        }
+        return toolPath;
     }
 
     /**
