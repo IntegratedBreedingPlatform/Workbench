@@ -1,7 +1,7 @@
 /*global angular, inject, expect*/
 'use strict';
 
-describe('test.listModuleTest', function() {
+describe('List module', function() {
 	var scope,
 		element;
 

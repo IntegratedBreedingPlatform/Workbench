@@ -1,7 +1,7 @@
 /*global expect, inject, spyOn*/
 'use strict';
 
-describe('test.propertiesModuleTest', function() {
+describe('Properties Controller', function() {
 	var data = [{
 			name: 'prop1',
 			description: 'prop1 description'

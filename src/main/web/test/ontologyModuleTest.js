@@ -1,7 +1,7 @@
 /*global expect, inject*/
 'use strict';
 
-describe('test.ontologyModuleTest', function() {
+describe('Ontology module', function() {
 
 	var PROPERTIES = '/properties',
 		VARIABLES = '/variables';
