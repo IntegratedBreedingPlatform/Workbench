@@ -1,7 +1,7 @@
 /*global expect, inject, spyOn*/
 'use strict';
 
-describe('Variables Controller', function() {
+describe('test.variablesModuleTest', function() {
 	var data = [{
 			name: 'var1',
 			description: 'var1 description'
