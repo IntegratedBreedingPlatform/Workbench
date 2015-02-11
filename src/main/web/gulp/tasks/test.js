@@ -8,7 +8,7 @@ var gulp = require('gulp'),
 
 function postProcessLCOV() {
 	return gulp.src('reports/coverage/lcov.info')
-		.pipe(replace('SF:.', 'SF:..'))
+		.pipe(replace('SF:.', 'SF:src/main/web'))
 		.pipe(gulp.dest('reports/coverage'));
 }
 
