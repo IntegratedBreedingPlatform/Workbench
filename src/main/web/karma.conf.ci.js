@@ -17,7 +17,7 @@ module.exports = function (config) {
 			'src/apps/**/*.js': ['coverage']
 		},
 		junitReporter: {
-			outputFile: 'reports/junit/junit.xml'
+			outputFile: 'reports/junit/TESTS-junit.xml'
 		},
 		coverageReporter: {
 			type: 'lcov',

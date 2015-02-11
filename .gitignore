@@ -237,4 +237,4 @@ pip-log.txt
 
 node_modules
 node
-src/main/web/reports/coverage
+src/main/web/reports
