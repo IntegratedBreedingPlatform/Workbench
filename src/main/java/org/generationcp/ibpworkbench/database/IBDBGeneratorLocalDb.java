@@ -56,7 +56,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     }
 
-    public boolean generateDatabase() throws InternationalizableException {
+    public boolean generateDatabase() {
         
         boolean isGenerationSuccess = false;
         
@@ -69,18 +69,17 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         } catch (InternationalizableException e) {
             isGenerationSuccess = false;            
             throw e;
-        } 
-        finally {
+        } finally {
             closeConnection();
         }
 
         return isGenerationSuccess;
     }
 
-    private void createLocalDatabase() throws InternationalizableException {
+    private void createLocalDatabase() {
 
         String databaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
-        StringBuffer createDatabaseSyntax = new StringBuffer();
+        StringBuilder createDatabaseSyntax = new StringBuilder();
 
         Statement statement = null;
 
@@ -108,8 +107,8 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
                 statement.executeBatch();
             } else {
-                StringBuffer createGrantSyntax = new StringBuffer();
-                StringBuffer createFlushSyntax = new StringBuffer();
+                StringBuilder createGrantSyntax = new StringBuilder();
+                StringBuilder createFlushSyntax = new StringBuilder();
                 statement.executeUpdate(createDatabaseSyntax.toString());
 
                 createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD)
@@ -144,7 +143,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         }
     }
 
-    private void createManagementSystems() throws InternationalizableException {
+    private void createManagementSystems() {
         try {
             WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
             if (setting == null) {
@@ -167,13 +166,13 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         }
     }
 
-    public static void handleDatabaseError(Exception e) throws InternationalizableException {
+    public static void handleDatabaseError(Exception e) {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
 
-    public static void handleConfigurationError(Exception e) throws InternationalizableException {
+    public static void handleConfigurationError(Exception e) {
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);

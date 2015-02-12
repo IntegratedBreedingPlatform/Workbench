@@ -17,6 +17,8 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -28,6 +30,7 @@ import java.util.Properties;
 
 @Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorCentralDb.class);
 	private CropType cropType;
     private boolean alreadyExistsFlag = false;
     
@@ -49,7 +52,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     	return alreadyExistsFlag;
     }
 
-    public boolean generateDatabase() throws InternationalizableException {
+    public boolean generateDatabase(){
 
         boolean isGenerationSuccess = false;
 
@@ -78,26 +81,30 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             statement.execute("USE " + cropType.getCentralDbName());
             return true;
         } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
             return false;
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
+                    LOG.error(e.getMessage(), e);
                 }
             }
         }
     }
 
-    private void createDatabase() throws InternationalizableException {
-        StringBuffer createDatabaseSyntax = new StringBuffer();
+    private void createDatabase() {
+        StringBuilder createDatabaseSyntax = new StringBuilder();
 
         String databaseName = cropType.getCentralDbName();
 
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            createDatabaseSyntax.append(SQL_CREATE_DATABASE_IF_NOT_EXISTS).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
+            createDatabaseSyntax.append(SQL_CREATE_DATABASE_IF_NOT_EXISTS).append(databaseName).append(
+                    SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(
+                    DEFAULT_COLLATE);
             statement.addBatch(createDatabaseSyntax.toString());
 
             if (isLanInstallerMode(workbenchProperties)) {
@@ -115,8 +122,8 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
                 statement.execute(localGrant);
                 statement.execute("FLUSH PRIVILEGES");
             } else {
-                StringBuffer createGrantSyntax = new StringBuffer();
-                StringBuffer createFlushSyntax = new StringBuffer();
+                StringBuilder createGrantSyntax = new StringBuilder();
+                StringBuilder createFlushSyntax = new StringBuilder();
                 createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD)
                         .append(DEFAULT_ALL).append(SQL_TO)
                         .append(SQL_SINGLE_QUOTE).append(DEFAULT_CENTRAL_USER)
@@ -148,7 +155,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         }
     }
 
-    private void createManagementSystems() throws InternationalizableException {
+    private void createManagementSystems() {
         try {
             WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
             if (setting == null) {
@@ -170,8 +177,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             // hence, we should not be running scripts for specific crops here
             
             // run crop specific script
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (MiddlewareQueryException e) {
             handleDatabaseError(e);
         }
     }

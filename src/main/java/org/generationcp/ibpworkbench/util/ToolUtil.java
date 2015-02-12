@@ -12,23 +12,6 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
@@ -41,20 +24,25 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 @Configurable
 public class ToolUtil {
-    private static Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
 
     private String jdbcHost;
     private Long jdbcPort;
@@ -200,7 +188,7 @@ public class ToolUtil {
             }
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -234,8 +222,7 @@ public class ToolUtil {
         Process process = pb.start();
         try {
             process.waitFor();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             LOG.error("Interrupted while waiting for " + tool.getToolName() + " to stop.");
         }
     }
@@ -249,10 +236,8 @@ public class ToolUtil {
         // launch the tool from the specified installation directory
         int startIndex = toolPath.indexOf("tools");
         if (startIndex > 0 && workbenchInstallationDirectory != null) {
-            String newPath = workbenchInstallationDirectory + File.separator + toolPath
+            toolPath = workbenchInstallationDirectory + File.separator + toolPath
                     .substring(startIndex);
-            toolPath = newPath;
-
         }
         return toolPath;
     }
@@ -292,6 +277,7 @@ public class ToolUtil {
                 } catch (MiddlewareQueryException ex) {
                     // do nothing, use the default central and local mysql user
                     // accounts
+                    LOG.error(ex.getMessage(), ex);
                 }
             }
         }
@@ -305,8 +291,7 @@ public class ToolUtil {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
-        }
-        else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
+        } else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
             String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "tools/mbdt/DatabaseConfig.properties";
             configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
                                                                              password, true);
@@ -349,18 +334,18 @@ public class ToolUtil {
             hibernateXml = hibernateXml.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", header);
             
             FileWriter fileWriter = null;
+
             try {
                 fileWriter = new FileWriter(gdmsConfigFile);
                 fileWriter.write(hibernateXml);
                 fileWriter.flush();
                 fileWriter.close();
-            }
-            finally {
+            } finally {
                 if (fileWriter != null) {
                     try {
                         fileWriter.close();
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage(), e);
                     }
                 }
             }
@@ -393,41 +378,29 @@ public class ToolUtil {
             }
             
             // close the file input stream
-            if (fis != null) {
-                try {
-                    fis.close();
-                }
-                catch (IOException e) {
-                }
-            }
-            
+
             // save the new property values
             if (changed) {
                 fos = new FileOutputStream(propertyFile);
                 properties.store(fos, null);
                 fos.flush();
             }
-        }
-        catch (FileNotFoundException e1) {
+        } catch (IOException e1) {
             LOG.error("Cannot update property file: " + propertyFile.getAbsolutePath(), e1);
-        }
-        catch (IOException e1) {
-            LOG.error("Cannot update property file: " + propertyFile.getAbsolutePath(), e1);
-        }
-        finally {
+        } finally {
             if (fis != null) {
                 try {
                     fis.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
                 }
             }
             
             if (fos != null) {
                 try {
                     fos.close();
-                }
-                catch (IOException e){
+                } catch (IOException e){
+                    LOG.error(e.getMessage());
                 }
             }
         }
@@ -608,7 +581,7 @@ public class ToolUtil {
     	String contextParameterString = ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
     			sessionData.getSelectedProject().getProjectId());
     	
-    	//FIXME: Just passing Base64 encoded username as a token for now.. until we get to BMS-61 where we need a proper secure token scheme.
+    	//TODO: Just passing Base64 encoded username as a token for now.. until we get to BMS-61 where we need a proper secure token scheme.
     	String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, 
     			SecurityUtil.getEncodedToken());
 		return contextParameterString + authenticationTokenString;

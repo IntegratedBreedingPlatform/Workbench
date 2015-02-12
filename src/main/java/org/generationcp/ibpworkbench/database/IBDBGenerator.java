@@ -73,7 +73,7 @@ public class IBDBGenerator {
     protected String workbenchPassword;
     protected String workbenchURL;
 
-    protected void createConnection() throws InternationalizableException {
+    protected void createConnection() {
         if (this.connection == null) {
 
             Properties prop = new Properties();
@@ -84,9 +84,9 @@ public class IBDBGenerator {
                     in = new FileInputStream(new File(ResourceFinder.locateFile(WORKBENCH_PROP).toURI()));
                     prop.load(in);
                 } catch (IllegalArgumentException ex) {
+                    LOG.debug(ex.getMessage(), ex);
                     in = Thread.currentThread().getContextClassLoader().getResourceAsStream(WORKBENCH_PROP);
-                }
-                finally {
+                } finally {
                     if (in != null) {
                         in.close();
                     }
@@ -101,13 +101,12 @@ public class IBDBGenerator {
                 handleConfigurationError(e);
             } catch (IOException e) {
                 handleConfigurationError(e);
-            }
-            finally {
+            } finally {
                 if (in != null) {
                     try {
                         in.close();
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage(), e);
                     }
                 }
             }
@@ -120,23 +119,20 @@ public class IBDBGenerator {
         }
     }
 
-    protected void executeSQLFile(File sqlFile) throws InternationalizableException {
+    protected void executeSQLFile(File sqlFile) {
         ScriptRunner scriptRunner = new ScriptRunner(connection);
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
             scriptRunner.runScript(br);
-        }
-        catch (FileNotFoundException e) {
+        }catch (FileNotFoundException e) {
             handleConfigurationError(e);
-        }
-        finally {
+        } finally {
             if (br != null) {
                 try {
                     br.close();
-                }
-                catch (IOException e) {
-                    // intentionally empty
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
                 }
             }
         }
@@ -164,24 +160,21 @@ public class IBDBGenerator {
             try {
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile)));
                 scriptRunner.runScript(br);
-            }
-            catch (IOException e) {
+            }catch (IOException e) {
                 handleDatabaseError(e);
-            }
-            finally {
+            } finally {
                 if (br != null) {
                     try {
                         br.close();
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage(), e);
                     }
                 }
             }
         }
     }
 
-    protected void closeConnection() throws InternationalizableException {
+    protected void closeConnection(){
         if (connection != null) {
             try {
                 connection.close();
@@ -192,13 +185,13 @@ public class IBDBGenerator {
         }
     }
 
-    protected static void handleDatabaseError(Exception e) throws InternationalizableException {
+    protected static void handleDatabaseError(Exception e){
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
     }
 
-    protected static void handleConfigurationError(Exception e) throws InternationalizableException {
+    protected static void handleConfigurationError(Exception e){
         LOG.error(e.toString(), e);
         throw new InternationalizableException(e,
                 Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
