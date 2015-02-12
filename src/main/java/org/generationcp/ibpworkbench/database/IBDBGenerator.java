@@ -13,14 +13,14 @@
 package org.generationcp.ibpworkbench.database;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.ResourceFinder;
 import org.generationcp.commons.util.ScriptRunner;
 import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+@Configurable
 public class IBDBGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
     //common constants
@@ -54,7 +55,6 @@ public class IBDBGenerator {
     protected static final String SQL_SINGLE_QUOTE = "'";
     protected static final String SQL_AT_SIGN = "@";
     protected static final String SQL_PERIOD = ".";
-    protected static final String SQL_END = ";";
     protected static final String DEFAULT_LOCAL_USER = "local";
     protected static final String DEFAULT_CENTRAL_USER = "central";
     protected static final String DEFAULT_LOCAL_HOST = "localhost";
@@ -73,43 +73,17 @@ public class IBDBGenerator {
     protected String workbenchPassword;
     protected String workbenchURL;
 
+    @Resource
+    protected Properties workbenchProperties;
+
     protected void createConnection() {
         if (this.connection == null) {
 
-            Properties prop = new Properties();
-
-            InputStream in = null;
-            try {
-                try {
-                    in = new FileInputStream(new File(ResourceFinder.locateFile(WORKBENCH_PROP).toURI()));
-                    prop.load(in);
-                } catch (IllegalArgumentException ex) {
-                    LOG.debug(ex.getMessage(), ex);
-                    in = Thread.currentThread().getContextClassLoader().getResourceAsStream(WORKBENCH_PROP);
-                } finally {
-                    if (in != null) {
-                        in.close();
-                    }
-                }
-
-                workbenchHost = prop.getProperty(WORKBENCH_PROP_HOST);
-                workbenchPort = prop.getProperty(WORKBENCH_PROP_PORT);
-                workbenchUsername = prop.getProperty(WORKBENCH_PROP_USER);
-                workbenchPassword = prop.getProperty(WORKBENCH_PROP_PASSWORD);
-                workbenchURL = "jdbc:mysql://" + workbenchHost + ":" + workbenchPort;
-            } catch (URISyntaxException e) {
-                handleConfigurationError(e);
-            } catch (IOException e) {
-                handleConfigurationError(e);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
-                }
-            }
+            workbenchHost = workbenchProperties.getProperty(WORKBENCH_PROP_HOST);
+            workbenchPort = workbenchProperties.getProperty(WORKBENCH_PROP_PORT);
+            workbenchUsername = workbenchProperties.getProperty(WORKBENCH_PROP_USER);
+            workbenchPassword = workbenchProperties.getProperty(WORKBENCH_PROP_PASSWORD);
+            workbenchURL = "jdbc:mysql://" + workbenchHost + ":" + workbenchPort;
 
             try {
                 connection = DriverManager.getConnection(workbenchURL, workbenchUsername, workbenchPassword);
