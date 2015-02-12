@@ -8,8 +8,19 @@
 		var ctrl = this;
 		this.variables = [];
 
+		ctrl.colHeaders = ['Name', 'Property', 'Method', 'Scale', 'action-favourite'];
+
 		variablesService.getVariables().then(function(variables) {
-			ctrl.variables = variables;
+
+			ctrl.variables = variables.map(function(item) {
+				return {
+					Name: item.name,
+					Property: item.property.name,
+					Method: item.method.name,
+					Scale: item.scale.name,
+					'action-favourite': item.favourite
+				};
+			});
 		});
 	}]);
 

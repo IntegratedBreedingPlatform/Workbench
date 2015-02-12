@@ -1,17 +1,12 @@
 <table class="om-li-table">
-	<tbody>
+	<thead>
 		<tr class="om-li-row">
-			<td class="om-li-cell">Name</td>
-			<td class="om-li-cell">Property</td>
-			<td class="om-li-cell">Method</td>
-			<td class="om-li-cell">Scale</td>
+			<th class="om-li-cell" ng-repeat="header in colHeaders">{{header}}</th>
 		</tr>
+	</thead>
+	<tbody>
 		<tr class="om-li-row" ng-repeat="item in data">
-			<td class="om-li-cell">{{item.name}}</td>
-			<td class="om-li-cell">{{item.property.name}}</td>
-			<td class="om-li-cell">{{item.method.name}}</td>
-			<td class="om-li-cell">{{item.scale.name}}</td>
-			<td class="om-li-cell">{{item.favourite}}</td>
+			<td class="om-li-cell" ng-repeat="header in colHeaders">{{item[header]}}</td>
 		</tr>
 	</tbody>
 </table>

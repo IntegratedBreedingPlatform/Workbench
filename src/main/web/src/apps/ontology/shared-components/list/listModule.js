@@ -8,9 +8,11 @@
 		return {
 			restrict: 'E',
 			scope: {
+				colHeaders: '=omcolheaders',
 				data: '=omdata'
 			},
 			templateUrl: '../static/views/ontology/listView.html'
 		};
 	});
+
 }());

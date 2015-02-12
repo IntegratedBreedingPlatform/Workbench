@@ -2,11 +2,7 @@
 'use strict';
 
 describe('Properties Controller', function() {
-	var data = [{
-			name: 'prop1',
-			description: 'prop1 description'
-		}],
-		q,
+	var q,
 		controller,
 		scope,
 		deferred,
@@ -32,11 +28,20 @@ describe('Properties Controller', function() {
 		});
 	}));
 
-	it('should retrieve properties from the propertiesService', function() {
-		deferred.resolve(data);
+	it('should transform properties into display format', function() {
+		var jsonData = [{
+				name: 'prop1',
+				classes: ['class1', 'class2']
+			}],
+			transformedData = [{
+				Name: 'prop1',
+				Classes: 'class1, class2'
+			}];
+
+		deferred.resolve(jsonData);
 		scope.$apply();
 		expect(propertiesService.getProperties).toHaveBeenCalled();
-		expect(controller.properties).toEqual(data);
+		expect(controller.properties).toEqual(transformedData);
 	});
 
 });
@@ -60,7 +65,7 @@ describe('Properties Service', function() {
 		httpBackend.verifyNoOutstandingRequest();
 	});
 
-	it('Should return an array of objects', function() {
+	it('should return an array of objects', function() {
 		var properties = [{
 				name: 'Prop1',
 				description: 'This is prop1'
@@ -82,7 +87,7 @@ describe('Properties Service', function() {
 		expect(result).toEqual(properties);
 	});
 
-	it('Should reject the promise when 500 response recieved', function() {
+	it('should return an error message when 500 response recieved', function() {
 		var result;
 
 		httpBackend.expectGET(propertiesServiceUrl).respond(500);
@@ -98,7 +103,7 @@ describe('Properties Service', function() {
 		expect(result).toEqual('An unknown error occurred.');
 	});
 
-	it('Should reject the promise when 400 response recieved', function() {
+	it('should return an error message when 400 response recieved', function() {
 		var result;
 
 		httpBackend.expectGET(propertiesServiceUrl).respond(400);

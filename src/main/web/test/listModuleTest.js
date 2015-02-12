@@ -18,23 +18,25 @@ describe('List module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			element = $compile('<omlist omdata="testData"></omlist>')(scope);
+			element = $compile('<omlist omdata="testData" omcolheaders="testHeaders"></omlist>')(scope);
 		});
 
 		scope.$digest();
 	}
 
-	it('should contain one list item when passed an array with one item', function() {
+	it('should contain one row when passed an array with one item', function() {
+		scope.testHeaders = ['name', 'description'];
 		scope.testData = [{
 			name: 'Cat',
 			description: 'A fluffy animal that likes to sleep.'
 		}];
 
 		compileDirective();
-		expect(element.find('li').length).toEqual(1);
+		expect(element.find('tbody').find('tr').length).toEqual(1);
 	});
 
 	it('should contain two list items when passed an array with two items', function() {
+		scope.testHeaders = ['name', 'description'];
 		scope.testData = [{
 			name: 'Cat',
 			description: 'A fluffy animal that likes to sleep.'
@@ -44,18 +46,12 @@ describe('List module', function() {
 		}];
 
 		compileDirective();
-		expect(element.find('li').length).toEqual(2);
+		expect(element.find('tbody').find('tr').length).toEqual(2);
 	});
 
-	it('should output the name and description of an item', function() {
-		var NAME = 'Mouse',
-			DESCRIPTION = 'A small animal that likes cheese';
-
-		scope.testData = [{
-			name: NAME,
-			description: DESCRIPTION
-		}];
+	it('should have two column headers when passed an array of two headers', function() {
+		scope.testHeaders = ['name', 'description'];
 		compileDirective();
-		expect(element.find('li').text().trim()).toEqual(NAME + ' - ' + DESCRIPTION);
+		expect(element.find('th').length).toEqual(2);
 	});
 });

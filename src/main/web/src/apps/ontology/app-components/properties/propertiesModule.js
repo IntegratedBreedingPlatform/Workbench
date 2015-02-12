@@ -8,8 +8,15 @@
 		var ctrl = this;
 		this.properties = [];
 
+		ctrl.colHeaders = ['Name', 'Classes'];
+
 		propertiesService.getProperties().then(function(properties) {
-			ctrl.properties = properties;
+			ctrl.properties = properties.map(function(item) {
+				return {
+					Name: item.name,
+					Classes: item.classes.join(', ')
+				};
+			});
 		});
 	}]);
 

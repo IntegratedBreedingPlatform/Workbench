@@ -2,11 +2,7 @@
 'use strict';
 
 describe('Variables Controller', function() {
-	var data = [{
-			name: 'var1',
-			description: 'var1 description'
-		}],
-		q,
+	var q,
 		controller,
 		scope,
 		deferred,
@@ -32,11 +28,32 @@ describe('Variables Controller', function() {
 		});
 	}));
 
-	it('should retrieve variables from the variablesService', function() {
-		deferred.resolve(data);
+	it('should transform variables into display format', function() {
+		var jsonData = [{
+				name: 'var1',
+				favourite: 'true',
+				method: {
+					name: 'method'
+				},
+				property: {
+					name: 'property'
+				},
+				scale: {
+					name: 'scale'
+				}
+			}],
+			transformedData = [{
+				Name: 'var1',
+				'action-favourite': 'true',
+				Method: 'method',
+				Property: 'property',
+				Scale: 'scale'
+			}];
+
+		deferred.resolve(jsonData);
 		scope.$apply();
 		expect(variablesService.getVariables).toHaveBeenCalled();
-		expect(controller.variables).toEqual(data);
+		expect(controller.variables).toEqual(transformedData);
 	});
 
 });
@@ -60,7 +77,7 @@ describe('Variables Service', function() {
 		httpBackend.verifyNoOutstandingRequest();
 	});
 
-	it('Should return an array of objects', function() {
+	it('should return an array of objects', function() {
 		var variables = [{
 				name: 'Var1',
 				description: 'This is var1'
@@ -82,7 +99,7 @@ describe('Variables Service', function() {
 		expect(result).toEqual(variables);
 	});
 
-	it('Should reject the promise when 500 response recieved', function() {
+	it('should return an error message when 500 response recieved', function() {
 		var result;
 
 		httpBackend.expectGET(variablesServiceUrl).respond(500);
@@ -98,7 +115,7 @@ describe('Variables Service', function() {
 		expect(result).toEqual('An unknown error occurred.');
 	});
 
-	it('Should reject the promise when 400 response recieved', function() {
+	it('should return an error message when 400 response recieved', function() {
 		var result;
 
 		httpBackend.expectGET(variablesServiceUrl).respond(400);
