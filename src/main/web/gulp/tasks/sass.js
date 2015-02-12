@@ -8,6 +8,7 @@ var argv = require('yargs').argv,
 	minifyCSS = require('gulp-minify-css'),
 	prefix = require('gulp-autoprefixer'),
 	pixrem = require('gulp-pixrem'),
+	concat = require('gulp-concat'),
 	sass = require('gulp-sass');
 
 gulp.task('sass', ['libSass', 'clientSass', 'ontologySass']);
@@ -19,8 +20,8 @@ gulp.task('clientSass', function() {
 		.pipe(cache('sass'))
 		.pipe(sass())
 		.pipe(prefix('last 2 versions', 'ie 8'))
-		.pipe(pixrem())
 		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(pixrem())
 		.pipe(gulp.dest('../webapp/WEB-INF/static/css'))
 		.on('error', handleErrors);
 });
@@ -28,12 +29,13 @@ gulp.task('clientSass', function() {
 gulp.task('ontologySass', function() {
 
 	// TODO Add in source maps when this issue is resolved
-	return gulp.src('src/apps/ontology/app/*.scss')
+	return gulp.src('src/apps/ontology/**/*.scss')
 		.pipe(cache('sass'))
 		.pipe(sass())
 		.pipe(prefix('last 2 versions', 'ie 8'))
-		.pipe(pixrem())
 		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(pixrem())
+		.pipe(concat('ontology.css'))
 		.pipe(gulp.dest('../webapp/WEB-INF/static/css'))
 		.on('error', handleErrors);
 });
