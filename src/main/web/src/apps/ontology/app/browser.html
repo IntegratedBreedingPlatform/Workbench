@@ -6,19 +6,20 @@
 	<meta charset="utf-8"></meta>
 	<title>Ontology Browser</title>
 
+	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
-<body>
-	<header>
-		<h1>Ontology Management</h1>
-		<nav>
+<body class="om-ontology-manager">
+	<header class="om-header">
+		<h1 class="om-title">Ontology Management</h1>
+		<nav class="om-nav">
 			<ol>
-				<li>
-					<a href="#variables">
+				<li class="om-nav-item">
+					<a class="om-nav-item-link" href="#variables">
 						Variables
 					</a>
 				</li>
-				<li>
-					<a href="#properties">
+				<li class="om-nav-item">
+					<a class="om-nav-item-link" href="#properties">
 						Properties
 					</a>
 				</li>
