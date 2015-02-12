@@ -1,5 +1,17 @@
-<ul>
-	<li ng-repeat="item in data">
-		{{item.name}} - {{item.description}}
-	</li>
-</ul>
+<table class="om-li-table">
+	<tbody>
+		<tr class="om-li-row">
+			<td class="om-li-cell">Name</td>
+			<td class="om-li-cell">Property</td>
+			<td class="om-li-cell">Method</td>
+			<td class="om-li-cell">Scale</td>
+		</tr>
+		<tr class="om-li-row" ng-repeat="item in data">
+			<td class="om-li-cell">{{item.name}}</td>
+			<td class="om-li-cell">{{item.property.name}}</td>
+			<td class="om-li-cell">{{item.method.name}}</td>
+			<td class="om-li-cell">{{item.scale.name}}</td>
+			<td class="om-li-cell">{{item.favourite}}</td>
+		</tr>
+	</tbody>
+</table>
