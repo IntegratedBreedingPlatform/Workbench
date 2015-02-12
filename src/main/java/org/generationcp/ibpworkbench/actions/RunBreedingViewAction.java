@@ -22,6 +22,7 @@ import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.util.*;
@@ -323,14 +324,8 @@ public class RunBreedingViewAction implements ClickListener {
 		boolean changedConfig = false;
 		try {
 			changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
-		} catch (IOException e1) {
+		} catch (ConfigurationChangeException e1) {
 			LOG.error(ERROR, e1);
-			showErrorMessage(window,
-					"Cannot update configuration for tool: " + tool.getToolName(), "<br />"
-							+ messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-			return false;
-		} catch (MiddlewareQueryException e) {
-			LOG.error(ERROR, e);
 			showErrorMessage(window,
 					"Cannot update configuration for tool: " + tool.getToolName(), "<br />"
 							+ messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));

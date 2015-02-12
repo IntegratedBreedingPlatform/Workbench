@@ -17,10 +17,10 @@ import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
-import org.generationcp.commons.xml.hibernate.HibernateConfiguration;
-import org.generationcp.commons.xml.hibernate.SessionFactory;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
+import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -30,11 +30,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,11 @@ import java.util.Properties;
 @Configurable
 public class ToolUtil {
     private static final Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
+    public static final String DEFAULT_DRIVER = "com.mysql.jdbc.Driver";
+    public static final String JDBC_FORMAT_STRING = "jdbc:mysql://%s:%s/%s";
+    public static final String INPUT = "input";
+    public static final String GDMS_CONFIG_LOCATION = "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
+    public static final String MBDT_CONFIG_LOCATION = "tools/mbdt/DatabaseConfig.properties";
 
     private String jdbcHost;
     private Long jdbcPort;
@@ -228,8 +232,7 @@ public class ToolUtil {
     }
 
     protected String getComputedToolPath(Tool tool) {
-        File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-        String toolPath = absoluteToolFile.getAbsolutePath();
+        String toolPath = tool.getPath();
 
         // if the tool path is an absolute path
         // and the workbench installation directory has been set,
@@ -254,104 +257,65 @@ public class ToolUtil {
      *          {@link Tool} was changed, otherwise, this method will returns
      *          <code>false</code>
      */
-    public boolean updateToolConfigurationForProject(Tool tool, Project project) throws MiddlewareQueryException, IOException {
+    public boolean updateToolConfigurationForProject(Tool tool, Project project) throws
+            ConfigurationChangeException{
         String centralDbName = project.getCropType().getCentralDbName();
         String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
+
+        // DMV : added short circuit processing of the method, so that database access logic is not performed if tool is not included in target of later activities
+        if (!Util.isOneOf(tool.getToolName(), ToolName.gdms.name(), ToolName.mbdt.name())) {
+            return false;
+        }
 
         // get mysql user name and password to use
         String username = null;
         String password = null;
 
-        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        User currentUser = getCurrentUser();
 
-        if (app != null) {
-            User currentUser = app.getSessionData().getUserData();
-
-            if (currentUser != null) {
-                try {
-                    ProjectUserMysqlAccount account = this.workbenchDataManager.getProjectUserMysqlAccountByProjectIdAndUserId(
-                                                                                         project.getProjectId().intValue()
-                                                                                        ,currentUser.getUserid());
-                    username = account.getMysqlUsername();
-                    password = account.getMysqlPassword();
-                } catch (MiddlewareQueryException ex) {
-                    // do nothing, use the default central and local mysql user
-                    // accounts
-                    LOG.error(ex.getMessage(), ex);
-                }
-            }
-        }
-        
-        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-      
-        boolean configurationChanged = false;
-        
-        
-        if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
-                                                                             password, true);
-        } else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
-            String configPath = workbenchSetting.getInstallationDirectory() + File.separator + "tools/mbdt/DatabaseConfig.properties";
-            configurationChanged = updateToolMiddlewareDatabaseConfiguration(configPath, centralDbName, localDbName, username,
-                                                                             password, true);
-        }
-        
-        return configurationChanged;
-    }
-    
-    protected boolean updateGdmsConfiguration(String connectionUrl, String username, String password) throws JAXBException, MiddlewareQueryException, IOException {
-        WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
-        
-        String installationDirectory = workbenchSetting == null? "" : workbenchSetting.getInstallationDirectory() + File.separator;
-        
-        String gdmsConfigFile = installationDirectory + File.separator + "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/hibernate.cfg.xml";
-        
-        JAXBContext context = JAXBContext.newInstance(HibernateConfiguration.class);
-        Unmarshaller um = context.createUnmarshaller();
-        
-        HibernateConfiguration config = (HibernateConfiguration) um.unmarshal(new File(gdmsConfigFile));
-        SessionFactory sessionFactory = config.getSessionFactory();
-        
-        boolean urlChanged = sessionFactory.updateConnectionUrl(connectionUrl);
-        boolean usernameChanged = sessionFactory.updateUsername(username);
-        boolean passwordChanged = sessionFactory.updatePassword(password);
-        boolean changed = urlChanged || usernameChanged || passwordChanged;
-        
-        if (changed) {
-            StringWriter stringWriter = new StringWriter();
-            
-            // save the hibernate configuration
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(config, stringWriter);
-            
-            String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                            + "<!DOCTYPE hibernate-configuration PUBLIC\r\n"
-                            + "\"-//Hibernate/Hibernate Configuration DTD 3.0//EN\"\r\n"
-                            + "\"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd\">\r\n";
-            String hibernateXml = stringWriter.toString();
-            hibernateXml = hibernateXml.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", header);
-            
-            FileWriter fileWriter = null;
-
+        if (currentUser != null) {
             try {
-                fileWriter = new FileWriter(gdmsConfigFile);
-                fileWriter.write(hibernateXml);
-                fileWriter.flush();
-                fileWriter.close();
-            } finally {
-                if (fileWriter != null) {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
-                }
+                ProjectUserMysqlAccount account = this.workbenchDataManager
+                        .getProjectUserMysqlAccountByProjectIdAndUserId(
+                                project.getProjectId().intValue()
+                                , currentUser.getUserid());
+                username = account.getMysqlUsername();
+                password = account.getMysqlPassword();
+            } catch (MiddlewareQueryException ex) {
+                // do nothing, use the default central and local mysql user
+                // accounts
+                LOG.error(ex.getMessage(), ex);
             }
         }
-        
-        return changed;
+
+
+        try {
+            WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
+
+            String configPath = null;
+            if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
+				configPath = workbenchSetting.getInstallationDirectory() + File.separator + GDMS_CONFIG_LOCATION;
+
+			} else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
+				configPath = workbenchSetting.getInstallationDirectory() + File.separator + MBDT_CONFIG_LOCATION;
+			}
+
+            return updateToolMiddlewareDatabaseConfiguration(
+                    new ConfigurationChangeParameters(configPath, centralDbName, localDbName,
+                            username, password, true, false, false));
+        } catch (MiddlewareQueryException e) {
+            throw new ConfigurationChangeException(e);
+        }
+    }
+
+    protected User getCurrentUser() {
+
+        IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+        if (app != null) {
+            return app.getSessionData().getUserData();
+        } else {
+            return null;
+        }
     }
     
     protected boolean updatePropertyFile(File propertyFile, Map<String, String> newPropertyValues) {
@@ -400,7 +364,7 @@ public class ToolUtil {
                 try {
                     fos.close();
                 } catch (IOException e){
-                    LOG.error(e.getMessage());
+                    LOG.error(e.getMessage(), e);
                 }
             }
         }
@@ -409,59 +373,53 @@ public class ToolUtil {
     }
 
     public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
-                                                            ,String localDbName, String username, String password) throws IOException, MiddlewareQueryException {
-        return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false);
+                                                            ,String localDbName, String username, String password) throws ConfigurationChangeException {
+        ConfigurationChangeParameters params = new ConfigurationChangeParameters(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false, false, false);
+        return updateToolMiddlewareDatabaseConfiguration(params);
     }
     
-    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
-                                                            ,String localDbName, String username, String password
-                                                            ,boolean includeWorkbenchConfig) throws IOException, MiddlewareQueryException {
-        return updateToolMiddlewareDatabaseConfiguration(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, includeWorkbenchConfig, false, false);
-    }
-    
-    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
-                                                            ,String localDbName, String username, String password
-                                                            ,boolean includeWorkbenchConfig
-                                                            ,boolean includeCurrentProjectId
-                                                            ,boolean includeOldFieldbookPath) throws IOException, MiddlewareQueryException {
-        File configurationFile = new File(ibpDatasourcePropertyFile).getAbsoluteFile();
 
-        String centralUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost,
-                                          jdbcPort, centralDbName);
-        String localUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost,
-                                        jdbcPort, localDbName);
-        
-        Map<String, String> newPropertyValues = new HashMap<String, String>();
-        
-        newPropertyValues.put("central.driver", "com.mysql.jdbc.Driver");
+    
+    public boolean updateToolMiddlewareDatabaseConfiguration(ConfigurationChangeParameters params) throws ConfigurationChangeException {
+        File configurationFile = getConfigurationFile(params);
+
+        String centralUrl = String.format(JDBC_FORMAT_STRING, jdbcHost,
+                                          jdbcPort, params.getCentralDbName());
+        String localUrl = String.format(JDBC_FORMAT_STRING, jdbcHost,
+                                        jdbcPort, params.getLocalDbName());
+
+        Map<String, String> newPropertyValues = new HashMap<>();
+
+        newPropertyValues.put("central.driver", DEFAULT_DRIVER);
         newPropertyValues.put("central.url", centralUrl);
-        newPropertyValues.put("central.dbname", centralDbName);
+        newPropertyValues.put("central.dbname", params.getCentralDbName());
         newPropertyValues.put("central.host", jdbcHost);
         newPropertyValues.put("central.port", String.valueOf(jdbcPort));
-        newPropertyValues.put("central.username", username);
-        newPropertyValues.put("central.password", password);
-        newPropertyValues.put("local.driver", "com.mysql.jdbc.Driver");
+        newPropertyValues.put("central.username", params.getUserName());
+        newPropertyValues.put("central.password", params.getPassword());
+
+        newPropertyValues.put("local.driver", DEFAULT_DRIVER);
         newPropertyValues.put("local.url", localUrl);
-        newPropertyValues.put("local.dbname", localDbName);
+        newPropertyValues.put("local.dbname", params.getLocalDbName());
         newPropertyValues.put("local.host", jdbcHost);
         newPropertyValues.put("local.port", String.valueOf(jdbcPort));
-        newPropertyValues.put("local.username", username);
-        newPropertyValues.put("local.password", password);
-        
+        newPropertyValues.put("local.username", params.getUserName());
+        newPropertyValues.put("local.password", params.getPassword());
+
         // if the specified MySQL username and password
         // use the configured central user and password
-        if (StringUtil.isEmptyOrWhitespaceOnly(username) || StringUtil.isEmptyOrWhitespaceOnly(password)) {
+        if (StringUtil.isEmptyOrWhitespaceOnly(params.getUserName()) || StringUtil.isEmptyOrWhitespaceOnly(params.getPassword())) {
             newPropertyValues.put("central.username", centralUser);
             newPropertyValues.put("central.password", centralPassword);
             newPropertyValues.put("local.username", localUser);
             newPropertyValues.put("local.password", localPassword);
         }
-        
-        // if we are instructed to include workbench configuration, add it
-        if (includeWorkbenchConfig) {
-            String jdbcUrl = String.format("jdbc:mysql://%s:%s/%s", jdbcHost, jdbcPort, workbenchDbName);
 
-            newPropertyValues.put("workbench.driver", "com.mysql.jdbc.Driver");
+        // if we are instructed to include workbench configuration, add it
+        if (params.isIncludeWorkbenchConfig()) {
+            String jdbcUrl = String.format(JDBC_FORMAT_STRING, jdbcHost, jdbcPort, workbenchDbName);
+
+            newPropertyValues.put("workbench.driver", DEFAULT_DRIVER);
             newPropertyValues.put("workbench.url", jdbcUrl);
             newPropertyValues.put("workbench.host", jdbcHost);
             newPropertyValues.put("workbench.port", String.valueOf(jdbcPort));
@@ -469,18 +427,22 @@ public class ToolUtil {
             newPropertyValues.put("workbench.username", workbenchUser);
             newPropertyValues.put("workbench.password", workbenchPassword);
         }
-        
+
         // if we are instructed to include the workbench current project id, add it
-        if (includeCurrentProjectId) {
+        if (params.isIncludeCurrentProjectId()) {
             IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
             Project project = app.getSessionData().getLastOpenedProject();
-            
+
             if (project != null) {
                 newPropertyValues.put("workbench.currentProjectId", String.valueOf(project.getProjectId()));
             }
         }
-        
+
         return updatePropertyFile(configurationFile, newPropertyValues);
+    }
+
+    public File getConfigurationFile(ConfigurationChangeParameters params) {
+        return new File(params.getPropertyFile()).getAbsoluteFile();
     }
     
     public void createWorkspaceDirectoriesForProject(Project project)
@@ -512,7 +474,7 @@ public class ToolUtil {
             toolDir.mkdirs();
 
             // create the input and output directories
-            new File(toolDir, "input").mkdirs();
+            new File(toolDir, INPUT).mkdirs();
             new File(toolDir, "output").mkdirs();
         }
     }
@@ -550,7 +512,7 @@ public class ToolUtil {
                                    + workspaceDirectory, projectDirName);
         File toolDir = new File(projectDir, tool.getGroupName());
 
-        return new File(toolDir, "input").getAbsolutePath();
+        return new File(toolDir, INPUT).getAbsolutePath();
     }
 
     public String getOutputDirectoryForTool(Project project, Tool tool)
@@ -570,7 +532,7 @@ public class ToolUtil {
                                    + workspaceDirectory, projectDirName);
         File toolDir = new File(projectDir, tool.getGroupName());
 
-        return new File(toolDir, "input").getAbsolutePath();
+        return new File(toolDir, INPUT).getAbsolutePath();
     }
     
     public static String getWorkbenchContextParameters() {
