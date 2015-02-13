@@ -2,7 +2,16 @@
 'use strict';
 
 describe('List module', function() {
-	var scope,
+	var LIST_ITEM_CAT = {
+			name: 'Cat',
+			description: 'A fluffy animal that likes to sleep.'
+		},
+		LIST_ITEM_DOG = {
+			name: 'Dog',
+			description: 'A playful animal that likes walks'
+		},
+
+		scope,
 		element;
 
 	beforeEach(function() {
@@ -26,10 +35,7 @@ describe('List module', function() {
 
 	it('should contain one row when passed an array with one item', function() {
 		scope.testHeaders = ['name', 'description'];
-		scope.testData = [{
-			name: 'Cat',
-			description: 'A fluffy animal that likes to sleep.'
-		}];
+		scope.testData = [LIST_ITEM_CAT];
 
 		compileDirective();
 		expect(element.find('tbody').find('tr').length).toEqual(1);
@@ -37,13 +43,7 @@ describe('List module', function() {
 
 	it('should contain two list items when passed an array with two items', function() {
 		scope.testHeaders = ['name', 'description'];
-		scope.testData = [{
-			name: 'Cat',
-			description: 'A fluffy animal that likes to sleep.'
-		}, {
-			name: 'Dog',
-			description: 'A playful animal that likes walks'
-		}];
+		scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 		compileDirective();
 		expect(element.find('tbody').find('tr').length).toEqual(2);
@@ -54,4 +54,22 @@ describe('List module', function() {
 		compileDirective();
 		expect(element.find('th').length).toEqual(2);
 	});
+
+	it('should display the correct values in the appropriate columns', function() {
+
+		var firstHeader = 'name',
+			secondHeader = 'description';
+
+		scope.testHeaders = [firstHeader, secondHeader];
+		scope.testData = [LIST_ITEM_CAT];
+
+		compileDirective();
+
+		expect(element.find('th')[0].innerHTML).toEqual(firstHeader);
+		expect(element.find('td')[0].innerHTML).toEqual(LIST_ITEM_CAT[firstHeader]);
+
+		expect(element.find('th')[1].innerHTML).toEqual(secondHeader);
+		expect(element.find('td')[1].innerHTML).toEqual(LIST_ITEM_CAT[secondHeader]);
+	});
+
 });
