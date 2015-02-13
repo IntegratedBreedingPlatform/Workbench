@@ -65,11 +65,11 @@ describe('List module', function() {
 
 		compileDirective();
 
-		expect(element.find('th')[0].innerHTML).toEqual(firstHeader);
-		expect(element.find('td')[0].innerHTML).toEqual(LIST_ITEM_CAT[firstHeader]);
+		expect(element.find('.om-li-header-cell-test')[0]).toContainText(firstHeader);
+		expect(element.find('.om-li-data-cell-test')[0]).toContainText(LIST_ITEM_CAT[firstHeader]);
 
-		expect(element.find('th')[1].innerHTML).toEqual(secondHeader);
-		expect(element.find('td')[1].innerHTML).toEqual(LIST_ITEM_CAT[secondHeader]);
+		expect(element.find('.om-li-header-cell-test')[1]).toContainText(secondHeader);
+		expect(element.find('.om-li-data-cell-test')[1]).toContainText(LIST_ITEM_CAT[secondHeader]);
 	});
 
 });

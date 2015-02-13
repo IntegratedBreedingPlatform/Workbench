@@ -1,12 +1,17 @@
 <table class="om-li-table">
 	<thead>
 		<tr class="om-li-row">
-			<th class="om-li-cell" ng-repeat="header in colHeaders">{{header}}</th>
+			<th class="om-li-cell" ng-repeat="header in colHeaders">
+				<span class="om-li-header-cell-test" ng-switch="isNotActionHeader(header)">{{header}}</span>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr class="om-li-row" ng-repeat="item in data">
-			<td class="om-li-cell" ng-repeat="header in colHeaders">{{item[header]}}</td>
+			<td class="om-li-cell" ng-repeat="header in colHeaders">
+				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
+				<span class="om-li-data-cell-test" ng-if="isAction(item[header])">{{item[header].iconValue}}</span>
+			</td>
 		</tr>
 	</tbody>
 </table>
