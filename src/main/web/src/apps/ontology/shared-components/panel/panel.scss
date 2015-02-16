@@ -1,0 +1,45 @@
+$panelWidth: 60%;
+
+.om-pa-mask {
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+	transition: transform 0.5s;
+
+	&::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 0;
+		height: 0;
+
+		content: '';
+		transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
+		opacity: 0;
+		background: rgba(0, 0, 0, 0.2);
+
+		.om-pa-panel-visible & {
+			width: 100%;
+			height: 100%;
+
+			transition: opacity 0.5s;
+			opacity: 1;
+		}
+	}
+}
+
+.om-pa-panel {
+	position: fixed;
+	top: 0;
+	right: -$panelWidth;
+
+	width: $panelWidth;
+	height: 100%;
+
+	z-index: 1000;
+	transition: all 0.5s ease;
+
+	.om-pa-panel-visible & {
+		right: 0px;
+	}
+}

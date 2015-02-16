@@ -12,7 +12,7 @@ describe('List module', function() {
 		},
 
 		scope,
-		element;
+		directiveElement;
 
 	beforeEach(function() {
 		angular.mock.module('templates');
@@ -27,7 +27,7 @@ describe('List module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			element = $compile('<omlist omdata="testData" omcolheaders="testHeaders"></omlist>')(scope);
+			directiveElement = $compile('<omlist omdata="testData" omcolheaders="testHeaders"></omlist>')(scope);
 		});
 
 		scope.$digest();
@@ -38,7 +38,7 @@ describe('List module', function() {
 		scope.testData = [LIST_ITEM_CAT];
 
 		compileDirective();
-		expect(element.find('tbody').find('tr').length).toEqual(1);
+		expect(directiveElement.find('tbody tr').length).toEqual(1);
 	});
 
 	it('should contain two list items when passed an array with two items', function() {
@@ -46,13 +46,13 @@ describe('List module', function() {
 		scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 		compileDirective();
-		expect(element.find('tbody').find('tr').length).toEqual(2);
+		expect(directiveElement.find('tbody tr').length).toEqual(2);
 	});
 
 	it('should have two column headers when passed an array of two headers', function() {
 		scope.testHeaders = ['name', 'description'];
 		compileDirective();
-		expect(element.find('th').length).toEqual(2);
+		expect(directiveElement.find('th').length).toEqual(2);
 	});
 
 	it('should display the correct values in the appropriate columns', function() {
@@ -65,11 +65,11 @@ describe('List module', function() {
 
 		compileDirective();
 
-		expect(element.find('.om-li-header-cell-test')[0]).toContainText(firstHeader);
-		expect(element.find('.om-li-data-cell-test')[0]).toContainText(LIST_ITEM_CAT[firstHeader]);
+		expect(directiveElement.find('.om-li-header-cell-test')[0]).toContainText(firstHeader);
+		expect(directiveElement.find('.om-li-data-cell-test')[0]).toContainText(LIST_ITEM_CAT[firstHeader]);
 
-		expect(element.find('.om-li-header-cell-test')[1]).toContainText(secondHeader);
-		expect(element.find('.om-li-data-cell-test')[1]).toContainText(LIST_ITEM_CAT[secondHeader]);
+		expect(directiveElement.find('.om-li-header-cell-test')[1]).toContainText(secondHeader);
+		expect(directiveElement.find('.om-li-data-cell-test')[1]).toContainText(LIST_ITEM_CAT[secondHeader]);
 	});
 
 });
