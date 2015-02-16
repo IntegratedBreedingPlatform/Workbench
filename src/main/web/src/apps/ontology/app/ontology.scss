@@ -1,4 +1,11 @@
+html,
 body {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	margin: 0;
 	font-size: 16px;
 }
 
@@ -8,11 +15,14 @@ ol {
 }
 
 .om-ontology-manager {
-	margin: 1rem;
+	display: table;
+	box-sizing: border-box;
+	padding: 1rem;
 }
 
 .om-header {
-	border-bottom: 1px solid grey;
+	display: table-row;
+	width: 100%;
 }
 
 .om-title {
@@ -20,7 +30,8 @@ ol {
 }
 
 .om-nav {
-	margin-bottom: 0.5rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid grey;
 }
 
 .om-nav-item {
@@ -31,4 +42,10 @@ ol {
 .om-nav-item-link {
 	text-decoration: none;
 	font-size: 1.2rem;
+}
+
+.om-view {
+	display: table-row;
+	height: 100%;
+	width: 100%;
 }
