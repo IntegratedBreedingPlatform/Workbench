@@ -4,7 +4,7 @@
 describe('List module', function() {
 	var PANEL_CLASS = 'om-pa-wrapper-test',
 		CONTENT_CLASS = 'om-pa-content-test',
-		CONTENT = '<div class="' + CONTENT_CLASS +'"></div>',
+		CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 
 		scope,
 		directiveElement;
