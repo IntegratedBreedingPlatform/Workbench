@@ -7,11 +7,11 @@
 	listModule.directive('ompanel', function() {
 		return {
 			link: function(scope, element) {
-				element.toggleClass('om-pa-open', scope.open);
+				element.toggleClass('om-pa-panel-visible', scope.visible);
 			},
 			restrict: 'E',
 			scope: {
-				open: '=omPanelOpen'
+				visible: '=omPanelVisible'
 			},
 			templateUrl: '../static/views/ontology/panelView.html',
 			transclude: true

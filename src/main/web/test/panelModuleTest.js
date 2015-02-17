@@ -35,9 +35,9 @@ describe('List module', function() {
 		expect(directiveElement.find('.' + PANEL_CLASS)).toContainElement('.' + CONTENT_CLASS);
 	});
 
-	it('should be shown when the open-panel attribute is set to true', function() {
-		compileDirective('om-panel-open="true"');
-		expect(directiveElement).toHaveClass('om-pa-open');
+	it('should be shown when the panel-visible attribute is set to true', function() {
+		compileDirective('om-panel-visible="true"');
+		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 	});
 
 });

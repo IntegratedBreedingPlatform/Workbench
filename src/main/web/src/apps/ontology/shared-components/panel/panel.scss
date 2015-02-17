@@ -28,8 +28,8 @@ $panelWidth: 60%;
 	}
 }
 
-.om-pa-panel {
-	position: fixed;
+ompanel {
+	position: absolute;
 	top: 0;
 	right: -$panelWidth;
 
@@ -39,7 +39,9 @@ $panelWidth: 60%;
 	z-index: 1000;
 	transition: all 0.5s ease;
 
-	.om-pa-panel-visible & {
+	background-color: aliceblue;
+
+	&.om-pa-panel-visible {
 		right: 0px;
 	}
 }

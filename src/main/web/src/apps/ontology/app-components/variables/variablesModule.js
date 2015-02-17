@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variables', ['list']);
+	var app = angular.module('variables', ['list', 'panel']);
 
 	app.controller('VariablesController', ['variablesService', function(variablesService) {
 		var ctrl = this;
