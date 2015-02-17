@@ -1,4 +1,8 @@
 <div class="om-va-view">
-	<ompanel om-panel-visible="true">This is in a panel</ompanel>
-	<omlist omdata="varsCtrl.variables" omcolheaders="varsCtrl.colHeaders"></omlist>
+	<ompanel om-visible="panelOpen">
+		<p ng-repeat="(key,value) in selectedVariable">
+			{{key}} : {{value}}
+		</p>
+	</ompanel>
+	<omlist omdata="varsCtrl.variables" omcolheaders="varsCtrl.colHeaders" on-click="showVariableDetails()" om-selected-item="selectedItem"></omlist>
 </div>
