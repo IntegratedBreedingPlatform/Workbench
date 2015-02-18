@@ -21,6 +21,7 @@ import java.util.Properties;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.exceptions.SQLFileException;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.slf4j.Logger;
@@ -96,8 +97,8 @@ public class IBDBGenerator {
     }
     
     
-    protected void runScriptsInDirectory(String databaseName, File directory) throws Exception {
-			mysqlUtil.runScriptsInDirectory(databaseName, directory);
+    protected void runScriptsInDirectory(String databaseName, File directory) throws SQLFileException {
+		mysqlUtil.runScriptsInDirectory(databaseName, directory);
     }
 
     protected void closeConnection(){

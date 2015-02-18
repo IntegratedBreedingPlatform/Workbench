@@ -12,7 +12,15 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.exceptions.SQLFileException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -21,12 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.annotation.Resource;
-import java.io.File;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
 @Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
@@ -176,7 +178,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
             // NOTE: IBDBGeneratorCentralDb is intended to be run for custom crops only,
             // hence, we should not be running scripts for specific crops here            
         
-        } catch (Exception e){
+        } catch (SQLFileException | MiddlewareQueryException e){
         	handleDatabaseError(e);
         }
     }

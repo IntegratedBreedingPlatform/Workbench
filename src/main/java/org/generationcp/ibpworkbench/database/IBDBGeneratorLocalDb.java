@@ -12,7 +12,15 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.database;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.exceptions.SQLFileException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -22,13 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.annotation.Resource;
-
-import java.io.File;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
 /**
  * 
@@ -162,7 +163,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             // run the common-update scripts
             runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, "common-update"));
 
-        } catch (Exception e){
+        } catch (SQLFileException | MiddlewareQueryException e){
         	handleDatabaseError(e);
         }
     }
