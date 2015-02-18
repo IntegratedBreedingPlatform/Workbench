@@ -128,4 +128,8 @@ public class IBDBGenerator {
         String installerMode = properties.getProperty(WORKBENCH_PROP_INSTALLER_MODE, INSTALLER_MODE_LOCAL);
         return INSTALLER_MODE_LAN.equals(installerMode);
     }
+    
+    public void setMySQLUtil(MySQLUtil sqlUtil){
+    	this.mysqlUtil = sqlUtil;
+    }
 }

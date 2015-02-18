@@ -38,7 +38,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
+    public static final String DATABASE_LOCAL = "database/local";
+
+	private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
     private CropType cropType;
     private Long projectId;
@@ -78,7 +80,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         return isGenerationSuccess;
     }
 
-    private void createLocalDatabase() {
+    protected void createLocalDatabase() {
 
         String databaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
         StringBuilder createDatabaseSyntax = new StringBuilder();
@@ -145,15 +147,14 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
         }
     }
 
-    private void createManagementSystems() {
+    protected void createManagementSystems() {
         try {
             WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
             if (setting == null) {
                 throw new IllegalStateException("Workbench setting record not found");
             }
             
-            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/local");
-            
+            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), DATABASE_LOCAL);
             // run the common scripts
             runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, "common"));
             

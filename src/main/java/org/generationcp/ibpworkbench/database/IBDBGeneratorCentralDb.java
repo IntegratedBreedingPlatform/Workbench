@@ -32,7 +32,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorCentralDb.class);
+    public static final String DATABASE_CENTRAL = "database/central";
+	private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorCentralDb.class);
+    
 	private CropType cropType;
     private boolean alreadyExistsFlag = false;
     
@@ -76,7 +78,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         return isGenerationSuccess;
     }
     
-    private boolean databaseExists() {
+    protected boolean databaseExists() {
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -96,7 +98,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         }
     }
 
-    private void createDatabase() {
+    protected void createDatabase() {
         StringBuilder createDatabaseSyntax = new StringBuilder();
 
         String databaseName = cropType.getCentralDbName();
@@ -157,14 +159,14 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         }
     }
 
-    private void createManagementSystems() {
+    protected void createManagementSystems() {
         try {
             WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
             if (setting == null) {
                 throw new IllegalStateException("Workbench setting record not found");
             }
             
-            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), "database/central");
+            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), DATABASE_CENTRAL);
             
             // run the common scripts
             runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, "common"));
@@ -186,4 +188,8 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
 	public void setCropType(CropType cropType) {
 		this.cropType = cropType;
 	}
+	
+	 public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+        this.workbenchDataManager = workbenchDataManager;
+    }
 }
