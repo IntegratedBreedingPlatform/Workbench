@@ -19,6 +19,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,6 +32,7 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
+import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -65,6 +67,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	private static final long serialVersionUID = 1L;
 	private Button browseLink;
+	private Button uploadLink;
 
 	private Label lblPageTitle;
 	private HeaderLabelLayout heading;
@@ -174,6 +177,12 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		browseLink.setStyleName("link");
 		browseLink.setCaption("Browse");
 		browseLink.setWidth("48px");
+		
+		uploadLink = new Button();
+		uploadLink.setImmediate(true);
+		uploadLink.setStyleName("link");
+		uploadLink.setCaption("Upload");
+		uploadLink.setWidth("48px");
 				
 		setVariatesCheckboxState(new HashMap<String, Boolean>());
 
@@ -256,6 +265,25 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			}
 			
 		});
+		
+		uploadLink.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1425892265723948423L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+					
+				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
+					FileUploadBreedingViewOutputWindow dialog = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), 0, currentProject);
+					event.getComponent().getWindow().addWindow(dialog);
+				} else if(event.getComponent()==null){
+					LOG.error("event component is null");
+				} else if(event.getComponent().getWindow()==null){
+					LOG.error("event component window is null");
+				}
+			}
+			
+		});
 
 		btnCancel.addListener(new Button.ClickListener() {
 
@@ -278,7 +306,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a study to work with."));
+		Label workWith = new Label("for a study to work with ");
+		workWith.setWidth("150px");
+		browseLabelLayout.addComponent(workWith);
+		Label orLabel = new Label("or");
+		orLabel.setWidth("20px");
+		browseLabelLayout.addComponent(orLabel);
+		browseLabelLayout.addComponent(uploadLink);
+		browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
 		browseLabelLayout.setSizeUndefined();
 		
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();

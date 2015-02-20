@@ -13,6 +13,9 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.google.common.base.Strings;
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
@@ -38,8 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +69,11 @@ public class RunBreedingViewAction implements ClickListener {
 	private Project project;
 
 	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
+	public static final String WORKBENCH_SERVERAPP_PROPERTY = "workbench.is.server.app";
 
+	@Value(WORKBENCH_SERVERAPP_PROPERTY)
+	private String isServerApp;
+	
 	@Autowired
 	private Properties workbenchProperties;
 
@@ -261,22 +271,56 @@ public class RunBreedingViewAction implements ClickListener {
 			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
 					(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments,
 					breedingViewInput);
-
+		
 		} catch (DatasetExporterException e1) {
 			LOG.error(ERROR, e1);
 		}
+		
+		writeProjectXML(event);
 
-		launchBV(event);
+		if ("true".equalsIgnoreCase(isServerApp)){
+			
+			String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
+			List<String> filenameList = new ArrayList<>();
+			filenameList.add(breedingViewInput.getDestXMLFilePath());
+			filenameList.add(breedingViewInput.getSourceXLSFilePath());
+			
+			ZipUtil.zipIt(outputFilename, filenameList);
+			
+			downloadInputFile(new File(outputFilename), source.getApplication());
+
+			
+		}else{
+			launchBV(event);
+		}
+		
 
 	}
 	
 	public void showErrorMessage(Window window ,String title, String description){
 		MessageNotifier.showError(window, title, description);
 	}
+	
+	private void writeProjectXML(ClickEvent event){
+		BreedingViewXMLWriter breedingViewXMLWriter;
+		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+		
+		// write the XML input for breeding view
+		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
+		
+		try{
+			breedingViewXMLWriter.writeProjectXML();
+		} catch (BreedingViewXMLWriterException e) {
+			LOG.debug("Cannot write Breeding View input XML", e);
+
+			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
+		} 
+		
+
+	}
 
 	private void launchBV(ClickEvent event) {
-
-		BreedingViewXMLWriter breedingViewXMLWriter;
+		
 		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		try {
@@ -287,26 +331,18 @@ public class RunBreedingViewAction implements ClickListener {
 			webServiceTool.setToolType(ToolType.WEB);
 			updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
 
-			// write the XML input for breeding view
-			breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-			breedingViewXMLWriter.writeProjectXML();
+			
 
 			// launch breeding view
 			File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
 
-			LOG.info(breedingViewInput.toString());
-			LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\""
-					+ breedingViewInput.getDestXMLFilePath() + "\"");
+			
 
 			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=",
 					breedingViewInput.getDestXMLFilePath());
 			pb.start();
 
-		} catch (BreedingViewXMLWriterException e) {
-			LOG.debug("Cannot write Breeding View input XML", e);
-
-			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
-		} catch (IOException e) {
+		}catch (IOException e) {
 			LOG.debug("Cannot write Breeding View input XML", e);
 
 			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
@@ -377,5 +413,30 @@ public class RunBreedingViewAction implements ClickListener {
 		}
 
 		return true;
+	}
+
+	private void downloadInputFile(File file, Application application){
+		
+		FileResource fr = new FileResource(file, application) {
+            private static final long serialVersionUID = 765143030552676513L;
+            @Override
+            public DownloadStream getStream() {
+                DownloadStream ds;
+                try {
+                    ds = new DownloadStream(new FileInputStream(
+                            getSourceFile()), getMIMEType(), getFilename());
+
+                    ds.setParameter("Content-Disposition", "attachment; filename="+getFilename());
+                    ds.setCacheTime(getCacheTime());
+                    return ds;
+
+                } catch (FileNotFoundException e) {
+                    // No logging for non-existing files at this level.
+                    return null;
+                }
+            }
+        };
+
+        application.getMainWindow().open(fr);
 	}
 }

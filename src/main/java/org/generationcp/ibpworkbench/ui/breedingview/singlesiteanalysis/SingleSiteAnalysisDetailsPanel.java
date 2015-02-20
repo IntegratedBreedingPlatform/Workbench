@@ -35,6 +35,7 @@ import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeLi
 import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -50,12 +51,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 
@@ -68,6 +71,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
 
+	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
+	public static final String WORKBENCH_SERVERAPP_PROPERTY = "workbench.is.server.app";
+	
 	private static final long serialVersionUID = 1L;
 
 	private static final String REPLICATION_FACTOR = "replication factor";
@@ -80,6 +86,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_BOX_WIDTH = "191px";
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
+	
+	@Value(WORKBENCH_SERVERAPP_PROPERTY)
+	private String isServerApp;
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
@@ -109,6 +118,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Label lblSpecifyDesignDetailsHeader;
 	private Label lblSpecifyGenotypesHeader;
 	private Button btnRun;
+	private Button btnUpload;
 	private Button btnReset;
 	private Button btnBack;
 	private TextField txtVersion;
@@ -593,6 +603,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		btnRun = new Button();
 		btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		btnUpload = new Button();
+		btnUpload.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		btnReset = new Button();
 		btnBack = new Button();
 
@@ -980,8 +992,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		combineLayout2.addComponent(btnBack);
 		combineLayout2.addComponent(btnReset);
 		combineLayout2.addComponent(btnRun);
+		combineLayout2.addComponent(btnUpload);
 		combineLayout2.setComponentAlignment(btnReset, Alignment.TOP_CENTER);
 		combineLayout2.setComponentAlignment(btnRun, Alignment.TOP_CENTER);
+		combineLayout2.setComponentAlignment(btnUpload, Alignment.TOP_CENTER);
 		mainLayout.addComponent(combineLayout2);
 		mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
 
@@ -1036,6 +1050,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			@Override
 			public void buttonClick(final ClickEvent event) {
 
+				
+				if ("true".equalsIgnoreCase(isServerApp)){
+					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+					.buttonClick(event);
+					return;
+				}else{
+					
+				}
+				
 				List<DataSet> dataSets;
 				try {
 
@@ -1099,9 +1122,23 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		};
 
 		btnRun.addListener(runBreedingView);
-
 		btnRun.setClickShortcut(KeyCode.ENTER);
 		btnRun.addStyleName("primary");
+		
+		btnUpload.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				
+				FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), breedingViewInput.getStudyId(), project);
+				
+				event.getComponent().getWindow().addWindow(window);
+				
+			}
+		});
+		btnUpload.addStyleName("primary");
 
 		selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
 		selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
@@ -1145,7 +1182,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		messageSource.setValue(getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
 		messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
 		messageSource.setValue(getLblGenotypes(), Message.BV_GENOTYPES);
-		messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
+		
+		if ("true".equalsIgnoreCase(isServerApp)){
+			messageSource.setCaption(btnRun, Message.DOWNLOAD_INPUT_FILES);
+			btnUpload.setVisible(true);
+			btnUpload.setCaption("Upload Output Files to BMS");
+		}else{
+			messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
+			btnUpload.setVisible(false);
+		}
 		messageSource.setCaption(btnReset, Message.RESET);
 		messageSource.setCaption(btnBack, Message.BACK);
 

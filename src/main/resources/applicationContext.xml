@@ -122,4 +122,7 @@
     <bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
 
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
+
+	<bean id="cloner" class="com.rits.cloning.Cloner"/>
+	
 </beans>
