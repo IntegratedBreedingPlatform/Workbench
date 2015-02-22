@@ -29,7 +29,7 @@ $panelWidth: 60%;
 }
 
 ompanel {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	right: -$panelWidth;
 
