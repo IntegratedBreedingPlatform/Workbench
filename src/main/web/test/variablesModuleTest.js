@@ -24,12 +24,14 @@ describe('Variables Controller', function() {
 		q = $q;
 		scope = $rootScope;
 		controller = $controller('VariablesController', {
+			$scope: scope,
 			variablesService: variablesService
 		});
 	}));
 
 	it('should transform variables into display format', function() {
 		var jsonData = [{
+				id: 'var1',
 				name: 'var1',
 				favourite: 'true',
 				method: {
@@ -43,6 +45,7 @@ describe('Variables Controller', function() {
 				}
 			}],
 			transformedData = [{
+				id: 'var1',
 				Name: 'var1',
 				'action-favourite': 'true',
 				Method: 'method',
