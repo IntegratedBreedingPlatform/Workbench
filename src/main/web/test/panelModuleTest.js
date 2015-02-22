@@ -1,7 +1,7 @@
 /*global angular, inject, expect*/
 'use strict';
 
-describe('List module', function() {
+describe('Panel module', function() {
 	var PANEL_CLASS = 'om-pa-wrapper-test',
 		CONTENT_CLASS = 'om-pa-content-test',
 		CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
