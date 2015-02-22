@@ -24,16 +24,19 @@ describe('Properties Controller', function() {
 		q = $q;
 		scope = $rootScope;
 		controller = $controller('PropertiesController', {
+			$scope: scope,
 			propertiesService: propertiesService
 		});
 	}));
 
 	it('should transform properties into display format', function() {
 		var jsonData = [{
+				id: 'prop1',
 				name: 'prop1',
 				classes: ['class1', 'class2']
 			}],
 			transformedData = [{
+				id: 'prop1',
 				Name: 'prop1',
 				Classes: 'class1, class2'
 			}];
