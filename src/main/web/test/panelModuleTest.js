@@ -23,7 +23,7 @@ describe('Panel module', function() {
 	function compileDirective(attribute) {
 		var attr = attribute || '';
 		inject(function($compile) {
-			directiveElement = $compile('<ompanel ' + attr + '>' + CONTENT + '</ompanel>')(scope);
+			directiveElement = $compile('<om-panel ' + attr + '>' + CONTENT + '</om-panel>')(scope);
 		});
 		scope.$digest();
 	}

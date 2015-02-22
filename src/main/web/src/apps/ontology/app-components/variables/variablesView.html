@@ -1,11 +1,11 @@
 <div class="om-va-view">
-	<ompanel om-visible="panelOpen">
+	<om-panel om-visible="panelOpen">
 		<p ng-repeat="(key,value) in selectedVariable">
 			{{key}} : {{value}}
 		</p>
-	</ompanel>
+	</om-panel>
 	<h2>Program Favourites</h2>
-	<omlist omdata="varsCtrl.variables" omcolheaders="varsCtrl.colHeaders" on-click="showVariableDetails()" om-selected-item="selectedItem"></omlist>
+	<om-list om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 	<h2>All Variables</h2>
-	<omlist omdata="varsCtrl.variables" omcolheaders="varsCtrl.colHeaders" on-click="showVariableDetails()" om-selected-item="selectedItem"></omlist>
+	<om-list om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 </div>

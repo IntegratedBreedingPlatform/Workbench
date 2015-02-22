@@ -27,7 +27,7 @@ describe('List module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			directiveElement = $compile('<omlist omdata="testData" omcolheaders="testHeaders"></omlist>')(scope);
+			directiveElement = $compile('<om-list om-data="testData" om-col-headers="testHeaders"></om-list>')(scope);
 		});
 
 		scope.$digest();

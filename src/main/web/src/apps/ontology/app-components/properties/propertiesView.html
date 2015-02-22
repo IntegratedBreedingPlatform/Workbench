@@ -1,8 +1,8 @@
 <div class="om-pr-view">
-	<ompanel om-visible="panelOpen">
+	<om-panel om-visible="panelOpen">
 		<p ng-repeat="(key,value) in selectedProperty">
 			{{key}} : {{value}}
 		</p>
-	</ompanel>
-	<omlist omdata="propsCtrl.properties" omcolheaders="propsCtrl.colHeaders" on-click="showPropertyDetails()" om-selected-item="selectedItem"></omlist>
+	</om-panel>
+	<om-list om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem"></om-list>
 </div>

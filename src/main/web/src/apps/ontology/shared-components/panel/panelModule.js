@@ -4,7 +4,7 @@
 (function() {
 	var panelModule = angular.module('panel', []);
 
-	panelModule.directive('ompanel', function() {
+	panelModule.directive('omPanel', function() {
 		return {
 			controller: function($scope) {
 				$scope.closePanel = function(e) {

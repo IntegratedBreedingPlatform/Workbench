@@ -4,13 +4,13 @@
 (function() {
 	var listModule = angular.module('list', []);
 
-	listModule.directive('omlist', function() {
+	listModule.directive('omList', function() {
 		return {
 			restrict: 'E',
 			scope: {
-				colHeaders: '=omcolheaders',
-				data: '=omdata',
-				parentClickHandler: '&onClick',
+				colHeaders: '=omColHeaders',
+				data: '=omData',
+				parentClickHandler: '&omOnClick',
 				selectedItem: '=omSelectedItem'
 			},
 			controller: function($scope) {
