@@ -17,6 +17,10 @@ describe('Variables Controller', function() {
 			getVariables: function() {
 				deferred = q.defer();
 				return deferred.promise;
+			},
+			getFavouriteVariables: function() {
+				deferred = q.defer();
+				return deferred.promise;
 			}
 		};
 		spyOn(variablesService, 'getVariables').and.callThrough();
@@ -29,8 +33,8 @@ describe('Variables Controller', function() {
 		});
 	}));
 
-	it('should transform variables into display format', function() {
-		var jsonData = [{
+	it('toDisplayFormat should transform variables into display format', function() {
+		var variable = {
 				id: 'var1',
 				name: 'var1',
 				favourite: 'true',
@@ -43,20 +47,17 @@ describe('Variables Controller', function() {
 				scale: {
 					name: 'scale'
 				}
-			}],
-			transformedData = [{
+			},
+			transformedVariable = {
 				id: 'var1',
 				Name: 'var1',
 				'action-favourite': 'true',
 				Method: 'method',
 				Property: 'property',
 				Scale: 'scale'
-			}];
+			};
 
-		deferred.resolve(jsonData);
-		scope.$apply();
-		expect(variablesService.getVariables).toHaveBeenCalled();
-		expect(controller.variables).toEqual(transformedData);
+		expect(controller.toDisplayFormat(variable)).toEqual(transformedVariable);
 	});
 
 });
