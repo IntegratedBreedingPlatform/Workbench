@@ -24,7 +24,7 @@
 			});
 		});
 
-		$scope.panelOpen = {show:false};
+		$scope.panelOpen = {show: false};
 
 		$scope.showVariableDetails = function() {
 
