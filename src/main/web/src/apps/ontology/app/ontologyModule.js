@@ -26,6 +26,10 @@
 		$scope.addNew = function() {
 			$scope.panelOpen.show = true;
 		};
+
+		$scope.addVariable = function() {
+			console.log('Add variable');
+		};
 	}]);
 
 }());
