@@ -19,4 +19,13 @@
 				templateUrl: VIEWS_LOCATION + 'variablesView.html'
 			});
 	}]);
+
+	app.controller('OntologyController', ['$scope', function($scope) {
+		$scope.panelOpen = {show: false};
+
+		$scope.addNew = function() {
+			$scope.panelOpen.show = true;
+		};
+	}]);
+
 }());

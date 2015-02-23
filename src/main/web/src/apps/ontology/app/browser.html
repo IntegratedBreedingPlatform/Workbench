@@ -8,26 +8,39 @@
 
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
-<body class="om-ontology-manager">
+<body class="om-ontology-manager" ng-controller="OntologyController as ctrl">
 	<header class="om-header">
 		<h1 class="om-title">Ontology Management</h1>
-		<nav class="om-nav">
-			<ol>
-				<li class="om-nav-item">
-					<a class="om-nav-item-link" href="#variables">
-						Variables
-					</a>
-				</li>
-				<li class="om-nav-item">
-					<a class="om-nav-item-link" href="#properties">
-						Properties
-					</a>
-				</li>
-			</ol>
-		</nav>
+		<div class="om-nav-wrapper">
+			<nav class="om-nav">
+				<ol>
+					<li class="om-nav-item">
+						<a class="om-nav-item-link" href="#variables">
+							Variables
+						</a>
+					</li>
+					<li class="om-nav-item">
+						<a class="om-nav-item-link" href="#properties">
+							Properties
+						</a>
+					</li>
+				</ol>
+			</nav>
+			<button class="om-add-new-button" ng-click="addNew()">Add New</button>
+		</div>
 	</header>
 
 	<div class="om-view" ng-view="ng-view"></div>
+
+	<om-panel om-visible="panelOpen">
+		<h3>Add New</h3>
+		<ol>
+			<li class="om-add-list-item"><a href="#">Variable</a></li>
+			<li class="om-add-list-item"><a href="#">Property</a></li>
+			<li class="om-add-list-item"><a href="#">Method</a></li>
+			<li class="om-add-list-item"><a href="#">Scale</a></li>
+		</ol>
+	</om-panel>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-route.min.js}"></script>
