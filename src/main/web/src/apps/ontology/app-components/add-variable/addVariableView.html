@@ -1,10 +1,7 @@
 <div class="om-av-view">
-	<div class="om-av-heading-wrapper">
 		<h2>Add New Variable</h2>
-		<button ng-click="saveVariable()">Save</button>
-	<div>
-
 	<form>
+		<button ng-click="saveVariable($event)" type="submit">Save</button>
 		<div>
 			<label for="om-av-name">Name</label>
 			<input type="text" name="om-av-name" id="om-av-name"></input>
@@ -22,7 +19,7 @@
 				<option ng-repeat="property in properties" value="property.id">{{property.name}}</option>
 			</select>
 
-			<a href="#" ng-click="addProperty()">Add a new property</a>
+			<a href="#" ng-click="addProperty($event)">Add a new property</a>
 		</div>
 
 		<div>
@@ -32,7 +29,7 @@
 				<option ng-repeat="method in methods" value="method.id">{{method.name}}</option>
 			</select>
 
-			<a href="#" ng-click="addMethod()">Add a new method</a>
+			<a href="#" ng-click="addMethod($event)">Add a new method</a>
 		</div>
 
 		<div>
@@ -42,7 +39,7 @@
 				<option ng-repeat="scale in scales" value="scale.id">{{scale.name}}</option>
 			</select>
 
-			<a href="#" ng-click="addScale()">Add a new scale</a>
+			<a href="#" ng-click="addScale($event)">Add a new scale</a>
 		</div>
 
 		<div>

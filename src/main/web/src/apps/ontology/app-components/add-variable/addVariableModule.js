@@ -1,4 +1,4 @@
-/*global angular*/
+/*global angular, alert*/
 'use strict';
 
 (function() {
@@ -10,19 +10,23 @@
 		this.scales = [];
 		this.types = [];
 
-		$scope.saveVariable = function() {
+		$scope.saveVariable = function(e) {
+			e.preventDefault();
 			alert('Save variable');
 		};
 
-		$scope.addProperty = function() {
+		$scope.addProperty = function(e) {
+			e.preventDefault();
 			alert('Add property');
 		};
 
-		$scope.addMethod = function() {
+		$scope.addMethod = function(e) {
+			e.preventDefault();
 			alert('Add method');
 		};
 
-		$scope.addScale = function() {
+		$scope.addScale = function(e) {
+			e.preventDefault();
 			alert('Add scale');
 		};
 	}]);
