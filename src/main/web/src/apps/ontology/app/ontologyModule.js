@@ -33,6 +33,9 @@
 			.when('/add/scale', {
 				controller: 'AddScaleController',
 				templateUrl: VIEWS_LOCATION + 'addScaleView.html'
+			})
+			.otherwise({
+				redirectTo: '/variables'
 			});
 	}]);
 
@@ -47,6 +50,16 @@
 			e.preventDefault();
 			$location.path('/add/' + path);
 			$scope.panelOpen.show = false;
+		};
+
+		// Storing the location so we can implement back functionality on our nested views
+		$scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+			$scope.previousUrl = oldUrl;
+		});
+
+		// Back functionality for our nested views. Used in the add-* modules
+		$scope.goBack = function() {
+			$location.path($scope.previousUrl);
 		};
 	}]);
 

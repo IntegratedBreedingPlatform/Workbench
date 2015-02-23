@@ -1,36 +1,55 @@
-/*global expect, inject*/
+/*global expect, inject, spyOn*/
 'use strict';
 
-describe('Ontology module', function() {
+describe('Ontology Controller', function() {
 
-	var PROPERTIES = '/properties',
-		VARIABLES = '/variables';
+	var fakeEvent = {
+			preventDefault: function(){}
+		},
+		controller,
+		location,
+		scope;
 
 	beforeEach(module('ontology'));
 
-	it('should map routes to views', function() {
-		inject(function($route) {
+	beforeEach(inject(function($rootScope, $location, $controller) {
 
-			expect($route.routes[PROPERTIES].templateUrl)
-				.toEqual('../static/views/ontology/propertiesView.html');
+		controller = $controller('OntologyController', {
+			$scope: $rootScope
+		});
 
-			expect($route.routes[VARIABLES].templateUrl)
-				.toEqual('../static/views/ontology/variablesView.html');
+		location = $location;
+		scope = $rootScope;
+
+	}));
+
+	describe('addNew', function() {
+		it('should route and close the panel', function() {
+
+			var path = 'myPath';
+
+			spyOn(location, 'path').and.callThrough();
+			scope.addNew(fakeEvent, path);
+
+			expect(location.path).toHaveBeenCalledWith('/add/' + path);
 		});
 	});
 
-	it('should map routes to controllers', function() {
-		inject(function($route) {
+	describe('goBack', function() {
+		it('should load the previous url', function() {
 
-			expect($route.routes[PROPERTIES].controller)
-				.toEqual('PropertiesController');
-			expect($route.routes[PROPERTIES].controllerAs)
-				.toEqual('propsCtrl');
+			var oldPath = 'oldPath';
 
-			expect($route.routes[VARIABLES].controller)
-				.toEqual('VariablesController');
-			expect($route.routes[VARIABLES].controllerAs)
-				.toEqual('varsCtrl');
+			// Where we're coming from
+			scope.previousUrl = oldPath;
+
+			// Pretend we've gone somewhere
+			scope.addNew(fakeEvent, 'newPath');
+
+			spyOn(location, 'path').and.callThrough();
+
+			scope.goBack();
+			expect(location.path).toHaveBeenCalledWith(oldPath);
 		});
 	});
 });
