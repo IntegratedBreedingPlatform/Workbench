@@ -10,6 +10,8 @@
 		this.scales = [];
 		this.types = [];
 
+		$scope.numericVariable = true;
+
 		$scope.saveVariable = function(e) {
 			e.preventDefault();
 			alert('Save variable');
