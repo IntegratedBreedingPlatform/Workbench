@@ -3,7 +3,7 @@
 
 (function() {
 	var VIEWS_LOCATION = '../static/views/ontology/',
-		app = angular.module('ontology', ['ngRoute', 'variables', 'properties', 'addVariable', 'addProperty']);
+		app = angular.module('ontology', ['ngRoute', 'variables', 'properties', 'addVariable', 'addProperty', 'addMethod', 'addScale']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -25,6 +25,14 @@
 			.when('/add/property', {
 				controller: 'AddPropertyController',
 				templateUrl: VIEWS_LOCATION + 'addPropertyView.html'
+			})
+			.when('/add/method', {
+				controller: 'AddMethodController',
+				templateUrl: VIEWS_LOCATION + 'addMethodView.html'
+			})
+			.when('/add/scale', {
+				controller: 'AddScaleController',
+				templateUrl: VIEWS_LOCATION + 'addScaleView.html'
 			});
 	}]);
 
