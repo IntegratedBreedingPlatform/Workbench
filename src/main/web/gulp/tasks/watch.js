@@ -8,7 +8,7 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch('src/pages/**', ['html']);
 	gulp.watch('src/fonts/**', ['fonts']);
 	gulp.watch('src/js/**', ['js']);
-	gulp.watch(['src/**/*.js', 'test/**/*.js', '!src/js/lib/**'], ['test']);
+	gulp.watch(['src/**/*.js', 'src/apps/**/*.html', 'test/**/*.js', '!src/js/lib/**'], ['test']);
 
 	// Angular
 	gulp.watch('src/apps/**/*.js', ['angularJs']);
