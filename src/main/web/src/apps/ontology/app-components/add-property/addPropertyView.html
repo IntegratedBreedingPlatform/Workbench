@@ -1,0 +1,29 @@
+<div class="om-ap-view">
+		<h2>Add New Property</h2>
+	<form>
+		<button ng-click="saveProperty($event)" type="submit">Save</button>
+		<div>
+			<label for="om-ap-name">Name</label>
+			<input type="text" name="om-ap-name" id="om-ap-name"></input>
+		</div>
+
+		<div>
+			<label for="om-ap-description">Description</label>
+			<textarea type="text" name="om-ap-description" id="om-ap-description"></textarea>
+		</div>
+
+		<!-- TODO: Make this into a tag selector thing-->
+		<div>
+			<label for="om-ap-class">Class</label>
+			<select name="om-ap-class" id="om-ap-class">
+				<option value="" selected>Select a class..</option>
+				<option ng-repeat="class in classes" value="class.id">{{class.name}}</option>
+			</select>
+		</div>
+
+		<div>
+			<label for="om-ap-ontology-id">Crop Ontology Id</label>
+			<input type="text" name="om-ap-ontology-id" id="om-ap-ontology-id"></input>
+		</div>
+	</form>
+</div>

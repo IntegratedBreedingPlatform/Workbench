@@ -3,7 +3,7 @@
 
 (function() {
 	var VIEWS_LOCATION = '../static/views/ontology/',
-		app = angular.module('ontology', ['ngRoute', 'variables', 'properties', 'addVariable']);
+		app = angular.module('ontology', ['ngRoute', 'variables', 'properties', 'addVariable', 'addProperty']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -21,19 +21,23 @@
 			.when('/add/variable', {
 				controller: 'AddVariableController',
 				templateUrl: VIEWS_LOCATION + 'addVariableView.html'
+			})
+			.when('/add/property', {
+				controller: 'AddPropertyController',
+				templateUrl: VIEWS_LOCATION + 'addPropertyView.html'
 			});
 	}]);
 
 	app.controller('OntologyController', ['$scope', '$location', function($scope, $location) {
 		$scope.panelOpen = {show: false};
 
-		$scope.addNew = function() {
+		$scope.addNewSelection = function() {
 			$scope.panelOpen.show = true;
 		};
 
-		$scope.addVariable = function(e) {
+		$scope.addNew = function(e, path) {
 			e.preventDefault();
-			$location.path('/add/variable');
+			$location.path('/add/' + path);
 			$scope.panelOpen.show = false;
 		};
 	}]);
