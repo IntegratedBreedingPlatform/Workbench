@@ -8,18 +8,22 @@ describe('Ontology Controller', function() {
 		},
 		controller,
 		location,
-		scope;
+		scope,
+		window;
 
 	beforeEach(module('ontology'));
 
-	beforeEach(inject(function($rootScope, $location, $controller) {
+	beforeEach(inject(function($rootScope, $location, $controller, $window) {
 
 		controller = $controller('OntologyController', {
-			$scope: $rootScope
+			$scope: $rootScope,
+			$location: $location,
+			$window: $window,
 		});
 
 		location = $location;
 		scope = $rootScope;
+		window = $window;
 
 	}));
 
@@ -38,18 +42,13 @@ describe('Ontology Controller', function() {
 	describe('goBack', function() {
 		it('should load the previous url', function() {
 
-			var oldPath = 'oldPath';
-
-			// Where we're coming from
-			scope.previousUrl = oldPath;
-
 			// Pretend we've gone somewhere
-			scope.addNew(fakeEvent, 'newPath');
+			scope.addNew(fakeEvent, 'aPath');
 
-			spyOn(location, 'path').and.callThrough();
+			spyOn(window.history, 'back').and.callThrough();
 
 			scope.goBack();
-			expect(location.path).toHaveBeenCalledWith(oldPath);
+			expect(window.history.back).toHaveBeenCalled();
 		});
 	});
 });

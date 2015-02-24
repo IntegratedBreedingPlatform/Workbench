@@ -4,7 +4,7 @@
 (function() {
 	var app = angular.module('addVariable', []);
 
-	app.controller('AddVariableController', ['$scope', function($scope) {
+	app.controller('AddVariableController', ['$scope', '$location', function($scope, $location) {
 		this.properties = [];
 		this.methods = [];
 		this.scales = [];
@@ -19,7 +19,7 @@
 
 		$scope.addProperty = function(e) {
 			e.preventDefault();
-			alert('Add property');
+			$location.path('/add/property');
 		};
 
 		$scope.addMethod = function(e) {

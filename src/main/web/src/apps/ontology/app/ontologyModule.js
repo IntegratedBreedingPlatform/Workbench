@@ -39,7 +39,7 @@
 			});
 	}]);
 
-	app.controller('OntologyController', ['$scope', '$location', function($scope, $location) {
+	app.controller('OntologyController', ['$scope', '$location', '$window', function($scope, $location, $window) {
 		$scope.panelOpen = {show: false};
 
 		$scope.addNewSelection = function() {
@@ -59,7 +59,7 @@
 
 		// Back functionality for our nested views. Used in the add-* modules
 		$scope.goBack = function() {
-			$location.path($scope.previousUrl);
+			$window.history.back();
 		};
 	}]);
 
