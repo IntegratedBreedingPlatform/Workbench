@@ -4,7 +4,7 @@
 describe('Ontology Controller', function() {
 
 	var fakeEvent = {
-			preventDefault: function(){}
+			preventDefault: function() {}
 		},
 		controller,
 		location,
@@ -18,7 +18,7 @@ describe('Ontology Controller', function() {
 		controller = $controller('OntologyController', {
 			$scope: $rootScope,
 			$location: $location,
-			$window: $window,
+			$window: $window
 		});
 
 		location = $location;
