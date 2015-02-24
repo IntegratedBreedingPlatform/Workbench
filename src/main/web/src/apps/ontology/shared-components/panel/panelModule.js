@@ -14,7 +14,7 @@
 			},
 			link: function($scope, element) {
 				$scope.$watch('omVisible.show', function(value) {
-					element.toggleClass('om-pa-panel-visible', value);
+					element.toggleClass('om-pa-panel-visible', !!value);
 				});
 			},
 			restrict: 'E',

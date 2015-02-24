@@ -36,7 +36,10 @@ describe('Panel module', function() {
 	});
 
 	it('should be shown when the panel-visible attribute is set to true', function() {
-		compileDirective('om-panel-visible="true"');
+		scope.showPanel = {
+			show: true
+		};
+		compileDirective('om-visible="showPanel"');
 		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 	});
 
