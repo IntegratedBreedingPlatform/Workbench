@@ -58,7 +58,7 @@ describe('Panel module', function() {
 		isolateScope.closePanel({
 			preventDefault: function() {}
 		});
-		expect(directiveElement.isolateScope().omVisible.show).toBe(false);
+		expect(isolateScope.omVisible.show).toBe(false);
 	});
 
 });
