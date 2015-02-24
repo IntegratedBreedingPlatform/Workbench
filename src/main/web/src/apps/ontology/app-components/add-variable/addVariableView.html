@@ -3,67 +3,56 @@
 	<button ng-click="goBack()">Back</button>
 
 	<h2>Add New Variable</h2>
-	<form>
-		<button ng-click="saveVariable($event)" type="submit">Save</button>
+	<form novalidate>
+		<button ng-click="saveVariable($event, variable)" type="submit">Save</button>
 		<div>
 			<label for="om-av-name">Name</label>
-			<input type="text" name="om-av-name" id="om-av-name"></input>
+			<input type="text" name="om-av-name" id="om-av-name" ng-model="variable.name"></input>
 		</div>
 
 		<div>
 			<label for="om-av-description">Description</label>
-			<textarea type="text" name="om-av-description" id="om-av-description"></textarea>
+			<textarea type="text" name="om-av-description" id="om-av-description" ng-model="variable.description"></textarea>
 		</div>
 
 		<div>
 			<label for="om-av-property">Property</label>
-			<select name="om-av-property" id="om-av-property">
-				<option value="" selected>Select a property..</option>
-				<option ng-repeat="property in properties" value="property.id">{{property.name}}</option>
-			</select>
+			<select name="om-av-property" id="om-av-property" ng-model="variable.property" ng-options="property as property.name for property in properties"></select>
 
-			<a href="#" ng-click="addProperty($event)">Add a new property</a>
+			<a href="#" ng-click="addProperty($event, variable)">Add a new property</a>
 		</div>
 
 		<div>
 			<label for="om-av-method">Method</label>
-			<select name="om-av-method" id="om-av-method">
-				<option value="" selected>Select a method..</option>
-				<option ng-repeat="method in methods" value="method.id">{{method.name}}</option>
-			</select>
+			<select name="om-av-method" id="om-av-method" ng-model="variable.method" ng-options="method as method.name for method in methods"></select>
 
 			<a href="#" ng-click="addMethod($event)">Add a new method</a>
 		</div>
 
 		<div>
 			<label for="om-av-scale">Scale</label>
-			<select name="om-av-scale" id="om-av-scale">
-				<option value="" selected>Select a scale..</option>
-				<option ng-repeat="scale in scales" value="scale.id">{{scale.name}}</option>
-			</select>
+			<select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" ng-options="scale as scale.name for scale in scales"></select>
 
 			<a href="#" ng-click="addScale($event)">Add a new scale</a>
 		</div>
 
 		<div>
 			<label for="om-av-type">Variable Type</label>
-			<select name="om-av-type" id="om-av-type">
-				<option value="" selected>Select a variable type..</option>
-				<option ng-repeat="type in types" value="type.id">{{type.name}}</option>
-			</select>
+
+			<select name="om-av-type" id="om-av-type" ng-model="variable.type" ng-options="type as type.name for type in types"></select>
 		</div>
 
 		<div>
 			<label for="om-av-ontology-id">Crop Ontology Id</label>
-			<input type="text" name="om-av-ontology-id" id="om-av-ontology-id"></input>
+			<input type="text" name="om-av-ontology-id" id="om-av-ontology-id" ng-model="variable.ontologyId"></input>
 		</div>
 
 		<div ng-show="numericVariable">
 			<label for="om-av-min">Minimum Expected Value</label>
-			<input type="text" name="om-av-min" id="om-av-min"></input>
+			<input type="text" name="om-av-min" id="om-av-min" ng-model="variable.range.min"></input>
 
 			<label for="om-av-max">Maximum Expected Value</label>
-			<input type="text" name="om-av-max" id="om-av-max"></input>
+			<input type="text" name="om-av-max" id="om-av-max" ng-model="variable.range.max"></input>
 		</div>
 	</form>
 </div>
