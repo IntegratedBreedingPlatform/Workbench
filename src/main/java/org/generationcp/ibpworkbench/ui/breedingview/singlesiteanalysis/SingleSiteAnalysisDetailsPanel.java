@@ -70,10 +70,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		InternationalizableComponent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
-
-	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
-	public static final String WORKBENCH_SERVERAPP_PROPERTY = "workbench.is.server.app";
-	
 	private static final long serialVersionUID = 1L;
 
 	private static final String REPLICATION_FACTOR = "replication factor";
@@ -87,7 +83,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
 	
-	@Value("${"+WORKBENCH_SERVERAPP_PROPERTY+"}")
+	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
@@ -1055,8 +1051,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
 					.buttonClick(event);
 					return;
-				}else{
-					
 				}
 				
 				List<DataSet> dataSets;
@@ -1131,8 +1125,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				Map<String, Boolean> visibleTraitsMap = new HashMap<>();
+				for (VariableType factor : factorsInDataset){
+					visibleTraitsMap.put(factor.getLocalName(), true);
+				}
+				visibleTraitsMap.putAll(breedingViewInput.getVariatesActiveState());
 				
-				FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), breedingViewInput.getStudyId(), project);
+				FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), breedingViewInput.getStudyId(), project, visibleTraitsMap);
 				
 				event.getComponent().getWindow().addWindow(window);
 				

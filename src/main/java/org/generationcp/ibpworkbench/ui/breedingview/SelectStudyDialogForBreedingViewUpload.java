@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -28,7 +27,7 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 	@Override
 	protected void openStudy(Reference r){
 		SingleSiteAnalysisPanel ssaPanel = (SingleSiteAnalysisPanel) source;
-		FileUploadBreedingViewOutputWindow dialog = new FileUploadBreedingViewOutputWindow(parentWindow, r.getId(), ssaPanel.getCurrentProject());
+		FileUploadBreedingViewOutputWindow dialog = new FileUploadBreedingViewOutputWindow(parentWindow, r.getId(), ssaPanel.getCurrentProject(), null);
 		parentWindow.getWindow().addWindow(dialog);
 		parentWindow.getWindow().removeWindow(this);
 	}

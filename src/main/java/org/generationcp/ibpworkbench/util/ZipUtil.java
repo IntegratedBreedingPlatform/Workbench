@@ -109,7 +109,7 @@ public class ZipUtil {
 			while(entry != null){
 				
 				if (entry.getName().toLowerCase().contains(fileNameToExtract.toLowerCase())){
-					String filePath = destination + File.pathSeparator + RandomUtils.nextInt() + entry.getName();
+					String filePath = destination + File.separator + RandomUtils.nextInt() + entry.getName();
 					extractFile(zip, filePath);
 					extractedFile = new File(filePath);
 					break;

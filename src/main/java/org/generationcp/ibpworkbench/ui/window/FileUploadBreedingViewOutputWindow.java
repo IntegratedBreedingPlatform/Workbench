@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.generationcp.commons.exceptions.BreedingViewImportException;
@@ -84,16 +85,19 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
     
     private Project project;
     
+    private Map<String, Boolean> variatesStateMap;
+    
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
     
-    public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project) {
+    public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project, Map<String, Boolean> variatesStateMap) {
         this.window = window;
         this.studyId = studyId;
         this.project = project;
+        this.variatesStateMap = variatesStateMap;
     }
     
     public void show(){
@@ -216,6 +220,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	private final class UploadButtonListener implements ClickListener {
 		private static final long serialVersionUID = 1L;
+		public static final String REGEX_VALID_BREEDING_VIEW_CHARACTERS = "[^a-zA-Z0-9-_%']+";
 		
 		File meansFile = null;
 		File summaryStatsFile = null;
@@ -233,6 +238,8 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 				Map<String, String> bmsInformation = new HashMap<>();
 				
 				StringBuilder importErrorMessage = new StringBuilder();
+				
+				Map<String, String> localNameToAliasMap = generateNameAliasMap();
 				
 				try{
 					uploadZip.validate();
@@ -266,7 +273,12 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 				
 				if (meansFile!=null){
 					try {
-						breedingViewImportService.importMeansData(meansFile, studyId);
+						if (!localNameToAliasMap.isEmpty()){
+							breedingViewImportService.importMeansData(meansFile, studyId, localNameToAliasMap);
+						}else{
+							breedingViewImportService.importMeansData(meansFile, studyId);
+						}
+						
 					} catch (BreedingViewImportException e) {
 						importErrorMessage.append("Cannot import the <b>Means</b> data\n");
 						LOG.error(e.getMessage(), e);
@@ -275,7 +287,13 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 					
 				if (summaryStatsFile!=null){
 					try {
-						breedingViewImportService.importSummaryStatsData(summaryStatsFile, studyId);
+						
+						if (!localNameToAliasMap.isEmpty()){
+							breedingViewImportService.importSummaryStatsData(summaryStatsFile, studyId, localNameToAliasMap);
+						}else{
+							breedingViewImportService.importSummaryStatsData(summaryStatsFile, studyId);
+						}
+						
 					} catch (BreedingViewImportException e) {
 						importErrorMessage.append("Cannot import the <b>Summary Statistics</b> data\n");
 						LOG.error(e.getMessage(), e);
@@ -284,7 +302,12 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 				
 				if(outlierFile!=null){
 					try {
-						breedingViewImportService.importOutlierData(outlierFile, studyId);
+						if (!localNameToAliasMap.isEmpty()){
+							breedingViewImportService.importOutlierData(outlierFile, studyId, localNameToAliasMap);
+						}else{
+							breedingViewImportService.importOutlierData(outlierFile, studyId);
+						}
+						
 					} catch (BreedingViewImportException e) {
 						importErrorMessage.append("Cannot import the <b>Outlier</b> data\n");
 						LOG.error(e.getMessage(), e);
@@ -321,6 +344,24 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 					bmsInformationFile.delete();
 				}
 			
+			}
+			
+			protected Map<String, String> generateNameAliasMap(){
+				Map<String, String> map = new HashMap<>();
+				
+				Map<String, Boolean> variates = variatesStateMap;
+				
+				if (variatesStateMap!=null){
+					for (Entry<String, Boolean> entry : variates.entrySet()){
+						if (entry.getValue()){
+							String nameSanitized = entry.getKey().replaceAll(REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+							map.put(nameSanitized, entry.getKey());
+						}
+					}
+				}
+				
+				return map;
+				
 			}
 				
 	}

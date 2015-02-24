@@ -12,13 +12,12 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -33,7 +32,6 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialogForBreedingViewUpload;
-import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -51,12 +49,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * 
@@ -311,16 +319,25 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.addComponent(browseLink);
-		Label workWith = new Label("for a study to work with ");
+		Label workWith = null;
+		
+		if (Boolean.parseBoolean(isServerApp)){
+			workWith = new Label("for a study to work with ");
+		}else{
+			workWith = new Label("for a study to work with.");
+		}
+		
 		workWith.setWidth("150px");
 		browseLabelLayout.addComponent(workWith);
 		Label orLabel = new Label("or");
 		orLabel.setWidth("20px");
 		
+		if (Boolean.parseBoolean(isServerApp)){
+			browseLabelLayout.addComponent(orLabel);
+			browseLabelLayout.addComponent(uploadLink);
+			browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
+		}
 		
-		browseLabelLayout.addComponent(orLabel);
-		browseLabelLayout.addComponent(uploadLink);
-		browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
 		browseLabelLayout.setSizeUndefined();
 		
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
