@@ -2,7 +2,7 @@
 	<thead>
 		<tr class="om-li-row">
 			<th class="om-li-cell" ng-repeat="header in colHeaders">
-				<span class="om-li-header-cell-test" ng-switch="isNotActionHeader(header)">{{header}}</span>
+				<span class="om-li-header-cell-test" ng-if="isNotActionHeader(header)">{{header}}</span>
 			</th>
 		</tr>
 	</thead>
