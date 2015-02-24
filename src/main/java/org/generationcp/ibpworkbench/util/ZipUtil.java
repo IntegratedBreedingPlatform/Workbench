@@ -12,10 +12,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jna.platform.win32.Guid.GUID;
 
 public class ZipUtil {
 	
@@ -110,7 +109,7 @@ public class ZipUtil {
 			while(entry != null){
 				
 				if (entry.getName().toLowerCase().contains(fileNameToExtract.toLowerCase())){
-					String filePath = destination + File.pathSeparator + GUID.newGuid().toString() + entry.getName();
+					String filePath = destination + File.pathSeparator + RandomUtils.nextInt() + entry.getName();
 					extractFile(zip, filePath);
 					extractedFile = new File(filePath);
 					break;

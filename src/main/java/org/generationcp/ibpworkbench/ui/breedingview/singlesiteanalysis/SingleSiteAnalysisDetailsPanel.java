@@ -87,7 +87,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
 	
-	@Value(WORKBENCH_SERVERAPP_PROPERTY)
+	@Value("${"+WORKBENCH_SERVERAPP_PROPERTY+"}")
 	private String isServerApp;
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
@@ -1051,7 +1051,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			public void buttonClick(final ClickEvent event) {
 
 				
-				if ("true".equalsIgnoreCase(isServerApp)){
+				if (Boolean.parseBoolean(isServerApp)){
 					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
 					.buttonClick(event);
 					return;
@@ -1183,7 +1183,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
 		messageSource.setValue(getLblGenotypes(), Message.BV_GENOTYPES);
 		
-		if ("true".equalsIgnoreCase(isServerApp)){
+		if (Boolean.parseBoolean(isServerApp)){
 			messageSource.setCaption(btnRun, Message.DOWNLOAD_INPUT_FILES);
 			btnUpload.setVisible(true);
 			btnUpload.setCaption("Upload Output Files to BMS");

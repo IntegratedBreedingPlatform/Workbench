@@ -32,6 +32,7 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
+import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialogForBreedingViewUpload;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -48,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,6 +119,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Value("${workbench.is.server.app}")
+	private String isServerApp;
 
 	private StudyDataManager studyDataManager;
 
@@ -274,7 +279,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 			public void buttonClick(ClickEvent event) {
 					
 				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
-					FileUploadBreedingViewOutputWindow dialog = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), 0, currentProject);
+					SelectStudyDialogForBreedingViewUpload dialog = new SelectStudyDialogForBreedingViewUpload(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if(event.getComponent()==null){
 					LOG.error("event component is null");
@@ -311,6 +316,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		browseLabelLayout.addComponent(workWith);
 		Label orLabel = new Label("or");
 		orLabel.setWidth("20px");
+		
+		
 		browseLabelLayout.addComponent(orLabel);
 		browseLabelLayout.addComponent(uploadLink);
 		browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));

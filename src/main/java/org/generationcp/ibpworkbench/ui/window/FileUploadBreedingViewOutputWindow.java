@@ -234,6 +234,14 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 				
 				StringBuilder importErrorMessage = new StringBuilder();
 				
+				try{
+					uploadZip.validate();
+				}catch(Exception e){
+					
+					MessageNotifier.showError(window, "Import Error", "The selected file is not valid.");
+					return;
+				}
+				
 				if (uploadZip.hasFileSelected() && uploadZip.isValid()){
 					
 					zipFile = uploadZipFileFactory.getFile();

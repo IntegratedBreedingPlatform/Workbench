@@ -68,14 +68,11 @@ public class RunBreedingViewAction implements ClickListener {
 
 	private Project project;
 
-	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
-	public static final String WORKBENCH_SERVERAPP_PROPERTY = "workbench.is.server.app";
-
-	@Value(WORKBENCH_SERVERAPP_PROPERTY)
-	private String isServerApp;
+	@Value("${bv.web.url}")
+	private String bvWebUrl;
 	
-	@Autowired
-	private Properties workbenchProperties;
+	@Value("${workbench.is.server.app}")
+	private String isServerApp;
 
 	@Autowired
 	private ToolUtil toolUtil;
@@ -278,7 +275,7 @@ public class RunBreedingViewAction implements ClickListener {
 		
 		writeProjectXML(event);
 
-		if ("true".equalsIgnoreCase(isServerApp)){
+		if (Boolean.parseBoolean(isServerApp)){
 			
 			String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
 			List<String> filenameList = new ArrayList<>();
@@ -327,7 +324,7 @@ public class RunBreedingViewAction implements ClickListener {
 			// when launching BreedingView, update the web service tool first
 			Tool webServiceTool = new Tool();
 			webServiceTool.setToolName("ibpwebservice");
-			webServiceTool.setPath(workbenchProperties.getProperty(WEB_SERVICE_URL_PROPERTY));
+			webServiceTool.setPath(bvWebUrl);
 			webServiceTool.setToolType(ToolType.WEB);
 			updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
 
