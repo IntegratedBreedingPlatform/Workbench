@@ -1,15 +1,16 @@
-/*global angular, alert*/
+/*global angular*/
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', []);
+	var app = angular.module('addProperty', ['addVariable']);
 
-	app.controller('AddPropertyController', ['$scope', function($scope) {
+	app.controller('AddPropertyController', ['$scope', '$window', 'addVariableService', function($scope, $window, addVariableService) {
 		this.classes = [];
 
-		$scope.saveProperty = function(e) {
+		$scope.saveProperty = function(e, property) {
 			e.preventDefault();
-			alert('Save property');
+			addVariableService.addProperty(property);
+			$window.history.back();
 		};
 	}]);
 

@@ -7,21 +7,31 @@
 	app.controller('AddVariableController', ['$scope', '$location', 'addVariableService', 'propertiesService',
 		function($scope, $location, addVariableService, propertiesService) {
 
-		var ctrl = this;
+		$scope.methods = [];
+		$scope.scales = [];
+		$scope.types = [];
 
-		ctrl.properties = [];
-		ctrl.methods = [];
-		ctrl.scales = [];
-		ctrl.types = [];
-
-		propertiesService.getProperties().then(function(properties) {
-			ctrl.properties = properties;
-		});
-
-		$scope.numericVariable = true;
+		$scope.properties = [];
 
 		// Restore state in case we were half way through creating variable
 		$scope.variable = angular.copy(addVariableService.getVariableState());
+
+		propertiesService.getProperties().then(function(properties) {
+			$scope.properties = properties;
+
+			// FIXME - Change to ID
+			// Select the currently selected property if there is one
+			if ($scope.variable.property) {
+				$scope.properties.some(function(prop) {
+					if (prop.name === $scope.variable.property.name) {
+						$scope.variable.property = prop;
+						return true;
+					}
+				});
+			}
+		});
+
+		$scope.numericVariable = true;
 
 		$scope.saveVariable = function(e, variable) {
 			e.preventDefault();
@@ -66,6 +76,10 @@
 
 			getVariableState: function() {
 				return variable;
+			},
+
+			addProperty: function(property) {
+				variable.property = property;
 			}
 		};
 	}]);
