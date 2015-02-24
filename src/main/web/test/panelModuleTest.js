@@ -43,4 +43,22 @@ describe('Panel module', function() {
 		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 	});
 
+	it('should hide the panel when closePanel is called', function() {
+
+		var isolateScope;
+
+		scope.showPanel = {
+			show: true
+		};
+
+		compileDirective('om-visible="showPanel"');
+
+		isolateScope = directiveElement.isolateScope();
+		expect(isolateScope.omVisible.show).toBe(true);
+		isolateScope.closePanel({
+			preventDefault: function() {}
+		});
+		expect(directiveElement.isolateScope().omVisible.show).toBe(false);
+	});
+
 });
