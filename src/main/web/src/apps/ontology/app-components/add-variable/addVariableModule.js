@@ -48,6 +48,9 @@
 				e.preventDefault();
 				// TODO Error handling
 				variableService.saveVariable(variable);
+
+				// FIXME Go somewhere more useful
+				$location.path('/variables');
 			};
 
 			$scope.addProperty = function(e, variable) {

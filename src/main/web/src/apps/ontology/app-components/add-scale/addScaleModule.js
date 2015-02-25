@@ -4,33 +4,38 @@
 (function() {
 	var app = angular.module('addScale', ['scales', 'dataTypes']);
 
-	app.controller('AddScaleController', ['$scope', 'dataTypesService', 'scaleService', function($scope, dataTypesService, scaleService) {
+	app.controller('AddScaleController', ['$scope', '$location', 'dataTypesService', 'scaleService',
+		function($scope, $location, dataTypesService, scaleService) {
 
-		$scope.scale = {
-			categories: [{}]
-		};
+			$scope.scale = {
+				categories: [{}]
+			};
 
-		$scope.showRangeWidget = false;
-		$scope.showCategoriesWidget = false;
+			$scope.showRangeWidget = false;
+			$scope.showCategoriesWidget = false;
 
-		// TODO Error handling
-		dataTypesService.getDataTypes().then(function(types) {
-			$scope.types = types;
-		});
+			// TODO Error handling
+			dataTypesService.getDataTypes().then(function(types) {
+				$scope.types = types;
+			});
 
-		// TODO Error handling
-		$scope.saveScale = function(e, scale) {
-			e.preventDefault();
-			scaleService.saveScale(scale);
-		};
+			$scope.saveScale = function(e, scale) {
+				e.preventDefault();
 
-		$scope.addCategory = function() {
-			$scope.scale.categories.push({});
-		};
+				// TODO Error handling
+				scaleService.saveScale(scale);
 
-		$scope.$watch('scale.type.name', function(newValue) {
-			$scope.showRangeWidget = newValue === 'Numeric';
-			$scope.showCategoriesWidget = newValue === 'Categorical';
-		});
-	}]);
+				$location.path('/scales');
+			};
+
+			$scope.addCategory = function() {
+				$scope.scale.categories.push({});
+			};
+
+			$scope.$watch('scale.type.name', function(newValue) {
+				$scope.showRangeWidget = newValue === 'Numeric';
+				$scope.showCategoriesWidget = newValue === 'Categorical';
+			});
+		}
+	]);
 }());

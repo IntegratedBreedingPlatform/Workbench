@@ -4,8 +4,8 @@
 (function() {
 	var app = angular.module('addProperty', ['properties', 'variables']);
 
-	app.controller('AddPropertyController', ['$scope', '$window', 'propertyService', 'propertiesService', 'variableService',
-		function($scope, $window, propertyService, propertiesService, variableService) {
+	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertyService', 'propertiesService', 'variableService',
+		function($scope, $location, $window, propertyService, propertiesService, variableService) {
 
 			// TODO Error handling
 			propertiesService.getClasses().then(function(classes) {
@@ -22,6 +22,9 @@
 					variableService.setProperty(property);
 					$window.history.back();
 				}
+
+				// FIXME Go somewhere more useful
+				$location.path('/properties');
 			};
 		}
 	]);
