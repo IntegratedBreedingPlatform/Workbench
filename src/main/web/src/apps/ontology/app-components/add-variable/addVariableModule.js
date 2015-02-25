@@ -4,18 +4,18 @@
 (function() {
 	var app = angular.module('addVariable', ['properties']);
 
-	app.controller('AddVariableController', ['$scope', '$location', 'addVariableService', 'propertiesService',
-		function($scope, $location, addVariableService, propertiesService) {
+	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'propertiesService',
+		function($scope, $location, variableService, propertiesService) {
 
+			$scope.properties = [];
 			$scope.methods = [];
 			$scope.scales = [];
 			$scope.types = [];
 
-			$scope.properties = [];
-
 			// Restore state in case we were half way through creating variable
-			$scope.variable = angular.copy(addVariableService.getVariableState());
+			$scope.variable = angular.copy(variableService.getVariableState());
 
+			// TODO Error handling
 			propertiesService.getProperties().then(function(properties) {
 				$scope.properties = properties;
 
@@ -35,13 +35,15 @@
 
 			$scope.saveVariable = function(e, variable) {
 				e.preventDefault();
-				addVariableService.saveVariable(variable);
+				// TODO Error handling
+				variableService.saveVariable(variable);
 			};
 
 			$scope.addProperty = function(e, variable) {
 				e.preventDefault();
 
-				addVariableService.updateVariableState(variable);
+				// TODO Error handling
+				variableService.updateVariableState(variable);
 
 				$location.path('/add/property');
 			};
@@ -58,7 +60,7 @@
 		}
 	]);
 
-	app.service('addVariableService', [function() {
+	app.service('variableService', [function() {
 
 		var variable = {};
 
@@ -79,7 +81,7 @@
 				return variable;
 			},
 
-			addProperty: function(property) {
+			setProperty: function(property) {
 				variable.property = property;
 			}
 		};
