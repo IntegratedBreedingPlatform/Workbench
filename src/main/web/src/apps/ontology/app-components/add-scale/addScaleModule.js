@@ -6,7 +6,6 @@
 
 	app.controller('AddScaleController', ['$scope', 'dataTypesService', 'scaleService', function($scope, dataTypesService, scaleService) {
 
-		$scope.types = [];
 		$scope.scale = {
 			categories: [{}]
 		};
@@ -33,7 +32,5 @@
 			$scope.showRangeWidget = newValue === 'Numeric';
 			$scope.showCategoriesWidget = newValue === 'Categorical';
 		});
-
 	}]);
-
 }());
