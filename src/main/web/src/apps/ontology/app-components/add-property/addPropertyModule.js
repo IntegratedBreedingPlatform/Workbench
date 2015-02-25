@@ -4,9 +4,13 @@
 (function() {
 	var app = angular.module('addProperty', ['properties', 'variables']);
 
-	app.controller('AddPropertyController', ['$scope', '$window', 'propertyService', 'variableService',
-		function($scope, $window, propertyService, variableService) {
-			this.classes = [];
+	app.controller('AddPropertyController', ['$scope', '$window', 'propertyService', 'propertiesService', 'variableService',
+		function($scope, $window, propertyService, propertiesService, variableService) {
+
+			// TODO Error handling
+			propertiesService.getClasses().then(function(classes) {
+				$scope.classes = classes;
+			});
 
 			$scope.saveProperty = function(e, property) {
 				e.preventDefault();

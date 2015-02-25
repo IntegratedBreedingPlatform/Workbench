@@ -40,6 +40,12 @@
 				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/properties');
 
 				return request.then(successHandler, failureHandler);
+			},
+
+			getClasses: function() {
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/classes');
+
+				return request.then(successHandler, failureHandler);
 			}
 		};
 	}]);
