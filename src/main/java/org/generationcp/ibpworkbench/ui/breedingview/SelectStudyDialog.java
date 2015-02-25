@@ -44,9 +44,42 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
+	private final class TreeTableItemClickListener implements ItemClickListener {
+		private final TreeTable tr;
+		private static final long serialVersionUID = 1L;
+
+		private TreeTableItemClickListener(TreeTable tr) {
+			this.tr = tr;
+		}
+
+		@Override
+		public void itemClick(ItemClickEvent event) {
+			
+			Reference r = (Reference) event.getItemId();
+			boolean isStudy = isStudy(r);
+			
+			if (event.isDoubleClick() && isStudy){
+				openStudy(r);
+			}else{
+				if (tr.isCollapsed(r)){
+					tr.setCollapsed(r, false);
+				}else{
+					tr.setCollapsed(r, true);
+				}
+			
+				if (isStudy){
+					selectButton.setEnabled(true);
+				}else{
+					selectButton.setEnabled(false);
+				}
+			}
+			
+		}
+	}
+
 	private static final long serialVersionUID = -7651767452229107837L;
 
-	private final static Logger LOG = LoggerFactory.getLogger(SelectStudyDialog.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SelectStudyDialog.class);
 
 	public static final String CLOSE_SCREEN_BUTTON_ID = "StudyInfoDialog Close Button ID";
 
@@ -143,7 +176,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return DatasetUtil.getPlotDataSetId(getStudyDataManager(),studyId);
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -204,7 +237,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
-            LOG.error(e1.getMessage(), e1);
+			LOG.error(e1.getMessage(), e1);
 			if (getWindow() != null) {
 				MessageNotifier
 				.showWarning(
@@ -224,7 +257,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					study = getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 
 			Object[] cells = new Object[3];
@@ -251,35 +284,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.setSelectable(true);
 
 		tr.addListener(new StudyTreeExpandAction(this, tr));
-		tr.addListener(new ItemClickListener(){
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				
-				Reference r = (Reference) event.getItemId();
-				boolean isStudy = isStudy(r);
-				
-				if (event.isDoubleClick() && isStudy){
-					openStudy(r);
-				}else{
-					if (tr.isCollapsed(r)){
-						tr.setCollapsed(r, false);
-					}else{
-						tr.setCollapsed(r, true);
-					}
-				
-					if (isStudy){
-						selectButton.setEnabled(true);
-					}else{
-						selectButton.setEnabled(false);
-					}
-				}
-				
-			}
-			
-		});
+		tr.addListener(new TreeTableItemClickListener(tr));
 		return tr;
 	}
 	
@@ -291,7 +296,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return getStudyDataManager().isStudy(r.getId());
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -310,7 +315,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 				((MultiSiteAnalysisPanel)source).openStudyMeansDataset(study);
 				parentWindow.removeWindow(SelectStudyDialog.this);
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 				if (study != null) {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
 				} else {
@@ -321,7 +326,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	}
 
 	public void queryChildrenStudies(Reference parentFolderReference,
-			TreeTable tr) throws InternationalizableException {
+			TreeTable tr) {
 
 		List<Reference> childrenReference = new ArrayList<Reference>();
 
@@ -331,7 +336,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId(), currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -351,7 +356,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 
 			cells[0] = " " + r.getName();
@@ -399,7 +404,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),

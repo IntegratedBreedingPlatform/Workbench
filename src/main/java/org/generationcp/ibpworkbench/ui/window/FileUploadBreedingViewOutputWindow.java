@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench.ui.window;
 import java.io.File;
 import java.util.Map;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -79,9 +78,6 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
     
 	@Autowired
     private SimpleResourceBundleMessageSource messageSource;
-    
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
     
     public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project, Map<String, Boolean> variatesStateMap) {
         this.window = window;

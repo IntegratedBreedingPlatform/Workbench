@@ -85,7 +85,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			try{
 				uploadZip.validate();
 			}catch(Exception e){
-				
+				LOG.error(e.getMessage(), e);
 				showError(messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT));
 				return;
 			}
@@ -227,7 +227,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			try {
 				scanner = new Scanner(new FileReader(file));
 			} catch (FileNotFoundException e) {
-				//if reading the file failed, just return an empty map
+				LOG.error(e.getMessage(), e);
 				return result;
 			}
 			

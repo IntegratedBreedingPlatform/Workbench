@@ -75,6 +75,104 @@ import com.vaadin.ui.Window;
 public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
+	private final class TableColumnGenerator implements Table.ColumnGenerator {
+		private final Table table;
+		private static final long serialVersionUID = 1L;
+
+		private TableColumnGenerator(Table table) {
+			this.table = table;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Object generateCell(Table source, Object itemId,
+				Object columnId) {
+
+			BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) table
+					.getContainerDataSource();
+			final VariateModel vm = container.getItem(itemId).getBean();
+
+			final CheckBox checkBox = new CheckBox();
+			checkBox.setImmediate(true);
+			checkBox.setVisible(true);
+			checkBox.addListener(new CheckBoxListener(vm));
+
+			if (vm.getActive()) {
+				checkBox.setValue(true);
+			} else {
+				checkBox.setValue(false);
+			}
+
+			return checkBox;
+
+		}
+	}
+
+	private final class SelectAllListener implements Property.ValueChangeListener {
+		private static final long serialVersionUID = 344514045768824046L;
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+
+			Boolean val = (Boolean) event.getProperty().getValue();
+			BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+			for (Object itemId : container.getItemIds()){
+				container.getItem(itemId).getBean().setActive(val);
+			}
+			tblVariates.refreshRowCache();
+			for (Entry<String, Boolean> entry : variatesCheckboxState
+					.entrySet()) {
+				variatesCheckboxState.put(entry.getKey(), val);
+			}
+			if(val) {
+				numOfSelectedVariates = variatesCheckboxState.size();
+			} else {
+				numOfSelectedVariates = 0;
+			}
+			
+			if (numOfSelectedVariates == 0) {
+				toggleNextButton(false);
+			}else{
+				toggleNextButton(val);
+			}
+			
+		}
+	}
+
+	private final class CheckBoxListener implements Property.ValueChangeListener {
+		private final VariateModel vm;
+		private static final long serialVersionUID = 1L;
+
+		private CheckBoxListener(VariateModel vm) {
+			this.vm = vm;
+		}
+
+		@Override
+		public void valueChange(final ValueChangeEvent event) {
+			Boolean val = (Boolean) event.getProperty().getValue();
+			variatesCheckboxState.put(vm.getName(), val);
+			vm.setActive(val);
+
+			if (!val) {
+				chkVariatesSelectAll
+						.removeListener(selectAllListener);
+				chkVariatesSelectAll.setValue(val);
+				chkVariatesSelectAll.addListener(selectAllListener);
+				numOfSelectedVariates--;
+				if(numOfSelectedVariates==0) {
+					toggleNextButton(false);
+				}
+			} else {
+				if(numOfSelectedVariates<variatesCheckboxState.size()) {//add this check to ensure that the number of selected does not exceed the total number of variates
+					numOfSelectedVariates++;
+				}
+				toggleNextButton(true);
+			}
+
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	private Button browseLink;
 	private Button uploadLink;
@@ -224,39 +322,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	@Override
 	public void addListeners() {
-		selectAllListener = new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 344514045768824046L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-
-				Boolean val = (Boolean) event.getProperty().getValue();
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-				for (Object itemId : container.getItemIds()){
-					container.getItem(itemId).getBean().setActive(val);
-				}
-				tblVariates.refreshRowCache();
-				for (Entry<String, Boolean> entry : variatesCheckboxState
-						.entrySet()) {
-					variatesCheckboxState.put(entry.getKey(), val);
-				}
-				if(val) {
-					numOfSelectedVariates = variatesCheckboxState.size();
-				} else {
-					numOfSelectedVariates = 0;
-				}
-				
-				if (numOfSelectedVariates == 0) {
-					toggleNextButton(false);
-				}else{
-					toggleNextButton(val);
-				}
-				
-			}
-
-		};
+		selectAllListener = new SelectAllListener();
 		
 		chkVariatesSelectAll.addListener(selectAllListener);
 
@@ -450,62 +516,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		table.setColumnExpandRatio(NAMED_COLUMN_1, 1);
 		table.setColumnExpandRatio(NAMED_COLUMN_2, 4);
 		table.setColumnExpandRatio(NAMED_COLUMN_3, 1);
-		table.addGeneratedColumn("", new Table.ColumnGenerator() {
-
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) table
-						.getContainerDataSource();
-				final VariateModel vm = container.getItem(itemId).getBean();
-
-				final CheckBox checkBox = new CheckBox();
-				checkBox.setImmediate(true);
-				checkBox.setVisible(true);
-				checkBox.addListener(new Property.ValueChangeListener() {
-
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void valueChange(final ValueChangeEvent event) {
-						Boolean val = (Boolean) event.getProperty().getValue();
-						variatesCheckboxState.put(vm.getName(), val);
-						vm.setActive(val);
-
-						if (!val) {
-							chkVariatesSelectAll
-									.removeListener(selectAllListener);
-							chkVariatesSelectAll.setValue(val);
-							chkVariatesSelectAll.addListener(selectAllListener);
-							numOfSelectedVariates--;
-							if(numOfSelectedVariates==0) {
-								toggleNextButton(false);
-							}
-						} else {
-							if(numOfSelectedVariates<variatesCheckboxState.size()) {//add this check to ensure that the number of selected does not exceed the total number of variates
-								numOfSelectedVariates++;
-							}
-							toggleNextButton(true);
-						}
-
-					}
-				});
-
-				if (vm.getActive()) {
-					checkBox.setValue(true);
-				} else {
-					checkBox.setValue(false);
-				}
-
-				return checkBox;
-
-			}
-
-		});
+		table.addGeneratedColumn("", new TableColumnGenerator(table));
 
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 

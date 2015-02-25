@@ -49,7 +49,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 
@@ -428,7 +427,7 @@ public class RunBreedingViewAction implements ClickListener {
                     return ds;
 
                 } catch (FileNotFoundException e) {
-                    // No logging for non-existing files at this level.
+                	LOG.error(e.getMessage(), e);
                     return null;
                 }
             }

@@ -57,7 +57,7 @@ public class ZipUtil {
  
     	LOG.debug("Done");
     }catch(IOException ex){
-       ex.printStackTrace();   
+    	LOG.error(ex.getMessage(), ex);
     }
    }
     
@@ -85,11 +85,9 @@ public class ZipUtil {
 			input.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
        
    }
@@ -125,11 +123,9 @@ public class ZipUtil {
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 		
 		return null;
