@@ -18,9 +18,10 @@
 				// TODO Error handling - only set the property if it saved
 				propertyService.saveProperty(property);
 
-				// TODO Only do this if we're coming from the add variable screen
-				variableService.setProperty(property);
-				$window.history.back();
+				if (variableService.updateInProgress()) {
+					variableService.setProperty(property);
+					$window.history.back();
+				}
 			};
 		}
 	]);

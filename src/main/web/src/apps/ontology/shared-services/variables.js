@@ -6,27 +6,39 @@
 
 	app.service('variableService', [function() {
 
-		var variable = {};
+		var variableState = {},
+			editInProgress = false;
 
 		return {
 			updateVariableState: function(updatedVariable) {
-				variable = angular.copy(updatedVariable);
+				variableState = angular.copy(updatedVariable);
+				editInProgress = true;
 			},
 
 			saveVariable: function(variable) {
 				// TODO Call actual save functionality
 				console.log('Saving variable');
+				console.log(variable);
 
 				// If successful..
-				variable = {};
+				this.reset();
 			},
 
 			getVariableState: function() {
-				return variable;
+				return variableState;
+			},
+
+			updateInProgress: function() {
+				return editInProgress;
+			},
+
+			reset: function() {
+				variableState = {};
+				editInProgress = false;
 			},
 
 			setProperty: function(property) {
-				variable.property = property;
+				variableState.property = property;
 			}
 		};
 	}]);
