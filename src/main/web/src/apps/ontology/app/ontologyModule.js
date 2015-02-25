@@ -3,8 +3,8 @@
 
 (function() {
 	var VIEWS_LOCATION = '../static/views/ontology/',
-		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'addVariable', 'addProperty', 'addMethod',
-			'addScale']);
+		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
+		'addProperty', 'addMethod', 'addScale']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -18,6 +18,16 @@
 				controller: 'VariablesController',
 				controllerAs: 'varsCtrl',
 				templateUrl: VIEWS_LOCATION + 'variablesView.html'
+			})
+			.when('/methods', {
+				controller: 'MethodsController',
+				controllerAs: 'methodsCtrl',
+				templateUrl: VIEWS_LOCATION + 'methodsView.html'
+			})
+			.when('/scales', {
+				controller: 'ScalesController',
+				controllerAs: 'scalesCtrl',
+				templateUrl: VIEWS_LOCATION + 'scalesView.html'
 			})
 			.when('/add/variable', {
 				controller: 'AddVariableController',
@@ -54,7 +64,7 @@
 		};
 
 		// Storing the location so we can implement back functionality on our nested views
-		$scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+		$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
 			$scope.previousUrl = oldUrl;
 		});
 
