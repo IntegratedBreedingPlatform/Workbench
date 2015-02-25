@@ -3,7 +3,8 @@
 
 (function() {
 	var VIEWS_LOCATION = '../static/views/ontology/',
-		app = angular.module('ontology', ['ngRoute', 'variables', 'properties', 'addVariable', 'addProperty', 'addMethod', 'addScale']);
+		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'addVariable', 'addProperty', 'addMethod',
+			'addScale']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 

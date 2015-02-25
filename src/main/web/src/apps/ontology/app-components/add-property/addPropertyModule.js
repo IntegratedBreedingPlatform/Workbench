@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['addVariable']);
+	var app = angular.module('addProperty', ['properties', 'variables']);
 
 	app.controller('AddPropertyController', ['$scope', '$window', 'propertyService', 'variableService',
 		function($scope, $window, propertyService, variableService) {
@@ -18,16 +18,6 @@
 				variableService.setProperty(property);
 				$window.history.back();
 			};
-		}]);
-
-	app.service('propertyService', [function() {
-		return {
-			saveProperty: function(property) {
-				// TODO Call actual save functionality
-				console.log('Saving property');
-				console.log(property);
-			}
-		};
-	}]);
-
-}());
+		}
+	]);
+} ());

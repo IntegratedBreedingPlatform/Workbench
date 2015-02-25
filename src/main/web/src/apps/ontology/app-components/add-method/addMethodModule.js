@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addMethod', []);
+	var app = angular.module('addMethod', ['methods']);
 
 	app.controller('AddMethodController', ['$scope', 'methodService', function($scope, methodService) {
 		$scope.saveMethod = function(e, method) {
@@ -12,15 +12,4 @@
 			methodService.saveMethod(method);
 		};
 	}]);
-
-	app.service('methodService', [function() {
-		return {
-			saveMethod: function(method) {
-				// TODO Call actual save functionality
-				console.log('Saving method');
-				console.log(method);
-			}
-		};
-	}]);
-
 }());

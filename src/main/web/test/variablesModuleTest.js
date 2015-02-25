@@ -9,7 +9,7 @@ describe('Variables Controller', function() {
 		variablesService;
 
 	beforeEach(function() {
-		module('variables');
+		module('variablesView');
 	});
 
 	beforeEach(inject(function($q, $controller, $rootScope) {

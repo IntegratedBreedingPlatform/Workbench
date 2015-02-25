@@ -1,38 +1,17 @@
-/*global angular*/
+/*global angular, console*/
 'use strict';
 
 (function() {
-	var app = angular.module('properties', ['list', 'panel']);
+	var app = angular.module('properties', []);
 
-	app.controller('PropertiesController', ['$scope', 'propertiesService', function($scope, propertiesService) {
-		var ctrl = this;
-		this.properties = [];
-
-		ctrl.colHeaders = ['Name', 'Classes'];
-
-		propertiesService.getProperties().then(function(properties) {
-			ctrl.properties = properties.map(function(item) {
-				return {
-					id: item.id,
-					Name: item.name,
-					Classes: item.classes.join(', ')
-				};
-			});
-		});
-
-		$scope.panelOpen = {show: false};
-
-		$scope.showPropertyDetails = function() {
-
-			propertiesService.getProperty($scope.selectedItem.id).then(function(property) {
-				$scope.selectedProperty = property;
-			});
-
-			$scope.panelOpen.show = true;
+	app.service('propertyService', [function() {
+		return {
+			saveProperty: function(property) {
+				// TODO Call actual save functionality
+				console.log('Saving property');
+				console.log(property);
+			}
 		};
-
-		$scope.selectedItem = {id: null};
-		$scope.selectedProperty = null;
 	}]);
 
 	app.service('propertiesService', ['$http', '$q', function($http, $q) {

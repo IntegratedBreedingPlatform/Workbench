@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['dataTypes']);
+	var app = angular.module('addScale', ['scales', 'dataTypes']);
 
 	app.controller('AddScaleController', ['$scope', 'dataTypesService', 'scaleService', function($scope, dataTypesService, scaleService) {
 
@@ -29,22 +29,11 @@
 			$scope.scale.categories.push({});
 		};
 
-		$scope.$watch('scale.type.name', function (newValue) {
+		$scope.$watch('scale.type.name', function(newValue) {
 			$scope.showRangeWidget = newValue === 'Numeric';
 			$scope.showCategoriesWidget = newValue === 'Categorical';
 		});
 
-	}]);
-
-	app.service('scaleService', [function() {
-
-		return {
-			saveScale: function(scale) {
-				// TODO Call actual save functionality
-				console.log('Saving scale');
-				console.log(scale);
-			}
-		};
 	}]);
 
 }());

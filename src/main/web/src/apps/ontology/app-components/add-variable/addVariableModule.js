@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['properties']);
+	var app = angular.module('addVariable', ['variables', 'properties']);
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'propertiesService',
 		function($scope, $location, variableService, propertiesService) {
@@ -59,32 +59,5 @@
 			};
 		}
 	]);
-
-	app.service('variableService', [function() {
-
-		var variable = {};
-
-		return {
-			updateVariableState: function(updatedVariable) {
-				variable = angular.copy(updatedVariable);
-			},
-
-			saveVariable: function(variable) {
-				// TODO Call actual save functionality
-				console.log('Saving variable');
-
-				// If successful..
-				variable = {};
-			},
-
-			getVariableState: function() {
-				return variable;
-			},
-
-			setProperty: function(property) {
-				variable.property = property;
-			}
-		};
-	}]);
 
 }());
