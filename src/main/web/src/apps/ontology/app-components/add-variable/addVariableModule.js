@@ -2,15 +2,11 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['variables', 'properties']);
+	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales']);
 
-	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'propertiesService',
-		function($scope, $location, variableService, propertiesService) {
-
-			$scope.properties = [];
-			$scope.methods = [];
-			$scope.scales = [];
-			$scope.types = [];
+	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
+		'methodsService', 'scalesService',
+		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService) {
 
 			// Restore state in case we were half way through creating variable
 			$scope.variable = angular.copy(variableService.getVariableState());
@@ -29,6 +25,21 @@
 						}
 					});
 				}
+			});
+
+			// TODO Error handling
+			methodsService.getMethods().then(function(methods) {
+				$scope.methods = methods;
+			});
+
+			// TODO Error handling
+			scalesService.getScales().then(function(scales) {
+				$scope.scales = scales;
+			});
+
+			// TODO Error handling
+			variablesService.getTypes().then(function(types) {
+				$scope.types = types;
 			});
 
 			$scope.numericVariable = true;
