@@ -4,37 +4,42 @@
 
 	<h2>Add New Scale</h2>
 	<form>
-		<button ng-click="saveScale($event)" type="submit">Sase</button>
+		<button ng-click="saveScale($event, scale)" type="submit">Save</button>
 		<div>
 			<label for="om-as-name">Name</label>
-			<input type="text" name="om-as-name" id="om-as-name"></input>
+			<input type="text" name="om-as-name" id="om-as-name" ng-model="scale.name"></input>
 		</div>
 
 		<div>
 			<label for="om-as-description">Description</label>
-			<textarea type="text" name="om-as-description" id="om-as-description"></textarea>
+			<textarea type="text" name="om-as-description" id="om-as-description" ng-model="scale.description"></textarea>
 		</div>
 
 		<div>
 			<label for="om-as-type">Data Type</label>
-			<select name="om-as-type" id="om-as-type">
-				<option value="" selected>Select a Data Type..</option>
-				<option ng-repeat="type in dataTypes" value="type.id">{{type.name}}</option>
-			</select>
+			<select name="om-as-type" id="om-as-type" ng-model="scale.type" ng-options="type as type.name for type in types"></select>
 		</div>
 
-		<div ng-show="selectedDataType === 'numeric'">
+		<div ng-show="showRangeWidget">
 			<label for="om-as-min">Minimum Expected Value</label>
-			<input type="text" name="om-as-min" id="om-as-min"></input>
+			<input type="text" name="om-as-min" id="om-as-min" ng-model="scale.range.min"></input>
 
 			<label for="om-as-max">Maximum Expected Value</label>
-			<input type="text" name="om-as-max" id="om-as-max"></input>
+			<input type="text" name="om-as-max" id="om-as-max" ng-model="scale.range.max"></input>
 		</div>
 
-		<div ng-show="selectedDataType === 'categorical'">
-			<span>Put some awesome repeating categories input control here</span>
-		</div>
+		<div ng-show="showCategoriesWidget">
+			<ol>
+				<li ng-repeat="category in scale.categories">
+					<label for="om-as-category-label">Label</label>
+					<input type="text" name="om-as-category-label" id="om-as-category-label" ng-model="category.label"/>
 
+					<label for="om-as-category-value">Value</label>
+					<input type="text" name="om-as-category-value" id="om-as-category-value" ng-model="category.value"/>
+				</li>
+			</ol>
+			<button ng-click="addCategory()">Add another category</button>
+		</div>
 	</form>
 </div>
 
