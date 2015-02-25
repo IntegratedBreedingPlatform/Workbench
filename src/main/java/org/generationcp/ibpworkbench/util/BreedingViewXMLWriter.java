@@ -56,6 +56,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
     @Value("${web.api.url}")
     private String webApiUrl;
+    
+    @Value("${workbench.is.server.app}")
+    private String isServerApp;
 
     private BreedingViewInput breedingViewInput;
     
@@ -180,6 +183,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 	        throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
 	                + ": " + ex.getMessage(), ex);
 	    }
+	    
+	    if (Boolean.parseBoolean(isServerApp)){
+	    	ssaParameters.setOutputDirectory(null);
+	    	ssaParameters.setWebApiUrl(null);
+	    }
+	    
 	    return ssaParameters;
 	}
 
