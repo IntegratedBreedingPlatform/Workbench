@@ -31,7 +31,7 @@
 					$scope.parentClickHandler();
 				};
 			},
-			templateUrl: 'static/views/ontology/list.html'
+			templateUrl: '../static/views/ontology/list.html'
 		};
 	});
 
