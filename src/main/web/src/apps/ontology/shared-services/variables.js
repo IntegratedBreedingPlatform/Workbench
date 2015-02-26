@@ -5,40 +5,11 @@
 	var app = angular.module('variables', []);
 
 	app.service('variableService', [function() {
-
-		var variableState = {},
-			editInProgress = false;
-
 		return {
-			updateVariableState: function(updatedVariable) {
-				variableState = angular.copy(updatedVariable);
-				editInProgress = true;
-			},
-
 			saveVariable: function(variable) {
 				// TODO Call actual save functionality
 				console.log('Saving variable');
 				console.log(variable);
-
-				// If successful..
-				this.reset();
-			},
-
-			getVariableState: function() {
-				return variableState;
-			},
-
-			updateInProgress: function() {
-				return editInProgress;
-			},
-
-			reset: function() {
-				variableState = {};
-				editInProgress = false;
-			},
-
-			setProperty: function(property) {
-				variableState.property = property;
 			}
 		};
 	}]);

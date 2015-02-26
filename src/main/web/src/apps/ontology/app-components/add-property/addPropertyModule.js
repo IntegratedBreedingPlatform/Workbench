@@ -1,11 +1,19 @@
-/*global angular*/
+/*global angular, console*/
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['properties', 'variables']);
+	var app = angular.module('addProperty', ['properties', 'variableState']);
 
-	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertyService', 'propertiesService', 'variableService',
-		function($scope, $location, $window, propertyService, propertiesService, variableService) {
+	// TODO Implement useful error handling
+	function genericAndRatherUselessErrorHandler(error) {
+		if (console) {
+			console.log(error);
+		}
+	}
+
+	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertyService', 'propertiesService',
+		'variableStateService',
+		function($scope, $location, $window, propertyService, propertiesService, variableStateService) {
 
 			// TODO Error handling
 			propertiesService.getClasses().then(function(classes) {
@@ -18,13 +26,16 @@
 				// TODO Error handling - only set the property if it saved
 				propertyService.saveProperty(property);
 
-				if (variableService.updateInProgress()) {
-					variableService.setProperty(property);
-					$window.history.back();
-				}
+				if (variableStateService.updateInProgress()) {
 
-				// FIXME Go somewhere more useful
-				$location.path('/properties');
+					// FIXME Change to ID
+					variableStateService.setProperty(property.name).then(function() {
+						$window.history.back();
+					}, genericAndRatherUselessErrorHandler);
+				} else {
+					// FIXME Go somewhere more useful
+					$location.path('/properties');
+				}
 			};
 		}
 	]);

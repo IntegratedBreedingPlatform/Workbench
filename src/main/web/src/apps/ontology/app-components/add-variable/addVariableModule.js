@@ -2,63 +2,73 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales']);
+	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales', 'variableState']);
+
+	// TODO Implement useful error handling
+	function genericAndRatherUselessErrorHandler(error) {
+		if (console) {
+			console.log(error);
+		}
+	}
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
-		'methodsService', 'scalesService',
-		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService) {
+		'methodsService', 'scalesService', 'variableStateService',
+		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService,
+			variableStateService) {
 
-			// Restore state in case we were half way through creating variable
-			$scope.variable = angular.copy(variableService.getVariableState());
+			var storedData;
 
-			// TODO Error handling
-			propertiesService.getProperties().then(function(properties) {
-				$scope.properties = properties;
+			// Whether or not we want to display the expected range widget
+			$scope.showRangeWidget = false;
 
-				// FIXME - Change to ID
-				// Select the currently selected property if there is one
-				if ($scope.variable.property) {
-					$scope.properties.some(function(prop) {
-						if (prop.name === $scope.variable.property.name) {
-							$scope.variable.property = prop;
-							return true;
-						}
-					});
-				}
+			// If we were half way through editing, we don't need to fetch everything again - we just need to copy over the stored state
+			if (variableStateService.updateInProgress()) {
+
+				storedData = variableStateService.getVariableState();
+				$scope.variable = storedData.variable;
+				$scope.data = storedData.scopeData;
+
+			} else {
+
+				$scope.data = {};
+
+				propertiesService.getProperties().then(function(properties) {
+					$scope.data.properties = properties;
+				}, genericAndRatherUselessErrorHandler);
+
+				methodsService.getMethods().then(function(methods) {
+					$scope.data.methods = methods;
+				}, genericAndRatherUselessErrorHandler);
+
+				scalesService.getScales().then(function(scales) {
+					$scope.data.scales = scales;
+				}, genericAndRatherUselessErrorHandler);
+
+				variablesService.getTypes().then(function(types) {
+					$scope.data.types = types;
+				}, genericAndRatherUselessErrorHandler);
+			}
+
+			// Show the expected range widget if the chosen scale has a numeric datatype
+			$scope.$watch('variable.scale.dataType.name', function(newValue) {
+				$scope.showRangeWidget = newValue === 'Numeric';
 			});
-
-			// TODO Error handling
-			methodsService.getMethods().then(function(methods) {
-				$scope.methods = methods;
-			});
-
-			// TODO Error handling
-			scalesService.getScales().then(function(scales) {
-				$scope.scales = scales;
-			});
-
-			// TODO Error handling
-			variablesService.getTypes().then(function(types) {
-				$scope.types = types;
-			});
-
-			$scope.numericVariable = true;
 
 			$scope.saveVariable = function(e, variable) {
 				e.preventDefault();
 				// TODO Error handling
 				variableService.saveVariable(variable);
+				variableStateService.reset();
 
 				// FIXME Go somewhere more useful
 				$location.path('/variables');
 			};
 
-			$scope.addProperty = function(e, variable) {
+			$scope.addProperty = function(e) {
 				e.preventDefault();
 
-				// TODO Error handling
-				variableService.updateVariableState(variable);
-
+				// Persist the current state of the variable, so we can return to editing once we've finished
+				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/property');
 			};
 

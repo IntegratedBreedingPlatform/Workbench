@@ -17,29 +17,28 @@
 
 		<div>
 			<label for="om-av-property">Property</label>
-			<select name="om-av-property" id="om-av-property" ng-model="variable.property" ng-options="property as property.name for property in properties"></select>
+			<select name="om-av-property" id="om-av-property" ng-model="variable.property" ng-options="property.name for property in data.properties"></select>
 
-			<a href="#" ng-click="addProperty($event, variable)">Add a new property</a>
+			<a href="#" ng-click="addProperty($event, variable, data)">Add a new property</a>
 		</div>
 
 		<div>
 			<label for="om-av-method">Method</label>
-			<select name="om-av-method" id="om-av-method" ng-model="variable.method" ng-options="method as method.name for method in methods"></select>
+			<select name="om-av-method" id="om-av-method" ng-model="variable.method" ng-options="method as method.name for method in data.methods"></select>
 
 			<a href="#" ng-click="addMethod($event)">Add a new method</a>
 		</div>
 
 		<div>
 			<label for="om-av-scale">Scale</label>
-			<select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" ng-options="scale as scale.name for scale in scales"></select>
+			<select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" ng-options="scale as scale.name for scale in data.scales"></select>
 
 			<a href="#" ng-click="addScale($event)">Add a new scale</a>
 		</div>
 
 		<div>
 			<label for="om-av-type">Variable Type</label>
-
-			<select name="om-av-type" id="om-av-type" ng-model="variable.type" ng-options="type as type.name for type in types"></select>
+			<select name="om-av-type" id="om-av-type" ng-model="variable.type" ng-options="type as type.name for type in data.types"></select>
 		</div>
 
 		<div>
@@ -47,7 +46,7 @@
 			<input type="text" name="om-av-ontology-id" id="om-av-ontology-id" ng-model="variable.ontologyId"></input>
 		</div>
 
-		<div ng-show="numericVariable">
+		<div ng-show="showRangeWidget">
 			<label for="om-av-min">Minimum Expected Value</label>
 			<input type="text" name="om-av-min" id="om-av-min" ng-model="variable.range.min"></input>
 
