@@ -1,4 +1,4 @@
-/*global angular, alert*/
+/*global angular*/
 'use strict';
 
 (function() {
@@ -13,10 +13,17 @@
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
 		'methodsService', 'scalesService', 'variableStateService',
+
 		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService,
 			variableStateService) {
 
 			var storedData;
+
+			// Persist the current state of the variable, so we can return to editing once we've finished
+			function persistStateAndRedirect(path) {
+				variableStateService.storeVariableState($scope.variable, $scope.data);
+				$location.path(path);
+			}
 
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
@@ -64,22 +71,9 @@
 				$location.path('/variables');
 			};
 
-			$scope.addProperty = function(e) {
+			$scope.addNew = function(e, path) {
 				e.preventDefault();
-
-				// Persist the current state of the variable, so we can return to editing once we've finished
-				variableStateService.storeVariableState($scope.variable, $scope.data);
-				$location.path('/add/property');
-			};
-
-			$scope.addMethod = function(e) {
-				e.preventDefault();
-				alert('Add method');
-			};
-
-			$scope.addScale = function(e) {
-				e.preventDefault();
-				alert('Add scale');
+				persistStateAndRedirect('/add/' + path);
 			};
 		}
 	]);

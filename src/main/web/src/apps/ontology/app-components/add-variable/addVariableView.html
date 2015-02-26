@@ -19,21 +19,21 @@
 			<label for="om-av-property">Property</label>
 			<select name="om-av-property" id="om-av-property" ng-model="variable.property" ng-options="property.name for property in data.properties"></select>
 
-			<a href="#" ng-click="addProperty($event, variable, data)">Add a new property</a>
+			<a href="#" ng-click="addNew($event, 'property')">Add a new property</a>
 		</div>
 
 		<div>
 			<label for="om-av-method">Method</label>
 			<select name="om-av-method" id="om-av-method" ng-model="variable.method" ng-options="method as method.name for method in data.methods"></select>
 
-			<a href="#" ng-click="addMethod($event)">Add a new method</a>
+			<a href="#" ng-click="addNew($event, 'method')">Add a new method</a>
 		</div>
 
 		<div>
 			<label for="om-av-scale">Scale</label>
 			<select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" ng-options="scale as scale.name for scale in data.scales"></select>
 
-			<a href="#" ng-click="addScale($event)">Add a new scale</a>
+			<a href="#" ng-click="addNew($event, 'scale')">Add a new scale</a>
 		</div>
 
 		<div>

@@ -2,10 +2,17 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['scales', 'dataTypes']);
+	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState']);
 
-	app.controller('AddScaleController', ['$scope', '$location', 'dataTypesService', 'scaleService',
-		function($scope, $location, dataTypesService, scaleService) {
+	// TODO Implement useful error handling
+	function genericAndRatherUselessErrorHandler(error) {
+		if (console) {
+			console.log(error);
+		}
+	}
+
+	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scaleService', 'variableStateService',
+		function($scope, $location, $window, dataTypesService, scaleService, variableStateService) {
 
 			$scope.scale = {
 				categories: [{}]
@@ -22,10 +29,18 @@
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
 
-				// TODO Error handling
+				// TODO Error handling - only set the scale if it saved
 				scaleService.saveScale(scale);
 
-				$location.path('/scales');
+				if (variableStateService.updateInProgress()) {
+					// FIXME Change to ID
+					variableStateService.setScale(scale.name).then(function() {
+						$window.history.back();
+					}, genericAndRatherUselessErrorHandler);
+				} else {
+					// FIXME Go somewhere more useful
+					$location.path('/scales');
+				}
 			};
 
 			$scope.addCategory = function() {
