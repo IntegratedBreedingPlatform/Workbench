@@ -163,8 +163,8 @@ public class MysqlAccountGenerator implements Serializable{
 
             for(Integer id : this.idAndNameOfProjectMembers.keySet()){
                 String username = this.idAndNameOfProjectMembers.get(id);
-                String password = username.substring(0, 11);
-
+                String password = username.length() > 16 ? username.substring(0, 16) : username;
+                
                 if (isLanInstallerMode()) {
                     String grant = String
                             .format(grantFormat, cropDatabaseName, username, "%", password);
