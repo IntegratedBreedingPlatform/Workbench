@@ -17,7 +17,10 @@
 
 		<div>
 			<label for="om-as-type">Data Type</label>
-			<select name="om-as-type" id="om-as-type" ng-model="scale.type" ng-options="type as type.name for type in types"></select>
+
+			<!-- TODO We want to store id, not the name, but we'll still want to use the name as the label, so we
+				will need to change to type.id as type.name for type in types.-->
+			<select name="om-as-type" id="om-as-type" ng-model="scale.type" ng-options="type.name for type in types"></select>
 		</div>
 
 		<div ng-show="showRangeWidget">
