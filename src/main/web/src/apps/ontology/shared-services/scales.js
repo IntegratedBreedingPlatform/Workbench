@@ -31,6 +31,10 @@
 		}
 
 		return {
+			getScale: function(/*id*/) {
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/scales/:id');
+				return request.then(successHandler, failureHandler);
+			},
 			getScales: function() {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/scales');
 				return request.then(successHandler, failureHandler);

@@ -31,6 +31,11 @@
 		}
 
 		return {
+			getMethod: function(/*id*/) {
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods/:id');
+				return request.then(successHandler, failureHandler);
+			},
+
 			getMethods: function() {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods');
 				return request.then(successHandler, failureHandler);
