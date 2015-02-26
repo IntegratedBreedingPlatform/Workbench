@@ -31,6 +31,7 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,21 +102,21 @@ public class SaveNewLocationAction implements ClickListener{
     			saveLocation();
     		}
     		
-    	} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		} catch (Validator.EmptyValueException e) {
+    	}catch (Validator.InvalidValueException e) {
             MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
-            return;
-        } catch (Validator.InvalidValueException e) {
-            MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
-            return;
-        }
-    }
+		}  catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
+		}
+	}
     
     private void saveLocation() {
         @SuppressWarnings("unchecked")
         BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) newLocationForm.getItemDataSource();
         LocationViewModel locModel = locationBean.getBean();
+
+		// sanitize locModel
+		locModel.setLocationName(Sanitizers.FORMATTING.sanitize(locModel.getLocationName()));
+		locModel.setLocationAbbreviation(Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
 
         // increment key from the session's list of locations (correct id from local db)
         Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
@@ -142,7 +143,7 @@ public class SaveNewLocationAction implements ClickListener{
         User user = sessionData.getUserData();
         if (user != null) {
             Project currentProject = sessionData.getLastOpenedProject();
-            ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ locModel.getLocationName() + ")", user, new Date());
+            ProjectActivity projAct = new ProjectActivity(currentProject.getProjectId().intValue(), currentProject,messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("+ locModel.getLocationName() + ")", user, new Date());
             try {
                 workbenchDataManager.addProjectActivity(projAct);
             } catch (MiddlewareQueryException e) {
