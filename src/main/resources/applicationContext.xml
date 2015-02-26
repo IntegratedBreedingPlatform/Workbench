@@ -75,15 +75,7 @@
         <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
-    
-	<!-- The data source configuration -->
-    <bean id="localDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-       <property name="driverClassName" value="${workbench.driver}"/>
-        <property name="url" value="${workbench.url}"/>
-        <property name="username" value="${workbench.username}"/>
-        <property name="password" value="${workbench.password}"/>
-    </bean>
-    
+      
     <!-- Manager Factory Provider -->
     <bean id="managerFactoryProvider" class="org.generationcp.commons.hibernate.DefaultManagerFactoryProvider" destroy-method="close">
     	<property name="dbUsername" value="${local.user}"/>
@@ -95,21 +87,6 @@
         class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
         <constructor-arg ref="hibernateSessionProvider" />
         <property name="installationDirectory" value="${workbench.installation_dir}"/>
-    </bean>
-    
-    <bean id="localHibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
-        <property name="sessionFactory" ref="localSessionFactory"/>
-        <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
-        <aop:scoped-proxy proxy-target-class="false"/>
-    </bean>
-    
-    <bean id="localSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="localDataSource"/>
-        <property name="configLocation" value="classpath:ibpmidware_hib.cfg.xml"/>
-    </bean>
-
-    <bean id="studyDataManager" class="org.generationcp.middleware.manager.StudyDataManagerImpl">
-        <property name="sessionProvider" ref="localHibernateSessionProvider"/>
     </bean>
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
