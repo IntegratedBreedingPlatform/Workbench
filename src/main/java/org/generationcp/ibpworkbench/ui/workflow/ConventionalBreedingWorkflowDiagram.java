@@ -361,11 +361,6 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
-        layout.addComponent(browseGenotypingDataButton);
-        browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
-
         layout.addComponent(mainHeadToHeadButton);
         mainHeadToHeadButton.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);

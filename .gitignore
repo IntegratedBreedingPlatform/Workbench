@@ -1,5 +1,7 @@
 # Project Specific
 resources/
+src/main/webapp/WEB-INF/static
+src/main/webapp/WEB-INF/pages
 
 #################
 ## Maven

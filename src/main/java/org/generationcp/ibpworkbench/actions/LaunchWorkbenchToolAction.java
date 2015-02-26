@@ -24,6 +24,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -491,13 +492,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
         boolean changedConfig = false;
         try {
             changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
-        }
-        catch (IOException e1) {
-            MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
-                                      "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-            return false;
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (ConfigurationChangeException e1) {
             MessageNotifier.showError(window, "Cannot update configuration for tool: " + tool.getToolName(),
                                       "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
             return false;

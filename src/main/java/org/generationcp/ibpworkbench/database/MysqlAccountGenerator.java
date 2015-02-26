@@ -24,7 +24,9 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserMysqlAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -43,6 +45,7 @@ import java.util.Properties;
  * @author Kevin L. Manansala
  *
  */
+@Configurable
 public class MysqlAccountGenerator implements Serializable{
 
     private static final long serialVersionUID = -7078581017175422156L;
@@ -54,6 +57,11 @@ public class MysqlAccountGenerator implements Serializable{
     public static final String SQL_PERCENT_SIGN = "%";
     public static final String SPACE = " ";
     
+    public static final String WORKBENCH_PROP_INSTALLER_MODE = "workbench.installer.mode";
+
+        public static final String INSTALLER_MODE_LAN = "lan";
+        public static final String INSTALLER_MODE_LOCAL = "local";
+
     private CropType cropType;
     private Long projectId;
     private Map<Integer, String> idAndNameOfProjectMembers;
@@ -66,6 +74,9 @@ public class MysqlAccountGenerator implements Serializable{
     private String workbenchURL;
     
     private Connection connection;
+
+    @Resource
+    private Properties workbenchProperties;
 
     public MysqlAccountGenerator(CropType cropType, Long projectId, Map<Integer, String> idAndNameOfProjectMembers, WorkbenchDataManager dataManager){
         this.cropType = cropType;
@@ -144,39 +155,34 @@ public class MysqlAccountGenerator implements Serializable{
         //execute grant statements
         Statement statement = null;
         String cropDatabaseName = cropType.getDbName();
-        
+
         try{
             statement = this.connection.createStatement();
             
+            String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+
             for(Integer id : this.idAndNameOfProjectMembers.keySet()){
                 String username = this.idAndNameOfProjectMembers.get(id);
                 String password = username.length() > 16 ? username.substring(0, 16) : username;
                 
-                StringBuilder grantStatement = new StringBuilder();
-                
-                grantStatement.append(IBDBGenerator.SQL_GRANT_ALL);
-                grantStatement.append(cropDatabaseName);
-                grantStatement.append(IBDBGenerator.SQL_PERIOD);
-                grantStatement.append(IBDBGenerator.DEFAULT_ALL);
-                grantStatement.append(IBDBGenerator.SQL_TO);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatement.append(username);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatement.append(IBDBGenerator.SQL_AT_SIGN);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatement.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatement.append(IBDBGenerator.SQL_IDENTIFIED_BY);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                grantStatement.append(password);
-                grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
-                
-                statement.addBatch(grantStatement.toString());
+                if (isLanInstallerMode()) {
+                    String grant = String
+                            .format(grantFormat, cropDatabaseName, username, "%", password);
+                    String localhostGrant = String
+                            .format(grantFormat, cropDatabaseName, username, "localhost",
+                                    password);
+
+                    statement.addBatch(grant);
+                    statement.addBatch(localhostGrant);
+                } else {
+                    processGrant(statement, cropDatabaseName, username,password);
+                }
+
             }
-            
+
             statement.addBatch("FLUSH PRIVILEGES");
             statement.executeBatch();
-            
+
         } catch (SQLException e) {
             handleDatabaseError(e);
         } finally {
@@ -188,6 +194,32 @@ public class MysqlAccountGenerator implements Serializable{
                 }
             }
         }
+    }
+
+    protected void processGrant(Statement statement, String cropDatabaseName, 
+		String username, String password) throws SQLException {
+        StringBuilder grantStatement = new StringBuilder();
+
+        grantStatement.append(SQL_GRANT_SELECT_AND_EXECUTE);
+        grantStatement.append(cropDatabaseName);
+        grantStatement.append(IBDBGenerator.SQL_PERIOD);
+        grantStatement.append(IBDBGenerator.DEFAULT_ALL);
+        grantStatement.append(IBDBGenerator.SQL_TO);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatement.append(username);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatement.append(IBDBGenerator.SQL_AT_SIGN);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatement.append(IBDBGenerator.DEFAULT_LOCAL_HOST);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatement.append(IBDBGenerator.SQL_IDENTIFIED_BY);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+        grantStatement.append(password);
+        grantStatement.append(IBDBGenerator.SQL_SINGLE_QUOTE);
+
+        statement.addBatch(grantStatement.toString());
+        statement.addBatch("FLUSH PRIVILEGES");
+        statement.executeBatch();
     }
     
     private void storeWokrbenchUserToMysqlAccountMappings() throws InternationalizableException {
@@ -255,4 +287,10 @@ public class MysqlAccountGenerator implements Serializable{
 	public void setDataManager(WorkbenchDataManager dataManager) {
 		this.dataManager = dataManager;
 	}
+
+    protected boolean isLanInstallerMode() {
+        String installerMode = workbenchProperties
+                .getProperty(WORKBENCH_PROP_INSTALLER_MODE, INSTALLER_MODE_LOCAL);
+        return INSTALLER_MODE_LAN.equals(installerMode);
+    }
 }
