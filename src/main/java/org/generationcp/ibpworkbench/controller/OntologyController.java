@@ -2,13 +2,14 @@ package org.generationcp.ibpworkbench.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/ontology")
 public class OntologyController {
 
-	@RequestMapping("/browser")
-	public String browser(){
-		return "browser";
+	@RequestMapping(method = RequestMethod.GET)
+	public String ontology(){
+		return "ontology";
 	}
 }
