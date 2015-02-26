@@ -4,35 +4,37 @@
 (function() {
 	var app = angular.module('scalesView', ['scales', 'list', 'panel']);
 
-	app.controller('ScalesController', ['$scope', 'scalesService', function($scope, scalesService) {
-		var ctrl = this;
-		this.scales = [];
+	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService',
+		function($scope, scalesService, panelService) {
+			var ctrl = this;
+			this.scales = [];
 
-		ctrl.colHeaders = ['Name', 'DataType'];
+			$scope.panelName = 'scales';
 
-		scalesService.getScales().then(function(scales) {
-			ctrl.scales = scales.map(function(item) {
-				return {
-					id: item.id,
-					Name: item.name,
-					Description: item.description,
-					DataType: item.dataType.name
-				};
-			});
-		});
+			ctrl.colHeaders = ['Name', 'DataType'];
 
-		$scope.panelOpen = {show: false};
-
-		$scope.showScaleDetails = function() {
-
-			scalesService.getScale($scope.selectedItem.id).then(function(scale) {
-				$scope.selectedScale = scale;
+			scalesService.getScales().then(function(scales) {
+				ctrl.scales = scales.map(function(item) {
+					return {
+						id: item.id,
+						Name: item.name,
+						Description: item.description,
+						DataType: item.dataType.name
+					};
+				});
 			});
 
-			$scope.panelOpen.show = true;
-		};
+			$scope.showScaleDetails = function() {
 
-		$scope.selectedItem = {id: null};
-		$scope.selectedScale = null;
-	}]);
+				scalesService.getScale($scope.selectedItem.id).then(function(scale) {
+					$scope.selectedScale = scale;
+				});
+
+				panelService.visible = {show: $scope.panelName};
+			};
+
+			$scope.selectedItem = {id: null};
+			$scope.selectedScale = null;
+		}
+	]);
 }());

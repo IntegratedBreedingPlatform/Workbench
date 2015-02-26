@@ -7,6 +7,7 @@ describe('Panel module', function() {
 		CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 
 		scope,
+		panelService,
 		directiveElement;
 
 	beforeEach(function() {
@@ -16,8 +17,9 @@ describe('Panel module', function() {
 	beforeEach(module('templates'));
 	beforeEach(module('panel'));
 
-	beforeEach(inject(function($rootScope) {
+	beforeEach(inject(function($rootScope, _panelService_) {
 		scope = $rootScope.$new();
+		panelService = _panelService_;
 	}));
 
 	function compileDirective(attribute) {
@@ -36,29 +38,31 @@ describe('Panel module', function() {
 	});
 
 	it('should be shown when the panel-visible attribute is set to true', function() {
-		scope.showPanel = {
-			show: true
-		};
-		compileDirective('om-visible="showPanel"');
+		scope.panelName = 'panel';
+
+		compileDirective('om-panel-identifier="panelName"');
+		panelService.visible = {show: 'panel'};
+		scope.$digest();
 		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 	});
 
 	it('should hide the panel when closePanel is called', function() {
-
 		var isolateScope;
+		scope.panelName = 'panel';
 
-		scope.showPanel = {
-			show: true
-		};
-
-		compileDirective('om-visible="showPanel"');
-
+		compileDirective('om-panel-identifier="panelName"');
 		isolateScope = directiveElement.isolateScope();
-		expect(isolateScope.omVisible.show).toBe(true);
+
+		panelService.visible = {show: 'panel'};
+		scope.$digest();
+		expect(directiveElement).toHaveClass('om-pa-panel-visible');
+
 		isolateScope.closePanel({
 			preventDefault: function() {}
 		});
-		expect(isolateScope.omVisible.show).toBe(false);
+		scope.$digest();
+		expect(panelService.visible.show).toBe(null);
+		expect(directiveElement).not.toHaveClass('om-pa-panel-visible');
 	});
 
 });

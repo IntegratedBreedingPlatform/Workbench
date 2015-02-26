@@ -5,24 +5,42 @@
 	var panelModule = angular.module('panel', []);
 
 	panelModule.directive('omPanel', function() {
+		var VISIBLE_CLASS = 'om-pa-panel-visible';
+
 		return {
-			controller: function($scope) {
+			controller: function($scope, panelService) {
+				$scope.panelService = panelService;
+
 				$scope.closePanel = function(e) {
 					e.preventDefault();
-					$scope.omVisible.show = false;
+					$scope.panelService.visible = {show: null};
 				};
 			},
 			link: function($scope, element) {
-				$scope.$watch('omVisible.show', function(value) {
-					element.toggleClass('om-pa-panel-visible', !!value);
+				$scope.$watch('panelService.visible', function(value, oldValue, scope) {
+					if (value.show === scope.omPanelIdentifier) {
+						element.addClass(VISIBLE_CLASS);
+					} else {
+						element.removeClass(VISIBLE_CLASS);
+					}
 				});
 			},
 			restrict: 'E',
 			scope: {
-				omVisible: '='
+				omPanelIdentifier: '='
 			},
 			templateUrl: '../static/views/ontology/panelView.html',
 			transclude: true
 		};
 	});
+
+	panelModule.service('panelService', [function() {
+		var visible = {
+			show: null
+		};
+
+		return {
+			visible: visible
+		};
+	}]);
 }());

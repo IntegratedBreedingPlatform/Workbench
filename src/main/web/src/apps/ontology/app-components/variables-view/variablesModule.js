@@ -16,37 +16,39 @@
 		};
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', function($scope, variablesService) {
-		var ctrl = this;
-		this.variables = [];
-		this.favouriteVariables = [];
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService',
+		function($scope, variablesService, panelService) {
+			var ctrl = this;
+			this.variables = [];
+			this.favouriteVariables = [];
 
-		ctrl.colHeaders = ['Name', 'Property', 'Method', 'Scale', 'action-favourite'];
+			$scope.panelName = 'variables';
 
-		variablesService.getFavouriteVariables().then(function(variables) {
-			ctrl.favouriteVariables = variables.map(toDisplayFormat);
-		});
+			ctrl.colHeaders = ['Name', 'Property', 'Method', 'Scale', 'action-favourite'];
 
-		variablesService.getVariables().then(function(variables) {
-			ctrl.variables = variables.map(toDisplayFormat);
-		});
-
-		$scope.panelOpen = {show: false};
-
-		$scope.showVariableDetails = function() {
-
-			variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
-				$scope.selectedVariable = variable;
+			variablesService.getFavouriteVariables().then(function(variables) {
+				ctrl.favouriteVariables = variables.map(toDisplayFormat);
 			});
 
-			$scope.panelOpen.show = true;
-		};
+			variablesService.getVariables().then(function(variables) {
+				ctrl.variables = variables.map(toDisplayFormat);
+			});
 
-		$scope.selectedItem = {id: null};
-		$scope.selectedVariable = null;
+			$scope.showVariableDetails = function() {
 
-		/* Exposed for testing */
-		this.toDisplayFormat = toDisplayFormat;
-	}]);
+				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
+					$scope.selectedVariable = variable;
+				});
+
+				panelService.visible = {show: $scope.panelName};
+			};
+
+			$scope.selectedItem = {id: null};
+			$scope.selectedVariable = null;
+
+			/* Exposed for testing */
+			this.toDisplayFormat = toDisplayFormat;
+		}
+	]);
 
 }());

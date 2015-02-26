@@ -50,28 +50,30 @@
 			});
 	}]);
 
-	app.controller('OntologyController', ['$scope', '$location', '$window', function($scope, $location, $window) {
-		$scope.panelOpen = {show: false};
+	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',
+		function($scope, $location, $window, panelService) {
+			$scope.panelName = 'addNew';
 
-		$scope.addNewSelection = function() {
-			$scope.panelOpen.show = true;
-		};
+			$scope.addNewSelection = function() {
+				panelService.visible = {show: $scope.panelName};
+			};
 
-		$scope.addNew = function(e, path) {
-			e.preventDefault();
-			$location.path('/add/' + path);
-			$scope.panelOpen.show = false;
-		};
+			$scope.addNew = function(e, path) {
+				e.preventDefault();
+				$location.path('/add/' + path);
+				panelService.visible = {show: null};
+			};
 
-		// Storing the location so we can implement back functionality on our nested views
-		$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-			$scope.previousUrl = oldUrl;
-		});
+			// Storing the location so we can implement back functionality on our nested views
+			$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+				$scope.previousUrl = oldUrl;
+			});
 
-		// Back functionality for our nested views. Used in the add-* modules
-		$scope.goBack = function() {
-			$window.history.back();
-		};
-	}]);
+			// Back functionality for our nested views. Used in the add-* modules
+			$scope.goBack = function() {
+				$window.history.back();
+			};
+		}
+	]);
 
 }());
