@@ -28,7 +28,7 @@
 					$scope.selectedMethod = method;
 				});
 
-				panelService.visible = {show: $scope.panelName};
+				panelService.showPanel($scope.panelName);
 			};
 
 			$scope.selectedItem = {id: null};

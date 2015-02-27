@@ -41,7 +41,7 @@ describe('Panel module', function() {
 		scope.panelName = 'panel';
 
 		compileDirective('om-panel-identifier="panelName"');
-		panelService.visible = {show: 'panel'};
+		panelService.showPanel('panel');
 		scope.$digest();
 		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 	});
@@ -53,7 +53,7 @@ describe('Panel module', function() {
 		compileDirective('om-panel-identifier="panelName"');
 		isolateScope = directiveElement.isolateScope();
 
-		panelService.visible = {show: 'panel'};
+		panelService.showPanel('panel');
 		scope.$digest();
 		expect(directiveElement).toHaveClass('om-pa-panel-visible');
 
@@ -61,7 +61,7 @@ describe('Panel module', function() {
 			preventDefault: function() {}
 		});
 		scope.$digest();
-		expect(panelService.visible.show).toBe(null);
+		expect(panelService.getShownPanel()).toBe(null);
 		expect(directiveElement).not.toHaveClass('om-pa-panel-visible');
 	});
 

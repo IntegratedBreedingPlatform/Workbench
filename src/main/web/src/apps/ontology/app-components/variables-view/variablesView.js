@@ -40,7 +40,7 @@
 					$scope.selectedVariable = variable;
 				});
 
-				panelService.visible = {show: $scope.panelName};
+				panelService.showPanel($scope.panelName);
 			};
 
 			$scope.selectedItem = {id: null};

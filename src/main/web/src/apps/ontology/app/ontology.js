@@ -55,12 +55,12 @@
 			$scope.panelName = 'addNew';
 
 			$scope.addNewSelection = function() {
-				panelService.visible = {show: $scope.panelName};
+				panelService.showPanel($scope.panelName);
 			};
 
 			$scope.addNew = function(e, path) {
 				e.preventDefault();
-				panelService.visible = {show: null};
+				panelService.hidePanel();
 				$location.path('/add/' + path);
 			};
 

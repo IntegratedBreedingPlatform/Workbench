@@ -13,12 +13,12 @@
 
 				$scope.closePanel = function(e) {
 					e.preventDefault();
-					$scope.panelService.visible = {show: null};
+					$scope.panelService.hidePanel();
 				};
 			},
 			link: function($scope, element) {
-				$scope.$watch('panelService.visible', function(value, oldValue, scope) {
-					if (value.show === scope.omPanelIdentifier) {
+				$scope.$watch('panelService.getShownPanel()', function(panelName, prevPanelName, scope) {
+					if (panelName === scope.omPanelIdentifier) {
 						element.addClass(VISIBLE_CLASS);
 					} else {
 						element.removeClass(VISIBLE_CLASS);
@@ -42,8 +42,8 @@
 				$scope.panelService = panelService;
 			},
 			link: function($scope, element) {
-				$scope.$watch('panelService.visible', function(value, oldValue, scope) {
-					if (value.show === scope.omPanelMask) {
+				$scope.$watch('panelService.getShownPanel()', function(panelName, prevPanelName, scope) {
+					if (panelName === scope.omPanelMask) {
 						element.addClass(VISIBLE_CLASS);
 					} else {
 						element.removeClass(VISIBLE_CLASS);
@@ -60,12 +60,18 @@
 	});
 
 	panelModule.service('panelService', [function() {
-		var visible = {
-			show: null
-		};
+		var shownPanel = null;
 
 		return {
-			visible: visible
+			showPanel: function(panel) {
+				shownPanel = panel;
+			},
+			hidePanel: function() {
+				shownPanel = null;
+			},
+			getShownPanel: function() {
+				return shownPanel;
+			}
 		};
 	}]);
 
