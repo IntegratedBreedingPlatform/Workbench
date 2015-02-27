@@ -103,7 +103,7 @@ describe('Add Method View', function() {
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 
-			spyOn(controller, 'genericAndRatherUselessErrorHandler').and.callThrough();
+			spyOn(controller, 'genericAndRatherUselessErrorHandler');
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 			deferred.reject();
