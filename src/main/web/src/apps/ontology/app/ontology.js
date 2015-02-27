@@ -60,8 +60,8 @@
 
 			$scope.addNew = function(e, path) {
 				e.preventDefault();
-				$location.path('/add/' + path);
 				panelService.visible = {show: null};
+				$location.path('/add/' + path);
 			};
 
 			// Storing the location so we can implement back functionality on our nested views
