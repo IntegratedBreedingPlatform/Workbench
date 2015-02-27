@@ -27,15 +27,35 @@ describe('Ontology Controller', function() {
 
 	}));
 
+	it('should store the previous location when the location changes', function() {
+		var oldUrl = '/oldUrl',
+			newUrl = '/newUrl';
+
+		expect(scope.previousUrl).toBeUndefined();
+		scope.$broadcast('$locationChangeStart', newUrl, oldUrl);
+		expect(scope.previousUrl).toEqual(oldUrl);
+		scope.$broadcast('$locationChangeStart', '/newNewUrl', newUrl);
+		expect(scope.previousUrl).toEqual(newUrl);
+	});
+
 	describe('addNew', function() {
 		it('should route and close the panel', function() {
-
 			var path = 'myPath';
 
 			spyOn(location, 'path').and.callThrough();
 			scope.addNew(fakeEvent, path);
 
+			// TODO Check it actually closes the panel
+
 			expect(location.path).toHaveBeenCalledWith('/add/' + path);
+		});
+	});
+
+	describe('addNewSelection', function() {
+		it('should show the panel', function() {
+
+			// TODO Implement me!
+
 		});
 	});
 
