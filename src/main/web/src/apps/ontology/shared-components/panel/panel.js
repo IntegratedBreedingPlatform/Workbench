@@ -34,6 +34,31 @@
 		};
 	});
 
+	panelModule.directive('omPanelMask', function() {
+		var VISIBLE_CLASS = 'om-pa-mask-visible';
+
+		return {
+			controller: function($scope, panelService) {
+				$scope.panelService = panelService;
+			},
+			link: function($scope, element) {
+				$scope.$watch('panelService.visible', function(value, oldValue, scope) {
+					if (value.show === scope.omPanelMask) {
+						element.addClass(VISIBLE_CLASS);
+					} else {
+						element.removeClass(VISIBLE_CLASS);
+					}
+				});
+			},
+			restrict: 'A',
+			scope: {
+				omPanelMask: '='
+			},
+			templateUrl: 'static/views/ontology/panelMask.html',
+			transclude: true
+		};
+	});
+
 	panelModule.service('panelService', [function() {
 		var visible = {
 			show: null
@@ -43,4 +68,5 @@
 			visible: visible
 		};
 	}]);
+
 }());
