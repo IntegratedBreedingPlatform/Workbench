@@ -1,24 +1,41 @@
 package org.generationcp.ibpworkbench;
 
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
+import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+
+import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-
 /**
  * This class contains all session data needed by the workbench application.
- * 
+ *
  * @author Glenn Marintes
  */
+@Deprecated
 public class SessionData {
-    private Project lastOpenedProject;
-    private Project selectedProject;
-    
-    public Project getSelectedProject() {
+	private Project lastOpenedProject;
+	private Project selectedProject;
+
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
+
+	private User userData;
+	private Integer username_counter = 0;
+	private Integer namevalidation_counter = 0;
+	private HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
+	private Set<String> uniqueLocations = new HashSet<String>();
+	private HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
+	private Set<String> uniqueBreedingMethods = new HashSet<String>();
+
+	public Project getSelectedProject() {
 		return selectedProject;
 	}
 
@@ -26,10 +43,7 @@ public class SessionData {
 		this.selectedProject = selectedProject;
 	}
 
-	private User userData;
-    private Integer username_counter = 0;
-    private Integer namevalidation_counter = 0;
-    public Integer getUsername_counter() {
+	public Integer getUsername_counter() {
 		return username_counter;
 	}
 
@@ -45,52 +59,56 @@ public class SessionData {
 		this.namevalidation_counter = namevalidation_counter;
 	}
 
-	private HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
-    private Set<String> uniqueLocations = new HashSet<String>();
-    private HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
-    private Set<String> uniqueBreedingMethods = new HashSet<String>();
+	public Project getLastOpenedProject() {
+		return lastOpenedProject;
+	}
 
-    public Project getLastOpenedProject() {
-        return lastOpenedProject;
-    }
+	public void setLastOpenedProject(Project lastOpenedProject) {
+		this.lastOpenedProject = lastOpenedProject;
+	}
 
-    public void setLastOpenedProject(Project lastOpenedProject) {
-        this.lastOpenedProject = lastOpenedProject;
-    }
-    
-    /**
-     * Check if the specified project was the last project opened.
-     * 
-     * @param project
-     * @return
-     */
-    public boolean isLastOpenedProject(Project project) {
-        return lastOpenedProject == null ? project == null : lastOpenedProject.equals(project);
-    }
-    
-    public User getUserData() {
-        return this.userData;
-    }
+	/**
+	 * Check if the specified project was the last project opened.
+	 *
+	 * @param project
+	 * @return
+	 */
+	public boolean isLastOpenedProject(Project project) {
+		return lastOpenedProject == null ? project == null : lastOpenedProject.equals(project);
+	}
 
-    public void setUserData(User userData) {
-        this.userData = userData;
-    }
+	public User getUserData() {
+		return this.userData;
+	}
 
-    public HashMap<Integer, LocationViewModel> getProjectLocationData() {
-        return this.locationMaps;
-    }
+	public void setUserData(User userData) {
+		this.userData = userData;
+	}
 
-    @Deprecated
-    public Set<String> getUniqueLocations() {
-        return this.uniqueLocations;
-    }
-    
-    public HashMap<Integer, MethodView> getProjectBreedingMethodData() {
-        return this.breedingMethodMaps;
-    }
-    
-    public Set<String> getUniqueBreedingMethods() {
-        return this.uniqueBreedingMethods;
-    }
-    
+	public HashMap<Integer, LocationViewModel> getProjectLocationData() {
+		return this.locationMaps;
+	}
+
+	public HashMap<Integer, MethodView> getProjectBreedingMethodData() {
+		return this.breedingMethodMaps;
+	}
+
+	public Set<String> getUniqueBreedingMethods() {
+		return this.uniqueBreedingMethods;
+	}
+
+	public void logProgramActivity(String activityTitle, String activityDescription)
+			throws MiddlewareQueryException {
+
+		ProjectActivity projAct = new ProjectActivity(
+				selectedProject.getProjectId().intValue(),
+				selectedProject,
+				activityTitle,
+				activityDescription,
+				userData,
+				new Date());
+
+		workbenchDataManager.addProjectActivity(projAct);
+	}
+
 }
