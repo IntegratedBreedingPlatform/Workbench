@@ -29,7 +29,7 @@
 			scope: {
 				omPanelIdentifier: '='
 			},
-			templateUrl: '../static/views/ontology/panel.html',
+			templateUrl: 'static/views/ontology/panel.html',
 			transclude: true
 		};
 	});

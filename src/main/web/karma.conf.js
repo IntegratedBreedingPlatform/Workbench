@@ -63,7 +63,7 @@ module.exports = function(config) {
 		ngHtml2JsPreprocessor: {
 			cacheIdFromPath: function(filepath) {
 				// Convert template path from its file system path to the path expected by the javascript using the template
-				return '../' + filepath.substr(filepath.indexOf('static'), filepath.length);
+				return filepath.substr(filepath.indexOf('static'), filepath.length);
 			},
 
 			// setting this option will create only a single module that contains templates
