@@ -4,26 +4,23 @@
 (function() {
 	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales', 'variableState']);
 
-	// TODO Implement useful error handling
-	function genericAndRatherUselessErrorHandler(error) {
-		if (console) {
-			console.log(error);
-		}
-	}
-
 	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
 		'methodsService', 'scalesService', 'variableStateService',
 
 		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService,
 			variableStateService) {
 
-			var storedData;
+			var ctrl = this,
+				storedData;
 
-			// Persist the current state of the variable, so we can return to editing once we've finished
-			function persistStateAndRedirect(path) {
-				variableStateService.storeVariableState($scope.variable, $scope.data);
-				$location.path(path);
-			}
+			// TODO Implement useful error handling
+
+			// Exposed on the controller for testing
+			ctrl.genericAndRatherUselessErrorHandler = function(error) {
+				if (console) {
+					console.log(error);
+				}
+			};
 
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
@@ -41,19 +38,19 @@
 
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
-				}, genericAndRatherUselessErrorHandler);
+				}, ctrl.genericAndRatherUselessErrorHandler);
 
 				methodsService.getMethods().then(function(methods) {
 					$scope.data.methods = methods;
-				}, genericAndRatherUselessErrorHandler);
+				}, ctrl.genericAndRatherUselessErrorHandler);
 
 				scalesService.getScales().then(function(scales) {
 					$scope.data.scales = scales;
-				}, genericAndRatherUselessErrorHandler);
+				}, ctrl.genericAndRatherUselessErrorHandler);
 
 				variablesService.getTypes().then(function(types) {
 					$scope.data.types = types;
-				}, genericAndRatherUselessErrorHandler);
+				}, ctrl.genericAndRatherUselessErrorHandler);
 			}
 
 			// Show the expected range widget if the chosen scale has a numeric datatype
@@ -73,7 +70,10 @@
 
 			$scope.addNew = function(e, path) {
 				e.preventDefault();
-				persistStateAndRedirect('/add/' + path);
+
+				// Persist the current state of the variable, so we can return to editing once we've finished
+				variableStateService.storeVariableState($scope.variable, $scope.data);
+				$location.path('/add/' + path);
 			};
 		}
 	]);
