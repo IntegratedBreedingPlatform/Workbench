@@ -4,15 +4,19 @@
 (function() {
 	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState']);
 
-	// TODO Implement useful error handling
-	function genericAndRatherUselessErrorHandler(error) {
-		if (console) {
-			console.log(error);
-		}
-	}
-
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scaleService', 'variableStateService',
 		function($scope, $location, $window, dataTypesService, scaleService, variableStateService) {
+
+			var ctrl = this;
+
+			// TODO Implement useful error handling
+
+			// Exposed on the controller for testing
+			ctrl.genericAndRatherUselessErrorHandler = function(error) {
+				if (console) {
+					console.log(error);
+				}
+			};
 
 			$scope.scale = {
 				categories: [{}]
@@ -36,7 +40,7 @@
 					// FIXME Change to ID
 					variableStateService.setScale(scale.name).then(function() {
 						$window.history.back();
-					}, genericAndRatherUselessErrorHandler);
+					}, ctrl.genericAndRatherUselessErrorHandler);
 				} else {
 					// FIXME Go somewhere more useful
 					$location.path('/scales');
