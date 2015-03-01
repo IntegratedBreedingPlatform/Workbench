@@ -31,13 +31,18 @@ module.exports = function(config) {
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
 			// generate js files from html templates
-			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js'
+			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js',
+			'src/apps/**/*.js': ['coverage']
 		},
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress', 'nyan'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['nyan'],
+		reporters: ['nyan', 'coverage'],
+
+		coverageReporter: {
+			type: 'text-summary'
+		},
 
 		// web server port
 		port: 9876,
