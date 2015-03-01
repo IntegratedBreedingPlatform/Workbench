@@ -7,21 +7,36 @@ describe('Ontology Controller', function() {
 			preventDefault: function() {}
 		},
 		controller,
+		deferred,
 		location,
+		panelService,
+		q,
 		scope,
 		window;
 
 	beforeEach(module('ontology'));
 
-	beforeEach(inject(function($rootScope, $location, $controller, $window) {
+	beforeEach(inject(function($rootScope, $location, $controller, $q, $window) {
+		panelService = {
+			hidePanel: function() {
+				deferred = q.defer();
+				return deferred.promise;
+			},
+			showPanel: function () {
+				deferred = q.defer();
+				return deferred.promise;
+			}
+		};
 
 		controller = $controller('OntologyController', {
 			$scope: $rootScope,
 			$location: $location,
-			$window: $window
+			$window: $window,
+			panelService: panelService
 		});
 
 		location = $location;
+		q = $q;
 		scope = $rootScope;
 		window = $window;
 
@@ -43,19 +58,21 @@ describe('Ontology Controller', function() {
 			var path = 'myPath';
 
 			spyOn(location, 'path').and.callThrough();
+			spyOn(panelService, 'hidePanel').and.callThrough();
+
 			scope.addNew(fakeEvent, path);
 
-			// TODO Check it actually closes the panel
-
 			expect(location.path).toHaveBeenCalledWith('/add/' + path);
+			expect(panelService.hidePanel).toHaveBeenCalled();
 		});
 	});
 
 	describe('addNewSelection', function() {
 		it('should show the panel', function() {
 
-			// TODO Implement me!
-
+			spyOn(panelService, 'showPanel').and.callThrough();
+			scope.addNewSelection();
+			expect(panelService.showPanel).toHaveBeenCalledWith(scope.panelName);
 		});
 	});
 
