@@ -34,6 +34,14 @@
 		};
 	});
 
+	panelModule.directive('omPanelSmall', function() {
+		return {
+			link: function ($scope, element) {
+				element.addClass('om-pa-panel-small');
+			}
+		};
+	});
+
 	panelModule.directive('omMaskForPanel', function() {
 		var VISIBLE_CLASS = 'om-pa-mask-visible';
 

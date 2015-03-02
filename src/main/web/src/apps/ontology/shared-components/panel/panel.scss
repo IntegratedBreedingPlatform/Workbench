@@ -1,4 +1,5 @@
 $panelWidth: 60%;
+$panelWidthSmall: 30%;
 
 .om-pa-mask {
 	width: 100%;
@@ -40,6 +41,10 @@ om-panel {
 	transition: all 0.5s ease;
 
 	background-color: aliceblue;
+
+	&.om-pa-panel-small {
+		width: $panelWidthSmall;
+	}
 
 	&.om-pa-panel-visible {
 		right: 0px;

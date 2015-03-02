@@ -80,6 +80,20 @@ describe('Panel module', function() {
 		});
 	});
 
+	describe('Small Panel Directive', function() {
+
+		it('should give the panel a smaller width', function() {
+			var directiveElement;
+
+			inject(function($compile) {
+				directiveElement = $compile('<om-panel om-panel-small>Content</div>')(scope);
+			});
+			scope.$digest();
+
+			expect(directiveElement).toHaveClass('om-pa-panel-small');
+		});
+	});
+
 	describe('Panel Mask Directive', function() {
 		var MASK_CLASS = 'om-pa-mask-test',
 			CONTENT_CLASS = 'masked-content',
