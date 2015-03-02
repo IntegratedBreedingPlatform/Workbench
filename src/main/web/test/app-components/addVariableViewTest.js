@@ -1,42 +1,51 @@
-/*global expect, inject*/
+/*global expect, inject, spyOn*/
 'use strict';
 
-describe('Add Property View', function() {
-	var variableService = {
+describe('Add Variable View', function() {
+	var fakeEvent = {
+			preventDefault: function() {}
+		},
+
+		variableService = {
 			saveVariable: function() {}
 		},
 
-		variablesService = {
-			getTypes: function() {}
-		},
-
-		propertiesService = {
-			getProperties: function() {}
-		},
-
-		methodsService = {
-			getMethods: function() {}
-		},
-
-		scalesService = {
-			getScales: function() {}
-		},
+		variablesService = {},
+		propertiesService = {},
+		methodsService = {},
+		scalesService = {},
 
 		variableStateService = {
 			updateInProgress: function() {},
 			getVariableState: function() {},
-			storeVariableState: function() {}
+			storeVariableState: function() {},
+			reset: function() {}
 		},
 
-		q,
-		deferred = [],
-		controller,
-		location,
-		scope;
+		PERCENTAGE = {
+			name: 'Percentage',
+			dataType: {
+				id: 2,
+				name: 'Numeric'
+			}
+		},
 
-	beforeEach(function() {
-		module('addVariable');
-	});
+		CATEGORICAL = {
+			name: 'Categorical Scale',
+			dataType: {
+				id: 1,
+				name: 'Categorical'
+			}
+		},
+
+		deferred = [],
+
+		q,
+		location,
+		scope,
+		controllerFn,
+
+		controller;
 
 	function fakePromise() {
 		return function() {
@@ -46,20 +55,10 @@ describe('Add Property View', function() {
 		};
 	}
 
-	beforeEach(inject(function($q, $rootScope, $location, $controller) {
-
-		q = $q;
-		location = $location;
-		scope = $rootScope;
-
-		propertiesService.getProperties = fakePromise();
-		methodsService.getMethods = fakePromise();
-		scalesService.getScales = fakePromise();
-		variablesService.getTypes = fakePromise();
-
-		controller = $controller('AddVariableController', {
-			$scope: $rootScope,
-			$location: $location,
+	function compileController() {
+		controller = controllerFn('AddVariableController', {
+			$scope: scope,
+			$location: location,
 			variableService: variableService,
 			variablesService: variablesService,
 			propertiesService: propertiesService,
@@ -73,38 +72,162 @@ describe('Add Property View', function() {
 		});
 
 		scope.$apply();
-	}));
+	}
 
-	it('should hide the range widget by deafult', function() {
-		expect(scope.showRangeWidget).toBe(false);
+	beforeEach(function() {
+		module('addVariable');
 	});
 
-	// To test
+	beforeEach(inject(function($q, $rootScope, $location, $controller) {
+		q = $q;
+		location = $location;
+		scope = $rootScope;
+		controllerFn = $controller;
 
-	// If a variable update is in progres..
-	// 	- set $scope.variable = storedData.variable;
-	//  - set $scope.data = storedData.scopeData;
-	//  - don't call propertiesService.getProperties()
-	//  - don't call methodsService.getMethods()
-	//  - don't call scalesService.getScales()
-	//  - don't call variablesService.getTypes()
+		propertiesService.getProperties = fakePromise();
+		methodsService.getMethods = fakePromise();
+		scalesService.getScales = fakePromise();
+		variablesService.getTypes = fakePromise();
 
-	// If a variable update is not in progres..
-	//  - call propertiesService.getProperties()
-	//  - call methodsService.getMethods()
-	//  - call scalesService.getScales()
-	//  - call variablesService.getTypes()
+		spyOn(variableService, 'saveVariable');
 
-	// If variable.scale.dataType.name changes to Numeric, show the range widget
-	// If variable.scale.dataType.name changes to not Numeric, hide the range widget
+		spyOn(variableStateService, 'reset');
+		spyOn(variableStateService, 'storeVariableState');
 
-	// $scope.saveVariable
-	// - call variableService.saveVariable(variable);
-	// - call reset on the variableStateService.reset();
-	// - go to $location.path('/variables');
+		spyOn(propertiesService, 'getProperties').and.callThrough();
+		spyOn(methodsService, 'getMethods').and.callThrough();
+		spyOn(scalesService, 'getScales').and.callThrough();
+		spyOn(variablesService, 'getTypes').and.callThrough();
 
-	// $scope.addNew
-	// - call variableStateService.storeVariableState($scope.variable, $scope.data);
-	// go to $location.path('/add/' + path);
+		spyOn(location, 'path');
+	}));
 
+	describe('by default', function() {
+
+		beforeEach(function() {
+			// Pretend no edit is in progress
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			compileController();
+		});
+
+		it('should hide the range widget by deafult', function() {
+			expect(scope.showRangeWidget).toBe(false);
+		});
+
+		it('should show the range widget if the variable changes to have a Numeric data type', function() {
+			scope.variable.scale = PERCENTAGE;
+			scope.$apply();
+
+			expect(scope.showRangeWidget).toBe(true);
+		});
+
+		it('should hide the range widget if the variable changes to have a non Numeric data type', function() {
+			scope.variable.scale = CATEGORICAL;
+			scope.$apply();
+
+			expect(scope.showRangeWidget).toBe(false);
+		});
+	});
+
+	describe('when a variable update is in progress', function() {
+
+		var state = {
+			variable: 'variable',
+			scopeData: 'data'
+		};
+
+		beforeEach(function() {
+			// Pretend an edit is in progress
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+			spyOn(variableStateService, 'getVariableState').and.returnValue(state);
+
+			compileController();
+		});
+
+		it('should set the variable and data properties on the $scope', function() {
+			expect(scope.variable).toEqual(state.variable);
+			expect(scope.scopeData).toEqual(state.data);
+		});
+
+		it('should not get property, method, scale or variable type data from services', function() {
+			expect(propertiesService.getProperties.calls.count()).toEqual(0);
+			expect(methodsService.getMethods.calls.count()).toEqual(0);
+			expect(scalesService.getScales.calls.count()).toEqual(0);
+			expect(variablesService.getTypes.calls.count()).toEqual(0);
+		});
+	});
+
+	describe('when a variable update is not in progress', function() {
+
+		beforeEach(function() {
+			// Pretend no edit is in progress
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			compileController();
+		});
+
+		it('should get property, method, scale or variable type data from services', function() {
+			expect(propertiesService.getProperties).toHaveBeenCalled();
+			expect(methodsService.getMethods).toHaveBeenCalled();
+			expect(scalesService.getScales).toHaveBeenCalled();
+			expect(variablesService.getTypes).toHaveBeenCalled();
+		});
+	});
+
+	describe('$scope.saveVariable', function() {
+
+		beforeEach(function() {
+			// Pretend no edit is in progress
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			compileController();
+		});
+
+		it('should save the variable to the variableService', function() {
+			var variable = {
+				name: 'My variable'
+			};
+			scope.saveVariable(fakeEvent, variable);
+			expect(variableService.saveVariable).toHaveBeenCalledWith(variable);
+		});
+
+		it('should reset the state of any stored variable', function() {
+			scope.saveVariable(fakeEvent, {});
+			expect(variableStateService.reset).toHaveBeenCalled();
+		});
+
+		it('should redirect to /variables after a successful save', function() {
+			scope.saveVariable(fakeEvent, {});
+			expect(location.path).toHaveBeenCalledWith('/variables');
+		});
+	});
+
+	describe('$scope.addNew', function() {
+
+		beforeEach(function() {
+			// Pretend no edit is in progress
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			compileController();
+		});
+
+		it('should store the variable state and data from the scope', function() {
+			var variable = {
+				name: 'variable'
+			},
+			data = {
+				someData: {}
+			};
+
+			scope.variable = variable;
+			scope.data = data;
+
+			scope.addNew(fakeEvent, '');
+			expect(variableStateService.storeVariableState).toHaveBeenCalledWith(variable, data);
+		});
+
+		it('should redirect to /variables after a successful save', function() {
+			var path = 'path';
+
+			scope.addNew(fakeEvent, path);
+			expect(location.path).toHaveBeenCalledWith('/add/' + path);
+		});
+	});
 });

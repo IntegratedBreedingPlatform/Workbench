@@ -35,6 +35,7 @@
 			} else {
 
 				$scope.data = {};
+				$scope.variable = {};
 
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
@@ -61,6 +62,7 @@
 			$scope.saveVariable = function(e, variable) {
 				e.preventDefault();
 				// TODO Error handling
+
 				variableService.saveVariable(variable);
 				variableStateService.reset();
 
