@@ -26,7 +26,7 @@ describe('Add Scale View', function() {
 		PERCENTAGE = {
 			name: 'Percentage',
 			description: 'As per title',
-			dataType: 2,
+			dataType: NUMERIC_TYPE,
 			validValues: {
 				min: 0,
 				max: 100
