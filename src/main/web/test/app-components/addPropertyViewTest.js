@@ -14,13 +14,7 @@ describe('Add Property View', function() {
 			classes: classes
 		},
 
-		propertyService = {
-			saveProperty: function() {}
-		},
-
-		propertiesService = {
-			getClasses: function() {}
-		},
+		propertiesService,
 
 		variableStateService = {
 			updateInProgress: function() {},
@@ -32,7 +26,7 @@ describe('Add Property View', function() {
 		},
 
 		q,
-		deferred,
+		deferredAddProperty,
 		controller,
 		location,
 		scope,
@@ -44,30 +38,38 @@ describe('Add Property View', function() {
 
 	beforeEach(inject(function($q, $rootScope, $location, $controller, $window) {
 
+		var deferredGetClasses;
+
 		q = $q;
 		location = $location;
 		scope = $rootScope;
 		window = $window;
 
-		propertiesService.getClasses = function() {
-			deferred = q.defer();
-			return deferred.promise;
+		propertiesService = {
+			getClasses: function() {
+				deferredGetClasses = q.defer();
+				return deferredGetClasses.promise;
+			},
+			addProperty: function() {
+				deferredAddProperty = q.defer();
+				return deferredAddProperty.promise;
+			}
 		};
+
+		spyOn(propertiesService, 'addProperty').and.callThrough();
+		spyOn(propertiesService, 'getClasses').and.callThrough();
+		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 		controller = $controller('AddPropertyController', {
 			$scope: $rootScope,
 			$location: $location,
 			$window: $window,
-			propertyService: propertyService,
 			propertiesService: propertiesService,
 			variableStateService: variableStateService,
 			serviceUtilities: serviceUtilities
 		});
 
-		spyOn(propertyService, 'saveProperty');
-		spyOn(propertiesService, 'getClasses').and.callThrough();
-
-		deferred.resolve(classes);
+		deferredGetClasses.resolve(classes);
 		scope.$apply();
 	}));
 
@@ -77,13 +79,26 @@ describe('Add Property View', function() {
 
 	describe('$scope.saveProperty', function() {
 
-		it('should call the property service to save the property', function() {
+		it('should call the properties service to save the property', function() {
 			// Pretend no edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
 
 			scope.saveProperty(fakeEvent, BLAST);
 
-			expect(propertyService.saveProperty).toHaveBeenCalledWith(BLAST);
+			expect(propertiesService.addProperty).toHaveBeenCalledWith(BLAST);
+		});
+
+		it('should handle any errors and not redirect if the save was not successful', function() {
+
+			spyOn(location, 'path');
+
+			scope.saveProperty(fakeEvent, BLAST);
+
+			deferredAddProperty.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(location.path.calls.count()).toEqual(0);
 		});
 
 		it('should redirect to /properties after a successful save, if no variable is currently being edited', function() {
@@ -92,17 +107,19 @@ describe('Add Property View', function() {
 			spyOn(location, 'path');
 
 			scope.saveProperty(fakeEvent, BLAST);
+			deferredAddProperty.resolve();
+			scope.$apply();
 
 			expect(location.path).toHaveBeenCalledWith('/properties');
 		});
 
 		it('should set the property on the variable and redirect to the previous screen if one is currently being edited', function() {
 
-			var deferred;
+			var deferredSetProperty;
 
 			variableStateService.setProperty = function() {
-				deferred = q.defer();
-				return deferred.promise;
+				deferredSetProperty = q.defer();
+				return deferredSetProperty.promise;
 			};
 
 			// Variable edit is in progress
@@ -110,8 +127,13 @@ describe('Add Property View', function() {
 			spyOn(variableStateService, 'setProperty').and.callThrough();
 			spyOn(window.history, 'back');
 
+			// Successful save
 			scope.saveProperty(fakeEvent, BLAST);
-			deferred.resolve();
+			deferredAddProperty.resolve();
+			scope.$apply();
+
+			// Successfully set the property
+			deferredSetProperty.resolve();
 			scope.$apply();
 
 			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.name);
@@ -120,20 +142,23 @@ describe('Add Property View', function() {
 
 		it('should log an error if there is a problem setting the property on the variable being updated', function() {
 
-			var deferred;
+			var deferredSetProperty;
 
 			variableStateService.setProperty = function() {
-				deferred = q.defer();
-				return deferred.promise;
+				deferredSetProperty = q.defer();
+				return deferredSetProperty.promise;
 			};
 
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 
-			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
-
+			// Successful save
 			scope.saveProperty(fakeEvent, BLAST);
-			deferred.reject();
+			deferredAddProperty.resolve();
+			scope.$apply();
+
+			// Fail to set the property
+			deferredSetProperty.reject();
 			scope.$apply();
 
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
