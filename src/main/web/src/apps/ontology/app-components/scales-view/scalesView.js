@@ -11,7 +11,7 @@
 
 			$scope.panelName = 'scales';
 
-			ctrl.colHeaders = ['Name', 'DataType'];
+			ctrl.colHeaders = ['Name', 'Description', 'DataType'];
 
 			scalesService.getScales().then(function(scales) {
 				ctrl.scales = scales.map(function(item) {
