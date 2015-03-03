@@ -1,7 +1,9 @@
 # Project Specific
-resources/
 src/main/webapp/WEB-INF/static
 src/main/webapp/WEB-INF/pages
+src/main/resources/workbench.properties
+src/test/resources/test.properties
+src/test/resources/testDatabaseConfig.properties
 
 #################
 ## Maven
@@ -239,3 +241,4 @@ pip-log.txt
 
 node_modules
 node
+
