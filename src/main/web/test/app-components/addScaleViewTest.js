@@ -33,9 +33,7 @@ describe('Add Scale View', function() {
 			}
 		},
 
-		scaleService = {
-			saveScale: function() {}
-		},
+		scalesService,
 
 		dataTypesService = {
 			getDataTypes: function() {}
@@ -51,11 +49,13 @@ describe('Add Scale View', function() {
 		},
 
 		q,
-		deferred,
 		controller,
 		location,
 		scope,
-		window;
+		window,
+
+		deferredGetDataTypes,
+		deferredAddScale;
 
 	beforeEach(function() {
 		module('addScale');
@@ -69,24 +69,32 @@ describe('Add Scale View', function() {
 		window = $window;
 
 		dataTypesService.getDataTypes = function() {
-			deferred = q.defer();
-			return deferred.promise;
+			deferredGetDataTypes = q.defer();
+			return deferredGetDataTypes.promise;
 		};
+
+		scalesService = {
+			addScale: function() {
+				deferredAddScale = q.defer();
+				return deferredAddScale.promise;
+			}
+		};
+
+		spyOn(scalesService, 'addScale').and.callThrough();
+		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
 
 		controller = $controller('AddScaleController', {
 			$scope: $rootScope,
 			$location: $location,
 			$window: $window,
-			scaleService: scaleService,
+			scalesService: scalesService,
 			dataTypesService: dataTypesService,
 			variableStateService: variableStateService,
 			serviceUtilities: serviceUtilities
 		});
 
-		spyOn(scaleService, 'saveScale');
-		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
-
-		deferred.resolve(types);
+		deferredGetDataTypes.resolve(types);
 		scope.$apply();
 	}));
 
@@ -156,7 +164,20 @@ describe('Add Scale View', function() {
 
 			scope.saveScale(fakeEvent, PERCENTAGE);
 
-			expect(scaleService.saveScale).toHaveBeenCalledWith(PERCENTAGE);
+			expect(scalesService.addScale).toHaveBeenCalledWith(PERCENTAGE);
+		});
+
+		it('should handle any errors and not redirect if the save was not successful', function() {
+
+			spyOn(location, 'path');
+
+			scope.saveScale(fakeEvent, PERCENTAGE);
+
+			deferredAddScale.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(location.path.calls.count()).toEqual(0);
 		});
 
 		it('should redirect to /scales after a successful save, if no variable is currently being edited', function() {
@@ -166,16 +187,19 @@ describe('Add Scale View', function() {
 
 			scope.saveScale(fakeEvent, PERCENTAGE);
 
+			deferredAddScale.resolve();
+			scope.$apply();
+
 			expect(location.path).toHaveBeenCalledWith('/scales');
 		});
 
-		it('should set the scale on the variable and redirect to the previous screen if one is currently being edited', function() {
+		it('should set the scale on the variable and go back after a successful save, if a variable is being edited', function() {
 
-			var deferred;
+			var deferredSetScale;
 
 			variableStateService.setScale = function() {
-				deferred = q.defer();
-				return deferred.promise;
+				deferredSetScale = q.defer();
+				return deferredSetScale.promise;
 			};
 
 			// Variable edit is in progress
@@ -183,8 +207,13 @@ describe('Add Scale View', function() {
 			spyOn(variableStateService, 'setScale').and.callThrough();
 			spyOn(window.history, 'back');
 
+			// Successful save
 			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferred.resolve();
+			deferredAddScale.resolve();
+			scope.$apply();
+
+			// Successfully set the scale
+			deferredSetScale.resolve();
 			scope.$apply();
 
 			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.name);
@@ -193,20 +222,23 @@ describe('Add Scale View', function() {
 
 		it('should log an error if there is a problem setting the scale on the variable being updated', function() {
 
-			var deferred;
+			var deferredSetScale;
 
 			variableStateService.setScale = function() {
-				deferred = q.defer();
-				return deferred.promise;
+				deferredSetScale = q.defer();
+				return deferredSetScale.promise;
 			};
 
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 
-			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
-
+			// Successful save
 			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferred.reject();
+			deferredAddScale.resolve();
+			scope.$apply();
+
+			// Fail to set the scale
+			deferredSetScale.reject();
 			scope.$apply();
 
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
