@@ -521,4 +521,6 @@ public enum Message {
     ,MINIMUM_CROP_VERSION_WARNING
     ,NOT_AVAILABLE
     ,WARNING
+
+    ,PLEASE_CHOOSE
 }

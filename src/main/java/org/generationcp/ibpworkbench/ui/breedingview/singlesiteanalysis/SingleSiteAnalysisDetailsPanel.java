@@ -535,7 +535,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		selEnvFactor = new Select();
 		selEnvFactor.setImmediate(true);
 		populateChoicesForEnvironmentFactor();
-		selEnvFactor.setNullSelectionAllowed(true);
+		selEnvFactor.setNullSelectionAllowed(false);
 		selEnvFactor.setNewItemsAllowed(false);
 
 		populateChoicesForEnvForAnalysis();
@@ -605,6 +605,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		if (this.trialVariablesInDataset == null) {
 			return;
 		}
+		
+		String pleaseChoose = messageSource.getMessage(Message.PLEASE_CHOOSE);
+		this.selEnvFactor.addItem(pleaseChoose);
 
 		for (VariableType factor : trialVariablesInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT) {
@@ -614,7 +617,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				}
 			}
 		}
-
+		this.selEnvFactor.setValue(pleaseChoose);
 		selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
 
 		if (this.selEnvFactor.getItemIds().isEmpty()) {
