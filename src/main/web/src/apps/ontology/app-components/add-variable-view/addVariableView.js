@@ -13,6 +13,11 @@
 			var ctrl = this,
 				storedData;
 
+			// The select2 input needs to be able to call length on the types array before the data is returned.
+			$scope.data = {
+				types: []
+			};
+
 			// TODO Implement useful error handling
 
 			// Exposed on the controller for testing
@@ -34,7 +39,6 @@
 
 			} else {
 
-				$scope.data = {};
 				$scope.variable = {};
 
 				propertiesService.getProperties().then(function(properties) {
