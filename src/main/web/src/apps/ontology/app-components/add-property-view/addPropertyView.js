@@ -2,13 +2,14 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['properties', 'variableState']);
+	var app = angular.module('addProperty', ['ngSanitize', 'ui.select', 'properties', 'variableState']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertyService', 'propertiesService',
 		'variableStateService',
 		function($scope, $location, $window, propertyService, propertiesService, variableStateService) {
 
 			var ctrl = this;
+			$scope.classes = [];
 
 			// TODO Implement useful error handling
 

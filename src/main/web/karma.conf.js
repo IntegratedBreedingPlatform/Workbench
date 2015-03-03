@@ -16,6 +16,8 @@ module.exports = function(config) {
 		files: [
 			'src/js/lib/angular.js',
 			'src/js/lib/angular-route.min.js',
+			'src/js/lib/angular-sanitize.min.js',
+			'src/js/lib/angular-ui-select.min.js',
 			'test/lib/angular-mocks.js',
 			'src/apps/**/*.js',
 			'test/**/*.js',

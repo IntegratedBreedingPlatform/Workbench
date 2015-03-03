@@ -15,10 +15,14 @@
 			<textarea type="text" name="om-ap-description" id="om-ap-description" ng-model="property.description"></textarea>
 		</div>
 
-		<!-- TODO: Make this into a tag selector thing-->
 		<div>
 			<label for="om-ap-class">Class</label>
-			<select name="om-ap-class" id="om-ap-class" ng-model="property.class" ng-options="class for class in classes"></select>
+			<ui-select name="om-ap-class" id="om-ap-class" multiple tagging tagging-label="(add as new class)" ng-model="property.classes" sortable="true" theme="select2" title="Choose a class">
+				<ui-select-match placeholder="Select classes...">{{$item}}</ui-select-match>
+				<ui-select-choices repeat="class in classes">
+					{{class}}
+				</ui-select-choices>
+			</ui-select>
 		</div>
 
 		<div>
