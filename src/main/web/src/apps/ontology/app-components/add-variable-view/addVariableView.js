@@ -4,10 +4,10 @@
 (function() {
 	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales', 'variableState', 'utilities']);
 
-	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
-		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities',
+	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'propertiesService', 'methodsService',
+		'scalesService', 'variableStateService', 'serviceUtilities',
 
-		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService,
+		function($scope, $location, variablesService, propertiesService, methodsService, scalesService,
 			variableStateService, serviceUtilities) {
 
 			var storedData;
@@ -55,13 +55,12 @@
 
 			$scope.saveVariable = function(e, variable) {
 				e.preventDefault();
-				// TODO Error handling
 
-				variableService.saveVariable(variable);
-				variableStateService.reset();
-
-				// FIXME Go somewhere more useful
-				$location.path('/variables');
+				variablesService.addVariable(variable).then(function(){
+					variableStateService.reset();
+					// FIXME Go somewhere more useful
+					$location.path('/variables');
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 			};
 
 			$scope.addNew = function(e, path) {

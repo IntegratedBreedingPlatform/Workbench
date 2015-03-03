@@ -6,8 +6,16 @@ describe('Add Variable View', function() {
 			preventDefault: function() {}
 		},
 
-		variableService = {
-			saveVariable: function() {}
+		PLANT_VIGOR = {
+			id: 1,
+			name: 'Plant Vigor',
+			description: 'A little vigourous',
+			property: 1,
+			method: 1,
+			scale: 1,
+			variableType: [
+				1
+			]
 		},
 
 		variablesService = {},
@@ -43,6 +51,7 @@ describe('Add Variable View', function() {
 		},
 
 		deferred = [],
+		deferredAddVariable,
 
 		q,
 		location,
@@ -63,7 +72,6 @@ describe('Add Variable View', function() {
 		controller = controllerFn('AddVariableController', {
 			$scope: scope,
 			$location: location,
-			variableService: variableService,
 			variablesService: variablesService,
 			propertiesService: propertiesService,
 			methodsService: methodsService,
@@ -94,7 +102,11 @@ describe('Add Variable View', function() {
 		scalesService.getScales = fakePromise();
 		variablesService.getTypes = fakePromise();
 
-		spyOn(variableService, 'saveVariable');
+		// We want a little more control over when this gets resolved
+		variablesService.addVariable = function() {
+			deferredAddVariable = q.defer();
+			return deferredAddVariable.promise;
+		};
 
 		spyOn(variableStateService, 'reset');
 		spyOn(variableStateService, 'storeVariableState');
@@ -102,9 +114,12 @@ describe('Add Variable View', function() {
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
+
+		spyOn(variablesService, 'addVariable').and.callThrough();
 		spyOn(variablesService, 'getTypes').and.callThrough();
 
 		spyOn(location, 'path');
+		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 	}));
 
 	describe('by default', function() {
@@ -186,21 +201,36 @@ describe('Add Variable View', function() {
 			compileController();
 		});
 
-		it('should save the variable to the variableService', function() {
-			var variable = {
-				name: 'My variable'
-			};
-			scope.saveVariable(fakeEvent, variable);
-			expect(variableService.saveVariable).toHaveBeenCalledWith(variable);
+		it('should call the variables service to save the variable', function() {
+			scope.saveVariable(fakeEvent, PLANT_VIGOR);
+			expect(variablesService.addVariable).toHaveBeenCalledWith(PLANT_VIGOR);
 		});
 
-		it('should reset the state of any stored variable', function() {
-			scope.saveVariable(fakeEvent, {});
+		it('should handle any errors and not redirect if the save was not successful', function() {
+			scope.saveVariable(fakeEvent, PLANT_VIGOR);
+
+			deferredAddVariable.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(location.path.calls.count()).toEqual(0);
+		});
+
+		it('should reset the state of any stored variable after a successful save', function() {
+			scope.saveVariable(fakeEvent, PLANT_VIGOR);
+
+			deferredAddVariable.resolve();
+			scope.$apply();
+
 			expect(variableStateService.reset).toHaveBeenCalled();
 		});
 
 		it('should redirect to /variables after a successful save', function() {
-			scope.saveVariable(fakeEvent, {});
+			scope.saveVariable(fakeEvent, PLANT_VIGOR);
+
+			deferredAddVariable.resolve();
+			scope.$apply();
+
 			expect(location.path).toHaveBeenCalledWith('/variables');
 		});
 	});
@@ -228,7 +258,7 @@ describe('Add Variable View', function() {
 			expect(variableStateService.storeVariableState).toHaveBeenCalledWith(variable, data);
 		});
 
-		it('should redirect to /variables after a successful save', function() {
+		it('should redirect to /variables after a successful state save', function() {
 			var path = 'path';
 
 			scope.addNew(fakeEvent, path);
