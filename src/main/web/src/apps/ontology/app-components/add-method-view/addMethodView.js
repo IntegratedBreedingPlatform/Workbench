@@ -2,22 +2,10 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addMethod', ['methods', 'variableState']);
+	var app = angular.module('addMethod', ['methods', 'variableState', 'utilities']);
 
-
-	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodService', 'variableStateService',
-		function($scope, $location, $window, methodService, variableStateService) {
-
-			var ctrl = this;
-
-			// TODO Implement useful error handling
-
-			// Exposed on the controller for testing
-			ctrl.genericAndRatherUselessErrorHandler = function(error) {
-				if (console) {
-					console.log(error);
-				}
-			};
+	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodService', 'variableStateService', 'serviceUtilities',
+		function($scope, $location, $window, methodService, variableStateService, serviceUtilities) {
 
 			$scope.saveMethod = function(e, method) {
 				e.preventDefault();
@@ -29,7 +17,7 @@
 					// FIXME Change to ID
 					variableStateService.setMethod(method.name).then(function() {
 						$window.history.back();
-					}, ctrl.genericAndRatherUselessErrorHandler);
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 				} else {
 					// FIXME Go somewhere more useful
 					$location.path('/methods');

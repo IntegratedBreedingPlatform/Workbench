@@ -1,24 +1,14 @@
-/*global angular, console*/
+/*global angular*/
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['ngSanitize', 'ui.select', 'properties', 'variableState']);
+	var app = angular.module('addProperty', ['ngSanitize', 'ui.select', 'properties', 'variableState', 'utilities']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertyService', 'propertiesService',
-		'variableStateService',
-		function($scope, $location, $window, propertyService, propertiesService, variableStateService) {
+		'variableStateService', 'serviceUtilities',
+		function($scope, $location, $window, propertyService, propertiesService, variableStateService, serviceUtilities) {
 
-			var ctrl = this;
 			$scope.classes = [];
-
-			// TODO Implement useful error handling
-
-			// Exposed on the controller for testing
-			ctrl.genericAndRatherUselessErrorHandler = function(error) {
-				if (console) {
-					console.log(error);
-				}
-			};
 
 			// TODO Error handling
 			propertiesService.getClasses().then(function(classes) {
@@ -36,7 +26,7 @@
 					// FIXME Change to ID
 					variableStateService.setProperty(property.name).then(function() {
 						$window.history.back();
-					}, ctrl.genericAndRatherUselessErrorHandler);
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 				} else {
 					// FIXME Go somewhere more useful
 					$location.path('/properties');

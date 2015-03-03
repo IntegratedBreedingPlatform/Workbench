@@ -22,6 +22,10 @@ describe('Add Variable View', function() {
 			reset: function() {}
 		},
 
+		serviceUtilities = {
+			genericAndRatherUselessErrorHandler: function() {}
+		},
+
 		PERCENTAGE = {
 			name: 'Percentage',
 			dataType: {
@@ -64,7 +68,8 @@ describe('Add Variable View', function() {
 			propertiesService: propertiesService,
 			methodsService: methodsService,
 			scalesService: scalesService,
-			variableStateService: variableStateService
+			variableStateService: variableStateService,
+			serviceUtilities: serviceUtilities
 		});
 
 		deferred.forEach(function(d) {

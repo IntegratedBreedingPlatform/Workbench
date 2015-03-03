@@ -46,6 +46,10 @@ describe('Add Scale View', function() {
 			setScale: function() {}
 		},
 
+		serviceUtilities = {
+			genericAndRatherUselessErrorHandler: function() {}
+		},
+
 		q,
 		deferred,
 		controller,
@@ -75,7 +79,8 @@ describe('Add Scale View', function() {
 			$window: $window,
 			scaleService: scaleService,
 			dataTypesService: dataTypesService,
-			variableStateService: variableStateService
+			variableStateService: variableStateService,
+			serviceUtilities: serviceUtilities
 		});
 
 		spyOn(scaleService, 'saveScale');
@@ -198,13 +203,13 @@ describe('Add Scale View', function() {
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 
-			spyOn(controller, 'genericAndRatherUselessErrorHandler');
+			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 			scope.saveScale(fakeEvent, PERCENTAGE);
 			deferred.reject();
 			scope.$apply();
 
-			expect(controller.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
 		});
 	});
 });

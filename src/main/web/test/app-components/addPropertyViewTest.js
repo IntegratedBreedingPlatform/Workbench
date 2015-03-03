@@ -27,6 +27,10 @@ describe('Add Property View', function() {
 			setProperty: function() {}
 		},
 
+		serviceUtilities = {
+			genericAndRatherUselessErrorHandler: function() {}
+		},
+
 		q,
 		deferred,
 		controller,
@@ -56,7 +60,8 @@ describe('Add Property View', function() {
 			$window: $window,
 			propertyService: propertyService,
 			propertiesService: propertiesService,
-			variableStateService: variableStateService
+			variableStateService: variableStateService,
+			serviceUtilities: serviceUtilities
 		});
 
 		spyOn(propertyService, 'saveProperty');
@@ -125,13 +130,13 @@ describe('Add Property View', function() {
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 
-			spyOn(controller, 'genericAndRatherUselessErrorHandler');
+			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 			scope.saveProperty(fakeEvent, BLAST);
 			deferred.reject();
 			scope.$apply();
 
-			expect(controller.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
 		});
 	});
 });

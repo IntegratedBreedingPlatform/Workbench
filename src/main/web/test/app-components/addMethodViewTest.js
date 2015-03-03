@@ -20,6 +20,10 @@ describe('Add Method View', function() {
 			setMethod: function() {}
 		},
 
+		serviceUtilities = {
+			genericAndRatherUselessErrorHandler: function() {}
+		},
+
 		q,
 		controller,
 		location,
@@ -39,7 +43,8 @@ describe('Add Method View', function() {
 			$location: $location,
 			$window: $window,
 			methodService: methodService,
-			variableStateService: variableStateService
+			variableStateService: variableStateService,
+			serviceUtilities: serviceUtilities
 		});
 
 		q = $q;
@@ -102,14 +107,13 @@ describe('Add Method View', function() {
 
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-
-			spyOn(controller, 'genericAndRatherUselessErrorHandler');
+			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 			deferred.reject();
 			scope.$apply();
 
-			expect(controller.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
 		});
 	});
 });

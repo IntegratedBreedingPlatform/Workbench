@@ -2,29 +2,19 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales', 'variableState']);
+	var app = angular.module('addVariable', ['variables', 'properties', 'methods', 'scales', 'variableState', 'utilities']);
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variableService', 'variablesService', 'propertiesService',
-		'methodsService', 'scalesService', 'variableStateService',
+		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities',
 
 		function($scope, $location, variableService, variablesService, propertiesService, methodsService, scalesService,
-			variableStateService) {
+			variableStateService, serviceUtilities) {
 
-			var ctrl = this,
-				storedData;
+			var storedData;
 
 			// The select2 input needs to be able to call length on the types array before the data is returned.
 			$scope.data = {
 				types: []
-			};
-
-			// TODO Implement useful error handling
-
-			// Exposed on the controller for testing
-			ctrl.genericAndRatherUselessErrorHandler = function(error) {
-				if (console) {
-					console.log(error);
-				}
 			};
 
 			// Whether or not we want to display the expected range widget
@@ -43,19 +33,19 @@
 
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
-				}, ctrl.genericAndRatherUselessErrorHandler);
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 				methodsService.getMethods().then(function(methods) {
 					$scope.data.methods = methods;
-				}, ctrl.genericAndRatherUselessErrorHandler);
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 				scalesService.getScales().then(function(scales) {
 					$scope.data.scales = scales;
-				}, ctrl.genericAndRatherUselessErrorHandler);
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 				variablesService.getTypes().then(function(types) {
 					$scope.data.types = types;
-				}, ctrl.genericAndRatherUselessErrorHandler);
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 			}
 
 			// Show the expected range widget if the chosen scale has a numeric datatype
