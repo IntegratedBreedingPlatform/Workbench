@@ -104,6 +104,11 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	
 	private Project currentProject;
 
+	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager){
+		this.parentWindow = parentWindow;
+		this.studyDataManager = studyDataManager;
+		this.source = source;
+	}
 
 	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager, Project currentProject){
 		this.parentWindow = parentWindow;
