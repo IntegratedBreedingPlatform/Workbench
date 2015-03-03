@@ -17,8 +17,8 @@
 
 		<div>
 			<label for="om-ap-class">Class</label>
-			<ui-select name="om-ap-class" id="om-ap-class" multiple tagging tagging-label="(add as new class)" ng-model="property.classes" sortable="true" theme="select2" title="Choose a class">
-				<ui-select-match placeholder="Select classes...">{{$item}}</ui-select-match>
+			<ui-select name="om-ap-class" id="om-ap-class" multiple tagging tagging-label="(add as new class)" ng-model="property.classes" sortable="true" theme="select2">
+				<ui-select-match>{{$item}}</ui-select-match>
 				<ui-select-choices repeat="class in classes">
 					{{class}}
 				</ui-select-choices>
