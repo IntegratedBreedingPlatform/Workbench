@@ -36,7 +36,7 @@
 			});
 
 			variablesService.getVariables().then(function(variables) {
-				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
+				ctrl.variables = ctrl.transformToDisplayFormat(variables);
 			});
 
 			$scope.showVariableDetails = function() {
