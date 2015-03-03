@@ -21,7 +21,6 @@
 		}
 
 		return {
-
 			// Methods services (plural)
 			getMethods: function() {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods');
@@ -34,12 +33,10 @@
 			},
 
 			// Method services (on a specific method)
-
 			getMethod: function(/*id*/) {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods/:id');
 				return request.then(successHandler, failureHandler);
 			}
-
 		};
 	}]);
 }());
