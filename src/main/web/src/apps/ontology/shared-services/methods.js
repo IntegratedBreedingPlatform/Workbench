@@ -1,18 +1,8 @@
-/*global angular, console*/
+/*global angular*/
 'use strict';
 
 (function() {
 	var app = angular.module('methods', []);
-
-	app.service('methodService', [function() {
-		return {
-			saveMethod: function(method) {
-				// TODO Call actual save functionality
-				console.log('Saving method');
-				console.log(method);
-			}
-		};
-	}]);
 
 	app.service('methodsService', ['$http', '$q', function($http, $q) {
 		function successHandler(response) {
@@ -31,15 +21,25 @@
 		}
 
 		return {
-			getMethod: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods/:id');
-				return request.then(successHandler, failureHandler);
-			},
 
+			// Methods services (plural)
 			getMethods: function() {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods');
 				return request.then(successHandler, failureHandler);
+			},
+
+			addMethod: function(method) {
+				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/methods', method);
+				return request.then(successHandler, failureHandler);
+			},
+
+			// Method services (on a specific method)
+
+			getMethod: function(/*id*/) {
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods/:id');
+				return request.then(successHandler, failureHandler);
 			}
+
 		};
 	}]);
 }());

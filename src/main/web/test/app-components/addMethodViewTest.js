@@ -11,9 +11,7 @@ describe('Add Method View', function() {
 			description: 'Self explanatory really'
 		},
 
-		methodService = {
-			saveMethod: function() {}
-		},
+		methodsService,
 
 		variableStateService = {
 			updateInProgress: function() {},
@@ -28,7 +26,9 @@ describe('Add Method View', function() {
 		controller,
 		location,
 		scope,
-		window;
+		window,
+
+		deferredAddMethod;
 
 	beforeEach(function() {
 		module('addMethod');
@@ -36,13 +36,21 @@ describe('Add Method View', function() {
 
 	beforeEach(inject(function($q, $rootScope, $location, $controller, $window) {
 
-		spyOn(methodService, 'saveMethod');
+		methodsService = {
+			addMethod: function() {
+				deferredAddMethod = q.defer();
+				return deferredAddMethod.promise;
+			}
+		};
+
+		spyOn(methodsService, 'addMethod').and.callThrough();
+		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 		controller = $controller('AddMethodController', {
 			$scope: $rootScope,
 			$location: $location,
 			$window: $window,
-			methodService: methodService,
+			methodsService: methodsService,
 			variableStateService: variableStateService,
 			serviceUtilities: serviceUtilities
 		});
@@ -61,7 +69,20 @@ describe('Add Method View', function() {
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 
-			expect(methodService.saveMethod).toHaveBeenCalledWith(CUT_AND_DRY);
+			expect(methodsService.addMethod).toHaveBeenCalledWith(CUT_AND_DRY);
+		});
+
+		it('should handle any errors and not redirect if the save was not successful', function() {
+
+			spyOn(location, 'path');
+
+			scope.saveMethod(fakeEvent, CUT_AND_DRY);
+
+			deferredAddMethod.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(location.path.calls.count()).toEqual(0);
 		});
 
 		it('should redirect to /methods after a successful save, if no variable is currently being edited', function() {
@@ -71,10 +92,13 @@ describe('Add Method View', function() {
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 
+			deferredAddMethod.resolve();
+			scope.$apply();
+
 			expect(location.path).toHaveBeenCalledWith('/methods');
 		});
 
-		it('should set the method on the variable and redirect to the previous screen if one is currently being edited', function() {
+		it('should set the method on the variable and go back after a successful save, if a variable is being edited', function() {
 
 			var deferred;
 
@@ -88,7 +112,12 @@ describe('Add Method View', function() {
 			spyOn(variableStateService, 'setMethod').and.callThrough();
 			spyOn(window.history, 'back');
 
+			// Successful save
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
+			deferredAddMethod.resolve();
+			scope.$apply();
+
+			// Successfully set the method
 			deferred.resolve();
 			scope.$apply();
 
@@ -107,13 +136,20 @@ describe('Add Method View', function() {
 
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-			spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+			spyOn(variableStateService, 'setMethod').and.callThrough();
+			spyOn(window.history, 'back');
 
+			// Successful save
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
+			deferredAddMethod.resolve();
+			scope.$apply();
+
+			// Fail to set the method
 			deferred.reject();
 			scope.$apply();
 
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(window.history.back.calls.count()).toEqual(0);
 		});
 	});
 });
