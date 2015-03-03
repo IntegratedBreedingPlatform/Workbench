@@ -4,38 +4,42 @@
 (function() {
 	var app = angular.module('variablesView', ['list', 'panel', 'variables']);
 
-	function toDisplayFormat(variable) {
+	function transformToDisplayFormat(variables) {
 		// TODO: check that variable has an ID and name
-		return {
-			id: variable.id,
-			Name: variable.name,
-			Property: variable.property && variable.property.name || '',
-			Method: variable.method && variable.method.name || '',
-			Scale: variable.scale && variable.scale.name || '',
-			'action-favourite': variable.favourite
-		};
+		return variables.map(function(variable){
+			return {
+				id: variable.id,
+				Name: variable.name,
+				Property: variable.property && variable.property.name || '',
+				Method: variable.method && variable.method.name || '',
+				Scale: variable.scale && variable.scale.name || '',
+				'action-favourite': variable.favourite
+			};
+		});
 	}
 
 	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService',
 		function($scope, variablesService, panelService) {
 			var ctrl = this;
-			this.variables = [];
-			this.favouriteVariables = [];
+			ctrl.variables = [];
+			ctrl.favouriteVariables = [];
+
+			/* Exposed for testing */
+			ctrl.transformToDisplayFormat = transformToDisplayFormat;
 
 			$scope.panelName = 'variables';
 
 			ctrl.colHeaders = ['Name', 'Property', 'Method', 'Scale', 'action-favourite'];
 
 			variablesService.getFavouriteVariables().then(function(variables) {
-				ctrl.favouriteVariables = variables.map(toDisplayFormat);
+				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
 			});
 
 			variablesService.getVariables().then(function(variables) {
-				ctrl.variables = variables.map(toDisplayFormat);
+				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
 			});
 
 			$scope.showVariableDetails = function() {
-
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
 				});
@@ -45,9 +49,6 @@
 
 			$scope.selectedItem = {id: null};
 			$scope.selectedVariable = null;
-
-			/* Exposed for testing */
-			this.toDisplayFormat = toDisplayFormat;
 		}
 	]);
 

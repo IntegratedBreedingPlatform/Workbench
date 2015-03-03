@@ -2,136 +2,172 @@
 'use strict';
 
 describe('Variables Controller', function() {
-	var q,
+	var PLANT_VIGOR = {
+			id: 1,
+			name: 'Plant Vigor',
+			alias: '',
+			description: 'A little vigourous',
+			property: {
+				id: 1,
+				name: 'Plant Vigor'
+			},
+			method: {
+				id: 1,
+				name: 'Visual assessment at seedling stage'
+			},
+			scale: {
+				id: 1,
+				name: 'Score',
+				dataType: 2,
+				validValues: {
+					min: 1,
+					max: 5
+				}
+			},
+			variableType: [
+				1
+			],
+			favourite: true
+		},
+		q,
 		controller,
 		scope,
-		deferred,
-		variablesService;
+
+		variablesService,
+		panelService,
+
+		deferredGetVariable,
+		deferredGetVariables,
+		deferredGetFavVariables;
 
 	beforeEach(function() {
 		module('variablesView');
 	});
 
 	beforeEach(inject(function($q, $controller, $rootScope) {
-		variablesService = {
-			getVariables: function() {
-				deferred = q.defer();
-				return deferred.promise;
-			},
-			getFavouriteVariables: function() {
-				deferred = q.defer();
-				return deferred.promise;
-			}
-		};
-		spyOn(variablesService, 'getVariables').and.callThrough();
-
 		q = $q;
 		scope = $rootScope;
+
+		variablesService = {
+			getVariable: function() {
+				deferredGetVariable = q.defer();
+				return deferredGetVariable.promise;
+			},
+			getVariables: function() {
+				deferredGetVariables = q.defer();
+				return deferredGetVariables.promise;
+			},
+			getFavouriteVariables: function() {
+				deferredGetFavVariables = q.defer();
+				return deferredGetFavVariables.promise;
+			}
+		};
+
+		panelService = {
+			showPanel: function() {}
+		};
+
+		spyOn(variablesService, 'getVariable').and.callThrough();
+		spyOn(variablesService, 'getVariables').and.callThrough();
+		spyOn(variablesService, 'getFavouriteVariables').and.callThrough();
+		spyOn(panelService, 'showPanel');
+
 		controller = $controller('VariablesController', {
 			$scope: scope,
-			variablesService: variablesService
+			variablesService: variablesService,
+			panelService: panelService
 		});
+
+		spyOn(controller, 'transformToDisplayFormat').and.callThrough();
 	}));
 
-	it('toDisplayFormat should transform variables into display format', function() {
-		var variable = {
-				id: 'var1',
-				name: 'var1',
-				favourite: 'true',
-				method: {
-					name: 'method'
-				},
-				property: {
-					name: 'property'
-				},
-				scale: {
-					name: 'scale'
-				}
-			},
-			transformedVariable = {
-				id: 'var1',
-				Name: 'var1',
-				'action-favourite': 'true',
-				Method: 'method',
-				Property: 'property',
-				Scale: 'scale'
-			};
+	describe('ctrl.transformToDisplayFormat', function() {
 
-		expect(controller.toDisplayFormat(variable)).toEqual(transformedVariable);
+		it('should transform variables into display format', function() {
+			var rawVariables = [PLANT_VIGOR],
+				transformedVariabless = [{
+					id: PLANT_VIGOR.id,
+					Name: PLANT_VIGOR.name,
+					Property: PLANT_VIGOR.property.name,
+					Method: PLANT_VIGOR.method.name,
+					Scale: PLANT_VIGOR.scale.name,
+					'action-favourite': PLANT_VIGOR.favourite
+				}];
+
+			expect(controller.transformToDisplayFormat(rawVariables)).toEqual(transformedVariabless);
+		});
+
+		it('should default values to empty strings if they are not present', function() {
+			var rawVariables = [PLANT_VIGOR],
+				transformedVariables;
+
+			// Null out some values
+			rawVariables[0].property = null;
+			rawVariables[0].method = null;
+			rawVariables[0].scale = null;
+
+			transformedVariables = [{
+				id: PLANT_VIGOR.id,
+				Name: PLANT_VIGOR.name,
+				Property: '',
+				Method: '',
+				Scale: '',
+				'action-favourite': PLANT_VIGOR.favourite
+			}];
+			expect(controller.transformToDisplayFormat(rawVariables)).toEqual(transformedVariables);
+		});
+
 	});
 
-});
+	it('should transform variables into display format', function() {
 
-describe('Variables Service', function() {
-	var variablesServiceUrl = 'http://private-905fc7-ontologymanagement.apiary-mock.com/variables',
-		variablesService,
-		httpBackend;
+		var jsonData = [PLANT_VIGOR];
 
-	beforeEach(function() {
-		module('variables');
+		deferredGetVariables.resolve(jsonData);
+		scope.$apply();
 
-		inject(function(_variablesService_, $httpBackend) {
-			variablesService = _variablesService_;
-			httpBackend = $httpBackend;
+		expect(variablesService.getVariables).toHaveBeenCalled();
+		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
+	});
+
+	it('should transform favourite variables into display format', function() {
+
+		var jsonData = [PLANT_VIGOR];
+
+		deferredGetFavVariables.resolve(jsonData);
+		scope.$apply();
+
+		expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
+		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
+	});
+
+	it('should set the selected item to be an object with an id property set to null by default', function() {
+		expect(scope.selectedItem).toEqual({id: null});
+	});
+
+	it('should set the selected variable to be null by default', function() {
+		expect(scope.selectedVariable).toEqual(null);
+	});
+
+	describe('$scope.showVariableDetails', function() {
+
+		it('should retrieve the selected variable and display the panel', function() {
+
+			var selectedId = 123,
+				panelName = 'variables',
+				variable = PLANT_VIGOR;
+
+			scope.selectedItem.id = selectedId;
+			scope.panelName = panelName;
+
+			scope.showVariableDetails();
+			deferredGetVariable.resolve(variable);
+			scope.$apply();
+
+			expect(variablesService.getVariable).toHaveBeenCalledWith(selectedId);
+			expect(scope.selectedVariable).toEqual(variable);
+			expect(panelService.showPanel).toHaveBeenCalledWith(panelName);
 		});
 	});
 
-	afterEach(function() {
-		httpBackend.verifyNoOutstandingExpectation();
-		httpBackend.verifyNoOutstandingRequest();
-	});
-
-	it('should return an array of objects', function() {
-		var variables = [{
-				name: 'Var1',
-				description: 'This is var1'
-			}, {
-				name: 'Var2',
-				description: 'This is var2'
-			}],
-			result;
-
-		httpBackend.expectGET(variablesServiceUrl).respond(variables);
-
-		variablesService.getVariables().then(function(response) {
-			result = response;
-		});
-
-		httpBackend.flush();
-
-		expect(result instanceof Array).toBeTruthy();
-		expect(result).toEqual(variables);
-	});
-
-	it('should return an error message when 500 response recieved', function() {
-		var result;
-
-		httpBackend.expectGET(variablesServiceUrl).respond(500);
-
-		variablesService.getVariables().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
-		});
-
-		httpBackend.flush();
-
-		expect(result).toEqual('An unknown error occurred.');
-	});
-
-	it('should return an error message when 400 response recieved', function() {
-		var result;
-
-		httpBackend.expectGET(variablesServiceUrl).respond(400);
-
-		variablesService.getVariables().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
-		});
-
-		httpBackend.flush();
-
-		expect(result).toEqual('Request was malformed.');
-	});
 });
