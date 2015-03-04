@@ -16,10 +16,10 @@
 
 			$scope.saveProperty = function(e, property) {
 				e.preventDefault();
-				propertiesService.addProperty(property).then(function() {
+				propertiesService.addProperty(property).then(function(response) {
+					property.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						// FIXME Change to ID
-						variableStateService.setProperty(property.name).then(function() {
+						variableStateService.setProperty(property.id).then(function() {
 							$window.history.back();
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					} else {
@@ -27,6 +27,7 @@
 						$location.path('/properties');
 					}
 				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+
 			};
 		}
 	]);

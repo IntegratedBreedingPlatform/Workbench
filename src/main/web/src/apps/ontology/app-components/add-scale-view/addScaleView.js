@@ -23,10 +23,10 @@
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
 
-				scalesService.addScale(scale).then(function() {
+				scalesService.addScale(scale).then(function(response) {
+					scale.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						// FIXME Change to ID
-						variableStateService.setScale(scale.name).then(function() {
+						variableStateService.setScale(scale.id).then(function() {
 							$window.history.back();
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					} else {

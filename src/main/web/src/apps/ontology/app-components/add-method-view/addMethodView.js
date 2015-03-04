@@ -10,11 +10,11 @@
 			$scope.saveMethod = function(e, method) {
 				e.preventDefault();
 
-				methodsService.addMethod(method).then(function() {
+				methodsService.addMethod(method).then(function(response) {
 					// If we successfully added the method, continue..
+					method.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						// FIXME Change to ID
-						variableStateService.setMethod(method.name).then(function() {
+						variableStateService.setMethod(method.id).then(function() {
 							$window.history.back();
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					} else {

@@ -12,8 +12,9 @@
 
 			var storedData;
 
-			// The select2 input needs to be able to call length on the types array before the data is returned.
+			// The select2 input needs to be able to call length on the arrays used for the options before the data is returned.
 			$scope.data = {
+				properties: [],
 				types: []
 			};
 
@@ -70,6 +71,7 @@
 				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/' + path);
 			};
+
 		}
 	]);
 

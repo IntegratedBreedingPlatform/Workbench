@@ -18,24 +18,38 @@
 		<div>
 			<label for="om-av-property">Property</label>
 
-			<!-- TODO We want to store id, not the name, but we'll still want to use the name as the label, so we
-				will need to change to property.id as property.name for property in data.properties. The same
-				change needs to happen for all the selects on this page-->
-			<select name="om-av-property" id="om-av-property" ng-model="variable.property" ng-options="property.name for property in data.properties"></select>
+			<ui-select name="om-av-property" id="om-av-property" ng-model="variable.property" theme="select2">
+				<ui-select-match>{{$select.selected.name}}</ui-select-match>
+				<ui-select-choices repeat="property.id as property in data.properties | filter: $select.search">
+					{{property.name}}
+				</ui-select-choices>
+			</ui-select>
 
 			<a href="#" ng-click="addNew($event, 'property')">Add a new property</a>
 		</div>
 
 		<div>
 			<label for="om-av-method">Method</label>
-			<select name="om-av-method" id="om-av-method" ng-model="variable.method" ng-options="method.name for method in data.methods"></select>
+
+			<ui-select name="om-av-method" id="om-av-method" ng-model="variable.method" theme="select2">
+				<ui-select-match>{{$select.selected.name}}</ui-select-match>
+				<ui-select-choices repeat="method.id as method in data.methods | filter: $select.search">
+					{{method.name}}
+				</ui-select-choices>
+			</ui-select>
 
 			<a href="#" ng-click="addNew($event, 'method')">Add a new method</a>
 		</div>
 
 		<div>
 			<label for="om-av-scale">Scale</label>
-			<select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" ng-options="scale.name for scale in data.scales"></select>
+
+			<ui-select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" theme="select2">
+				<ui-select-match>{{$select.selected.name}}</ui-select-match>
+				<ui-select-choices repeat="scale.id as scale in data.scales | filter: $select.search">
+					{{scale.name}}
+				</ui-select-choices>
+			</ui-select>
 
 			<a href="#" ng-click="addNew($event, 'scale')">Add a new scale</a>
 		</div>
@@ -43,7 +57,8 @@
 		<div>
 			<label for="om-av-type">Variable Type</label>
 
-			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.type" sortable="true" theme="select2">
+			<!-- TODO: Get variable type to just return array of IDs -->
+			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.type" theme="select2">
 				<ui-select-match>{{$item.name}}</ui-select-match>
 				<ui-select-choices repeat="type in data.types">
 					{{type.name}}

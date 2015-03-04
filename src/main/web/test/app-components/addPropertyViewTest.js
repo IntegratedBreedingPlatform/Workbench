@@ -107,7 +107,7 @@ describe('Add Property View', function() {
 			spyOn(location, 'path');
 
 			scope.saveProperty(fakeEvent, BLAST);
-			deferredAddProperty.resolve();
+			deferredAddProperty.resolve({id: 45});
 			scope.$apply();
 
 			expect(location.path).toHaveBeenCalledWith('/properties');
@@ -129,14 +129,14 @@ describe('Add Property View', function() {
 
 			// Successful save
 			scope.saveProperty(fakeEvent, BLAST);
-			deferredAddProperty.resolve();
+			deferredAddProperty.resolve({id: 45});
 			scope.$apply();
 
 			// Successfully set the property
 			deferredSetProperty.resolve();
 			scope.$apply();
 
-			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.name);
+			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id);
 			expect(window.history.back).toHaveBeenCalled();
 		});
 
@@ -154,7 +154,7 @@ describe('Add Property View', function() {
 
 			// Successful save
 			scope.saveProperty(fakeEvent, BLAST);
-			deferredAddProperty.resolve();
+			deferredAddProperty.resolve({id: 45});
 			scope.$apply();
 
 			// Fail to set the property

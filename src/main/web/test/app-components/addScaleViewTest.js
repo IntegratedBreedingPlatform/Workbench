@@ -187,7 +187,7 @@ describe('Add Scale View', function() {
 
 			scope.saveScale(fakeEvent, PERCENTAGE);
 
-			deferredAddScale.resolve();
+			deferredAddScale.resolve({id: '1'});
 			scope.$apply();
 
 			expect(location.path).toHaveBeenCalledWith('/scales');
@@ -209,14 +209,14 @@ describe('Add Scale View', function() {
 
 			// Successful save
 			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferredAddScale.resolve();
+			deferredAddScale.resolve({id: '1'});
 			scope.$apply();
 
 			// Successfully set the scale
 			deferredSetScale.resolve();
 			scope.$apply();
 
-			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.name);
+			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id);
 			expect(window.history.back).toHaveBeenCalled();
 		});
 
@@ -234,7 +234,7 @@ describe('Add Scale View', function() {
 
 			// Successful save
 			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferredAddScale.resolve();
+			deferredAddScale.resolve({id: '1'});
 			scope.$apply();
 
 			// Fail to set the scale
