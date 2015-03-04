@@ -18,9 +18,12 @@
 		<div>
 			<label for="om-as-type">Data Type</label>
 
-			<!-- TODO We want to store id, not the name, but we'll still want to use the name as the label, so we
-				will need to change to type.id as type.name for type in types.-->
-			<select name="om-as-type" id="om-as-type" ng-model="scale.type" ng-options="type.name for type in types"></select>
+			<ui-select name="om-as-type" id="om-as-type" ng-model="scale.type" theme="select2">
+				<ui-select-match>{{$select.selected.name}}</ui-select-match>
+				<ui-select-choices repeat="type.id as type in types | filter: $select.search">
+					{{type.name}}
+				</ui-select-choices>
+			</ui-select>
 		</div>
 
 		<div ng-show="showRangeWidget">
