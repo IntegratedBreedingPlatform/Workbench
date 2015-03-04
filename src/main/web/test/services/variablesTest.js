@@ -1,14 +1,31 @@
-/*global expect, inject*/
+/*global expect, inject, spyOn*/
 'use strict';
 
 describe('Variables Service', function() {
-	var variablesServiceUrl = 'http://private-905fc7-ontologymanagement.apiary-mock.com/variables',
-		variablesService,
-		httpBackend;
+	var variablesService,
+		httpBackend,
+		serviceUtilities;
 
 	beforeEach(function() {
 		module('variables');
+	});
 
+	beforeEach(function () {
+
+		serviceUtilities = {
+			restSuccessHandler: function() {},
+			restFailureHandler: function() {}
+		};
+
+		spyOn(serviceUtilities, 'restSuccessHandler');
+		spyOn(serviceUtilities, 'restFailureHandler');
+
+		module(function ($provide) {
+			$provide.value('serviceUtilities', serviceUtilities);
+		});
+	});
+
+	beforeEach(function() {
 		inject(function(_variablesService_, $httpBackend) {
 			variablesService = _variablesService_;
 			httpBackend = $httpBackend;
@@ -20,57 +37,217 @@ describe('Variables Service', function() {
 		httpBackend.verifyNoOutstandingRequest();
 	});
 
-	it('should return an array of objects', function() {
-		var variables = [{
-				name: 'Var1',
-				description: 'This is var1'
-			}, {
-				name: 'Var2',
-				description: 'This is var2'
-			}],
-			result;
+	describe('getVariables', function() {
 
-		httpBackend.expectGET(variablesServiceUrl).respond(variables);
+		it('should GET /variables', function() {
 
-		variablesService.getVariables().then(function(response) {
-			result = response;
+			httpBackend.expectGET(/\/variables$/).respond();
+
+			variablesService.getVariables();
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result instanceof Array).toBeTruthy();
-		expect(result).toEqual(variables);
+			var response = ['variables go here'];
+
+			httpBackend.expectGET(/\/variables$/).respond(response);
+
+			variablesService.getVariables();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectGET(/\/variables$/).respond(500, error);
+
+			variablesService.getVariables();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
 	});
 
-	it('should return an error message when 500 response recieved', function() {
-		var result;
+	describe('getFavouriteVariables', function() {
 
-		httpBackend.expectGET(variablesServiceUrl).respond(500);
+		it('should GET /variables, setting favourite=true', function() {
 
-		variablesService.getVariables().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
+			httpBackend.expectGET(/\/variables\?favourite=true$/).respond();
+
+			variablesService.getFavouriteVariables();
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result).toEqual('An unknown error occurred.');
+			var response = ['variables go here'];
+
+			httpBackend.expectGET(/\/variables\?favourite=true$/).respond(response);
+
+			variablesService.getFavouriteVariables();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectGET(/\/variables\?favourite=true$/).respond(500, error);
+
+			variablesService.getFavouriteVariables();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
 	});
 
-	it('should return an error message when 400 response recieved', function() {
-		var result;
+	describe('addVariable', function() {
 
-		httpBackend.expectGET(variablesServiceUrl).respond(400);
+		it('should POST to /variables', function() {
 
-		variablesService.getVariables().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
+			var variable = {
+				name: 'myvariable'
+			};
+
+			httpBackend.expectPOST(/\/variables$/, variable).respond(201);
+
+			variablesService.addVariable(variable);
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result).toEqual('Request was malformed.');
+			var variable = {
+				name: 'myvariable'
+			},
+			response = 123;
+
+			httpBackend.expectPOST(/\/variables$/, variable).respond(201, response);
+
+			variablesService.addVariable(variable);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectPOST(/\/variables$/).respond(500, error);
+
+			variablesService.addVariable({});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
+	describe('getVariable', function() {
+
+		it('should GET /variable, specifying the given id', function() {
+
+			var id = 123;
+
+			// FIXME check that the variable with the specified ID is actually requested once we've hooked up the real service
+			httpBackend.expectGET(/\/variables\/:id$/).respond();
+
+			variablesService.getVariable(id);
+
+			httpBackend.flush();
+		});
+
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
+
+			var id = 123,
+				response = ['variables go here'];
+
+			httpBackend.expectGET(/\/variables\/:id$/).respond(response);
+
+			variablesService.getVariable(id);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var id = 123,
+				error = 'Error!';
+
+			httpBackend.expectGET(/\/variables\/:id$/).respond(500, error);
+
+			variablesService.getVariable(id);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+
+	});
+
+	describe('getTypes', function() {
+
+		it('should GET /variableTypes', function() {
+
+			httpBackend.expectGET(/\/variableTypes$/).respond();
+
+			variablesService.getTypes();
+
+			httpBackend.flush();
+		});
+
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
+
+			var response = ['variableTypes go here'];
+
+			httpBackend.expectGET(/\/variableTypes$/).respond(response);
+
+			variablesService.getTypes();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectGET(/\/variableTypes$/).respond(500, error);
+
+			variablesService.getTypes();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+
 	});
 });
