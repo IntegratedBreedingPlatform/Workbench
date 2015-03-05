@@ -17,12 +17,14 @@
 			},
 
 			getFavouriteVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables?favourite=true');
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
+					'?favourite=true');
 				return request.then(successHandler, failureHandler);
 			},
 
 			addVariable: function(variable) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables', variable);
+				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables',
+					variable);
 				return request.then(successHandler, failureHandler);
 			},
 

@@ -17,15 +17,9 @@
 				return response.data;
 			},
 
-			restFailureHandler: function(q, response) {
-				var errorMessage = 'An unknown error occurred.';
-
-				if (!angular.isObject(response.data)) {
-					if (response.status === 400) {
-						errorMessage = 'Request was malformed.';
-					}
-					return $q.reject(errorMessage);
-				}
+			restFailureHandler: function(response) {
+				var error = response && response.status === 400 ? 'Request was malformed.' : 'An unknown error occurred.';
+				return $q.reject(error);
 			}
 		};
 	}]);

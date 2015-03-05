@@ -2,23 +2,12 @@
 'use strict';
 
 (function() {
-	var app = angular.module('dataTypes', []);
+	var app = angular.module('dataTypes', ['utilities']);
 
-	app.service('dataTypesService', ['$http', '$q', function($http, $q) {
-		function successHandler(response) {
-			return response.data;
-		}
+	app.service('dataTypesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
 
-		function failureHandler(response) {
-			var errorMessage = 'An unknown error occurred.';
-
-			if (!angular.isObject(response.data)) {
-				if (response.status === 400) {
-					errorMessage = 'Request was malformed.';
-				}
-				return $q.reject(errorMessage);
-			}
-		}
+		var successHandler = serviceUtilities.restSuccessHandler,
+			failureHandler = serviceUtilities.restFailureHandler;
 
 		return {
 			getDataTypes: function() {

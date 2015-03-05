@@ -2,23 +2,12 @@
 'use strict';
 
 (function() {
-	var app = angular.module('scales', []);
+	var app = angular.module('scales', ['utilities']);
 
-	app.service('scalesService', ['$http', '$q', function($http, $q) {
-		function successHandler(response) {
-			return response.data;
-		}
+	app.service('scalesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
 
-		function failureHandler(response) {
-			var errorMessage = 'An unknown error occurred.';
-
-			if (!angular.isObject(response.data)) {
-				if (response.status === 400) {
-					errorMessage = 'Request was malformed.';
-				}
-				return $q.reject(errorMessage);
-			}
-		}
+		var successHandler = serviceUtilities.restSuccessHandler,
+			failureHandler = serviceUtilities.restFailureHandler;
 
 		return {
 			// Scales services (plural)
