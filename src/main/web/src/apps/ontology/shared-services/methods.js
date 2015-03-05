@@ -23,18 +23,18 @@
 		return {
 			// Methods services (plural)
 			getMethods: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods');
 				return request.then(successHandler, failureHandler);
 			},
 
 			addMethod: function(method) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/methods', method);
+				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods', method);
 				return request.then(successHandler, failureHandler);
 			},
 
 			// Method services (on a specific method)
 			getMethod: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/methods/:id');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods/:id');
 				return request.then(successHandler, failureHandler);
 			}
 		};

@@ -2,7 +2,7 @@
 'use strict';
 
 describe('Properties Service', function() {
-	var propertiesServiceUrl = 'http://private-905fc7-ontologymanagement.apiary-mock.com/properties',
+	var propertiesServiceUrl = 'http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties',
 		propertiesService,
 		httpBackend;
 

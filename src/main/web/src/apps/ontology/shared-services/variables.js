@@ -12,29 +12,29 @@
 		return {
 			// Variables services (plural)
 			getVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/variables');
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables');
 				return request.then(successHandler, failureHandler);
 			},
 
 			getFavouriteVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/variables?favourite=true');
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables?favourite=true');
 				return request.then(successHandler, failureHandler);
 			},
 
 			addVariable: function(variable) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/variables', variable);
+				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables', variable);
 				return request.then(successHandler, failureHandler);
 			},
 
 			// Variable services (on a specific variable)
 			getVariable: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/variables/:id');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id');
 				return request.then(successHandler, failureHandler);
 			},
 
 			// Variable Types services (plural)
 			getTypes: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/variableTypes');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variableTypes');
 				return request.then(successHandler, failureHandler);
 			}
 		};
