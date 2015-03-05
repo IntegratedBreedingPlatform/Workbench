@@ -1,14 +1,31 @@
-/*global expect, inject*/
+/*global expect, inject, spyOn*/
 'use strict';
 
 describe('Properties Service', function() {
-	var propertiesServiceUrl = 'http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties',
-		propertiesService,
-		httpBackend;
+	var propertiesService,
+		httpBackend,
+		serviceUtilities;
 
 	beforeEach(function() {
 		module('properties');
+	});
 
+	beforeEach(function () {
+
+		serviceUtilities = {
+			restSuccessHandler: function() {},
+			restFailureHandler: function() {}
+		};
+
+		spyOn(serviceUtilities, 'restSuccessHandler');
+		spyOn(serviceUtilities, 'restFailureHandler');
+
+		module(function ($provide) {
+			$provide.value('serviceUtilities', serviceUtilities);
+		});
+	});
+
+	beforeEach(function() {
 		inject(function(_propertiesService_, $httpBackend) {
 			propertiesService = _propertiesService_;
 			httpBackend = $httpBackend;
@@ -20,57 +37,176 @@ describe('Properties Service', function() {
 		httpBackend.verifyNoOutstandingRequest();
 	});
 
-	it('should return an array of objects', function() {
-		var properties = [{
-				name: 'Prop1',
-				description: 'This is prop1'
-			}, {
-				name: 'Prop2',
-				description: 'This is prop2'
-			}],
-			result;
+	describe('getProperties', function() {
 
-		httpBackend.expectGET(propertiesServiceUrl).respond(properties);
+		it('should GET /properties', function() {
 
-		propertiesService.getProperties().then(function(response) {
-			result = response;
+			httpBackend.expectGET(/\/properties$/).respond();
+
+			propertiesService.getProperties();
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result instanceof Array).toBeTruthy();
-		expect(result).toEqual(properties);
+			var response = ['properties go here'];
+
+			httpBackend.expectGET(/\/properties$/).respond(response);
+
+			propertiesService.getProperties();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectGET(/\/properties$/).respond(500, error);
+
+			propertiesService.getProperties();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
 	});
 
-	it('should return an error message when 500 response recieved', function() {
-		var result;
+	describe('addProperty', function() {
 
-		httpBackend.expectGET(propertiesServiceUrl).respond(500);
+		it('should POST to /properties', function() {
 
-		propertiesService.getProperties().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
+			var property = {
+				name: 'myproperty'
+			};
+
+			httpBackend.expectPOST(/\/properties$/, property).respond(201);
+
+			propertiesService.addProperty(property);
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result).toEqual('An unknown error occurred.');
+			var property = {
+				name: 'myproperty'
+			},
+			response = 123;
+
+			httpBackend.expectPOST(/\/properties$/, property).respond(201, response);
+
+			propertiesService.addProperty(property);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectPOST(/\/properties$/).respond(500, error);
+
+			propertiesService.addProperty({});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
 	});
 
-	it('should return an error message when 400 response recieved', function() {
-		var result;
+	describe('getProperty', function() {
 
-		httpBackend.expectGET(propertiesServiceUrl).respond(400);
+		it('should GET /properties, specifying the given id', function() {
 
-		propertiesService.getProperties().then(function(response) {
-			result = response;
-		}, function(reason) {
-			result = reason;
+			var id = 123;
+
+			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
+			httpBackend.expectGET(/\/properties\/:id$/).respond();
+
+			propertiesService.getProperty(id);
+
+			httpBackend.flush();
 		});
 
-		httpBackend.flush();
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-		expect(result).toEqual('Request was malformed.');
+			var id = 123,
+				response = ['properties go here'];
+
+			httpBackend.expectGET(/\/properties\/:id$/).respond(response);
+
+			propertiesService.getProperty(id);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var id = 123,
+				error = 'Error!';
+
+			httpBackend.expectGET(/\/properties\/:id$/).respond(500, error);
+
+			propertiesService.getProperty(id);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+
+	});
+
+	describe('getClasses', function() {
+
+		it('should GET /classes', function() {
+
+			httpBackend.expectGET(/\/classes$/).respond();
+
+			propertiesService.getClasses();
+
+			httpBackend.flush();
+		});
+
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
+
+			var response = ['classes go here'];
+
+			httpBackend.expectGET(/\/classes$/).respond(response);
+
+			propertiesService.getClasses();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectGET(/\/classes$/).respond(500, error);
+
+			propertiesService.getClasses();
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
 	});
 });

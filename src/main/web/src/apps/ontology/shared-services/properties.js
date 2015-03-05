@@ -2,23 +2,12 @@
 'use strict';
 
 (function() {
-	var app = angular.module('properties', []);
+	var app = angular.module('properties', ['utilities']);
 
-	app.service('propertiesService', ['$http', '$q', function($http, $q) {
-		function successHandler(response) {
-			return response.data;
-		}
+	app.service('propertiesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
 
-		function failureHandler(response) {
-			var errorMessage = 'An unknown error occurred.';
-
-			if (!angular.isObject(response.data)) {
-				if (response.status === 400) {
-					errorMessage = 'Request was malformed.';
-				}
-				return $q.reject(errorMessage);
-			}
-		}
+		var successHandler = serviceUtilities.restSuccessHandler,
+			failureHandler = serviceUtilities.restFailureHandler;
 
 		return {
 			// Properties services (plural)
@@ -28,7 +17,8 @@
 			},
 
 			addProperty: function(property) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties', property);
+				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties',
+					property);
 				return request.then(successHandler, failureHandler);
 			},
 
