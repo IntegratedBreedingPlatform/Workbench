@@ -4,7 +4,8 @@
 (function() {
 	var app = angular.module('utilities', []);
 
-	app.factory('serviceUtilities', '$q', function($q) {
+	app.factory('serviceUtilities', ['$q', function($q) {
+
 		return {
 			genericAndRatherUselessErrorHandler: function(error) {
 				if (console) {
@@ -27,5 +28,5 @@
 				}
 			}
 		};
-	});
+	}]);
 }());
