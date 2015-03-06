@@ -12,6 +12,8 @@
 				categories: [{}]
 			};
 
+			$scope.data = {};
+
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
 
@@ -40,9 +42,13 @@
 				$scope.scale.categories.push({});
 			};
 
-			$scope.$watch('scale.type.name', function(newValue) {
-				$scope.showRangeWidget = newValue === 'Numeric';
-				$scope.showCategoriesWidget = newValue === 'Categorical';
+			$scope.$watch('data.selectedType', function(newType) {
+				if (newType) {
+					$scope.scale.dataType = newType.id;
+
+					$scope.showRangeWidget = newType.name === 'Numeric';
+					$scope.showCategoriesWidget = newType.name === 'Categorical';
+				}
 			});
 		}
 	]);
