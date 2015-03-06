@@ -23,10 +23,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
 
@@ -37,6 +40,9 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     private static final long serialVersionUID = 8866276834893749854L;
 
     private final static Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
+    
+    @Value("${workbench.is.server.app}")
+	private String isServerApp;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -62,8 +68,15 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         
         //create DataFile element
         DataFile data = new DataFile();
-        data.setName(gxeInput.getSourceCSVFilePath());
-        data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
+        
+        if (Boolean.parseBoolean(isServerApp)){
+        	data.setName(new File(gxeInput.getSourceCSVFilePath()).getName());
+            data.setSummarystats(new File(gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
+        }else{
+        	data.setName(gxeInput.getSourceCSVFilePath());
+            data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
+        }
+        
         
         Environments environments = new Environments();
         environments.setName(gxeInput.getEnvironmentName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));

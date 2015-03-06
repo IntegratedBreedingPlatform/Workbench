@@ -15,6 +15,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -24,6 +25,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -204,8 +206,14 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
             return;
         }
 
-		MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(getStudyDataManager(), project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedGenotypeFactorName ,selectedEnvGroupFactorName, variatesCheckboxState);
-		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
+		MultiSiteParameters multiSiteParameters = new MultiSiteParameters();
+		multiSiteParameters.setSelectedEnvironmentFactorName(selectedEnvFactorName);
+		multiSiteParameters.setSelectedGenotypeFactorName(selectedGenotypeFactorName);
+		multiSiteParameters.setSelectedEnvGroupFactorName(selectedEnvGroupFactorName);
+		multiSiteParameters.setProject(project);
+		multiSiteParameters.setStudy(study);
+
+		MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState, multiSiteParameters);
 		tabContainer.setVisible(true);
 
 		getStudiesTabsheet().setVisible(true);

@@ -12,41 +12,48 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import org.generationcp.commons.breedingview.xml.Genotypes;
-import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.util.GxeInput;
-import org.generationcp.ibpworkbench.util.GxeUtility;
+import org.generationcp.ibpworkbench.actions.RunMultiSiteAction;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * 
@@ -57,32 +64,28 @@ import java.util.Map.Entry;
 public class MultiSiteAnalysisGxePanel extends VerticalLayout implements InitializingBean, 
 										InternationalizableComponent, IBPWorkbenchLayout {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
     
     private GxeTable gxeTable;
-    private Table selectTraitsTable;
     
-    private Project currentProject;
-
-    private Study currentStudy;
+    private Table selectTraitsTable;
     
     private Integer currentRepresentationId;
     
     private Integer currentDataSetId;
     
     private String currentDatasetName;
-
-    private String selectedEnvFactorName;
-    private String selectedEnvGroupFactorName;
-    private String selectedGenotypeFactorName;
     
     private Button btnBack;
     private Button btnReset;
-    private Button btnRunBreedingView;
+    private Button btnRunMultiSite;
     private Map<String, Boolean> variatesCheckboxState;
     private MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel;
     
     private List<DataSet> ds;
+    
+    @Value("${workbench.is.server.app}")
+	private String isServerApp;
     
     @Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -99,6 +102,8 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     private StudyDataManager studyDataManager;
     
     private ManagerFactory managerFactory;
+    
+    private MultiSiteParameters multiSiteParameters;
 
 	private Label lblDataSelectedForAnalysisHeader;
 	private Label lblDatasetName;
@@ -119,22 +124,13 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	
 	
     public MultiSiteAnalysisGxePanel(StudyDataManager studyDataManager,
-    		Project currentProject, 
-    		Study study,  
     		MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel, 
-    		String selectedEnvFactorName,
-    		String selectedGenotypeFactorName,
-    		String selectedEnvGroupFactorName,
-    		Map<String, Boolean> variatesCheckboxState) {
+    		Map<String, Boolean> variatesCheckboxState, MultiSiteParameters multiSiteParameters) {
     	this.studyDataManager = studyDataManager;
-        this.currentProject = currentProject;
-        this.currentStudy = study;
         this.gxeSelectEnvironmentPanel = gxeSelectEnvironmentPanel;
-        this.selectedEnvFactorName = selectedEnvFactorName;
-        this.selectedGenotypeFactorName = selectedGenotypeFactorName;
-        this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
-        this.variatesCheckboxState = variatesCheckboxState;        
-        setCaption(study.getName());
+        this.variatesCheckboxState = variatesCheckboxState;
+        this.multiSiteParameters = multiSiteParameters;
+        setCaption(multiSiteParameters.getStudy().getName());
     }
     
     @Override
@@ -158,7 +154,12 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     public void updateLabels() {
         messageSource.setCaption(btnBack, Message.BACK);
         messageSource.setCaption(btnReset, Message.RESET);
-        messageSource.setCaption(btnRunBreedingView, Message.LAUNCH_BREEDING_VIEW);
+        if (Boolean.parseBoolean(isServerApp)){
+			messageSource.setCaption(btnRunMultiSite, Message.DOWNLOAD_INPUT_FILES);
+        }else{
+        	messageSource.setCaption(btnRunMultiSite, Message.LAUNCH_BREEDING_VIEW);
+        }
+        
         messageSource.setValue(lblDataSelectedForAnalysisHeader, Message.GXE_SELECTED_INFO);
         messageSource.setValue(lblDatasetName , Message.BV_DATASET_NAME);
         messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
@@ -170,7 +171,8 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     
 	@Override
 	public void instantiateComponents() {
-		managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+		
+		managerFactory = managerFactoryProvider.getManagerFactoryForProject(multiSiteParameters.getProject());
 		
 	   	lblDataSelectedForAnalysisHeader = new Label();
     	lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
@@ -210,7 +212,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
     	
     	lblSelectTraitsForAnalysis = new Label();
     	    	
-    	btnRunBreedingView = new Button();
+    	btnRunMultiSite = new Button();
 		btnBack = new Button();  
 		btnReset = new Button(); 
         
@@ -220,7 +222,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	public void initializeValues() {
 		ds = null;
 		try {
-			ds = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.MEANS_DATA);
+			ds = studyDataManager.getDataSetsByType(multiSiteParameters.getStudy().getId(), DataSetType.MEANS_DATA);
 		} catch (MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
@@ -228,9 +230,9 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		if (ds != null && ds.size() > 0){
 			setCaption(ds.get(0).getName());
 			txtDatasetName.setValue(ds.get(0).getName());
-			txtDatasourceName.setValue(currentStudy.getName());
-			txtSelectedEnvironmentFactor.setValue(getSelectedEnvFactorName());
-			txtSelectedEnvironmentGroupFactor.setValue(getSelectedEnvGroupFactorName());
+			txtDatasourceName.setValue(multiSiteParameters.getStudy().getName());
+			txtSelectedEnvironmentFactor.setValue(multiSiteParameters.getSelectedEnvironmentFactorName());
+			txtSelectedEnvironmentGroupFactor.setValue(multiSiteParameters.getSelectedEnvGroupFactorName());
 			
 			Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener(){
 				
@@ -249,7 +251,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 				
 			};
 			
-			setGxeTable(new GxeTable(studyDataManager, currentStudy.getId(), getSelectedEnvFactorName(), selectedEnvGroupFactorName, variatesCheckboxState, envCheckBoxListener));
+			setGxeTable(new GxeTable(studyDataManager, multiSiteParameters.getStudy().getId(), multiSiteParameters.getSelectedEnvironmentFactorName(), multiSiteParameters.getSelectedEnvGroupFactorName(), variatesCheckboxState, envCheckBoxListener));
 			getGxeTable().setHeight("300px");
 		}
 		
@@ -337,138 +339,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		};
 
 		//Generate Buttons
-		btnRunBreedingView.addListener(new Button.ClickListener() {
-		private static final long serialVersionUID = -7090745965019240566L;
-
-		@Override
-		public void buttonClick(ClickEvent event) {
-			final ClickEvent buttonClickEvent = event;
-			launchBV(false,buttonClickEvent.getComponent().getWindow());
-					
-		}
-		
-		private void launchBV(boolean isXLS,final Window windowSource) {
-			String inputDir = "";
-			Tool breedingViewTool = null;
-			try{
-				breedingViewTool = workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-				inputDir = toolUtil.getInputDirectoryForTool(currentProject, breedingViewTool);
-			}catch(MiddlewareQueryException ex){
-				
-			}
-
-			String inputFileName = "";
-			
-			if (currentStudy == null){
-				MessageNotifier
-				.showError(windowSource,
-						"Cannot export dataset",
-						"No dataset is selected. Please open a study that has a dataset.");
-				
-				return;
-			}
-			
-			
-			if (gxeTable != null) {
-				
-				
-				GxeInput gxeInput =  new GxeInput(currentProject, "", 0, 0, "", "", "", "");
-	
-				
-				inputFileName = String.format("%s_%s_%s", currentProject.getProjectName().trim(), gxeTable.getMeansDataSetId(), gxeTable.getMeansDataSet().getName());
-				GxeEnvironment gxeEnv = gxeTable.getGxeEnvironment();
-				
-				
-				List<Trait> selectedTraits = new ArrayList<Trait>();
-				Iterator<?> itr = selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
-				
-				while (itr.hasNext()){
-					Object propertyId = itr.next();
-					CheckBox cb = (CheckBox)selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
-					if ((Boolean)cb.getValue()){
-						Trait t = new Trait();
-						t.setName(propertyId.toString());
-						t.setActive(true);
-						selectedTraits.add(t);
-					}
-				}
-				
-				
-				List<Environment> selectedEnnvironments = gxeTable.getSelectedEnvironments();
-			
-
-				
-				File datasetExportFile = null;
-				datasetExportFile = GxeUtility.exportGxEDatasetToBreadingViewCsv(gxeTable.getMeansDataSet(), gxeTable.getExperiments(),gxeTable.getEnvironmentName(), selectedEnvGroupFactorName , selectedGenotypeFactorName ,gxeEnv,selectedTraits, currentProject);
-				
-				
-
-				
-				try{
-					DataSet trialDataSet;
-					List<DataSet> dataSets = studyDataManager.getDataSetsByType(currentStudy.getId(), DataSetType.SUMMARY_DATA);
-					if (dataSets.size() > 0) {
-						trialDataSet = dataSets.get(0);
-					}else{
-						trialDataSet = getTrialDataSet(currentStudy.getId());
-					}
-					List<Experiment> trialExperiments = studyDataManager.getExperiments(trialDataSet.getId(), 0, Integer.MAX_VALUE);
-					File summaryStatsFile = GxeUtility.exportTrialDatasetToSummaryStatsCsv(trialDataSet, trialExperiments, gxeTable.getEnvironmentName(), selectedTraits, currentProject);
-					gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsFile.getAbsolutePath());
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				
-				
-				
-				if (isXLS) {
-                    gxeInput.setSourceXLSFilePath(datasetExportFile.getAbsolutePath());
-                } else {
-                    gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
-                }
-			
-				gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-				gxeInput.setTraits(selectedTraits);
-				gxeInput.setEnvironment(gxeEnv);
-				gxeInput.setSelectedEnvironments(selectedEnnvironments);
-				gxeInput.setEnvironmentGroup(selectedEnvGroupFactorName);
-				
-			
-				Genotypes genotypes = new Genotypes();
-				if (selectedGenotypeFactorName != null && selectedGenotypeFactorName != "") {
-						genotypes.setName(selectedGenotypeFactorName);
-					}else{
-						genotypes.setName("G!");
-					}
-					
-			
-
-				gxeInput.setGenotypes(genotypes);
-				gxeInput.setEnvironmentName(gxeTable.getEnvironmentName());
-				gxeInput.setBreedingViewProjectName(currentProject.getProjectName());
-				
-				
-				
-				
-				GxeUtility.generateXmlFieldBook(gxeInput);
-				
-				File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
-	            try {
-					ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", gxeInput.getDestXMLFilePath());
-					pb.start();
-
-                    MessageNotifier.showMessage(windowSource, "GxE files saved", "Successfully generated the means dataset and xml input files for breeding view.");
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                    MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(), "But it successfully created GxE Excel and XML input file for the breeding_view!");
-                }
-                
-			}
-			
-			managerFactory.close();
-		}
-	});
+		btnRunMultiSite.addListener(new RunMultiSiteAction(managerFactory, studyDataManager, gxeTable, selectTraitsTable, multiSiteParameters));
 	
 		btnBack.addListener(new Button.ClickListener() {
 			
@@ -544,43 +415,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
         addComponent(layoutButtonArea());
 	}
     
-	private DataSet getTrialDataSet(int studyId) throws MiddlewareQueryException{
-    	
-    	int trialDatasetId = studyId-1;//default
-		List<DatasetReference> datasets = studyDataManager.getDatasetReferences(studyId);
-		for (DatasetReference datasetReference : datasets) {
-			String name = datasetReference.getName();
-			int id = datasetReference.getId();
-			
-				if(name!=null && (name.startsWith("TRIAL_") || name.startsWith("NURSERY_"))) {
-					trialDatasetId = id;
-					break;
-				} else {
-					DataSet ds = studyDataManager.getDataSet(id);
-					if(ds!=null && ds.getVariableTypes().getVariableTypes()!=null) {
-						boolean aTrialDataset = true;
-						for (VariableType variableType: ds.getVariableTypes().getVariableTypes()) {
-							if(variableType.getStandardVariable().getPhenotypicType() 
-									== PhenotypicType.GERMPLASM) {
-								aTrialDataset = false;
-								break;
-							}
-						}
-						if(aTrialDataset) {
-							trialDatasetId = id;
-						}
-					}
-				}
-			
-		}
-		
-		DataSet trialDataSet = studyDataManager.getDataSet(trialDatasetId);
-		return trialDataSet;
-		
-    }
-    
-
-    
     protected Component layoutButtonArea() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         
@@ -588,7 +422,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(true);
 
-        btnRunBreedingView.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+        btnRunMultiSite.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
         Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
         spacer.setSizeFull();
         
@@ -596,33 +430,16 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
         buttonLayout.setExpandRatio(spacer,1.0F);
         buttonLayout.addComponent(btnBack);
         buttonLayout.addComponent(btnReset);
-        buttonLayout.addComponent(btnRunBreedingView);
+        buttonLayout.addComponent(btnRunMultiSite);
 
         return buttonLayout;
     }
 
     @Override
 	public Object getData(){
-		return this.getCurrentStudy();
+		return multiSiteParameters.getStudy();
 		
 	}
-    
-	//SETTERS AND GETTERS
-	public Project getCurrentProject() {
-        return currentProject;
-    }
-
-    public void setCurrentProject(Project currentProject) {
-        this.currentProject = currentProject;
-    }
-
-    public Study getCurrentStudy() {
-        return currentStudy;
-    }
-
-    public void setCurrentStudy(Study currentStudy) {
-        this.currentStudy = currentStudy;
-    }
 
     public Integer getCurrentRepresentationId() {
         return currentRepresentationId;
@@ -669,22 +486,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 	public void setGxeTable(GxeTable gxeTable) {
 		this.gxeTable = gxeTable;
-	}
-
-	public String getSelectedEnvFactorName() {
-		return selectedEnvFactorName;
-	}
-
-	public void setSelectedEnvFactorName(String selectedEnvFactorName) {
-		this.selectedEnvFactorName = selectedEnvFactorName;
-	}
-	
-	public String getSelectedEnvGroupFactorName() {
-		return selectedEnvGroupFactorName;
-	}
-
-	public void setSelectedEnvGroupFactorName(String selectedEnvGroupFactorName) {
-		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
 	}
 
 }// End of MultiSiteAnalysisGxePanel

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
+import org.generationcp.ibpworkbench.actions.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -56,7 +56,7 @@ public class RunBreedingViewActionTest {
 
 	private BreedingViewInput breedingViewInput;
 	private SingleSiteAnalysisDetailsPanel source;
-	private RunBreedingViewAction runBreedingViewAction;
+	private RunSingleSiteAction runBreedingViewAction;
 	
 	@Before
 	public void setup(){
@@ -92,7 +92,7 @@ public class RunBreedingViewActionTest {
 		source.assemble();
 		
 		
-		runBreedingViewAction = spy(new RunBreedingViewAction(source, project));
+		runBreedingViewAction = spy(new RunSingleSiteAction(source, project));
 		doNothing().when(runBreedingViewAction).showErrorMessage(any(Window.class), anyString(), anyString());
 	
 	}

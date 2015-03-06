@@ -29,7 +29,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
-import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
+import org.generationcp.ibpworkbench.actions.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -95,7 +95,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			
 			if (Boolean.parseBoolean(isServerApp)){
-				new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
 				.buttonClick(event);
 				return;
 			}
@@ -133,28 +133,28 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 											@Override
 											public void run() {
 
-												new RunBreedingViewAction(
+												new RunSingleSiteAction(
 														SingleSiteAnalysisDetailsPanel.this,
 														project).buttonClick(event);
 											}
 
 										});
 					} else {
-						new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
 								.buttonClick(event);
 					}
 
 				} else {
-					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
 							.buttonClick(event);
 				}
 
 			} catch (MiddlewareQueryException e) {
-				new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
 						.buttonClick(event);
 				LOG.error(e.getMessage(), e);
 			} catch (Exception e) {
-				new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
 						.buttonClick(event);
 				LOG.error(e.getMessage(), e);
 			}

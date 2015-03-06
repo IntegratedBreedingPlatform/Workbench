@@ -56,12 +56,12 @@ import java.util.List;
  * 
  */
 @Configurable
-public class RunBreedingViewAction implements ClickListener {
+public class RunSingleSiteAction implements ClickListener {
 	private static final String ERROR = "ERROR: ";
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RunSingleSiteAction.class);
 
 	private SingleSiteAnalysisDetailsPanel source;
 
@@ -82,7 +82,7 @@ public class RunBreedingViewAction implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public RunBreedingViewAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow,
+	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow,
 			Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
