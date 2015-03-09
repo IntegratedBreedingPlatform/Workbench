@@ -251,7 +251,8 @@
 		var loginFormRef = this;
 		var login = isLoginDisplayed();
 		var isPasswordScreen = isForgotPasswordScreenDisplayed();
-		var errorMessage = isPasswordScreen ? validateForgotPasswordInputs() : (login ? validateSignInInputs() : validateCreateAccountInputs());
+		var errorMessage = isPasswordScreen ? validateForgotPasswordInputs() :
+			(login ? validateSignInInputs() : validateCreateAccountInputs());
 
 		if (errorMessage) {
 			displayClientError(errorMessage);
