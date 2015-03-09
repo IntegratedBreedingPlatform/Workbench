@@ -22,18 +22,16 @@ describe('Variable details directive', function() {
 	}));
 
 	function compileDirective() {
-		scope.variable = VARIABLE;
-		console.log(scope.variable);
-
 		inject(function($compile) {
-			directiveElement = $compile('<om-variable-details om-variable="variable"></om-variable-details>')(scope);
+			directiveElement = $compile('<om-variable-details></om-variable-details>')(scope);
 		});
 		scope.$digest();
 	}
 
 	it('should show the keys and values of the passed in variable', function() {
+		scope.selectedVariable = VARIABLE;
 		compileDirective();
-		console.log(directiveElement);
+
 		expect(directiveElement).toContainText('cropOntologyId : CO_123');
 		expect(directiveElement).toContainText('description : A little vigorous');
 		expect(directiveElement).toContainText('name : Plant Vigour');

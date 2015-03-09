@@ -8,9 +8,6 @@
 
 		return {
 			restrict: 'E',
-			scope: {
-				omVariable: '='
-			},
 			templateUrl: 'static/views/ontology/variableDetails.html'
 		};
 	});
