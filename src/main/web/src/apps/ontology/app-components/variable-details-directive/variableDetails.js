@@ -33,10 +33,16 @@
 		};
 	});
 
-	variableDetailsModule.directive('omDescription', function() {
+	variableDetailsModule.directive('omTextArea', function() {
 		return {
 			restrict: 'E',
-			templateUrl: 'static/views/ontology/description.html'
+			scope: {
+				omLabel: '@',
+				omId: '@',
+				omModel: '=',
+				omEditable: '='
+			},
+			templateUrl: 'static/views/ontology/textArea.html'
 		};
 	});
 

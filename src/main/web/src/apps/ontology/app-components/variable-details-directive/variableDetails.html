@@ -1,7 +1,8 @@
 <button ng-click="editVariable()">Edit</button>
 <button ng-click="cancel()">Cancel</button>
 
-<om-description></om-description>
+<om-text-area om-label="Description" om-id="om-ev-description" om-model="selectedVariable.description"
+	om-editable="editableFields.description"></om-text-area>
 <p ng-repeat="(key, value) in selectedVariable">
 	{{key}} : {{value}}
 </p>

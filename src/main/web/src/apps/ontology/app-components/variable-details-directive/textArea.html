@@ -1,0 +1,5 @@
+<div>
+	<label for="{{omId}}">{{omLabel}}</label>
+	<textarea ng-show="omEditable" type="text" name="{{omId}}" id="{{omId}}" ng-model="omModel"></textarea>
+	<p ng-hide="omEditable">{{omModel}}</p>
+</div>
