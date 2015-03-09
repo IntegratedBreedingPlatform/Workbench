@@ -1,4 +1,7 @@
-<button>Edit</button>
+<button ng-click="editVariable()">Edit</button>
+<button ng-click="cancel()">Cancel</button>
+
+<om-description></om-description>
 <p ng-repeat="(key, value) in selectedVariable">
 	{{key}} : {{value}}
 </p>

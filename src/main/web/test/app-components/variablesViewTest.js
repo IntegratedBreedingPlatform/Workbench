@@ -145,8 +145,8 @@ describe('Variables Controller', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});
 
-	it('should set the selected variable to be null by default', function() {
-		expect(scope.selectedVariable).toEqual(null);
+	it('should set the selected variable to be an empty object by default', function() {
+		expect(scope.selectedVariable).toEqual({});
 	});
 
 	describe('$scope.showVariableDetails', function() {

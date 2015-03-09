@@ -4,6 +4,9 @@
 describe('Variable details directive', function() {
 	var VARIABLE = {
 			cropOntologyId: 'CO_123',
+			editableFields: [
+				'description'
+			],
 			description: 'A little vigorous',
 			name: 'Plant Vigour'
 		},

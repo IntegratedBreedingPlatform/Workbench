@@ -1,0 +1,5 @@
+<div>
+	<label for="om-ev-description">Description</label>
+	<textarea ng-show="editableFields.description" type="text" name="om-ev-description" id="om-ev-description" ng-model="selectedVariable.description"></textarea>
+	<p ng-hide="editableFields.description">{{selectedVariable.description}}</p>
+</div>

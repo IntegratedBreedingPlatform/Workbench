@@ -48,7 +48,7 @@
 			};
 
 			$scope.selectedItem = {id: null};
-			$scope.selectedVariable = null;
+			$scope.selectedVariable = {};
 		}
 	]);
 
