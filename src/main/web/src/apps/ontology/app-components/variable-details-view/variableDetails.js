@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', []);
+	var variableDetailsModule = angular.module('variableDetails', ['formFields']);
 
 	variableDetailsModule.directive('omVariableDetails', function() {
 
@@ -30,19 +30,6 @@
 			},
 			restrict: 'E',
 			templateUrl: 'static/views/ontology/variableDetails.html'
-		};
-	});
-
-	variableDetailsModule.directive('omTextArea', function() {
-		return {
-			restrict: 'E',
-			scope: {
-				omLabel: '@',
-				omId: '@',
-				omModel: '=',
-				omEditable: '='
-			},
-			templateUrl: 'static/views/ontology/textArea.html'
 		};
 	});
 
