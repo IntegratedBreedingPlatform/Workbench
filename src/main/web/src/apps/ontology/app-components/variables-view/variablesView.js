@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variablesView', ['list', 'panel', 'variables']);
+	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']);
 
 	function transformToDisplayFormat(variables) {
 		// TODO: check that variable has an ID and name
