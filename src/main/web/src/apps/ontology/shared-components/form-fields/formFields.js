@@ -17,5 +17,18 @@
 		};
 	});
 
+	formFieldsModule.directive('omInput', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				omLabel: '@',
+				omId: '@',
+				omModel: '=',
+				omEditable: '='
+			},
+			templateUrl: 'static/views/ontology/input.html'
+		};
+	});
+
 })();
 

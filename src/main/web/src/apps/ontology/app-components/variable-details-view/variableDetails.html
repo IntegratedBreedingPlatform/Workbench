@@ -3,6 +3,9 @@
 
 <om-text-area om-label="Description" om-id="om-ev-description" om-model="selectedVariable.description"
 	om-editable="editableFields.description"></om-text-area>
+<om-input om-label="Crop Ontology ID" om-id="om-ev-crop-ontology-id" om-model="selectedVariable.cropOntologyId"
+	om-editable="editableFields.cropOntologyId"></om-input>
+<om-input om-label="Alias" om-id="om-ev-alias" om-model="selectedVariable.alias" om-editable="editableFields.alias"></om-input>
 <p ng-repeat="(key, value) in selectedVariable">
 	{{key}} : {{value}}
 </p>
