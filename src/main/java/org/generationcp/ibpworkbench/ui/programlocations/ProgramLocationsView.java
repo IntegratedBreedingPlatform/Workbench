@@ -89,6 +89,7 @@ import java.util.*;
      private Button removeToFavoriteBtn;
 
      private Boolean cropOnly = false;
+     private Button searchGoBtn;
 
      public ProgramLocationsView(Project project) {
          presenter = new ProgramLocationsPresenter(this,project);
@@ -108,6 +109,9 @@ import java.util.*;
 
          saveBtn = new Button("Save Favorites");
          saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+
+         searchGoBtn= new Button("Go");
+         searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
          availableSelectAll = new CheckBox("Select All");
          availableSelectAll.setImmediate(true);
@@ -135,6 +139,26 @@ import java.util.*;
          // filter form
          this.initializeFilterForm();
      }
+     private void doLocationSearch(){
+         Country selectedCountry = (Country) countryFilter.getValue();
+         UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
+         String locationName = (String) searchField.getValue();
+
+         Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
+         Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
+
+
+         try {
+             availableTableContainer.removeAllItems();
+             availableTableContainer.addAll(presenter.getFilteredResults(cntryId, locationTypeId, locationName,favoritesTableContainer.getItemIds()));
+
+             resultCountLbl.setValue("Results: " + availableTableContainer.getItemIds().size() + " items");
+             updateNoOfEntries(availTotalEntriesLabel, availableTable);
+             updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
+         } catch (MiddlewareQueryException e) {
+             LOG.error(e.getMessage(),e);
+         }
+     }
      private void initializeActions() {
          addNewLocationsBtn.addListener(new Button.ClickListener() {
 			private static final long serialVersionUID = -7171034021312549121L;
@@ -150,24 +174,7 @@ import java.util.*;
 
 			@Override
              public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 Country selectedCountry = (Country) countryFilter.getValue();
-                 UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
-                 String locationName = (String) searchField.getValue();
-
-                 Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
-                 Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
-
-
-                 try {
-                     availableTableContainer.removeAllItems();
-                     availableTableContainer.addAll(presenter.getFilteredResults(cntryId, locationTypeId, locationName,favoritesTableContainer.getItemIds()));
-
-                     resultCountLbl.setValue("Results: " + availableTableContainer.getItemIds().size() + " items");
-                     updateNoOfEntries(availTotalEntriesLabel, availableTable);
-                     updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
-                 } catch (MiddlewareQueryException e) {
-                     LOG.error(e.getMessage(),e);
-                 }
+                doLocationSearch();
              }
          };
 
@@ -518,6 +525,16 @@ import java.util.*;
          field1.setSizeUndefined();
          field1.addComponent(searchLbl);
          field1.addComponent(searchField);
+         field1.addComponent(searchGoBtn);
+
+         searchGoBtn.addListener(new Button.ClickListener() {
+             private static final long serialVersionUID = 4839268740583678422L;
+
+             @Override
+             public void buttonClick(ClickEvent clickEvent) {
+                 doLocationSearch();
+             }
+         });
 
          container.addComponent(field1);
 
