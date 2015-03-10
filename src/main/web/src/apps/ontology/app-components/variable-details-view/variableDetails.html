@@ -1,11 +1,14 @@
-<button ng-click="editVariable()">Edit</button>
-<button ng-click="cancel()">Cancel</button>
+<form novalidate>
 
-<om-text-area om-label="Description" om-id="om-ev-description" om-model="selectedVariable.description"
-	om-editable="editableFields.description"></om-text-area>
-<om-input om-label="Crop Ontology ID" om-id="om-ev-crop-ontology-id" om-model="selectedVariable.cropOntologyId"
-	om-editable="editableFields.cropOntologyId"></om-input>
-<om-input om-label="Alias" om-id="om-ev-alias" om-model="selectedVariable.alias" om-editable="editableFields.alias"></om-input>
-<p ng-repeat="(key, value) in selectedVariable">
-	{{key}} : {{value}}
-</p>
+	<om-input om-id="om-name" om-label="Name" om-property="name" om-editing="editing" om-model="model"></om-input>
+
+	<om-input om-id="om-alias" om-label="Alias" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model"></om-input>
+
+	<om-text-area om-id="om-description" om-label="Description" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+
+	<om-input om-id="om-ontology-id" om-label="Crop Ontology Id" om-property="cropOntologyId" om-editing="editing" om-model="model"></om-input>
+
+	<button ng-hide="editing" ng-click="editVariable($event)">Edit</button>
+	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">Save</button>
+	<button ng-show="editing" ng-click="cancel($event)">Cancel</button>
+</form>

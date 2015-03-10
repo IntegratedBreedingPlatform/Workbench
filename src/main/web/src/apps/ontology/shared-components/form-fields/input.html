@@ -1,5 +1,5 @@
 <div>
-	<label for="{{omId}}">{{omLabel}}</label>
-	<input ng-show="omEditable" type="text" name="{{omId}}" id="{{omId}}" ng-model="omModel"></input>
-	<p ng-hide="omEditable">{{omModel}}</p>
+	<label for="{{id}}">{{label}}</label>
+	<input ng-show="editable()" type="text" name="{{id}}" id="{{id}}" ng-model="model[property]"></input>
+	<p ng-hide="editable()">{{model[property]}}</p>
 </div>

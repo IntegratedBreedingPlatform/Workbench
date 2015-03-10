@@ -2,35 +2,57 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['formFields']);
+	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'variables']);
 
-	variableDetailsModule.directive('omVariableDetails', function() {
+	variableDetailsModule.directive('omVariableDetails', ['variablesService', function(variablesService) {
 
 		return {
 			controller: function($scope) {
+
 				$scope.editing = false;
 
-				$scope.editVariable = function() {
-					$scope.editing = true;
+				$scope.$watch('selectedVariable', function(variable) {
+					$scope.model = angular.copy(variable);
+				});
 
-					// Map the array of editable fields to an object that can be inspected to determine whether fields should be
-					// displayed as editable.
-					if ($scope.selectedVariable) {
-						$scope.editableFields = $scope.selectedVariable.editableFields.reduce(function(editableFields, currentField) {
-							editableFields[currentField] = true;
-							return editableFields;
-						}, {});
-					}
+				$scope.$watch('selectedItem', function(selected) {
+					$scope.variableId = selected && selected.id || null;
+				});
+
+				// Hide the alias if the name is still editable
+				$scope.hideAlias = function() {
+					return $scope.model && $scope.model.editableFields && $scope.model.editableFields.indexOf('name') !== -1;
 				};
 
-				$scope.cancel = function() {
+				$scope.editVariable = function(e) {
+					e.preventDefault();
+					$scope.editing = true;
+				};
+
+				$scope.cancel = function(e) {
+					e.preventDefault();
 					$scope.editing = false;
-					$scope.editableFields = {};
+					$scope.model = $scope.selectedVariable;
+				};
+
+				$scope.saveChanges = function(e, id, model) {
+					e.preventDefault();
+
+					variablesService.updateVariable(id, model).then(function() {
+
+						// Update variable on parent scope if we succeeded
+						$scope.updateSelectedVariable(model);
+
+						$scope.editing = false;
+					}, function(error) {
+
+						// TODO Error handling
+						console.log(error);
+					});
 				};
 			},
 			restrict: 'E',
 			templateUrl: 'static/views/ontology/variableDetails.html'
 		};
-	});
-
+	}]);
 })();

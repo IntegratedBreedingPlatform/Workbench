@@ -132,7 +132,7 @@ describe('Variables Service', function() {
 			httpBackend.flush();
 		});
 
-		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful POST is made', function() {
 
 			var variable = {
 				name: 'myvariable'
@@ -149,7 +149,7 @@ describe('Variables Service', function() {
 			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
 		});
 
-		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful POST is not made', function() {
 
 			var error = 'Error!';
 
@@ -210,6 +210,61 @@ describe('Variables Service', function() {
 
 	});
 
+	describe('updateVariable', function() {
+
+		it('should PUT to /updateVariable', function() {
+
+			var variable = {
+				name: 'myvariable'
+			},
+
+			// FIXME not in use yet because services haven't been hooked up
+			id = 1;
+
+			httpBackend.expectPUT(/\/variables\/:id$/, variable).respond(204);
+
+			variablesService.updateVariable(id, variable);
+
+			httpBackend.flush();
+		});
+
+		it('should return the response status if a successful PUT is made', function() {
+
+			var variable = {
+				name: 'myvariable'
+			},
+			id = 1,
+
+			expectedResponse = 204,
+			actualResponse;
+
+			httpBackend.expectPUT(/\/variables\/:id$/, variable).respond(expectedResponse);
+
+			variablesService.updateVariable(id, variable).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectPUT(/\/variables\/:id$/, {}).respond(500, error);
+
+			variablesService.updateVariable(1, {});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
 	describe('getTypes', function() {
 
 		it('should GET /variableTypes', function() {
@@ -248,6 +303,5 @@ describe('Variables Service', function() {
 			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
 			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
 		});
-
 	});
 });

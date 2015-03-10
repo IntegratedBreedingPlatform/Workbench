@@ -31,13 +31,14 @@ describe('Variable details directive', function() {
 		scope.$digest();
 	}
 
-	it('should show the keys and values of the passed in variable', function() {
+	// FIXME This test is useless, we should get rid of it and test the actual JS
+	it('should show the values of the passed in variable', function() {
 		scope.selectedVariable = VARIABLE;
 		compileDirective();
 
-		expect(directiveElement).toContainText('cropOntologyId : CO_123');
-		expect(directiveElement).toContainText('description : A little vigorous');
-		expect(directiveElement).toContainText('name : Plant Vigour');
+		expect(directiveElement).toContainText('CO_123');
+		expect(directiveElement).toContainText('A little vigorous');
+		expect(directiveElement).toContainText('Plant Vigour');
 	});
 
 });

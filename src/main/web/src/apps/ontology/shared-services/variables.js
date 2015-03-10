@@ -28,6 +28,14 @@
 				return request.then(successHandler, failureHandler);
 			},
 
+			updateVariable: function(id, variable) {
+				var request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id',
+					variable);
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
 			// Variable services (on a specific variable)
 			getVariable: function(/*id*/) {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id');
