@@ -2,18 +2,26 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'variables']);
+	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'utilities', 'variables']);
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', function(variablesService) {
 
 		return {
-			controller: function($scope) {
+			controller: function($scope, propertiesService, serviceUtilities) {
 
 				$scope.editing = false;
 
 				$scope.$watch('selectedVariable', function(variable) {
 					$scope.model = angular.copy(variable);
 				});
+
+				$scope.data = {
+					properties: []
+				};
+
+				propertiesService.getProperties().then(function(properties) {
+					$scope.data.properties = properties;
+				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 				$scope.$watch('selectedItem', function(selected) {
 					$scope.variableId = selected && selected.id || null;

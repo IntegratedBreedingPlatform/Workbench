@@ -1,16 +1,8 @@
-/*global angular, expect, inject*/
+/*global angular, inject*/
 'use strict';
 
 describe('Variable details directive', function() {
-	var VARIABLE = {
-			cropOntologyId: 'CO_123',
-			editableFields: [
-				'description'
-			],
-			description: 'A little vigorous',
-			name: 'Plant Vigour'
-		},
-		scope,
+	var scope,
 		directiveElement;
 
 	beforeEach(function() {
@@ -31,14 +23,6 @@ describe('Variable details directive', function() {
 		scope.$digest();
 	}
 
-	// FIXME This test is useless, we should get rid of it and test the actual JS
-	it('should show the values of the passed in variable', function() {
-		scope.selectedVariable = VARIABLE;
-		compileDirective();
-
-		expect(directiveElement).toContainText('CO_123');
-		expect(directiveElement).toContainText('A little vigorous');
-		expect(directiveElement).toContainText('Plant Vigour');
-	});
+	//TODO: Implement tests!!!
 
 });
