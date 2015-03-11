@@ -1,13 +1,15 @@
-/*global expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn*/
 'use strict';
 
 describe('Properties View', function() {
 	var BLAST = {
 			name: 'Blast',
 			description: 'I\'ts a blast',
-			classes: ['class', 'anotherClass']
+			classes: ['class', 'anotherClass'],
+			cropOntologyId: 'CO_192791864',
+			editableFields: ['name', 'description', 'classes', 'cropOntologyId'],
+			deletable: true
 		},
-
 		q,
 		controller,
 		scope,
@@ -77,6 +79,25 @@ describe('Properties View', function() {
 
 	describe('$scope.showPropertyDetails', function() {
 
+		it('should set the selected property to null before retrieving the selected property', function() {
+
+			var selectedId = 123,
+				panelName = 'properties',
+				property = BLAST;
+
+			scope.selectedItem.id = selectedId;
+			scope.panelName = panelName;
+
+			scope.showPropertyDetails();
+
+			expect(scope.selectedProperty).toEqual(null);
+
+			deferredGetProperty.resolve(property);
+			scope.$apply();
+
+			expect(scope.selectedProperty).toEqual(property);
+		});
+
 		it('should retrieve the selected property and display the panel', function() {
 
 			var selectedId = 123,
@@ -93,6 +114,91 @@ describe('Properties View', function() {
 			expect(propertiesService.getProperty).toHaveBeenCalledWith(selectedId);
 			expect(scope.selectedProperty).toEqual(property);
 			expect(panelService.showPanel).toHaveBeenCalledWith(panelName);
+		});
+	});
+
+	describe('$scope.updateSelectedProperty', function() {
+
+		it('should sync the updated property in the properties list', function() {
+
+			var propertyToUpdate = angular.copy(BLAST),
+				newName = 'Not Blast';
+
+			controller.properties = [{
+					id: 1,
+					Name: propertyToUpdate.name,
+					Classes: propertyToUpdate.classes.join(', ')
+				}];
+
+			// Select our property for editing
+			scope.selectedItem.id = 1;
+
+			// "Update" our property
+			propertyToUpdate.name = newName;
+
+			scope.updateSelectedProperty(propertyToUpdate);
+
+			expect(controller.properties[0].Name).toEqual(newName);
+		});
+
+		it('should only update the property in the properties list matched by id', function() {
+
+			var detailedPropertyToUpdate = angular.copy(BLAST),
+
+				displayPropertyToLeaveAlone = {
+					id: 2,
+					Name: 'Another Property',
+					Classes: 'No classes here'
+				},
+
+				displayPropertyToUpdate = {
+					id: 1,
+					Name: detailedPropertyToUpdate.name,
+					Classes: detailedPropertyToUpdate.classes.join(', ')
+				},
+
+				newName = 'Not Blast';
+
+			controller.properties = [displayPropertyToLeaveAlone, displayPropertyToUpdate];
+
+			// Select our property for editing
+			scope.selectedItem.id = 1;
+
+			// "Update" our property
+			detailedPropertyToUpdate.name = newName;
+
+			scope.updateSelectedProperty(detailedPropertyToUpdate);
+
+			// Ensure non-matching property was left alone
+			expect(controller.properties[0]).toEqual(displayPropertyToLeaveAlone);
+		});
+
+		it('should not update any properties if there is no property in the list with a matching id', function() {
+
+			var propertyToUpdate = angular.copy(BLAST),
+
+				nonMatchingProperty = {
+					id: 1,
+					Name: 'Non Matching Property',
+					Classes: 'No classes here'
+				},
+
+				anotherNonMatchingProperty = {
+					id: 2,
+					Name: 'Another Non Matching Property',
+					Classes: 'No classes here'
+				};
+
+			controller.properties = [nonMatchingProperty, anotherNonMatchingProperty];
+
+			// Select a property not in the list (shouldn't happen, really)
+			scope.selectedItem.id = 3;
+
+			scope.updateSelectedProperty(propertyToUpdate);
+
+			// Ensure no updates happened
+			expect(controller.properties[0]).toEqual(nonMatchingProperty);
+			expect(controller.properties[1]).toEqual(anotherNonMatchingProperty);
 		});
 	});
 });

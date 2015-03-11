@@ -9,6 +9,27 @@
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
 
+		function convertPropertyForUpdating(property) {
+			var convertedProperty = {},
+
+				propertiesToInclude = [
+					'name',
+					'description',
+					'classes',
+					'cropOntologyId'
+				];
+
+				Object.keys(property).forEach(function(key) {
+
+					// Ignore properties we want to remove before sending
+					if (propertiesToInclude.indexOf(key) > -1) {
+						convertedProperty[key] = property[key];
+					}
+				});
+
+			return convertedProperty;
+		}
+
 		return {
 			/*
 			Returns an array of properties in the format:
@@ -76,8 +97,11 @@
 			}
 			*/
 			updateProperty: function(id, property) {
-				var request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id',
-					property);
+				var convertedProperty = convertPropertyForUpdating(property),
+					request;
+
+				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id',
+					convertedProperty);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
