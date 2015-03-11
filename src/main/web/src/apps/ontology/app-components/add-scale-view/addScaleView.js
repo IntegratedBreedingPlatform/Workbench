@@ -17,13 +17,22 @@
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
 
-			// TODO Error handling
 			dataTypesService.getDataTypes().then(function(types) {
 				$scope.types = types;
-			});
+			}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
+
+				if ($scope.data.selectedType) {
+					if ($scope.data.selectedType.name !== 'Numeric') {
+						delete scale.validValues;
+					}
+
+					if ($scope.data.selectedType.name !== 'Categorical') {
+						delete scale.categories;
+					}
+				}
 
 				scalesService.addScale(scale).then(function(response) {
 					scale.id = response.id;
@@ -44,7 +53,7 @@
 
 			$scope.$watch('data.selectedType', function(newType) {
 				if (newType) {
-					$scope.scale.dataType = newType.id;
+					$scope.scale.dataTypeId = newType.id;
 
 					$scope.showRangeWidget = newType.name === 'Numeric';
 					$scope.showCategoriesWidget = newType.name === 'Categorical';
