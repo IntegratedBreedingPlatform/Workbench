@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.commons.context.ContextConstants;
-import org.generationcp.commons.security.SecurityUtil;
-import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -529,19 +525,5 @@ public class ToolUtil {
         File toolDir = new File(projectDir, tool.getGroupName());
 
         return new File(toolDir, INPUT).getAbsolutePath();
-    }
-    
-    public static String getWorkbenchContextParameters() {
-    	
-    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-    	SessionData sessionData = app.getSessionData();
-
-    	String contextParameterString = ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
-    			sessionData.getSelectedProject().getProjectId());
-    	
-    	//TODO: Just passing Base64 encoded username as a token for now.. until we get to BMS-61 where we need a proper secure token scheme.
-    	String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, 
-    			SecurityUtil.getEncodedToken());
-		return contextParameterString + authenticationTokenString;
     }
 }

@@ -1,10 +1,10 @@
 package org.generationcp.browser.study.listeners;
 
-import static org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener.STUDY_BROWSER_LINK;
 import static org.mockito.Mockito.doReturn;
 
 import java.util.Set;
 
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.junit.Assert;
@@ -41,7 +41,7 @@ public class ViewStudyDetailsButtonClickListenerTest {
 		ViewStudyDetailsButtonClickListener moleListener = Mockito.spy(viewStudyListener);
 		
 		doReturn(null).when(workbenchManager).getToolWithName(Matchers.anyString());
-		doReturn("").when(moleListener).getAdditionalParams();
+		//doReturn("").when(moleListener).getAdditionalParams();
 		
 		ClickEvent event = Mockito.mock(ClickEvent.class);
 		Button mockButton = Mockito.mock(Button.class);
@@ -64,7 +64,7 @@ public class ViewStudyDetailsButtonClickListenerTest {
 		Embedded embeddedResource = (Embedded) 
 				studyWindow.getContent().getComponentIterator().next();
 		ExternalResource externalResource = (ExternalResource) embeddedResource.getSource();
-		String expectedStudyURL = STUDY_BROWSER_LINK + STUDY_ID + "?restartApplication";
+		String expectedStudyURL = DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + STUDY_ID + "?restartApplication";
 		Assert.assertEquals("URL to StudyBrowser resource should be", expectedStudyURL, externalResource.getURL());
 		
 		

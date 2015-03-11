@@ -5,6 +5,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -300,14 +301,12 @@ public class NurseryListPreview extends VerticalLayout {
                 int studyId = ((Integer) value).intValue();
                 StudyType studyType = presenter.getStudyType(studyId);
                 if(studyType!=null && studyType.getId()==StudyType.T.getId()) {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB, selectedProject, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB, studyId).buttonClick(event);
                 } else if(studyType!=null && studyType.getId()==StudyType.N.getId()) {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB, selectedProject, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB, studyId).buttonClick(event);
                 } else {
-                	new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.STUDY_BROWSER_WITH_ID, selectedProject, studyId).buttonClick(event);
+                	new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER_WITH_ID, studyId).buttonClick(event);
                 }
-                
-
             }
         });
 

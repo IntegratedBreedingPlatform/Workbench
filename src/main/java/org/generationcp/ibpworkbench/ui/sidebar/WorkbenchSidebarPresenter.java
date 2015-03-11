@@ -1,7 +1,8 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
+
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -87,7 +88,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
     		WorkbenchSidebarCategory category) throws MiddlewareQueryException {
     	categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
         categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
-        categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
+        categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName()),category,
+				ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
         categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
         categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
 	}

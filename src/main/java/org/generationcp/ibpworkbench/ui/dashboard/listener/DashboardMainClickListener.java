@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -104,12 +105,12 @@ public class DashboardMainClickListener implements ClickListener{
 
 
             // page change to list manager, with parameter passed
-            (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER_MAIN, project ,null)).buttonClick(event);
+            (new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN)).buttonClick(event);
 
         } catch (InternationalizableException e){
-            LOG.error(e.toString() + "\n" + e.getStackTrace());
-            e.printStackTrace();
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+            LOG.error(e.getMessage(),e);
+            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(),
+					e.getDescription());
         }
     }
     

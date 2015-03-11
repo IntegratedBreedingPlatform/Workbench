@@ -125,6 +125,7 @@
 
     <bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
     <bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
+    <bean id="appLauncherService" class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>
 
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 </beans>

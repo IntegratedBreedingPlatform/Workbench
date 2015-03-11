@@ -194,7 +194,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
 	protected String getWebApiUrl() {
 		String url = webApiUrl + "?restartApplication";
-		url += ToolUtil.getWorkbenchContextParameters();
+		url += sessionData.getWorkbenchContextParameters();
 		return url;
 	}
 
