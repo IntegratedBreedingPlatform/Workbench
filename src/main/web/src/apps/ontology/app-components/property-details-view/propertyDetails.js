@@ -35,7 +35,7 @@
 					$scope.cancel = function(e) {
 						e.preventDefault();
 						$scope.editing = false;
-						$scope.model = $scope.selectedProperty;
+						$scope.model = angular.copy($scope.selectedProperty);
 					};
 
 					$scope.saveChanges = function(e, id, model) {

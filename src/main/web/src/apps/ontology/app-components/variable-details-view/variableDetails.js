@@ -40,7 +40,7 @@
 					$scope.cancel = function(e) {
 						e.preventDefault();
 						$scope.editing = false;
-						$scope.model = $scope.selectedVariable;
+						$scope.model = angular.copy($scope.selectedVariable);
 					};
 
 					$scope.saveChanges = function(e, id, model) {
