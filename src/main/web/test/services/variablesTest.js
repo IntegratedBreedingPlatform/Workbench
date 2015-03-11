@@ -2,7 +2,45 @@
 'use strict';
 
 describe('Variables Service', function() {
-	var variablesService,
+	var PLANT_VIGOR = {
+			id: 1,
+			name: 'Plant Vigor',
+			description: 'A little vigourous',
+			propertySummary: {
+				id: 1,
+				name: 'Plant Vigor'
+			},
+			methodSummary: {
+				id: 1,
+				name: 'Look at the plant'
+			},
+			scale: {
+				id: 1,
+				name: 'Score',
+				description: 'As per title',
+				dataType: {
+					id: 2,
+					name: 'Numeric'
+				},
+				validValues: {
+					min: 0,
+					max: 10
+				}
+			},
+			variableTypeIds: [1]
+		},
+
+		CONVERTED_PLANT_VIGOR = {
+			id: PLANT_VIGOR.id,
+			name: PLANT_VIGOR.name,
+			description: PLANT_VIGOR.description,
+			propertyId: PLANT_VIGOR.propertySummary.id,
+			methodId: PLANT_VIGOR.methodSummary.id,
+			scaleId: PLANT_VIGOR.scale.id,
+			variableTypeIds: PLANT_VIGOR.variableTypeIds
+		},
+
+		variablesService,
 		httpBackend,
 		serviceUtilities;
 
@@ -222,6 +260,19 @@ describe('Variables Service', function() {
 			id = 1;
 
 			httpBackend.expectPUT(/\/variables\/:id$/, variable).respond(204);
+
+			variablesService.updateVariable(id, variable);
+
+			httpBackend.flush();
+		});
+
+		it('should convert method, property and scale objects to ids and remove unnecessary properties before PUTing', function() {
+
+			var variable = PLANT_VIGOR,
+				id = 1,
+				expectedVariable = CONVERTED_PLANT_VIGOR;
+
+			httpBackend.expectPUT(/\/variables\/:id$/, expectedVariable).respond(204);
 
 			variablesService.updateVariable(id, variable);
 

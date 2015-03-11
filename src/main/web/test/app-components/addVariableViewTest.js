@@ -10,10 +10,10 @@ describe('Add Variable View', function() {
 			id: 1,
 			name: 'Plant Vigor',
 			description: 'A little vigourous',
-			property: 1,
-			method: 1,
-			scale: 1,
-			variableType: [
+			propertyId: 1,
+			methodId: 1,
+			scaleId: 1,
+			variableTypeIds: [
 				1
 			]
 		},

@@ -18,7 +18,7 @@
 		<div>
 			<label for="om-av-property">Property</label>
 
-			<ui-select name="om-av-property" id="om-av-property" ng-model="variable.property" theme="select2">
+			<ui-select name="om-av-property" id="om-av-property" ng-model="variable.propertyId" theme="select2">
 				<ui-select-match>{{$select.selected.name}}</ui-select-match>
 				<ui-select-choices repeat="property.id as property in data.properties | filter: $select.search">
 					{{property.name}}
@@ -31,7 +31,7 @@
 		<div>
 			<label for="om-av-method">Method</label>
 
-			<ui-select name="om-av-method" id="om-av-method" ng-model="variable.method" theme="select2">
+			<ui-select name="om-av-method" id="om-av-method" ng-model="variable.methodId" theme="select2">
 				<ui-select-match>{{$select.selected.name}}</ui-select-match>
 				<ui-select-choices repeat="method.id as method in data.methods | filter: $select.search">
 					{{method.name}}
@@ -44,7 +44,7 @@
 		<div>
 			<label for="om-av-scale">Scale</label>
 
-			<ui-select name="om-av-scale" id="om-av-scale" ng-model="variable.scale" theme="select2">
+			<ui-select name="om-av-scale" id="om-av-scale" ng-model="variable.scaleId" theme="select2">
 				<ui-select-match>{{$select.selected.name}}</ui-select-match>
 				<ui-select-choices repeat="scale.id as scale in data.scales | filter: $select.search">
 					{{scale.name}}
@@ -58,7 +58,7 @@
 			<label for="om-av-type">Variable Type</label>
 
 			<!-- TODO: Get variable type to just return array of IDs -->
-			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.type" theme="select2">
+			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.variableTypeIds" theme="select2">
 				<ui-select-match>{{$item.name}}</ui-select-match>
 				<ui-select-choices repeat="type in data.types">
 					{{type.name}}
@@ -68,15 +68,15 @@
 
 		<div>
 			<label for="om-av-ontology-id">Crop Ontology Id</label>
-			<input type="text" name="om-av-ontology-id" id="om-av-ontology-id" ng-model="variable.ontologyId"></input>
+			<input type="text" name="om-av-ontology-id" id="om-av-ontology-id" ng-model="variable.cropOntologyId"></input>
 		</div>
 
 		<div ng-show="showRangeWidget">
 			<label for="om-av-min">Minimum Expected Value</label>
-			<input type="text" name="om-av-min" id="om-av-min" ng-model="variable.range.min"></input>
+			<input type="text" name="om-av-min" id="om-av-min" ng-model="variable.expectedRange.min"></input>
 
 			<label for="om-av-max">Maximum Expected Value</label>
-			<input type="text" name="om-av-max" id="om-av-max" ng-model="variable.range.max"></input>
+			<input type="text" name="om-av-max" id="om-av-max" ng-model="variable.expectedRange.max"></input>
 		</div>
 	</form>
 </div>
