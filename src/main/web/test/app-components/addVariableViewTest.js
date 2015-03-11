@@ -130,7 +130,7 @@ describe('Add Variable View', function() {
 			compileController();
 		});
 
-		it('should hide the range widget by deafult', function() {
+		it('should hide the range widget by default', function() {
 			expect(scope.showRangeWidget).toBe(false);
 		});
 
