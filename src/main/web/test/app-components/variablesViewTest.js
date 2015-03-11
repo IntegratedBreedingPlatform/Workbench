@@ -1,7 +1,9 @@
-/*global expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn*/
 'use strict';
 
 describe('Variables Controller', function() {
+
+	// This format is what is returned by a getVariables() call
 	var PLANT_VIGOR = {
 			id: 1,
 			name: 'Plant Vigor',
@@ -24,11 +26,12 @@ describe('Variables Controller', function() {
 					max: 5
 				}
 			},
-			variableTypeIds: [
-				1
-			],
+			variableTypeIds: [1],
 			favourite: true
 		},
+
+		PLANT_VIGOR_DETAILED,
+
 		q,
 		controller,
 		scope,
@@ -39,6 +42,15 @@ describe('Variables Controller', function() {
 		deferredGetVariable,
 		deferredGetVariables,
 		deferredGetFavVariables;
+
+	// This format is what is returned by a getVariable() call (singular)
+	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR);
+
+	delete PLANT_VIGOR_DETAILED.id;
+
+	PLANT_VIGOR_DETAILED.deletable = true;
+	PLANT_VIGOR_DETAILED.metadata = {};
+	PLANT_VIGOR_DETAILED.editableFields = ['name', 'description'];
 
 	beforeEach(function() {
 		module('variablesView');
@@ -151,22 +163,131 @@ describe('Variables Controller', function() {
 
 	describe('$scope.showVariableDetails', function() {
 
-		it('should retrieve the selected variable and display the panel', function() {
+		it('should set the selected variable to null before retrieving the selected property', function() {
 
 			var selectedId = 123,
-				panelName = 'variables',
-				variable = PLANT_VIGOR;
+				panelName = 'variables';
 
 			scope.selectedItem.id = selectedId;
 			scope.panelName = panelName;
 
 			scope.showVariableDetails();
-			deferredGetVariable.resolve(variable);
+
+			expect(scope.selectedVariable).toEqual(null);
+
+			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
+			scope.$apply();
+
+			expect(scope.selectedVariable).toEqual(PLANT_VIGOR_DETAILED);
+		});
+
+		it('should retrieve the selected variable and display the panel', function() {
+
+			var selectedId = 123,
+				panelName = 'variables';
+
+			scope.selectedItem.id = selectedId;
+			scope.panelName = panelName;
+
+			scope.showVariableDetails();
+			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
 			scope.$apply();
 
 			expect(variablesService.getVariable).toHaveBeenCalledWith(selectedId);
-			expect(scope.selectedVariable).toEqual(variable);
+			expect(scope.selectedVariable).toEqual(PLANT_VIGOR_DETAILED);
 			expect(panelService.showPanel).toHaveBeenCalledWith(panelName);
+		});
+	});
+
+	describe('$scope.updateSelectedVariable', function() {
+
+		it('should sync the updated variable in the variables list', function() {
+
+			var updateSelectedVariable = angular.copy(PLANT_VIGOR_DETAILED),
+				newName = 'Not Plant Vigor',
+				id = 1;
+
+			controller.variables = [{
+					id: id,
+					Name: updateSelectedVariable.name,
+					Property: updateSelectedVariable.propertySummary.name,
+					Method: updateSelectedVariable.methodSummary.name,
+					Scale: updateSelectedVariable.scale.name
+				}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Update" our variable
+			updateSelectedVariable.name = newName;
+
+			scope.updateSelectedVariable(updateSelectedVariable);
+
+			expect(controller.variables[0].Name).toEqual(newName);
+		});
+
+		it('should only update the variable in the variables list matched by id', function() {
+
+			var detailedVariableToUpdate = angular.copy(PLANT_VIGOR_DETAILED),
+
+				displayVariableToLeaveAlone = {
+					id: 2,
+					Property: 'A Property',
+					Method: 'A Method',
+					Scale: 'A Scale'
+				},
+
+				displayVariableToUpdate = {
+					id: 1,
+					Property: detailedVariableToUpdate.propertySummary.name,
+					Method: detailedVariableToUpdate.methodSummary.name,
+					Scale: detailedVariableToUpdate.scale.name
+				},
+
+				newName = 'Not Plant Vigor';
+
+			controller.variables = [displayVariableToLeaveAlone, displayVariableToUpdate];
+
+			// Select our variable for editing
+			scope.selectedItem.id = 1;
+
+			// "Update" our variable
+			detailedVariableToUpdate.name = newName;
+
+			scope.updateSelectedVariable(detailedVariableToUpdate);
+
+			// Ensure non-matching variable was left alone
+			expect(controller.variables[0]).toEqual(displayVariableToLeaveAlone);
+		});
+
+		it('should not update any variables if there is no variable in the list with a matching id', function() {
+
+			var variableToUpdate = angular.copy(PLANT_VIGOR_DETAILED),
+
+				nonMatchingVariable = {
+					id: 1,
+					Property: 'A Property',
+					Method: 'A Method',
+					Scale: 'A Scale'
+				},
+
+				anotherNonMatchingVariable = {
+					id: 2,
+					Property: 'Another Property',
+					Method: 'Another Method',
+					Scale: 'Another Scale'
+				};
+
+			controller.variables = [nonMatchingVariable, anotherNonMatchingVariable];
+
+			// Select a property not in the list (shouldn't happen, really)
+			scope.selectedItem.id = 3;
+
+			scope.updateSelectedVariable(variableToUpdate);
+
+			// Ensure no updates happened
+			expect(controller.variables[0]).toEqual(nonMatchingVariable);
+			expect(controller.variables[1]).toEqual(anotherNonMatchingVariable);
 		});
 	});
 

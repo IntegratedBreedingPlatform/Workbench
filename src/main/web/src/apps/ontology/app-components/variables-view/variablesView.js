@@ -42,6 +42,10 @@
 			});
 
 			$scope.showVariableDetails = function() {
+
+				// Ensure the previously selected variable doesn't show in the panel before we've retrieved the new one
+				$scope.selectedVariable = null;
+
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
 				});
@@ -54,8 +58,6 @@
 				var selectedVariableIndex = -1,
 					favouriteVariableIndex = -1,
 					transformedVariable = transformVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
-
-				$scope.selectedVariable = updatedVariable;
 
 				ctrl.variables.some(function(variable, index) {
 					if (variable.id === $scope.selectedItem.id) {
@@ -71,7 +73,7 @@
 					}
 				});
 
-				// TODO Error handling
+				// Not much we can really do if we don't find it in the list. Just don't update.
 				if (selectedVariableIndex !== -1) {
 					ctrl.variables[selectedVariableIndex] = transformedVariable;
 				}
