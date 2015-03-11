@@ -1,4 +1,4 @@
-/*global expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn*/
 'use strict';
 
 describe('Variables Service', function() {
@@ -31,7 +31,6 @@ describe('Variables Service', function() {
 		},
 
 		CONVERTED_PLANT_VIGOR = {
-			id: PLANT_VIGOR.id,
 			name: PLANT_VIGOR.name,
 			description: PLANT_VIGOR.description,
 			propertyId: PLANT_VIGOR.propertySummary.id,
@@ -268,9 +267,13 @@ describe('Variables Service', function() {
 
 		it('should convert method, property and scale objects to ids and remove unnecessary properties before PUTing', function() {
 
-			var variable = PLANT_VIGOR,
+			var variable = angular.copy(PLANT_VIGOR),
 				id = 1,
 				expectedVariable = CONVERTED_PLANT_VIGOR;
+
+			variable.deletable = true;
+			variable.metadata = {};
+			variable.editableFields = ['blah'];
 
 			httpBackend.expectPUT(/\/variables\/:id$/, expectedVariable).respond(204);
 

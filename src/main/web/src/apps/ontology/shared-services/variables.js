@@ -16,7 +16,7 @@
 					propertyId: variable.propertySummary && variable.propertySummary.id
 				},
 
-				propertiesToInclude = ['id',
+				propertiesToInclude = [
 					'name',
 					'alias',
 					'description',
