@@ -7,11 +7,11 @@ describe('Variables Controller', function() {
 			name: 'Plant Vigor',
 			alias: '',
 			description: 'A little vigourous',
-			property: {
+			propertySummary: {
 				id: 1,
 				name: 'Plant Vigor'
 			},
-			method: {
+			methodSummary: {
 				id: 1,
 				name: 'Visual assessment at seedling stage'
 			},
@@ -24,7 +24,7 @@ describe('Variables Controller', function() {
 					max: 5
 				}
 			},
-			variableType: [
+			variableTypeIds: [
 				1
 			],
 			favourite: true
@@ -88,8 +88,8 @@ describe('Variables Controller', function() {
 				transformedVariabless = [{
 					id: PLANT_VIGOR.id,
 					Name: PLANT_VIGOR.name,
-					Property: PLANT_VIGOR.property.name,
-					Method: PLANT_VIGOR.method.name,
+					Property: PLANT_VIGOR.propertySummary.name,
+					Method: PLANT_VIGOR.methodSummary.name,
 					Scale: PLANT_VIGOR.scale.name,
 					'action-favourite': PLANT_VIGOR.favourite
 				}];
@@ -102,8 +102,8 @@ describe('Variables Controller', function() {
 				transformedVariables;
 
 			// Null out some values
-			rawVariables[0].property = null;
-			rawVariables[0].method = null;
+			rawVariables[0].propertySummary = null;
+			rawVariables[0].methodSummary = null;
 			rawVariables[0].scale = null;
 
 			transformedVariables = [{

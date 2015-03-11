@@ -8,8 +8,8 @@
 		return {
 				id: variable.id || id,
 				Name: variable.name,
-				Property: variable.property && variable.property.name || '',
-				Method: variable.method && variable.method.name || '',
+				Property: variable.propertySummary && variable.propertySummary.name || '',
+				Method: variable.methodSummary && variable.methodSummary.name || '',
 				Scale: variable.scale && variable.scale.name || '',
 				'action-favourite': variable.favourite
 			};
