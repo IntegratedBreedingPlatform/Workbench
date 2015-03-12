@@ -11,7 +11,7 @@
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
                         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
     <!-- Declare property file locations -->
-    <context:property-placeholder location="classpath:workbench.properties" />
+    <context:property-placeholder location="classpath:workbench.properties,classpath:c3p0.properties" />
     <util:properties id="workbenchProperties" location="classpath:workbench.properties"/>
 
     <!-- Enable Spring annotations -->
@@ -60,9 +60,14 @@
         <property name="password" value="${workbench.password}" /> 
 
         <!-- C3P0 properties -->
-        <property name="maxPoolSize" value="300" />
-        <property name="debugUnreturnedConnectionStackTraces" value="true" />
-        <property name="unreturnedConnectionTimeout" value="240" />
+        <property name="minPoolSize" value="${c3p0.minPoolSize}" />
+        <property name="maxPoolSize" value="${c3p0.maxPoolSize}" />
+        <property name="debugUnreturnedConnectionStackTraces" value="${c3p0.debugUnreturnedConnectionStackTraces}" />
+        <property name="unreturnedConnectionTimeout" value="${c3p0.unreturnedConnectionTimeout}" />
+        <property name="maxConnectionAge" value="${c3p0.maxConnectionAge}" />
+        <property name="maxIdleTime" value="${c3p0.maxIdleTime}" />
+        <property name="preferredTestQuery" value="${c3p0.preferredTestQuery}" />
+        <property name="testConnectionOnCheckout" value="${c3p0.testConnectionOnCheckout}" />
  	</bean>
     
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -75,15 +80,7 @@
         <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
-    
-	<!-- The data source configuration -->
-    <bean id="localDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-       <property name="driverClassName" value="${workbench.driver}"/>
-        <property name="url" value="${workbench.url}"/>
-        <property name="username" value="${workbench.username}"/>
-        <property name="password" value="${workbench.password}"/>
-    </bean>
-    
+      
     <!-- Manager Factory Provider -->
     <bean id="managerFactoryProvider" class="org.generationcp.commons.hibernate.DefaultManagerFactoryProvider" destroy-method="close">
     	<property name="dbUsername" value="${local.user}"/>
@@ -92,24 +89,9 @@
     </bean>
 
     <bean id="workbenchDataManager"
-        class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl">
+        class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl" destroy-method="close">
         <constructor-arg ref="hibernateSessionProvider" />
         <property name="installationDirectory" value="${workbench.installation_dir}"/>
-    </bean>
-    
-    <bean id="localHibernateSessionProvider" class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider" scope="request" destroy-method="close">
-        <property name="sessionFactory" ref="localSessionFactory"/>
-        <!-- JDK Standard Proxy around this request scoped bean, so we can use it on longer scoped beans -->
-        <aop:scoped-proxy proxy-target-class="false"/>
-    </bean>
-    
-    <bean id="localSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="localDataSource"/>
-        <property name="configLocation" value="classpath:ibpmidware_hib.cfg.xml"/>
-    </bean>
-
-    <bean id="studyDataManager" class="org.generationcp.middleware.manager.StudyDataManagerImpl">
-        <property name="sessionProvider" ref="localHibernateSessionProvider"/>
     </bean>
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
@@ -143,6 +125,7 @@
 
     <bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
     <bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
+    <bean id="appLauncherService" class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>
 
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 </beans>

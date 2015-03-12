@@ -1,7 +1,9 @@
 package org.generationcp.browser.study.listeners;
 
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -19,16 +21,19 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 
+import javax.annotation.Resource;
+
 @Configurable
 public class ViewStudyDetailsButtonClickListener implements ClickListener {
 
 	private static final long serialVersionUID = -2009510049166285893L;
 	private static final Logger LOG = LoggerFactory.getLogger(ViewStudyDetailsButtonClickListener.class);
-	public static final String STUDY_BROWSER_LINK = 
-			"http://localhost:18080/GermplasmStudyBrowser/main/study-";
-	
+
 	@Autowired
     private WorkbenchDataManager workbenchDataManager;
+
+	@Resource
+	private SessionData sessionData;
 	
 	private int studyId;
 	private String studyName;
@@ -48,18 +53,18 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
         } catch (MiddlewareQueryException qe) {
             LOG.error("QueryException", qe);
         }
-        
-        String addtlParams = getAdditionalParams();
-        
-        ExternalResource studyLink = null;
-        if (tool == null) {
-            studyLink = new ExternalResource(STUDY_BROWSER_LINK + studyId + "?restartApplication"+
-            		addtlParams);
-        } else {
-            studyLink = new ExternalResource(tool.getPath().replace("study/", "study-") + studyId + "?restartApplication"+
-            		addtlParams);
-        }
-        LOG.debug(studyLink.getURL());
+
+		String addtlParams = sessionData.getWorkbenchContextParameters();
+		ExternalResource studyLink;
+		if (tool == null) {
+			studyLink = new ExternalResource(
+					WorkbenchAppPathResolver.getFullWebAddress(
+							DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + studyId,
+							"?restartApplication" + addtlParams));
+		} else {
+			studyLink = new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool,String.valueOf(studyId),"?restartApplication" + addtlParams));
+		}
+		LOG.debug(studyLink.getURL());
         renderStudyDetailsWindow(studyLink, event.getComponent().getWindow());
 
 	}
@@ -94,10 +99,4 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager){
 		this.workbenchDataManager = workbenchDataManager;
 	}
-	
-	protected String getAdditionalParams(){
-		return ToolUtil.getWorkbenchContextParameters();
-	}
-	
-
 }

@@ -14,13 +14,13 @@ package org.generationcp.ibpworkbench.ui.workflow;
 
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;

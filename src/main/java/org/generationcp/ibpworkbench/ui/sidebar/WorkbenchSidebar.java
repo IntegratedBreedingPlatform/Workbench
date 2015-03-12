@@ -6,8 +6,14 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.*;
+import org.generationcp.ibpworkbench.exception.AppLaunchException;
+import org.generationcp.ibpworkbench.service.AppLauncherService;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -20,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +42,17 @@ public class WorkbenchSidebar extends CssLayout {
     @Autowired
     private SessionData sessionData;
 
+	@Resource
+	private AppLauncherService appLauncherService;
+
+	@Resource
+	private SimpleResourceBundleMessageSource messageSource;
+
     private WorkbenchSidebarPresenter presenter;
     private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
     private Tree sidebarTree;
 
-    public static Map<String,TreeItem> sidebarTreeMap = new HashMap<String, TreeItem>();
+    public static Map<String,TreeItem> sidebarTreeMap = new HashMap<>();
 
     private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
@@ -47,37 +60,31 @@ public class WorkbenchSidebar extends CssLayout {
         public void itemClick(ItemClickEvent event) {
             if (event.getItemId() == null) {
                 return;
-            } else {
-                LOG.trace(event.getItemId().toString());
-
-                TreeItem treeItem = (TreeItem) event.getItemId();
-                if (treeItem.getValue() == null) {
-                    
-                    if (sidebarTree.isExpanded(treeItem)) {
-                        sidebarTree.collapseItem(treeItem);
-                    }
-                    else {
-                        sidebarTree.expandItem(treeItem);
-                    }
-                    
-                    return;
-                }
-
-                presenter.updateProjectLastOpenedDate();
-
-                ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),sessionData.getSelectedProject());
-                if (listener instanceof LaunchWorkbenchToolAction) {
-
-                    ((LaunchWorkbenchToolAction)listener).launchTool(treeItem.getId(),event.getComponent().getWindow(),true);
-                }
-                else if (listener instanceof OpenWindowAction) {
-                    ((OpenWindowAction)listener).launchWindow(event.getComponent().getWindow(),treeItem.getId());
-                }
-
-                else {
-                    listener.doAction(event.getComponent().getWindow(),"/" + treeItem.getId(),true);
-                }
             }
+
+			LOG.trace(event.getItemId().toString());
+
+			TreeItem treeItem = (TreeItem) event.getItemId();
+			if (treeItem.getValue() == null) {
+
+				if (sidebarTree.isExpanded(treeItem)) {
+					sidebarTree.collapseItem(treeItem);
+				}
+				else {
+					sidebarTree.expandItem(treeItem);
+				}
+
+				return;
+			}
+
+			presenter.updateProjectLastOpenedDate();
+
+			ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),sessionData.getSelectedProject());
+			if (listener instanceof OpenWindowAction) {
+				((OpenWindowAction)listener).launchWindow(event.getComponent().getWindow(),treeItem.getId());
+			} else {
+				listener.doAction(event.getComponent().getWindow(),"/" + treeItem.getId(),true);
+			}
         }
     };
 
@@ -209,8 +216,8 @@ public class WorkbenchSidebar extends CssLayout {
             return null;
         }
 
-        if (LaunchWorkbenchToolAction.ToolEnum.isCorrectTool(toolName)) {
-            return new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.equivalentToolEnum(toolName),project,null);
+        if (ToolEnum.isCorrectTool(toolName)) {
+            return new LaunchWorkbenchToolAction(ToolEnum.equivalentToolEnum(toolName));
         } else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName) ) {
             return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName),project,null);
         } else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {

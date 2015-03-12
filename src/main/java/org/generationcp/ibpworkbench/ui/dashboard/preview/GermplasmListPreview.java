@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
 import java.util.List;
 
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -203,7 +204,7 @@ public class GermplasmListPreview extends VerticalLayout {
                     mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
                 }
                 // page change to list manager, with parameter passed
-                (new LaunchWorkbenchToolAction(LaunchWorkbenchToolAction.ToolEnum.BM_LIST_MANAGER, sessionData.getSelectedProject(), (Integer) lastItemId)).buttonClick(event);
+                (new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER, (Integer) lastItemId)).buttonClick(event);
 
             }
         });
