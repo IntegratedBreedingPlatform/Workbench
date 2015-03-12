@@ -37,7 +37,6 @@ describe('Property details directive', function() {
 		// Provide mocks for the directive controller
 		$provide.value('propertiesService', propertiesService);
 		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('propertiesService', propertiesService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
