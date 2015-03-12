@@ -1,4 +1,4 @@
-/*global angular, inject, expect, spyOn*/
+/*global angular, inject, expect*/
 'use strict';
 
 describe('List module', function() {
