@@ -47,11 +47,7 @@
 							$scope.updateSelectedProperty(model);
 
 							$scope.editing = false;
-						}, function(error) {
-
-							// TODO Error handling
-							console.log(error);
-						});
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					};
 				},
 				restrict: 'E',
