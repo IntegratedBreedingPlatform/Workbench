@@ -4,15 +4,17 @@
 (function() {
 	var formFieldsModule = angular.module('formFields', []);
 
-	function editable($scope) {
-		return function() {
+	formFieldsModule.factory('editable', function() {
+		return function($scope){
+			return function() {
 				return $scope.editing &&
 					$scope.model && $scope.model.editableFields &&
 					$scope.model.editableFields.indexOf($scope.property) !== -1;
 			};
-	}
+		};
+	});
 
-	formFieldsModule.directive('omTextArea', function() {
+	formFieldsModule.directive('omTextArea', function(editable) {
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
@@ -29,7 +31,7 @@
 		};
 	});
 
-	formFieldsModule.directive('omInput', function() {
+	formFieldsModule.directive('omInput', function(editable) {
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
@@ -46,7 +48,7 @@
 		};
 	});
 
-	formFieldsModule.directive('omSelect', function() {
+	formFieldsModule.directive('omSelect', function(editable) {
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
