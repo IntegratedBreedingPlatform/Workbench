@@ -1,4 +1,4 @@
-/*global angular, expect, inject, spyOn*/
+/*global expect, inject, spyOn*/
 'use strict';
 
 describe('Properties Service', function() {
