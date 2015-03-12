@@ -124,6 +124,45 @@ describe('Methods Service', function() {
 		});
 	});
 
+	describe('updateMethod', function() {
+
+		it('should PUT to /updateMethod', function() {
+			httpBackend.expectPUT(/\/methods\/:id$/).respond(204);
+			methodsService.updateMethod(null, {});
+			httpBackend.flush();
+		});
+
+		it('should return the response status if a successful PUT is made', function() {
+			var id = 1,
+				expectedResponse = 204,
+				actualResponse;
+
+			httpBackend.expectPUT(/\/methods\/:id$/).respond(expectedResponse);
+
+			methodsService.updateMethod(id, {}).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
+			var error = 'Error!';
+
+			httpBackend.expectPUT(/\/methods\/:id$/, {}).respond(500, error);
+
+			methodsService.updateMethod(1, {});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
 	describe('getMethod', function() {
 
 		it('should GET /methods, specifying the given id', function() {
