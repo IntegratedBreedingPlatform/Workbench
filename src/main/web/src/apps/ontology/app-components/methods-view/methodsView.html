@@ -1,8 +1,6 @@
 <div class="om-mt-view" om-mask-for-panel="panelName">
 	<om-panel om-panel-identifier="panelName">
-		<p ng-repeat="(key,value) in selectedMethod">
-			{{key}} : {{value}}
-		</p>
+		<om-method-details></om-method-details>
 	</om-panel>
 	<om-list om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem"></om-list>
 </div>

@@ -5,11 +5,11 @@
 	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails']);
 
 	function transformPropertyToDisplayFormat(property, id) {
-			return {
-				id: property.id || id,
-				Name: property.name,
-				Classes: property.classes.join(', ')
-			};
+		return {
+			id: property.id || id,
+			Name: property.name,
+			Classes: property.classes.join(', ')
+		};
 	}
 
 	function transformToDisplayFormat(properties) {
