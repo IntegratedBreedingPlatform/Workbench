@@ -59,7 +59,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 		if (tool == null) {
 			studyLink = new ExternalResource(
 					WorkbenchAppPathResolver.getFullWebAddress(
-							DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK + studyId,
+							DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + studyId,
 							"?restartApplication" + addtlParams));
 		} else {
 			studyLink = new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool,String.valueOf(studyId),"?restartApplication" + addtlParams));
