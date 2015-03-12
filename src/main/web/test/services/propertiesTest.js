@@ -145,7 +145,6 @@ describe('Properties Service', function() {
 		});
 
 		it('should remove unnecessary properties before PUTing', function() {
-
 			var id = 1;
 
 			httpBackend.expectPUT(/\/properties\/:id$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
@@ -156,11 +155,9 @@ describe('Properties Service', function() {
 		});
 
 		it('should return the response status if a successful PUT is made', function() {
-
 			var id = 1,
-
-			expectedResponse = 204,
-			actualResponse;
+				expectedResponse = 204,
+				actualResponse;
 
 			httpBackend.expectPUT(/\/properties\/:id$/).respond(expectedResponse);
 
