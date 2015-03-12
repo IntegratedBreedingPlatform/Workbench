@@ -1,8 +1,24 @@
-/*global expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn*/
 'use strict';
 
 describe('Properties Service', function() {
-	var propertiesService,
+	var DETAILED_PROPERTY = {
+			name: 'Alkali Injury',
+			description: 'Condition characterized by discoloration of the leaves ranging from ...',
+			classes: ['Abiotic Stress', 'Trait'],
+			cropOntologyId: 'CO_192791864',
+			editableFields: ['name', 'description', 'classes', 'cropOntologyId'],
+			deletable: true
+		},
+
+		PROPERTY_FOR_ADD_OR_UPDATE = {
+			name: DETAILED_PROPERTY.name,
+			description: DETAILED_PROPERTY.description,
+			classes: DETAILED_PROPERTY.classes,
+			cropOntologyId: DETAILED_PROPERTY.cropOntologyId
+		},
+
+		propertiesService,
 		httpBackend,
 		serviceUtilities;
 
@@ -81,27 +97,20 @@ describe('Properties Service', function() {
 
 		it('should POST to /properties', function() {
 
-			var property = {
-				name: 'myproperty'
-			};
+			httpBackend.expectPOST(/\/properties$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(201);
 
-			httpBackend.expectPOST(/\/properties$/, property).respond(201);
-
-			propertiesService.addProperty(property);
+			propertiesService.addProperty(PROPERTY_FOR_ADD_OR_UPDATE);
 
 			httpBackend.flush();
 		});
 
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-			var property = {
-				name: 'myproperty'
-			},
-			response = 123;
+			var response = 123;
 
-			httpBackend.expectPOST(/\/properties$/, property).respond(201, response);
+			httpBackend.expectPOST(/\/properties$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(201, response);
 
-			propertiesService.addProperty(property);
+			propertiesService.addProperty(PROPERTY_FOR_ADD_OR_UPDATE);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
@@ -124,11 +133,67 @@ describe('Properties Service', function() {
 		});
 	});
 
+	describe('updateProperty', function() {
+
+		it('should PUT to /updateProperty', function() {
+
+			httpBackend.expectPUT(/\/properties\/:id$/).respond(204);
+
+			propertiesService.updateProperty(null, {});
+
+			httpBackend.flush();
+		});
+
+		it('should convert method, property and scale objects to ids and remove unnecessary properties before PUTing', function() {
+
+			var id = 1;
+
+			httpBackend.expectPUT(/\/properties\/:id$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
+
+			propertiesService.updateProperty(id, DETAILED_PROPERTY);
+
+			httpBackend.flush();
+		});
+
+		it('should return the response status if a successful PUT is made', function() {
+
+			var id = 1,
+
+			expectedResponse = 204,
+			actualResponse;
+
+			httpBackend.expectPUT(/\/properties\/:id$/).respond(expectedResponse);
+
+			propertiesService.updateProperty(id, {}).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectPUT(/\/properties\/:id$/, {}).respond(500, error);
+
+			propertiesService.updateProperty(1, {});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
 	describe('getProperty', function() {
 
 		it('should GET /properties, specifying the given id', function() {
 
-			var id = 123;
+			var id = 1;
 
 			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
 			httpBackend.expectGET(/\/properties\/:id$/).respond();
@@ -140,7 +205,7 @@ describe('Properties Service', function() {
 
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-			var id = 123,
+			var id = 1,
 				response = ['properties go here'];
 
 			httpBackend.expectGET(/\/properties\/:id$/).respond(response);
@@ -155,7 +220,7 @@ describe('Properties Service', function() {
 
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
 
-			var id = 123,
+			var id = 1,
 				error = 'Error!';
 
 			httpBackend.expectGET(/\/properties\/:id$/).respond(500, error);
