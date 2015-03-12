@@ -144,7 +144,7 @@ describe('Properties Service', function() {
 			httpBackend.flush();
 		});
 
-		it('should convert method, property and scale objects to ids and remove unnecessary properties before PUTing', function() {
+		it('should remove unnecessary properties before PUTing', function() {
 
 			var id = 1;
 
