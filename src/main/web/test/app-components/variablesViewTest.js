@@ -215,6 +215,14 @@ describe('Variables Controller', function() {
 					Scale: updateSelectedVariable.scale.name
 				}];
 
+			controller.favouriteVariables = [{
+					id: id,
+					Name: updateSelectedVariable.name,
+					Property: updateSelectedVariable.propertySummary.name,
+					Method: updateSelectedVariable.methodSummary.name,
+					Scale: updateSelectedVariable.scale.name
+				}];
+
 			// Select our variable for editing
 			scope.selectedItem.id = id;
 
@@ -224,6 +232,7 @@ describe('Variables Controller', function() {
 			scope.updateSelectedVariable(updateSelectedVariable);
 
 			expect(controller.variables[0].Name).toEqual(newName);
+			expect(controller.favouriteVariables[0].Name).toEqual(newName);
 		});
 
 		it('should only update the variable in the variables list matched by id', function() {
@@ -247,6 +256,7 @@ describe('Variables Controller', function() {
 				newName = 'Not Plant Vigor';
 
 			controller.variables = [displayVariableToLeaveAlone, displayVariableToUpdate];
+			controller.favouriteVariables = [displayVariableToLeaveAlone, displayVariableToUpdate];
 
 			// Select our variable for editing
 			scope.selectedItem.id = 1;
@@ -258,6 +268,7 @@ describe('Variables Controller', function() {
 
 			// Ensure non-matching variable was left alone
 			expect(controller.variables[0]).toEqual(displayVariableToLeaveAlone);
+			expect(controller.favouriteVariables[0]).toEqual(displayVariableToLeaveAlone);
 		});
 
 		it('should not update any variables if there is no variable in the list with a matching id', function() {
@@ -279,6 +290,7 @@ describe('Variables Controller', function() {
 				};
 
 			controller.variables = [nonMatchingVariable, anotherNonMatchingVariable];
+			controller.favouriteVariables = [nonMatchingVariable, anotherNonMatchingVariable];
 
 			// Select a property not in the list (shouldn't happen, really)
 			scope.selectedItem.id = 3;
@@ -288,6 +300,8 @@ describe('Variables Controller', function() {
 			// Ensure no updates happened
 			expect(controller.variables[0]).toEqual(nonMatchingVariable);
 			expect(controller.variables[1]).toEqual(anotherNonMatchingVariable);
+			expect(controller.favouriteVariables[0]).toEqual(nonMatchingVariable);
+			expect(controller.favouriteVariables[1]).toEqual(anotherNonMatchingVariable);
 		});
 	});
 
