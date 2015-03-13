@@ -125,9 +125,9 @@ describe('Methods View', function() {
 				newName = 'Not Cut and Dry';
 
 			controller.methods = [{
-					id: 1,
-					Name: methodToUpdate.name
-				}];
+				id: 1,
+				Name: methodToUpdate.name
+			}];
 
 			// Select our method for editing
 			scope.selectedItem.id = 1;
