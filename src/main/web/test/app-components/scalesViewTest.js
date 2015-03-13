@@ -1,9 +1,8 @@
-/*global expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn*/
 'use strict';
 
 describe('Scales View', function() {
 	var PERCENTAGE = {
-			id: 1,
 			name: 'Percentage',
 			description: 'As per title',
 			dataType: {
@@ -58,9 +57,14 @@ describe('Scales View', function() {
 	}));
 
 	it('should transform scales into display format', function() {
-		var jsonData = [PERCENTAGE],
+		var jsonData = [{
+				id: 1,
+				name: PERCENTAGE.name,
+				description: PERCENTAGE.description,
+				dataType: PERCENTAGE.dataType
+			}],
 			transformedData = [{
-				id: PERCENTAGE.id,
+				id: 1,
 				Name: PERCENTAGE.name,
 				Description: PERCENTAGE.description,
 				DataType: PERCENTAGE.dataType.name
@@ -82,6 +86,25 @@ describe('Scales View', function() {
 
 	describe('$scope.showScaleDetails', function() {
 
+		it('should set the selected scale to null before retrieving the selected scale', function() {
+
+			var selectedId = 123,
+				panelName = 'scales',
+				scale = PERCENTAGE;
+
+			scope.selectedItem.id = selectedId;
+			scope.panelName = panelName;
+
+			scope.showScaleDetails();
+
+			expect(scope.selectedScale).toEqual(null);
+
+			deferredGetScale.resolve(scale);
+			scope.$apply();
+
+			expect(scope.selectedScale).toEqual(scale);
+		});
+
 		it('should retrieve the selected scale and display the panel', function() {
 
 			var selectedId = 123,
@@ -98,6 +121,86 @@ describe('Scales View', function() {
 			expect(scalesService.getScale).toHaveBeenCalledWith(selectedId);
 			expect(scope.selectedScale).toEqual(scale);
 			expect(panelService.showPanel).toHaveBeenCalledWith(panelName);
+		});
+	});
+
+	describe('$scope.updateSelectedScale', function() {
+
+		it('should sync the updated scale in the scales list', function() {
+
+			var scaleToUpdate = angular.copy(PERCENTAGE),
+				newName = 'Not Percentage';
+
+			controller.scales = [{
+				id: 1,
+				Name: scaleToUpdate.name
+			}];
+
+			// Select our scale for editing
+			scope.selectedItem.id = 1;
+
+			// "Update" our scale
+			scaleToUpdate.name = newName;
+
+			scope.updateSelectedScale(scaleToUpdate);
+
+			expect(controller.scales[0].Name).toEqual(newName);
+		});
+
+		it('should only update the scale in the scales list matched by id', function() {
+
+			var detailedScaleToUpdate = angular.copy(PERCENTAGE),
+
+				displayScaleToLeaveAlone = {
+					id: 2,
+					Name: 'Another Scale'
+				},
+
+				displayScaleToUpdate = {
+					id: 1,
+					Name: detailedScaleToUpdate.name
+				},
+
+				newName = 'Not Cut and Dry';
+
+			controller.scales = [displayScaleToLeaveAlone, displayScaleToUpdate];
+
+			// Select our scale for editing
+			scope.selectedItem.id = 1;
+
+			// "Update" our scale
+			detailedScaleToUpdate.name = newName;
+
+			scope.updateSelectedScale(detailedScaleToUpdate);
+
+			// Ensure non-matching scale was left alone
+			expect(controller.scales[0]).toEqual(displayScaleToLeaveAlone);
+		});
+
+		it('should not update any scales if there is no scale in the list with a matching id', function() {
+
+			var scaleToUpdate = angular.copy(PERCENTAGE),
+
+				nonMatchingScale = {
+					id: 1,
+					Name: 'Non Matching Scale'
+				},
+
+				anotherNonMatchingScale = {
+					id: 2,
+					Name: 'Another Non Matching Scale'
+				};
+
+			controller.scales = [nonMatchingScale, anotherNonMatchingScale];
+
+			// Select a scale not in the list (shouldn't happen, really)
+			scope.selectedItem.id = 3;
+
+			scope.updateSelectedScale(scaleToUpdate);
+
+			// Ensure no updates happened
+			expect(controller.scales[0]).toEqual(nonMatchingScale);
+			expect(controller.scales[1]).toEqual(anotherNonMatchingScale);
 		});
 	});
 });

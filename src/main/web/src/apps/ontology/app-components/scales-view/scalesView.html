@@ -1,8 +1,6 @@
 <div class="om-sc-view" om-mask-for-panel="panelName">
 	<om-panel om-panel-identifier="panelName">
-		<p ng-repeat="(key,value) in selectedScale">
-			{{key}} : {{value}}
-		</p>
+		<om-scale-details></om-scale-details>
 	</om-panel>
 	<om-list om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem"></om-list>
 </div>
