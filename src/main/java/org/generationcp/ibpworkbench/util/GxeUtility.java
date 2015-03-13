@@ -12,11 +12,10 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
@@ -26,9 +25,6 @@ import java.util.Map.Entry;
 
 @Configurable
 public class GxeUtility {
-	
-	@Autowired
-	private StudyDataManager studyDataManager;
 	
     private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
 	
@@ -79,9 +75,7 @@ public class GxeUtility {
 	public static Double randomInRange(double min, double max) {
 	  double range = max - min;
 	  double scaled = random.nextDouble() * range;
-	  double shifted = scaled + min;
-	  return shifted; 
-	
+	  return scaled + min;
 	}
 	/**
 	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
@@ -97,8 +91,7 @@ public class GxeUtility {
 			writer.writeProjectXML();
 			
 		} catch (GxeXMLWriterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.debug(e.getMessage(), e);
 		}
 	}
 	
@@ -206,7 +199,7 @@ public class GxeUtility {
 
 			return csvFile;
 		} catch (Exception e) {
-			e.printStackTrace();
+            LOG.debug(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -215,7 +208,7 @@ public class GxeUtility {
 	
 	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName, List<Trait> selectedTraits, Project currentProject) throws MiddlewareQueryException {
 		
-		ArrayList<String[]> tableItems = new ArrayList<String[]>();
+		List<String[]> tableItems = new ArrayList<String[]>();
 		
 		String[] header = new String[] {
 				environmentName
@@ -257,8 +250,16 @@ public class GxeUtility {
 			for (Trait trait : selectedTraits){
 				
 				List<String> row = new ArrayList<String>();
-				row.add(exp.getFactors().findByLocalName(environmentName).getValue());
-				row.add(trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+                String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
+                String traitValue = trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+                if(envValue != null){
+                    envValue = envValue.replaceAll(",",";");
+                }
+                if(traitValue != null){
+                    traitValue = traitValue.replaceAll(",",";");
+                }
+				row.add(envValue);
+				row.add(traitValue);
 				
 				for (int i = 2; i < header.length; i++){
 					boolean existsFlag = false;
@@ -301,7 +302,7 @@ public class GxeUtility {
 
 			return csvFile;
 		} catch (Exception e) {
-			e.printStackTrace();
+            LOG.debug(e.getMessage(), e);
 			return null;
 		}
 	
