@@ -1,0 +1,13 @@
+<div>
+	<ol>
+		<li ng-repeat="category in categories">
+			<label for="om-category-label">Label</label>
+			<input type="text" name="om-category-label" id="om-category-label" ng-model="category.label"/>
+
+			<label for="om-category-value">Value</label>
+			<input type="text" name="om-category-value" id="om-category-value" ng-model="category.value"/>
+			<a href="#" data-category-label="{category.label}" ng-click="removeCategory($event, $index)">Remove</a>
+		</li>
+	</ol>
+	<button ng-click="addCategory($event)">Add another category</button>
+</div>

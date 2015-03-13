@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities']);
+	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
 		'serviceUtilities',
@@ -45,10 +45,6 @@
 						$location.path('/scales');
 					}
 				}, serviceUtilities.genericAndRatherUselessErrorHandler);
-			};
-
-			$scope.addCategory = function() {
-				$scope.scale.categories.push({});
 			};
 
 			$scope.$watch('data.selectedType', function(newType) {

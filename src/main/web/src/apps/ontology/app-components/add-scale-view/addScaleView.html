@@ -34,18 +34,7 @@
 			<input type="text" name="om-as-max" id="om-as-max" ng-model="scale.validValues.max"></input>
 		</div>
 
-		<div ng-show="showCategoriesWidget">
-			<ol>
-				<li ng-repeat="category in scale.categories">
-					<label for="om-as-category-label">Label</label>
-					<input type="text" name="om-as-category-label" id="om-as-category-label" ng-model="category.label"/>
-
-					<label for="om-as-category-value">Value</label>
-					<input type="text" name="om-as-category-value" id="om-as-category-value" ng-model="category.value"/>
-				</li>
-			</ol>
-			<button ng-click="addCategory()">Add another category</button>
-		</div>
+		<om-categories ng-show="showCategoriesWidget" om-categories="scale.categories"></om-categories>
 	</form>
 </div>
 

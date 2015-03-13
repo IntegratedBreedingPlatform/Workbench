@@ -153,20 +153,6 @@ describe('Add Scale View', function() {
 		}
 	);
 
-	describe('$scope.addCategory', function() {
-
-		it('should add an empty category to the categories array on the scale object', function() {
-
-			expect(scope.scale.categories.length).toEqual(1);
-			expect(scope.scale.categories[0]).toEqual({});
-
-			scope.addCategory();
-
-			expect(scope.scale.categories.length).toEqual(2);
-			expect(scope.scale.categories[1]).toEqual({});
-		});
-	});
-
 	describe('$scope.saveScale', function() {
 
 		it('should call the scale service to save the scale', function() {
