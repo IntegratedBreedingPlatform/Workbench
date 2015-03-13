@@ -57,10 +57,9 @@
 		<div>
 			<label for="om-av-type">Variable Type</label>
 
-			<!-- TODO: Get variable type to just return array of IDs -->
 			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.variableTypeIds" theme="select2">
 				<ui-select-match>{{$item.name}}</ui-select-match>
-				<ui-select-choices repeat="type in data.types">
+				<ui-select-choices repeat="type.id as type in data.types">
 					{{type.name}}
 				</ui-select-choices>
 			</ui-select>
