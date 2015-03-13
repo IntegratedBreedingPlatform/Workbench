@@ -2,10 +2,12 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'utilities', 'variables']);
+	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'methods', 'scales', 'utilities',
+		'variables']);
 
-	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'serviceUtilities',
-		function(variablesService,  propertiesService, serviceUtilities) {
+	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'methodsService', 'scalesService',
+		'serviceUtilities',
+		function(variablesService, propertiesService, methodsService, scalesService, serviceUtilities) {
 
 			return {
 				controller: function($scope) {
@@ -16,11 +18,21 @@
 					});
 
 					$scope.data = {
-						properties: []
+						properties: [],
+						methods: [],
+						scales: []
 					};
 
 					propertiesService.getProperties().then(function(properties) {
 						$scope.data.properties = properties;
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+
+					methodsService.getMethods().then(function(methods) {
+						$scope.data.methods = methods;
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+
+					scalesService.getScales().then(function(scales) {
+						$scope.data.scales = scales;
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 					$scope.$watch('selectedItem', function(selected) {

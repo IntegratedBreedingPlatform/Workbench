@@ -13,11 +13,15 @@ describe('Variable details directive', function() {
 			name: 'Plant Vigor'
 		},
 		propertiesService = {},
+		methodsService = {},
+		scalesService = {},
 		variablesService = {},
 		scope,
 		q,
 		directiveElement,
 		deferredGetProperties,
+		deferredGetMethods,
+		deferredGetScales,
 		deferredUpdateVariable;
 
 	function compileDirective() {
@@ -36,6 +40,8 @@ describe('Variable details directive', function() {
 	beforeEach(module('variableDetails', function($provide) {
 		// Provide mocks for the directive controller
 		$provide.value('propertiesService', propertiesService);
+		$provide.value('methodsService', methodsService);
+		$provide.value('scalesService', scalesService);
 		$provide.value('serviceUtilities', serviceUtilities);
 		$provide.value('variablesService', variablesService);
 	}));
@@ -49,12 +55,24 @@ describe('Variable details directive', function() {
 			return deferredGetProperties.promise;
 		};
 
+		methodsService.getMethods = function() {
+			deferredGetMethods = q.defer();
+			return deferredGetMethods.promise;
+		};
+
+		scalesService.getScales = function() {
+			deferredGetScales = q.defer();
+			return deferredGetScales.promise;
+		};
+
 		variablesService.updateVariable = function() {
 			deferredUpdateVariable = q.defer();
 			return deferredUpdateVariable.promise;
 		};
 
 		spyOn(propertiesService, 'getProperties').and.callThrough();
+		spyOn(methodsService, 'getMethods').and.callThrough();
+		spyOn(scalesService, 'getScales').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
@@ -67,8 +85,12 @@ describe('Variable details directive', function() {
 			expect(scope.editing).toBe(false);
 		});
 
-		it('should set data to have an empty array of properties', function() {
-			expect(scope.data).toEqual({properties: []});
+		it('should set data to have an empty array of properties, methods and scales', function() {
+			expect(scope.data).toEqual({
+				properties: [],
+				methods: [],
+				scales: []
+			});
 		});
 
 		it('should set the model to be the selected variable if the selected variable changes', function() {
@@ -112,6 +134,44 @@ describe('Variable details directive', function() {
 			scope.$apply();
 
 			expect(scope.data.properties).toEqual([PLANT_VIGOR]);
+		});
+	});
+
+	describe('getting methods', function() {
+		it('should call the methods service to get all methods', function() {
+			expect(methodsService.getMethods).toHaveBeenCalled();
+		});
+
+		it('should handle any errors if the retrieving methods was not successful', function() {
+			deferredGetMethods.reject();
+			scope.$apply();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should set data.methods to the returned methods after a successful update', function() {
+			deferredGetMethods.resolve([PLANT_VIGOR]);
+			scope.$apply();
+
+			expect(scope.data.methods).toEqual([PLANT_VIGOR]);
+		});
+	});
+
+	describe('getting scales', function() {
+		it('should call the scales service to get all scales', function() {
+			expect(scalesService.getScales).toHaveBeenCalled();
+		});
+
+		it('should handle any errors if the retrieving scales was not successful', function() {
+			deferredGetScales.reject();
+			scope.$apply();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should set data.scales to the returned scales after a successful update', function() {
+			deferredGetScales.resolve([PLANT_VIGOR]);
+			scope.$apply();
+
+			expect(scope.data.scales).toEqual([PLANT_VIGOR]);
 		});
 	});
 

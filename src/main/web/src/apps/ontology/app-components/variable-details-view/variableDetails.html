@@ -10,6 +10,10 @@
 
 	<om-select om-id="om-property" om-label="Property" om-property="propertySummary" om-editing="editing" om-model="model" om-options="data.properties"></om-select>
 
+	<om-select om-id="om-property" om-label="Method" om-property="methodSummary" om-editing="editing" om-model="model" om-options="data.methods"></om-select>
+
+	<om-select om-id="om-property" om-label="Scale" om-property="scale" om-editing="editing" om-model="model" om-options="data.scales"></om-select>
+
 	<button ng-hide="editing" ng-click="editVariable($event)">Edit</button>
 	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">Save</button>
 	<button ng-show="editing" ng-click="cancel($event)">Cancel</button>
