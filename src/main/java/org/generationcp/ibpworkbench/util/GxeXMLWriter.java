@@ -42,7 +42,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     private final static Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
     
     @Value("${workbench.is.server.app}")
-	private String isServerApp;
+	private String isServerAppString;
     
     @Autowired
     private ManagerFactoryProvider managerFactoryProvider;
@@ -56,6 +56,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     }
     
     public void writeProjectXML() throws GxeXMLWriterException{
+    	boolean isServerApp = Boolean.parseBoolean(isServerAppString);
         
     	Traits traits = new Traits();
         for( Trait t : gxeInput.getTraits()){
@@ -68,8 +69,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         
         //create DataFile element
         DataFile data = new DataFile();
-        
-        if (Boolean.parseBoolean(isServerApp)){
+		if (isServerApp){
         	data.setName(new File(gxeInput.getSourceCSVFilePath()).getName());
             data.setSummarystats(new File(gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
         }else{
@@ -125,12 +125,15 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         bvSession.setDataFile(data);
         
         SSAParameters ssaParameters = new SSAParameters();
-        try{
-        	String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, gxeInput.getProject().getProjectName());
-            ssaParameters.setOutputDirectory(outputDirectory);
-        }catch(Exception e){
-        	e.printStackTrace();
+        //output directory is not needed if deployed on server
+        if (!isServerApp){
+        	try{
+        		String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+        		String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, gxeInput.getProject().getProjectName());
+        		ssaParameters.setOutputDirectory(outputDirectory);
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
         }
         bvSession.setIbws(ssaParameters);
         
