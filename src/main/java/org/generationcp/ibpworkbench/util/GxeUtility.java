@@ -30,9 +30,6 @@ import java.util.Map.Entry;
 @Configurable
 public class GxeUtility {
 	
-	@Autowired
-	private StudyDataManager studyDataManager;
-	
     private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
 	
 	public static Object createObjectCaption(Class<?> propertyType, String value, Integer colIndex) throws Exception{
@@ -82,9 +79,7 @@ public class GxeUtility {
 	public static Double randomInRange(double min, double max) {
 	  double range = max - min;
 	  double scaled = random.nextDouble() * range;
-	  double shifted = scaled + min;
-	  return shifted; 
-	
+	  return scaled + min;
 	}
 	/**
 	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
@@ -100,16 +95,15 @@ public class GxeUtility {
 			writer.writeProjectXML();
 			
 		} catch (GxeXMLWriterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error writng GxE XML file", e);
 		}
 	}
 	
 	
 	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,List<Experiment> experiments,String environmentName, String environmentGroup,String genotypeName ,GxeEnvironment gxeEnv,List<Trait> selectedTraits, Project currentProject) {
-		ArrayList<String[]> tableItems = new ArrayList<String[]>();
+		List<String[]> tableItems = new ArrayList<String[]>();
 		
-		Hashtable<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
+		Map<String,Integer> traitToColNoMap = new Hashtable<String, Integer>();
 		
 		int i = 0, j = 0;
 		// create header row
@@ -121,7 +115,7 @@ public class GxeUtility {
 			j++;
 		}
 		
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !environmentGroup.equalsIgnoreCase("none")) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup,j);
 			headerRow.add(environmentGroup.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;

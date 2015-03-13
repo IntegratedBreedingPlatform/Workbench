@@ -36,6 +36,8 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -65,6 +67,8 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 										InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
+	
+	 private static final Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisGxePanel.class);
     
     private GxeTable gxeTable;
     
@@ -224,10 +228,10 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		try {
 			ds = studyDataManager.getDataSetsByType(multiSiteParameters.getStudy().getId(), DataSetType.MEANS_DATA);
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error("Error getting means dataset", e);
 		}
 		
-		if (ds != null && ds.size() > 0){
+		if (ds != null && !ds.isEmpty()){
 			setCaption(ds.get(0).getName());
 			txtDatasetName.setValue(ds.get(0).getName());
 			txtDatasourceName.setValue(multiSiteParameters.getStudy().getName());
@@ -241,7 +245,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					Boolean val = (Boolean) event.getProperty().getValue();
-					if (val == false){
+					if (!val){
 						chkSelectAllEnvironments.removeListener(selectAllEnvironmentsListener);
 						chkSelectAllEnvironments.setValue(false);
 						chkSelectAllEnvironments.addListener(selectAllEnvironmentsListener);
@@ -476,7 +480,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return variatesCheckboxState;
 	}
 	
-	public void setVariatesCheckboxState(HashMap<String, Boolean> hashMap) {
+	public void setVariatesCheckboxState(Map<String, Boolean> hashMap) {
 			this.variatesCheckboxState = hashMap;
 	}
 
@@ -488,4 +492,4 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.gxeTable = gxeTable;
 	}
 
-}// End of MultiSiteAnalysisGxePanel
+}

@@ -72,20 +72,14 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 	private StudyDataManager studyDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private ToolUtil toolUtil;
-
 	private Project project;
 
-	private final static Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisPanel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisPanel.class);
 
 	public MultiSiteAnalysisPanel(Project project) {
 		LOG.debug("Project is " + project.getProjectName());
@@ -139,8 +133,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void initializeValues() {
-		// TODO Auto-generated method stub
-		
+		// do nothing - inherited abstract method
 	}
 
 	@Override
@@ -202,7 +195,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	public void generateTabContent(Study study, String selectedEnvFactorName,String selectedGenotypeFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
 
-		if (selectedEnvFactorName == null || selectedEnvFactorName == "") {
+		if (selectedEnvFactorName == null || "".equals(selectedEnvFactorName)) {
             return;
         }
 
@@ -250,11 +243,11 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			List<DataSet> dataSets = null;
 			try{
 				dataSets = getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
-			}catch(MiddlewareQueryException e){
-				e.printStackTrace();
+			} catch (MiddlewareQueryException e){
+				LOG.error("Error getting means dataset", e);
 			}
 
-			if (dataSets != null && study.getName() != null && dataSets.size() > 0){
+			if (dataSets != null && study.getName() != null && !dataSets.isEmpty()){
 
 				MultiSiteAnalysisSelectPanel selectEnvironmentPanel = new MultiSiteAnalysisSelectPanel(getStudyDataManager() ,project, study, this);
 
