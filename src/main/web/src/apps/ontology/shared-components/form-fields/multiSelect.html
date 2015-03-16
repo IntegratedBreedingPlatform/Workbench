@@ -1,0 +1,12 @@
+<div>
+	<label for="{{id}}">{{label}}</label>
+
+	<ui-select ng-show="editable()" name="{{id}}" id="{{id}}" multiple ng-model="model[property]" theme="select2">
+		<ui-select-match>{{$item.name}}</ui-select-match>
+		<ui-select-choices repeat="item.id as item in options">
+			{{item.name}}
+		</ui-select-choices>
+	</ui-select>
+
+	<p ng-hide="editable()">{{model[property]}}</p>
+</div>

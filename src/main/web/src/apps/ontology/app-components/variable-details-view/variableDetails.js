@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'methods', 'scales', 'utilities',
-		'variables']);
+	var variableDetailsModule = angular.module('variableDetails', ['ngSanitize', 'ui.select', 'formFields', 'properties', 'methods',
+		'scales', 'utilities', 'variables']);
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'methodsService', 'scalesService',
 		'serviceUtilities',
@@ -13,15 +13,16 @@
 				controller: function($scope) {
 					$scope.editing = false;
 
-					$scope.$watch('selectedVariable', function(variable) {
-						$scope.model = angular.copy(variable);
-					});
-
 					$scope.data = {
 						properties: [],
 						methods: [],
-						scales: []
+						scales: [],
+						types: []
 					};
+
+					$scope.$watch('selectedVariable', function(variable) {
+						$scope.model = angular.copy(variable);
+					});
 
 					propertiesService.getProperties().then(function(properties) {
 						$scope.data.properties = properties;
@@ -33,6 +34,10 @@
 
 					scalesService.getScales().then(function(scales) {
 						$scope.data.scales = scales;
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+
+					variablesService.getTypes().then(function(types) {
+						$scope.data.types = types;
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
 					$scope.$watch('selectedItem', function(selected) {

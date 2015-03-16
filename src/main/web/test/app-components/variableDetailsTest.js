@@ -22,6 +22,7 @@ describe('Variable details directive', function() {
 		deferredGetProperties,
 		deferredGetMethods,
 		deferredGetScales,
+		deferredGetTypes,
 		deferredUpdateVariable;
 
 	function compileDirective() {
@@ -65,6 +66,11 @@ describe('Variable details directive', function() {
 			return deferredGetScales.promise;
 		};
 
+		variablesService.getTypes = function() {
+			deferredGetTypes = q.defer();
+			return deferredGetTypes.promise;
+		};
+
 		variablesService.updateVariable = function() {
 			deferredUpdateVariable = q.defer();
 			return deferredUpdateVariable.promise;
@@ -73,6 +79,7 @@ describe('Variable details directive', function() {
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
+		spyOn(variablesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
@@ -85,11 +92,12 @@ describe('Variable details directive', function() {
 			expect(scope.editing).toBe(false);
 		});
 
-		it('should set data to have an empty array of properties, methods and scales', function() {
+		it('should set data to have an empty array of properties, methods, scales and types', function() {
 			expect(scope.data).toEqual({
 				properties: [],
 				methods: [],
-				scales: []
+				scales: [],
+				types: []
 			});
 		});
 
@@ -123,7 +131,7 @@ describe('Variable details directive', function() {
 			expect(propertiesService.getProperties).toHaveBeenCalled();
 		});
 
-		it('should handle any errors if the retrieving properties was not successful', function() {
+		it('should handle any errors if retrieving the properties was not successful', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
@@ -142,7 +150,7 @@ describe('Variable details directive', function() {
 			expect(methodsService.getMethods).toHaveBeenCalled();
 		});
 
-		it('should handle any errors if the retrieving methods was not successful', function() {
+		it('should handle any errors if retrieving the methods was not successful', function() {
 			deferredGetMethods.reject();
 			scope.$apply();
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
@@ -161,7 +169,7 @@ describe('Variable details directive', function() {
 			expect(scalesService.getScales).toHaveBeenCalled();
 		});
 
-		it('should handle any errors if the retrieving scales was not successful', function() {
+		it('should handle any errors if retrieving the scales was not successful', function() {
 			deferredGetScales.reject();
 			scope.$apply();
 			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
@@ -172,6 +180,25 @@ describe('Variable details directive', function() {
 			scope.$apply();
 
 			expect(scope.data.scales).toEqual([PLANT_VIGOR]);
+		});
+	});
+
+	describe('getting variable types', function() {
+		it('should call the variables service to get all variable types', function() {
+			expect(variablesService.getTypes).toHaveBeenCalled();
+		});
+
+		it('should handle any errors if retrieving the variable types was not successful', function() {
+			deferredGetTypes.reject();
+			scope.$apply();
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should set data.types to the returned variable types after a successful update', function() {
+			deferredGetTypes.resolve([1, 2]);
+			scope.$apply();
+
+			expect(scope.data.types).toEqual([1, 2]);
 		});
 	});
 

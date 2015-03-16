@@ -66,4 +66,23 @@
 			templateUrl: 'static/views/ontology/select.html'
 		};
 	});
+
+	formFieldsModule.directive('omMultiSelect', function(editable) {
+		return {
+			controller: function ($scope) {
+				$scope.editable = editable($scope);
+			},
+			restrict: 'E',
+			scope: {
+				// omOptions must be an array of objects with (at least) name and id properties.
+				options: '=omOptions',
+				id: '@omId',
+				label: '@omLabel',
+				property: '@omProperty',
+				editing: '=omEditing',
+				model: '=omModel'
+			},
+			templateUrl: 'static/views/ontology/multiSelect.html'
+		};
+	});
 })();
