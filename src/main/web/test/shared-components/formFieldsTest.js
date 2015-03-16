@@ -88,4 +88,26 @@ describe('formFields Module', function() {
 			}
 		);
 	});
+
+	describe('id filter', function() {
+		var filter;
+
+		beforeEach(function() {
+			inject(function($filter) {
+				filter = $filter;
+			});
+		});
+
+		it('should filter an array of objects by their id', function() {
+			var one = {id: 1, name: 'one'},
+				two = {id: 2, name: 'two'},
+				objects = [one, two],
+				filteredObjects;
+
+			filteredObjects = filter('id')(objects, 1);
+
+			expect(filteredObjects).toContain(one);
+			expect(filteredObjects).not.toContain(two);
+		});
+	});
 });

@@ -85,4 +85,12 @@
 			templateUrl: 'static/views/ontology/multiSelect.html'
 		};
 	});
+
+	// Filter to return objects from an array of items by the id in the object, using the passed
+	// in id as the filter parameter.
+	formFieldsModule.filter('id', function($filter){
+		return function(items, id){
+			return $filter('filter')(items, {id: id}, true);
+		};
+	});
 })();
