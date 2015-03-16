@@ -102,15 +102,7 @@ public class RunMultiSiteAction implements ClickListener {
 			
 			if (Boolean.parseBoolean(isServerApp)){
 				
-				String outputFilename = multiSiteParameters.getStudy().getName() + ".zip";
-				List<String> filenameList = new ArrayList<>();
-				filenameList.add(gxeInput.getDestXMLFilePath());
-				filenameList.add(gxeInput.getSourceCSVFilePath());
-				filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
-				
-				ZipUtil.zipIt(outputFilename, filenameList);
-				
-				downloadInputFile(new File(outputFilename), IBPWorkbenchApplication.get());
+				zipInputFilesAndDownload(gxeInput);
 				
 			}else{
 				launchBV(gxeInput.getDestXMLFilePath(), buttonClickEvent.getComponent().getWindow());
@@ -121,8 +113,20 @@ public class RunMultiSiteAction implements ClickListener {
 		}
 		
 	}
+
+	protected void zipInputFilesAndDownload(GxeInput gxeInput) {
+		String outputFilename = multiSiteParameters.getStudy().getName() + ".zip";
+		List<String> filenameList = new ArrayList<>();
+		filenameList.add(gxeInput.getDestXMLFilePath());
+		filenameList.add(gxeInput.getSourceCSVFilePath());
+		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
+		
+		ZipUtil.zipIt(outputFilename, filenameList);
+		
+		downloadInputFile(new File(outputFilename), IBPWorkbenchApplication.get());
+	}
 	
-	private GxeInput generateInputFiles() throws MiddlewareQueryException {
+	protected GxeInput generateInputFiles() throws MiddlewareQueryException {
 		
 		
 		Project project = multiSiteParameters.getProject();
@@ -180,7 +184,7 @@ public class RunMultiSiteAction implements ClickListener {
 		return gxeInput;
 	}
 
-	private void launchBV(String projectFilePath, final Window windowSource) {
+	protected void launchBV(String projectFilePath, final Window windowSource) {
 			
 		File absoluteToolFile = new File(breedingViewTool.getPath()).getAbsoluteFile();
 
@@ -216,7 +220,7 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 	
-	protected void downloadInputFile(File file, Application application){
+	private void downloadInputFile(File file, Application application){
 		
 		FileResource fr = new FileResource(file, application) {
             private static final long serialVersionUID = 765143030552676513L;
@@ -239,6 +243,10 @@ public class RunMultiSiteAction implements ClickListener {
         };
 
         application.getMainWindow().open(fr);
+	}
+	
+	protected void setIsServerApp(String isServerApp){
+		this.isServerApp = isServerApp;
 	}
 	
 	
