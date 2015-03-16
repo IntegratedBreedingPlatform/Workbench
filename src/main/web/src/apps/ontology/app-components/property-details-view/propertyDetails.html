@@ -3,6 +3,8 @@
 
 	<om-text-area om-id="om-description" om-label="Description" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
+	<om-tag-select om-id="om-class" om-label="Classes" om-property="classes" om-editing="editing" om-model="model" om-options="data.classes"></om-tag-select>
+
 	<om-input om-id="om-ontology-id" om-label="Crop Ontology Id" om-property="cropOntologyId" om-editing="editing" om-model="model"></om-input>
 
 	<button ng-hide="editing" ng-click="editProperty($event)">Edit</button>

@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var formFieldsModule = angular.module('formFields', []);
+	var formFieldsModule = angular.module('formFields', ['ngSanitize', 'ui.select']);
 
 	formFieldsModule.factory('editable', function() {
 		return function($scope){
@@ -83,6 +83,25 @@
 				model: '=omModel'
 			},
 			templateUrl: 'static/views/ontology/multiSelect.html'
+		};
+	});
+
+	formFieldsModule.directive('omTagSelect', function(editable) {
+		return {
+			controller: function ($scope) {
+				$scope.editable = editable($scope);
+			},
+			restrict: 'E',
+			scope: {
+				// omOptions must be an array of strings.
+				options: '=omOptions',
+				id: '@omId',
+				label: '@omLabel',
+				property: '@omProperty',
+				editing: '=omEditing',
+				model: '=omModel'
+			},
+			templateUrl: 'static/views/ontology/tagSelect.html'
 		};
 	});
 

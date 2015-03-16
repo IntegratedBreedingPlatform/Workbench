@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['ngSanitize', 'ui.select', 'formFields', 'properties', 'methods',
+	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'methods',
 		'scales', 'utilities', 'variables']);
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'methodsService', 'scalesService',
