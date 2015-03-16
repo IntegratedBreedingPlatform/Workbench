@@ -117,19 +117,6 @@ describe('Add Scale View', function() {
 		expect(scope.showCategoriesWidget).toBe(false);
 	});
 
-	it('should initialise the scale model with a categories property set to an array with one empty object', function() {
-		var scale = scope.scale,
-			categories;
-
-		expect(typeof scale).toEqual('object');
-
-		categories = scale.categories;
-
-		expect(categories).not.toBeUndefined();
-		expect(Array.isArray(categories)).toBe(true);
-		expect(categories[0]).toEqual({});
-	});
-
 	it('should show the range widget and hide the categories widget if the scale type is changed to be Numeric', function() {
 		scope.data.selectedType = NUMERIC_TYPE;
 		scope.$apply();
@@ -160,48 +147,6 @@ describe('Add Scale View', function() {
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
 
 			scope.saveScale(fakeEvent, PERCENTAGE);
-
-			expect(scalesService.addScale).toHaveBeenCalledWith(PERCENTAGE);
-		});
-
-		it('should remove any valid values on the scale before saving if the data type is not numeric', function() {
-
-			var scaleToSave = angular.copy(SCORE);
-
-			// Select a non-numeric type
-			scope.data.selectedType = CATEGORICAL_TYPE;
-
-			// Pretend user set some valid values before they decided to make it categorical
-			scaleToSave.validValues = {
-				min: 0,
-				max: 10
-			};
-
-			// Pretend no edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
-
-			scope.saveScale(fakeEvent, scaleToSave);
-
-			expect(scalesService.addScale).toHaveBeenCalledWith(SCORE);
-		});
-
-		it('should remove any categories on the scale before saving if the data type is not categorical', function() {
-
-			var scaleToSave = angular.copy(PERCENTAGE);
-
-			// Select a non-numeric type
-			scope.data.selectedType = NUMERIC_TYPE;
-
-			// Pretend user set some categories before they decided to make it categorical
-			scaleToSave.categories = [{
-				label: 'a',
-				description: 'b'
-			}];
-
-			// Pretend no edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
-
-			scope.saveScale(fakeEvent, scaleToSave);
 
 			expect(scalesService.addScale).toHaveBeenCalledWith(PERCENTAGE);
 		});

@@ -1,0 +1,12 @@
+<div ng-show="editable()">
+	<label for="om-as-min">Minimum Expected Value</label>
+	<input type="text" name="om-as-min" id="om-as-min" ng-model="model[property].min"></input>
+
+	<label for="om-as-max">Maximum Expected Value</label>
+	<input type="text" name="om-as-max" id="om-as-max" ng-model="model[property].max"></input>
+</div>
+
+<div ng-hide="editable()">
+	<p>Min: {{model[property].min}}</p>
+	<p>Min: {{model[property].max}}</p>
+</div>

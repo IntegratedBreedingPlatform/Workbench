@@ -23,7 +23,7 @@ describe('Categories module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			directiveElement = $compile('<om-categories om-categories="categories"></om-categories>')(scope);
+			directiveElement = $compile('<om-categories om-model="model" om-property="validValues"></om-categories>')(scope);
 		});
 
 		scope.$digest();
@@ -31,18 +31,30 @@ describe('Categories module', function() {
 		isolateScope = directiveElement.isolateScope();
 	}
 
+	it('should instantiate the specified property on the model if not otherwise provided', function() {
+
+		scope.model = {};
+		expect(scope.model.validValues).toBeUndefined();
+
+		compileDirective();
+
+		expect(scope.model.validValues).not.toBeUndefined();
+	});
+
 	describe('$scope.addCategory', function() {
 
 		it('should add an empty category to the categories array on the scale object', function() {
 
-			scope.categories = [{}];
+			scope.model = {
+				validValues: {}
+			};
 
 			compileDirective();
 
 			isolateScope.addCategory(fakeEvent);
 
-			expect(scope.categories.length).toEqual(2);
-			expect(scope.categories[1]).toEqual({});
+			expect(scope.model.validValues.categories.length).toEqual(2);
+			expect(scope.model.validValues.categories[1]).toEqual({});
 		});
 	});
 
@@ -59,14 +71,18 @@ describe('Categories module', function() {
 					value: 'value b'
 				};
 
-			scope.categories = [cat1, cat2];
+			scope.model = {
+				validValues: {
+					categories: [cat1, cat2]
+				}
+			};
 
 			compileDirective();
 
 			isolateScope.removeCategory(fakeEvent, cat1.label);
 
-			expect(scope.categories.length).toEqual(1);
-			expect(scope.categories[0]).toEqual(cat2);
+			expect(scope.model.validValues.categories.length).toEqual(1);
+			expect(scope.model.validValues.categories[0]).toEqual(cat2);
 		});
 	});
 });

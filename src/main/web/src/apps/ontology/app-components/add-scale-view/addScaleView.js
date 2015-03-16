@@ -2,15 +2,13 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories']);
+	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
 		'serviceUtilities',
 		function($scope, $location, $window, dataTypesService, scalesService, variableStateService, serviceUtilities) {
 
-			$scope.scale = {
-				categories: [{}]
-			};
+			$scope.scale = {};
 
 			$scope.data = {};
 
@@ -23,16 +21,6 @@
 
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
-
-				if ($scope.data.selectedType) {
-					if ($scope.data.selectedType.name !== 'Numeric') {
-						delete scale.validValues;
-					}
-
-					if ($scope.data.selectedType.name !== 'Categorical') {
-						delete scale.categories;
-					}
-				}
 
 				scalesService.addScale(scale).then(function(response) {
 					scale.id = response.id;

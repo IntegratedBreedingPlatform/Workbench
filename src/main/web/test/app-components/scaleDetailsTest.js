@@ -8,10 +8,37 @@ describe('Scale details directive', function() {
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
+
 		PERCENTAGE = {
 			id: 1,
-			name: 'Percentage'
+			name: 'Percentage',
+			description: 'As per title, really',
+			dataType: {
+				id: 2,
+				name: 'Numeric'
+			}
 		},
+
+		SCORE = {
+			id: 2,
+			name: 'Score',
+			description: 'Score, 1 - 5',
+			dataType: {
+				id: 1,
+				name: 'Categorical'
+			}
+		},
+
+		FREE_TEXT = {
+			id: 2,
+			name: 'Text',
+			description: 'Some text',
+			dataType: {
+				id: 3,
+				name: 'Character'
+			}
+		},
+
 		scalesService = {},
 		scope,
 		q,
@@ -57,6 +84,34 @@ describe('Scale details directive', function() {
 		it('should set editing to false', function() {
 			expect(scope.editing).toBe(false);
 		});
+
+		it('should hide the range and categories widgets by default', function() {
+			expect(scope.showRangeWidget).toBe(false);
+			expect(scope.showCategoriesWidget).toBe(false);
+		});
+
+		it('should show the range widget and hide the categories widget if the scale type is changed to be Numeric', function() {
+			scope.selectedScale = PERCENTAGE;
+			scope.$apply();
+			expect(scope.showRangeWidget).toBe(true);
+			expect(scope.showCategoriesWidget).toBe(false);
+		});
+
+		it('should show the categories widget and hide the range widget if the scale type is changed to be Categorical', function() {
+			scope.selectedScale = SCORE;
+			scope.$apply();
+			expect(scope.showRangeWidget).toBe(false);
+			expect(scope.showCategoriesWidget).toBe(true);
+		});
+
+		it('should hide the categories and range widgets if the scale type is changed to be something other than Categorical or Numeric',
+			function() {
+				scope.selectedScale = FREE_TEXT;
+				scope.$apply();
+				expect(scope.showRangeWidget).toBe(false);
+				expect(scope.showCategoriesWidget).toBe(false);
+			}
+		);
 
 		it('should set the model to be the selected scale if the selected scale changes', function() {
 			scope.selectedScale = PERCENTAGE;

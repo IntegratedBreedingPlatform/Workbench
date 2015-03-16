@@ -7,9 +7,9 @@
 	formFieldsModule.factory('editable', function() {
 		return function($scope){
 			return function() {
-				return $scope.editing &&
+				return $scope.adding || ($scope.editing &&
 					$scope.model && $scope.model.editableFields &&
-					$scope.model.editableFields.indexOf($scope.property) !== -1;
+					$scope.model.editableFields.indexOf($scope.property) !== -1);
 			};
 		};
 	});

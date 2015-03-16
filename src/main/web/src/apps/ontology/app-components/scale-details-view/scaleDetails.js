@@ -2,16 +2,23 @@
 'use strict';
 
 (function() {
-	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'utilities']);
+	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'utilities', 'categories']);
 
 	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', function(scalesService, serviceUtilities) {
 
 		return {
 			controller: function($scope) {
 				$scope.editing = false;
+				$scope.showRangeWidget = false;
+				$scope.showCategoriesWidget = false;
 
 				$scope.$watch('selectedScale', function(scale) {
 					$scope.model = angular.copy(scale);
+
+					if (scale && scale.dataType) {
+						$scope.showRangeWidget = scale.dataType.name === 'Numeric';
+						$scope.showCategoriesWidget = scale.dataType.name === 'Categorical';
+					}
 				});
 
 				$scope.$watch('selectedItem', function(selected) {

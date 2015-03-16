@@ -26,15 +26,9 @@
 			</ui-select>
 		</div>
 
-		<div ng-show="showRangeWidget">
-			<label for="om-as-min">Minimum Expected Value</label>
-			<input type="text" name="om-as-min" id="om-as-min" ng-model="scale.validValues.min"></input>
+		<om-range ng-show="showRangeWidget" om-property="validValues" om-adding="true" om-model="scale"></om-range>
 
-			<label for="om-as-max">Maximum Expected Value</label>
-			<input type="text" name="om-as-max" id="om-as-max" ng-model="scale.validValues.max"></input>
-		</div>
-
-		<om-categories ng-show="showCategoriesWidget" om-categories="scale.categories"></om-categories>
+		<om-categories ng-show="showCategoriesWidget" om-property="validValues" om-adding="true" om-model="scale"></om-categories>
 	</form>
 </div>
 
