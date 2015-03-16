@@ -23,7 +23,7 @@ import com.vaadin.ui.Window;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RunBreedingViewActionTest {
+public class RunSingleSiteActionTest {
 	
 	private static final String TRIAL_NO = "1";
 	private static final String ENVIRONMENT_NAME = "Environment Name";
