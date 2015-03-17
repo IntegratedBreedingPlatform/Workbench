@@ -6,13 +6,13 @@
 
 	function transformVariableToDisplayFormat(variable, id) {
 		return {
-				id: variable.id || id,
-				Name: variable.name,
-				Property: variable.propertySummary && variable.propertySummary.name || '',
-				Method: variable.methodSummary && variable.methodSummary.name || '',
-				Scale: variable.scale && variable.scale.name || '',
-				'action-favourite': variable.favourite
-			};
+			id: variable.id || id,
+			Name: variable.name,
+			Property: variable.propertySummary && variable.propertySummary.name || '',
+			Method: variable.methodSummary && variable.methodSummary.name || '',
+			Scale: variable.scaleSummary && variable.scaleSummary.name || '',
+			'action-favourite': variable.favourite
+		};
 	}
 
 	function transformToDisplayFormat(variables) {
