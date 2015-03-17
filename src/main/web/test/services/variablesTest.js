@@ -14,7 +14,7 @@ describe('Variables Service', function() {
 				id: 1,
 				name: 'Look at the plant'
 			},
-			scale: {
+			scaleSummary: {
 				id: 1,
 				name: 'Score',
 				description: 'As per title',
@@ -35,7 +35,7 @@ describe('Variables Service', function() {
 			description: PLANT_VIGOR.description,
 			propertyId: PLANT_VIGOR.propertySummary.id,
 			methodId: PLANT_VIGOR.methodSummary.id,
-			scaleId: PLANT_VIGOR.scale.id,
+			scaleId: PLANT_VIGOR.scaleSummary.id,
 			variableTypeIds: PLANT_VIGOR.variableTypeIds
 		},
 

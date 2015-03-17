@@ -17,7 +17,7 @@ describe('Variables Controller', function() {
 				id: 1,
 				name: 'Visual assessment at seedling stage'
 			},
-			scale: {
+			scaleSummary: {
 				id: 1,
 				name: 'Score',
 				dataType: 2,
@@ -102,7 +102,7 @@ describe('Variables Controller', function() {
 					Name: PLANT_VIGOR.name,
 					Property: PLANT_VIGOR.propertySummary.name,
 					Method: PLANT_VIGOR.methodSummary.name,
-					Scale: PLANT_VIGOR.scale.name,
+					Scale: PLANT_VIGOR.scaleSummary.name,
 					'action-favourite': PLANT_VIGOR.favourite
 				}];
 
@@ -116,7 +116,7 @@ describe('Variables Controller', function() {
 			// Null out some values
 			rawVariables[0].propertySummary = null;
 			rawVariables[0].methodSummary = null;
-			rawVariables[0].scale = null;
+			rawVariables[0].scaleSummary = null;
 
 			transformedVariables = [{
 				id: PLANT_VIGOR.id,
@@ -212,7 +212,7 @@ describe('Variables Controller', function() {
 					Name: updateSelectedVariable.name,
 					Property: updateSelectedVariable.propertySummary.name,
 					Method: updateSelectedVariable.methodSummary.name,
-					Scale: updateSelectedVariable.scale.name
+					Scale: updateSelectedVariable.scaleSummary.name
 				}];
 
 			controller.favouriteVariables = [{
@@ -220,7 +220,7 @@ describe('Variables Controller', function() {
 					Name: updateSelectedVariable.name,
 					Property: updateSelectedVariable.propertySummary.name,
 					Method: updateSelectedVariable.methodSummary.name,
-					Scale: updateSelectedVariable.scale.name
+					Scale: updateSelectedVariable.scaleSummary.name
 				}];
 
 			// Select our variable for editing
@@ -250,7 +250,7 @@ describe('Variables Controller', function() {
 					id: 1,
 					Property: detailedVariableToUpdate.propertySummary.name,
 					Method: detailedVariableToUpdate.methodSummary.name,
-					Scale: detailedVariableToUpdate.scale.name
+					Scale: detailedVariableToUpdate.scaleSummary.name
 				},
 
 				newName = 'Not Plant Vigor';

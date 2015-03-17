@@ -12,7 +12,7 @@
 		function convertVariableForUpdating(variable) {
 			var convertedVariable = {
 					methodId: variable.methodSummary && variable.methodSummary.id,
-					scaleId: variable.scale && variable.scale.id,
+					scaleId: variable.scaleSummary && variable.scaleSummary.id,
 					propertyId: variable.propertySummary && variable.propertySummary.id
 				},
 
@@ -48,7 +48,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scale': {...},
+				'scaleSummary': {...},
 				'variableTypeIds': [1],
 				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
@@ -114,7 +114,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scale': {...},
+				'scaleSummary': {...},
 				'variableTypeIds': [1],
 				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
@@ -169,7 +169,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scale': {...},
+				'scaleSummary': {...},
 				'variableTypeIds': [1],
 				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
