@@ -92,6 +92,27 @@ describe('Scales Service', function() {
 			httpBackend.flush();
 		});
 
+		it('should convert data type object to an id and remove unnecessary properties before POSTing', function() {
+
+			var scale = {
+					name: 'myscale',
+					dataType: {
+						id: 1
+					},
+					description: 'A scale.'
+				},
+				id = 1,
+				expectedScale = {
+					name: 'myscale',
+					dataTypeId: 1,
+					description: 'A scale.'	
+				};
+
+			httpBackend.expectPOST(/\/scales$/, expectedScale).respond(201);
+			scalesService.addScale(scale);
+			httpBackend.flush();
+		});
+
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
 			var scale = {

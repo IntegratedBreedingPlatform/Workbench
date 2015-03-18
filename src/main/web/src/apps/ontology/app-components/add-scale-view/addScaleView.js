@@ -10,8 +10,6 @@
 
 			$scope.scale = {};
 
-			$scope.data = {};
-
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
 
@@ -35,10 +33,8 @@
 				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 			};
 
-			$scope.$watch('data.selectedType', function(newType) {
+			$scope.$watch('scale.dataType', function(newType) {
 				if (newType) {
-					$scope.scale.dataTypeId = newType.id;
-
 					$scope.showRangeWidget = newType.name === 'Numeric';
 					$scope.showCategoriesWidget = newType.name === 'Categorical';
 				}

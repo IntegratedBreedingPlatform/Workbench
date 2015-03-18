@@ -9,6 +9,26 @@
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
 
+		function convertScaleForAdding(scale) {
+			var convertedScale = {
+					dataTypeId: scale.dataType && scale.dataType.id
+				},
+				propertiesToInclude = [
+					'name',
+					'description',
+					'validValues'
+				];
+
+				Object.keys(scale).forEach(function(key) {
+					// Ignore properties we want to remove before sending
+					if (propertiesToInclude.indexOf(key) > -1) {
+						convertedScale[key] = scale[key];
+					}
+				});
+
+			return convertedScale;
+		}
+
 		return {
 			/*
 			Returns an array of scales in the format:
@@ -57,7 +77,9 @@
 			}
 			*/
 			addScale: function(scale) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales', scale);
+				var convertedScale = convertScaleForAdding(scale),
+					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales', 
+						convertedScale);
 				return request.then(successHandler, failureHandler);
 			},
 
