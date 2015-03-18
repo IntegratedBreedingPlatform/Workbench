@@ -1,4 +1,4 @@
-/*global angular, expect, inject, spyOn*/
+/*global expect, inject, spyOn*/
 'use strict';
 
 describe('Add Scale View', function() {
@@ -31,16 +31,6 @@ describe('Add Scale View', function() {
 				min: 0,
 				max: 100
 			}
-		},
-
-		SCORE = {
-			name: 'Score',
-			description: 'As per title',
-			dataType: CATEGORICAL_TYPE,
-			categories: [{
-				label: 'A',
-				description: 'A thing'
-			}]
 		},
 
 		scalesService,
