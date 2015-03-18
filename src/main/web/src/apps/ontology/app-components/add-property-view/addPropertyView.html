@@ -5,15 +5,10 @@
 	<h2>Add New Property</h2>
 	<form>
 		<button ng-click="saveProperty($event, property)" type="submit">Save</button>
-		<div>
-			<label for="om-ap-name">Name</label>
-			<input type="text" name="om-ap-name" id="om-ap-name" ng-model="property.name"></input>
-		</div>
 
-		<div>
-			<label for="om-ap-description">Description</label>
-			<textarea type="text" name="om-ap-description" id="om-ap-description" ng-model="property.description"></textarea>
-		</div>
+		<om-input om-id="om-name" om-label="Name" om-property="name" om-adding="true" om-model="property"></om-input>
+
+		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="property"></om-text-area>
 
 		<div>
 			<label for="om-ap-class">Class</label>
@@ -25,9 +20,6 @@
 			</ui-select>
 		</div>
 
-		<div>
-			<label for="om-ap-ontology-id">Crop Ontology Id</label>
-			<input type="text" name="om-ap-ontology-id" id="om-ap-ontology-id" ng-model="property.cropOntologyId"></input>
-		</div>
+		<om-input om-id="om-ontology-id" om-label="Crop Ontology Id" om-property="cropOntologyId" om-adding="true" om-model="property"></om-input>
 	</form>
 </div>
