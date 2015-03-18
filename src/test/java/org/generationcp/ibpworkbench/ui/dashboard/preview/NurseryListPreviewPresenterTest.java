@@ -108,11 +108,11 @@ public class NurseryListPreviewPresenterTest  {
 	@Test
     public void testRenameNurseryListFolder() throws Exception {
         when(messageSource.getMessage(Message.INVALID_ITEM_NAME)).thenReturn("Blank name not accepted");
-        when(studyDataManager.renameSubFolder(null, 0)).thenThrow(MiddlewareException.class);
+        when(studyDataManager.renameSubFolder(null, 0, project.getUniqueID())).thenThrow(MiddlewareException.class);
 
         presenter.renameNurseryListFolder(newFolderName,folderId);
 
-        verify(studyDataManager).renameSubFolder(newFolderName,folderId);
+        verify(studyDataManager).renameSubFolder(newFolderName,folderId, project.getUniqueID());
 
         try {
             presenter.renameNurseryListFolder(null,0);

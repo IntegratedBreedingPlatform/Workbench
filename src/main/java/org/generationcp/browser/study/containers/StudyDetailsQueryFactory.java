@@ -31,14 +31,16 @@ public class StudyDetailsQueryFactory implements QueryFactory{
 	private StudyDataManager studyDataManager;
 	private StudyType studyType;
 	private List<String> columnIds;
+	private String programUUID;
 	private Query query;
 	
 	public StudyDetailsQueryFactory(StudyDataManager studyDataManager,
-			StudyType studyType, List<String> columnIds) {
+			StudyType studyType, List<String> columnIds, String programUUID) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.studyType = studyType;
 		this.columnIds = columnIds;
+		this.programUUID = programUUID;
 	}
 
 	/**
@@ -47,7 +49,7 @@ public class StudyDetailsQueryFactory implements QueryFactory{
      */
 	@Override
 	public Query constructQuery(Object[] sortPropertyIds, boolean[] sortStates) {
-		query = new StudyDetailsQuery(studyDataManager, studyType, columnIds);
+		query = new StudyDetailsQuery(studyDataManager, studyType, columnIds, programUUID);
 		return query;
 	}
 

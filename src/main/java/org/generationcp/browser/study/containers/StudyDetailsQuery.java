@@ -42,10 +42,11 @@ public class StudyDetailsQuery implements Query{
     private StudyDataManager studyDataManager;
     private StudyType studyType;
     private List<String> columnIds;
+    private String programUUID;
     private int size;
 
 	public StudyDetailsQuery(StudyDataManager studyDataManager,
-			StudyType studyType, List<String> columnIds) {
+			StudyType studyType, List<String> columnIds, String programUUID) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.studyType = studyType;
@@ -76,9 +77,9 @@ public class StudyDetailsQuery implements Query{
         List<StudyDetails> list = new ArrayList<StudyDetails>();
         try {
         	if(studyType!=null) {
-                list = studyDataManager.getStudyDetails(Database.LOCAL,studyType,startIndex,count);
+                list = studyDataManager.getStudyDetails(studyType,programUUID,startIndex,count);
         	} else {
-        		list = studyDataManager.getNurseryAndTrialStudyDetails(Database.LOCAL,startIndex,count);
+        		list = studyDataManager.getNurseryAndTrialStudyDetails(programUUID,startIndex,count);
         	}
         } catch (MiddlewareQueryException e) {
         	LOG.error("Error in getting all study details with for study type: " + studyType + "\n" + e.toString());
@@ -153,10 +154,10 @@ public class StudyDetailsQuery implements Query{
 		if(size == -1){
             try {
             	if(studyType!=null) {
-            		Long count = studyDataManager.countStudyDetails(Database.LOCAL,studyType);
+            		Long count = studyDataManager.countStudyDetails(studyType,programUUID);
             		this.size = count.intValue();
             	} else {
-            		Long count = studyDataManager.countNurseryAndTrialStudyDetails(Database.LOCAL);
+            		Long count = studyDataManager.countAllNurseryAndTrialStudyDetails(programUUID);
             		this.size = count.intValue();
             	}
             } catch (MiddlewareQueryException ex) {

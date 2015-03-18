@@ -93,7 +93,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 		dataSetResource = new ThemeResource("../vaadin-retro/svg/dataset-icon.svg");
 		
-		treeTable = createStudyTreeTable(Database.LOCAL);
+		treeTable = createStudyTreeTable();
 	}
 
 	protected void initializeActions(){
@@ -166,7 +166,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		assemble();
 	}
 
-	private TreeTable createStudyTreeTable(Database database) {
+	private TreeTable createStudyTreeTable() {
 
 		final TreeTable tr = new TreeTable();
 
@@ -177,7 +177,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<FolderReference> folderRef = null;
 
 		try {
-			folderRef = getStudyDataManager().getRootFolders(database, currentProject.getUniqueID());
+			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

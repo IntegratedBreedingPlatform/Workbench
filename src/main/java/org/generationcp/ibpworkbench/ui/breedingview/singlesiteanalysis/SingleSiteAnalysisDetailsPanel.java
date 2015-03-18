@@ -854,7 +854,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected int retrieveExperimentalDesignTypeID() {
 		try {
-			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL,
+			String expDesign = studyDataManager.getGeolocationPropValue(
 					TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
 			if (expDesign != null && !("").equals(expDesign.trim())
 					&& NumberUtils.isNumber(expDesign)) {

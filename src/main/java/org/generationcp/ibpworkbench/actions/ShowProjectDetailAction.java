@@ -156,17 +156,20 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
             summaryView.updateActivityTable(activityList);
 
             StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, StudyType.T, Arrays.asList(summaryView.getTblTrialColumns()));
+                    studyDataManager, StudyType.T, Arrays.asList(summaryView.getTblTrialColumns()),
+                    project.getUniqueID());
 
             summaryView.updateTrialSummaryTable(trialFactory);
 
 
             StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, StudyType.N, Arrays.asList(summaryView.getTblNurseryColumns()));
+                    studyDataManager, StudyType.N, Arrays.asList(summaryView.getTblNurseryColumns()),
+                    project.getUniqueID());
             summaryView.updateNurserySummaryTable(nurseryFactory);
 
             StudyDetailsQueryFactory seasonFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, null, Arrays.asList(summaryView.getTblSeasonColumns()));
+                    studyDataManager, null, Arrays.asList(summaryView.getTblSeasonColumns()),
+                    project.getUniqueID());
             summaryView.updateSeasonSummaryTable(seasonFactory);
 
             germplasmListPreview.setProject(currentProj);

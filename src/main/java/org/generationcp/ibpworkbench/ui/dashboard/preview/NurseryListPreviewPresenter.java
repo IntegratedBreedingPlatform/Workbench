@@ -104,7 +104,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
             validateStudyFolderName(newFolderName);
 
-            this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId);
+            this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId, project.getUniqueID());
         } catch (MiddlewareQueryException e) {
             LOG.error(e.getMessage(),e);
         }
