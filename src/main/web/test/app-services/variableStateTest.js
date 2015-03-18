@@ -203,14 +203,15 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should set the properties and selected property if the call to the properties service is successful', function() {
+		it('should set the properties and property summary if the call to the properties service is successful', function() {
 
 			var properties = [{id: 1, name: 'a property'}],
 				selectedPropertyId = 1,
+				selectedPropertyName = 'a property',
 				result,
 				success;
 
-			result = variableStateService.setProperty(selectedPropertyId);
+			result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
 
 			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
 			// to ensure correct promise resolution
@@ -219,7 +220,8 @@ describe('VariableState Service', function() {
 			deferredGetProperties.resolve(properties);
 			scope.$apply();
 
-			expect(variableStateService.variable.propertyId).toEqual(selectedPropertyId);
+			expect(variableStateService.variable.propertySummary.id).toEqual(selectedPropertyId);
+			expect(variableStateService.variable.propertySummary.name).toEqual(selectedPropertyName);
 			expect(variableStateService.scopeData.properties).toEqual(properties);
 		});
 	});
@@ -265,14 +267,15 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should set the methods and selected method if the call to the methods service is successful', function() {
+		it('should set the methods and method summary if the call to the methods service is successful', function() {
 
 			var methods = [{id: 1, name: 'a method'}],
 				selectedMethodId = 1,
+				selectedMethodName = 'a method',
 				result,
 				success;
 
-			result = variableStateService.setMethod(selectedMethodId);
+			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
 
 			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
 			// to ensure correct promise resolution
@@ -281,7 +284,8 @@ describe('VariableState Service', function() {
 			deferredGetMethods.resolve(methods);
 			scope.$apply();
 
-			expect(variableStateService.variable.methodId).toEqual(selectedMethodId);
+			expect(variableStateService.variable.methodSummary.id).toEqual(selectedMethodId);
+			expect(variableStateService.variable.methodSummary.name).toEqual(selectedMethodName);
 			expect(variableStateService.scopeData.methods).toEqual(methods);
 		});
 	});
@@ -327,14 +331,15 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should set the scales and selected scale if the call to the scales service is successful', function() {
+		it('should set the scales and scale summary if the call to the scales service is successful', function() {
 
 			var scales = [{id: 1, name: 'a scale'}],
 				selectedScaleId = 1,
+				selectedScaleName = 'a scale',
 				result,
 				success;
 
-			result = variableStateService.setScale(selectedScaleId);
+			result = variableStateService.setScale(selectedScaleId, selectedScaleName);
 
 			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
 			// to ensure correct promise resolution
@@ -343,7 +348,8 @@ describe('VariableState Service', function() {
 			deferredGetScales.resolve(scales);
 			scope.$apply();
 
-			expect(variableStateService.variable.scaleId).toEqual(selectedScaleId);
+			expect(variableStateService.variable.scaleSummary.id).toEqual(selectedScaleId);
+			expect(variableStateService.variable.scaleSummary.name).toEqual(selectedScaleName);
 			expect(variableStateService.scopeData.scales).toEqual(scales);
 		});
 	});

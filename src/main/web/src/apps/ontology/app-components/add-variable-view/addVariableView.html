@@ -15,41 +15,22 @@
 			<textarea type="text" name="om-av-description" id="om-av-description" ng-model="variable.description"></textarea>
 		</div>
 
-		<div>
-			<label for="om-av-property">Property</label>
+		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="variable"></om-text-area>
 
-			<ui-select name="om-av-property" id="om-av-property" ng-model="variable.propertyId" theme="select2">
-				<ui-select-match>{{$select.selected.name}}</ui-select-match>
-				<ui-select-choices repeat="property.id as property in data.properties | filter: $select.search">
-					{{property.name}}
-				</ui-select-choices>
-			</ui-select>
+		<div>
+			<om-select om-id="om-property" om-label="Property" om-property="propertySummary" om-adding="true" om-model="variable" om-options="data.properties"></om-select>
 
 			<a href="#" ng-click="addNew($event, 'property')">Add a new property</a>
 		</div>
 
 		<div>
-			<label for="om-av-method">Method</label>
-
-			<ui-select name="om-av-method" id="om-av-method" ng-model="variable.methodId" theme="select2">
-				<ui-select-match>{{$select.selected.name}}</ui-select-match>
-				<ui-select-choices repeat="method.id as method in data.methods | filter: $select.search">
-					{{method.name}}
-				</ui-select-choices>
-			</ui-select>
+			<om-select om-id="om-method" om-label="Method" om-property="methodSummary" om-adding="true" om-model="variable" om-options="data.methods"></om-select>
 
 			<a href="#" ng-click="addNew($event, 'method')">Add a new method</a>
 		</div>
 
 		<div>
-			<label for="om-av-scale">Scale</label>
-
-			<ui-select name="om-av-scale" id="om-av-scale" ng-model="variable.scaleId" theme="select2">
-				<ui-select-match>{{$select.selected.name}}</ui-select-match>
-				<ui-select-choices repeat="scale.id as scale in data.scales | filter: $select.search">
-					{{scale.name}}
-				</ui-select-choices>
-			</ui-select>
+			<om-select om-id="om-scale" om-label="Scale" om-property="scaleSummary" om-adding="true" om-model="variable" om-options="data.scales"></om-select>
 
 			<a href="#" ng-click="addNew($event, 'scale')">Add a new scale</a>
 		</div>

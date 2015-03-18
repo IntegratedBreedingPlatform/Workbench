@@ -121,7 +121,7 @@ describe('Add Method View', function() {
 			deferred.resolve();
 			scope.$apply();
 
-			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id);
+			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
 

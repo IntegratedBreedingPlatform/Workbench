@@ -78,6 +78,19 @@
 			{
 				'name': 'Plant Vigor',
 				'description': 'A little vigourous',
+				'propertySummary': {...},
+				'methodSummary': {...},
+				'scaleSummary': {...},
+				'variableTypeIds': [1],
+				'expectedRange': {...}
+			}
+
+			This will be converted before sending to change property, method and scale to only return their id, and
+			to remove any other properties not listed above, resulting in a structure similar to:
+
+			{
+				'name': 'Plant Vigor',
+				'description': 'A little vigourous',
 				'propertyId': 34,
 				'methodId': 68,
 				'scaleId': 145,
@@ -97,8 +110,10 @@
 			}
 			*/
 			addVariable: function(variable) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables',
-					variable);
+				var convertedVariable = convertVariableForUpdating(variable),
+					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables',
+					convertedVariable);
+
 				return request.then(successHandler, failureHandler);
 			},
 

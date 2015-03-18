@@ -23,7 +23,7 @@
 				scalesService.addScale(scale).then(function(response) {
 					scale.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						variableStateService.setScale(scale.id).then(function() {
+						variableStateService.setScale(scale.id, scale.name).then(function() {
 							$window.history.back();
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					} else {

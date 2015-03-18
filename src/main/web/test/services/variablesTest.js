@@ -169,6 +169,18 @@ describe('Variables Service', function() {
 			httpBackend.flush();
 		});
 
+		it('should convert method, property and scale objects to ids and remove unnecessary properties before POSTing', function() {
+
+			var variable = angular.copy(PLANT_VIGOR),
+				expectedVariable = CONVERTED_PLANT_VIGOR;
+
+			httpBackend.expectPOST(/\/variables$/, expectedVariable).respond(201);
+
+			variablesService.addVariable(variable);
+
+			httpBackend.flush();
+		});
+
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful POST is made', function() {
 
 			var variable = {

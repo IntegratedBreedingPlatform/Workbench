@@ -190,7 +190,7 @@ describe('Add Scale View', function() {
 			deferredSetScale.resolve();
 			scope.$apply();
 
-			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id);
+			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
 

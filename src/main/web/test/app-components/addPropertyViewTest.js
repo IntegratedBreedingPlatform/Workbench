@@ -136,7 +136,7 @@ describe('Add Property View', function() {
 			deferredSetProperty.resolve();
 			scope.$apply();
 
-			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id);
+			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id, BLAST.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
 

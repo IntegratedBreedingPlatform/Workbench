@@ -14,7 +14,7 @@
 					// If we successfully added the method, continue..
 					method.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						variableStateService.setMethod(method.id).then(function() {
+						variableStateService.setMethod(method.id, method.name).then(function() {
 							$window.history.back();
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					} else {
