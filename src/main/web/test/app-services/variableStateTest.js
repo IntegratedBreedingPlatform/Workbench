@@ -219,7 +219,7 @@ describe('VariableState Service', function() {
 			deferredGetProperties.resolve(properties);
 			scope.$apply();
 
-			expect(variableStateService.variable.property).toEqual(selectedPropertyId);
+			expect(variableStateService.variable.propertyId).toEqual(selectedPropertyId);
 			expect(variableStateService.scopeData.properties).toEqual(properties);
 		});
 	});
@@ -281,7 +281,7 @@ describe('VariableState Service', function() {
 			deferredGetMethods.resolve(methods);
 			scope.$apply();
 
-			expect(variableStateService.variable.method).toEqual(selectedMethodId);
+			expect(variableStateService.variable.methodId).toEqual(selectedMethodId);
 			expect(variableStateService.scopeData.methods).toEqual(methods);
 		});
 	});
@@ -343,7 +343,7 @@ describe('VariableState Service', function() {
 			deferredGetScales.resolve(scales);
 			scope.$apply();
 
-			expect(variableStateService.variable.scale).toEqual(selectedScaleId);
+			expect(variableStateService.variable.scaleId).toEqual(selectedScaleId);
 			expect(variableStateService.scopeData.scales).toEqual(scales);
 		});
 	});
