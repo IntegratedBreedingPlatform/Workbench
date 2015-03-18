@@ -21,7 +21,6 @@
 					'alias',
 					'description',
 					'variableTypeIds',
-					'cropOntologyId',
 					'favourite',
 					'expectedRange'
 				];
@@ -50,7 +49,6 @@
 				'methodSummary': {...},
 				'scaleSummary': {...},
 				'variableTypeIds': [1],
-				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
 				'metadata': {...},
 				'expectedRange': {..}
@@ -84,7 +82,6 @@
 				'methodId': 68,
 				'scaleId': 145,
 				'variableTypeIds': [2],
-				'cropOntologyId': 'CO_12397f8',
 				'expectedRange': {...}
 			}
 
@@ -116,7 +113,6 @@
 				'methodSummary': {...},
 				'scaleSummary': {...},
 				'variableTypeIds': [1],
-				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
 				'expectedRange': {...}
 			}
@@ -132,7 +128,6 @@
 				'methodId': 13,
 				'scaleId': 16,
 				'variableTypeIds': [1, 2],
-				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
 				'expectedRange': {...}
 			}
@@ -171,10 +166,9 @@
 				'methodSummary': {...},
 				'scaleSummary': {...},
 				'variableTypeIds': [1],
-				'cropOntologyId': 'CO_12397f8',
 				'favourite': true,
 				'metadata': {...},
-				'editableFields': ['name', 'description', 'alias', 'cropOntologyId', 'variableTypeIds'],
+				'editableFields': ['name', 'description', 'alias', 'variableTypeIds'],
 				'deletable': false
 			}
 
