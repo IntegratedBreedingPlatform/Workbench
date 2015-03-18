@@ -24,6 +24,7 @@
 				id: '@omId',
 				label: '@omLabel',
 				property: '@omProperty',
+				adding: '=omAdding',
 				editing: '=omEditing',
 				model: '=omModel'
 			},
@@ -41,6 +42,7 @@
 				id: '@omId',
 				label: '@omLabel',
 				property: '@omProperty',
+				adding: '=omAdding',
 				editing: '=omEditing',
 				model: '=omModel'
 			},
