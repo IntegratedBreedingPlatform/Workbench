@@ -5,15 +5,10 @@
 	<h2>Add New Scale</h2>
 	<form>
 		<button ng-click="saveScale($event, scale)" type="submit">Save</button>
-		<div>
-			<label for="om-as-name">Name</label>
-			<input type="text" name="om-as-name" id="om-as-name" ng-model="scale.name"></input>
-		</div>
 
-		<div>
-			<label for="om-as-description">Description</label>
-			<textarea type="text" name="om-as-description" id="om-as-description" ng-model="scale.description"></textarea>
-		</div>
+		<om-input om-id="om-name" om-label="Name" om-property="name" om-adding="true" om-model="scale"></om-input>
+
+		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="scale"></om-text-area>
 
 		<div>
 			<label for="om-as-type">Data Type</label>
