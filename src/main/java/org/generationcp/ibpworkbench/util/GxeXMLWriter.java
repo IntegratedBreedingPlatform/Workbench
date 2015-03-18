@@ -13,22 +13,33 @@
  **************************************************************/
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.sea.xml.*;
+import org.generationcp.commons.sea.xml.BreedingViewSession;
+import org.generationcp.commons.sea.xml.DataConfiguration;
+import org.generationcp.commons.sea.xml.DataFile;
+import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.commons.sea.xml.Environments;
+import org.generationcp.commons.sea.xml.MegaEnvironment;
+import org.generationcp.commons.sea.xml.MegaEnvironments;
+import org.generationcp.commons.sea.xml.Pipeline;
+import org.generationcp.commons.sea.xml.Pipelines;
+import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.FileWriter;
-import java.io.Serializable;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @Configurable
@@ -36,10 +47,11 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
 
     private static final long serialVersionUID = 8866276834893749854L;
 
-    private final static Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
     
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
+    @Value("${workbench.is.server.app}")
+	private String isServerAppString;
+    
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
@@ -50,6 +62,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
     }
     
     public void writeProjectXML() throws GxeXMLWriterException{
+    	boolean isServerApp = Boolean.parseBoolean(isServerAppString);
         
     	Traits traits = new Traits();
         for( Trait t : gxeInput.getTraits()){
@@ -62,8 +75,14 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         
         //create DataFile element
         DataFile data = new DataFile();
-        data.setName(gxeInput.getSourceCSVFilePath());
-        data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
+		if (isServerApp){
+        	data.setName(new File(gxeInput.getSourceCSVFilePath()).getName());
+            data.setSummarystats(new File(gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
+        }else{
+        	data.setName(gxeInput.getSourceCSVFilePath());
+            data.setSummarystats(gxeInput.getSourceCSVSummaryStatsFilePath());
+        }
+        
         
         Environments environments = new Environments();
         environments.setName(gxeInput.getEnvironmentName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
@@ -84,7 +103,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         dataConfiguration.setTraits(traits);
         dataConfiguration.setHeritabilities(gxeInput.getHeritabilities());
         
-        if (!gxeInput.getEnvironmentGroup().equalsIgnoreCase("None")){
+        if (!"None".equalsIgnoreCase(gxeInput.getEnvironmentGroup())){
         	MegaEnvironment megaEnv = new MegaEnvironment();
         	MegaEnvironments megaEnvs = new MegaEnvironments();
         	megaEnv.setActive(true);
@@ -112,12 +131,15 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
         bvSession.setDataFile(data);
         
         SSAParameters ssaParameters = new SSAParameters();
-        try{
-        	String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-            String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, gxeInput.getProject().getProjectName());
-            ssaParameters.setOutputDirectory(outputDirectory);
-        }catch(Exception e){
-        	e.printStackTrace();
+        //output directory is not needed if deployed on server
+        if (!isServerApp){
+        	try{
+        		String installationDirectory = workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+        		String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory, gxeInput.getProject().getProjectName());
+        		ssaParameters.setOutputDirectory(outputDirectory);
+        	}catch(Exception e){
+        		LOG.error("Error getting BMS installation directory", e);
+        	}
         }
         bvSession.setIbws(ssaParameters);
         
@@ -146,5 +168,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable{
 
     @Override
     public void afterPropertiesSet() throws Exception {
+    	// do nothing - inherited abstract method
     }
 }

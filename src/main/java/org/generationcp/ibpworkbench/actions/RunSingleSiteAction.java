@@ -13,6 +13,9 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.google.common.base.Strings;
 import com.mysql.jdbc.StringUtils;
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
@@ -38,12 +41,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 
@@ -51,21 +56,22 @@ import java.util.Properties;
  * 
  */
 @Configurable
-public class RunBreedingViewAction implements ClickListener {
+public class RunSingleSiteAction implements ClickListener {
 	private static final String ERROR = "ERROR: ";
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RunSingleSiteAction.class);
 
 	private SingleSiteAnalysisDetailsPanel source;
 
 	private Project project;
 
-	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
-
-	@Autowired
-	private Properties workbenchProperties;
+	@Value("${bv.web.url}")
+	private String bvWebUrl;
+	
+	@Value("${workbench.is.server.app}")
+	private String isServerApp;
 
 	@Autowired
 	private ToolUtil toolUtil;
@@ -76,7 +82,7 @@ public class RunBreedingViewAction implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public RunBreedingViewAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow,
+	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow,
 			Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
@@ -261,52 +267,78 @@ public class RunBreedingViewAction implements ClickListener {
 			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
 					(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments,
 					breedingViewInput);
-
+		
 		} catch (DatasetExporterException e1) {
 			LOG.error(ERROR, e1);
 		}
+		
+		writeProjectXML(event);
 
-		launchBV(event);
+		if (Boolean.parseBoolean(isServerApp)){
+			
+			String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
+			List<String> filenameList = new ArrayList<>();
+			filenameList.add(breedingViewInput.getDestXMLFilePath());
+			filenameList.add(breedingViewInput.getSourceXLSFilePath());
+			
+			ZipUtil.zipIt(outputFilename, filenameList);
+			
+			downloadInputFile(new File(outputFilename), source.getApplication());
+
+			
+		}else{
+			launchBV(event);
+		}
+		
 
 	}
 	
 	public void showErrorMessage(Window window ,String title, String description){
 		MessageNotifier.showError(window, title, description);
 	}
+	
+	private void writeProjectXML(ClickEvent event){
+		BreedingViewXMLWriter breedingViewXMLWriter;
+		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+		
+		// write the XML input for breeding view
+		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
+		
+		try{
+			breedingViewXMLWriter.writeProjectXML();
+		} catch (BreedingViewXMLWriterException e) {
+			LOG.debug("Cannot write Breeding View input XML", e);
+
+			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
+		} 
+		
+
+	}
 
 	private void launchBV(ClickEvent event) {
-
-		BreedingViewXMLWriter breedingViewXMLWriter;
+		
 		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		try {
 			// when launching BreedingView, update the web service tool first
 			Tool webServiceTool = new Tool();
 			webServiceTool.setToolName("ibpwebservice");
-			webServiceTool.setPath(workbenchProperties.getProperty(WEB_SERVICE_URL_PROPERTY));
+			webServiceTool.setPath(bvWebUrl);
 			webServiceTool.setToolType(ToolType.WEB);
 			updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
 
-			// write the XML input for breeding view
-			breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-			breedingViewXMLWriter.writeProjectXML();
+			
 
 			// launch breeding view
 			File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
 
-			LOG.info(breedingViewInput.toString());
-			LOG.info(absoluteToolFile.getAbsolutePath() + " -project=\""
-					+ breedingViewInput.getDestXMLFilePath() + "\"");
+			
 
 			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=",
 					breedingViewInput.getDestXMLFilePath());
 			pb.start();
 
-		} catch (BreedingViewXMLWriterException e) {
-			LOG.debug("Cannot write Breeding View input XML", e);
-
-			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
-		} catch (IOException e) {
+		}catch (IOException e) {
 			LOG.debug("Cannot write Breeding View input XML", e);
 
 			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
@@ -377,5 +409,30 @@ public class RunBreedingViewAction implements ClickListener {
 		}
 
 		return true;
+	}
+
+	private void downloadInputFile(File file, Application application){
+		
+		FileResource fr = new FileResource(file, application) {
+            private static final long serialVersionUID = 765143030552676513L;
+            @Override
+            public DownloadStream getStream() {
+                DownloadStream ds;
+                try {
+                    ds = new DownloadStream(new FileInputStream(
+                            getSourceFile()), getMIMEType(), getFilename());
+
+                    ds.setParameter("Content-Disposition", "attachment; filename="+getFilename());
+                    ds.setCacheTime(getCacheTime());
+                    return ds;
+
+                } catch (FileNotFoundException e) {
+                	LOG.error(e.getMessage(), e);
+                    return null;
+                }
+            }
+        };
+
+        application.getMainWindow().open(fr);
 	}
 }
