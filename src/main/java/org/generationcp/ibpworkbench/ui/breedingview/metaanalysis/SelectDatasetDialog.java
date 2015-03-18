@@ -33,7 +33,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	private static final long serialVersionUID = -7651767452229107837L;
 
-	private final static Logger LOG = LoggerFactory.getLogger(SelectDatasetDialog.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SelectDatasetDialog.class);
 
 	public static final String CLOSE_SCREEN_BUTTON_ID = "StudyInfoDialog Close Button ID";
 
@@ -179,8 +179,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LOG.error(e1.getMessage(),e1);
 			if (getWindow() != null) {
 				MessageNotifier
 				.showWarning(
@@ -202,6 +201,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					study = getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage(),e);
 			}
 
 			Object[] cells = new Object[3];
@@ -227,48 +227,27 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 		tr.addListener(new StudyTreeExpandAction(this, tr));
 		tr.addListener(new ItemClickListener(){
-
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void itemClick(ItemClickEvent event) {
-
 				Object itemId = event.getItemId();
-				
-				
 				if (event.isDoubleClick() && itemId instanceof DatasetReference){
-					
-					DatasetReference datasetRef = (DatasetReference) itemId;
-					int dataSetId = datasetRef.getId();
-					metaAnalysisPanel.generateTab(dataSetId);
+					metaAnalysisPanel.generateTab(((DatasetReference)itemId).getId());
 					parentWindow.removeWindow(SelectDatasetDialog.this);
-					
-					
 				}else{
 					if (tr.isCollapsed(itemId)){
 						tr.setCollapsed(itemId, false);
 					}else{
 						tr.setCollapsed(itemId, true);
 					}
-					
-					if (event.getItemId() instanceof DatasetReference){
-						selectButton.setEnabled(true);
-					}else{
-						selectButton.setEnabled(false);
-					}
+					selectButton.setEnabled(event.getItemId() instanceof DatasetReference);
 				}
-				
-				
-				
 			}
-			
 		});
-		
 		return tr;
 	}
 
-	public void queryChildrenStudies(Reference parentFolderReference,
-			TreeTable tr) throws InternationalizableException {
+	public void queryChildrenStudies(Reference parentFolderReference, TreeTable tr) {
 
 		List<Reference> childrenReference = new ArrayList<Reference>();
 
@@ -278,7 +257,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					parentFolderReference.getId(), currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -298,6 +277,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage(),e);
 			}
 
 			cells[0] = " " + r.getName();
@@ -335,8 +315,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			
 	}
 
-	public void queryChildrenDatasets(Reference parentFolderReference,
-			TreeTable tr) throws InternationalizableException {
+	public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) {
 
 		List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
 
@@ -346,7 +325,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -386,6 +365,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 			children = getStudyDataManager().getChildrenOfFolder(folderId, currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -405,6 +385,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 	            boolean isStudy = studyDataManager.isStudy(studyId);
 	            return !isStudy;
 	        } catch (MiddlewareQueryException e) {
+	        	LOG.error(e.getMessage(),e);
 	        	return false;
 	        }
 	    }
@@ -416,6 +397,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 			children = getStudyDataManager().getDatasetReferences(folderId);
 		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
