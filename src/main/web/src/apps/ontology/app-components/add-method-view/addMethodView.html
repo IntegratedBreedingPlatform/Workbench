@@ -5,14 +5,9 @@
 	<h2>Add New Method</h2>
 	<form>
 		<button ng-click="saveMethod($event, method)" type="submit">Save</button>
-		<div>
-			<label for="om-am-name">Name</label>
-			<input type="text" name="om-am-name" id="om-am-name" ng-model="method.name"></input>
-		</div>
 
-		<div>
-			<label for="om-am-description">Description</label>
-			<textarea type="text" name="om-am-description" id="om-am-description" ng-model="method.description"></textarea>
-		</div>
+		<om-input om-id="om-name" om-label="Name" om-property="name" om-adding="true" om-model="method"></om-input>
+
+		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="method"></om-text-area>
 	</form>
 </div>
