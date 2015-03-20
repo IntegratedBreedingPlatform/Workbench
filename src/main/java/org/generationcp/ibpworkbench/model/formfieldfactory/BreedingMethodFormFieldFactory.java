@@ -14,9 +14,7 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import java.util.Map;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -39,6 +37,7 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+import javax.annotation.Resource;
 
 /**
  * <b>Description</b>: Field factory for generating Breeding Method fields for Breeding Method class.
@@ -68,6 +67,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
     
     @Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+
+	@Resource
+	private SessionData sessionData;
 
     public BreedingMethodFormFieldFactory(Map<Integer,String> classMap) {
         initFields(classMap);
@@ -104,23 +106,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				if (value == null) {
                     return true;
                 }
-				
-				SessionData sessionData = null;
-				
-				try{
-					sessionData = WorkbenchContentApp.get().getSessionData();
-				} catch(Exception e) {
-					LOG.error(e.getMessage(),e);
-				}
-				
-				try{
-					if (sessionData == null){
-						sessionData = IBPWorkbenchApplication.get().getSessionData();
-					}
-				} catch(Exception e) {
-					LOG.error(e.getMessage(),e);
-				}
-				
+
 				Method method = null;
 				try {
 					Project currentProject = sessionData.getSelectedProject();
@@ -177,24 +163,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				if (value == null) {
                     return true;
                 }
-				
-				SessionData sessionData = null;
-				
-				try{
-					sessionData = WorkbenchContentApp.get().getSessionData();
-				}catch(Exception e){
-					LOG.error(e.getMessage(),e);
-				}
-				
-				try{
-					if (sessionData == null){
-						sessionData = IBPWorkbenchApplication.get().getSessionData();
-					}
-				}catch(Exception e){
-					LOG.error(e.getMessage(),e);
-				}
-				
-				
+
 				Method method = null;
 				try {
 					Project currentProject = sessionData.getSelectedProject();

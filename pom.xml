@@ -207,6 +207,13 @@
 			<version>${spring.security.version}</version>
 		</dependency>
 
+        <!-- owasp for xss prevention -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>r239</version>
+        </dependency>
+
 		<!-- For AOP Proxying -->
 		<dependency>
 			<groupId>cglib</groupId>
