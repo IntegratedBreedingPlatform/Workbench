@@ -70,7 +70,7 @@
 		};
 	});
 
-	formFieldsModule.directive('omMultiSelect', function(editable) {
+	formFieldsModule.directive('omMultiUiSelect', function(editable) {
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
@@ -85,11 +85,11 @@
 				editing: '=omEditing',
 				model: '=omModel'
 			},
-			templateUrl: 'static/views/ontology/multiSelect.html'
+			templateUrl: 'static/views/ontology/multiUiSelect.html'
 		};
 	});
 
-	formFieldsModule.directive('omTagSelect', function(editable) {
+	formFieldsModule.directive('omTagUiSelect', function(editable) {
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
@@ -104,7 +104,7 @@
 				editing: '=omEditing',
 				model: '=omModel'
 			},
-			templateUrl: 'static/views/ontology/tagSelect.html'
+			templateUrl: 'static/views/ontology/tagUiSelect.html'
 		};
 	});
 

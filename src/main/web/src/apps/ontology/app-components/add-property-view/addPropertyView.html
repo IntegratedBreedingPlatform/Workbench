@@ -10,15 +10,7 @@
 
 		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="property"></om-text-area>
 
-		<div>
-			<label for="om-ap-class">Class</label>
-			<ui-select name="om-ap-class" id="om-ap-class" multiple tagging tagging-label="(new)" ng-model="property.classes" sortable="true" theme="select2">
-				<ui-select-match>{{$item}}</ui-select-match>
-				<ui-select-choices repeat="class in classes">
-					{{class}}
-				</ui-select-choices>
-			</ui-select>
-		</div>
+		<om-multi-select om-options="classes" om-model="property.classes" om-label="Class"></om-multi-select>
 
 		<om-input om-id="om-ontology-id" om-label="Crop Ontology Id" om-property="cropOntologyId" om-adding="true" om-model="property"></om-input>
 	</form>

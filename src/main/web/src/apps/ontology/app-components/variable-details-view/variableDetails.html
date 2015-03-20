@@ -12,7 +12,7 @@
 
 	<om-select om-id="om-scale" om-label="Scale" om-property="scaleSummary" om-editing="editing" om-model="model" om-options="data.scales"></om-select>
 
-	<om-multi-select om-id="om-type" om-label="Variable Type" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-select>
+	<om-multi-ui-select om-id="om-type" om-label="Variable Type" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
 	<button ng-hide="editing" ng-click="editVariable($event)">Edit</button>
 	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">Save</button>

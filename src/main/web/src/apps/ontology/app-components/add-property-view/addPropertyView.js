@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['ngSanitize', 'ui.select', 'properties', 'variableState', 'utilities']);
+	var app = angular.module('addProperty', ['formFields', 'multiSelect', 'properties', 'variableState', 'utilities']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertiesService', 'variableStateService',
 		'serviceUtilities',
