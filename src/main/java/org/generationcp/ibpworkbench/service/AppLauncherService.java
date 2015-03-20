@@ -13,7 +13,6 @@ import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
 import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -47,6 +46,8 @@ public class AppLauncherService {
 
 	@Resource
 	private SessionData sessionData;
+
+
 
 	public String launchTool(String toolName, Integer idParam) throws AppLaunchException {
 		try {
@@ -140,11 +141,10 @@ public class AppLauncherService {
 
 	protected String launchWebappWithLogin(Tool tool) {
 		final String loginUrl = tool.getPath() + "/web_login_forward";
-		final String params = "username=%s&password=%s";
-		User localIbdbUser = sessionData.getUserData();
+		final String params = "selectedProjectId=%s&loggedInUserId=%s";
 
 		return WorkbenchAppPathResolver.getFullWebAddress(loginUrl,
-				String.format(params, localIbdbUser.getUserid(), localIbdbUser.getPassword()));
+				String.format(params, sessionData.getLastOpenedProject().getProjectId(), sessionData.getUserData().getUserid()));
 
 	}
 

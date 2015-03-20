@@ -130,5 +130,5 @@
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner"/>
-	
+
 </beans>
