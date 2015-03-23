@@ -141,6 +141,25 @@ describe('Properties View', function() {
 			expect(controller.properties[0].name).toEqual(newName);
 		});
 
+		it('should remove the updated property in the properties list if the property is undefined', function() {
+
+			var id = 1;
+
+			controller.properties = [{
+					id: id,
+					name: BLAST.name,
+					classes: BLAST.classes.join(', ')
+				}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Delete" our variable
+			scope.updateSelectedProperty();
+
+			expect(controller.properties.length).toEqual(0);
+		});
+
 		it('should only update the property in the properties list matched by id', function() {
 
 			var detailedPropertyToUpdate = angular.copy(BLAST),

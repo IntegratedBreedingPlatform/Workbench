@@ -108,6 +108,18 @@
 			},
 
 			/*
+			Deletes the property with the specified ID.
+			*/
+			deleteProperty: function(/*id*/) {
+				var request;
+
+				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id');
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
+			/*
 			Returns a single property in the format:
 
 			{

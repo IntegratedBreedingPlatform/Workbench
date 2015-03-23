@@ -2,10 +2,10 @@
 'use strict';
 
 (function() {
-	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'properties', 'utilities']);
+	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'properties', 'utilities', 'panel']);
 
-	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities',
-		function(propertiesService, serviceUtilities) {
+	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities','panelService',
+		function(propertiesService, serviceUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -30,6 +30,16 @@
 					$scope.editProperty = function(e) {
 						e.preventDefault();
 						$scope.editing = true;
+					};
+
+					$scope.deleteProperty = function(e, id) {
+						e.preventDefault();
+
+						propertiesService.deleteProperty(id).then(function() {
+							// Remove property on parent scope if we succeeded
+							panelService.hidePanel();
+							$scope.updateSelectedProperty();
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					};
 
 					$scope.cancel = function(e) {

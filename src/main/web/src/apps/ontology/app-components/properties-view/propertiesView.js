@@ -44,7 +44,7 @@
 			$scope.updateSelectedProperty = function(updatedProperty) {
 
 				var selectedIndex = -1,
-					transformedProperty = transformPropertyToDisplayFormat(updatedProperty, $scope.selectedItem.id);
+					transformedProperty = updatedProperty && transformPropertyToDisplayFormat(updatedProperty, $scope.selectedItem.id);
 
 				ctrl.properties.some(function(property, index) {
 					if (property.id === $scope.selectedItem.id) {
@@ -55,7 +55,11 @@
 
 				// Not much we can really do if we don't find it in the list. Just don't update.
 				if (selectedIndex !== -1) {
-					ctrl.properties[selectedIndex] = transformedProperty;
+					if (transformedProperty) {
+						ctrl.properties[selectedIndex] = transformedProperty;
+					} else {
+						ctrl.properties.splice(selectedIndex, 1);
+					}
 				}
 			};
 

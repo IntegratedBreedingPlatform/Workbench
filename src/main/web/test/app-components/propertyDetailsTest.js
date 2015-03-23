@@ -5,6 +5,9 @@ describe('Property details directive', function() {
 	var fakeEvent = {
 			preventDefault: function() {}
 		},
+		panelService = {
+			hidePanel: function() {}
+		},
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
@@ -19,6 +22,7 @@ describe('Property details directive', function() {
 		directiveElement,
 		deferredGetClasses,
 		deferredUpdateProperty,
+		deferredDeleteProperty,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -48,6 +52,7 @@ describe('Property details directive', function() {
 		// Provide mocks for the directive controller
 		$provide.value('propertiesService', propertiesService);
 		$provide.value('serviceUtilities', serviceUtilities);
+		$provide.value('panelService', panelService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -64,9 +69,16 @@ describe('Property details directive', function() {
 			return deferredUpdateProperty.promise;
 		};
 
+		propertiesService.deleteProperty = function() {
+			deferredDeleteProperty = q.defer();
+			return deferredDeleteProperty.promise;
+		};
+
 		spyOn(propertiesService, 'getClasses').and.callThrough();
 		spyOn(propertiesService, 'updateProperty').and.callThrough();
+		spyOn(propertiesService, 'deleteProperty').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
 	}));
@@ -188,6 +200,39 @@ describe('Property details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedProperty).toHaveBeenCalledWith(BLAST);
+		});
+	});
+
+	describe('$scope.deleteProperty', function() {
+
+		beforeEach(function() {
+			scope.updateSelectedProperty = function(/*model*/) {};
+		});
+
+		it('should call the properties service to delete the variable', function() {
+			scope.deleteProperty(fakeEvent, BLAST.id);
+			expect(propertiesService.deleteProperty).toHaveBeenCalledWith(BLAST.id);
+		});
+
+		it('should handle any errors if the update was not successful', function() {
+			scope.deleteProperty(fakeEvent, BLAST.id);
+
+			deferredDeleteProperty.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+			spyOn(scope, 'updateSelectedProperty').and.callThrough();
+
+			scope.deleteProperty(fakeEvent, BLAST.id);
+
+			deferredDeleteProperty.resolve();
+			scope.$apply();
+
+			expect(panelService.hidePanel).toHaveBeenCalled();
+			expect(scope.updateSelectedProperty).toHaveBeenCalledWith();
 		});
 	});
 
