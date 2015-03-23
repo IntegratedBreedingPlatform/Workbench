@@ -147,6 +147,24 @@ describe('Scales View', function() {
 			expect(controller.scales[0].name).toEqual(newName);
 		});
 
+		it('should remove the updated scale in the scales list if the scale is undefined', function() {
+
+			var id = 1;
+
+			controller.scales = [{
+				id: id,
+				name: PERCENTAGE.name
+			}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Delete" our variable
+			scope.updateSelectedScale();
+
+			expect(controller.scales.length).toEqual(0);
+		});
+
 		it('should only update the scale in the scales list matched by id', function() {
 
 			var detailedScaleToUpdate = angular.copy(PERCENTAGE),

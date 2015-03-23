@@ -101,11 +101,10 @@ describe('Scales Service', function() {
 					},
 					description: 'A scale.'
 				},
-				id = 1,
 				expectedScale = {
 					name: 'myscale',
 					dataTypeId: 1,
-					description: 'A scale.'	
+					description: 'A scale.'
 				};
 
 			httpBackend.expectPOST(/\/scales$/, expectedScale).respond(201);
@@ -176,6 +175,54 @@ describe('Scales Service', function() {
 			httpBackend.expectPUT(/\/scales\/:id$/, {}).respond(500, error);
 
 			scalesService.updateScale(1, {});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
+	describe('deleteScale', function() {
+
+		it('should DELETE /scales/:id', function() {
+
+			// FIXME not in use yet because services haven't been hooked up
+			var id = 1;
+
+			httpBackend.expectDELETE(/\/scales\/:id$/).respond(204);
+
+			scalesService.deleteScale(id);
+
+			httpBackend.flush();
+		});
+
+		it('should return a 204 status if a successful DELETE is made', function() {
+
+			var id = 1,
+
+			expectedResponse = 204,
+			actualResponse;
+
+			httpBackend.expectDELETE(/\/scales\/:id$/).respond(expectedResponse);
+
+			scalesService.deleteScale(id).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful DELETE is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectDELETE(/\/scales\/:id$/).respond(500, error);
+
+			scalesService.deleteScale(1);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();

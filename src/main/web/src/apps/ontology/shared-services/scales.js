@@ -78,7 +78,7 @@
 			*/
 			addScale: function(scale) {
 				var convertedScale = convertScaleForAdding(scale),
-					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales', 
+					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales',
 						convertedScale);
 				return request.then(successHandler, failureHandler);
 			},
@@ -110,6 +110,18 @@
 			updateScale: function(id, scale) {
 				var request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales/:id',
 					scale);
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
+			/*
+			Deletes the scale with the specified ID.
+			*/
+			deleteScale: function(/*id*/) {
+				var request;
+
+				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales/:id');
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);

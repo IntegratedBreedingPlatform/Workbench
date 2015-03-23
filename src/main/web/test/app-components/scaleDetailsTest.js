@@ -8,6 +8,9 @@ describe('Scale details directive', function() {
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
+		panelService = {
+			hidePanel: function() {}
+		},
 
 		PERCENTAGE = {
 			id: 1,
@@ -44,6 +47,7 @@ describe('Scale details directive', function() {
 		q,
 		directiveElement,
 		deferredUpdateScale,
+		deferredDeleteScale,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -73,6 +77,7 @@ describe('Scale details directive', function() {
 		// Provide mocks for the directive controller
 		$provide.value('scalesService', scalesService);
 		$provide.value('serviceUtilities', serviceUtilities);
+		$provide.value('panelService', panelService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -84,8 +89,15 @@ describe('Scale details directive', function() {
 			return deferredUpdateScale.promise;
 		};
 
+		scalesService.deleteScale = function() {
+			deferredDeleteScale = q.defer();
+			return deferredDeleteScale.promise;
+		};
+
 		spyOn(scalesService, 'updateScale').and.callThrough();
+		spyOn(scalesService, 'deleteScale').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
 	}));
@@ -212,6 +224,39 @@ describe('Scale details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedScale).toHaveBeenCalledWith(PERCENTAGE);
+		});
+	});
+
+	describe('$scope.deleteScale', function() {
+
+		beforeEach(function() {
+			scope.updateSelectedScale = function(/*model*/) {};
+		});
+
+		it('should call the properties service to delete the variable', function() {
+			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+			expect(scalesService.deleteScale).toHaveBeenCalledWith(PERCENTAGE.id);
+		});
+
+		it('should handle any errors if the update was not successful', function() {
+			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			deferredDeleteScale.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+			spyOn(scope, 'updateSelectedScale').and.callThrough();
+
+			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			deferredDeleteScale.resolve();
+			scope.$apply();
+
+			expect(panelService.hidePanel).toHaveBeenCalled();
+			expect(scope.updateSelectedScale).toHaveBeenCalledWith();
 		});
 	});
 

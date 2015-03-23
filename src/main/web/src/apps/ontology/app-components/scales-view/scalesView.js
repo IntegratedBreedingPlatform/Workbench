@@ -44,7 +44,7 @@
 			$scope.updateSelectedScale = function(updatedScale) {
 
 				var selectedIndex = -1,
-					transformedScale = transformScaleToDisplayFormat(updatedScale, $scope.selectedItem.id);
+					transformedScale = updatedScale && transformScaleToDisplayFormat(updatedScale, $scope.selectedItem.id);
 
 				ctrl.scales.some(function(scale, index) {
 					if (scale.id === $scope.selectedItem.id) {
@@ -55,7 +55,11 @@
 
 				// Not much we can really do if we don't find it in the list. Just don't update.
 				if (selectedIndex !== -1) {
-					ctrl.scales[selectedIndex] = transformedScale;
+					if (transformedScale) {
+						ctrl.scales[selectedIndex] = transformedScale;
+					} else {
+						ctrl.scales.splice(selectedIndex, 1);
+					}
 				}
 			};
 

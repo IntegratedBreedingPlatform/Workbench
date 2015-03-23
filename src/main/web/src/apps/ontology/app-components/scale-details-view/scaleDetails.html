@@ -14,6 +14,8 @@
 	</div>
 
 	<button ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
-	<button ng-show="editing" ng-click="saveChanges($event, propertyId, model)" type="submit">{{'button.save' | translate}}</button>
+	<button ng-hide="editing" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
+
+	<button ng-show="editing" ng-click="saveChanges($event, scaleId, model)" type="submit">{{'button.save' | translate}}</button>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

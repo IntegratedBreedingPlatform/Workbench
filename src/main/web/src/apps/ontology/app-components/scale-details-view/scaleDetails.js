@@ -2,9 +2,10 @@
 'use strict';
 
 (function() {
-	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'utilities', 'categories']);
+	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'utilities', 'categories', 'panel']);
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', function(scalesService, serviceUtilities) {
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'panelService',
+		function(scalesService, serviceUtilities, panelService) {
 
 		return {
 			controller: function($scope) {
@@ -29,6 +30,16 @@
 					e.preventDefault();
 					$scope.editing = true;
 				};
+
+				$scope.deleteScale = function(e, id) {
+						e.preventDefault();
+
+						scalesService.deleteScale(id).then(function() {
+							// Remove scale on parent scope if we succeeded
+							panelService.hidePanel();
+							$scope.updateSelectedScale();
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					};
 
 				$scope.cancel = function(e) {
 					e.preventDefault();
