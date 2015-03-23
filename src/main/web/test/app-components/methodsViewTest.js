@@ -51,6 +51,12 @@ describe('Methods View', function() {
 		});
 	}));
 
+	it('should get methods', function() {
+		deferredGetMethods.resolve([]);
+		scope.$apply();
+		expect(methodsService.getMethods).toHaveBeenCalled();
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});
