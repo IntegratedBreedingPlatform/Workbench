@@ -11,6 +11,9 @@
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
 <body class="om-ontology-manager" ng-controller="OntologyController as ctrl">
+
+	<p th:text="${currentCrop}">currentCrop</p>
+
 	<header class="om-header">
 		<h1 class="om-title">{{'title' | translate}}</h1>
 		<div class="om-nav-wrapper">

@@ -128,4 +128,8 @@
     <bean id="appLauncherService" class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>
 
     <bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
+    
+    <bean id="contextUtil" class="org.generationcp.commons.spring.util.ContextUtil" scope="request">
+        <aop:scoped-proxy/>
+    </bean>
 </beans>
