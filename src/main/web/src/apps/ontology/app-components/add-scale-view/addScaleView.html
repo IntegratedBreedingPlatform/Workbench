@@ -21,9 +21,16 @@
 			</ui-select>
 		</div>
 
-		<om-range ng-show="showRangeWidget" om-property="validValues" om-adding="true" om-model="scale"></om-range>
+		<div ng-show="showRangeWidget">
+			<span>{{'add-new.scale.valid-range' | translate}}</span>
+			<om-range om-property="validValues" om-adding="true" om-model="scale"></om-range>
+		</div>
 
-		<om-categories ng-show="showCategoriesWidget" om-property="validValues" om-adding="true" om-model="scale"></om-categories>
+		<div ng-show="showCategoriesWidget">
+			<span>{{'add-new.scale.categories' | translate}}</span>
+			<om-categories om-property="validValues" om-adding="true" om-model="scale"></om-categories>
+		</div>
+
 	</form>
 </div>
 

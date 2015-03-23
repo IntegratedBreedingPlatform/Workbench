@@ -14,6 +14,11 @@
 
 	<om-multi-ui-select om-id="om-type" om-label="{{'form-field.variable-type' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
+	<div ng-show="showRangeWidget">
+		<span>{{'variables-list.details.expected-range' | translate}}</span>
+		<om-range om-property="expectedRange" om-editing="editing" om-model="model"></om-range>
+	</div>
+
 	<button ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">{{'button.save' | translate}}</button>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>

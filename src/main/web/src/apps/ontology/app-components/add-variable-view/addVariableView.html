@@ -28,17 +28,11 @@
 			<a href="#" ng-click="addNew($event, 'scale')">{{'add-new.variable.add-scale' | translate}}</a>
 		</div>
 
-		<div>
-			<label for="om-av-type">{{'form-field.variable-type' | translate}}</label>
+		<om-multi-ui-select om-id="om-type" om-label="{{'form-field.variable-type' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
-			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.variableTypeIds" theme="select2">
-				<ui-select-match>{{$item.name}}</ui-select-match>
-				<ui-select-choices repeat="type.id as type in data.types">
-					{{type.name}}
-				</ui-select-choices>
-			</ui-select>
+		<div ng-show="showRangeWidget">
+			<span>{{'add-new.variable.expected-range' | translate}}</span>
+			<om-range om-property="expectedRange" om-adding="true" om-model="variable"></om-range>
 		</div>
-
-		<om-range ng-show="showRangeWidget" om-property="expectedRange" om-adding="true" om-model="variable"></om-range>
 	</form>
 </div>

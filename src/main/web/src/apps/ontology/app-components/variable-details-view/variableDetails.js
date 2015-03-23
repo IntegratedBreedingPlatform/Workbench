@@ -20,8 +20,16 @@
 						types: []
 					};
 
+					// Whether or not we want to display the expected range widget
+					$scope.showRangeWidget = false;
+
 					$scope.$watch('selectedVariable', function(variable) {
 						$scope.model = angular.copy(variable);
+					});
+
+					// Show the expected range widget if the chosen scale has a numeric datatype
+					$scope.$watch('model.scale.dataType.name', function(newValue) {
+						$scope.showRangeWidget = newValue === 'Numeric';
 					});
 
 					propertiesService.getProperties().then(function(properties) {

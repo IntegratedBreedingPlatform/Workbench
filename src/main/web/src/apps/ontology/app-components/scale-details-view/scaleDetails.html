@@ -3,9 +3,15 @@
 
 	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
-	<om-range ng-show="showRangeWidget" om-property="validValues" om-editing="editing" om-model="model"></om-range>
+	<div ng-show="showRangeWidget">
+		<span>{{'scales-list.details.valid-range' | translate}}</span>
+		<om-range om-property="validValues" om-editing="editing" om-model="model"></om-range>
+	</div>
 
-	<om-categories ng-show="showCategoriesWidget" om-property="validValues" om-editing="editing" om-model="model"></om-categories>
+	<div ng-show="showCategoriesWidget">
+		<span>{{'scales-list.details.categories' | translate}}</span>
+		<om-categories om-property="validValues" om-editing="editing" om-model="model"></om-categories>
+	</div>
 
 	<button ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
 	<button ng-show="editing" ng-click="saveChanges($event, propertyId, model)" type="submit">{{'button.save' | translate}}</button>
