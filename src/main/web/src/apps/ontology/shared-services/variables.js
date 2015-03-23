@@ -170,7 +170,6 @@
 				}, failureHandler);
 			},
 
-
 			/*
 			Deletes the variable with the specified ID.
 			*/
