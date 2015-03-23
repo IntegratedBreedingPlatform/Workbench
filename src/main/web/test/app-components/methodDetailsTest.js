@@ -8,6 +8,9 @@ describe('Method details directive', function() {
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
+		panelService = {
+			hidePanel: function() {}
+		},
 		CUT_AND_DRY = {
 			id: 1,
 			name: 'Cut and Dry'
@@ -17,6 +20,7 @@ describe('Method details directive', function() {
 		q,
 		directiveElement,
 		deferredUpdateMethod,
+		deferredDeleteMethod,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -46,6 +50,7 @@ describe('Method details directive', function() {
 		// Provide mocks for the directive controller
 		$provide.value('methodsService', methodsService);
 		$provide.value('serviceUtilities', serviceUtilities);
+		$provide.value('panelService', panelService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -57,8 +62,15 @@ describe('Method details directive', function() {
 			return deferredUpdateMethod.promise;
 		};
 
+		methodsService.deleteMethod = function() {
+			deferredDeleteMethod = q.defer();
+			return deferredDeleteMethod.promise;
+		};
+
 		spyOn(methodsService, 'updateMethod').and.callThrough();
+		spyOn(methodsService, 'deleteMethod').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
 	}));
@@ -157,6 +169,39 @@ describe('Method details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedMethod).toHaveBeenCalledWith(CUT_AND_DRY);
+		});
+	});
+
+	describe('$scope.deleteMethod', function() {
+
+		beforeEach(function() {
+			scope.updateSelectedMethod = function(/*model*/) {};
+		});
+
+		it('should call the properties service to delete the variable', function() {
+			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+			expect(methodsService.deleteMethod).toHaveBeenCalledWith(CUT_AND_DRY.id);
+		});
+
+		it('should handle any errors if the update was not successful', function() {
+			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			deferredDeleteMethod.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+			spyOn(scope, 'updateSelectedMethod').and.callThrough();
+
+			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			deferredDeleteMethod.resolve();
+			scope.$apply();
+
+			expect(panelService.hidePanel).toHaveBeenCalled();
+			expect(scope.updateSelectedMethod).toHaveBeenCalledWith();
 		});
 	});
 

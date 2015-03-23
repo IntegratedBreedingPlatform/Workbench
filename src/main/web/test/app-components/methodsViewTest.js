@@ -128,6 +128,24 @@ describe('Methods View', function() {
 			expect(controller.methods[0].name).toEqual(newName);
 		});
 
+		it('should remove the updated method in the methods list if the method is undefined', function() {
+
+			var id = 1;
+
+			controller.methods = [{
+				id: 1,
+				name: CUT_AND_DRY.name
+			}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Delete" our variable
+			scope.updateSelectedMethod();
+
+			expect(controller.methods.length).toEqual(0);
+		});
+
 		it('should only update the method in the methods list matched by id', function() {
 
 			var detailedMethodToUpdate = angular.copy(CUT_AND_DRY),

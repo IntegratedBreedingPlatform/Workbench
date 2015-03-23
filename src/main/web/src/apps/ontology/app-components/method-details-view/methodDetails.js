@@ -2,9 +2,10 @@
 'use strict';
 
 (function() {
-	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'methods', 'utilities']);
+	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'methods', 'utilities', 'panel']);
 
-	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', function(methodsService, serviceUtilities) {
+	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'panelService',
+		function(methodsService, serviceUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -21,6 +22,16 @@
 					$scope.editMethod = function(e) {
 						e.preventDefault();
 						$scope.editing = true;
+					};
+
+					$scope.deleteMethod = function(e, id) {
+						e.preventDefault();
+
+						methodsService.deleteMethod(id).then(function() {
+							// Remove method on parent scope if we succeeded
+							panelService.hidePanel();
+							$scope.updateSelectedMethod();
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					};
 
 					$scope.cancel = function(e) {

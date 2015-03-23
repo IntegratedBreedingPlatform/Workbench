@@ -76,6 +76,18 @@
 			},
 
 			/*
+			Deletes the method with the specified ID.
+			*/
+			deleteMethod: function(/*id*/) {
+				var request;
+
+				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods/:id');
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
+			/*
 			Returns a single method in the format:
 
 			{

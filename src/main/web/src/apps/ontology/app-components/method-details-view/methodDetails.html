@@ -4,6 +4,8 @@
 	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
 	<button ng-hide="editing" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
-	<button ng-show="editing" ng-click="saveChanges($event, propertyId, model)" type="submit">{{'button.save' | translate}}</button>
+	<button ng-hide="editing" ng-click="deleteMethod($event, methodId)">{{'button.delete' | translate}}</button>
+
+	<button ng-show="editing" ng-click="saveChanges($event, methodId, model)" type="submit">{{'button.save' | translate}}</button>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

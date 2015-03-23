@@ -163,6 +163,54 @@ describe('Methods Service', function() {
 		});
 	});
 
+	describe('deleteMethod', function() {
+
+		it('should DELETE /methods/:id', function() {
+
+			// FIXME not in use yet because services haven't been hooked up
+			var id = 1;
+
+			httpBackend.expectDELETE(/\/methods\/:id$/).respond(204);
+
+			methodsService.deleteMethod(id);
+
+			httpBackend.flush();
+		});
+
+		it('should return a 204 status if a successful DELETE is made', function() {
+
+			var id = 1,
+
+			expectedResponse = 204,
+			actualResponse;
+
+			httpBackend.expectDELETE(/\/methods\/:id$/).respond(expectedResponse);
+
+			methodsService.deleteMethod(id).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful DELETE is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectDELETE(/\/methods\/:id$/).respond(500, error);
+
+			methodsService.deleteMethod(1);
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
 	describe('getMethod', function() {
 
 		it('should GET /methods, specifying the given id', function() {

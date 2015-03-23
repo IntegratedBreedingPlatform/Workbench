@@ -32,7 +32,9 @@
 
 				var selectedIndex = -1;
 
-				updatedMethod.id = $scope.selectedItem.id;
+				if (updatedMethod) {
+					updatedMethod.id = $scope.selectedItem.id;
+				}
 
 				ctrl.methods.some(function(method, index) {
 					if (method.id === $scope.selectedItem.id) {
@@ -43,7 +45,11 @@
 
 				// Not much we can really do if we don't find it in the list. Just don't update.
 				if (selectedIndex !== -1) {
-					ctrl.methods[selectedIndex] = updatedMethod;
+					if (updatedMethod) {
+						ctrl.methods[selectedIndex] = updatedMethod;
+					} else {
+						ctrl.methods.splice(selectedIndex, 1);
+					}
 				}
 			};
 
