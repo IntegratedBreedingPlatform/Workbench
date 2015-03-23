@@ -41,7 +41,6 @@ describe('Variables Controller', function() {
 	// This format is what is returned by a getVariable() call (singular)
 	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR);
 
-	delete PLANT_VIGOR_DETAILED.id;
 
 	PLANT_VIGOR_DETAILED.scale = {
 			id: 1,
@@ -55,6 +54,10 @@ describe('Variables Controller', function() {
 				max: 5
 			}
 		};
+
+	delete PLANT_VIGOR_DETAILED.id;
+	delete PLANT_VIGOR_DETAILED.scaleSummary;
+
 	PLANT_VIGOR_DETAILED.deletable = true;
 	PLANT_VIGOR_DETAILED.metadata = {};
 	PLANT_VIGOR_DETAILED.editableFields = ['name', 'description'];
@@ -119,7 +122,7 @@ describe('Variables Controller', function() {
 		});
 
 		it('should default values to empty strings if they are not present', function() {
-			var rawVariable = PLANT_VIGOR,
+			var rawVariable = angular.copy(PLANT_VIGOR),
 				transformedVariable;
 
 			// Null out some values
@@ -256,18 +259,18 @@ describe('Variables Controller', function() {
 
 			controller.variables = [{
 					id: id,
-					name: updateSelectedVariable.name,
-					property: updateSelectedVariable.propertySummary.name,
-					method: updateSelectedVariable.methodSummary.name,
-					scale: updateSelectedVariable.scaleSummary.name
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name
 				}];
 
 			controller.favouriteVariables = [{
 					id: id,
-					name: updateSelectedVariable.name,
-					property: updateSelectedVariable.propertySummary.name,
-					method: updateSelectedVariable.methodSummary.name,
-					scale: updateSelectedVariable.scaleSummary.name
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name
 				}];
 
 			// Select our variable for editing
@@ -295,9 +298,9 @@ describe('Variables Controller', function() {
 
 				displayVariableToUpdate = {
 					id: 1,
-					property: detailedVariableToUpdate.propertySummary.name,
-					method: detailedVariableToUpdate.methodSummary.name,
-					scale: detailedVariableToUpdate.scaleSummary.name
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name
 				},
 
 				newName = 'Not Plant Vigor';
