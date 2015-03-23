@@ -1,5 +1,6 @@
 # Project Specific
-resources/
+/src/main/resources/
+/src/test/resources/
 
 #################
 ## Maven

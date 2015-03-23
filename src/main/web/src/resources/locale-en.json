@@ -1,0 +1,110 @@
+{
+	"title": "Ontology Browser",
+	"variables": "Variables",
+	"properties": "Properties",
+	"methods": "Methods",
+	"scales": "Scales",
+
+	"button": {
+		"add-new": "Add New",
+		"back": "Back",
+		"save": "Save",
+		"edit": "Edit",
+		"delete": "Delete",
+		"cancel": "Cancel"
+	},
+
+	"form-field": {
+		"name": "Name",
+		"alias": "Alias",
+		"description": "Description",
+		"property": "Property",
+		"method": "Method",
+		"scale": "Scale",
+		"variable-type": "Variable Type",
+		"classes": "Classes",
+		"ontology-id": "Crop Ontology ID",
+		"data-type": "Data Type"
+	},
+
+	"variables-list": {
+		"favourites-title": "Program Favourites",
+		"all-title": "All Variables",
+		"details": {
+			"expected-range": "Expected Range"
+		}
+	},
+
+	"scales-list": {
+		"details": {
+			"valid-range": "Valid Range",
+			"categories": "Categories"
+		}
+	},
+
+	"add-new": {
+		"title": "Add New",
+
+		"variable": {
+			"menu-item": "Variable",
+			"title": "Add New Variable",
+			"add-property": "Add a new property",
+			"add-method": "Add a new method",
+			"add-scale": "Add a new scale",
+			"expected-range": "@:variables-list.details.expected-range"
+		},
+
+		"method": {
+			"menu-item": "Method",
+			"title": "Add New Method"
+		},
+
+		"property": {
+			"menu-item": "Property",
+			"title": "Add New Property"
+		},
+
+		"scale": {
+			"menu-item": "Scale",
+			"title": "Add New Scale",
+			"valid-range": "@:scales-list.details.valid-range",
+			"categories": "@:scales-list.details.categories"
+		}
+	},
+
+	"categories": {
+		"name": "Name",
+		"description": "Description",
+		"remove": "Remove",
+		"add": "Add another category"
+	},
+
+	"multiSelect": {
+		"placeholder": "Start typing"
+	},
+
+	"panel": {
+		"close": "Close"
+	},
+
+	"range": {
+		"edit": {
+			"min": "Minimum Value",
+			"max": "Maximum Value"
+		},
+		"readOnly": {
+			"min": "Min: {{min}}",
+			"max": "Max: {{max}}"
+		}
+	},
+
+	"list": {
+		"name": "Name",
+		"description": "Description",
+		"property": "Property",
+		"method": "Method",
+		"scale": "Scale",
+		"classes": "Classes",
+		"dataType": "Data Type"
+	}
+}
