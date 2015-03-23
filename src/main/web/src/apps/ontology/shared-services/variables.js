@@ -80,7 +80,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scaleSummary': {...},
+				'scale': {...},
 				'variableTypeIds': [1],
 				'expectedRange': {...}
 			}
@@ -126,7 +126,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scaleSummary': {...},
+				'scale': {...},
 				'variableTypeIds': [1],
 				'favourite': true,
 				'expectedRange': {...}
@@ -179,7 +179,7 @@
 				'description': 'A little vigourous',
 				'propertySummary': {...},
 				'methodSummary': {...},
-				'scaleSummary': {...},
+				'scale': {...},
 				'variableTypeIds': [1],
 				'favourite': true,
 				'metadata': {...},

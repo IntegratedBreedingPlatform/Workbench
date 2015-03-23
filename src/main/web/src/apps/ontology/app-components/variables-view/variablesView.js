@@ -4,9 +4,21 @@
 (function() {
 	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']);
 
-	function transformVariableToDisplayFormat(variable, id) {
+
+	function transformDetailedVariableToDisplayFormat(variable, id) {
 		return {
-			id: variable.id || id,
+			id: id,
+			Name: variable.name,
+			Property: variable.propertySummary && variable.propertySummary.name || '',
+			Method: variable.methodSummary && variable.methodSummary.name || '',
+			Scale: variable.scale && variable.scale.name || '',
+			'action-favourite': variable.favourite
+		};
+	}
+
+	function transformVariableToDisplayFormat(variable) {
+		return {
+			id: variable.id,
 			Name: variable.name,
 			Property: variable.propertySummary && variable.propertySummary.name || '',
 			Method: variable.methodSummary && variable.methodSummary.name || '',
@@ -26,8 +38,10 @@
 			ctrl.variables = [];
 			ctrl.favouriteVariables = [];
 
-			/* Exposed for testing */
 			ctrl.transformToDisplayFormat = transformToDisplayFormat;
+			/* Exposed for testing */
+			ctrl.transformVariableToDisplayFormat = transformVariableToDisplayFormat;
+			ctrl.transformDetailedVariableToDisplayFormat = transformDetailedVariableToDisplayFormat;
 
 			$scope.panelName = 'variables';
 
@@ -57,7 +71,7 @@
 
 				var selectedVariableIndex = -1,
 					favouriteVariableIndex = -1,
-					transformedVariable = transformVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
+					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
 				ctrl.variables.some(function(variable, index) {
 					if (variable.id === $scope.selectedItem.id) {

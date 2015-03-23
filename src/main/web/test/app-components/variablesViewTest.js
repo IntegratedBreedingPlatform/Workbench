@@ -19,12 +19,7 @@ describe('Variables Controller', function() {
 			},
 			scaleSummary: {
 				id: 1,
-				name: 'Score',
-				dataType: 2,
-				validValues: {
-					min: 1,
-					max: 5
-				}
+				name: 'Score'
 			},
 			variableTypeIds: [1],
 			favourite: true
@@ -48,6 +43,18 @@ describe('Variables Controller', function() {
 
 	delete PLANT_VIGOR_DETAILED.id;
 
+	PLANT_VIGOR_DETAILED.scale = {
+			id: 1,
+			name: 'Score',
+			dataType: {
+				id: 2,
+				name: 'Numeric'
+			},
+			validValues: {
+				min: 1,
+				max: 5
+			}
+		};
 	PLANT_VIGOR_DETAILED.deletable = true;
 	PLANT_VIGOR_DETAILED.metadata = {};
 	PLANT_VIGOR_DETAILED.editableFields = ['name', 'description'];
@@ -91,42 +98,82 @@ describe('Variables Controller', function() {
 		});
 
 		spyOn(controller, 'transformToDisplayFormat').and.callThrough();
+		spyOn(controller, 'transformVariableToDisplayFormat').and.callThrough();
+		spyOn(controller, 'transformDetailedVariableToDisplayFormat').and.callThrough();
 	}));
 
-	describe('ctrl.transformToDisplayFormat', function() {
+	describe('ctrl.transformVariableToDisplayFormat', function() {
 
-		it('should transform variables into display format', function() {
-			var rawVariables = [PLANT_VIGOR],
-				transformedVariabless = [{
+		it('should transform a variable summary into display format', function() {
+			var rawVariable = PLANT_VIGOR,
+				transformedVariable = {
 					id: PLANT_VIGOR.id,
 					Name: PLANT_VIGOR.name,
 					Property: PLANT_VIGOR.propertySummary.name,
 					Method: PLANT_VIGOR.methodSummary.name,
 					Scale: PLANT_VIGOR.scaleSummary.name,
 					'action-favourite': PLANT_VIGOR.favourite
-				}];
+				};
 
-			expect(controller.transformToDisplayFormat(rawVariables)).toEqual(transformedVariabless);
+			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
 		});
 
 		it('should default values to empty strings if they are not present', function() {
-			var rawVariables = [PLANT_VIGOR],
-				transformedVariables;
+			var rawVariable = PLANT_VIGOR,
+				transformedVariable;
 
 			// Null out some values
-			rawVariables[0].propertySummary = null;
-			rawVariables[0].methodSummary = null;
-			rawVariables[0].scaleSummary = null;
+			rawVariable.propertySummary = null;
+			rawVariable.methodSummary = null;
+			rawVariable.scaleSummary = null;
 
-			transformedVariables = [{
+			transformedVariable = {
 				id: PLANT_VIGOR.id,
 				Name: PLANT_VIGOR.name,
 				Property: '',
 				Method: '',
 				Scale: '',
 				'action-favourite': PLANT_VIGOR.favourite
-			}];
-			expect(controller.transformToDisplayFormat(rawVariables)).toEqual(transformedVariables);
+			};
+			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
+		});
+
+	});
+
+	describe('ctrl.transformDetailedVariableToDisplayFormat', function() {
+
+		it('should transform a detailed variable into display format', function() {
+			var newId = 3,
+				transformedVariable = {
+					id: newId,
+					Name: PLANT_VIGOR_DETAILED.name,
+					Property: PLANT_VIGOR_DETAILED.propertySummary.name,
+					Method: PLANT_VIGOR_DETAILED.methodSummary.name,
+					Scale: PLANT_VIGOR_DETAILED.scale.name,
+					'action-favourite': PLANT_VIGOR_DETAILED.favourite
+				};
+
+			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(transformedVariable);
+		});
+
+		it('should default values to empty strings if they are not present', function() {
+			var rawVariable = angular.copy(PLANT_VIGOR_DETAILED),
+				transformedVariables;
+
+			// Null out some values
+			rawVariable.propertySummary = null;
+			rawVariable.methodSummary = null;
+			rawVariable.scale = null;
+
+			transformedVariables = {
+				id: PLANT_VIGOR_DETAILED.id,
+				Name: PLANT_VIGOR_DETAILED.name,
+				Property: '',
+				Method: '',
+				Scale: '',
+				'action-favourite': PLANT_VIGOR_DETAILED.favourite
+			};
+			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
 		});
 
 	});

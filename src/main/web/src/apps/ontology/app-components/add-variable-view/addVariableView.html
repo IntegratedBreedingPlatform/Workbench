@@ -39,12 +39,6 @@
 			</ui-select>
 		</div>
 
-		<div ng-show="showRangeWidget">
-			<label for="om-av-min">Minimum Expected Value</label>
-			<input type="text" name="om-av-min" id="om-av-min" ng-model="variable.expectedRange.min"></input>
-
-			<label for="om-av-max">Maximum Expected Value</label>
-			<input type="text" name="om-av-max" id="om-av-max" ng-model="variable.expectedRange.max"></input>
-		</div>
+		<om-range ng-show="showRangeWidget" om-property="expectedRange" om-adding="true" om-model="variable"></om-range>
 	</form>
 </div>
