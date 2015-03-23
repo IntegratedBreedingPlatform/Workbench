@@ -108,10 +108,10 @@ describe('Variables Controller', function() {
 			var rawVariable = PLANT_VIGOR,
 				transformedVariable = {
 					id: PLANT_VIGOR.id,
-					Name: PLANT_VIGOR.name,
-					Property: PLANT_VIGOR.propertySummary.name,
-					Method: PLANT_VIGOR.methodSummary.name,
-					Scale: PLANT_VIGOR.scaleSummary.name,
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name,
 					'action-favourite': PLANT_VIGOR.favourite
 				};
 
@@ -129,10 +129,10 @@ describe('Variables Controller', function() {
 
 			transformedVariable = {
 				id: PLANT_VIGOR.id,
-				Name: PLANT_VIGOR.name,
-				Property: '',
-				Method: '',
-				Scale: '',
+				name: PLANT_VIGOR.name,
+				property: '',
+				method: '',
+				scale: '',
 				'action-favourite': PLANT_VIGOR.favourite
 			};
 			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
@@ -146,10 +146,10 @@ describe('Variables Controller', function() {
 			var newId = 3,
 				transformedVariable = {
 					id: newId,
-					Name: PLANT_VIGOR_DETAILED.name,
-					Property: PLANT_VIGOR_DETAILED.propertySummary.name,
-					Method: PLANT_VIGOR_DETAILED.methodSummary.name,
-					Scale: PLANT_VIGOR_DETAILED.scale.name,
+					name: PLANT_VIGOR_DETAILED.name,
+					property: PLANT_VIGOR_DETAILED.propertySummary.name,
+					method: PLANT_VIGOR_DETAILED.methodSummary.name,
+					scale: PLANT_VIGOR_DETAILED.scale.name,
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite
 				};
 
@@ -167,10 +167,10 @@ describe('Variables Controller', function() {
 
 			transformedVariables = {
 				id: PLANT_VIGOR_DETAILED.id,
-				Name: PLANT_VIGOR_DETAILED.name,
-				Property: '',
-				Method: '',
-				Scale: '',
+				name: PLANT_VIGOR_DETAILED.name,
+				property: '',
+				method: '',
+				scale: '',
 				'action-favourite': PLANT_VIGOR_DETAILED.favourite
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
@@ -256,18 +256,18 @@ describe('Variables Controller', function() {
 
 			controller.variables = [{
 					id: id,
-					Name: updateSelectedVariable.name,
-					Property: updateSelectedVariable.propertySummary.name,
-					Method: updateSelectedVariable.methodSummary.name,
-					Scale: updateSelectedVariable.scaleSummary.name
+					name: updateSelectedVariable.name,
+					property: updateSelectedVariable.propertySummary.name,
+					method: updateSelectedVariable.methodSummary.name,
+					scale: updateSelectedVariable.scaleSummary.name
 				}];
 
 			controller.favouriteVariables = [{
 					id: id,
-					Name: updateSelectedVariable.name,
-					Property: updateSelectedVariable.propertySummary.name,
-					Method: updateSelectedVariable.methodSummary.name,
-					Scale: updateSelectedVariable.scaleSummary.name
+					name: updateSelectedVariable.name,
+					property: updateSelectedVariable.propertySummary.name,
+					method: updateSelectedVariable.methodSummary.name,
+					scale: updateSelectedVariable.scaleSummary.name
 				}];
 
 			// Select our variable for editing
@@ -278,8 +278,8 @@ describe('Variables Controller', function() {
 
 			scope.updateSelectedVariable(updateSelectedVariable);
 
-			expect(controller.variables[0].Name).toEqual(newName);
-			expect(controller.favouriteVariables[0].Name).toEqual(newName);
+			expect(controller.variables[0].name).toEqual(newName);
+			expect(controller.favouriteVariables[0].name).toEqual(newName);
 		});
 
 		it('should only update the variable in the variables list matched by id', function() {
@@ -288,16 +288,16 @@ describe('Variables Controller', function() {
 
 				displayVariableToLeaveAlone = {
 					id: 2,
-					Property: 'A Property',
-					Method: 'A Method',
-					Scale: 'A Scale'
+					property: 'A Property',
+					method: 'A Method',
+					scale: 'A Scale'
 				},
 
 				displayVariableToUpdate = {
 					id: 1,
-					Property: detailedVariableToUpdate.propertySummary.name,
-					Method: detailedVariableToUpdate.methodSummary.name,
-					Scale: detailedVariableToUpdate.scaleSummary.name
+					property: detailedVariableToUpdate.propertySummary.name,
+					method: detailedVariableToUpdate.methodSummary.name,
+					scale: detailedVariableToUpdate.scaleSummary.name
 				},
 
 				newName = 'Not Plant Vigor';
@@ -324,16 +324,16 @@ describe('Variables Controller', function() {
 
 				nonMatchingVariable = {
 					id: 1,
-					Property: 'A Property',
-					Method: 'A Method',
-					Scale: 'A Scale'
+					property: 'A Property',
+					method: 'A Method',
+					scale: 'A Scale'
 				},
 
 				anotherNonMatchingVariable = {
 					id: 2,
-					Property: 'Another Property',
-					Method: 'Another Method',
-					Scale: 'Another Scale'
+					property: 'Another Property',
+					method: 'Another Method',
+					scale: 'Another Scale'
 				};
 
 			controller.variables = [nonMatchingVariable, anotherNonMatchingVariable];

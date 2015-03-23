@@ -3,7 +3,18 @@
 
 describe('Panel module', function() {
 	var scope,
-		panelService;
+		panelService,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	beforeEach(function() {
 		angular.mock.module('templates');

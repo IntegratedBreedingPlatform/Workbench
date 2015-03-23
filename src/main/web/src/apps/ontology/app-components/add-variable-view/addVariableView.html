@@ -1,35 +1,35 @@
 <div class="om-av-view">
 
-	<button ng-click="goBack()">Back</button>
+	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
-	<h2>Add New Variable</h2>
+	<h2>{{'add-new.variable.title' | translate}}</h2>
 	<form novalidate>
-		<button ng-click="saveVariable($event, variable)" type="submit">Save</button>
+		<button ng-click="saveVariable($event, variable)" type="submit">{{'button.save' | translate}}</button>
 
-		<om-input om-id="om-name" om-label="Name" om-property="name" om-adding="true" om-model="variable"></om-input>
+		<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="variable"></om-input>
 
-		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="variable"></om-text-area>
+		<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="variable"></om-text-area>
 
 		<div>
-			<om-select om-id="om-property" om-label="Property" om-property="propertySummary" om-adding="true" om-model="variable" om-options="data.properties"></om-select>
+			<om-select om-id="om-property" om-label="{{'form-field.property' | translate}}" om-property="propertySummary" om-adding="true" om-model="variable" om-options="data.properties"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'property')">Add a new property</a>
+			<a href="#" ng-click="addNew($event, 'property')">{{'add-new.variable.add-property' | translate}}</a>
 		</div>
 
 		<div>
-			<om-select om-id="om-method" om-label="Method" om-property="methodSummary" om-adding="true" om-model="variable" om-options="data.methods"></om-select>
+			<om-select om-id="om-method" om-label="{{'form-field.method' | translate}}" om-property="methodSummary" om-adding="true" om-model="variable" om-options="data.methods"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'method')">Add a new method</a>
+			<a href="#" ng-click="addNew($event, 'method')">{{'add-new.variable.add-method' | translate}}</a>
 		</div>
 
 		<div>
-			<om-select om-id="om-scale" om-label="Scale" om-property="scaleSummary" om-adding="true" om-model="variable" om-options="data.scales"></om-select>
+			<om-select om-id="om-scale" om-label="{{'form-field.scale' | translate}}" om-property="scale" om-adding="true" om-model="variable" om-options="data.scales"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'scale')">Add a new scale</a>
+			<a href="#" ng-click="addNew($event, 'scale')">{{'add-new.variable.add-scale' | translate}}</a>
 		</div>
 
 		<div>
-			<label for="om-av-type">Variable Type</label>
+			<label for="om-av-type">{{'form-field.variable-type' | translate}}</label>
 
 			<ui-select name="om-av-type" id="om-av-type" multiple ng-model="variable.variableTypeIds" theme="select2">
 				<ui-select-match>{{$item.name}}</ui-select-match>

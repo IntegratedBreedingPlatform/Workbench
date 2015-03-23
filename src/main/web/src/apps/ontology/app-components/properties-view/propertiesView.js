@@ -7,8 +7,8 @@
 	function transformPropertyToDisplayFormat(property, id) {
 		return {
 			id: property.id || id,
-			Name: property.name,
-			Classes: property.classes.join(', ')
+			name: property.name,
+			classes: property.classes.join(', ')
 		};
 	}
 
@@ -23,7 +23,7 @@
 
 			$scope.panelName = 'properties';
 
-			ctrl.colHeaders = ['Name', 'Classes'];
+			ctrl.colHeaders = ['name', 'classes'];
 
 			propertiesService.getProperties().then(function(properties) {
 				ctrl.properties = transformToDisplayFormat(properties);

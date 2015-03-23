@@ -1,15 +1,15 @@
 <div ng-show="editable()">
 	<ol>
 		<li ng-repeat="category in model[property].categories">
-			<label for="om-category-label">Name</label>
+			<label for="om-category-label">{{'categories.name' | translate}}</label>
 			<input type="text" name="om-category-label" id="om-category-label" ng-model="category.name"/>
 
-			<label for="om-category-value">Description</label>
+			<label for="om-category-value">{{'categories.description' | translate}}</label>
 			<input type="text" name="om-category-value" id="om-category-value" ng-model="category.description"/>
-			<a href="#" ng-click="removeCategory($event, $index)">Remove</a>
+			<a href="#" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
 		</li>
 	</ol>
-	<button ng-click="addCategory($event)">Add another category</button>
+	<button ng-click="addCategory($event)">{{'categories.add' | translate}}</button>
 </div>
 
 <div ng-hide="editable()">

@@ -65,9 +65,9 @@ describe('Scales View', function() {
 			}],
 			transformedData = [{
 				id: 1,
-				Name: PERCENTAGE.name,
-				Description: PERCENTAGE.description,
-				DataType: PERCENTAGE.dataType.name
+				name: PERCENTAGE.name,
+				description: PERCENTAGE.description,
+				dataType: PERCENTAGE.dataType.name
 			}];
 
 		deferredGetScales.resolve(jsonData);
@@ -133,7 +133,7 @@ describe('Scales View', function() {
 
 			controller.scales = [{
 				id: 1,
-				Name: scaleToUpdate.name
+				name: scaleToUpdate.name
 			}];
 
 			// Select our scale for editing
@@ -144,7 +144,7 @@ describe('Scales View', function() {
 
 			scope.updateSelectedScale(scaleToUpdate);
 
-			expect(controller.scales[0].Name).toEqual(newName);
+			expect(controller.scales[0].name).toEqual(newName);
 		});
 
 		it('should only update the scale in the scales list matched by id', function() {
@@ -153,12 +153,12 @@ describe('Scales View', function() {
 
 				displayScaleToLeaveAlone = {
 					id: 2,
-					Name: 'Another Scale'
+					name: 'Another Scale'
 				},
 
 				displayScaleToUpdate = {
 					id: 1,
-					Name: detailedScaleToUpdate.name
+					name: detailedScaleToUpdate.name
 				},
 
 				newName = 'Not Cut and Dry';
@@ -183,12 +183,12 @@ describe('Scales View', function() {
 
 				nonMatchingScale = {
 					id: 1,
-					Name: 'Non Matching Scale'
+					name: 'Non Matching Scale'
 				},
 
 				anotherNonMatchingScale = {
 					id: 2,
-					Name: 'Another Non Matching Scale'
+					name: 'Another Non Matching Scale'
 				};
 
 			controller.scales = [nonMatchingScale, anotherNonMatchingScale];

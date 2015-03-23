@@ -18,6 +18,8 @@ module.exports = function(config) {
 			'src/js/lib/angular-route.min.js',
 			'src/js/lib/angular-sanitize.min.js',
 			'src/js/lib/angular-ui-select.min.js',
+			'src/js/lib/angular-translate.min.js',
+			'src/js/lib/angular-translate-loader-static-files.min.js',
 			'test/lib/angular-mocks.js',
 			'src/apps/**/*.js',
 			'test/**/*.js',

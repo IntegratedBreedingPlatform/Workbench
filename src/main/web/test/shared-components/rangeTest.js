@@ -2,13 +2,20 @@
 'use strict';
 
 describe('Range module', function() {
-	var fakeEvent = {
-			preventDefault: function(){}
-		},
-
-		scope,
+	var scope,
 		isolateScope,
-		directiveElement;
+		directiveElement,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	beforeEach(function() {
 		angular.mock.module('templates');

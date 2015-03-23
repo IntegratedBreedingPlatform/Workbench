@@ -4,7 +4,7 @@
 (function() {
 	var VIEWS_LOCATION = 'static/views/ontology/',
 		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
-		'addProperty', 'addMethod', 'addScale']);
+		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -48,6 +48,15 @@
 			.otherwise({
 				redirectTo: '/variables'
 			});
+	}]);
+
+	// FIXME Use the dynamic context path passed in from the server
+	app.config(['$translateProvider', function($translateProvider) {
+		$translateProvider.useStaticFilesLoader({
+			prefix: '/ibpworkbench/controller/static/resources/locale-',
+			suffix: '.json'
+		});
+		$translateProvider.preferredLanguage('en');
 	}]);
 
 	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',

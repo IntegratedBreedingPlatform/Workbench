@@ -1,17 +1,17 @@
 <div class="om-as-view">
 
-	<button ng-click="goBack()">Back</button>
+	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
-	<h2>Add New Scale</h2>
+	<h2>{{'add-new.scale.title' | translate}}</h2>
 	<form>
-		<button ng-click="saveScale($event, scale)" type="submit">Save</button>
+		<button ng-click="saveScale($event, scale)" type="submit">{{'button.save' | translate}}</button>
 
-		<om-input om-id="om-name" om-label="Name" om-property="name" om-adding="true" om-model="scale"></om-input>
+		<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="scale"></om-input>
 
-		<om-text-area om-id="om-description" om-label="Description" om-property="description" om-adding="true" om-model="scale"></om-text-area>
+		<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="scale"></om-text-area>
 
 		<div>
-			<label for="om-as-type">Data Type</label>
+			<label for="om-as-type">{{'form-field.data-type' | translate}}</label>
 
 			<ui-select name="om-as-type" id="om-as-type" ng-model="scale.dataType" theme="select2">
 				<ui-select-match>{{$select.selected.name}}</ui-select-match>

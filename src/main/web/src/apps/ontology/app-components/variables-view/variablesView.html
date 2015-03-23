@@ -2,8 +2,8 @@
 	<om-panel om-panel-identifier="panelName">
 		<om-variable-details></om-variable-details>
 	</om-panel>
-	<h2>Program Favourites</h2>
+	<h2>{{'variables-list.favourites-title' | translate}}</h2>
 	<om-list om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
-	<h2>All Variables</h2>
+	<h2>{{'variables-list.all-title' | translate}}</h2>
 	<om-list om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 </div>

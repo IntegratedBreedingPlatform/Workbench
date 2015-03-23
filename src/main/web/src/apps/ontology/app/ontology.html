@@ -4,7 +4,7 @@
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 	<meta charset="utf-8"></meta>
-	<title>Ontology Browser</title>
+	<title>{{'title' | translate}}</title>
 
 	<link th:href="@{/controller/static/lib/angular-ui-select/angular-ui-select.min.css}" rel="stylesheet"></link>
 	<link rel="stylesheet" th:href="@{/controller/static/lib/select2/select2.css}"></link>
@@ -12,33 +12,33 @@
 </head>
 <body class="om-ontology-manager" ng-controller="OntologyController as ctrl">
 	<header class="om-header">
-		<h1 class="om-title">Ontology Management</h1>
+		<h1 class="om-title">{{'title' | translate}}</h1>
 		<div class="om-nav-wrapper">
 			<nav class="om-nav">
 				<ol>
 					<li class="om-nav-item">
 						<a class="om-nav-item-link" href="#variables">
-							Variables
+							{{'variables' | translate}}
 						</a>
 					</li>
 					<li class="om-nav-item">
 						<a class="om-nav-item-link" href="#properties">
-							Properties
+							{{'properties' | translate}}
 						</a>
 					</li>
 					<li class="om-nav-item">
 						<a class="om-nav-item-link" href="#methods">
-							Methods
+							{{'methods' | translate}}
 						</a>
 					</li>
 					<li class="om-nav-item">
 						<a class="om-nav-item-link" href="#scales">
-							Scales
+							{{'scales' | translate}}
 						</a>
 					</li>
 				</ol>
 			</nav>
-			<button class="om-add-new-button" ng-click="addNewSelection()">Add New</button>
+			<button class="om-add-new-button" ng-click="addNewSelection()">{{'button.add-new' | translate}}</button>
 		</div>
 	</header>
 
@@ -47,12 +47,12 @@
 	<div om-mask-for-panel="panelName"></div>
 
 	<om-panel om-panel-identifier="panelName" om-panel-small="">
-		<h3>Add New</h3>
+		<h3>{{'add-new.title' | translate}}</h3>
 		<ol>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'variable')">Variable</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'property')">Property</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'method')">Method</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'scale')">Scale</a></li>
+			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'variable')">{{'add-new.variable.menu-item' | translate}}</a></li>
+			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'property')">{{'add-new.property.menu-item' | translate}}</a></li>
+			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'method')">{{'add-new.method.menu-item' | translate}}</a></li>
+			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'scale')">{{'add-new.scale.menu-item' | translate}}</a></li>
 		</ol>
 	</om-panel>
 
@@ -60,6 +60,8 @@
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-route.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-sanitize.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-ui-select.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate-loader-static-files.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/ontology.js}"></script>
 </body>
 </html>

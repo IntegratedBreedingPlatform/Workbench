@@ -43,7 +43,18 @@ describe('Scale details directive', function() {
 		scope,
 		q,
 		directiveElement,
-		deferredUpdateScale;
+		deferredUpdateScale,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	function compileDirective() {
 		inject(function($compile) {

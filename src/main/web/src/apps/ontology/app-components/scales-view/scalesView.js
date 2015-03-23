@@ -7,9 +7,9 @@
 	function transformScaleToDisplayFormat(scale, id) {
 		return {
 			id: scale.id || id,
-			Name: scale.name,
-			Description: scale.description,
-			DataType: scale.dataType.name
+			name: scale.name,
+			description: scale.description,
+			dataType: scale.dataType.name
 		};
 	}
 
@@ -24,7 +24,7 @@
 
 			$scope.panelName = 'scales';
 
-			ctrl.colHeaders = ['Name', 'Description', 'DataType'];
+			ctrl.colHeaders = ['name', 'description', 'dataType'];
 
 			scalesService.getScales().then(function(scales) {
 				ctrl.scales = transformToDisplayFormat(scales);

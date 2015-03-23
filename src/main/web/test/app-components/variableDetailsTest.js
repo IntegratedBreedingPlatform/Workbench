@@ -23,7 +23,18 @@ describe('Variable details directive', function() {
 		deferredGetMethods,
 		deferredGetScales,
 		deferredGetTypes,
-		deferredUpdateVariable;
+		deferredUpdateVariable,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	function compileDirective() {
 		inject(function($compile) {

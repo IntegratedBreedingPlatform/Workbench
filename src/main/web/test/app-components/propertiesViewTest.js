@@ -59,8 +59,8 @@ describe('Properties View', function() {
 			}],
 			transformedData = [{
 				id: 'prop1',
-				Name: 'prop1',
-				Classes: 'class1, class2'
+				name: 'prop1',
+				classes: 'class1, class2'
 			}];
 
 		deferredGetProperties.resolve(jsonData);
@@ -126,8 +126,8 @@ describe('Properties View', function() {
 
 			controller.properties = [{
 					id: 1,
-					Name: propertyToUpdate.name,
-					Classes: propertyToUpdate.classes.join(', ')
+					name: propertyToUpdate.name,
+					classes: propertyToUpdate.classes.join(', ')
 				}];
 
 			// Select our property for editing
@@ -138,7 +138,7 @@ describe('Properties View', function() {
 
 			scope.updateSelectedProperty(propertyToUpdate);
 
-			expect(controller.properties[0].Name).toEqual(newName);
+			expect(controller.properties[0].name).toEqual(newName);
 		});
 
 		it('should only update the property in the properties list matched by id', function() {
@@ -147,14 +147,14 @@ describe('Properties View', function() {
 
 				displayPropertyToLeaveAlone = {
 					id: 2,
-					Name: 'Another Property',
-					Classes: 'No classes here'
+					name: 'Another Property',
+					classes: 'No classes here'
 				},
 
 				displayPropertyToUpdate = {
 					id: 1,
-					Name: detailedPropertyToUpdate.name,
-					Classes: detailedPropertyToUpdate.classes.join(', ')
+					name: detailedPropertyToUpdate.name,
+					classes: detailedPropertyToUpdate.classes.join(', ')
 				},
 
 				newName = 'Not Blast';
@@ -179,14 +179,14 @@ describe('Properties View', function() {
 
 				nonMatchingProperty = {
 					id: 1,
-					Name: 'Non Matching Property',
-					Classes: 'No classes here'
+					name: 'Non Matching Property',
+					classes: 'No classes here'
 				},
 
 				anotherNonMatchingProperty = {
 					id: 2,
-					Name: 'Another Non Matching Property',
-					Classes: 'No classes here'
+					name: 'Another Non Matching Property',
+					classes: 'No classes here'
 				};
 
 			controller.properties = [nonMatchingProperty, anotherNonMatchingProperty];

@@ -18,7 +18,18 @@ describe('Property details directive', function() {
 		q,
 		directiveElement,
 		deferredGetClasses,
-		deferredUpdateProperty;
+		deferredUpdateProperty,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	function compileDirective() {
 		inject(function($compile) {

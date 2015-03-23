@@ -9,7 +9,7 @@
 				<span class="cross" ng-click="removeTag($index)">x</span>
 			</span>
 		</span>
-		<input id="searchInput" class="searchInput" type="text" placeholder="Start typing" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()"/>
+		<input id="searchInput" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()"/>
 	</div>
 
 	<ul class="suggestions-list">

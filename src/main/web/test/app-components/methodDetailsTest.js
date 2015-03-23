@@ -16,7 +16,18 @@ describe('Method details directive', function() {
 		scope,
 		q,
 		directiveElement,
-		deferredUpdateMethod;
+		deferredUpdateMethod,
+		mockTranslateFilter;
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+	});
 
 	function compileDirective() {
 		inject(function($compile) {

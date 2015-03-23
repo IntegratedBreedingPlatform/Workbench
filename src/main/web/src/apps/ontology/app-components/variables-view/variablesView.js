@@ -8,10 +8,10 @@
 	function transformDetailedVariableToDisplayFormat(variable, id) {
 		return {
 			id: id,
-			Name: variable.name,
-			Property: variable.propertySummary && variable.propertySummary.name || '',
-			Method: variable.methodSummary && variable.methodSummary.name || '',
-			Scale: variable.scale && variable.scale.name || '',
+			name: variable.name,
+			property: variable.propertySummary && variable.propertySummary.name || '',
+			method: variable.methodSummary && variable.methodSummary.name || '',
+			scale: variable.scale && variable.scale.name || '',
 			'action-favourite': variable.favourite
 		};
 	}
@@ -19,10 +19,10 @@
 	function transformVariableToDisplayFormat(variable) {
 		return {
 			id: variable.id,
-			Name: variable.name,
-			Property: variable.propertySummary && variable.propertySummary.name || '',
-			Method: variable.methodSummary && variable.methodSummary.name || '',
-			Scale: variable.scaleSummary && variable.scaleSummary.name || '',
+			name: variable.name,
+			property: variable.propertySummary && variable.propertySummary.name || '',
+			method: variable.methodSummary && variable.methodSummary.name || '',
+			scale: variable.scaleSummary && variable.scaleSummary.name || '',
 			'action-favourite': variable.favourite
 		};
 	}
@@ -45,7 +45,7 @@
 
 			$scope.panelName = 'variables';
 
-			ctrl.colHeaders = ['Name', 'Property', 'Method', 'Scale', 'action-favourite'];
+			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
 
 			variablesService.getFavouriteVariables().then(function(variables) {
 				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);

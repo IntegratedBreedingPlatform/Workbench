@@ -4,18 +4,6 @@
 (function() {
 	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails']);
 
-	function transformMethodToDisplayFormat(method, id) {
-		return {
-			id: method.id || id,
-			Name: method.name,
-			Description: method.description
-		};
-	}
-
-	function transformToDisplayFormat(methods) {
-		return methods.map(transformMethodToDisplayFormat);
-	}
-
 	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService',
 		function($scope, methodsService, panelService) {
 			var ctrl = this;
@@ -23,10 +11,10 @@
 
 			$scope.panelName = 'methods';
 
-			ctrl.colHeaders = ['Name', 'Description'];
+			ctrl.colHeaders = ['name', 'description'];
 
 			methodsService.getMethods().then(function(methods) {
-				ctrl.methods = transformToDisplayFormat(methods);
+				ctrl.methods = methods;
 			});
 
 			$scope.showMethodDetails = function() {
@@ -42,8 +30,9 @@
 
 			$scope.updateSelectedMethod = function(updatedMethod) {
 
-				var selectedIndex = -1,
-					transformedMethod = transformMethodToDisplayFormat(updatedMethod, $scope.selectedItem.id);
+				var selectedIndex = -1;
+
+				updatedMethod.id = $scope.selectedItem.id;
 
 				ctrl.methods.some(function(method, index) {
 					if (method.id === $scope.selectedItem.id) {
@@ -54,7 +43,7 @@
 
 				// Not much we can really do if we don't find it in the list. Just don't update.
 				if (selectedIndex !== -1) {
-					ctrl.methods[selectedIndex] = transformedMethod;
+					ctrl.methods[selectedIndex] = updatedMethod;
 				}
 			};
 

@@ -51,24 +51,6 @@ describe('Methods View', function() {
 		});
 	}));
 
-	it('should transform methods into display format', function() {
-		var jsonData = [{
-				id: 23,
-				name: 'Cut and Dry',
-				description: 'Cut the plant 10cm above the root and air dry in a shadey place.'
-			}],
-			transformedData = [{
-				id: 23,
-				Name: 'Cut and Dry',
-				Description: 'Cut the plant 10cm above the root and air dry in a shadey place.'
-			}];
-
-		deferredGetMethods.resolve(jsonData);
-		scope.$apply();
-		expect(methodsService.getMethods).toHaveBeenCalled();
-		expect(controller.methods).toEqual(transformedData);
-	});
-
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});
@@ -126,7 +108,7 @@ describe('Methods View', function() {
 
 			controller.methods = [{
 				id: 1,
-				Name: methodToUpdate.name
+				name: methodToUpdate.name
 			}];
 
 			// Select our method for editing
@@ -137,7 +119,7 @@ describe('Methods View', function() {
 
 			scope.updateSelectedMethod(methodToUpdate);
 
-			expect(controller.methods[0].Name).toEqual(newName);
+			expect(controller.methods[0].name).toEqual(newName);
 		});
 
 		it('should only update the method in the methods list matched by id', function() {
@@ -146,12 +128,12 @@ describe('Methods View', function() {
 
 				displayMethodToLeaveAlone = {
 					id: 2,
-					Name: 'Another Method'
+					name: 'Another Method'
 				},
 
 				displayMethodToUpdate = {
 					id: 1,
-					Name: detailedMethodToUpdate.name
+					name: detailedMethodToUpdate.name
 				},
 
 				newName = 'Not Cut and Dry';
@@ -176,12 +158,12 @@ describe('Methods View', function() {
 
 				nonMatchingMethod = {
 					id: 1,
-					Name: 'Non Matching Method'
+					name: 'Non Matching Method'
 				},
 
 				anotherNonMatchingMethod = {
 					id: 2,
-					Name: 'Another Non Matching Method'
+					name: 'Another Non Matching Method'
 				};
 
 			controller.methods = [nonMatchingMethod, anotherNonMatchingMethod];
