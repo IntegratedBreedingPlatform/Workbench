@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Properties;
 
+import com.vaadin.terminal.ExternalResource;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -416,7 +417,20 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         toggleSidebarIcon();
     }
 
-    public void setUriFragment(String fragment,boolean isLinkAccessed) {
+	@Override
+	public void showContent(String toolUrl) {
+		if (!toolUrl.isEmpty()) {
+			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+
+			browser.setType(Embedded.TYPE_BROWSER);
+			browser.setSizeFull();
+
+			this.showContent(browser);
+		}
+	}
+
+
+	public void setUriFragment(String fragment,boolean isLinkAccessed) {
         uriFragUtil.setFragment(fragment,!isLinkAccessed);
     }
 

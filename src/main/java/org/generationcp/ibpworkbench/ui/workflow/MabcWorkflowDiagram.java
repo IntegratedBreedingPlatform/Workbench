@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.ui.workflow;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,7 +23,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -328,24 +328,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         Component breedingDecisionArea = layoutBreedingDecision();
         layout.addComponent(breedingDecisionArea, "top:" + topInPixels + "; left:" + extraSpace);
 
-        //the steps on the second column   
-        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        String leftInPixels = left + "px";
-
-        Component genotypingArea = layoutGenotypingStep();
-        layout.addComponent(genotypingArea, "top:" + topInPixels + "; left:" + leftInPixels);
-
-        top = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 40;
-        topInPixels = top + "px";
-        left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
-                + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        leftInPixels = left + "px";
-        layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
-
         final VerticalLayout rootContainer = new VerticalLayout();
         rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContainer.setSpacing(false);
@@ -394,11 +376,6 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
         layout.setExpandRatio(germplasmImportButton2, 0);
 
-        layout.addComponent(browseGenotypingDataButton);
-        browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
-        
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);

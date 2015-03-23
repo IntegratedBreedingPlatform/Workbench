@@ -1,9 +1,8 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -32,9 +31,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
     private WorkbenchDataManager manager;
 
     @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-
-    @Autowired
     private SessionData sessionData;
 
     public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
@@ -44,6 +40,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+    	//do nothing
     }
 
     public WorkbenchDataManager getManager() {
@@ -60,29 +57,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
             List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = manager.getAllWorkbenchSidebarCategory();
 
             for (WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-                if (category.getSidebarCategoryName().equals("workflows")) {
-
-                    if (sessionData.getSelectedProject() != null) {
-                        List<Role> roles = manager.getRolesByProjectAndUser(sessionData.getSelectedProject(),sessionData.getUserData());
-
-                        for (Role role : roles) {
-                            //we dont include the tools anymore
-                            if(!role.getName().equalsIgnoreCase("Manager")) {
-                                categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, role.getWorkflowTemplate().getName(), role.getLabel()));
-                            }
-                        }
-                    }
+                if ("workflows".equals(category.getSidebarCategoryName()) && 
+                		sessionData.getSelectedProject() != null) {
+                	addCategoryLinkBasedOnRole(categoryLinks,category);
                 }
-                if (category.getSidebarCategoryName().equals("admin")) {
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program Data"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
-
-                    //add the softare_license in the tools
-
+                if ("admin".equals(category.getSidebarCategoryName())) {
+                	addAdminCategoryLinks(categoryLinks,category);
                 } else {
                     categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
                 }
@@ -92,30 +72,49 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                 if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
                     sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
                 }
-
                 if (link.getTool() == null) {
                     link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
                 }
-
-
                 sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
             }
-
-
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        	LOG.error(e.getMessage(),e);
         }
         return sidebarLinks;
     }
 
-    public List<Role> getRoleByTemplateName(String templateName) {
+    private void addAdminCategoryLinks(
+			List<WorkbenchSidebarCategoryLink> categoryLinks, 
+    		WorkbenchSidebarCategory category) throws MiddlewareQueryException {
+    	categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
+        categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
+        categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName()),category,
+				ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
+        categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
+        categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
+	}
+
+	private void addCategoryLinkBasedOnRole(
+    		List<WorkbenchSidebarCategoryLink> categoryLinks, 
+    		WorkbenchSidebarCategory category) throws MiddlewareQueryException {
+    	List<Role> roles = manager.getRolesByProjectAndUser(
+    			sessionData.getSelectedProject(),sessionData.getUserData());
+    	for (Role role : roles) {
+            //we dont include the tools anymore
+            if(!"Manager".equalsIgnoreCase(role.getName())) {
+                categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, role.getWorkflowTemplate().getName(), role.getLabel()));
+            }
+        }
+	}
+
+	public List<Role> getRoleByTemplateName(String templateName) {
         try {
             return manager.getRolesByWorkflowTemplate(manager.getWorkflowTemplateByName(templateName).get(0));
 
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        	LOG.error(e.getMessage(),e);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public void updateProjectLastOpenedDate() {

@@ -67,7 +67,8 @@ public class GermplasmListTreeDropHandler implements DropHandler {
         VerticalDropLocation location = dropData.getDropLocation();
 
         moveNode(sourceItemId, targetItemId, location);
-
+        
+        tree.requestRepaint();
     }
 
     @Override
@@ -94,15 +95,10 @@ public class GermplasmListTreeDropHandler implements DropHandler {
         HierarchicalContainer container = (HierarchicalContainer) tree
                 .getContainerDataSource();
         
-        if(sourceItemId.equals(GermplasmListPreview.SHARED_LIST) || sourceItemId.equals(GermplasmListPreview.MY_LIST)){
+        if(sourceItemId.equals(GermplasmListPreview.LISTS)){
     		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
             return;
     	}
-        
-        if ((targetItemId instanceof String && ((String) targetItemId).equals(GermplasmListPreview.SHARED_LIST)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_LIST)));
-            return;
-        }
 
         if (container.hasChildren(sourceItemId)) {
             MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
@@ -116,7 +112,7 @@ public class GermplasmListTreeDropHandler implements DropHandler {
                 if(parentFolder != null){
                     targetItemId = parentFolder.getId();
                 } else {
-                    targetItemId = GermplasmListPreview.MY_LIST;
+                    targetItemId = GermplasmListPreview.LISTS;
                 }
             }
 

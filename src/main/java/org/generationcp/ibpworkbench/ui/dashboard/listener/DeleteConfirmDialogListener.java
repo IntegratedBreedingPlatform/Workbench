@@ -49,8 +49,8 @@ public class DeleteConfirmDialogListener implements ConfirmDialog.Listener{
             presenter.deleteNurseryListFolder(finalId);
             treeView.removeItem(treeView.getValue());
             if (parent.getProjectId().intValue() == NurseryListPreview.ROOT_FOLDER) {
-                treeView.select(NurseryListPreview.MY_STUDIES);
-                presenter.processToolbarButtons(NurseryListPreview.MY_STUDIES);
+                treeView.select(NurseryListPreview.NURSERIES_AND_TRIALS);
+                presenter.processToolbarButtons(NurseryListPreview.NURSERIES_AND_TRIALS);
             } else {
                 treeView.select(parent.getProjectId());
                 presenter.processToolbarButtons(parent.getProjectId());

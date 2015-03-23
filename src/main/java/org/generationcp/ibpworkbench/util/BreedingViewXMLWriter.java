@@ -56,6 +56,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
     @Value("${web.api.url}")
     private String webApiUrl;
+    
+    @Value("${workbench.is.server.app}")
+    private String isServerApp;
 
     private BreedingViewInput breedingViewInput;
     
@@ -180,6 +183,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 	        throw new BreedingViewXMLWriterException("Error with getting installation directory: " + breedingViewInput.getDatasetId()
 	                + ": " + ex.getMessage(), ex);
 	    }
+	    
+	    if (Boolean.parseBoolean(isServerApp)){
+	    	ssaParameters.setOutputDirectory(null);
+	    	ssaParameters.setWebApiUrl(null);
+	    }
+	    
 	    return ssaParameters;
 	}
 
@@ -194,7 +203,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 
 	protected String getWebApiUrl() {
 		String url = webApiUrl + "?restartApplication";
-		url += ToolUtil.getWorkbenchContextParameters();
+		url += sessionData.getWorkbenchContextParameters();
 		return url;
 	}
 
@@ -206,7 +215,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
         	org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
         	env.setName(s.getEnvironmentName().replace(",",";"));
         	env.setActive(true);
-        	if (s.getActive()) environments.add(env);
+        	if (s.getActive()) {
+        		environments.add(env);
+        	}
         }
         return environments;
 	}
@@ -216,25 +227,33 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable{
 		Design design = new Design();
         design.setType(breedingViewInput.getDesignType());
         
-        if (breedingViewInput.getBlocks() != null)
+        if (breedingViewInput.getBlocks() != null){
         	breedingViewInput.getBlocks().setName(breedingViewInput.getBlocks().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
+        	
         design.setBlocks(breedingViewInput.getBlocks());
         
-        if (breedingViewInput.getReplicates() != null)
+        if (breedingViewInput.getReplicates() != null){
         	breedingViewInput.getReplicates().setName(breedingViewInput.getReplicates().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setReplicates(breedingViewInput.getReplicates());
         
-        if (breedingViewInput.getColumns() != null)
+        if (breedingViewInput.getColumns() != null){
         	breedingViewInput.getColumns().setName(breedingViewInput.getColumns().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
+        	
         design.setColumns(breedingViewInput.getColumns());
         
-        if (breedingViewInput.getRows() != null)
+        if (breedingViewInput.getRows() != null){
         	breedingViewInput.getRows().setName(breedingViewInput.getRows().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setRows(breedingViewInput.getRows());
         
-        if (breedingViewInput.getPlot() != null)
+        if (breedingViewInput.getPlot() != null){
         	breedingViewInput.getPlot().setName(breedingViewInput.getPlot().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+        }
         design.setPlot(breedingViewInput.getPlot());
+        
         return design;
 	}
 

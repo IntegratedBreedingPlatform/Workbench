@@ -33,9 +33,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * 
+ * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs re-engineering BMS-209) refers to it.
  * @author Jeffrey Morales
  */
 @Configurable
+@Deprecated
 public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     public static final String DATABASE_LOCAL = "database/local";
@@ -68,12 +70,16 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
             createConnection();
             createLocalDatabase();
             createManagementSystems();
-            
+            generatedDatabaseName = cropType.getDbName();
+            connection.setCatalog(generatedDatabaseName);            
             isGenerationSuccess = true;
         } catch (InternationalizableException e) {
             isGenerationSuccess = false;            
             throw e;
-        } finally {
+        } catch (SQLException e) {
+        	isGenerationSuccess = false;
+        	handleDatabaseError(e);
+		} finally {
             closeConnection();
         }
 
@@ -82,7 +88,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
     protected void createLocalDatabase() {
 
-        String databaseName = cropType.getLocalDatabaseNameWithProjectId(projectId);
+        String databaseName = cropType.getDbName();
         StringBuilder createDatabaseSyntax = new StringBuilder();
 
         Statement statement = null;

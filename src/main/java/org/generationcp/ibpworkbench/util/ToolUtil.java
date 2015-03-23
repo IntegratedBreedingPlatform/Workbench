@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.commons.context.ContextConstants;
-import org.generationcp.commons.security.SecurityUtil;
-import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -259,11 +255,10 @@ public class ToolUtil {
      */
     public boolean updateToolConfigurationForProject(Tool tool, Project project) throws
             ConfigurationChangeException{
-        String centralDbName = project.getCropType().getCentralDbName();
-        String localDbName = project.getCropType().getLocalDatabaseNameWithProject(project);
+        String dbName = project.getCropType().getDbName();
 
         // DMV : added short circuit processing of the method, so that database access logic is not performed if tool is not included in target of later activities
-        if (!Util.isOneOf(tool.getToolName(), ToolName.gdms.name(), ToolName.mbdt.name())) {
+        if (!Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
             return false;
         }
 
@@ -293,15 +288,12 @@ public class ToolUtil {
             WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
 
             String configPath = null;
-            if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
-				configPath = workbenchSetting.getInstallationDirectory() + File.separator + GDMS_CONFIG_LOCATION;
-
-			} else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
+            if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
 				configPath = workbenchSetting.getInstallationDirectory() + File.separator + MBDT_CONFIG_LOCATION;
 			}
 
             return updateToolMiddlewareDatabaseConfiguration(
-                    new ConfigurationChangeParameters(configPath, centralDbName, localDbName,
+                    new ConfigurationChangeParameters(configPath, dbName,
                             username, password, true, false, false));
         } catch (MiddlewareQueryException e) {
             throw new ConfigurationChangeException(e);
@@ -372,9 +364,8 @@ public class ToolUtil {
         return changed;
     }
 
-    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String centralDbName
-                                                            ,String localDbName, String username, String password) throws ConfigurationChangeException {
-        ConfigurationChangeParameters params = new ConfigurationChangeParameters(ibpDatasourcePropertyFile, centralDbName, localDbName, username, password, false, false, false);
+    public boolean updateToolMiddlewareDatabaseConfiguration(String ibpDatasourcePropertyFile, String dbName, String username, String password) throws ConfigurationChangeException {
+        ConfigurationChangeParameters params = new ConfigurationChangeParameters(ibpDatasourcePropertyFile, dbName, username, password, false, false, false);
         return updateToolMiddlewareDatabaseConfiguration(params);
     }
     
@@ -383,24 +374,22 @@ public class ToolUtil {
     public boolean updateToolMiddlewareDatabaseConfiguration(ConfigurationChangeParameters params) throws ConfigurationChangeException {
         File configurationFile = getConfigurationFile(params);
 
-        String centralUrl = String.format(JDBC_FORMAT_STRING, jdbcHost,
-                                          jdbcPort, params.getCentralDbName());
-        String localUrl = String.format(JDBC_FORMAT_STRING, jdbcHost,
-                                        jdbcPort, params.getLocalDbName());
+        String url = String.format(JDBC_FORMAT_STRING, jdbcHost,
+                                          jdbcPort, params.getDbName());
 
         Map<String, String> newPropertyValues = new HashMap<>();
 
         newPropertyValues.put("central.driver", DEFAULT_DRIVER);
-        newPropertyValues.put("central.url", centralUrl);
-        newPropertyValues.put("central.dbname", params.getCentralDbName());
+        newPropertyValues.put("central.url", url);
+        newPropertyValues.put("central.dbname", params.getDbName());
         newPropertyValues.put("central.host", jdbcHost);
         newPropertyValues.put("central.port", String.valueOf(jdbcPort));
         newPropertyValues.put("central.username", params.getUserName());
         newPropertyValues.put("central.password", params.getPassword());
 
         newPropertyValues.put("local.driver", DEFAULT_DRIVER);
-        newPropertyValues.put("local.url", localUrl);
-        newPropertyValues.put("local.dbname", params.getLocalDbName());
+        newPropertyValues.put("local.url", url);
+        newPropertyValues.put("local.dbname", params.getDbName());
         newPropertyValues.put("local.host", jdbcHost);
         newPropertyValues.put("local.port", String.valueOf(jdbcPort));
         newPropertyValues.put("local.username", params.getUserName());
@@ -533,19 +522,5 @@ public class ToolUtil {
         File toolDir = new File(projectDir, tool.getGroupName());
 
         return new File(toolDir, INPUT).getAbsolutePath();
-    }
-    
-    public static String getWorkbenchContextParameters() {
-    	
-    	IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-    	SessionData sessionData = app.getSessionData();
-
-    	String contextParameterString = ContextUtil.getContextParameterString(sessionData.getUserData().getUserid(), 
-    			sessionData.getSelectedProject().getProjectId());
-    	
-    	//TODO: Just passing Base64 encoded username as a token for now.. until we get to BMS-61 where we need a proper secure token scheme.
-    	String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, 
-    			SecurityUtil.getEncodedToken());
-		return contextParameterString + authenticationTokenString;
     }
 }

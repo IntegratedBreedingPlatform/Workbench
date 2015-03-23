@@ -64,7 +64,8 @@ import org.generationcp.middleware.pojos.Method;
             getGeneq(),
             getUser(),
             getLmid(),
-            getMdate()
+            getMdate(),
+            getUniqueID()
         );
     }
     
@@ -84,6 +85,7 @@ import org.generationcp.middleware.pojos.Method;
     	methodView.setUser(getUser());
     	methodView.setLmid(getLmid());
     	methodView.setMdate(getMdate());
+    	methodView.setUniqueID(getUniqueID());
     	
 		return methodView;
     	

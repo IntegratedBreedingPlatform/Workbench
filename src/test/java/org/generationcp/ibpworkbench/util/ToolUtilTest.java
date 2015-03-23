@@ -87,8 +87,7 @@ public class ToolUtilTest {
 		CropType cropType = mock(CropType.class);
 
 		when(project.getCropType()).thenReturn(cropType);
-		when(cropType.getCentralDbName()).thenReturn(DUMMY_CENTRAL_DB_NAME);
-		when(cropType.getLocalDatabaseNameWithProject(any(Project.class))).thenReturn(DUMMY_LOCAL_DB_NAME);
+		when(cropType.getDbName()).thenReturn(DUMMY_CENTRAL_DB_NAME);
 
 		Tool dummyTool = new Tool(DUMMY_TOOL_NAME, DUMMY_TOOL_TITLE, DUMMY_NON_NATIVE_TOOL_PATH);
 		try {
@@ -240,7 +239,7 @@ public class ToolUtilTest {
 
 	@Test
 	public void testUpdateToolMiddlewareDatabaseConfigurationWithWorkbench() {
-		ConfigurationChangeParameters params = new ConfigurationChangeParameters(ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, true, false, false);
+		ConfigurationChangeParameters params = new ConfigurationChangeParameters(ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, true, false, false);
 
 		dut.setWorkbenchDbName(DUMMY_WORKBENCH_DB_NAME);
 
@@ -266,7 +265,7 @@ public class ToolUtilTest {
 
 	@Test
 		public void testUpdateToolMiddlewareDatabaseConfigurationNoWorkbench() {
-			ConfigurationChangeParameters params = new ConfigurationChangeParameters(ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, false, false, false);
+			ConfigurationChangeParameters params = new ConfigurationChangeParameters(ANY_STRING, ANY_STRING, ANY_STRING, ANY_STRING, false, false, false);
 
 			dut.setWorkbenchDbName(DUMMY_WORKBENCH_DB_NAME);
 
@@ -293,7 +292,7 @@ public class ToolUtilTest {
 	@Test
 	public void testUpdateToolMiddlewareDatabaseConfigurationEmptyUsernameParam() {
 		ConfigurationChangeParameters params = new ConfigurationChangeParameters(ANY_STRING,
-				ANY_STRING, ANY_STRING, null, null, false, false, false);
+				ANY_STRING, null, null, false, false, false);
 
 		dut.setCentralPassword(DUMMY_SQL_PASSWORD);
 		dut.setCentralUser(DUMMY_SQL_USERNAME);
@@ -337,10 +336,7 @@ public class ToolUtilTest {
 			when(setting.getInstallationDirectory()).thenReturn(DUMMY_INSTALLATION_PATH);
 
 			when(project.getCropType()).thenReturn(cropType);
-			when(cropType.getCentralDbName()).thenReturn(DUMMY_CENTRAL_DB_NAME);
-			when(cropType.getLocalDatabaseNameWithProject(any(Project.class)))
-					.thenReturn(DUMMY_LOCAL_DB_NAME);
-
+			when(cropType.getDbName()).thenReturn(DUMMY_CENTRAL_DB_NAME);
 
 			boolean changed = utilSetup.updateToolConfigurationForProject(toolToTest, project);
 

@@ -59,8 +59,7 @@ public class RestoreUtilTest {
     
     private SimpleResourceBundleMessageSource messageSource;
     
-    private static final String crop = "maize";
-	private static final String cropType = CropType.MAIZE;
+	private static final String cropType = CropType.CropEnum.MAIZE.toString();
 	
 	private static final String filename = "Maize_Tutorial_002-20140806.sql";
 	private static final String prefixDirectory = "/updatedIbdbScripts";
@@ -134,12 +133,6 @@ public class RestoreUtilTest {
         Mockito.doReturn(setting).when(workbenchDataManager).getWorkbenchSetting();
     }
     
-    private String getCentralDbName(){
-    	return "ibdbv2_"+crop+"_central";
-    }
-    private String getLocalDbName(){
-    	return "ibdbv2_"+crop+"_99999_local";
-    }
     private String getTestProjectName(){
     	return "Test-"+UUID.randomUUID().toString();
     }
@@ -200,17 +193,13 @@ public class RestoreUtilTest {
 			try {
 				doIbdbScriptsCheckout();
 				Project newProject = new Project();
-				newProject.setCentralDbName(getCentralDbName());
 				newProject.setCropType(new CropType(cropType));
 			    newProject.setLastOpenDate(new Date());
-			    newProject.setLocalDbName(getLocalDbName()); //assign temp local DB name
 			    newProject.setStartDate(new Date());
-			    newProject.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 			    newProject.setProjectName(getTestProjectName());
 			    newProject.setUserId(1);
 	
 			    Project project = workbenchDataManager.addProject(newProject);
-			    project.setLocalDbName("ibdbv2_maize_"+project.getProjectId()+"_local");
 			    workbenchDataManager.saveOrUpdateProject(project);
 			    
 		        IBDBGeneratorLocalDb generator = new IBDBGeneratorLocalDb(project.getCropType(), project.getProjectId());
@@ -234,7 +223,6 @@ public class RestoreUtilTest {
 				restoreAction.onClose(confirmDialog);
 	
 				workbenchDataManager.deleteProject(project);
-				workbenchDataManager.dropLocalDatabase(project);
 				
 				Assert.assertFalse("There is a restore process error", restoreAction.isHasRestoreError());
 				
@@ -257,17 +245,13 @@ public class RestoreUtilTest {
 			try {
 				doIbdbScriptsCheckout();
 				Project newProject = new Project();
-				newProject.setCentralDbName(getCentralDbName());
 				newProject.setCropType(new CropType(cropType));
 			    newProject.setLastOpenDate(new Date());
-			    newProject.setLocalDbName(getLocalDbName()); //assign temp local DB name
 			    newProject.setStartDate(new Date());
-			    newProject.setTemplate(workbenchDataManager.getWorkflowTemplates().get(0));
 			    newProject.setProjectName(getTestProjectName());
 			    newProject.setUserId(1);
 	
 			    Project project = workbenchDataManager.addProject(newProject);
-			    project.setLocalDbName("ibdbv2_maize_"+project.getProjectId()+"_local");
 			    workbenchDataManager.saveOrUpdateProject(project);
 			    
 		        IBDBGeneratorLocalDb generator;
@@ -281,7 +265,6 @@ public class RestoreUtilTest {
 				restoreAction.onClose(confirmDialog);
 	
 				workbenchDataManager.deleteProject(project);
-				workbenchDataManager.dropLocalDatabase(project);
 				
 				Assert.assertTrue("Should return false since user did not confirm the restore process", restoreAction.isHasRestoreError());
 				

@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.ui.workflow;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,7 +23,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction.WindowEnums;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction.ToolEnum;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -378,12 +378,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         Component fieldTrialArea = layoutFieldTrialManagement();
         layout.addComponent(fieldTrialArea);
         
-        layout.addComponent(downArrow13);
-        layout.setComponentAlignment(downArrow13, Alignment.MIDDLE_CENTER);
-
-        Component genotypingArea = layoutGenotyping();
-        layout.addComponent(genotypingArea);
-        
         Label emptyLabel = new Label(" ");
         emptyLabel.setWidth("100%");
         emptyLabel.setHeight("20px");
@@ -424,10 +418,6 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         ontologyBrowserFBBtn.setHeight("20px");
         layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
         layout.setExpandRatio(ontologyBrowserFBBtn, 0);
-
-        layout.addComponent(browseGenotypingDataButton);
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
 
         layout.addComponent(mainHeadToHeadButton2);
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public
  * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
  * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 package org.generationcp.ibpworkbench.actions;
 
@@ -42,12 +42,12 @@ import java.util.List;
 @Configurable
 public class SaveNewLocationAction implements ClickListener {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
-	private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
+    private static final long serialVersionUID = 1L;
 
-	private AddLocationForm newLocationForm;
+    private AddLocationForm newLocationForm;
 
-	private AddLocationsWindow window;
+    private AddLocationsWindow window;
 
 	private ProgramLocationsPresenter programLocationsPresenter;
 
@@ -55,49 +55,50 @@ public class SaveNewLocationAction implements ClickListener {
 	private SessionData sessionData;
 
 	@Resource
-	private SimpleResourceBundleMessageSource messageSource;
+    private SimpleResourceBundleMessageSource messageSource;
 
 	public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
 			ProgramLocationsPresenter programLocationsPresenter) {
-		this.newLocationForm = newLocationForm;
-		this.window = window;
-		this.programLocationsPresenter = programLocationsPresenter;
-	}
+        this.newLocationForm = newLocationForm;
+        this.window = window;
+        this.programLocationsPresenter = programLocationsPresenter;
+    }
 
-	@Override
-	public void buttonClick(ClickEvent event) {
-
-		try {
-			newLocationForm.commit();
+    @Override
+    public void buttonClick(ClickEvent event) {
+    	
+    	try {
+            newLocationForm.commit();
 			LocationViewModel location = getLocationFromForm();
 			List<Location> existingLocations = programLocationsPresenter
 					.getExistingLocations(location.getLocationName());
 
-			// there exists a location with the same name?
-			if (existingLocations.size() > 0) {
-				new ConfirmLocationsWindow(window, existingLocations, programLocationsPresenter,
-						new Button.ClickListener() {
+            // there exists a location with the same name?
+    		if (!existingLocations.isEmpty()){
+    			new ConfirmLocationsWindow(window, existingLocations , programLocationsPresenter, new Button.ClickListener() {
+				
+					private static final long serialVersionUID = 1L;
 
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							public void buttonClick(ClickEvent event) {
-								saveLocation();
-							}
+					@Override
+					public void buttonClick(ClickEvent event) {
+						saveLocation();
+					}
 						}).show();
-
+    			
 			} else {
-				saveLocation();
-			}
-
+    			saveLocation();
+    		}
+    		
 		} catch (Validator.InvalidValueException e) {
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(),
 					e.getLocalizedMessage());
-		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-		}
-	}
-
+    	} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(),e);
+        }
+    }
+    
 	protected void saveLocation() {
 		final LocationViewModel locModel = this.getLocationFromForm();
 
@@ -119,14 +120,13 @@ public class SaveNewLocationAction implements ClickListener {
 
 	// FIXME: depricated for BMS-4.0 (merge-db), remove this when we replace sessionData obj.
 	protected void updateSessionData(LocationViewModel locModel) {
-		// increment key from the session's list of locations (correct id from local db)
-		Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
-		nextKey = nextKey * -1;
-		locModel.setLocationId(nextKey);
+        // increment key from the session's list of locations (correct id from local db)
+        Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
+        locModel.setLocationId(nextKey);
 
-		// add new location to session list
-		sessionData.getProjectLocationData().put(nextKey, locModel);
-	}
+        // add new location to session list
+        sessionData.getProjectLocationData().put(nextKey, locModel);
+        }
 
 	protected LocationViewModel getLocationFromForm() {
 		@SuppressWarnings("unchecked")
@@ -140,5 +140,5 @@ public class SaveNewLocationAction implements ClickListener {
 				Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
 
 		return locModel;
-	}
+    }
 }

@@ -15,6 +15,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -24,6 +25,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -70,20 +72,14 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 	private StudyDataManager studyDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private ToolUtil toolUtil;
-
 	private Project project;
 
-	private final static Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisPanel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisPanel.class);
 
 	public MultiSiteAnalysisPanel(Project project) {
 		LOG.debug("Project is " + project.getProjectName());
@@ -137,8 +133,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void initializeValues() {
-		// TODO Auto-generated method stub
-		
+		// do nothing - inherited abstract method
 	}
 
 	@Override
@@ -150,7 +145,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), project);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 
@@ -200,12 +195,18 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	public void generateTabContent(Study study, String selectedEnvFactorName,String selectedGenotypeFactorName, String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState, MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
 
-		if (selectedEnvFactorName == null || selectedEnvFactorName == "") {
+		if (selectedEnvFactorName == null || "".equals(selectedEnvFactorName)) {
             return;
         }
 
-		MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(getStudyDataManager(), project, study, gxeSelectEnvironmentPanel, selectedEnvFactorName, selectedGenotypeFactorName ,selectedEnvGroupFactorName, variatesCheckboxState);
-		tabContainer.setSelectedEnvFactorName(selectedEnvFactorName);
+		MultiSiteParameters multiSiteParameters = new MultiSiteParameters();
+		multiSiteParameters.setSelectedEnvironmentFactorName(selectedEnvFactorName);
+		multiSiteParameters.setSelectedGenotypeFactorName(selectedGenotypeFactorName);
+		multiSiteParameters.setSelectedEnvGroupFactorName(selectedEnvGroupFactorName);
+		multiSiteParameters.setProject(project);
+		multiSiteParameters.setStudy(study);
+
+		MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState, multiSiteParameters);
 		tabContainer.setVisible(true);
 
 		getStudiesTabsheet().setVisible(true);
@@ -242,11 +243,11 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			List<DataSet> dataSets = null;
 			try{
 				dataSets = getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
-			}catch(MiddlewareQueryException e){
-				e.printStackTrace();
+			} catch (MiddlewareQueryException e){
+				LOG.error("Error getting means dataset", e);
 			}
 
-			if (dataSets != null && study.getName() != null && dataSets.size() > 0){
+			if (dataSets != null && study.getName() != null && !dataSets.isEmpty()){
 
 				MultiSiteAnalysisSelectPanel selectEnvironmentPanel = new MultiSiteAnalysisSelectPanel(getStudyDataManager() ,project, study, this);
 

@@ -65,7 +65,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
         LOG.debug("Current ProjectID: " + selectedProject.getProjectId());
         File backupFile;
         try {
-            backupFile = backupIBDBService.backupIBDB(selectedProject.getProjectId().toString(),selectedProject.getLocalDbName());
+        	//TODO review this for merged DB scheme. For now passing in the pointer to the merged db if backup action is executed..
+            backupFile = backupIBDBService.backupIBDB(selectedProject.getProjectId().toString(),selectedProject.getDatabaseName());
             
             // TODO: remove test code
 

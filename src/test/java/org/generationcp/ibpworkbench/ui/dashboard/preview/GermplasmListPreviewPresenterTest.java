@@ -1,11 +1,18 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -19,20 +26,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmListPreviewPresenterTest {
 
     public static final String SAMPLE_VALID_FOLDER_NAME = "some random folder name";
-    public static final String PROGRAM_LISTS = "Program Lists";
-    public static final String PUBLIC_LISTS = "Public Lists";
+    public static final String LISTS = "Lists";
     public static final String TOO_LONG_GERMPLASM_LIST_FOLDER_NAME = "50 character sentence is not accepted as valid input here.";
 
     @Mock
@@ -97,8 +95,7 @@ public class GermplasmListPreviewPresenterTest {
         when(project.getProjectId()).thenReturn(PROJECT_ID);
 
         // this two conditions setups a successful checkIfUnique() from presenter
-        when(germplasmListManager.getGermplasmListByName(SAMPLE_VALID_FOLDER_NAME, 0, 1, null, Database.CENTRAL)).thenReturn(null);
-        when(germplasmListManager.getGermplasmListByName(SAMPLE_VALID_FOLDER_NAME, 0, 1, null, Database.LOCAL)).thenReturn(null);
+        when(germplasmListManager.getGermplasmListByName(SAMPLE_VALID_FOLDER_NAME, 0, 1, null)).thenReturn(null);
 
         when(germplasmListManager.getGermplasmListById(LIST_ID_WITH_NO_PARENT)).thenReturn(null);
         when(germplasmListManager.getGermplasmListById(LIST_ID_WITH_PARENT)).thenReturn(germplasmListWithParent);
@@ -107,9 +104,7 @@ public class GermplasmListPreviewPresenterTest {
 
 
         when(manager.getLocalIbdbUserId(sessionData.getUserData().getUserid(), sessionData.getSelectedProject().getProjectId())).thenReturn(USER_ID);
-        GermplasmListPreview.MY_LIST = PROGRAM_LISTS;
-        GermplasmListPreview.SHARED_LIST =PUBLIC_LISTS;
-
+        GermplasmListPreview.LISTS = LISTS;
     }
 
     @Test
@@ -180,17 +175,10 @@ public class GermplasmListPreviewPresenterTest {
         }
 
         try {
-            presenter.addGermplasmListFolder(PROGRAM_LISTS,LIST_ID_NOT_A_FOLDER);
+            presenter.addGermplasmListFolder(LISTS,LIST_ID_NOT_A_FOLDER);
             fail ("should throw an exception since the folder name is null");
         } catch (GermplasmListPreviewException e) {
-            try {
-                presenter.addGermplasmListFolder(PUBLIC_LISTS, LIST_ID_NOT_A_FOLDER);
-                fail("something something");
-
-            } catch (GermplasmListPreviewException e2) {
-                assertTrue(e.getMessage().contains(GermplasmListPreviewException.INVALID_NAME));
-                assertTrue(e2.getMessage().contains(GermplasmListPreviewException.INVALID_NAME));
-            }
+        	assertTrue(e.getMessage().contains(GermplasmListPreviewException.INVALID_NAME));
         }
     }
 
@@ -230,16 +218,9 @@ public class GermplasmListPreviewPresenterTest {
 
     }
 
-
     @Test (expected=GermplasmListPreviewException.class)
     public void testValidateGermplasmListFolderNameInvalidNameMyList() throws Exception {
-        presenter.validateGermplasmListFolderName(GermplasmListPreview.MY_LIST);
-        fail("should throw an exception as this is an invalid input");
-    }
-
-    @Test (expected=GermplasmListPreviewException.class)
-    public void testValidateGermplasmListFolderNameInvalidNameSharedList() throws Exception {
-        presenter.validateGermplasmListFolderName(GermplasmListPreview.SHARED_LIST);
+        presenter.validateGermplasmListFolderName(GermplasmListPreview.LISTS);
         fail("should throw an exception as this is an invalid input");
     }
 

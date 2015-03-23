@@ -1,5 +1,8 @@
 package org.generationcp.ibpworkbench;
 
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.security.SecurityUtil;
+import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -99,16 +102,29 @@ public class SessionData {
 
 	public void logProgramActivity(String activityTitle, String activityDescription)
 			throws MiddlewareQueryException {
+		Project currentProject = this.getLastOpenedProject();
+		User currentUser = this.getUserData();
 
 		ProjectActivity projAct = new ProjectActivity(
-				selectedProject.getProjectId().intValue(),
-				selectedProject,
+				currentProject.getProjectId().intValue(),
+				currentProject,
 				activityTitle,
 				activityDescription,
-				userData,
+				currentUser,
 				new Date());
 
 		workbenchDataManager.addProjectActivity(projAct);
 	}
 
+	public String getWorkbenchContextParameters() {
+
+		String contextParameterString = ContextUtil
+				.getContextParameterString(this.getUserData().getUserid(),
+						this.getSelectedProject().getProjectId());
+
+		String authenticationTokenString = ContextUtil
+				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN,
+						SecurityUtil.getEncodedToken());
+		return contextParameterString + authenticationTokenString;
+	}
 }

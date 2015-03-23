@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.*;
@@ -57,7 +58,19 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
     }
 
-    @Override
+	@Override
+	public void showContent(String toolUrl) {
+		if (!toolUrl.isEmpty()) {
+			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+
+			browser.setType(Embedded.TYPE_BROWSER);
+			browser.setSizeFull();
+
+			this.showContent(browser);
+		}
+	}
+
+	@Override
     public void attach() {
         super.attach();
 
@@ -177,9 +190,5 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
     public void afterPropertiesSet() throws Exception {
         this.addURIHandler(this);
         this.addParameterHandler(this);
-    }
-
-    public void initializeProjectSession() throws Exception {
-
     }
 }

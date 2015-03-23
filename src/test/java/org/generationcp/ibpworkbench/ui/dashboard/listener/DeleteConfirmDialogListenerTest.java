@@ -4,6 +4,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreviewPresenter;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class DeleteConfirmDialogListenerTest {
 	}
 	
 	@Test
-	public void testDeleteStudyWithRootFolderAsParent(){
+	public void testDeleteStudyWithRootFolderAsParent() throws MiddlewareQueryException{
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(NurseryListPreview.ROOT_FOLDER);
 		Mockito.when(presenter.getStudyNodeParent(finalId)).thenReturn(parent);
@@ -43,13 +44,13 @@ public class DeleteConfirmDialogListenerTest {
 		boolean isDeleted = listener.deleteStudy();
 		Mockito.verify(presenter, Mockito.times(1)).deleteNurseryListFolder(finalId);
 		Mockito.verify(treeView, Mockito.times(1)).removeItem(finalId);
-		Mockito.verify(treeView, Mockito.times(1)).select(NurseryListPreview.MY_STUDIES);
-		Mockito.verify(presenter, Mockito.times(1)).processToolbarButtons(NurseryListPreview.MY_STUDIES);		
+		Mockito.verify(treeView, Mockito.times(1)).select(NurseryListPreview.NURSERIES_AND_TRIALS);
+		Mockito.verify(presenter, Mockito.times(1)).processToolbarButtons(NurseryListPreview.NURSERIES_AND_TRIALS);		
         Assert.assertTrue("Study was deleted successfully", isDeleted);
 	}
 	
 	@Test
-	public void testDeleteStudyWithNonRootFolderAsParent(){
+	public void testDeleteStudyWithNonRootFolderAsParent() throws MiddlewareQueryException{
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(2);
 		Mockito.when(presenter.getStudyNodeParent(finalId)).thenReturn(parent);

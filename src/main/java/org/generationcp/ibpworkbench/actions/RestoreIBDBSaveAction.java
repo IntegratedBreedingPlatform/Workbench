@@ -120,7 +120,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                 }
 
                 // restore the database
-                mysqlUtil.restoreDatabase(project.getLocalDbName(), restoreFile, new Callable<Boolean>() {
+                mysqlUtil.restoreDatabase(project.getDatabaseName(), restoreFile, new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         IBDBGeneratorLocalDb generateLocalDB = new IBDBGeneratorLocalDb(sessionData.getLastOpenedProject().getCropType(),sessionData.getLastOpenedProject().getProjectId());
@@ -134,14 +134,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
                                 project.getProjectId());
                 
                 if(userId != null) {
-                	mysqlUtil.updateOwnerships(project.getLocalDbName(), userId);
+                	mysqlUtil.updateOwnerships(project.getDatabaseName(), userId);
                 }
 
                 // the restored database may be old
                 // and needs to be upgraded for it to be usable
                 WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
                 File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
-                mysqlUtil.upgradeDatabase(project.getLocalDbName(), schemaDir);
+                mysqlUtil.upgradeDatabase(project.getDatabaseName(), schemaDir);
 
                 MessageNotifier.showMessage(sourceWindow, messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 

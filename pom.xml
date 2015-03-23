@@ -5,13 +5,13 @@
     <artifactId>ibpworkbench</artifactId>
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
-    <version>3.1.2.SNAPSHOT</version>
+    <version>4.0.2.SNAPSHOT</version>
 
     <properties>
         <vaadin.version>6.8.13</vaadin.version>
         <gwt.version>2.5.1</gwt.version>
         <gwt.plugin.version>2.5.1</gwt.plugin.version>
-        <ibpcommons.version>3.1.2.SNAPSHOT</ibpcommons.version>
+        <ibpcommons.version>4.0.2.SNAPSHOT</ibpcommons.version>
         <spring.version>3.2.11.RELEASE</spring.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <webapp.path>C:/Breeding Management System/infrastructure/tomcat/webapps</webapp.path>
@@ -352,6 +352,12 @@
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
+        
+        <dependency>
+            <groupId>uk.com.robust-it</groupId>
+            <artifactId>cloning</artifactId>
+            <version>1.9.0</version>
+        </dependency>
 
         <!-- Mockito -->
         <dependency>
@@ -547,7 +553,7 @@
 	        <plugin>
 		        <groupId>com.github.eirslett</groupId>
 		        <artifactId>frontend-maven-plugin</artifactId>
-		        <version>0.0.16</version>
+		        <version>0.0.17</version>
 
 		        <configuration>
 		        	<workingDirectory>src/main/web</workingDirectory>

@@ -30,7 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+/**
+ * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs re-engineering BMS-209) refers to it.
+ */
 @Configurable
+@Deprecated
 public class IBDBGeneratorCentralDb extends IBDBGenerator {
     public static final String DATABASE_CENTRAL = "database/central";
 	private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorCentralDb.class);
@@ -82,7 +86,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("USE " + cropType.getCentralDbName());
+            statement.execute("USE " + cropType.getDbName());
             return true;
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
@@ -101,7 +105,7 @@ public class IBDBGeneratorCentralDb extends IBDBGenerator {
     protected void createDatabase() {
         StringBuilder createDatabaseSyntax = new StringBuilder();
 
-        String databaseName = cropType.getCentralDbName();
+        String databaseName = cropType.getDbName();
 
         Statement statement = null;
         try {

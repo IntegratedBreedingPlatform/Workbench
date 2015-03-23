@@ -12,14 +12,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table.ColumnGenerator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
@@ -32,11 +29,19 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
-import org.generationcp.ibpworkbench.actions.RunBreedingViewAction;
+import org.generationcp.ibpworkbench.actions.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -50,12 +55,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * 
@@ -66,8 +84,214 @@ import java.util.Map;
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean,
 		InternationalizableComponent {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
+	private static final String MARGIN_TOP10 = "marginTop10";
+	private static final String REPLICATES = "REPLICATES";
 
+	private final class RunBreedingViewButtonListener implements Button.ClickListener {
+		private static final long serialVersionUID = -6682011023617457906L;
+
+		@Override
+		public void buttonClick(final ClickEvent event) {
+
+			
+			if (Boolean.parseBoolean(isServerApp)){
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
+				.buttonClick(event);
+				return;
+			}
+			
+			List<DataSet> dataSets;
+			try {
+
+				dataSets = studyDataManager.getDataSetsByType(breedingViewInput.getStudyId(),
+						DataSetType.MEANS_DATA);
+				if (!dataSets.isEmpty()) {
+
+					DataSet meansDataSet = dataSets.get(0);
+					TrialEnvironments envs = studyDataManager
+							.getTrialEnvironmentsInDataset(meansDataSet.getId());
+
+					Boolean environmentExists = false;
+					for (SeaEnvironmentModel model : getSelectedEnvironments()) {
+
+						TrialEnvironment env = envs.findOnlyOneByLocalName(
+								breedingViewInput.getTrialInstanceName(), model.getTrialno());
+						if (env != null) {
+							environmentExists = true;
+							break;
+						}
+
+					}
+
+					if (environmentExists) {
+						ConfirmDialog
+								.show(event.getComponent().getWindow(),
+										"",
+										"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
+										"OK", "Cancel", new Runnable() {
+
+											@Override
+											public void run() {
+
+												new RunSingleSiteAction(
+														SingleSiteAnalysisDetailsPanel.this,
+														project).buttonClick(event);
+											}
+
+										});
+					} else {
+						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
+								.buttonClick(event);
+					}
+
+				} else {
+					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
+							.buttonClick(event);
+				}
+
+			} catch (MiddlewareQueryException e) {
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
+						.buttonClick(event);
+				LOG.error(e.getMessage(), e);
+			} catch (Exception e) {
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
+						.buttonClick(event);
+				LOG.error(e.getMessage(), e);
+			}
+
+		}
+	}
+
+	private final class FooterCheckBoxListener implements Property.ValueChangeListener {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			boolean selected = (Boolean)event.getProperty().getValue();
+			if (!selected) {
+				disableEnvironmentEntries();
+				tblEnvironmentSelection.refreshRowCache();
+				return;
+			}
+
+			try {
+
+				List<String> invalidEnvs = new ArrayList<String>() {
+
+					@Override
+					public String toString() {
+						StringBuilder sb = new StringBuilder();
+						Iterator<String> itr = this.listIterator();
+						while (itr.hasNext()) {
+							sb.append("\"" + itr.next() + "\"");
+							if (itr.hasNext()) {
+								sb.append(",");
+							}
+						}
+						return sb.toString();
+					}
+				};
+
+				for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
+						.getItemIds().iterator(); itr.hasNext();) {
+					SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
+
+					Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
+							getBreedingViewInput().getDatasetId(), m.getLocationId());
+
+					if (!valid) {
+						invalidEnvs.add(m.getEnvironmentName());
+						m.setActive(false);
+					} else {
+						m.setActive(true);
+					}
+
+				}
+
+				tblEnvironmentSelection.refreshRowCache();
+
+				if (!invalidEnvs.isEmpty()) {
+					MessageNotifier
+							.showError(
+									getWindow(),
+									INVALID_SELECTION_STRING,
+									getSelEnvFactor().getValue().toString()
+											+ " "
+											+ invalidEnvs.toString()
+											+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+				}
+
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+			}
+
+		}
+	}
+
+	private final class EnvironmentCheckBoxListener implements Property.ValueChangeListener {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+
+			CheckBox chk = (CheckBox) event.getProperty();
+			Boolean val = (Boolean) event.getProperty().getValue();
+
+			if (!val) {
+				footerCheckBox.removeListener(footerCheckBoxListener);
+				footerCheckBox.setValue(false);
+				footerCheckBox.addListener(footerCheckBoxListener);
+				return;
+			}
+
+			SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
+
+			TrialEnvironments trialEnvironments;
+			try {
+				trialEnvironments = studyDataManager
+						.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+				TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(
+						getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
+
+				if (trialEnv == null) {
+
+					MessageNotifier.showError(getWindow(), INVALID_SELECTION_STRING,
+							"\"" + model.getEnvironmentName()
+									+ "\" value is not a valid selection for breeding view.");
+					chk.setValue(false);
+					model.setActive(false);
+
+				} else {
+
+					Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
+							getBreedingViewInput().getDatasetId(), model.getLocationId());
+
+					if (!valid) {
+						MessageNotifier
+								.showError(
+										getWindow(),
+										INVALID_SELECTION_STRING,
+										getSelEnvFactor().getValue().toString()
+												+ " \""
+												+ model.getEnvironmentName()
+												+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+						chk.setValue(false);
+						model.setActive(false);
+					} else {
+						model.setActive(val);
+					}
+
+				}
+			} catch (ConfigException e) {
+				LOG.error(e.getMessage(), e);
+			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage(), e);
+			}
+
+		}
+	}
+
+	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
 	private static final long serialVersionUID = 1L;
 
 	private static final String REPLICATION_FACTOR = "replication factor";
@@ -80,6 +304,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_BOX_WIDTH = "191px";
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
+	
+	@Value("${workbench.is.server.app}")
+	private String isServerApp;
 
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
@@ -109,6 +336,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Label lblSpecifyDesignDetailsHeader;
 	private Label lblSpecifyGenotypesHeader;
 	private Button btnRun;
+	private Button btnUpload;
 	private Button btnReset;
 	private Button btnBack;
 	private TextField txtVersion;
@@ -249,70 +477,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		setBlockRowColumnContainer(new VerticalLayout());
 
-		envCheckBoxListener = new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-
-				CheckBox chk = (CheckBox) event.getProperty();
-				Boolean val = (Boolean) event.getProperty().getValue();
-
-				if (!val) {
-					footerCheckBox.removeListener(footerCheckBoxListener);
-					footerCheckBox.setValue(false);
-					footerCheckBox.addListener(footerCheckBoxListener);
-					return;
-				}
-
-				SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
-
-				TrialEnvironments trialEnvironments;
-				try {
-					trialEnvironments = studyDataManager
-							.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-					TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(
-							getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
-
-					if (trialEnv == null) {
-
-						MessageNotifier.showError(getWindow(), INVALID_SELECTION_STRING,
-								"\"" + model.getEnvironmentName()
-										+ "\" value is not a valid selection for breeding view.");
-						chk.setValue(false);
-						model.setActive(false);
-
-					} else {
-
-						Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
-								getBreedingViewInput().getDatasetId(), model.getLocationId());
-
-						if (!valid) {
-							MessageNotifier
-									.showError(
-											getWindow(),
-											INVALID_SELECTION_STRING,
-											getSelEnvFactor().getValue().toString()
-													+ " \""
-													+ model.getEnvironmentName()
-													+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
-							chk.setValue(false);
-							model.setActive(false);
-						} else {
-							model.setActive(val);
-						}
-
-					}
-				} catch (ConfigException e) {
-					LOG.error(e.getMessage(), e);
-				} catch (MiddlewareQueryException e) {
-					LOG.error(e.getMessage(), e);
-				}
-
-			}
-
-		};
+		envCheckBoxListener = new EnvironmentCheckBoxListener();
 
 		tblEnvironmentSelection.addGeneratedColumn(SELECT_COLUMN, new ColumnGenerator() {
 
@@ -332,73 +497,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		});
 
-		footerCheckBoxListener = new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				boolean selected = (Boolean)event.getProperty().getValue();
-				if (!selected) {
-					disableEnvironmentEntries();
-					tblEnvironmentSelection.refreshRowCache();
-					return;
-				}
-
-				try {
-
-					List<String> invalidEnvs = new ArrayList<String>() {
-
-						@Override
-						public String toString() {
-							StringBuilder sb = new StringBuilder();
-							Iterator<String> itr = this.listIterator();
-							while (itr.hasNext()) {
-								sb.append("\"" + itr.next() + "\"");
-								if (itr.hasNext()) {
-									sb.append(",");
-								}
-							}
-							return sb.toString();
-						}
-					};
-
-					for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
-							.getItemIds().iterator(); itr.hasNext();) {
-						SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
-
-						Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
-								getBreedingViewInput().getDatasetId(), m.getLocationId());
-
-						if (!valid) {
-							invalidEnvs.add(m.getEnvironmentName());
-							m.setActive(false);
-						} else {
-							m.setActive(true);
-						}
-
-					}
-
-					tblEnvironmentSelection.refreshRowCache();
-
-					if (!invalidEnvs.isEmpty()) {
-						MessageNotifier
-								.showError(
-										getWindow(),
-										INVALID_SELECTION_STRING,
-										getSelEnvFactor().getValue().toString()
-												+ " "
-												+ invalidEnvs.toString()
-												+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
-					}
-
-				} catch (Exception e) {
-					LOG.error(e.getMessage(), e);
-				}
-
-			}
-
-		};
+		footerCheckBoxListener = new FooterCheckBoxListener();
 
 		footerCheckBox = new CheckBox("Select All", false);
 		footerCheckBox.addListener(footerCheckBoxListener);
@@ -593,6 +692,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		btnRun = new Button();
 		btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		btnUpload = new Button();
+		btnUpload.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		btnReset = new Button();
 		btnBack = new Button();
 
@@ -857,7 +958,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected int retrieveExperimentalDesignTypeID() {
 		try {
-			String expDesign = studyDataManager.getGeolocationPropValue(Database.LOCAL,
+			String expDesign = studyDataManager.getGeolocationPropValue(
 					TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
 			if (expDesign != null && !("").equals(expDesign.trim())
 					&& NumberUtils.isNumber(expDesign)) {
@@ -955,7 +1056,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName("marginTop10");
+		gLayout.addStyleName(MARGIN_TOP10);
 		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
 		gLayout.addComponent(getLblGenotypes(), 0, 1);
 		gLayout.addComponent(getSelGenotypes(), 1, 1);
@@ -983,8 +1084,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		combineLayout2.addComponent(btnBack);
 		combineLayout2.addComponent(btnReset);
 		combineLayout2.addComponent(btnRun);
+		combineLayout2.addComponent(btnUpload);
 		combineLayout2.setComponentAlignment(btnReset, Alignment.TOP_CENTER);
 		combineLayout2.setComponentAlignment(btnRun, Alignment.TOP_CENTER);
+		combineLayout2.setComponentAlignment(btnUpload, Alignment.TOP_CENTER);
 		mainLayout.addComponent(combineLayout2);
 		mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
 
@@ -1032,79 +1135,31 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			}
 		});
 
-		Button.ClickListener runBreedingView = new Button.ClickListener() {
-
-			private static final long serialVersionUID = -6682011023617457906L;
-
-			@Override
-			public void buttonClick(final ClickEvent event) {
-
-				List<DataSet> dataSets;
-				try {
-
-					dataSets = studyDataManager.getDataSetsByType(breedingViewInput.getStudyId(),
-							DataSetType.MEANS_DATA);
-					if (!dataSets.isEmpty()) {
-
-						DataSet meansDataSet = dataSets.get(0);
-						TrialEnvironments envs = studyDataManager
-								.getTrialEnvironmentsInDataset(meansDataSet.getId());
-
-						Boolean environmentExists = false;
-						for (SeaEnvironmentModel model : getSelectedEnvironments()) {
-
-							TrialEnvironment env = envs.findOnlyOneByLocalName(
-									breedingViewInput.getTrialInstanceName(), model.getTrialno());
-							if (env != null) {
-								environmentExists = true;
-								break;
-							}
-
-						}
-
-						if (environmentExists) {
-							ConfirmDialog
-									.show(event.getComponent().getWindow(),
-											"",
-											"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
-											"OK", "Cancel", new Runnable() {
-
-												@Override
-												public void run() {
-
-													new RunBreedingViewAction(
-															SingleSiteAnalysisDetailsPanel.this,
-															project).buttonClick(event);
-												}
-
-											});
-						} else {
-							new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
-									.buttonClick(event);
-						}
-
-					} else {
-						new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
-								.buttonClick(event);
-					}
-
-				} catch (MiddlewareQueryException e) {
-					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
-							.buttonClick(event);
-					LOG.error(e.getMessage(), e);
-				} catch (Exception e) {
-					new RunBreedingViewAction(SingleSiteAnalysisDetailsPanel.this, project)
-							.buttonClick(event);
-					LOG.error(e.getMessage(), e);
-				}
-
-			}
-		};
+		Button.ClickListener runBreedingView = new RunBreedingViewButtonListener();
 
 		btnRun.addListener(runBreedingView);
-
 		btnRun.setClickShortcut(KeyCode.ENTER);
 		btnRun.addStyleName("primary");
+		
+		btnUpload.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Map<String, Boolean> visibleTraitsMap = new HashMap<>();
+				for (VariableType factor : factorsInDataset){
+					visibleTraitsMap.put(factor.getLocalName(), true);
+				}
+				visibleTraitsMap.putAll(breedingViewInput.getVariatesActiveState());
+				
+				FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), breedingViewInput.getStudyId(), project, visibleTraitsMap);
+				
+				event.getComponent().getWindow().addWindow(window);
+				
+			}
+		});
+		btnUpload.addStyleName("primary");
 
 		selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
 		selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
@@ -1148,7 +1203,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		messageSource.setValue(getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
 		messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
 		messageSource.setValue(getLblGenotypes(), Message.BV_GENOTYPES);
-		messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
+		
+		if (Boolean.parseBoolean(isServerApp)){
+			messageSource.setCaption(btnRun, Message.DOWNLOAD_INPUT_FILES);
+			btnUpload.setVisible(true);
+			btnUpload.setCaption("Upload Output Files to BMS");
+		}else{
+			messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
+			btnUpload.setVisible(false);
+		}
 		messageSource.setCaption(btnReset, Message.RESET);
 		messageSource.setCaption(btnBack, Message.BACK);
 
@@ -1269,7 +1332,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName("marginTop10");
+		gLayout.addStyleName(MARGIN_TOP10);
 
 		getBlockRowColumnContainer().removeAllComponents();
 		gLayout.addComponent(getLblSpecifyColumnFactor(), 0, 0);
@@ -1286,7 +1349,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().setItemCaption(itemId, REPLICATES);
 				getSelReplicates().select(itemId);
 				getSelReplicates().setEnabled(true);
 			}
@@ -1299,7 +1362,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName("marginTop10");
+		gLayout.addStyleName(MARGIN_TOP10);
 
 		getBlockRowColumnContainer().removeAllComponents();
 		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
@@ -1312,7 +1375,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().setItemCaption(itemId, REPLICATES);
 				getSelReplicates().select(itemId);
 				getSelReplicates().setEnabled(true);
 			}
@@ -1325,7 +1388,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName("marginTop10");
+		gLayout.addStyleName(MARGIN_TOP10);
 
 		getBlockRowColumnContainer().removeAllComponents();
 		gLayout.addComponent(getLblBlocks(), 0, 0);
@@ -1341,7 +1404,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			for (Object itemId : getSelBlocks().getItemIds()) {
 				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, "REPLICATES");
+				getSelReplicates().setItemCaption(itemId, REPLICATES);
 				getSelReplicates().select(itemId);
 				getSelReplicates().setEnabled(true);
 			}

@@ -22,4 +22,7 @@ import com.vaadin.ui.Component;
 public interface IContentWindow{
 
     public void showContent(Component content);
+	public void showContent(String toolUrl);
+
+
 }

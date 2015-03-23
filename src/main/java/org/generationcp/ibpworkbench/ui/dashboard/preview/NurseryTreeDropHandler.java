@@ -14,6 +14,8 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.dms.DmsProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 */
 @Configurable
 class NurseryTreeDropHandler implements DropHandler {
+	private static final Logger LOG = LoggerFactory.getLogger(NurseryTreeDropHandler.class);
     private final Tree tree;
     private final NurseryListPreviewPresenter presenter;
 
@@ -54,12 +57,9 @@ class NurseryTreeDropHandler implements DropHandler {
                 .getTargetDetails());
 
         Object sourceItemId = ((DataBoundTransferable) t).getItemId();
-        // FIXME: Why "over", should be "targetItemId" or just
-        // "getItemId"
         Object targetItemId = dropData.getItemIdOver();
 
-        // Location describes on which part of the node the drop took
-        // place
+        // Location describes on which part of the node the drop took place
         VerticalDropLocation location = dropData.getDropLocation();
 
         moveNode(sourceItemId, targetItemId, location);
@@ -80,7 +80,7 @@ class NurseryTreeDropHandler implements DropHandler {
      * @param location     VerticalDropLocation indicating where the source node was
      *                     dropped relative to the target node
      */
-    private void moveNode(Object sourceItemId, Object targetItemId,
+    public void moveNode(Object sourceItemId, Object targetItemId,
                           VerticalDropLocation location) {
     	
     	if(location != VerticalDropLocation.MIDDLE || sourceItemId.equals(targetItemId)){
@@ -90,81 +90,79 @@ class NurseryTreeDropHandler implements DropHandler {
     	HierarchicalContainer container = (HierarchicalContainer) tree
                 .getContainerDataSource();
         
-        if(sourceItemId.equals(NurseryListPreview.SHARED_STUDIES) || sourceItemId.equals(NurseryListPreview.MY_STUDIES)){
-    		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
+        if(sourceItemId.equals(NurseryListPreview.NURSERIES_AND_TRIALS)){
+    		showError(messageSource.getMessage(Message.INVALID_OPERATION),
+    				messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
             return;
     	}
-    	
-    	if ((targetItemId instanceof String && ((String) targetItemId).equals(NurseryListPreview.SHARED_STUDIES)) || (targetItemId instanceof Integer && ((Integer) targetItemId) > 0)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM,tree.getItemCaption(sourceItemId),messageSource.getMessage(Message.SHARED_STUDIES)));
-            return;
-        }
-
         if (container.hasChildren(sourceItemId)) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(), messageSource.getMessage(Message.INVALID_OPERATION),messageSource.getMessage(Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
+        	showError(messageSource.getMessage(Message.INVALID_OPERATION),
+        			messageSource.getMessage(
+        					Message.INVALID_CANNOT_MOVE_ITEM_WITH_CHILD,tree.getItemCaption(sourceItemId)));
             return;
         }
         
+        Object parentId = targetItemId;
         if (targetItemId instanceof Integer && !presenter.isFolder((Integer)targetItemId)) {
         	DmsProject parentFolder = (DmsProject)presenter.getStudyNodeParent((Integer) targetItemId);
         	if(parentFolder != null){
-        		if(((Integer) targetItemId).intValue() < 0 && parentFolder.getProjectId().equals(
+        		if(parentFolder.getProjectId().equals(
         				NurseryListPreview.ROOT_FOLDER)){
-        			targetItemId = NurseryListPreview.MY_STUDIES;
+        			parentId = NurseryListPreview.NURSERIES_AND_TRIALS;
         		} else {
-        			targetItemId = parentFolder.getProjectId();
+        			parentId = parentFolder.getProjectId();
         		}
         	} else {
-        		targetItemId = NurseryListPreview.MY_STUDIES;
+        		parentId = NurseryListPreview.NURSERIES_AND_TRIALS;
         	}
-        	
-        	
         }
         
-        Integer sourceId = null;
-    	if(sourceItemId!=null && sourceItemId instanceof Integer) {
-            sourceId = Integer.valueOf(sourceItemId.toString());
-        }
-    	
-    	if(sourceId!=null && sourceId>0){
-			MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow().getWindow(), 
-					messageSource.getMessage(Message.INVALID_OPERATION), 
-					messageSource.getMessage(Message.MOVE_PUBLIC_STUDIES_NOT_ALLOWED));
-			return;
-		}
-
         boolean success = true;
         try {
             int actualTargetId = 0;
             // switch to using the root folder id if target is the root of the local folder
-            if (targetItemId instanceof String && ((String) targetItemId).equals(NurseryListPreview.MY_STUDIES)) {
+            if (parentId instanceof String && ((String) parentId).equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
                 actualTargetId = NurseryListPreview.ROOT_FOLDER;
             } else {
                 actualTargetId = (Integer)targetItemId;
             }
-            
-            Object previousTargetItemId = container.getParent(sourceItemId);
+            Object previousTargetItemId = getSourceParentId(container,sourceItemId);
             if(previousTargetItemId.equals(targetItemId)) {
             	return;
             }
-
             Integer source = (Integer)sourceItemId;
-
             success = presenter.moveNurseryListFolder(source, actualTargetId, !presenter.isFolder(source));
         } catch (Exception error) {
-            MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),messageSource.getMessage(Message.ERROR), error.getMessage());
+        	LOG.error(error.getMessage(),error);
+        	showError(messageSource.getMessage(Message.ERROR), error.getMessage());
             success = false;
         }
 
         // only perform UI change if backend modification was successful
         if (success) {
-        	container.setChildrenAllowed(targetItemId,true);
-        	if(container.setParent(sourceItemId, targetItemId) && 
-            	container.hasChildren(targetItemId)) {
+        	container.setChildrenAllowed(parentId,true);
+        	if(container.setParent(sourceItemId, parentId) && 
+            	container.hasChildren(parentId)) {
             	container.moveAfterSibling(sourceItemId, null);
             }
             
         }
     }
+
+	protected Object getSourceParentId(
+			HierarchicalContainer container, Object sourceItemId) {
+		return container.getParent(sourceItemId);
+	}
+
+	protected void showError(String caption, String description) {
+		MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),
+				caption,description);
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
+	
 
 }

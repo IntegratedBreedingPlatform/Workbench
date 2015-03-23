@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
@@ -37,7 +38,7 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
     private static final Logger LOG = LoggerFactory.getLogger(HelpWindow.class);
     private static final long serialVersionUID = 1L;
     private static final String PDF_FILE_NAME = "BMS_User_Manual.pdf";
-    private static final String HTML_DOC_URL = "http://localhost:18080/BMS_HTML/index.html";
+    private static final String HTML_DOC_URL = "BMS_HTML/index.html";
     private static final String BMS_INSTALLATION_DIR_POSTFIX = "infrastructure/tomcat/webapps/";
     private static final String BMS_HTML = "BMS_HTML";
 
@@ -140,8 +141,8 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
             		new File(targetHTMLPath));
             FileUtils.copyFile(new File(pdfFilepath), 
             		new File(targetPDFPath+File.separator+PDF_FILE_NAME));
-            String contextPath = TomcatUtil.getContextPathFromUrl(HTML_DOC_URL);
-            String localWarPath = TomcatUtil.getLocalWarPathFromUrl(HTML_DOC_URL);
+            String contextPath = TomcatUtil.getContextPathFromUrl(WorkbenchAppPathResolver.getFullWebAddress(HTML_DOC_URL));
+            String localWarPath = TomcatUtil.getLocalWarPathFromUrl(WorkbenchAppPathResolver.getFullWebAddress(HTML_DOC_URL));
             tomcatUtil.deployLocalWar(contextPath, localWarPath);
         } catch (IOException e) {
         	LOG.error(e.getMessage(),e);
@@ -150,7 +151,7 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 
 	private Link buildHTMLLink() {
     	Link htmlLink = new Link();
-        htmlLink.setResource(new ExternalResource(HTML_DOC_URL));
+        htmlLink.setResource(new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(HTML_DOC_URL)));
         htmlLink.setCaption("BMS Manual HTML Version");
         htmlLink.setTargetName("_blank");
         htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));

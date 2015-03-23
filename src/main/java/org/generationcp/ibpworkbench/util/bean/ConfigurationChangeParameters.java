@@ -11,20 +11,18 @@ package org.generationcp.ibpworkbench.util.bean;
 
 public class ConfigurationChangeParameters {
 	private String propertyFile;
-	private String centralDbName;
-	private String localDbName;
+	private String dbName;
 	private String userName;
 	private String password;
 	private boolean includeWorkbenchConfig;
 	private boolean includeCurrentProjectId;
 	private boolean includeOldFieldbookPath;
 
-	public ConfigurationChangeParameters(String propertyFile, String centralDbName,
-			String localDbName, String userName, String password, boolean includeWorkbenchConfig,
+	public ConfigurationChangeParameters(String propertyFile, String dbName, 
+			String userName, String password, boolean includeWorkbenchConfig,
 			boolean includeCurrentProjectId, boolean includeOldFieldbookPath) {
 		this.propertyFile = propertyFile;
-		this.centralDbName = centralDbName;
-		this.localDbName = localDbName;
+		this.dbName = dbName;
 		this.userName = userName;
 		this.password = password;
 		this.includeWorkbenchConfig = includeWorkbenchConfig;
@@ -40,20 +38,12 @@ public class ConfigurationChangeParameters {
 		this.propertyFile = propertyFile;
 	}
 
-	public String getCentralDbName() {
-		return centralDbName;
+	public String getDbName() {
+		return dbName;
 	}
 
-	public void setCentralDbName(String centralDbName) {
-		this.centralDbName = centralDbName;
-	}
-
-	public String getLocalDbName() {
-		return localDbName;
-	}
-
-	public void setLocalDbName(String localDbName) {
-		this.localDbName = localDbName;
+	public void setLocalDbName(String dbName) {
+		this.dbName = dbName;
 	}
 
 	public String getUserName() {

@@ -233,7 +233,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			@Override
 			public void buttonClick(ClickEvent event) {
 					
-				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager());
+				SelectDatasetDialog dialog = new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), currentProject);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 			
