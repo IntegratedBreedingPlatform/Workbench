@@ -170,6 +170,19 @@
 				}, failureHandler);
 			},
 
+
+			/*
+			Deletes the variable with the specified ID.
+			*/
+			deleteVariable: function(/*id*/) {
+				var request;
+
+				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id');
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
 			/*
 			Returns a single variable in the format:
 

@@ -4,7 +4,6 @@
 (function() {
 	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']);
 
-
 	function transformDetailedVariableToDisplayFormat(variable, id) {
 		return {
 			id: id,
@@ -30,6 +29,30 @@
 	function transformToDisplayFormat(variables) {
 		// TODO: check that variable has an ID and name
 		return variables.map(transformVariableToDisplayFormat);
+	}
+
+	function findAndUpdate(list, id, updatedVariable) {
+		var selectedVariableIndex = -1;
+
+		list.some(function(variable, index) {
+			if (variable.id === id) {
+				selectedVariableIndex = index;
+				return true;
+			}
+		});
+
+		// Not much we can really do if we don't find it in the list. Just don't update.
+		if (selectedVariableIndex !== -1) {
+			if (updatedVariable) {
+				list[selectedVariableIndex] = updatedVariable;
+			} else {
+				list.splice(selectedVariableIndex, 1);
+			}
+		}
+	}
+
+	function findAndRemove(list, id) {
+		findAndUpdate(list, id);
 	}
 
 	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService',
@@ -69,32 +92,24 @@
 
 			$scope.updateSelectedVariable = function(updatedVariable) {
 
-				var selectedVariableIndex = -1,
-					favouriteVariableIndex = -1,
+				var transformedVariable;
+
+				// If the
+				if (updatedVariable) {
 					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
-				ctrl.variables.some(function(variable, index) {
-					if (variable.id === $scope.selectedItem.id) {
-						selectedVariableIndex = index;
-						return true;
+					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable);
+
+					// If the variable is not a favourite, we need to remove it if it's in the favourites list
+					if (updatedVariable.favourite) {
+						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable);
+					} else {
+						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 					}
-				});
 
-				ctrl.favouriteVariables.some(function(variable, index) {
-					if (variable.id === $scope.selectedItem.id) {
-						favouriteVariableIndex = index;
-						return true;
-					}
-				});
-
-				// Not much we can really do if we don't find it in the list. Just don't update.
-				if (selectedVariableIndex !== -1) {
-					ctrl.variables[selectedVariableIndex] = transformedVariable;
-				}
-
-				// TODO Remove if no longer a favourite
-				if (favouriteVariableIndex !== -1) {
-					ctrl.favouriteVariables[favouriteVariableIndex] = transformedVariable;
+				} else {
+					findAndRemove(ctrl.variables, $scope.selectedItem.id);
+					findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 				}
 			};
 

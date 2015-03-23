@@ -3,11 +3,11 @@
 
 (function() {
 	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'properties', 'methods',
-		'scales', 'utilities', 'variables']);
+		'scales', 'utilities', 'variables', 'panel']);
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'methodsService', 'scalesService',
-		'serviceUtilities',
-		function(variablesService, propertiesService, methodsService, scalesService, serviceUtilities) {
+		'serviceUtilities', 'panelService',
+		function(variablesService, propertiesService, methodsService, scalesService, serviceUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -60,6 +60,16 @@
 					$scope.editVariable = function(e) {
 						e.preventDefault();
 						$scope.editing = true;
+					};
+
+					$scope.deleteVariable = function(e, id) {
+						e.preventDefault();
+
+						variablesService.deleteVariable(id).then(function() {
+							// Remove variable on parent scope if we succeeded
+							panelService.hidePanel();
+							$scope.updateSelectedVariable();
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					};
 
 					$scope.cancel = function(e) {

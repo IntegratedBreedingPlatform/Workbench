@@ -285,6 +285,73 @@ describe('Variables Controller', function() {
 			expect(controller.favouriteVariables[0].name).toEqual(newName);
 		});
 
+		it('should remove the updated variable in the variables list if the variable is undefined', function() {
+
+			var id = 1;
+
+			controller.variables = [{
+					id: id,
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name
+				}];
+
+			controller.favouriteVariables = [{
+					id: id,
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name
+				}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Delete" our variable
+			scope.updateSelectedVariable();
+
+			expect(controller.variables.length).toEqual(0);
+			expect(controller.favouriteVariables.length).toEqual(0);
+		});
+
+		it('should remove an updated variable from the favourites list if it is no longer a favourite', function() {
+
+			var updateSelectedVariable = angular.copy(PLANT_VIGOR_DETAILED),
+				id = 1;
+
+			controller.variables = [{
+					id: id,
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name,
+					'action-favourite': PLANT_VIGOR.favourite
+				}];
+
+			controller.favouriteVariables = [{
+					id: id,
+					name: PLANT_VIGOR.name,
+					property: PLANT_VIGOR.propertySummary.name,
+					method: PLANT_VIGOR.methodSummary.name,
+					scale: PLANT_VIGOR.scaleSummary.name,
+					'action-favourite': PLANT_VIGOR.favourite
+				}];
+
+			// Select our variable for editing
+			scope.selectedItem.id = id;
+
+			// "Update" our variable
+			updateSelectedVariable.favourite = false;
+
+			scope.updateSelectedVariable(updateSelectedVariable);
+
+			expect(controller.variables.length).toEqual(1);
+			expect(controller.favouriteVariables.length).toEqual(0);
+
+			expect(controller.variables[0]['action-favourite']).toEqual(false);
+		});
+
 		it('should only update the variable in the variables list matched by id', function() {
 
 			var detailedVariableToUpdate = angular.copy(PLANT_VIGOR_DETAILED),

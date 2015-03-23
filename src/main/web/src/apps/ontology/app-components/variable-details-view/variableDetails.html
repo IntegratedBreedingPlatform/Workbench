@@ -20,6 +20,8 @@
 	</div>
 
 	<button ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
+	<button ng-hide="editing" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
+
 	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">{{'button.save' | translate}}</button>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

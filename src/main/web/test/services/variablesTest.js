@@ -261,7 +261,7 @@ describe('Variables Service', function() {
 
 	describe('updateVariable', function() {
 
-		it('should PUT to /updateVariable', function() {
+		it('should PUT to /variables/:id', function() {
 
 			var variable = {
 				name: 'myvariable'
@@ -294,7 +294,7 @@ describe('Variables Service', function() {
 			httpBackend.flush();
 		});
 
-		it('should return the response status if a successful PUT is made', function() {
+		it('should return a 204 status if a successful PUT is made', function() {
 
 			var variable = {
 				name: 'myvariable'
@@ -323,6 +323,54 @@ describe('Variables Service', function() {
 			httpBackend.expectPUT(/\/variables\/:id$/, {}).respond(500, error);
 
 			variablesService.updateVariable(1, {});
+			httpBackend.flush();
+
+			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
+			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
+		});
+	});
+
+	describe('deleteVariable', function() {
+
+		it('should DELETE /variables/:id', function() {
+
+			// FIXME not in use yet because services haven't been hooked up
+			var id = 1;
+
+			httpBackend.expectDELETE(/\/variables\/:id$/).respond(204);
+
+			variablesService.deleteVariable(id);
+
+			httpBackend.flush();
+		});
+
+		it('should return a 204 status if a successful DELETE is made', function() {
+
+			var id = 1,
+
+			expectedResponse = 204,
+			actualResponse;
+
+			httpBackend.expectDELETE(/\/variables\/:id$/).respond(expectedResponse);
+
+			variablesService.deleteVariable(id).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
+		it('should pass the result to the serviceUtilities.restFailureHandler if a successful DELETE is not made', function() {
+
+			var error = 'Error!';
+
+			httpBackend.expectDELETE(/\/variables\/:id$/).respond(500, error);
+
+			variablesService.deleteVariable(1);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();

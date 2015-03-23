@@ -5,6 +5,9 @@ describe('Variable details directive', function() {
 	var fakeEvent = {
 			preventDefault: function() {}
 		},
+		panelService = {
+			hidePanel: function() {}
+		},
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
@@ -24,6 +27,7 @@ describe('Variable details directive', function() {
 		deferredGetScales,
 		deferredGetTypes,
 		deferredUpdateVariable,
+		deferredDeleteVariable,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -56,6 +60,7 @@ describe('Variable details directive', function() {
 		$provide.value('scalesService', scalesService);
 		$provide.value('serviceUtilities', serviceUtilities);
 		$provide.value('variablesService', variablesService);
+		$provide.value('panelService', panelService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -87,12 +92,19 @@ describe('Variable details directive', function() {
 			return deferredUpdateVariable.promise;
 		};
 
+		variablesService.deleteVariable = function() {
+			deferredDeleteVariable = q.defer();
+			return deferredDeleteVariable.promise;
+		};
+
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
 		spyOn(variablesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
+		spyOn(variablesService, 'deleteVariable').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
 	}));
@@ -306,6 +318,39 @@ describe('Variable details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(PLANT_VIGOR);
+		});
+	});
+
+	describe('$scope.deleteVariable', function() {
+
+		beforeEach(function() {
+			scope.updateSelectedVariable = function(/*model*/) {};
+		});
+
+		it('should call the variables service to delete the variable', function() {
+			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+			expect(variablesService.deleteVariable).toHaveBeenCalledWith(PLANT_VIGOR.id);
+		});
+
+		it('should handle any errors if the update was not successful', function() {
+			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			deferredDeleteVariable.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+		});
+
+		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+			spyOn(scope, 'updateSelectedVariable').and.callThrough();
+
+			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			deferredDeleteVariable.resolve();
+			scope.$apply();
+
+			expect(panelService.hidePanel).toHaveBeenCalled();
+			expect(scope.updateSelectedVariable).toHaveBeenCalledWith();
 		});
 	});
 
