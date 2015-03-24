@@ -841,7 +841,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void populateChoicesForGenotypes() {
 
 		for (VariableType factor : factorsInDataset) {
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM) {
+			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()) {
 				this.getSelGenotypes().addItem(factor.getLocalName());
 				this.getSelGenotypes().setValue(factor.getLocalName());
 			}
