@@ -18,6 +18,7 @@
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
+				$scope.maxLength = $scope.maxLength || -1;
 			},
 			restrict: 'E',
 			scope: {
@@ -26,7 +27,8 @@
 				property: '@omProperty',
 				adding: '=omAdding',
 				editing: '=omEditing',
-				model: '=omModel'
+				model: '=omModel',
+				maxLength: '@omMaxLength'
 			},
 			templateUrl: 'static/views/ontology/textArea.html'
 		};
@@ -36,6 +38,9 @@
 		return {
 			controller: function ($scope) {
 				$scope.editable = editable($scope);
+				$scope.required = $scope.required || false;
+				$scope.maxLength = $scope.maxLength || -1;
+				$scope.regex = $scope.pattern ? new RegExp($scope.pattern) : /[\s\S]*/;
 			},
 			restrict: 'E',
 			scope: {
@@ -44,7 +49,10 @@
 				property: '@omProperty',
 				adding: '=omAdding',
 				editing: '=omEditing',
-				model: '=omModel'
+				model: '=omModel',
+				required: '@omRequired',
+				maxLength: '@omMaxLength',
+				pattern: '@omPattern',
 			},
 			templateUrl: 'static/views/ontology/input.html'
 		};

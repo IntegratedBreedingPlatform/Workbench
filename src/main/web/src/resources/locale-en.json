@@ -51,7 +51,17 @@
 			"add-property": "Add a new property",
 			"add-method": "Add a new method",
 			"add-scale": "Add a new scale",
-			"expected-range": "@:variables-list.details.expected-range"
+			"expected-range": "@:variables-list.details.expected-range",
+
+			"validation": {
+				"name-required": "Please name your variable",
+				"name-too-long": "Please reduce to under 32 characters",
+				"pattern": "Name must start with a letter and may only contain letters, numbers or underscores",
+				"desc-too-long": "Please reduce to under 255 characters",
+				"property-required": "Property is required",
+				"method-required": "Method is required",
+				"scale-required": "Scale is required"
+			}
 		},
 
 		"method": {

@@ -57,11 +57,13 @@
 			$scope.saveVariable = function(e, variable) {
 				e.preventDefault();
 
-				variablesService.addVariable(variable).then(function(){
-					variableStateService.reset();
-					// FIXME Go somewhere more useful
-					$location.path('/variables');
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				if ($scope.avForm.$valid) {
+					variablesService.addVariable(variable).then(function(){
+						variableStateService.reset();
+						// FIXME Go somewhere more useful
+						$location.path('/variables');
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}
 			};
 
 			$scope.addNew = function(e, path) {
@@ -71,7 +73,6 @@
 				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/' + path);
 			};
-
 		}
 	]);
 
