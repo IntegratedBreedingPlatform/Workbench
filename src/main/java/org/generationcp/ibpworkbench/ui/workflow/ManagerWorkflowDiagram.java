@@ -727,8 +727,8 @@ public class ManagerWorkflowDiagram extends Panel implements WorkflowConstants, 
             breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,null));
             membersButton.addListener(new ChangeWindowAction(WindowEnums.MEMBER, this.project));
             
-            backupIBDBButton.addListener(new OpenWindowAction(WindowEnum.BACKUP_IBDB,this.project));
-            restoreIBDBButton.addListener(new OpenWindowAction(WindowEnum.RESTORE_IBDB,this.project));
+            backupIBDBButton.addListener(new ChangeWindowAction(WindowEnums.RECOVERY,this.project));
+            restoreIBDBButton.addListener(new ChangeWindowAction(WindowEnums.RECOVERY,this.project));
             userToolsButton.addListener(new OpenWindowAction(WindowEnum.USER_TOOLS,this.project));
 
             updateProjectButton.addListener(new OpenUpdateProjectPageAction());
