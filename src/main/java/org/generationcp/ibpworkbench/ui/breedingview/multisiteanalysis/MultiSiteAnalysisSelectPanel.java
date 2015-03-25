@@ -593,63 +593,11 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             List<FactorModel> factorList = new ArrayList<FactorModel>();
             List<VariateModel> variateList = new ArrayList<VariateModel>();
             
-            for (VariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()){
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-            			&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()){
-            		selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
-            	}
-            	
-            	// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-            	if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-            			|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
-	            	selectSpecifyEnvironment.addItem(factor.getLocalName());
-            	}
-            }
+            populateEnvironmentDropdown(trialDs);
 			
-			for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
-            	
-            	FactorModel fm = new FactorModel();
-            	fm.setId(factor.getRank());
-            	fm.setName(factor.getLocalName());
-            	fm.setScname(factor.getStandardVariable().getScale().getName());
-            	fm.setScaleid(factor.getStandardVariable().getScale().getId());
-            	fm.setTmname(factor.getStandardVariable().getMethod().getName());
-            	fm.setTmethid(factor.getStandardVariable().getMethod().getId());
-            	fm.setTrname(factor.getStandardVariable().getProperty().getName());
-            	fm.setDescription(factor.getLocalDescription());
-            	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
-            	fm.setDataType(factor.getStandardVariable().getDataType().getName());
-            	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()){
-            		factorList.add(fm);
-            		selectSpecifyGenotypes.addItem(fm.getName());
-            	}
-            }
+			populateGenotypeDropdown(ds, factorList);
             
-            for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
-            	
-            	VariateModel vm = new VariateModel();
-            	vm.setId(variate.getRank());
-            	vm.setVariableId(variate.getId());
-            	vm.setName(variate.getLocalName());
-            	vm.setDisplayName(variate.getLocalName().replace("_Means", ""));
-            	vm.setScname(variate.getStandardVariable().getScale().getName());
-            	vm.setScaleid(variate.getStandardVariable().getScale().getId());
-            	vm.setTmname(variate.getStandardVariable().getMethod().getName());
-            	vm.setTmethid(variate.getStandardVariable().getMethod().getId());
-            	vm.setTrname(variate.getStandardVariable().getProperty().getName());
-            	vm.setTraitid(variate.getStandardVariable().getProperty().getId());
-            	vm.setDescription(variate.getLocalDescription());
-            	vm.setDatatype(variate.getStandardVariable().getDataType().getName());
-            	if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
-            			&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + variate.getLocalName().replace("_UnitErrors", "") + ")") 
-            			&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
-            		vm.setActive(false);
-            		variateList.add(vm);
-            	}
-            	
-            }
+            populateTraitGroup(ds, variateList);
            
             this.setCurrentDatasetName(ds.getName());
             this.setCurrentDataSetId(ds.getId());
@@ -662,6 +610,70 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             
         }
     }
+
+	protected void populateTraitGroup(DataSet ds, List<VariateModel> variateList) {
+		for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()){
+			
+			VariateModel vm = new VariateModel();
+			vm.setId(variate.getRank());
+			vm.setVariableId(variate.getId());
+			vm.setName(variate.getLocalName());
+			vm.setDisplayName(variate.getLocalName().replace("_Means", ""));
+			vm.setScname(variate.getStandardVariable().getScale().getName());
+			vm.setScaleid(variate.getStandardVariable().getScale().getId());
+			vm.setTmname(variate.getStandardVariable().getMethod().getName());
+			vm.setTmethid(variate.getStandardVariable().getMethod().getId());
+			vm.setTrname(variate.getStandardVariable().getProperty().getName());
+			vm.setTraitid(variate.getStandardVariable().getProperty().getId());
+			vm.setDescription(variate.getLocalDescription());
+			vm.setDatatype(variate.getStandardVariable().getDataType().getName());
+			if (!variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate") 
+					&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("error estimate (" + variate.getLocalName().replace("_UnitErrors", "") + ")") 
+					&& !variate.getStandardVariable().getMethod().getName().equalsIgnoreCase("ls blups")){
+				vm.setActive(false);
+				variateList.add(vm);
+			}
+			
+		}
+	}
+
+	protected void populateGenotypeDropdown(DataSet ds, List<FactorModel> factorList) {
+		for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()){
+			
+			FactorModel fm = new FactorModel();
+			fm.setId(factor.getRank());
+			fm.setName(factor.getLocalName());
+			fm.setScname(factor.getStandardVariable().getScale().getName());
+			fm.setScaleid(factor.getStandardVariable().getScale().getId());
+			fm.setTmname(factor.getStandardVariable().getMethod().getName());
+			fm.setTmethid(factor.getStandardVariable().getMethod().getId());
+			fm.setTrname(factor.getStandardVariable().getProperty().getName());
+			fm.setDescription(factor.getLocalDescription());
+			fm.setTraitid(factor.getStandardVariable().getProperty().getId());
+			fm.setDataType(factor.getStandardVariable().getDataType().getName());
+			
+			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()){
+				factorList.add(fm);
+				getSelectSpecifyGenotypes().addItem(fm.getName());
+			}
+		}
+	}
+
+	protected void populateEnvironmentDropdown(DataSet trialDs) {
+		for (VariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()){
+			
+			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+					&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()){
+				getSelectSpecifyEnvironment().addItem(factor.getLocalName());
+			}
+			
+			// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
+			if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
+					|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()){
+		    	getSelectSpecifyEnvironment().addItem(factor.getLocalName());
+			}
+		}
+	}
     
     
 
@@ -792,6 +804,14 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	public Object getData(){
 		return this.getCurrentStudy();
 		
+	}
+
+	public Select getSelectSpecifyEnvironment() {
+		return selectSpecifyEnvironment;
+	}
+
+	public Select getSelectSpecifyGenotypes() {
+		return selectSpecifyGenotypes;
 	}
 
 }// end of MultiSiteAnalysisSelectPanel
