@@ -294,10 +294,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
 	private static final long serialVersionUID = 1L;
 
-	private static final String REPLICATION_FACTOR = "replication factor";
-	private static final String BLOCKING_FACTOR = "blocking factor";
-	private static final String ROW_FACTOR = "row in layout";
-	private static final String COLUMN_FACTOR = "column in layout";
+	public static final String REPLICATION_FACTOR = "replication factor";
+	public static final String BLOCKING_FACTOR = "blocking factor";
+	public static final String ROW_FACTOR = "row in layout";
+	public static final String COLUMN_FACTOR = "column in layout";
 	private static final String INVALID_SELECTION_STRING = "Invalid Selection";
 	private static final String LABEL_BOLD_STYLING = "label-bold";
 	private static final String LABEL_WIDTH = "160px";
@@ -701,30 +701,30 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	private void populateChoicesForEnvironmentFactor() {
+	public void populateChoicesForEnvironmentFactor() {
 
 		if (this.trialVariablesInDataset == null) {
 			return;
 		}
 		
 		String pleaseChoose = messageSource.getMessage(Message.PLEASE_CHOOSE);
-		this.selEnvFactor.addItem(pleaseChoose);
+		this.getSelEnvFactor().addItem(pleaseChoose);
 
 		for (VariableType factor : trialVariablesInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT) {
-				this.selEnvFactor.addItem(factor.getLocalName());
+				this.getSelEnvFactor().addItem(factor.getLocalName());
 				if (PhenotypicType.TRIAL_ENVIRONMENT.getLabelList().contains(factor.getLocalName())) {
-					this.selEnvFactor.setValue(factor.getLocalName());
+					this.getSelEnvFactor().setValue(factor.getLocalName());
 				}
 			}
 		}
-		this.selEnvFactor.setValue(pleaseChoose);
-		selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
+		this.getSelEnvFactor().setValue(pleaseChoose);
+		getSelEnvFactor().select(getSelEnvFactor().getItemIds().iterator().next());
 
-		if (this.selEnvFactor.getItemIds().isEmpty()) {
-			this.selEnvFactor.setEnabled(false);
+		if (this.getSelEnvFactor().getItemIds().isEmpty()) {
+			this.getSelEnvFactor().setEnabled(false);
 		} else {
-			this.selEnvFactor.setEnabled(true);
+			this.getSelEnvFactor().setEnabled(true);
 		}
 
 	}
@@ -855,15 +855,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(REPLICATION_FACTOR)) {
-				this.selReplicates.addItem(factor.getLocalName());
-				this.selReplicates.setValue(factor.getLocalName());
+				this.getSelReplicates().addItem(factor.getLocalName());
+				this.getSelReplicates().setValue(factor.getLocalName());
 			}
 		}
 
-		if (this.selReplicates.getItemIds().isEmpty()) {
-			this.selReplicates.setEnabled(false);
+		if (this.getSelReplicates().getItemIds().isEmpty()) {
+			this.getSelReplicates().setEnabled(false);
 		} else {
-			this.selReplicates.setEnabled(true);
+			this.getSelReplicates().setEnabled(true);
 		}
 	}
 
@@ -872,9 +872,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(BLOCKING_FACTOR)) {
-				this.selBlocks.addItem(factor.getLocalName());
-				this.selBlocks.setValue(factor.getLocalName());
-				selBlocks.setEnabled(true);
+				this.getSelBlocks().addItem(factor.getLocalName());
+				this.getSelBlocks().setValue(factor.getLocalName());
+				getSelBlocks().setEnabled(true);
 			}
 		}
 
@@ -885,8 +885,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(ROW_FACTOR)) {
-				this.selRowFactor.addItem(factor.getLocalName());
-				this.selRowFactor.setValue(factor.getLocalName());
+				this.getSelRowFactor().addItem(factor.getLocalName());
+				this.getSelRowFactor().setValue(factor.getLocalName());
 			}
 		}
 
@@ -897,8 +897,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(COLUMN_FACTOR)) {
-				this.selColumnFactor.addItem(factor.getLocalName());
-				this.selColumnFactor.setValue(factor.getLocalName());
+				this.getSelColumnFactor().addItem(factor.getLocalName());
+				this.getSelColumnFactor().setValue(factor.getLocalName());
 			}
 		}
 
