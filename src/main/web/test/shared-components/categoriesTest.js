@@ -34,7 +34,7 @@ describe('Categories module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			directiveElement = $compile('<om-categories om-model="model" om-property="validValues"></om-categories>')(scope);
+			directiveElement = $compile('<om-categories ng-model="model" om-property="validValues"></om-categories>')(scope);
 		});
 
 		scope.$digest();
@@ -95,5 +95,120 @@ describe('Categories module', function() {
 			expect(scope.model.validValues.categories.length).toEqual(1);
 			expect(scope.model.validValues.categories[0]).toEqual(cat2);
 		});
+
+		it('should not remove the category if there is only 1 category left in the list', function() {
+
+			var cat1 = {
+					label: 'a',
+					value: 'value a'
+				};
+
+			scope.model = {
+				validValues: {
+					categories: [cat1]
+				}
+			};
+
+			compileDirective();
+
+			isolateScope.removeCategory(fakeEvent, cat1.label);
+
+			expect(scope.model.validValues.categories.length).toEqual(1);
+		});
+	});
+
+	describe('Categories validation', function() {
+
+		function compileForm(extraAttrs) {
+			var attrs = extraAttrs || '';
+
+			inject(function($compile) {
+				directiveElement = $compile(
+					'<form name="testForm" novalidate>' +
+					'<om-categories ng-model="model" om-property="validValues" ' + attrs + '></om-categories>' +
+					'</form>'
+					)(scope);
+			});
+
+			scope.$digest();
+		}
+
+		it('should set the widget to be valid if the selected data type is not categorical', function() {
+
+			compileForm('om-categorical="false"');
+
+			expect(scope.testForm.$valid).toBe(true);
+		});
+
+		it('should set the widget to be invalid if there is a category with no name', function() {
+
+			scope.model = {
+				validValues: {
+					categories: [{
+						description: 'description but no name'
+					}]
+				}
+			};
+
+			compileForm('om-categorical="true"');
+
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the widget to be invalid if there is an empty description', function() {
+
+			scope.model = {
+				validValues: {
+					categories: [{
+						name: 'name but no description'
+					}]
+				}
+			};
+
+			compileForm('om-categorical="true"');
+
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the widget to be invalid if there are two categories with the same name', function() {
+
+			scope.model = {
+				validValues: {
+					categories: [{
+						name: 'name',
+						description: 'description 1'
+					},
+					{
+						name: 'name',
+						description: 'description 2'
+					}]
+				}
+			};
+
+			compileForm('om-categorical="true"');
+
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the widget to be invalid if there are two categories with the same description', function() {
+
+			scope.model = {
+				validValues: {
+					categories: [{
+						name: 'name 1',
+						description: 'description'
+					},
+					{
+						name: 'name 2',
+						description: 'description'
+					}]
+				}
+			};
+
+			compileForm('om-categorical="true"');
+
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
 	});
 });

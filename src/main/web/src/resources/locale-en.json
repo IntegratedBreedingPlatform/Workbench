@@ -55,9 +55,8 @@
 
 			"validation": {
 				"name-required": "Please name your variable",
-				"name-too-long": "Please reduce to under 32 characters",
+				"too-long": "Please reduce to under {{maxLength}} characters",
 				"pattern": "Name must start with a letter and may only contain letters, numbers or underscores",
-				"desc-too-long": "Please reduce to under 255 characters",
 				"property-required": "Property is required",
 				"method-required": "Method is required",
 				"scale-required": "Scale is required"
@@ -78,7 +77,16 @@
 			"menu-item": "Scale",
 			"title": "Add New Scale",
 			"valid-range": "@:scales-list.details.valid-range",
-			"categories": "@:scales-list.details.categories"
+			"categories": "@:scales-list.details.categories",
+
+			"validation": {
+				"name-required": "Please name your scale",
+				"too-long": "Please reduce to under {{maxLength}} characters",
+				"data-type-required": "Please select a data type",
+				"empty-value": "Please provide a name and value for all categories",
+				"non-unique-name": "All category names must be unique",
+				"non-unique-value": "All category values must be unique"
+			}
 		}
 	},
 

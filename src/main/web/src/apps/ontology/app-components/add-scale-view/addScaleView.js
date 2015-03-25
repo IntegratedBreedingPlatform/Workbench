@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range']);
+	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range', 'ngMessages']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
 		'serviceUtilities',
@@ -20,17 +20,19 @@
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
 
-				scalesService.addScale(scale).then(function(response) {
-					scale.id = response.id;
-					if (variableStateService.updateInProgress()) {
-						variableStateService.setScale(scale.id, scale.name).then(function() {
-							$window.history.back();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
-					} else {
-						// FIXME Go somewhere more useful
-						$location.path('/scales');
-					}
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				if ($scope.asForm.$valid) {
+					scalesService.addScale(scale).then(function(response) {
+						scale.id = response.id;
+						if (variableStateService.updateInProgress()) {
+							variableStateService.setScale(scale.id, scale.name).then(function() {
+								$window.history.back();
+							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						} else {
+							// FIXME Go somewhere more useful
+							$location.path('/scales');
+						}
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}
 			};
 
 			$scope.$watch('scale.dataType', function(newType) {

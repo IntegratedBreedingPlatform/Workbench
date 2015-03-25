@@ -80,6 +80,11 @@ describe('Add Scale View', function() {
 			}
 		};
 
+		// Pretend our form is valid
+		scope.asForm = {
+			$valid: true
+		};
+
 		spyOn(scalesService, 'addScale').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
@@ -139,6 +144,15 @@ describe('Add Scale View', function() {
 			scope.saveScale(fakeEvent, PERCENTAGE);
 
 			expect(scalesService.addScale).toHaveBeenCalledWith(PERCENTAGE);
+		});
+
+		it('should not call the scale service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.asForm.$valid = false;
+
+			scope.saveScale(fakeEvent, PERCENTAGE);
+
+			expect(scalesService.addScale.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors and not redirect if the save was not successful', function() {

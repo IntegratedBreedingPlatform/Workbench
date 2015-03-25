@@ -6,11 +6,11 @@
 
 	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
-	<om-select om-id="om-property" om-label="{{'form-field.property' | translate}}" om-property="propertySummary" om-editing="editing" om-model="model" om-options="data.properties"></om-select>
+	<om-select om-id="om-property" om-label="{{'form-field.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties"></om-select>
 
-	<om-select om-id="om-method" om-label="{{'form-field.method' | translate}}" om-property="methodSummary" om-editing="editing" om-model="model" om-options="data.methods"></om-select>
+	<om-select om-id="om-method" om-label="{{'form-field.method' | translate}}" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods"></om-select>
 
-	<om-select om-id="om-scale" om-label="{{'form-field.scale' | translate}}" om-property="scale" om-editing="editing" om-model="model" om-options="data.scales"></om-select>
+	<om-select om-id="om-scale" om-label="{{'form-field.scale' | translate}}" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales"></om-select>
 
 	<om-multi-ui-select om-id="om-type" om-label="{{'form-field.variable-type' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 

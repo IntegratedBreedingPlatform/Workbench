@@ -199,11 +199,24 @@ describe('Add Variable View', function() {
 			// Pretend no edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
 			compileController();
+
+			// Set the form to be valid
+			scope.avForm = {
+				$valid: true
+			};
 		});
 
 		it('should call the variables service to save the variable', function() {
 			scope.saveVariable(fakeEvent, PLANT_VIGOR);
 			expect(variablesService.addVariable).toHaveBeenCalledWith(PLANT_VIGOR);
+		});
+
+		it('should not call the variables service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.avForm.$valid = false;
+			scope.saveVariable(fakeEvent, PLANT_VIGOR);
+
+			expect(variablesService.addVariable.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors and not redirect if the save was not successful', function() {

@@ -10,7 +10,7 @@
 
 	<div ng-show="showCategoriesWidget">
 		<span>{{'scales-list.details.categories' | translate}}</span>
-		<om-categories om-property="validValues" om-editing="editing" om-model="model"></om-categories>
+		<om-categories om-property="validValues" om-editing="editing" ng-model="model"></om-categories>
 	</div>
 
 	<button ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>

@@ -3,23 +3,27 @@
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'add-new.scale.title' | translate}}</h2>
-	<form>
-		<button ng-click="saveScale($event, scale)" type="submit">{{'button.save' | translate}}</button>
+	<form name="asForm" ng-submit="saveScale($event, scale)" novalidate>
+		<input type="submit" value="{{'button.save' | translate}}"></input>
 
-		<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="scale"></om-input>
+		<om-input om-id="omName" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="scale" om-required="true" om-max-length="200"></om-input>
 
-		<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="scale"></om-text-area>
+		<ng-messages for="asForm.omName.$error" ng-if="asForm.$submitted || asForm.omName.$touched">
+			<ng-message when="required">{{'add-new.scale.validation.name-required' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'add-new.scale.validation.too-long' | translate:'{maxLength: "200"}'}}</ng-message>
+		</ng-messages>
 
-		<div>
-			<label for="om-as-type">{{'form-field.data-type' | translate}}</label>
+		<om-text-area om-id="omDescription" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="scale" om-max-length="255"></om-text-area>
 
-			<ui-select name="om-as-type" id="om-as-type" ng-model="scale.dataType" theme="select2">
-				<ui-select-match>{{$select.selected.name}}</ui-select-match>
-				<ui-select-choices repeat="type in types | filter: $select.search">
-					{{type.name}}
-				</ui-select-choices>
-			</ui-select>
-		</div>
+		<ng-messages for="asForm.omDescription.$error" ng-if="asForm.$submitted || asForm.omDescription.$touched">
+			<ng-message when="maxlength">{{'add-new.scale.validation.too-long' | translate:'{maxLength: "255"}'}}</ng-message>
+		</ng-messages>
+
+		<om-select name="omDataType" om-id="om-data-type" om-label="{{'form-field.data-type' | translate}}" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
+
+		<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted">
+			<ng-message when="required">{{'add-new.scale.validation.data-type-required' | translate}}</ng-message>
+		</ng-messages>
 
 		<div ng-show="showRangeWidget">
 			<span>{{'add-new.scale.valid-range' | translate}}</span>
@@ -28,9 +32,13 @@
 
 		<div ng-show="showCategoriesWidget">
 			<span>{{'add-new.scale.categories' | translate}}</span>
-			<om-categories om-property="validValues" om-adding="true" om-model="scale"></om-categories>
+			<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
 		</div>
-
+		<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
+			<ng-message when="emptyValue">{{'add-new.scale.validation.empty-value' | translate}}</ng-message>
+			<ng-message when="nonUniqueName">{{'add-new.scale.validation.non-unique-name' | translate}}</ng-message>
+			<ng-message when="nonUniqueValue">{{'add-new.scale.validation.non-unique-value' | translate}}</ng-message>
+		</ng-messages>
 	</form>
 </div>
 

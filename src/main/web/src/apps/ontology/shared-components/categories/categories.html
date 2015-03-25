@@ -1,11 +1,11 @@
 <div ng-show="editable()">
 	<ol>
 		<li ng-repeat="category in model[property].categories">
-			<label for="om-category-label">{{'categories.name' | translate}}</label>
-			<input type="text" name="om-category-label" id="om-category-label" ng-model="category.name"/>
+			<label for="om-category-label-{{$index}}">{{'categories.name' | translate}}</label>
+			<input type="text" name="om-category-label-{{$index}}" id="om-category-label-{{$index}}" ng-model="category.name"/>
 
-			<label for="om-category-value">{{'categories.description' | translate}}</label>
-			<input type="text" name="om-category-value" id="om-category-value" ng-model="category.description"/>
+			<label for="om-category-value-{{$index}}">{{'categories.description' | translate}}</label>
+			<input type="text" name="om-category-value-{{$index}}" id="om-category-value-{{$index}}" ng-model="category.description"/>
 			<a href="#" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
 		</li>
 	</ol>
