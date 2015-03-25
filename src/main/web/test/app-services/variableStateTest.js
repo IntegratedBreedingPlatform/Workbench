@@ -3,7 +3,7 @@
 
 describe('VariableState Service', function() {
 	var PLANT_VIGOR = {
-			id: 1,
+			id: 2,
 			name: 'Plant Vigor',
 			description: 'A little vigourous',
 			property: 1,
@@ -15,9 +15,9 @@ describe('VariableState Service', function() {
 		},
 
 		SCOPE_DATA = {
-			properties: [{name: 'a property'}],
-			methods: [{name: 'a method'}],
-			scales: [{name: 'a scale'}]
+			properties: [{id: 1, name: 'a property'}],
+			methods: [{id: 1, name: 'a method'}],
+			scales: [{id: 1, name: 'a scale'}]
 		},
 
 		variableStateService,
@@ -331,15 +331,14 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should set the scales and scale summary if the call to the scales service is successful', function() {
+		it('should set the scales and scale if the call to the scales service is successful', function() {
 
 			var scales = [{id: 1, name: 'a scale'}],
 				selectedScaleId = 1,
-				selectedScaleName = 'a scale',
 				result,
 				success;
 
-			result = variableStateService.setScale(selectedScaleId, selectedScaleName);
+			result = variableStateService.setScale(selectedScaleId);
 
 			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
 			// to ensure correct promise resolution
@@ -348,9 +347,27 @@ describe('VariableState Service', function() {
 			deferredGetScales.resolve(scales);
 			scope.$apply();
 
-			expect(variableStateService.variable.scaleSummary.id).toEqual(selectedScaleId);
-			expect(variableStateService.variable.scaleSummary.name).toEqual(selectedScaleName);
+			expect(variableStateService.variable.scale.id).toEqual(selectedScaleId);
 			expect(variableStateService.scopeData.scales).toEqual(scales);
+		});
+
+		it('should not set the scale if there is no matching id', function() {
+
+			var scales = [{id: 1, name: 'a scale'}],
+				selectedScaleId = 3,
+				result,
+				success;
+
+			result = variableStateService.setScale(selectedScaleId);
+
+			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
+			// to ensure correct promise resolution
+			result.then(function() {success = true;}, function() {success = false;});
+
+			deferredGetScales.resolve(scales);
+			scope.$apply();
+
+			expect(variableStateService.variable.scale).toBeUndefined();
 		});
 	});
 });

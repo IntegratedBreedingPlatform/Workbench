@@ -97,21 +97,21 @@
 				contain the id and name of the selected scale.
 
 				@param scaleId the id of the selected scale
-				@param scaleName the name of the selected scale
 				@returns a promise that will resolve when the scales and scale summary have been updated, and will reject
 					with one parameter error containing the error if one occurs.
 				*/
-				setScale: function(scaleId, scaleName) {
+				setScale: function(scaleId) {
 					var service = this;
 
 					return $q(function(resolve, reject) {
 						scalesService.getScales().then(function(scales) {
 							service.scopeData.scales = scales;
 
-							service.variable.scaleSummary = {
-								id: scaleId,
-								name: scaleName
-							};
+							scales.some(function(scale) {
+								if (scale.id === scaleId) {
+									service.variable.scale = scale;
+								}
+							});
 
 							resolve();
 						}, function(error) {
