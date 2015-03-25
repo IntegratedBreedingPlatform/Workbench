@@ -621,7 +621,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
             	fm.setTraitid(factor.getStandardVariable().getProperty().getId());
             	fm.setDataType(factor.getStandardVariable().getDataType().getName());
             	
-            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM){
+            	if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()){
             		factorList.add(fm);
             		selectSpecifyGenotypes.addItem(fm.getName());
             	}
