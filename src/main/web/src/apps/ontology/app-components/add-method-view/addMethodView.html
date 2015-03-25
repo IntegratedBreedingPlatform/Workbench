@@ -2,12 +2,12 @@
 
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
-	<h2>{{'add-new.method.title' | translate}}</h2>
+	<h2>{{'addNew.method.title' | translate}}</h2>
 	<form>
 		<button ng-click="saveMethod($event, method)" type="submit">{{'button.save' | translate}}</button>
 
-		<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="method"></om-input>
+		<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="method"></om-input>
 
-		<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="method"></om-text-area>
+		<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="method"></om-text-area>
 	</form>
 </div>

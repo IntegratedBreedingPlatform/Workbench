@@ -1,15 +1,15 @@
 <form novalidate>
-	<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
 
-	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
 	<div ng-show="showRangeWidget">
-		<span>{{'scales-list.details.valid-range' | translate}}</span>
+		<span>{{'scalesList.details.validRange' | translate}}</span>
 		<om-range om-property="validValues" om-editing="editing" om-model="model"></om-range>
 	</div>
 
 	<div ng-show="showCategoriesWidget">
-		<span>{{'scales-list.details.categories' | translate}}</span>
+		<span>{{'scalesList.details.categories' | translate}}</span>
 		<om-categories om-property="validValues" om-editing="editing" ng-model="model"></om-categories>
 	</div>
 

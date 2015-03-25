@@ -1,21 +1,21 @@
 <form novalidate>
 
-	<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
 
-	<om-input om-id="om-alias" om-label="{{'form-field.alias' | translate}}" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model"></om-input>
+	<om-input om-id="om-alias" om-label="{{'formField.alias' | translate}}" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model"></om-input>
 
-	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
-	<om-select om-id="om-property" om-label="{{'form-field.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties"></om-select>
+	<om-select om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties"></om-select>
 
-	<om-select om-id="om-method" om-label="{{'form-field.method' | translate}}" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods"></om-select>
+	<om-select om-id="om-method" om-label="{{'formField.method' | translate}}" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods"></om-select>
 
-	<om-select om-id="om-scale" om-label="{{'form-field.scale' | translate}}" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales"></om-select>
+	<om-select om-id="om-scale" om-label="{{'formField.scale' | translate}}" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales"></om-select>
 
-	<om-multi-ui-select om-id="om-type" om-label="{{'form-field.variable-type' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
+	<om-multi-ui-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
 	<div ng-show="showRangeWidget">
-		<span>{{'variables-list.details.expected-range' | translate}}</span>
+		<span>{{'variablesList.details.expectedRange' | translate}}</span>
 		<om-range om-property="expectedRange" om-editing="editing" om-model="model"></om-range>
 	</div>
 

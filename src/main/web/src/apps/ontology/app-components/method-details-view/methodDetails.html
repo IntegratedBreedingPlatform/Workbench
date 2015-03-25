@@ -1,7 +1,7 @@
 <form novalidate>
-	<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
 
-	<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
 	<button ng-hide="editing" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
 	<button ng-hide="editing" ng-click="deleteMethod($event, methodId)">{{'button.delete' | translate}}</button>

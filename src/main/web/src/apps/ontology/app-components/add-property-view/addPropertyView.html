@@ -2,16 +2,16 @@
 
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
-	<h2>{{'add-new.property.title' | translate}}</h2>
+	<h2>{{'addNew.property.title' | translate}}</h2>
 	<form>
 		<button ng-click="saveProperty($event, property)" type="submit">{{'button.save' | translate}}</button>
 
-		<om-input om-id="om-name" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="property"></om-input>
+		<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="property"></om-input>
 
-		<om-text-area om-id="om-description" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="property"></om-text-area>
+		<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="property"></om-text-area>
 
-		<om-multi-select om-options="classes" om-model="property.classes" om-label="{{'form-field.classes' | translate}}"></om-multi-select>
+		<om-multi-select om-options="classes" om-model="property.classes" om-label="{{'formField.classes' | translate}}"></om-multi-select>
 
-		<om-input om-id="om-ontology-id" om-label="{{'form-field.ontology-id' | translate}}" om-property="cropOntologyId" om-adding="true" om-model="property"></om-input>
+		<om-input om-id="om-ontology-id" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-adding="true" om-model="property"></om-input>
 	</form>
 </div>

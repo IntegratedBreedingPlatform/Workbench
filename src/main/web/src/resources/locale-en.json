@@ -6,7 +6,7 @@
 	"scales": "Scales",
 
 	"button": {
-		"add-new": "Add New",
+		"addNew": "Add New",
 		"back": "Back",
 		"save": "Save",
 		"edit": "Edit",
@@ -14,78 +14,78 @@
 		"cancel": "Cancel"
 	},
 
-	"form-field": {
+	"formField": {
 		"name": "Name",
 		"alias": "Alias",
 		"description": "Description",
 		"property": "Property",
 		"method": "Method",
 		"scale": "Scale",
-		"variable-type": "Variable Type",
+		"variableType": "Variable Type",
 		"classes": "Classes",
-		"ontology-id": "Crop Ontology ID",
-		"data-type": "Data Type"
+		"ontologyId": "Crop Ontology ID",
+		"dataType": "Data Type"
 	},
 
-	"variables-list": {
-		"favourites-title": "Program Favourites",
-		"all-title": "All Variables",
+	"variablesList": {
+		"favouritesTitle": "Program Favourites",
+		"allTitle": "All Variables",
 		"details": {
-			"expected-range": "Expected Range"
+			"expectedRange": "Expected Range"
 		}
 	},
 
-	"scales-list": {
+	"scalesList": {
 		"details": {
-			"valid-range": "Valid Range",
+			"validRange": "Valid Range",
 			"categories": "Categories"
 		}
 	},
 
-	"add-new": {
+	"addNew": {
 		"title": "Add New",
 
 		"variable": {
-			"menu-item": "Variable",
+			"menuItem": "Variable",
 			"title": "Add New Variable",
-			"add-property": "Add a new property",
-			"add-method": "Add a new method",
-			"add-scale": "Add a new scale",
-			"expected-range": "@:variables-list.details.expected-range",
+			"addProperty": "Add a new property",
+			"addMethod": "Add a new method",
+			"addScale": "Add a new scale",
+			"expectedRange": "@:variables-list.details.expected-range",
 
 			"validation": {
-				"name-required": "Please name your variable",
-				"too-long": "Please reduce to under {{maxLength}} characters",
+				"nameRequired": "Please name your variable",
+				"tooLong": "Please reduce to under {{maxLength}} characters",
 				"pattern": "Name must start with a letter and may only contain letters, numbers or underscores",
-				"property-required": "Property is required",
-				"method-required": "Method is required",
-				"scale-required": "Scale is required"
+				"propertyRequired": "Property is required",
+				"methodRequired": "Method is required",
+				"scaleRequired": "Scale is required"
 			}
 		},
 
 		"method": {
-			"menu-item": "Method",
+			"menuItem": "Method",
 			"title": "Add New Method"
 		},
 
 		"property": {
-			"menu-item": "Property",
+			"menuItem": "Property",
 			"title": "Add New Property"
 		},
 
 		"scale": {
-			"menu-item": "Scale",
+			"menuItem": "Scale",
 			"title": "Add New Scale",
-			"valid-range": "@:scales-list.details.valid-range",
+			"validRange": "@:scales-list.details.valid-range",
 			"categories": "@:scales-list.details.categories",
 
 			"validation": {
-				"name-required": "Please name your scale",
-				"too-long": "Please reduce to under {{maxLength}} characters",
-				"data-type-required": "Please select a data type",
-				"empty-value": "Please provide a name and value for all categories",
-				"non-unique-name": "All category names must be unique",
-				"non-unique-value": "All category values must be unique"
+				"nameRequired": "Please name your scale",
+				"tooLong": "Please reduce to under {{maxLength}} characters",
+				"dataTypeRequired": "Please select a data type",
+				"emptyValue": "Please provide a name and value for all categories",
+				"nonUniqueName": "All category names must be unique",
+				"nonUniqueValue": "All category values must be unique"
 			}
 		}
 	},

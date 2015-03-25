@@ -2,58 +2,58 @@
 
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
-	<h2>{{'add-new.variable.title' | translate}}</h2>
+	<h2>{{'addNew.variable.title' | translate}}</h2>
 	<form name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
 		<input type="submit" value="{{'button.save' | translate}}"></input>
 
-		<om-input om-id="omName" om-label="{{'form-field.name' | translate}}" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 
 		<ng-messages for="avForm.omName.$error" ng-if="avForm.$submitted || avForm.omName.$touched">
-			<ng-message when="required">{{'add-new.variable.validation.name-required' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'add-new.variable.validation.too-long' | translate:'{maxLength: "32"}'}}</ng-message>
-			<ng-message when="pattern">{{'add-new.variable.validation.pattern' | translate}}</ng-message>
+			<ng-message when="required">{{'addNew.variable.validation.nameRequired' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'addNew.variable.validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
+			<ng-message when="pattern">{{'addNew.variable.validation.pattern' | translate}}</ng-message>
 		</ng-messages>
 
-		<om-text-area om-id="omDescription" om-label="{{'form-field.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
+		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 
 		<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
-			<ng-message when="maxlength">{{'add-new.variable.validation.too-long' | translate:'{maxLength: "255"}'}}</ng-message>
+			<ng-message when="maxlength">{{'addNew.variable.validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
 		</ng-messages>
 
 		<div>
-			<om-select name="omProperty" om-id="om-property" om-label="{{'form-field.property' | translate}}" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
+			<om-select name="omProperty" om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'property')">{{'add-new.variable.add-property' | translate}}</a>
+			<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
 
 			<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'add-new.variable.validation.property-required' | translate}}</ng-message>
+				<ng-message when="required">{{'addNew.variable.validation.propertyRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
 		<div>
-			<om-select name="omMethod" om-id="om-method" om-label="{{'form-field.method' | translate}}" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
+			<om-select name="omMethod" om-id="om-method" om-label="{{'formField.method' | translate}}" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'method')">{{'add-new.variable.add-method' | translate}}</a>
+			<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
 
 			<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'add-new.variable.validation.method-required' | translate}}</ng-message>
+				<ng-message when="required">{{'addNew.variable.validation.methodRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
 		<div>
-			<om-select name="omScale" om-id="om-scale" om-label="{{'form-field.scale' | translate}}" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
+			<om-select name="omScale" om-id="om-scale" om-label="{{'formField.scale' | translate}}" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
 
-			<a href="#" ng-click="addNew($event, 'scale')">{{'add-new.variable.add-scale' | translate}}</a>
+			<a href="#" ng-click="addNew($event, 'scale')">{{'addNew.variable.addScale' | translate}}</a>
 
 			<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'add-new.variable.validation.scale-required' | translate}}</ng-message>
+				<ng-message when="required">{{'addNew.variable.validation.scaleRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
-		<om-multi-ui-select om-id="om-type" om-label="{{'form-field.variable-type' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
+		<om-multi-ui-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
 		<div ng-show="showRangeWidget">
-			<span>{{'add-new.variable.expected-range' | translate}}</span>
+			<span>{{'addNew.variable.expectedRange' | translate}}</span>
 			<om-range om-property="expectedRange" om-adding="true" om-model="variable"></om-range>
 		</div>
 	</form>
