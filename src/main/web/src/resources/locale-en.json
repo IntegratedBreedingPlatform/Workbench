@@ -51,7 +51,7 @@
 			"addProperty": "Add a new property",
 			"addMethod": "Add a new method",
 			"addScale": "Add a new scale",
-			"expectedRange": "@:variables-list.details.expected-range",
+			"expectedRange": "@:variablesList.details.expectedRange",
 
 			"validation": {
 				"nameRequired": "Please name your variable",
@@ -76,8 +76,8 @@
 		"scale": {
 			"menuItem": "Scale",
 			"title": "Add New Scale",
-			"validRange": "@:scales-list.details.valid-range",
-			"categories": "@:scales-list.details.categories",
+			"validRange": "@:scalesList.details.validRange",
+			"categories": "@:scalesList.details.categories",
 
 			"validation": {
 				"nameRequired": "Please name your scale",
