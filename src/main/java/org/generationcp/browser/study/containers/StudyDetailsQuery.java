@@ -126,7 +126,7 @@ public class StudyDetailsQuery implements Query {
         return item;
     }
 
-    private List<StudyDetails> getStudyDetailsList(int startIndex, int count) {
+    protected List<StudyDetails> getStudyDetailsList(int startIndex, int count) {
         List<StudyDetails> studyDetailsList = new ArrayList<StudyDetails>();
         try {
             if (studyType != null) {
@@ -140,7 +140,7 @@ public class StudyDetailsQuery implements Query {
         return studyDetailsList;
     }
 
-    private String getStudyDate(String date, SimpleDateFormat oldFormat, SimpleDateFormat format) {
+    protected String getStudyDate(String date, SimpleDateFormat oldFormat, SimpleDateFormat format) {
         String value;
         try {
             if (date == null) {
