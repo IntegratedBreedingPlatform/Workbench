@@ -125,7 +125,7 @@ describe('Categories module', function() {
 			inject(function($compile) {
 				directiveElement = $compile(
 					'<form name="testForm" novalidate>' +
-					'<om-categories ng-model="model" om-property="validValues" ' + attrs + '></om-categories>' +
+						'<om-categories name="omCategories" ng-model="model" om-property="validValues" ' + attrs + '></om-categories>' +
 					'</form>'
 					)(scope);
 			});
@@ -140,7 +140,7 @@ describe('Categories module', function() {
 			expect(scope.testForm.$valid).toBe(true);
 		});
 
-		it('should set the widget to be invalid if there is a category with no name', function() {
+		it('should set the emptyValue error to be true if there is a category with no name', function() {
 
 			scope.model = {
 				validValues: {
@@ -152,10 +152,13 @@ describe('Categories module', function() {
 
 			compileForm('om-categorical="true"');
 
+			expect(scope.testForm.omCategories.$error).toEqual({
+				emptyValue: true
+			});
 			expect(scope.testForm.$valid).toBe(false);
 		});
 
-		it('should set the widget to be invalid if there is an empty description', function() {
+		it('should set the emptyValue error to be true if there is an empty description', function() {
 
 			scope.model = {
 				validValues: {
@@ -167,10 +170,13 @@ describe('Categories module', function() {
 
 			compileForm('om-categorical="true"');
 
+			expect(scope.testForm.omCategories.$error).toEqual({
+				emptyValue: true
+			});
 			expect(scope.testForm.$valid).toBe(false);
 		});
 
-		it('should set the widget to be invalid if there are two categories with the same name', function() {
+		it('should set the nonUniqueName error to be true if there are two categories with the same name', function() {
 
 			scope.model = {
 				validValues: {
@@ -187,6 +193,9 @@ describe('Categories module', function() {
 
 			compileForm('om-categorical="true"');
 
+			expect(scope.testForm.omCategories.$error).toEqual({
+				nonUniqueName: true
+			});
 			expect(scope.testForm.$valid).toBe(false);
 		});
 
@@ -207,8 +216,10 @@ describe('Categories module', function() {
 
 			compileForm('om-categorical="true"');
 
+			expect(scope.testForm.omCategories.$error).toEqual({
+				nonUniqueValue: true
+			});
 			expect(scope.testForm.$valid).toBe(false);
 		});
-
 	});
 });
