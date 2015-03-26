@@ -16,7 +16,7 @@
 
 	<div ng-show="showRangeWidget">
 		<span>{{'variablesList.details.expectedRange' | translate}}</span>
-		<om-range om-property="expectedRange" om-editing="editing" om-model="model"></om-range>
+		<om-range om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="{{model.scale.validValues.min}}" om-max="{{model.scale.validValues.max}}"></om-range>
 	</div>
 
 	<button ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>

@@ -27,8 +27,12 @@
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.scale.validRange' | translate}}</span>
-			<om-range om-property="validValues" om-adding="true" om-model="scale"></om-range>
+			<om-range name="omRange" om-property="validValues" om-adding="true" ng-model="scale" om-numeric="showRangeWidget"></om-range>
 		</div>
+
+		<ng-messages for="asForm.omRange.$error" ng-if="asForm.$submitted">
+			<ng-message when="minTooBig">{{'addNew.scale.validation.minTooBig' | translate}}</ng-message>
+		</ng-messages>
 
 		<div ng-show="showCategoriesWidget">
 			<span>{{'addNew.scale.categories' | translate}}</span>

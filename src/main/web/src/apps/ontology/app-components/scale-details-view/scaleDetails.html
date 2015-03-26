@@ -5,7 +5,7 @@
 
 	<div ng-show="showRangeWidget">
 		<span>{{'scalesList.details.validRange' | translate}}</span>
-		<om-range om-property="validValues" om-editing="editing" om-model="model"></om-range>
+		<om-range om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
 	</div>
 
 	<div ng-show="showCategoriesWidget">

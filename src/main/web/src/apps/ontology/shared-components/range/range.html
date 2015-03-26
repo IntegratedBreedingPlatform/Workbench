@@ -1,9 +1,25 @@
 <div ng-show="editable()">
-	<label for="om-as-min">{{'range.edit.min' | translate}}</label>
-	<input type="number" name="om-as-min" id="om-as-min" ng-model="model[property].min"></input>
+	<ng-form name="rangeForm">
 
-	<label for="om-as-max">{{'range.edit.max' | translate}}</label>
-	<input type="number" name="om-as-max" id="om-as-max" ng-model="model[property].max"></input>
+		<div>
+			<label for="omRangeMin">{{'range.edit.min' | translate}}</label>
+			<input type="number" name="omRangeMin" id="omRangeMin" ng-model="model[property].min"></input>
+
+			<ng-messages for="rangeForm.omRangeMin.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMin.$touched">
+				<ng-message when="number">{{'range.validation.nan' | translate}}</ng-message>
+			</ng-messages>
+		</div>
+
+		<div>
+			<label for="omRangeMax">{{'range.edit.max' | translate}}</label>
+			<input type="number" name="omRangeMax" id="omRangeMax" ng-model="model[property].max"></input>
+
+			<ng-messages for="rangeForm.omRangeMax.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMax.$touched">
+				<ng-message when="number">{{'range.validation.nan' | translate}}</ng-message>
+			</ng-messages>
+		</div>
+
+	</ng-form>
 </div>
 
 <div ng-hide="editable()">
