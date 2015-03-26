@@ -28,10 +28,12 @@
 				scope.search = function() {
 					scope.suggestions = angular.copy(scope.options);
 
-					// Add the search term text that the user has entered into the start of the
-					// suggestions list so that they can add it if no suitable tag is found
-					if (scope.model[scope.property] && scope.suggestions.indexOf(scope.model[scope.property]) === -1) {
-						scope.suggestions.unshift(scope.model[scope.property]);
+					if (scope.tags) {
+						// Add the search term text that the user has entered into the start of the
+						// suggestions list so that they can add it if no suitable suggestion is found
+						if (scope.model[scope.property] && scope.suggestions.indexOf(scope.model[scope.property]) === -1) {
+							scope.suggestions.unshift(scope.model[scope.property]);
+						}
 					}
 
 					// Only return options that match the search term
@@ -90,7 +92,7 @@
 
 					// Allow the user to add the text they have entered as a tag
 					// without having to select it from the list
-					if (scope.model[scope.property] && !tagToAdd) {
+					if (scope.model[scope.property] && !tagToAdd && scope.tags) {
 						tagToAdd = scope.model[scope.property];
 					}
 
@@ -114,7 +116,8 @@
 				label: '@omLabel',
 				model: '=omModel',
 				options: '=omOptions',
-				property: '=omProperty'
+				property: '=omProperty',
+				tags: '@omTags'
 			},
 			templateUrl:'static/views/ontology/multiSelect.html'
 		};
