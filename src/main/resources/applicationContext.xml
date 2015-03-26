@@ -117,7 +117,7 @@
         <property name="workbenchInstallationDirectory" value="${workbench.installation_dir}"/>
     </bean>
     
-    <bean id="tomcatUtil" class="org.generationcp.ibpworkbench.util.tomcat.TomcatUtil">
+    <bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
         <property name="managerUrl"         value="${tomcat.manager.url}"/>
         <property name="username"           value="${tomcat.manager.username}"/>
         <property name="password"           value="${tomcat.manager.password}"/>

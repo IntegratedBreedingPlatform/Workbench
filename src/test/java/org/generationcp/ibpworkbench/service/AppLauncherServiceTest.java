@@ -1,14 +1,12 @@
 package org.generationcp.ibpworkbench.service;
 
 import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
-import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.junit.Before;
@@ -85,7 +83,7 @@ public class AppLauncherServiceTest {
 		when(workbenchDataManager.getToolWithName(ToolEnum.GDMS.getToolName())).thenReturn(gdmsTool);
 		when(workbenchDataManager.getToolWithName(ToolEnum.BREEDING_PLANNER.getToolName())).thenReturn(nativeTool);
 
-		doNothing().when(appLauncherService).updateToolConfiguration(any(Tool.class));
+		doNothing().when(tomcatUtil).deployWebAppIfNecessary(any(Tool.class));
 		doNothing().when(appLauncherService).updateGermplasmStudyBrowserConfigurationIfNecessary(
 				any(Tool.class));
 	 	doNothing().when(sessionData).logProgramActivity(anyString(),anyString());
@@ -106,58 +104,13 @@ public class AppLauncherServiceTest {
 	}
 
 	@Test
-	public void testUpdateToolConfiguration() throws Exception, AppLaunchException {
-		Tool aWebTool = new Tool();
-
-		// for vaadin type params with a dash
-		aWebTool.setToolName(ToolEnum.BM_LIST_MANAGER.getToolName());
-		aWebTool.setPath(SAMPLE_BASE_URL);
-		aWebTool.setToolType(ToolType.WEB);
-
-		when(sessionData.getLastOpenedProject()).thenReturn(mock(Project.class));
-		when(toolUtil
-				.updateToolConfigurationForProject(aWebTool, sessionData.getLastOpenedProject()))
-				.thenReturn(false);
-
-		WebAppStatusInfo statusInfo = mock(WebAppStatusInfo.class);
-		when(tomcatUtil.getWebAppStatus()).thenReturn(statusInfo);
-		when(statusInfo.isDeployed(anyString())).thenReturn(false);
-		when(statusInfo.isRunning(anyString())).thenReturn(false);
-
-		// run case 1 , webapp is not yet deployed
-		appLauncherService.updateToolConfiguration(aWebTool);
-
-		verify(tomcatUtil,times(1)).deployLocalWar("/somewhere", "somewhere");
-
-		// run case 2, webapp is deployed but not running
-		when(statusInfo.isDeployed(anyString())).thenReturn(true);
-		appLauncherService.updateToolConfiguration(aWebTool);
-
-		verify(tomcatUtil,times(1)).startWebApp("/somewhere");
-
-		// run case 3, webapp is deployed and running, and tool is a GDMS
-		when(toolUtil
-				.updateToolConfigurationForProject(aWebTool,sessionData.getLastOpenedProject())).thenReturn(true);
-
-		aWebTool.setToolName(ToolEnum.GDMS.getToolName());
-		aWebTool.setToolType(ToolType.WEB_WITH_LOGIN);
-
-		when(statusInfo.isDeployed(anyString())).thenReturn(true);
-		when(statusInfo.isRunning(anyString())).thenReturn(true);
-
-		appLauncherService.updateToolConfiguration(aWebTool);
-
-		verify(tomcatUtil,times(1)).reloadWebApp("/somewhere");
-	}
-
-	@Test
 	public void testUpdateGermplasmStudyBrowserConfigurationIfNecessary()
 			throws Exception, AppLaunchException {
 		Tool gsbTool = new Tool();
 		gsbTool.setToolName(ToolEnum.GERMPLASM_BROWSER.getToolName());
 		when(workbenchDataManager.getToolWithName(ToolEnum.GERMPLASM_BROWSER.getToolName())).thenReturn(gsbTool);
 
-		doNothing().when(appLauncherService).updateToolConfiguration(gsbTool);
+		doNothing().when(tomcatUtil).deployWebAppIfNecessary(gsbTool);
 
 		Tool aWebTool = new Tool();
 
@@ -168,7 +121,7 @@ public class AppLauncherServiceTest {
 
 		appLauncherService.updateGermplasmStudyBrowserConfigurationIfNecessary(aWebTool);
 
-		verify(appLauncherService).updateToolConfiguration(gsbTool);
+		verify(tomcatUtil).deployWebAppIfNecessary(gsbTool);
 	}
 
 	@Test
@@ -184,13 +137,13 @@ public class AppLauncherServiceTest {
 
 		// since the tool is breeding view, ibpwebservice should be updated too
 		ArgumentCaptor<Tool> captor = ArgumentCaptor.forClass(Tool.class);
-		doNothing().when(appLauncherService).updateToolConfiguration(any(Tool.class));
+		doNothing().when(tomcatUtil).deployWebAppIfNecessary(any(Tool.class));
 		when(toolUtil.launchNativeTool(aNativeTool)).thenReturn(mock(Process.class));
 
 		// launch the native app!
 		appLauncherService.launchNativeapp(aNativeTool);
 
-		verify(appLauncherService).updateToolConfiguration(captor.capture());
+		verify(tomcatUtil).deployWebAppIfNecessary(captor.capture());
 		assertEquals("ibpwebservice is configured", "ibpwebservice",
 				captor.getValue().getToolName());
 		verify(appLauncherService, times(1)).launchNativeapp(aNativeTool);

@@ -1,8 +1,8 @@
 package org.generationcp.ibpworkbench.util.tomcat.test;
 
-import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
-import org.generationcp.ibpworkbench.util.tomcat.WebAppStatus;
-import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
+import org.generationcp.commons.tomcat.util.TomcatUtil;
+import org.generationcp.commons.tomcat.util.WebAppStatus;
+import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
 import org.junit.Test;
 
 import java.io.IOException;

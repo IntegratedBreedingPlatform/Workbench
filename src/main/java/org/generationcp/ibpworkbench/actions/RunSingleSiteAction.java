@@ -21,6 +21,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 import org.generationcp.commons.breedingview.xml.*;
+import org.generationcp.commons.tomcat.util.TomcatUtil;
+import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -29,8 +31,6 @@ import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.util.*;
-import org.generationcp.ibpworkbench.util.tomcat.TomcatUtil;
-import org.generationcp.ibpworkbench.util.tomcat.WebAppStatusInfo;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -76,7 +77,7 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private ToolUtil toolUtil;
 
-	@Autowired
+	@Resource
 	private TomcatUtil tomcatUtil;
 
 	@Autowired
