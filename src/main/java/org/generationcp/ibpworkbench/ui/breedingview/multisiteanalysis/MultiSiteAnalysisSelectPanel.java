@@ -688,7 +688,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
 					&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()){
-				getSelectSpecifyEnvironment().addItem(factor.getLocalName());
+				selectSpecifyEnvironmentGroups.addItem(factor.getLocalName());
 			}
 			
 			// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
