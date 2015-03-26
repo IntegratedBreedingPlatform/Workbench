@@ -2,13 +2,16 @@
 'use strict';
 
 (function() {
-	var multiSelect = angular.module('multiSelect', []);
+	var multiSelect = angular.module('multiSelect', ['formFields']);
 
 	// This will work for classes at this stage. Will just need to get rid of
 	// adding your own in the search function and then it should work for multi
 	// select as well
-	multiSelect.directive('omMultiSelect', function() {
+	multiSelect.directive('omMultiSelect', function(editable) {
 		return {
+			controller: function($scope) {
+				$scope.editable = editable($scope);
+			},
 			link: function(scope) {
 				scope.suggestions = angular.copy(scope.options);
 				scope.selectedTags = [];
@@ -105,6 +108,8 @@
 			},
 			restrict: 'E',
 			scope: {
+				adding: '=omAdding',
+				editing: '=omEditing',
 				id: '@omId',
 				label: '@omLabel',
 				model: '=omModel',

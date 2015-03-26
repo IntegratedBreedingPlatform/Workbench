@@ -1,18 +1,24 @@
-<div class="tags-wrapper">
+<div>
 	<label for="{{id}}">{{label}}</label>
 
-	<div class="tags-cloud">
-		<span class="tag" ng-repeat="selectedTag in selectedTags">
-			<span class="tagName">{{selectedTag}}</span>
-			<span>
-				&nbsp;
-				<span class="cross" ng-click="removeTag($index)">x</span>
+	<div ng-show="editable()" class="tags-wrapper">
+		<div class="tags-cloud">
+			<span class="tag" ng-repeat="selectedTag in selectedTags">
+				<span class="tagName">{{selectedTag}}</span>
+				<span>
+					&nbsp;
+					<span class="cross" ng-click="removeTag($index)">x</span>
+				</span>
 			</span>
-		</span>
-		<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="model[property]" ng-change="search()"/>
+			<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="model[property]" ng-change="search()"/>
+		</div>
+
+		<ul class="suggestions-list">
+			<li class="blockSpan" ng-repeat="suggestion in suggestions" ng-click="addToSelectedTags($index)" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active: selectedIndex === $index}">{{suggestion}}</li>
+		</ul>
 	</div>
 
-	<ul class="suggestions-list">
-		<li class="blockSpan" ng-repeat="suggestion in suggestions" ng-click="addToSelectedTags($index)" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active: selectedIndex === $index}">{{suggestion}}</li>
-	</ul>
+	<div ng-hide="editable()">
+		<p ng-repeat="tag in selectedTags">{{tag}}</p>
+	</div>
 </div>
