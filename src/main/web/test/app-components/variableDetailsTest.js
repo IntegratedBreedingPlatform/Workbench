@@ -283,11 +283,20 @@ describe('Variable details directive', function() {
 
 		beforeEach(function() {
 			scope.updateSelectedVariable = function(/*model*/) {};
+			scope.vdForm.$valid = true;
 		});
 
 		it('should call the variables service to update the variable', function() {
 			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, PLANT_VIGOR);
 			expect(variablesService.updateVariable).toHaveBeenCalledWith(PLANT_VIGOR.id, PLANT_VIGOR);
+		});
+
+		it('should not call the variables service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.vdForm.$valid = false;
+			scope.saveChanges(fakeEvent, PLANT_VIGOR);
+
+			expect(variablesService.updateVariable.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors if the update was not successful', function() {

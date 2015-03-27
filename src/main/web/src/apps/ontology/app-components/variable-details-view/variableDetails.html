@@ -1,27 +1,61 @@
-<form novalidate>
+<form name="vdForm" ng-submit="saveChanges($event, variableId, model)" novalidate>
 
-	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+	<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 
-	<om-input om-id="om-alias" om-label="{{'formField.alias' | translate}}" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model"></om-input>
+	<ng-messages for="vdForm.omName.$error" ng-if="editing && (vdForm.$submitted || vdForm.omName.$touched)">
+		<ng-message when="required">{{'validation.variable.nameRequired' | translate}}</ng-message>
+		<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
+		<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
+	</ng-messages>
 
-	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-input om-id="omAlias" om-label="{{'formField.alias' | translate}}" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 
-	<om-select om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties"></om-select>
+	<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
+		<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
+		<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
+	</ng-messages>
 
-	<om-select om-id="om-method" om-label="{{'formField.method' | translate}}" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods"></om-select>
+	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
 
-	<om-select om-id="om-scale" om-label="{{'formField.scale' | translate}}" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales"></om-select>
+	<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
+		<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+	</ng-messages>
+
+	<om-select name="omProperty" om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
+
+	<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
+		<ng-message when="required">{{'validation.variable.propertyRequired' | translate}}</ng-message>
+	</ng-messages>
+
+	<om-select name="omMethod" om-id="om-method" om-label="{{'formField.method' | translate}}" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
+
+	<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
+		<ng-message when="required">{{'validation.variable.methodRequired' | translate}}</ng-message>
+	</ng-messages>
+
+	<om-select name="omScale" om-id="om-scale" om-label="{{'formField.scale' | translate}}" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
+
+	<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
+		<ng-message when="required">{{'validation.variable.scaleRequired' | translate}}</ng-message>
+	</ng-messages>
 
 	<om-multi-ui-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
 
 	<div ng-show="showRangeWidget">
 		<span>{{'variablesList.details.expectedRange' | translate}}</span>
-		<om-range om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="{{model.scale.validValues.min}}" om-max="{{model.scale.validValues.max}}"></om-range>
+		<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="{{model.scale.validValues.min}}" om-max="{{model.scale.validValues.max}}"></om-range>
+
+		<ng-messages for="vdForm.omRange.$error" ng-if="editing && vdForm.$submitted">
+			<ng-message when="mustProvideBoth">{{'validation.variable.mustProvideBoth' | translate}}</ng-message>
+			<ng-message when="minTooBig">{{'validation.variable.minTooBig' | translate}}</ng-message>
+			<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: model.scale.validValues}}</ng-message>
+			<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: model.scale.validValues}}</ng-message>
+		</ng-messages>
 	</div>
 
 	<button ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 	<button ng-hide="editing" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
 
-	<button ng-show="editing" ng-click="saveChanges($event, variableId, model)" type="submit">{{'button.save' | translate}}</button>
+	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

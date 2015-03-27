@@ -81,13 +81,15 @@
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
 
-						variablesService.updateVariable(id, model).then(function() {
+						if ($scope.vdForm.$valid) {
+							variablesService.updateVariable(id, model).then(function() {
 
-							// Update variable on parent scope if we succeeded
-							$scope.updateSelectedVariable(model);
+								// Update variable on parent scope if we succeeded
+								$scope.updateSelectedVariable(model);
 
-							$scope.editing = false;
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+								$scope.editing = false;
+							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						}
 					};
 				},
 				restrict: 'E',

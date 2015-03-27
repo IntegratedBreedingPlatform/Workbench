@@ -9,15 +9,15 @@
 		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 
 		<ng-messages for="avForm.omName.$error" ng-if="avForm.$submitted || avForm.omName.$touched">
-			<ng-message when="required">{{'addNew.variable.validation.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'addNew.variable.validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
-			<ng-message when="pattern">{{'addNew.variable.validation.pattern' | translate}}</ng-message>
+			<ng-message when="required">{{'validation.variable.nameRequired' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
+			<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
 		</ng-messages>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 
 		<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
-			<ng-message when="maxlength">{{'addNew.variable.validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+			<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
 		</ng-messages>
 
 		<div>
@@ -26,7 +26,7 @@
 			<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
 
 			<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'addNew.variable.validation.propertyRequired' | translate}}</ng-message>
+				<ng-message when="required">{{'validation.variable.propertyRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
@@ -36,7 +36,7 @@
 			<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
 
 			<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'addNew.variable.validation.methodRequired' | translate}}</ng-message>
+				<ng-message when="required">{{'validation.variable.methodRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
@@ -46,7 +46,7 @@
 			<a href="#" ng-click="addNew($event, 'scale')">{{'addNew.variable.addScale' | translate}}</a>
 
 			<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'addNew.variable.validation.scaleRequired' | translate}}</ng-message>
+				<ng-message when="required">{{'validation.variable.scaleRequired' | translate}}</ng-message>
 			</ng-messages>
 		</div>
 
@@ -57,10 +57,10 @@
 			<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="{{variable.scale.validValues.min}}" om-max="{{variable.scale.validValues.max}}"></om-range>
 
 			<ng-messages for="avForm.omRange.$error" ng-if="avForm.$submitted">
-				<ng-message when="mustProvideBoth">{{'addNew.variable.validation.mustProvideBoth' | translate}}</ng-message>
-				<ng-message when="minTooBig">{{'addNew.variable.validation.minTooBig' | translate}}</ng-message>
-				<ng-message when="minOutOfRange">{{'addNew.variable.validation.minOutOfRange' | translate: variable.scale.validValues}}</ng-message>
-				<ng-message when="maxOutOfRange">{{'addNew.variable.validation.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>
+				<ng-message when="mustProvideBoth">{{'validation.variable.mustProvideBoth' | translate}}</ng-message>
+				<ng-message when="minTooBig">{{'validation.variable.minTooBig' | translate}}</ng-message>
+				<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: variable.scale.validValues}}</ng-message>
+				<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>
 			</ng-messages>
 		</div>
 	</form>
