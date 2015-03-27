@@ -79,6 +79,19 @@ describe('Range module', function() {
 			expect(scope.testForm.$valid).toBe(true);
 		});
 
+		it('should set the widget to be valid if the specified model is undefined or null', function() {
+
+			scope.model = undefined;
+			compileForm('om-numeric="true"');
+
+			expect(scope.testForm.$valid).toBe(true);
+
+			scope.model = null;
+			compileForm('om-numeric="true"');
+
+			expect(scope.testForm.$valid).toBe(true);
+		});
+
 		it('should set the mustProvideBoth error to be true if a minimum is provided but there is no maximum', function() {
 
 			scope.model = {

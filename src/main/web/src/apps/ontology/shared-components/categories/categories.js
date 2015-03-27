@@ -57,7 +57,7 @@
 
 					resetValidity();
 
-					if (!scope.categorical) {
+					if (!scope.categorical || !data) {
 						return;
 					}
 

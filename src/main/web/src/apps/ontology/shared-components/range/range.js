@@ -31,7 +31,7 @@
 				scope.$watch('model[property]', function (data) {
 					resetValidity();
 
-					if (!scope.numeric) {
+					if (!scope.numeric || !data) {
 						return;
 					}
 

@@ -135,7 +135,22 @@ describe('Categories module', function() {
 
 		it('should set the widget to be valid if the selected data type is not categorical', function() {
 
+			scope.model = {};
+
 			compileForm('om-categorical="false"');
+
+			expect(scope.testForm.$valid).toBe(true);
+		});
+
+		it('should set the widget to be valid if the specified model is undefined or null', function() {
+
+			scope.model = undefined;
+			compileForm('om-categorical="true"');
+
+			expect(scope.testForm.$valid).toBe(true);
+
+			scope.model = null;
+			compileForm('om-categorical="true"');
 
 			expect(scope.testForm.$valid).toBe(true);
 		});
