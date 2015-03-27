@@ -5,42 +5,56 @@ describe('Scale details directive', function() {
 	var fakeEvent = {
 			preventDefault: function() {}
 		},
+
 		serviceUtilities = {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
+
 		panelService = {
 			hidePanel: function() {}
+		},
+
+		dataTypesService = {
+			getDataTypes: function() {}
+		},
+
+		CATEGORICAL_TYPE = {
+			id: 1,
+			name: 'Categorical'
+		},
+
+		NUMERIC_TYPE = {
+			id: 2,
+			name: 'Numeric'
+		},
+
+		CHARACTER_TYPE = {
+			id: 3,
+			name: 'Character'
 		},
 
 		PERCENTAGE = {
 			id: 1,
 			name: 'Percentage',
 			description: 'As per title, really',
-			dataType: {
-				id: 2,
-				name: 'Numeric'
-			}
+			dataType: NUMERIC_TYPE
 		},
 
 		SCORE = {
 			id: 2,
 			name: 'Score',
 			description: 'Score, 1 - 5',
-			dataType: {
-				id: 1,
-				name: 'Categorical'
-			}
+			dataType: CATEGORICAL_TYPE
 		},
 
 		FREE_TEXT = {
 			id: 2,
 			name: 'Text',
 			description: 'Some text',
-			dataType: {
-				id: 3,
-				name: 'Character'
-			}
+			dataType: CHARACTER_TYPE
 		},
+
+		types = [angular.copy(CATEGORICAL_TYPE), angular.copy(NUMERIC_TYPE), angular.copy(CHARACTER_TYPE)],
 
 		scalesService = {},
 		scope,
@@ -48,6 +62,7 @@ describe('Scale details directive', function() {
 		directiveElement,
 		deferredUpdateScale,
 		deferredDeleteScale,
+		deferredGetDataTypes,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -75,6 +90,7 @@ describe('Scale details directive', function() {
 
 	beforeEach(module('scaleDetails', function($provide) {
 		// Provide mocks for the directive controller
+		$provide.value('dataTypesService', dataTypesService);
 		$provide.value('scalesService', scalesService);
 		$provide.value('serviceUtilities', serviceUtilities);
 		$provide.value('panelService', panelService);
@@ -94,8 +110,14 @@ describe('Scale details directive', function() {
 			return deferredDeleteScale.promise;
 		};
 
+		dataTypesService.getDataTypes = function() {
+			deferredGetDataTypes = q.defer();
+			return deferredGetDataTypes.promise;
+		};
+
 		spyOn(scalesService, 'updateScale').and.callThrough();
 		spyOn(scalesService, 'deleteScale').and.callThrough();
+		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 		spyOn(panelService, 'hidePanel');
 
@@ -163,9 +185,19 @@ describe('Scale details directive', function() {
 
 	describe('$scope.editScale', function() {
 
+		it('should set the data types on the scope', function() {
+			scope.editScale(fakeEvent);
+
+			deferredGetDataTypes.resolve(types);
+			scope.$apply();
+
+			expect(scope.types).toEqual(types);
+		});
+
 		it('should set editing to be true', function() {
 			scope.editing = false;
 			scope.editScale(fakeEvent);
+
 			expect(scope.editing).toBe(true);
 		});
 	});
@@ -179,8 +211,14 @@ describe('Scale details directive', function() {
 
 		it('should set the model back to the original unchanged scale', function() {
 			scope.model = null;
+
 			scope.selectedScale = PERCENTAGE;
+			scope.$apply();
+
+			scope.model.dataType = CATEGORICAL_TYPE;
+
 			scope.cancel(fakeEvent);
+
 			expect(scope.model).toEqual(scope.selectedScale);
 		});
 	});

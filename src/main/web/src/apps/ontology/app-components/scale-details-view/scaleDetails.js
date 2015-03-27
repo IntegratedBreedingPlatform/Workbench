@@ -2,10 +2,10 @@
 'use strict';
 
 (function() {
-	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'utilities', 'categories', 'panel']);
+	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'dataTypes', 'utilities', 'categories', 'panel']);
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'panelService',
-		function(scalesService, serviceUtilities, panelService) {
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'panelService', 'dataTypesService',
+		function(scalesService, serviceUtilities, panelService, dataTypesService) {
 
 		return {
 			controller: function($scope) {
@@ -15,36 +15,43 @@
 
 				$scope.$watch('selectedScale', function(scale) {
 					$scope.model = angular.copy(scale);
-
-					if (scale && scale.dataType) {
-						$scope.showRangeWidget = scale.dataType.name === 'Numeric';
-						$scope.showCategoriesWidget = scale.dataType.name === 'Categorical';
-					}
 				});
 
 				$scope.$watch('selectedItem', function(selected) {
 					$scope.scaleId = selected && selected.id || null;
 				});
 
+				$scope.$watch('model.dataType', function(newType) {
+					if (newType) {
+						$scope.showRangeWidget = newType.name === 'Numeric';
+						$scope.showCategoriesWidget = newType.name === 'Categorical';
+					}
+				});
+
 				$scope.editScale = function(e) {
 					e.preventDefault();
+
+					dataTypesService.getDataTypes().then(function(types) {
+						$scope.types = types;
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+
 					$scope.editing = true;
 				};
 
 				$scope.deleteScale = function(e, id) {
-						e.preventDefault();
+					e.preventDefault();
 
-						scalesService.deleteScale(id).then(function() {
-							// Remove scale on parent scope if we succeeded
-							panelService.hidePanel();
-							$scope.updateSelectedScale();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
-					};
+					scalesService.deleteScale(id).then(function() {
+						// Remove scale on parent scope if we succeeded
+						panelService.hidePanel();
+						$scope.updateSelectedScale();
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				};
 
 				$scope.cancel = function(e) {
 					e.preventDefault();
 					$scope.editing = false;
-					$scope.model = angular.copy($scope.selectedScale);
+					$scope.model = angular.copy($scope.selectedScale || {});
 				};
 
 				$scope.saveChanges = function(e, id, model) {

@@ -3,6 +3,8 @@
 
 	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
 
+	<om-select om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
+
 	<div ng-show="showRangeWidget">
 		<span>{{'scalesList.details.validRange' | translate}}</span>
 		<om-range om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
