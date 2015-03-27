@@ -59,7 +59,8 @@
 			min and max properties.
 			*/
 			getVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables');
+				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
+					'?propertyId=1');
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -68,7 +69,7 @@
 			*/
 			getFavouriteVariables: function() {
 				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
-					'?favourite=true');
+					'?favourite=true?propertyId=1');
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -112,7 +113,7 @@
 			addVariable: function(variable) {
 				var convertedVariable = convertVariableForUpdating(variable),
 					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables',
-					convertedVariable);
+						convertedVariable);
 
 				return request.then(successHandler, failureHandler);
 			},
@@ -163,8 +164,8 @@
 				var convertedVariable = convertVariableForUpdating(variable),
 					request;
 
-				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id',
-					convertedVariable);
+				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
+					'?propertyId=1', convertedVariable);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -204,7 +205,8 @@
 			min and max properties.
 			*/
 			getVariable: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
+					'?propertyId=1');
 				return request.then(successHandler, failureHandler);
 			},
 
