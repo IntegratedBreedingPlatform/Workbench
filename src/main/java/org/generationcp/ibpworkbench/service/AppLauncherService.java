@@ -143,8 +143,8 @@ public class AppLauncherService {
 	}
 
 	protected String launchWebappWithLogin(Tool tool) {
-		final String loginUrl = tool.getPath() + "/web_login_forward";
-		final String params = "selectedProjectId=%s&loggedInUserId=%s";
+		final String loginUrl = tool.getPath();
+		final String params = "restartApplication&selectedProjectId=%s&loggedInUserId=%s";
 
 		return WorkbenchAppPathResolver.getFullWebAddress(loginUrl,
 				String.format(params, sessionData.getLastOpenedProject().getProjectId(), sessionData.getUserData().getUserid()));
