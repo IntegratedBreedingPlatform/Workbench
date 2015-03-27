@@ -14,7 +14,7 @@
 			},
 			link: function(scope) {
 				scope.suggestions = angular.copy(scope.options);
-				scope.selectedTags = [];
+				scope.selectedItems = [];
 
 				scope.selectedIndex = -1; //currently selected suggestion index
 
@@ -48,7 +48,7 @@
 					// Only return options that haven't already been selected
 					scope.suggestions = scope.suggestions.filter(function(value) {
 
-						return scope.selectedTags.indexOf(value) === -1;
+						return scope.selectedItems.indexOf(value) === -1;
 					});
 
 
@@ -66,7 +66,6 @@
 							scope.search();
 						}
 
-						// Otherwise we just want to increase the selected index
 						if (scope.selectedIndex + 1 !== scope.suggestions.length) {
 							scope.selectedIndex++;
 						}
@@ -82,30 +81,30 @@
 					// Enter pressed, select item
 					else if (event.keyCode === 13) {
 						event.preventDefault();
-						scope.addToSelectedTags(scope.selectedIndex);
+						scope.addToSelectedItems(scope.selectedIndex);
 						scope.selectedIndex = -1;
 					}
 				};
 
-				scope.addToSelectedTags = function(index) {
-					var tagToAdd = scope.suggestions[index];
+				scope.addToSelectedItems = function(index) {
+					var itemToAdd = scope.suggestions[index];
 
-					// Allow the user to add the text they have entered as a tag
+					// Allow the user to add the text they have entered as an item
 					// without having to select it from the list
-					if (scope.model[scope.property] && !tagToAdd && scope.tags) {
-						tagToAdd = scope.model[scope.property];
+					if (scope.model[scope.property] && !itemToAdd && scope.tags) {
+						itemToAdd = scope.model[scope.property];
 					}
 
-					// Add the tag if it hasn't already been added
-					if (tagToAdd && scope.selectedTags.indexOf(tagToAdd) === -1) {
-						scope.selectedTags.push(tagToAdd);
+					// Add the item if it hasn't already been added
+					if (itemToAdd && scope.selectedItems.indexOf(itemToAdd) === -1) {
+						scope.selectedItems.push(itemToAdd);
 						scope.model[scope.property] = '';
 						scope.suggestions = [];
 					}
 				};
 
-				scope.removeTag = function(index) {
-					scope.selectedTags.splice(index, 1);
+				scope.removeItem = function(index) {
+					scope.selectedItems.splice(index, 1);
 				};
 			},
 			restrict: 'E',
