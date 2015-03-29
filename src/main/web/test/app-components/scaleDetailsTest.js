@@ -227,11 +227,20 @@ describe('Scale details directive', function() {
 
 		beforeEach(function() {
 			scope.updateSelectedScale = function(/*model*/) {};
+			scope.sdForm.$valid = true;
 		});
 
 		it('should call the scales service to update the scale', function() {
 			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
 			expect(scalesService.updateScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE);
+		});
+
+		it('should not call the scales service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.sdForm.$valid = false;
+			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
+
+			expect(scalesService.updateScale.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors if the update was not successful', function() {

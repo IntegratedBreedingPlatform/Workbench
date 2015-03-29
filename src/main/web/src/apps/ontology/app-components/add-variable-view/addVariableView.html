@@ -10,14 +10,14 @@
 
 		<ng-messages for="avForm.omName.$error" ng-if="avForm.$submitted || avForm.omName.$touched">
 			<ng-message when="required">{{'validation.variable.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
 			<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
 		</ng-messages>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 
 		<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
-			<ng-message when="maxlength">{{'validation.variable.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
 		</ng-messages>
 
 		<div>
@@ -58,7 +58,7 @@
 
 			<ng-messages for="avForm.omRange.$error" ng-if="avForm.$submitted">
 				<ng-message when="mustProvideBoth">{{'validation.variable.mustProvideBoth' | translate}}</ng-message>
-				<ng-message when="minTooBig">{{'validation.variable.minTooBig' | translate}}</ng-message>
+				<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
 				<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: variable.scale.validValues}}</ng-message>
 				<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>
 			</ng-messages>

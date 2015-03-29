@@ -57,13 +57,15 @@
 				$scope.saveChanges = function(e, id, model) {
 					e.preventDefault();
 
-					scalesService.updateScale(id, model).then(function() {
+					if ($scope.sdForm.$valid) {
+						scalesService.updateScale(id, model).then(function() {
 
-						// Update scale on parent scope if we succeeded
-						$scope.updateSelectedScale(model);
+							// Update scale on parent scope if we succeeded
+							$scope.updateSelectedScale(model);
 
-						$scope.editing = false;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							$scope.editing = false;
+						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}
 				};
 			},
 			restrict: 'E',

@@ -1,23 +1,48 @@
-<form novalidate>
-	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+<form name="sdForm" ng-submit="saveChanges($event, scaleId, model)" novalidate>
 
-	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
 
-	<om-select om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
+	<ng-messages for="sdForm.omName.$error" ng-if="sdForm.$submitted || sdForm.omName.$touched">
+		<ng-message when="required">{{'validation.scale.nameRequired' | translate}}</ng-message>
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+	</ng-messages>
+
+	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+
+	<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+	</ng-messages>
+
+	<om-select name="omDataType" om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
+
+	<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
+		<ng-message when="required">{{'validation.scale.dataTypeRequired' | translate}}</ng-message>
+	</ng-messages>
 
 	<div ng-show="showRangeWidget">
 		<span>{{'scalesList.details.validRange' | translate}}</span>
-		<om-range om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
+		<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
+
+		<ng-messages for="sdForm.omRange.$error" ng-if="sdForm.$submitted">
+			<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
+		</ng-messages>
 	</div>
 
 	<div ng-show="showCategoriesWidget">
 		<span>{{'scalesList.details.categories' | translate}}</span>
-		<om-categories om-property="validValues" om-editing="editing" ng-model="model"></om-categories>
+		<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model"></om-categories>
+
+		<ng-messages for="sdForm.omCategories.$error" ng-if="sdForm.$submitted">
+			<ng-message when="emptyValue">{{'validation.scale.emptyValue' | translate}}</ng-message>
+			<ng-message when="nonUniqueName">{{'validation.scale.nonUniqueName' | translate}}</ng-message>
+			<ng-message when="nonUniqueValue">{{'validation.scale.nonUniqueValue' | translate}}</ng-message>
+		</ng-messages>
 	</div>
 
 	<button ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
 	<button ng-hide="editing" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
 
-	<button ng-show="editing" ng-click="saveChanges($event, scaleId, model)" type="submit">{{'button.save' | translate}}</button>
+	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
+
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

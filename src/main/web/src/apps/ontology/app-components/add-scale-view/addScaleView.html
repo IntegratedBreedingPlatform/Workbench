@@ -9,40 +9,41 @@
 		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="scale" om-required="true" om-max-length="200"></om-input>
 
 		<ng-messages for="asForm.omName.$error" ng-if="asForm.$submitted || asForm.omName.$touched">
-			<ng-message when="required">{{'addNew.scale.validation.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'addNew.scale.validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+			<ng-message when="required">{{'validation.scale.nameRequired' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
 		</ng-messages>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="scale" om-max-length="255"></om-text-area>
 
 		<ng-messages for="asForm.omDescription.$error" ng-if="asForm.$submitted || asForm.omDescription.$touched">
-			<ng-message when="maxlength">{{'addNew.scale.validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
 		</ng-messages>
 
 		<om-select name="omDataType" om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
 
 		<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted">
-			<ng-message when="required">{{'addNew.scale.validation.dataTypeRequired' | translate}}</ng-message>
+			<ng-message when="required">{{'validation.scale.dataTypeRequired' | translate}}</ng-message>
 		</ng-messages>
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.scale.validRange' | translate}}</span>
 			<om-range name="omRange" om-property="validValues" om-adding="true" ng-model="scale" om-numeric="showRangeWidget"></om-range>
-		</div>
 
-		<ng-messages for="asForm.omRange.$error" ng-if="asForm.$submitted">
-			<ng-message when="minTooBig">{{'addNew.scale.validation.minTooBig' | translate}}</ng-message>
-		</ng-messages>
+			<ng-messages for="asForm.omRange.$error" ng-if="asForm.$submitted">
+				<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
+			</ng-messages>
+		</div>
 
 		<div ng-show="showCategoriesWidget">
 			<span>{{'addNew.scale.categories' | translate}}</span>
 			<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
+
+			<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
+				<ng-message when="emptyValue">{{'validation.scale.emptyValue' | translate}}</ng-message>
+				<ng-message when="nonUniqueName">{{'validation.scale.nonUniqueName' | translate}}</ng-message>
+				<ng-message when="nonUniqueValue">{{'validation.scale.nonUniqueValue' | translate}}</ng-message>
+			</ng-messages>
 		</div>
-		<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
-			<ng-message when="emptyValue">{{'addNew.scale.validation.emptyValue' | translate}}</ng-message>
-			<ng-message when="nonUniqueName">{{'addNew.scale.validation.nonUniqueName' | translate}}</ng-message>
-			<ng-message when="nonUniqueValue">{{'addNew.scale.validation.nonUniqueValue' | translate}}</ng-message>
-		</ng-messages>
 	</form>
 </div>
 
