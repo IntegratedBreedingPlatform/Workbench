@@ -57,7 +57,6 @@
 			<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="{{variable.scale.validValues.min}}" om-max="{{variable.scale.validValues.max}}"></om-range>
 
 			<ng-messages for="avForm.omRange.$error" ng-if="avForm.$submitted">
-				<ng-message when="mustProvideBoth">{{'validation.variable.mustProvideBoth' | translate}}</ng-message>
 				<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
 				<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: variable.scale.validValues}}</ng-message>
 				<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>

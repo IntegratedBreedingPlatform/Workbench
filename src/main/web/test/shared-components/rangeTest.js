@@ -92,34 +92,6 @@ describe('Range module', function() {
 			expect(scope.testForm.$valid).toBe(true);
 		});
 
-		it('should set the mustProvideBoth error to be true if a minimum is provided but there is no maximum', function() {
-
-			scope.model = {
-				validValues: {
-					max: 90
-				}
-			};
-
-			compileForm('om-numeric="true"');
-
-			expect(scope.testForm.omRange.$error).toEqual({mustProvideBoth: true});
-			expect(scope.testForm.$valid).toBe(false);
-		});
-
-		it('should set the mustProvideBoth error to be true if a maximum is provided but there is no minimum', function() {
-
-			scope.model = {
-				validValues: {
-					min: 80
-				}
-			};
-
-			compileForm('om-numeric="true"');
-
-			expect(scope.testForm.omRange.$error).toEqual({mustProvideBoth: true});
-			expect(scope.testForm.$valid).toBe(false);
-		});
-
 		it('should set the minTooBig error to be true if a minimum is provided and it exceeds the maximum', function() {
 
 			scope.model = {

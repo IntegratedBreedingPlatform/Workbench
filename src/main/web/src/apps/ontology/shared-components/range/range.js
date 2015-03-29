@@ -16,7 +16,6 @@
 			link: function(scope, elm, attrs, ctrl) {
 
 				var resetValidity = function() {
-					ctrl.$setValidity('mustProvideBoth', true);
 					ctrl.$setValidity('minTooBig', true);
 					ctrl.$setValidity('minOutOfRange', true);
 					ctrl.$setValidity('maxOutOfRange', true);
@@ -33,10 +32,6 @@
 
 					if (!scope.numeric || !data) {
 						return;
-					}
-
-					if (data.max && !data.min || !data.max && data.min) {
-						ctrl.$setValidity('mustProvideBoth', false);
 					}
 
 					if (data.max && data.min && data.max <= data.min) {

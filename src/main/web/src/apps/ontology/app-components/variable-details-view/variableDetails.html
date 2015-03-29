@@ -46,7 +46,6 @@
 		<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="{{model.scale.validValues.min}}" om-max="{{model.scale.validValues.max}}"></om-range>
 
 		<ng-messages for="vdForm.omRange.$error" ng-if="editing && vdForm.$submitted">
-			<ng-message when="mustProvideBoth">{{'validation.variable.mustProvideBoth' | translate}}</ng-message>
 			<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
 			<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: model.scale.validValues}}</ng-message>
 			<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: model.scale.validValues}}</ng-message>
