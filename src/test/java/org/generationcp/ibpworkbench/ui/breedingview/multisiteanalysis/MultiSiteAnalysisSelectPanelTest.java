@@ -73,15 +73,25 @@ public class MultiSiteAnalysisSelectPanelTest {
 	
 	@Test
 	public void testPopulateEnvironmentDropdown(){
-		Select select = new Select();
-		Mockito.doReturn(select).when(selectPanel).getSelectSpecifyEnvironment();
+		Select envSelect = new Select();
+		Select envGroupSelect = new Select();
+		Mockito.doReturn(envSelect).when(selectPanel).getSelectSpecifyEnvironment();
+		Mockito.doReturn(envGroupSelect).when(selectPanel).getSelectSpecifyEnvironmentGroups();
 
 		selectPanel.populateEnvironmentDropdown(dataset);
 		
-		assertTrue("Dropdown should return fixed # of env factors", select.getItemIds().size() == TRIAL_ENV_FACTORS.length);
-		for (Object id : select.getItemIds()){
+		assertTrue("Dropdown should return fixed # of env factors", envSelect.getItemIds().size() == TRIAL_ENV_FACTORS.length);
+		for (Object id : envSelect.getItemIds()){
 			String localName = (String) id;
 			assertTrue(ArrayUtils.contains(TRIAL_ENV_FACTORS, localName));
+		}
+		
+
+		assertTrue("Dropdown should return fixed # of env group factors", envGroupSelect.getItemIds().size() == TRIAL_ENV_FACTORS.length - 1);
+		for (Object id : envGroupSelect.getItemIds()){
+			String localName = (String) id;
+			assertTrue(ArrayUtils.contains(TRIAL_ENV_FACTORS, localName));
+			assertFalse(TRIAL_INSTANCE.equals(localName));
 		}
 	}
 	
