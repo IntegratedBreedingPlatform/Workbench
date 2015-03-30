@@ -13,14 +13,15 @@
 			var convertedVariable = {
 					methodId: variable.methodSummary && variable.methodSummary.id,
 					scaleId: variable.scaleSummary && variable.scaleSummary.id,
-					propertyId: variable.propertySummary && variable.propertySummary.id
+					propertyId: variable.propertySummary && variable.propertySummary.id,
+					variableTypeIds: variable.variableTypes.map(function(variableType) {
+						return variableType.id;
+					})
 				},
-
 				propertiesToInclude = [
 					'name',
 					'alias',
 					'description',
-					'variableTypes',
 					'favourite',
 					'expectedRange'
 				];

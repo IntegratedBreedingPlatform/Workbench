@@ -40,7 +40,7 @@ describe('Variables Service', function() {
 			propertyId: PLANT_VIGOR.propertySummary.id,
 			methodId: PLANT_VIGOR.methodSummary.id,
 			scaleId: PLANT_VIGOR.scaleSummary.id,
-			variableTypes: PLANT_VIGOR.variableTypes
+			variableTypeIds: [PLANT_VIGOR.variableTypes[0].id]
 		},
 
 		variablesService,
@@ -162,13 +162,9 @@ describe('Variables Service', function() {
 
 		it('should POST to /variables', function() {
 
-			var variable = {
-				name: 'myvariable'
-			};
+			httpBackend.expectPOST(/\/variables$/, CONVERTED_PLANT_VIGOR).respond(201);
 
-			httpBackend.expectPOST(/\/variables$/, variable).respond(201);
-
-			variablesService.addVariable(variable);
+			variablesService.addVariable(PLANT_VIGOR);
 
 			httpBackend.flush();
 		});
@@ -187,14 +183,11 @@ describe('Variables Service', function() {
 
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful POST is made', function() {
 
-			var variable = {
-				name: 'myvariable'
-			},
-			response = 123;
+			var response = 123;
 
-			httpBackend.expectPOST(/\/variables$/, variable).respond(201, response);
+			httpBackend.expectPOST(/\/variables$/, CONVERTED_PLANT_VIGOR).respond(201, response);
 
-			variablesService.addVariable(variable);
+			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
@@ -208,7 +201,7 @@ describe('Variables Service', function() {
 
 			httpBackend.expectPOST(/\/variables$/).respond(500, error);
 
-			variablesService.addVariable({});
+			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
@@ -267,16 +260,12 @@ describe('Variables Service', function() {
 
 		it('should PUT to /variables/:id', function() {
 
-			var variable = {
-				name: 'myvariable'
-			},
-
 			// FIXME not in use yet because services haven't been hooked up
-			id = 1;
+			var id = 1;
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, variable).respond(204);
+			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(204);
 
-			variablesService.updateVariable(id, variable);
+			variablesService.updateVariable(id, PLANT_VIGOR);
 
 			httpBackend.flush();
 		});
@@ -300,17 +289,13 @@ describe('Variables Service', function() {
 
 		it('should return a 204 status if a successful PUT is made', function() {
 
-			var variable = {
-				name: 'myvariable'
-			},
-			id = 1,
+			var id = 1,
+				expectedResponse = 204,
+				actualResponse;
 
-			expectedResponse = 204,
-			actualResponse;
+			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, variable).respond(expectedResponse);
-
-			variablesService.updateVariable(id, variable).then(function(res) {
+			variablesService.updateVariable(id, PLANT_VIGOR).then(function(res) {
 				actualResponse = res;
 			});
 
@@ -324,9 +309,9 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, {}).respond(500, error);
+			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(500, error);
 
-			variablesService.updateVariable(1, {});
+			variablesService.updateVariable(1, PLANT_VIGOR);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
