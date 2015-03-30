@@ -30,7 +30,7 @@
 
 	<div ng-show="showCategoriesWidget">
 		<span>{{'scalesList.details.categories' | translate}}</span>
-		<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model"></om-categories>
+		<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model" om-categorical="showCategoriesWidget"></om-categories>
 
 		<ng-messages for="sdForm.omCategories.$error" ng-if="sdForm.$submitted">
 			<ng-message when="emptyValue">{{'validation.scale.emptyValue' | translate}}</ng-message>
