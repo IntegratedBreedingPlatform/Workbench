@@ -50,7 +50,7 @@
 			</ng-messages>
 		</div>
 
-		<om-multi-ui-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
+		<om-multi-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-adding="true" om-model="variable" om-options="data.types"></om-multi-select>
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.variable.expectedRange' | translate}}</span>

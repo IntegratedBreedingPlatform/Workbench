@@ -27,7 +27,11 @@ describe('Variables Service', function() {
 					max: 10
 				}
 			},
-			variableTypeIds: [1]
+			variableTypes: [{
+				id: 1,
+				name: 'Analysis',
+				description: ''
+			}]
 		},
 
 		CONVERTED_PLANT_VIGOR = {
@@ -36,7 +40,7 @@ describe('Variables Service', function() {
 			propertyId: PLANT_VIGOR.propertySummary.id,
 			methodId: PLANT_VIGOR.methodSummary.id,
 			scaleId: PLANT_VIGOR.scaleSummary.id,
-			variableTypeIds: PLANT_VIGOR.variableTypeIds
+			variableTypes: PLANT_VIGOR.variableTypes
 		},
 
 		variablesService,

@@ -20,7 +20,7 @@
 					'name',
 					'alias',
 					'description',
-					'variableTypeIds',
+					'variableTypes',
 					'favourite',
 					'expectedRange'
 				];
@@ -48,7 +48,7 @@
 				'propertySummary': {...},
 				'methodSummary': {...},
 				'scaleSummary': {...},
-				'variableTypeIds': [1],
+				'variableTypes': [{...}],
 				'favourite': true,
 				'metadata': {...},
 				'expectedRange': {..}
@@ -82,7 +82,7 @@
 				'propertySummary': {...},
 				'methodSummary': {...},
 				'scale': {...},
-				'variableTypeIds': [1],
+				'variableTypes': [{...}],
 				'expectedRange': {...}
 			}
 
@@ -95,7 +95,7 @@
 				'propertyId': 34,
 				'methodId': 68,
 				'scaleId': 145,
-				'variableTypeIds': [2],
+				'variableTypes': [{...}],
 				'expectedRange': {...}
 			}
 
@@ -128,7 +128,7 @@
 				'propertySummary': {...},
 				'methodSummary': {...},
 				'scale': {...},
-				'variableTypeIds': [1],
+				'variableTypes': [{...}],
 				'favourite': true,
 				'expectedRange': {...}
 			}
@@ -143,7 +143,7 @@
 				'propertyId': 12,
 				'methodId': 13,
 				'scaleId': 16,
-				'variableTypeIds': [1, 2],
+				'variableTypes': [{...}],
 				'favourite': true,
 				'expectedRange': {...}
 			}
@@ -193,10 +193,10 @@
 				'propertySummary': {...},
 				'methodSummary': {...},
 				'scale': {...},
-				'variableTypeIds': [1],
+				'variableTypes': [{...}],
 				'favourite': true,
 				'metadata': {...},
-				'editableFields': ['name', 'description', 'alias', 'variableTypeIds'],
+				'editableFields': ['name', 'description', 'alias', 'variableTypes'],
 				'deletable': false
 			}
 

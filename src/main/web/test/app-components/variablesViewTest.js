@@ -21,7 +21,11 @@ describe('Variables Controller', function() {
 				id: 1,
 				name: 'Score'
 			},
-			variableTypeIds: [1],
+			variableTypes: [{
+				id: 1,
+				name: 'Analysis',
+				description: ''
+			}],
 			favourite: true
 		},
 

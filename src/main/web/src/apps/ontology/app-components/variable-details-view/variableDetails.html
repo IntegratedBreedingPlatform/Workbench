@@ -39,7 +39,7 @@
 		<ng-message when="required">{{'validation.variable.scaleRequired' | translate}}</ng-message>
 	</ng-messages>
 
-	<om-multi-ui-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypeIds" om-editing="editing" om-model="model" om-options="data.types"></om-multi-ui-select>
+	<om-multi-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-editing="editing" om-model="model" om-options="data.types"></om-multi-select>
 
 	<div ng-show="showRangeWidget">
 		<span>{{'variablesList.details.expectedRange' | translate}}</span>

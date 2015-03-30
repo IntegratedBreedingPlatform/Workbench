@@ -7,32 +7,133 @@
 	// This will work for classes at this stage. Will just need to get rid of
 	// adding your own in the search function and then it should work for multi
 	// select as well
-	multiSelect.directive('omMultiSelect', function(editable) {
+	multiSelect.directive('omMultiSelect', ['editable', 'stringDataService', 'objectDataService',
+		function(editable, stringDataService, objectDataService) {
+
+			return {
+				controller: function($scope) {
+					$scope.editable = editable($scope);
+
+					$scope.$watch('options', function(options) {
+						// Check the type of data the multi-select needs to work with and set the appropriate service
+						if (typeof options[0] === 'string') {
+							$scope.service = stringDataService;
+						} else if (typeof options[0] === 'object') {
+							$scope.service = objectDataService;
+						}
+
+						// Set the functions of the multi-select based on the data service that we are using
+						if ($scope.service) {
+							$scope.addToSelectedItems = $scope.service.addToSelectedItems($scope);
+							$scope.formatForDisplay = $scope.service.formatForDisplay;
+							$scope.search = $scope.service.search($scope);
+						}
+					});
+				},
+				link: function(scope) {
+
+					scope.suggestions = angular.copy(scope.options);
+					scope.searchText = '';
+					scope.selectedIndex = -1;
+
+					// Set the input to contain the text of the selected item from the suggestions
+					scope.$watch('selectedIndex', function(index) {
+						if (index !== -1 && scope.suggestions.length > 0) {
+							scope.searchText = scope.service.formatForDisplay(scope.suggestions[index]);
+						}
+					});
+
+					scope.checkKeyDown = function(event) {
+
+						// Down key, increment selectedIndex
+						if (event.keyCode === 40) {
+							event.preventDefault();
+
+							// Load the suggestions if the user presses down with an empty input
+							if (scope.selectedIndex === -1) {
+								scope.search();
+							}
+
+							if (scope.selectedIndex + 1 < scope.suggestions.length) {
+								scope.selectedIndex++;
+							}
+						}
+						// Up key, decrement selectedIndex
+						else if (event.keyCode === 38) {
+							event.preventDefault();
+
+							if (scope.selectedIndex - 1 > -1) {
+								scope.selectedIndex--;
+							}
+						}
+						// Enter pressed, select item
+						else if (event.keyCode === 13) {
+							event.preventDefault();
+							scope.addToSelectedItems(scope.selectedIndex);
+							scope.selectedIndex = -1;
+						}
+					};
+
+					scope.removeItem = function(index) {
+						scope.model[scope.property].splice(index, 1);
+					};
+
+				},
+				restrict: 'E',
+				scope: {
+					adding: '=omAdding',
+					editing: '=omEditing',
+					id: '@omId',
+					label: '@omLabel',
+					model: '=omModel',
+					options: '=omOptions',
+					property: '@omProperty',
+					tags: '@omTags'
+				},
+				templateUrl:'static/views/ontology/multiSelect.html'
+			};
+		}
+	]);
+
+	/*
+	This service is used when the multi-select is dealing with arrays of strings
+	*/
+	multiSelect.service('stringDataService', function() {
 		return {
-			controller: function($scope) {
-				$scope.editable = editable($scope);
-			},
-			link: function(scope) {
-				scope.suggestions = angular.copy(scope.options);
-				scope.selectedItems = [];
 
-				scope.selectedIndex = -1; //currently selected suggestion index
+			addToSelectedItems: function(scope) {
+				return function(index) {
+					var itemToAdd = scope.suggestions[index];
 
-				// Set the input to contain the text of the selected item from the suggestions
-				scope.$watch('selectedIndex', function(index) {
-					if (index !== -1) {
-						scope.model[scope.property] = scope.suggestions[index];
+					// Allow the user to add the text they have entered as an item
+					// without having to select it from the list
+					if (scope.searchText && !itemToAdd && scope.tags) {
+						itemToAdd = scope.searchText;
 					}
-				});
 
-				scope.search = function() {
+					// Add the item if it hasn't already been added
+					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
+						scope.model[scope.property].push(itemToAdd);
+						scope.searchText = '';
+						scope.suggestions = [];
+					}
+				};
+			},
+
+			formatForDisplay: function(item) {
+				return item;
+			},
+
+			search: function(scope) {
+				return function() {
 					scope.suggestions = angular.copy(scope.options);
 
 					if (scope.tags) {
+
 						// Add the search term text that the user has entered into the start of the
 						// suggestions list so that they can add it if no suitable suggestion is found
-						if (scope.model[scope.property] && scope.suggestions.indexOf(scope.model[scope.property]) === -1) {
-							scope.suggestions.unshift(scope.model[scope.property]);
+						if (scope.searchText && scope.suggestions.indexOf(scope.searchText) === -1) {
+							scope.suggestions.unshift(scope.searchText);
 						}
 					}
 
@@ -40,7 +141,7 @@
 					scope.suggestions = scope.suggestions.filter(function(value) {
 
 						var lowerValue = value.toLowerCase(),
-							lowerSearchText = scope.model[scope.property].toLowerCase();
+							lowerSearchText = scope.searchText.toLowerCase();
 
 						return lowerValue.indexOf(lowerSearchText) !== -1;
 					});
@@ -48,77 +149,64 @@
 					// Only return options that haven't already been selected
 					scope.suggestions = scope.suggestions.filter(function(value) {
 
-						return scope.selectedItems.indexOf(value) === -1;
+						return scope.model[scope.property].indexOf(value) === -1;
 					});
-
 
 					scope.selectedIndex = -1;
 				};
+			}
+		};
+	});
 
-				scope.checkKeyDown = function(event) {
+	/*
+	This service is used when the multi-select is dealing with arrays of objects that have a name property
+	*/
+	multiSelect.service('objectDataService', function() {
+		return {
 
-					// Down key, increment selectedIndex
-					if (event.keyCode === 40) {
-						event.preventDefault();
-
-						// Load the suggestions if the user presses down with an empty input
-						if (scope.selectedIndex === -1) {
-							scope.search();
-						}
-
-						if (scope.selectedIndex + 1 !== scope.suggestions.length) {
-							scope.selectedIndex++;
-						}
-					}
-					// Up key, decrement selectedIndex
-					else if (event.keyCode === 38) {
-						event.preventDefault();
-
-						if (scope.selectedIndex - 1 > -1) {
-							scope.selectedIndex--;
-						}
-					}
-					// Enter pressed, select item
-					else if (event.keyCode === 13) {
-						event.preventDefault();
-						scope.addToSelectedItems(scope.selectedIndex);
-						scope.selectedIndex = -1;
-					}
-				};
-
-				scope.addToSelectedItems = function(index) {
+			addToSelectedItems: function(scope) {
+				return function(index) {
 					var itemToAdd = scope.suggestions[index];
 
-					// Allow the user to add the text they have entered as an item
-					// without having to select it from the list
-					if (scope.model[scope.property] && !itemToAdd && scope.tags) {
-						itemToAdd = scope.model[scope.property];
-					}
-
 					// Add the item if it hasn't already been added
-					if (itemToAdd && scope.selectedItems.indexOf(itemToAdd) === -1) {
-						scope.selectedItems.push(itemToAdd);
-						scope.model[scope.property] = '';
+					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
+						scope.model[scope.property].push(itemToAdd);
+						scope.searchText = '';
 						scope.suggestions = [];
 					}
 				};
+			},
 
-				scope.removeItem = function(index) {
-					scope.selectedItems.splice(index, 1);
+			formatForDisplay: function(item) {
+				return item.name;
+			},
+
+			search: function(scope) {
+				return function() {
+					scope.suggestions = angular.copy(scope.options);
+
+					// Only return options that match the search term
+					scope.suggestions = scope.suggestions.filter(function(value) {
+
+						var lowerValue = value.name.toLowerCase(),
+							lowerSearchText = scope.searchText.toLowerCase();
+
+						return lowerValue.indexOf(lowerSearchText) !== -1;
+					});
+
+					// Only return options that haven't already been selected
+					scope.suggestions = scope.suggestions.filter(function(value) {
+
+						var isAlreadySelected = scope.model[scope.property].some(function(selectedItem) {
+								return selectedItem.name === value.name;
+							});
+
+						return !isAlreadySelected;
+					});
+
+					scope.selectedIndex = -1;
 				};
-			},
-			restrict: 'E',
-			scope: {
-				adding: '=omAdding',
-				editing: '=omEditing',
-				id: '@omId',
-				label: '@omLabel',
-				model: '=omModel',
-				options: '=omOptions',
-				property: '=omProperty',
-				tags: '@omTags'
-			},
-			templateUrl:'static/views/ontology/multiSelect.html'
+			}
 		};
 	});
 }());

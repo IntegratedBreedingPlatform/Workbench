@@ -13,9 +13,11 @@ describe('Add Variable View', function() {
 			propertyId: 1,
 			methodId: 1,
 			scaleId: 1,
-			variableTypeIds: [
-				1
-			]
+			variableTypes: [{
+				id: 1,
+				name: 'Analysis',
+				description: ''
+			}]
 		},
 
 		variablesService = {},

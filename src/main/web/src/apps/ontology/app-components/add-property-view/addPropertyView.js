@@ -8,6 +8,9 @@
 		'serviceUtilities',
 		function($scope, $location, $window, propertiesService, variableStateService, serviceUtilities) {
 
+			$scope.property = {
+				classes: []
+			};
 			$scope.classes = [];
 
 			propertiesService.getClasses().then(function(classes) {

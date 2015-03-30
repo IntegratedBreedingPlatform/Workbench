@@ -34,7 +34,7 @@ describe('multiselect module', function() {
 
 	beforeEach(function() {
 		scope.model = {
-			property: ''
+			property: []
 		};
 		scope.property = 'property';
 		scope.options = ['one', 'two'];
@@ -57,13 +57,13 @@ describe('multiselect module', function() {
 	it('should set the input to contain the selected item from the suggestions', function() {
 		compileDirective();
 
-		expect(scope.model[scope.property]).toEqual('');
+		expect(isolateScope.searchText).toEqual('');
 
 		isolateScope.suggestions = ['one', 'two'];
 		isolateScope.selectedIndex = 1;
 		scope.$apply();
 
-		expect(scope.model[scope.property]).toEqual('two');
+		expect(isolateScope.searchText).toEqual('two');
 	});
 
 	describe('by default', function() {
@@ -74,9 +74,9 @@ describe('multiselect module', function() {
 			expect(isolateScope.suggestions).toEqual(scope.options);
 		});
 
-		it('should set selectedItems to an empty array', function() {
+		it('should set searchText to an empty string', function() {
 			compileDirective();
-			expect(isolateScope.selectedItems).toEqual([]);
+			expect(isolateScope.searchText).toEqual('');
 		});
 
 		it('should set selectedIndex to -1', function() {
@@ -97,8 +97,8 @@ describe('multiselect module', function() {
 		});
 
 		it('should add the search term text to the suggestions if the multiselect allows tags', function() {
-			scope.model[scope.property] = 'cat';
 			compileDirective('om-tags="true"');
+			isolateScope.searchText = 'cat';
 
 			isolateScope.search();
 
@@ -106,8 +106,8 @@ describe('multiselect module', function() {
 		});
 
 		it('should not add the search term text to the suggestions if the multiselect does not allow tags', function() {
-			scope.model[scope.property] = 'cat';
 			compileDirective();
+			isolateScope.searchText = 'cat';
 
 			isolateScope.search();
 
@@ -123,8 +123,8 @@ describe('multiselect module', function() {
 		});
 
 		it('should only return suggestions that match the search term', function() {
-			scope.model[scope.property] = 'on';
 			compileDirective();
+			isolateScope.searchText = 'on';
 
 			isolateScope.search();
 
@@ -133,10 +133,10 @@ describe('multiselect module', function() {
 		});
 
 		it('should only return suggestions that have not already been selected', function() {
-			scope.model[scope.property] = 'one';
 			compileDirective();
+			isolateScope.searchText = 'one';
 
-			isolateScope.selectedItems = ['one'];
+			scope.model[scope.property] = ['one'];
 			isolateScope.search();
 
 			expect(isolateScope.suggestions).not.toContain('one');
@@ -248,19 +248,19 @@ describe('multiselect module', function() {
 		it('should allow the user to add text they have entered as a tag without explicitly selecting it', function() {
 			compileDirective('om-tags="true"');
 
-			scope.model[scope.property] = 'hi';
+			isolateScope.searchText = 'hi';
 			isolateScope.addToSelectedItems(-1);
 
-			expect(isolateScope.selectedItems).toContain('hi');
+			expect(scope.model[scope.property]).toContain('hi');
 		});
 
 		it('should not allow the user to add text they have entered as a tag if the multiselect does not allow tags', function() {
 			compileDirective();
 
-			scope.model[scope.property] = 'hi';
+			isolateScope.searchText = 'hi';
 			isolateScope.addToSelectedItems(-1);
 
-			expect(isolateScope.selectedItems).not.toContain('hi');
+			expect(scope.model[scope.property]).not.toContain('hi');
 		});
 
 		it('should add the item if it hasn\'t already been added to the list of selected items', function() {
@@ -268,17 +268,17 @@ describe('multiselect module', function() {
 
 			isolateScope.addToSelectedItems(0);
 
-			expect(isolateScope.selectedItems).toContain('one');
+			expect(scope.model[scope.property]).toContain('one');
 		});
 
 		it('should not add the item again if it has already been added to the list of selected items', function() {
 			compileDirective();
 
-			isolateScope.selectedItems = ['one'];
+			scope.model[scope.property] = ['one'];
 			isolateScope.addToSelectedItems(0);
 
-			expect(isolateScope.selectedItems[0]).toEqual('one');
-			expect(isolateScope.selectedItems.length).toEqual(1);
+			expect(scope.model[scope.property][0]).toEqual('one');
+			expect(scope.model[scope.property].length).toEqual(1);
 		});
 
 		it('should not add an item if the index is not within the bounds of the suggestions array', function() {
@@ -286,7 +286,7 @@ describe('multiselect module', function() {
 
 			isolateScope.addToSelectedItems(-1);
 
-			expect(isolateScope.selectedItems.length).toEqual(0);
+			expect(scope.model[scope.property].length).toEqual(0);
 		});
 
 		it('should set the suggestions back to an empty array after adding an item', function() {
@@ -302,13 +302,13 @@ describe('multiselect module', function() {
 		it('should remove an item from the selected items array at the provided index', function() {
 			compileDirective();
 
-			isolateScope.selectedItems = ['one'];
-			spyOn(isolateScope.selectedItems, 'splice').and.callThrough();
+			scope.model[scope.property] = ['one'];
+			spyOn(scope.model[scope.property], 'splice').and.callThrough();
 
 			isolateScope.removeItem(0);
 
-			expect(isolateScope.selectedItems.splice).toHaveBeenCalledWith(0, 1);
-			expect(isolateScope.selectedItems).not.toContain('one');
+			expect(scope.model[scope.property].splice).toHaveBeenCalledWith(0, 1);
+			expect(scope.model[scope.property]).not.toContain('one');
 		});
 	});
 });

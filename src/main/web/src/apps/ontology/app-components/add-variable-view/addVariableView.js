@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['formFields', 'input', 'textArea', 'select', 'variables', 'properties', 'methods', 'scales',
-		'variableState', 'utilities']);
+	var app = angular.module('addVariable', ['formFields', 'multiSelect', 'input', 'textArea', 'select', 'variables', 'properties',
+		'methods', 'scales', 'variableState', 'utilities']);
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'propertiesService', 'methodsService',
 		'scalesService', 'variableStateService', 'serviceUtilities',
@@ -31,7 +31,9 @@
 
 			} else {
 
-				$scope.variable = {};
+				$scope.variable = {
+					variableTypes: []
+				};
 
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
