@@ -17,7 +17,7 @@
 
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.methodId = selected && selected.id || null;
-					});
+					}, true);
 
 					$scope.editMethod = function(e) {
 						e.preventDefault();

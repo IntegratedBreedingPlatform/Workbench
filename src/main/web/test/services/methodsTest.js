@@ -127,8 +127,8 @@ describe('Methods Service', function() {
 	describe('updateMethod', function() {
 
 		it('should PUT to /updateMethod', function() {
-			httpBackend.expectPUT(/\/methods\/:id$/).respond(204);
-			methodsService.updateMethod(null, {});
+			httpBackend.expectPUT(/\/methods\/1$/).respond(204);
+			methodsService.updateMethod(1, {});
 			httpBackend.flush();
 		});
 
@@ -137,7 +137,7 @@ describe('Methods Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/methods\/:id$/).respond(expectedResponse);
+			httpBackend.expectPUT(/\/methods\/1$/).respond(expectedResponse);
 
 			methodsService.updateMethod(id, {}).then(function(res) {
 				actualResponse = res;
@@ -152,7 +152,7 @@ describe('Methods Service', function() {
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/methods\/:id$/, {}).respond(500, error);
+			httpBackend.expectPUT(/\/methods\/1$/, {}).respond(500, error);
 
 			methodsService.updateMethod(1, {});
 			httpBackend.flush();
@@ -167,10 +167,9 @@ describe('Methods Service', function() {
 
 		it('should DELETE /methods/:id', function() {
 
-			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/methods\/:id$/).respond(204);
+			httpBackend.expectDELETE(/\/methods\/1$/).respond(204);
 
 			methodsService.deleteMethod(id);
 
@@ -184,7 +183,7 @@ describe('Methods Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/methods\/:id$/).respond(expectedResponse);
+			httpBackend.expectDELETE(/\/methods\/1$/).respond(expectedResponse);
 
 			methodsService.deleteMethod(id).then(function(res) {
 				actualResponse = res;
@@ -200,7 +199,7 @@ describe('Methods Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/methods\/:id$/).respond(500, error);
+			httpBackend.expectDELETE(/\/methods\/1$/).respond(500, error);
 
 			methodsService.deleteMethod(1);
 			httpBackend.flush();
@@ -217,8 +216,7 @@ describe('Methods Service', function() {
 
 			var id = 123;
 
-			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/methods\/:id$/).respond();
+			httpBackend.expectGET(/\/methods\/123$/).respond();
 
 			methodsService.getMethod(id);
 
@@ -230,7 +228,7 @@ describe('Methods Service', function() {
 			var id = 123,
 				response = ['methods go here'];
 
-			httpBackend.expectGET(/\/methods\/:id$/).respond(response);
+			httpBackend.expectGET(/\/methods\/123$/).respond(response);
 
 			methodsService.getMethod(id);
 			httpBackend.flush();
@@ -245,7 +243,7 @@ describe('Methods Service', function() {
 			var id = 123,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/methods\/:id$/).respond(500, error);
+			httpBackend.expectGET(/\/methods\/123$/).respond(500, error);
 
 			methodsService.getMethod(id);
 			httpBackend.flush();

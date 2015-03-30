@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html ng-app="ontology" xmlns:th="http://www.thymeleaf.org">
+<html ng-app="ontology" xmlns:th="http://www.thymeleaf.org" data-om-crop-name="" data-th-attr="om-crop=${currentCrop}">
+
 <head>
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -11,8 +12,6 @@
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
 <body class="om-ontology-manager" ng-controller="OntologyController as ctrl">
-
-	<p th:text="${currentCrop}">currentCrop</p>
 
 	<header class="om-header">
 		<h1 class="om-title">{{'title' | translate}}</h1>
@@ -67,5 +66,11 @@
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate-loader-static-files.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/ontology.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+	/* global angular */
+	//<![CDATA[
+		angular.injector(['ng', 'config']).get('configService').setCropName(/*[[${currentCrop}]]*/);
+	//]]>
+	</script>
 </body>
 </html>

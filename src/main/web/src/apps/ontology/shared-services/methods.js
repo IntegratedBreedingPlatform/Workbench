@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var app = angular.module('methods', ['utilities']);
+	var app = angular.module('methods', ['utilities', 'config']);
 
-	app.service('methodsService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
+	app.service('methodsService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -20,7 +20,10 @@
 			  }]
 			*/
 			getMethods: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods');
+
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods',
+					request = $http.get(url);
+
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -44,7 +47,10 @@
 			}
 			*/
 			addMethod: function(method) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods', method);
+
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods',
+					request = $http.post(url, method);
+
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -68,8 +74,13 @@
 			}
 			*/
 			updateMethod: function(id, method) {
-				var request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods/:id',
-					method);
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+					convertedMethod = {
+						name: method.name,
+						description: method.description
+					},
+					request = $http.put(url, convertedMethod);
+
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -78,10 +89,11 @@
 			/*
 			Deletes the method with the specified ID.
 			*/
-			deleteMethod: function(/*id*/) {
-				var request;
+			deleteMethod: function(id) {
 
-				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods/:id');
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+					request = $http.delete(url);
+
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -97,8 +109,10 @@
 				'deletable': false
 			}
 			*/
-			getMethod: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/methods/:id');
+			getMethod: function(id) {
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+					request = $http.get(url);
+
 				return request.then(successHandler, failureHandler);
 			}
 		};
