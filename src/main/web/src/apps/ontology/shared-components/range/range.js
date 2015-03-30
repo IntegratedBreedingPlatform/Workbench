@@ -34,16 +34,25 @@
 						return;
 					}
 
+					// Minimum must be less than the maximum
 					if (data.max && data.min && data.max <= data.min) {
 						ctrl.$setValidity('minTooBig', false);
 					}
 
-					if (scope.min && data.min && data.min < scope.min || data.min > scope.max) {
-						ctrl.$setValidity('minOutOfRange', false);
+					if (data.min) {
+						// If there is a minimum valid value specified, ensure minimum is not lower than this
+						// If there is a maximum valid value specified, ensure minimum is not higher than this
+						if ((scope.min && data.min < scope.min) || (scope.max && data.min > scope.max)) {
+							ctrl.$setValidity('minOutOfRange', false);
+						}
 					}
 
-					if (scope.max && data.max && data.max > scope.max || data.max < scope.min) {
-						ctrl.$setValidity('maxOutOfRange', false);
+					if (data.max) {
+						// If there is a minimum valid value specified, ensure maximum is not lower than this
+						// If there is a maximum valid value specified, ensure maximum is not higher than this
+						if ((scope.min && data.max < scope.min) || (scope.max && data.max > scope.max)) {
+							ctrl.$setValidity('maxOutOfRange', false);
+						}
 					}
 
 				}, true);
@@ -51,8 +60,8 @@
 			require: 'ngModel',
 			restrict: 'E',
 			scope: {
-				min: '@omMin',
-				max: '@omMax',
+				min: '=?omMin',
+				max: '=?omMax',
 				numeric: '=omNumeric',
 				property: '@omProperty',
 				adding: '=omAdding',

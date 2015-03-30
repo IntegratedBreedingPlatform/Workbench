@@ -54,7 +54,7 @@
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.variable.expectedRange' | translate}}</span>
-			<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="{{variable.scale.validValues.min}}" om-max="{{variable.scale.validValues.max}}"></om-range>
+			<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="variable.scale.validValues.min" om-max="variable.scale.validValues.max"></om-range>
 
 			<ng-messages for="avForm.omRange.$error" ng-if="avForm.$submitted">
 				<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
