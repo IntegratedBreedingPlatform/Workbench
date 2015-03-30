@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'scales', 'dataTypes', 'utilities', 'categories', 'panel']);
+	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
+		'utilities', 'categories', 'panel']);
 
 	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'panelService', 'dataTypesService',
 		function(scalesService, serviceUtilities, panelService, dataTypesService) {

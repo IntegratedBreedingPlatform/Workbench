@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addVariable', ['formFields', 'variables', 'properties', 'methods', 'scales', 'variableState', 'utilities']);
+	var app = angular.module('addVariable', ['formFields', 'input', 'textArea', 'select', 'variables', 'properties', 'methods', 'scales',
+		'variableState', 'utilities']);
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'propertiesService', 'methodsService',
 		'scalesService', 'variableStateService', 'serviceUtilities',

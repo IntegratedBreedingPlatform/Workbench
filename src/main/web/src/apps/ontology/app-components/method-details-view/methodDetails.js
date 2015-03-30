@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'methods', 'utilities', 'panel']);
+	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']);
 
 	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'panelService',
 		function(methodsService, serviceUtilities, panelService) {
