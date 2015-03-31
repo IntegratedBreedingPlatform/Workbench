@@ -30,6 +30,57 @@ describe('Utilities Service', function() {
 		});
 	});
 
+	describe('formatErrorsForDisplay', function() {
+
+		it('should return an empty array if there are no errors', function() {
+			var responseNoErrors = {},
+				responseEmptyErrors = {
+					errors: []
+				},
+				resultNoErrors,
+				resultEmptyErrors;
+
+			resultNoErrors = serviceUtilities.formatErrorsForDisplay(responseNoErrors);
+			resultEmptyErrors = serviceUtilities.formatErrorsForDisplay(responseEmptyErrors);
+
+			expect(resultNoErrors).toEqual({});
+			expect(resultEmptyErrors).toEqual({});
+		});
+
+		it('should append error messages not belonging to a specific field on the general property array', function() {
+			var response = {
+				errors: [{
+					fieldNames: [],
+					message: 'An error message'
+				}]
+			},
+			result;
+
+			result = serviceUtilities.formatErrorsForDisplay(response);
+
+			expect(result).toEqual({
+				general: ['An error message']
+			});
+		});
+
+		it('should append error messages belonging to a specific field to the property with the same name as the field', function() {
+			var response = {
+				errors: [{
+					fieldNames: ['field'],
+					message: 'An error message'
+				}]
+			},
+			result;
+
+			result = serviceUtilities.formatErrorsForDisplay(response);
+
+			expect(result).toEqual({
+				field: ['An error message']
+			});
+		});
+
+	});
+
 	describe('restSuccessHandler', function() {
 
 		it('should return the data from the response', function() {
@@ -47,43 +98,23 @@ describe('Utilities Service', function() {
 
 	describe('restFailureHandler', function() {
 
-		it('should return a rejected promise with a malformed request error message if the response status is 400', function() {
+		it('should return a rejected promise with a status and response data errors', function() {
 
 			var response = {
-					status: 400
+					status: 400,
+					data: {
+						errors: []
+					}
 				},
-				expectedMessage = 'Request was malformed.',
-				result;
-
-			result = serviceUtilities.restFailureHandler(response);
-
-			expect(result).toEqual(q.reject(expectedMessage));
-		});
-
-		it('should return a rejected promise with an unknown error message if the response status is not 400', function() {
-
-			var response = {
-					status: 500
+				expected = {
+					status: 400,
+					errors: []
 				},
-				expectedMessage = 'An unknown error occurred.',
 				result;
 
 			result = serviceUtilities.restFailureHandler(response);
 
-			expect(result).toEqual(q.reject(expectedMessage));
-		});
-
-		it('should return a rejected promise with an unknown error message if the response is undefined', function() {
-
-			var response = null,
-				expectedMessage = 'An unknown error occurred.',
-				result;
-
-			result = serviceUtilities.restFailureHandler(response);
-
-			expect(result).toEqual(q.reject(expectedMessage));
+			expect(result).toEqual(q.reject(expected));
 		});
 	});
-
-
 });

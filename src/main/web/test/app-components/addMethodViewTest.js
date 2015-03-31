@@ -19,7 +19,8 @@ describe('Add Method View', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			genericAndRatherUselessErrorHandler: function() {},
+			formatErrorsForDisplay: function() {}
 		},
 
 		q,
@@ -59,6 +60,12 @@ describe('Add Method View', function() {
 		location = $location;
 		scope = $rootScope;
 		window = $window;
+
+
+		// Pretend our form is valid
+		scope.amForm = {
+			$valid: true
+		};
 	}));
 
 	describe('$scope.saveMethod', function() {
@@ -72,16 +79,31 @@ describe('Add Method View', function() {
 			expect(methodsService.addMethod).toHaveBeenCalledWith(CUT_AND_DRY);
 		});
 
-		it('should handle any errors and not redirect if the save was not successful', function() {
-
-			spyOn(location, 'path');
+		it('should not call the method service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.amForm.$valid = false;
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 
-			deferredAddMethod.reject();
+			expect(methodsService.addMethod.calls.count()).toEqual(0);
+		});
+
+		it('should handle any errors and not redirect if the save was not successful', function() {
+
+			var response = {
+				status: 400,
+				errors: [{fieldNames: [], message: 'An error'}]
+			};
+
+			spyOn(location, 'path');
+			spyOn(serviceUtilities, 'formatErrorsForDisplay').and.callThrough();
+
+			scope.saveMethod(fakeEvent, CUT_AND_DRY);
+
+			deferredAddMethod.reject(response);
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalledWith(response);
 			expect(location.path.calls.count()).toEqual(0);
 		});
 
@@ -124,32 +146,5 @@ describe('Add Method View', function() {
 			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
-
-		// it('should log an error if there is a problem setting the method on the variable being updated', function() {
-
-		// 	var deferred;
-
-		// 	variableStateService.setMethod = function() {
-		// 		deferred = q.defer();
-		// 		return deferred.promise;
-		// 	};
-
-		// 	// Variable edit is in progress
-		// 	spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-		// 	spyOn(variableStateService, 'setMethod').and.callThrough();
-		// 	spyOn(window.history, 'back');
-
-		// 	// Successful save
-		// 	scope.saveMethod(fakeEvent, CUT_AND_DRY);
-		// 	deferredAddMethod.resolve();
-		// 	scope.$apply();
-
-		// 	// Fail to set the method
-		// 	deferred.reject();
-		// 	scope.$apply();
-
-		// 	expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
-		// 	expect(window.history.back.calls.count()).toEqual(0);
-		// });
 	});
 });

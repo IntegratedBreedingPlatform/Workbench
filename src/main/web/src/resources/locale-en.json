@@ -93,6 +93,10 @@
 			"emptyValue": "Please provide a name and value for all categories",
 			"nonUniqueName": "All category names must be unique",
 			"nonUniqueValue": "All category values must be unique"
+		},
+
+		"method": {
+			"nameRequired": "Please name your method"
 		}
 	},
 

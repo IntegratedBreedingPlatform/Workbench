@@ -13,13 +13,38 @@
 				}
 			},
 
+			formatErrorsForDisplay: function(response) {
+
+				var errors = response.errors,
+					formattedErrors = {};
+
+				if (errors) {
+					errors.forEach(function(err) {
+						var formFieldNames = err.fieldNames;
+
+						if (formFieldNames && formFieldNames.length > 0) {
+							formFieldNames.forEach(function(field) {
+								formattedErrors[field] = formattedErrors[field] || [];
+								formattedErrors[field].push(err.message);
+							});
+						} else {
+							formattedErrors.general = formattedErrors.general || [];
+							formattedErrors.general.push(err.message);
+						}
+					});
+				}
+				return formattedErrors;
+			},
+
 			restSuccessHandler: function(response) {
 				return response.data;
 			},
 
 			restFailureHandler: function(response) {
-				var error = response && response.status === 400 ? 'Request was malformed.' : 'An unknown error occurred.';
-				return $q.reject(error);
+				return $q.reject({
+					status: response.status,
+					errors: response.data && response.data.errors
+				});
 			}
 		};
 	}]);

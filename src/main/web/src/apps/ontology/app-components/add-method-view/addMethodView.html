@@ -3,11 +3,28 @@
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.method.title' | translate}}</h2>
-	<form>
-		<button ng-click="saveMethod($event, method)" type="submit">{{'button.save' | translate}}</button>
 
-		<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="method"></om-input>
+	<form name="amForm" ng-submit="saveMethod($event, method)" novalidate>
+		<input type="submit" value="{{'button.save' | translate}}"></input>
 
-		<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="method"></om-text-area>
+		<div ng-repeat="error in serverErrors.general">{{error}}</div>
+
+		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
+
+		<ng-messages for="amForm.omName.$error" ng-if="amForm.$submitted || amForm.omName.$touched">
+			<ng-message when="required">{{'validation.method.nameRequired' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+		</ng-messages>
+
+		<div ng-repeat="error in serverErrors.name">{{error}}</div>
+
+		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="method" om-max-length="255"></om-text-area>
+
+		<ng-messages for="amForm.omDescription.$error" ng-if="amForm.$submitted || amForm.omDescription.$touched">
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+		</ng-messages>
+
+		<div ng-repeat="error in serverErrors.description">{{error}}</div>
+
 	</form>
 </div>
