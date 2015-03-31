@@ -340,21 +340,24 @@ public class ToolUtilTest {
 
 			boolean changed = utilSetup.updateToolConfigurationForProject(toolToTest, project);
 
-			ArgumentCaptor<ConfigurationChangeParameters> params = ArgumentCaptor
-					.forClass(ConfigurationChangeParameters.class);
-			verify(utilSetup).updateToolMiddlewareDatabaseConfiguration(params.capture());
-
-			assertTrue("Tool Util unable to update tool configuration properly", changed);
-			ConfigurationChangeParameters captured = params.getValue();
-			assertEquals(
-					"Unable to properly initialize the configuration location path for application",
-					expectedConfigPath,
-					captured.getPropertyFile());
-			assertEquals("Wrong configuration sent for username", expectedUserName,
-					captured.getUserName());
-			assertEquals("Wrong configuration sent for password", expectedPassword,
-					captured.getPassword());
-
+			if (toolToTest.getToolName().equals(ToolName.mbdt.name())) {
+				ArgumentCaptor<ConfigurationChangeParameters> params = ArgumentCaptor.forClass(ConfigurationChangeParameters.class);
+				verify(utilSetup).updateToolMiddlewareDatabaseConfiguration(
+										params.capture());
+				assertTrue("Tool Util unable to update tool configuration properly", changed);
+				ConfigurationChangeParameters captured = params.getValue();
+				assertEquals(
+						"Unable to properly initialize the configuration location path for application",
+						expectedConfigPath,
+						captured.getPropertyFile());
+				assertEquals("Wrong configuration sent for username", expectedUserName,
+						captured.getUserName());
+				assertEquals("Wrong configuration sent for password", expectedPassword,
+						captured.getPassword());
+			} else {
+				verify(utilSetup, never()).updateToolMiddlewareDatabaseConfiguration(
+						any(ConfigurationChangeParameters.class));
+			}
 		} catch (MiddlewareQueryException | ConfigurationChangeException e) {
 			fail(e.getMessage());
 		}
