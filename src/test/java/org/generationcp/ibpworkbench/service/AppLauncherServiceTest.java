@@ -7,6 +7,7 @@ import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.junit.Before;
@@ -36,6 +37,7 @@ public class AppLauncherServiceTest {
 	public static final int ID_PARAM = 5;
 	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedinUserId=1&selectedProjectId=1";
 	public static final String RESTART_URL_STR = "?restartApplication";
+	public static final Long DUMMY_PROJECT_ID = Long.valueOf(1);
 	@Mock
 	HttpServletRequest request;
 	@Mock
@@ -204,13 +206,18 @@ public class AppLauncherServiceTest {
 		user.setUserid(1);
 		user.setName("a_username");
 		user.setPassword("a_password");
+
+		Project project = mock(Project.class);
+		when(project.getProjectId()).thenReturn(DUMMY_PROJECT_ID);
+		when(sessionData.getLastOpenedProject()).thenReturn(project);
+
 		when(sessionData.getUserData()).thenReturn(user);
 
 		String urlResult = appLauncherService.launchWebappWithLogin(aWebTool);
 
 		assertEquals("should return correct url for gdms app",
-				String.format("%s://%s:%d/%s/web_login_forward?username=%s&password=%s", SCHEME,
-						HOST_NAME, PORT, SAMPLE_BASE_URL, 1, user.getPassword()), urlResult);
+				String.format("%s://%s:%d/%s?restartApplication&selectedProjectId=%s&loggedInUserId=%s", SCHEME,
+						HOST_NAME, PORT, SAMPLE_BASE_URL, DUMMY_PROJECT_ID, 1), urlResult);
 
 	}
 }
