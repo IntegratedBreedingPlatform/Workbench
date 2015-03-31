@@ -74,6 +74,11 @@
 						}
 					};
 
+					scope.onClick = function(index) {
+						scope.addToSelectedItems(index);
+						scope.selectedIndex = -1;
+					};
+
 					scope.removeItem = function(index) {
 						scope.model[scope.property].splice(index, 1);
 					};
