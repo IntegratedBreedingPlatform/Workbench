@@ -15,6 +15,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -76,30 +77,18 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-		String windowName = "";
+		String windowName = StringUtils.isNotBlank(uriFragment) ? StringUtils.removeStart(uriFragment,"/") : windowEnums.getwindowName();
 
-		try {
-			windowName = (uriFragment.startsWith("/") ?
-					uriFragment.split("/")[1].split("\\?")[0] :
-					uriFragment.split("\\?")[0]);
-
-			if (windowName.equals("")) {
-				windowName = windowEnums.getwindowName();
-			}
-
-			if (WindowEnums.isCorrectTool(windowName)) {
-				launchWindow(window, windowName, isLinkAccessed);
-			} else {
-				LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-				MessageNotifier
-						.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
-								messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC,
-										Arrays.asList(windowName).toArray()));
-			}
-
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+		if (WindowEnums.isCorrectTool(windowName)) {
+			launchWindow(window, windowName, isLinkAccessed);
+		} else {
+			LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
+			MessageNotifier
+					.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+							messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC,
+									Arrays.asList(windowName).toArray()));
 		}
+
 	}
 
 	public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
