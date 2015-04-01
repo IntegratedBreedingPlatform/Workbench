@@ -12,13 +12,13 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,6 +31,7 @@ import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
+import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialogForBreedingViewUpload;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -46,13 +47,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * 
@@ -63,8 +75,107 @@ import java.util.Map.Entry;
 public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
+	private final class TableColumnGenerator implements Table.ColumnGenerator {
+		private final Table table;
+		private static final long serialVersionUID = 1L;
+
+		private TableColumnGenerator(Table table) {
+			this.table = table;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Object generateCell(Table source, Object itemId,
+				Object columnId) {
+
+			BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) table
+					.getContainerDataSource();
+			final VariateModel vm = container.getItem(itemId).getBean();
+
+			final CheckBox checkBox = new CheckBox();
+			checkBox.setImmediate(true);
+			checkBox.setVisible(true);
+			checkBox.addListener(new CheckBoxListener(vm));
+
+			if (vm.getActive()) {
+				checkBox.setValue(true);
+			} else {
+				checkBox.setValue(false);
+			}
+
+			return checkBox;
+
+		}
+	}
+
+	private final class SelectAllListener implements Property.ValueChangeListener {
+		private static final long serialVersionUID = 344514045768824046L;
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+
+			Boolean val = (Boolean) event.getProperty().getValue();
+			BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+			for (Object itemId : container.getItemIds()){
+				container.getItem(itemId).getBean().setActive(val);
+			}
+			tblVariates.refreshRowCache();
+			for (Entry<String, Boolean> entry : variatesCheckboxState
+					.entrySet()) {
+				variatesCheckboxState.put(entry.getKey(), val);
+			}
+			if(val) {
+				numOfSelectedVariates = variatesCheckboxState.size();
+			} else {
+				numOfSelectedVariates = 0;
+			}
+			
+			if (numOfSelectedVariates == 0) {
+				toggleNextButton(false);
+			}else{
+				toggleNextButton(val);
+			}
+			
+		}
+	}
+
+	private final class CheckBoxListener implements Property.ValueChangeListener {
+		private final VariateModel vm;
+		private static final long serialVersionUID = 1L;
+
+		private CheckBoxListener(VariateModel vm) {
+			this.vm = vm;
+		}
+
+		@Override
+		public void valueChange(final ValueChangeEvent event) {
+			Boolean val = (Boolean) event.getProperty().getValue();
+			variatesCheckboxState.put(vm.getName(), val);
+			vm.setActive(val);
+
+			if (!val) {
+				chkVariatesSelectAll
+						.removeListener(selectAllListener);
+				chkVariatesSelectAll.setValue(val);
+				chkVariatesSelectAll.addListener(selectAllListener);
+				numOfSelectedVariates--;
+				if(numOfSelectedVariates==0) {
+					toggleNextButton(false);
+				}
+			} else {
+				if(numOfSelectedVariates<variatesCheckboxState.size()) {//add this check to ensure that the number of selected does not exceed the total number of variates
+					numOfSelectedVariates++;
+				}
+				toggleNextButton(true);
+			}
+
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	private Button browseLink;
+	private Button uploadLink;
 
 	private Label lblPageTitle;
 	private HeaderLabelLayout heading;
@@ -114,6 +225,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Value("${workbench.is.server.app}")
+	private String isServerApp;
 
 	private StudyDataManager studyDataManager;
 
@@ -174,6 +288,12 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		browseLink.setStyleName("link");
 		browseLink.setCaption("Browse");
 		browseLink.setWidth("48px");
+		
+		uploadLink = new Button();
+		uploadLink.setImmediate(true);
+		uploadLink.setStyleName("link");
+		uploadLink.setCaption("Upload");
+		uploadLink.setWidth("48px");
 				
 		setVariatesCheckboxState(new HashMap<String, Boolean>());
 
@@ -202,39 +322,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 
 	@Override
 	public void addListeners() {
-		selectAllListener = new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 344514045768824046L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-
-				Boolean val = (Boolean) event.getProperty().getValue();
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-				for (Object itemId : container.getItemIds()){
-					container.getItem(itemId).getBean().setActive(val);
-				}
-				tblVariates.refreshRowCache();
-				for (Entry<String, Boolean> entry : variatesCheckboxState
-						.entrySet()) {
-					variatesCheckboxState.put(entry.getKey(), val);
-				}
-				if(val) {
-					numOfSelectedVariates = variatesCheckboxState.size();
-				} else {
-					numOfSelectedVariates = 0;
-				}
-				
-				if (numOfSelectedVariates == 0) {
-					toggleNextButton(false);
-				}else{
-					toggleNextButton(val);
-				}
-				
-			}
-
-		};
+		selectAllListener = new SelectAllListener();
 		
 		chkVariatesSelectAll.addListener(selectAllListener);
 
@@ -247,6 +335,26 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 					
 				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
 					SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), currentProject);
+					event.getComponent().getWindow().addWindow(dialog);
+				} else if(event.getComponent()==null){
+					LOG.error("event component is null");
+				} else if(event.getComponent().getWindow()==null){
+					LOG.error("event component window is null");
+				}
+			}
+			
+		});
+		
+		uploadLink.addListener(new Button.ClickListener() {
+			
+			private static final long serialVersionUID = 1425892265723948423L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+					
+				if(event.getComponent()!=null && event.getComponent().getWindow()!=null) {
+					SelectStudyDialogForBreedingViewUpload dialog = new SelectStudyDialogForBreedingViewUpload(event.getComponent().getWindow(), 
+							SingleSiteAnalysisPanel.this ,(StudyDataManagerImpl) getStudyDataManager(), currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if(event.getComponent()==null){
 					LOG.error("event component is null");
@@ -278,7 +386,25 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.addComponent(browseLink);
-		browseLabelLayout.addComponent(new Label("for a study to work with."));
+		Label workWith = null;
+		
+		if (Boolean.parseBoolean(isServerApp)){
+			workWith = new Label("for a study to work with ");
+		}else{
+			workWith = new Label("for a study to work with.");
+		}
+		
+		workWith.setWidth("150px");
+		browseLabelLayout.addComponent(workWith);
+		Label orLabel = new Label("or");
+		orLabel.setWidth("20px");
+		
+		if (Boolean.parseBoolean(isServerApp)){
+			browseLabelLayout.addComponent(orLabel);
+			browseLabelLayout.addComponent(uploadLink);
+			browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
+		}
+		
 		browseLabelLayout.setSizeUndefined();
 		
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
@@ -391,62 +517,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements
 		table.setColumnExpandRatio(NAMED_COLUMN_1, 1);
 		table.setColumnExpandRatio(NAMED_COLUMN_2, 4);
 		table.setColumnExpandRatio(NAMED_COLUMN_3, 1);
-		table.addGeneratedColumn("", new Table.ColumnGenerator() {
-
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) table
-						.getContainerDataSource();
-				final VariateModel vm = container.getItem(itemId).getBean();
-
-				final CheckBox checkBox = new CheckBox();
-				checkBox.setImmediate(true);
-				checkBox.setVisible(true);
-				checkBox.addListener(new Property.ValueChangeListener() {
-
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void valueChange(final ValueChangeEvent event) {
-						Boolean val = (Boolean) event.getProperty().getValue();
-						variatesCheckboxState.put(vm.getName(), val);
-						vm.setActive(val);
-
-						if (!val) {
-							chkVariatesSelectAll
-									.removeListener(selectAllListener);
-							chkVariatesSelectAll.setValue(val);
-							chkVariatesSelectAll.addListener(selectAllListener);
-							numOfSelectedVariates--;
-							if(numOfSelectedVariates==0) {
-								toggleNextButton(false);
-							}
-						} else {
-							if(numOfSelectedVariates<variatesCheckboxState.size()) {//add this check to ensure that the number of selected does not exceed the total number of variates
-								numOfSelectedVariates++;
-							}
-							toggleNextButton(true);
-						}
-
-					}
-				});
-
-				if (vm.getActive()) {
-					checkBox.setValue(true);
-				} else {
-					checkBox.setValue(false);
-				}
-
-				return checkBox;
-
-			}
-
-		});
+		table.addGeneratedColumn("", new TableColumnGenerator(table));
 
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 

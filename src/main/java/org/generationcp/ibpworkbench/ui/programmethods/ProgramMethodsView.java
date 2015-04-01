@@ -108,6 +108,7 @@ import java.util.*;
      private Button removeToFavoriteBtn;
      
      private Map<Integer,String> classMap;
+     private Button searchGoBtn;
 
 
      public ProgramMethodsView(Project project) {
@@ -148,6 +149,9 @@ import java.util.*;
 
          saveBtn = new Button("Save Favorites");
          saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+
+         searchGoBtn= new Button("Go");
+         searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
          availableSelectAll = new CheckBox("Select All");
          availableSelectAll.setImmediate(true);
@@ -604,6 +608,16 @@ import java.util.*;
          field1.setSizeUndefined();
          field1.addComponent(searchLbl);
          field1.addComponent(searchField);
+         field1.addComponent(searchGoBtn);
+
+         searchGoBtn.addListener(new Button.ClickListener() {
+             private static final long serialVersionUID = 4839268740583678422L;
+
+             @Override
+             public void buttonClick(Button.ClickEvent clickEvent) {
+                 doMethodSearch();
+             }
+         });
 
          container.addComponent(field1);
 
@@ -698,6 +712,15 @@ import java.util.*;
          updateNoOfEntries(availTotalEntriesLabel,availableTable);
 	}
 
+    private void doMethodSearch(){
+        getAvailableTableContainer().removeAllItems();
+        getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
+
+        resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
+        updateNoOfEntries(availTotalEntriesLabel, availableTable);
+        updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
+    }
+
     private void initializeActions() {
 
          editMethodListener = new Button.ClickListener() {
@@ -723,12 +746,7 @@ import java.util.*;
 
 			@Override
              public void valueChange(Property.ValueChangeEvent event) {
-                 getAvailableTableContainer().removeAllItems();
-                 getAvailableTableContainer().addAll(presenter.getFilteredResults(groupFilter.getValue().toString(), typeFilter.getValue().toString(), searchField.getValue().toString()));
-
-                 resultCountLbl.setValue("Results: " + availableTable.getContainerDataSource().getItemIds().size() + " items");
-                 updateNoOfEntries(availTotalEntriesLabel, availableTable);
-                 updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
+                doMethodSearch();
              }
          };
 

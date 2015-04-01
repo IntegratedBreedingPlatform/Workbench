@@ -5,7 +5,7 @@
     <artifactId>ibpworkbench</artifactId>
     <packaging>war</packaging>
     <name>IBPWorkbench</name>
-    <version>4.0.1.RELEASE</version>
+    <version>4.0.2.SNAPSHOT</version>
 
     <properties>
         <vaadin.version>6.8.13</vaadin.version>
@@ -207,6 +207,13 @@
 			<version>${spring.security.version}</version>
 		</dependency>
 
+        <!-- owasp for xss prevention -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>r239</version>
+        </dependency>
+
 		<!-- For AOP Proxying -->
 		<dependency>
 			<groupId>cglib</groupId>
@@ -344,6 +351,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>uk.com.robust-it</groupId>
+            <artifactId>cloning</artifactId>
+            <version>1.9.0</version>
         </dependency>
 
         <!-- Mockito -->

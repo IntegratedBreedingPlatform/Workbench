@@ -35,6 +35,8 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -44,6 +46,7 @@ import java.util.List;
 @Configurable
 public class ShowProjectDetailAction implements Property.ValueChangeListener {
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(ShowProjectDetailAction.class);
     private SummaryView summaryView;
 
     @Autowired
@@ -115,11 +118,9 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
         if (project == null) {
             return;
-        }else
-        {
+        } else {
             currentProj = project;
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-            app.getSessionData().setSelectedProject(currentProj);
+            IBPWorkbenchApplication.get().getSessionData().setSelectedProject(currentProj);
         }
 
         // update the project activity table's listener
@@ -156,25 +157,28 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
             summaryView.updateActivityTable(activityList);
 
             StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, StudyType.T, Arrays.asList(summaryView.getTblTrialColumns()));
+                    studyDataManager, StudyType.T, Arrays.asList(summaryView.getTblTrialColumns()),
+                    project.getUniqueID());
 
             summaryView.updateTrialSummaryTable(trialFactory);
 
 
             StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, StudyType.N, Arrays.asList(summaryView.getTblNurseryColumns()));
+                    studyDataManager, StudyType.N, Arrays.asList(summaryView.getTblNurseryColumns()),
+                    project.getUniqueID());
             summaryView.updateNurserySummaryTable(nurseryFactory);
 
             StudyDetailsQueryFactory seasonFactory = new StudyDetailsQueryFactory(
-                    studyDataManager, null, Arrays.asList(summaryView.getTblSeasonColumns()));
+                    studyDataManager, null, Arrays.asList(summaryView.getTblSeasonColumns()),
+                    project.getUniqueID());
             summaryView.updateSeasonSummaryTable(seasonFactory);
 
             germplasmListPreview.setProject(currentProj);
             nurseryListPreview.setProject(currentProj);
             previewTab.setSelectedTab(germplasmListPreview);
 
-        }
-        catch (MiddlewareQueryException e) {
+        } catch (MiddlewareQueryException e) {
+        	LOG.error(e.getMessage(),e);
             showDatabaseError(tblProject.getWindow());
         }
     }

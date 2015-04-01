@@ -20,7 +20,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
-import org.generationcp.ibpworkbench.navigation.UriUtils;
 import org.generationcp.ibpworkbench.service.AppLauncherService;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -31,15 +30,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 @Configurable
 public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
 	private ToolEnum toolEnum;
 
 	/**
@@ -91,22 +88,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
 		String toolName = (a).split("\\?")[0];
 
-		Map<String, List<String>> params = UriUtils.getUriParameters(uriFragment);
-
 		this.toolEnum = ToolEnum.equivalentToolEnum(toolName);
-
-		if (uriFragment.equals("/breeding_view")) {
-			new ChangeWindowAction().doAction(window, "breeding_view", isLinkAccessed);
-			return;
-		}
-		if (uriFragment.equals("/BreedingGxE")) {
-			new ChangeWindowAction().doAction(window, "BreedingGxE", isLinkAccessed);
-			return;
-		}
-		if (uriFragment.equals("/ProjectMembers")) {
-			new ChangeWindowAction().doAction(window, "ProjectMembers", isLinkAccessed);
-			return;
-		}
 
 		if (this.toolEnum != null) {
 			this.onAppLaunch(window);

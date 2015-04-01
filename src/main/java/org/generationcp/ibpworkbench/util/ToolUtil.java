@@ -258,7 +258,7 @@ public class ToolUtil {
         String dbName = project.getCropType().getDbName();
 
         // DMV : added short circuit processing of the method, so that database access logic is not performed if tool is not included in target of later activities
-        if (!Util.isOneOf(tool.getToolName(), ToolName.gdms.name(), ToolName.mbdt.name())) {
+        if (!Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
             return false;
         }
 
@@ -288,10 +288,7 @@ public class ToolUtil {
             WorkbenchSetting workbenchSetting = workbenchDataManager.getWorkbenchSetting();
 
             String configPath = null;
-            if (Util.isOneOf(tool.getToolName(), ToolName.gdms.name())) {
-				configPath = workbenchSetting.getInstallationDirectory() + File.separator + GDMS_CONFIG_LOCATION;
-
-			} else if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
+            if (Util.isOneOf(tool.getToolName(), ToolName.mbdt.name())) {
 				configPath = workbenchSetting.getInstallationDirectory() + File.separator + MBDT_CONFIG_LOCATION;
 			}
 

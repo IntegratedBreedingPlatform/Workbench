@@ -15,10 +15,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
@@ -28,230 +27,146 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Arrays;
-import java.util.Date;
 
 @Configurable
 public class ChangeWindowAction implements WorkflowConstants, ClickListener, ActionListener {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final static Logger LOG = LoggerFactory.getLogger(ChangeWindowAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ChangeWindowAction.class);
 
-    Project project;
+	@Autowired
+	private SessionData sessionData;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-    public static enum WindowEnums {
-         GERMPLASM_BROWSER("germplasm_browser")
-        ,STUDY_BROWSER("study_browser")
-        ,GERMPLASM_LIST_BROWSER("germplasm_list_browser")
-        ,GDMS("gdms")
-        ,OPTIMAS("optimas")
-        ,BREEDING_MANAGER("breeding_manager")
-        ,BREEDING_VIEW("breeding_view_wb")
-        ,BREEDING_GXE("breeding_gxe")
-        ,BV_META_ANALYSIS("bv_meta_analysis")
-        ,MBDT("mbdt")
-        ,MEMBER("program_member")
-        ,RECOVERY("recovery")
-        ;
+	private Project project;
+	private WindowEnums windowEnums;
 
-        String windowName;
+	public ChangeWindowAction(WindowEnums windowEnum, Project project) {
+		this.windowEnums = windowEnum;
+		this.project = project;
+	}
 
-        WindowEnums(String windowName) {
-            this.windowName = windowName;
-        }
+	/**
+	 * @Depricated, toolConfiguration is no longer necessary
+	 */
+	@Deprecated
+	public ChangeWindowAction(WindowEnums windowEnum, Project project, String toolConfiguration) {
+		this.windowEnums = windowEnum;
+		this.project = project;
+	}
 
-        public String getwindowName() {
-            return windowName;
-        }
+	@Override
+	public void buttonClick(ClickEvent event) {
+		doAction(event);
+	}
 
-        public static WindowEnums equivalentWindowEnum(String windowName) {
-            for (WindowEnums window : WindowEnums.values()) {
-                if (window.getwindowName().equals(windowName)) {
-                    return window;
-                }
-            }
-            return null;
-        }
+	@Override
+	public void doAction(Event event) {
+		doAction(event.getComponent().getWindow(), null, true);
+	}
 
-        public static boolean isCorrectTool(String windowName) {
+	@Override
+	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+		String windowName = StringUtils.isNotBlank(uriFragment) ? StringUtils.removeStart(uriFragment,"/") : windowEnums.getwindowName();
 
-            for (WindowEnums winEnum : WindowEnums.values()) {
-                if (winEnum.getwindowName().equals(windowName)) {
-                    return true;
-                }
-            }
+		if (WindowEnums.isCorrectTool(windowName)) {
+			launchWindow(window, windowName, isLinkAccessed);
+		} else {
+			LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
+			MessageNotifier
+					.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+							messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC,
+									Arrays.asList(windowName).toArray()));
+		}
 
-            return false;
-        }
-    }
+	}
 
-    private WindowEnums windowEnums;
+	public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
+		IContentWindow w = (IContentWindow) window;
 
-    private String toolConfiguration;
+		// TASK: get messagesource equivalent
+		String appLaunched = windowName;
+		if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
+			appLaunched = messageSource.getMessage(Message.MEMBERS_LINK);
+			ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
+			w.showContent(projectLocationPanel);
+		} else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
+			appLaunched = messageSource.getMessage("BACKUP_RESTORE_TITLE");
+			BackupAndRestoreView backupAndRestoreView = new BackupAndRestoreView();
+			w.showContent(backupAndRestoreView);
+		} else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
+			appLaunched = messageSource.getMessage(Message.TITLE_GXE);
+			MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
+			w.showContent(gxeAnalysisPanel);
+		} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
+			appLaunched = messageSource.getMessage(Message.TITLE_SSA);
+			SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project,
+					Database.LOCAL);
+			w.showContent(breedingViewPanel);
+		} else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
+			appLaunched = messageSource.getMessage(Message.TITLE_METAANALYSIS);
+			MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
+			w.showContent(metaAnalyis);
+		}
 
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+		try {
 
-    @Autowired
-    private SessionData sessionData;
+			sessionData.logProgramActivity(windowName,messageSource.getMessage(Message.LAUNCHED_APP,appLaunched));
 
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
+		} catch (MiddlewareQueryException e1) {
+			MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
+					"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+		}
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	}
 
-    @Autowired
-    private ToolUtil toolUtil;
+	public static enum WindowEnums {
+		BREEDING_VIEW("breeding_view_wb")
+		, BREEDING_GXE("breeding_gxe")
+		, BV_META_ANALYSIS("bv_meta_analysis")
+		, MEMBER("program_member")
+		, RECOVERY("recovery")
+		;
 
-    public ChangeWindowAction() {
-    }
+		String windowName;
 
-    public ChangeWindowAction(WindowEnums windowEnum) {
-        this.windowEnums = windowEnum;
-        this.toolConfiguration = WorkflowConstants.DEFAULT;
-    }
+		WindowEnums(String windowName) {
+			this.windowName = windowName;
+		}
 
-    public ChangeWindowAction(WindowEnums windowEnum, Project project) {
-        this.windowEnums = windowEnum;
-        this.project = project;
+		public static WindowEnums equivalentWindowEnum(String windowName) {
+			for (WindowEnums window : WindowEnums.values()) {
+				if (window.getwindowName().equals(windowName)) {
+					return window;
+				}
+			}
+			return null;
+		}
 
-    }
+		public static boolean isCorrectTool(String windowName) {
 
-    public ChangeWindowAction(WindowEnums windowEnum, Project project, String toolConfiguration) {
-        this.windowEnums = windowEnum;
-        this.project = project;
-        this.toolConfiguration = toolConfiguration;
-    }
+			for (WindowEnums winEnum : WindowEnums.values()) {
+				if (winEnum.getwindowName().equals(windowName)) {
+					return true;
+				}
+			}
 
-    @Override
-    public void buttonClick(ClickEvent event) {
-        doAction(event.getComponent().getWindow(), null, true);
-    }
+			return false;
+		}
 
-    @Override
-    public void doAction(Event event) {
-    }
-
-    @Override
-    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        String windowName = "";
-
-        try {
-            windowName = uriFragment.split("/")[1].split("\\?")[0];
-        } catch (Exception e) { }
-
-        if (windowName.equals("")) {
-            windowName = windowEnums.getwindowName();
-        }
-
-        if (WindowEnums.isCorrectTool(windowName)) {
-            launchWindow(window, windowName, isLinkAccessed);
-        } else {
-            LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
-                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
-        }
-    }
-
-    public void launchWindow(Window window, String windowName, boolean isLinkAccessed) {
-        IContentWindow w = (IContentWindow) window;
-
-        if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
-            try {
-                ProjectActivity projAct = new ProjectActivity(new Integer(sessionData.getLastOpenedProject().getProjectId().intValue()), sessionData.getLastOpenedProject(),messageSource.getMessage(Message.MEMBERS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.MEMBERS_LINK)), sessionData.getUserData(), new Date());
-
-                workbenchDataManager.addProjectActivity(projAct);
-
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
-            }
-
-            ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
-            w.showContent(projectLocationPanel);
-
-        } else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
-            w.showContent(new BackupAndRestoreView());
-        }
-        else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
-
-
-            try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
-
-                workbenchDataManager.addProjectActivity(projAct);
-
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
-            }
-
-            MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
-            w.showContent(gxeAnalysisPanel);
-
-        } else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
-
-            try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
-
-                workbenchDataManager.addProjectActivity(projAct);
-
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
-            }
-
-            SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
-            w.showContent(breedingViewPanel);
-        } else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
-            try {
-                IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-                User user = app.getSessionData().getUserData();
-                Project currentProject = app.getSessionData().getLastOpenedProject();
-
-                ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, windowName, "Launched " + windowName, user, new Date());
-
-                workbenchDataManager.addProjectActivity(projAct);
-
-            } catch (MiddlewareQueryException e1) {
-                MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-                        "<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-                return;
-            }
-
-            MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
-            w.showContent(metaAnalyis);
-        } else {
-            LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-            MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
-                    messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
-        }
-
-    }
-
+		public String getwindowName() {
+			return windowName;
+		}
+	}
 
 }

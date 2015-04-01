@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
+
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -37,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -65,6 +67,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
     
     @Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+    
+    @Value("${workbench.is.server.app}")
+    private String isServerApp;
     
     public OpenSelectDatasetForExportAction(SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
         
@@ -109,8 +114,13 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
             LOG.info("Default File Path: " + defaultFilePath);
 
-            String sourceCSVFile = inputDir + defaultFilePath + ".csv";
-
+            String sourceCSVFile = "";
+            if (Boolean.parseBoolean(isServerApp)){
+            	sourceCSVFile = breedingViewProjectName + ".csv";
+            }else{
+            	sourceCSVFile = inputDir + defaultFilePath + ".csv";
+            }
+            
             LOG.info("Source CSV File Path: " + sourceCSVFile);
 
             String destXMLFilePath = inputDir + defaultFilePath + ".xml"; 

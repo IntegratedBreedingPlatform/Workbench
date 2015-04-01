@@ -1,11 +1,7 @@
 package org.generationcp.ibpworkbench.ui.breedingview;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -17,9 +13,12 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -28,37 +27,80 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
+	private final class TreeTableItemClickListener implements ItemClickListener {
+		private final TreeTable tr;
+		private static final long serialVersionUID = 1L;
+
+		private TreeTableItemClickListener(TreeTable tr) {
+			this.tr = tr;
+		}
+
+		@Override
+		public void itemClick(ItemClickEvent event) {
+			
+			Reference r = (Reference) event.getItemId();
+			boolean isStudy = isStudy(r);
+			
+			if (event.isDoubleClick() && isStudy){
+				openStudy(r);
+			}else{
+				if (tr.isCollapsed(r)){
+					tr.setCollapsed(r, false);
+				}else{
+					tr.setCollapsed(r, true);
+				}
+			
+				if (isStudy){
+					selectButton.setEnabled(true);
+				}else{
+					selectButton.setEnabled(false);
+				}
+			}
+			
+		}
+	}
+
 	private static final long serialVersionUID = -7651767452229107837L;
 
-	private final static Logger LOG = LoggerFactory.getLogger(SelectStudyDialog.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SelectStudyDialog.class);
 
 	public static final String CLOSE_SCREEN_BUTTON_ID = "StudyInfoDialog Close Button ID";
 
 	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
+	protected SimpleResourceBundleMessageSource messageSource;
+
+	protected Window parentWindow;
+	protected Button cancelButton;
+	protected Button selectButton;
+	protected TreeTable treeTable;
+	protected VerticalLayout rootLayout;
 
 
-	private Window parentWindow;
-	private Button cancelButton;
-	private Button selectButton;
-	private TreeTable treeTable;
-	private VerticalLayout rootLayout;
+	protected StudyDataManagerImpl studyDataManager;
+	protected Component source;
 
+	protected ThemeResource folderResource;
+	protected ThemeResource studyResource;
+	protected ThemeResource dataSetResource;
 
-	private StudyDataManagerImpl studyDataManager;
-	private Component source;
-
-	private ThemeResource folderResource;
-	private ThemeResource studyResource;
-	private ThemeResource dataSetResource;
-
-	private Label lblStudyTreeDetailDescription;
+	protected Label lblStudyTreeDetailDescription;
 	
 	private Project currentProject;
 
@@ -133,7 +175,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return DatasetUtil.getPlotDataSetId(getStudyDataManager(),studyId);
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -194,7 +236,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
-            LOG.error(e1.getMessage(), e1);
+			LOG.error(e1.getMessage(), e1);
 			if (getWindow() != null) {
 				MessageNotifier
 				.showWarning(
@@ -214,7 +256,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					study = getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 
 			Object[] cells = new Object[3];
@@ -241,35 +283,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.setSelectable(true);
 
 		tr.addListener(new StudyTreeExpandAction(this, tr));
-		tr.addListener(new ItemClickListener(){
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				
-				Reference r = (Reference) event.getItemId();
-				boolean isStudy = isStudy(r);
-				
-				if (event.isDoubleClick() && isStudy){
-					openStudy(r);
-				}else{
-					if (tr.isCollapsed(r)){
-						tr.setCollapsed(r, false);
-					}else{
-						tr.setCollapsed(r, true);
-					}
-				
-					if (isStudy){
-						selectButton.setEnabled(true);
-					}else{
-						selectButton.setEnabled(false);
-					}
-				}
-				
-			}
-			
-		});
+		tr.addListener(new TreeTableItemClickListener(tr));
 		return tr;
 	}
 	
@@ -281,12 +295,12 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 			return getStudyDataManager().isStudy(r.getId());
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
 
-	private void openStudy(Reference r){
+	protected void openStudy(Reference r){
 		if(source instanceof SingleSiteAnalysisPanel) {
 			Integer dataSetId = getPlotDataSetId(r.getId());
 			if(dataSetId!=null) {
@@ -300,7 +314,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 				((MultiSiteAnalysisPanel)source).openStudyMeansDataset(study);
 				parentWindow.removeWindow(SelectStudyDialog.this);
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 				if (study != null) {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
 				} else {
@@ -311,7 +325,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	}
 
 	public void queryChildrenStudies(Reference parentFolderReference,
-			TreeTable tr) throws InternationalizableException {
+			TreeTable tr) {
 
 		List<Reference> childrenReference = new ArrayList<Reference>();
 
@@ -321,7 +335,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId(), currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),
@@ -341,7 +355,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 
 			cells[0] = " " + r.getName();
@@ -389,7 +403,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier
 			.showWarning(
 					getWindow(),

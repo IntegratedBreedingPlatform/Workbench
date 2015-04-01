@@ -313,7 +313,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
         if (userInfo == null || userInfo.getLoginCount() < 1) {
             if (user.getName().equals(user.getPassword()) && userInfo != null){
                 OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-                ow.launchWindow(this, "change_password");
+                ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
             }
 
             if (userInfo == null) {
@@ -448,7 +448,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
             workbenchTitle.setDescription("");
         }
         String pageTitle = "";
-        if (myTitle != null && !myTitle.isEmpty()) {
+        if (!myTitle.isEmpty()) {
         	pageTitle = StringUtils.abbreviate(myTitle, 50);
         }
 
