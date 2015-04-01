@@ -7,33 +7,33 @@
 	app.service('variableStateService', ['$q', 'propertiesService', 'methodsService', 'scalesService',
 		function($q, propertiesService, methodsService, scalesService) {
 
+			var variable = {},
+				scopeData = {},
+				editInProgress = false;
+
 			return {
 
-				variable: {},
-				scopeData: {},
-				editInProgress: false,
-
 				storeVariableState: function(_variable, _scopeData) {
-					this.variable = _variable || {};
-					this.scopeData = _scopeData || {};
-					this.editInProgress = true;
+					variable = _variable || {};
+					scopeData = _scopeData || {};
+					editInProgress = true;
 				},
 
 				getVariableState: function() {
 					return {
-						variable: this.variable,
-						scopeData: this.scopeData
+						variable: variable,
+						scopeData: scopeData
 					};
 				},
 
 				updateInProgress: function() {
-					return this.editInProgress;
+					return editInProgress;
 				},
 
 				reset: function() {
-					this.variable = {};
-					this.scopeData = {};
-					this.editInProgress = false;
+					variable = {};
+					scopeData = {};
+					editInProgress = false;
 				},
 
 				/*
@@ -46,13 +46,12 @@
 					with one parameter error containing the error if one occurs.
 				*/
 				setProperty: function(propertyId, propertyName) {
-					var service = this;
 
 					return $q(function(resolve, reject) {
 						propertiesService.getProperties().then(function(properties) {
-							service.scopeData.properties = properties;
+							scopeData.properties = properties;
 
-							service.variable.propertySummary = {
+							variable.propertySummary = {
 								id: propertyId,
 								name: propertyName
 							};
@@ -74,19 +73,20 @@
 					with one parameter error containing the error if one occurs.
 				*/
 				setMethod: function(methodId, methodName) {
-					var service = this;
 
 					return $q(function(resolve, reject) {
 						methodsService.getMethods().then(function(methods) {
-							service.scopeData.methods = methods;
+							scopeData.methods = methods;
 
-							service.variable.methodSummary = {
+							variable.methodSummary = {
 								id: methodId,
 								name: methodName
 							};
 
 							resolve();
 						}, function(error) {
+
+							// FIXME Set some kind of error state on the variable state service
 							reject(error);
 						});
 					});
@@ -101,15 +101,14 @@
 					with one parameter error containing the error if one occurs.
 				*/
 				setScale: function(scaleId) {
-					var service = this;
 
 					return $q(function(resolve, reject) {
 						scalesService.getScales().then(function(scales) {
-							service.scopeData.scales = scales;
+							scopeData.scales = scales;
 
 							scales.some(function(scale) {
 								if (scale.id === scaleId) {
-									service.variable.scale = scale;
+									variable.scale = scale;
 								}
 							});
 

@@ -83,51 +83,40 @@ describe('VariableState Service', function() {
 
 		it('should store the specified variable and scope data', function() {
 
+			var result;
+
 			variableStateService.storeVariableState(PLANT_VIGOR, SCOPE_DATA);
 
-			expect(variableStateService.variable).toEqual(PLANT_VIGOR);
-			expect(variableStateService.scopeData).toEqual(SCOPE_DATA);
+			result = variableStateService.getVariableState();
+
+			expect(result.variable).toEqual(PLANT_VIGOR);
+			expect(result.scopeData).toEqual(SCOPE_DATA);
 		});
 
 		it('should default to an empty object for falsy variable or scope data values', function() {
 
+			var result;
+
 			variableStateService.storeVariableState(null, null);
 
-			expect(variableStateService.variable).toEqual({});
-			expect(variableStateService.scopeData).toEqual({});
+			result = variableStateService.getVariableState();
+
+			expect(result.variable).toEqual({});
+			expect(result.scopeData).toEqual({});
 
 			variableStateService.storeVariableState();
 
-			expect(variableStateService.variable).toEqual({});
-			expect(variableStateService.scopeData).toEqual({});
+			result = variableStateService.getVariableState();
+
+			expect(result.variable).toEqual({});
+			expect(result.scopeData).toEqual({});
 		});
 
 		it('should set edit in progress to be true', function() {
 
 			variableStateService.storeVariableState(PLANT_VIGOR, SCOPE_DATA);
 
-			expect(variableStateService.editInProgress).toBe(true);
-		});
-	});
-
-	describe('getVariableState', function() {
-
-		it('should return the stored variable and scope data', function() {
-
-			// Nothing had been stored so it should be empty
-			expect(variableStateService.getVariableState()).toEqual({
-				variable: {},
-				scopeData: {}
-			});
-
-			// Store some data
-			variableStateService.storeVariableState(PLANT_VIGOR, SCOPE_DATA);
-
-			// It should now be what we stored
-			expect(variableStateService.getVariableState()).toEqual({
-				variable: PLANT_VIGOR,
-				scopeData: SCOPE_DATA
-			});
+			expect(variableStateService.updateInProgress()).toBe(true);
 		});
 	});
 
@@ -151,14 +140,18 @@ describe('VariableState Service', function() {
 
 		it('should empty any stored data and cancel any edit if there is one in progress', function() {
 
+			var result;
+
 			// Store some data
 			variableStateService.storeVariableState(PLANT_VIGOR, SCOPE_DATA);
 
 			variableStateService.reset();
 
-			expect(variableStateService.variable).toEqual({});
-			expect(variableStateService.scopeData).toEqual({});
-			expect(variableStateService.editInProgress).toBe(false);
+			result = variableStateService.getVariableState();
+
+			expect(result.variable).toEqual({});
+			expect(result.scopeData).toEqual({});
+			expect(variableStateService.updateInProgress()).toBe(false);
 		});
 	});
 
@@ -209,6 +202,7 @@ describe('VariableState Service', function() {
 				selectedPropertyId = 1,
 				selectedPropertyName = 'a property',
 				result,
+				state,
 				success;
 
 			result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
@@ -220,9 +214,11 @@ describe('VariableState Service', function() {
 			deferredGetProperties.resolve(properties);
 			scope.$apply();
 
-			expect(variableStateService.variable.propertySummary.id).toEqual(selectedPropertyId);
-			expect(variableStateService.variable.propertySummary.name).toEqual(selectedPropertyName);
-			expect(variableStateService.scopeData.properties).toEqual(properties);
+			state = variableStateService.getVariableState();
+
+			expect(state.variable.propertySummary.id).toEqual(selectedPropertyId);
+			expect(state.variable.propertySummary.name).toEqual(selectedPropertyName);
+			expect(state.scopeData.properties).toEqual(properties);
 		});
 	});
 
@@ -245,7 +241,6 @@ describe('VariableState Service', function() {
 			scope.$apply();
 
 			expect(success).toBe(true);
-
 		});
 
 		it('should return a promise that is rejected if the methods service fails to successfully returns methods', function() {
@@ -273,6 +268,7 @@ describe('VariableState Service', function() {
 				selectedMethodId = 1,
 				selectedMethodName = 'a method',
 				result,
+				state,
 				success;
 
 			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
@@ -284,9 +280,11 @@ describe('VariableState Service', function() {
 			deferredGetMethods.resolve(methods);
 			scope.$apply();
 
-			expect(variableStateService.variable.methodSummary.id).toEqual(selectedMethodId);
-			expect(variableStateService.variable.methodSummary.name).toEqual(selectedMethodName);
-			expect(variableStateService.scopeData.methods).toEqual(methods);
+			state = variableStateService.getVariableState();
+
+			expect(state.variable.methodSummary.id).toEqual(selectedMethodId);
+			expect(state.variable.methodSummary.name).toEqual(selectedMethodName);
+			expect(state.scopeData.methods).toEqual(methods);
 		});
 	});
 
@@ -336,6 +334,7 @@ describe('VariableState Service', function() {
 			var scales = [{id: 1, name: 'a scale'}],
 				selectedScaleId = 1,
 				result,
+				state,
 				success;
 
 			result = variableStateService.setScale(selectedScaleId);
@@ -347,8 +346,10 @@ describe('VariableState Service', function() {
 			deferredGetScales.resolve(scales);
 			scope.$apply();
 
-			expect(variableStateService.variable.scale.id).toEqual(selectedScaleId);
-			expect(variableStateService.scopeData.scales).toEqual(scales);
+			state = variableStateService.getVariableState();
+
+			expect(state.variable.scale.id).toEqual(selectedScaleId);
+			expect(state.scopeData.scales).toEqual(scales);
 		});
 
 		it('should not set the scale if there is no matching id', function() {
@@ -356,6 +357,7 @@ describe('VariableState Service', function() {
 			var scales = [{id: 1, name: 'a scale'}],
 				selectedScaleId = 3,
 				result,
+				state,
 				success;
 
 			result = variableStateService.setScale(selectedScaleId);
@@ -367,7 +369,9 @@ describe('VariableState Service', function() {
 			deferredGetScales.resolve(scales);
 			scope.$apply();
 
-			expect(variableStateService.variable.scale).toBeUndefined();
+			state = variableStateService.getVariableState();
+
+			expect(state.variable.scale).toBeUndefined();
 		});
 	});
 });
