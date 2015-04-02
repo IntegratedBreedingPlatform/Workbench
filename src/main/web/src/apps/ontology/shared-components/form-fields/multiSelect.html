@@ -10,7 +10,10 @@
 					<span class="cross" ng-click="removeItem($index)">x</span>
 				</span>
 			</span>
-			<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()"/>
+			<div>
+				<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()"/>
+				<span class="suggestions-toggle" ng-click="toggleSuggestions()">toggle</span>
+			</div>
 		</div>
 
 		<ul class="suggestions-list">

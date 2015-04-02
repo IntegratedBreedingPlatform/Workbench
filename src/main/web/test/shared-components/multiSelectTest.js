@@ -259,6 +259,30 @@ describe('multiselect module', function() {
 		});
 	});
 
+	describe('$scope.toggleSuggestions', function() {
+
+		it('should call search to populate the suggestions if there are no suggestions and nothing is selected', function() {
+			compileDirective();
+
+			spyOn(isolateScope, 'search').and.callThrough();
+
+			isolateScope.selectedIndex = -1;
+			isolateScope.suggestions = [];
+			isolateScope.toggleSuggestions();
+
+			expect(isolateScope.search).toHaveBeenCalled();
+		});
+
+		it('should clear the suggestions to hide them if they are currently shown', function() {
+			compileDirective();
+
+			isolateScope.suggestions = ['one'];
+			isolateScope.toggleSuggestions();
+
+			expect(isolateScope.suggestions.length).toEqual(0);
+		});
+	});
+
 });
 
 describe('stringDataService', function() {

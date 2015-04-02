@@ -83,6 +83,16 @@
 						scope.model[scope.property].splice(index, 1);
 					};
 
+					scope.toggleSuggestions = function() {
+						// If the suggestions are not populated then they aren't currently shown, so search to show them
+						if (scope.selectedIndex === -1 && scope.suggestions.length === 0) {
+							scope.search();
+						} else {
+							// Clear the suggestions to hide them
+							scope.suggestions = [];
+						}
+					};
+
 				},
 				restrict: 'E',
 				scope: {
