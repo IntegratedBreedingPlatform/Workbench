@@ -1,7 +1,7 @@
 /*global expect, inject, spyOn*/
 'use strict';
 
-describe('VariableState Service', function() {
+describe('Variable State Service', function() {
 	var PLANT_VIGOR = {
 			id: 2,
 			name: 'Plant Vigor',
@@ -18,6 +18,12 @@ describe('VariableState Service', function() {
 			properties: [{id: 1, name: 'a property'}],
 			methods: [{id: 1, name: 'a method'}],
 			scales: [{id: 1, name: 'a scale'}]
+		},
+
+		TRANSLATIONS = {
+			'variableStateService.couldNotSetProperty': 'an error message',
+			'variableStateService.couldNotSetMethod': 'another error message',
+			'variableStateService.couldNotSetScale': 'yet another error message'
 		},
 
 		variableStateService,
@@ -64,7 +70,12 @@ describe('VariableState Service', function() {
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
 
-		module(function ($provide) {
+		module(function ($translateProvider, $provide) {
+
+			$translateProvider
+				.translations('en', TRANSLATIONS)
+				.preferredLanguage('en');
+
 			$provide.value('propertiesService', propertiesService);
 			$provide.value('methodsService', methodsService);
 			$provide.value('scalesService', scalesService);
@@ -138,7 +149,7 @@ describe('VariableState Service', function() {
 
 	describe('reset', function() {
 
-		it('should empty any stored data and cancel any edit if there is one in progress', function() {
+		it('should empty any stored state and cancel any edit if there is one in progress', function() {
 
 			var result;
 
@@ -151,6 +162,7 @@ describe('VariableState Service', function() {
 
 			expect(result.variable).toEqual({});
 			expect(result.scopeData).toEqual({});
+			expect(result.errors).toEqual([]);
 			expect(variableStateService.updateInProgress()).toBe(false);
 		});
 	});
@@ -177,10 +189,12 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should return a promise that is rejected if the properties service fails to successfully returns properties', function() {
+		it('should set an error and return a promise that is rejected if the properties service fails to successfully returns', function() {
 
 			var selectedPropertyId = 1,
+				errorMessage = TRANSLATIONS['variableStateService.couldNotSetProperty'],
 				result,
+				state,
 				success;
 
 			result = variableStateService.setProperty(selectedPropertyId);
@@ -192,8 +206,11 @@ describe('VariableState Service', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
 
-			expect(success).toBe(false);
+			state = variableStateService.getVariableState();
 
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(errorMessage);
+			expect(success).toBe(false);
 		});
 
 		it('should set the properties and property summary if the call to the properties service is successful', function() {
@@ -233,8 +250,6 @@ describe('VariableState Service', function() {
 
 			result = variableStateService.setMethod(selectedMethodId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetMethods.resolve(methods);
@@ -243,21 +258,25 @@ describe('VariableState Service', function() {
 			expect(success).toBe(true);
 		});
 
-		it('should return a promise that is rejected if the methods service fails to successfully returns methods', function() {
+		it('should set an error and return a promise that is rejected if the methods service fails to successfully returns', function() {
 
 			var selectedMethodId = 1,
+				errorMessage = TRANSLATIONS['variableStateService.couldNotSetMethod'],
 				result,
+				state,
 				success;
 
 			result = variableStateService.setMethod(selectedMethodId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetMethods.reject();
 			scope.$apply();
 
+			state = variableStateService.getVariableState();
+
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(errorMessage);
 			expect(success).toBe(false);
 
 		});
@@ -273,8 +292,6 @@ describe('VariableState Service', function() {
 
 			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetMethods.resolve(methods);
@@ -299,8 +316,6 @@ describe('VariableState Service', function() {
 
 			result = variableStateService.setScale(selectedScaleId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetScales.resolve(scales);
@@ -310,21 +325,25 @@ describe('VariableState Service', function() {
 
 		});
 
-		it('should return a promise that is rejected if the scales service fails to successfully returns scales', function() {
+		it('should set an error and return a promise that is rejected if the scales service fails to successfully returns', function() {
 
 			var selectedScaleId = 1,
+				errorMessage = TRANSLATIONS['variableStateService.couldNotSetScale'],
 				result,
+				state,
 				success;
 
 			result = variableStateService.setScale(selectedScaleId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetScales.reject();
 			scope.$apply();
 
+			state = variableStateService.getVariableState();
+
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(errorMessage);
 			expect(success).toBe(false);
 
 		});
@@ -339,8 +358,6 @@ describe('VariableState Service', function() {
 
 			result = variableStateService.setScale(selectedScaleId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetScales.resolve(scales);
@@ -362,8 +379,6 @@ describe('VariableState Service', function() {
 
 			result = variableStateService.setScale(selectedScaleId);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
 			result.then(function() {success = true;}, function() {success = false;});
 
 			deferredGetScales.resolve(scales);

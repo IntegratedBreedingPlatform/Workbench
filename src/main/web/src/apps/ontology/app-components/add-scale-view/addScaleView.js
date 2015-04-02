@@ -24,9 +24,9 @@
 					scalesService.addScale(scale).then(function(response) {
 						scale.id = response.id;
 						if (variableStateService.updateInProgress()) {
-							variableStateService.setScale(scale.id, scale.name).then(function() {
+							variableStateService.setScale(scale.id, scale.name).finally(function() {
 								$window.history.back();
-							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							});
 						} else {
 							// FIXME Go somewhere more useful
 							$location.path('/scales');

@@ -19,7 +19,6 @@ describe('Add Method View', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {},
 			formatErrorsForDisplay: function() {}
 		},
 
@@ -45,7 +44,6 @@ describe('Add Method View', function() {
 		};
 
 		spyOn(methodsService, 'addMethod').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
 
 		controller = $controller('AddMethodController', {
 			$scope: $rootScope,

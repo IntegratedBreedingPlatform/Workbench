@@ -139,29 +139,5 @@ describe('Add Property View', function() {
 			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id, BLAST.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
-
-		it('should log an error if there is a problem setting the property on the variable being updated', function() {
-
-			var deferredSetProperty;
-
-			variableStateService.setProperty = function() {
-				deferredSetProperty = q.defer();
-				return deferredSetProperty.promise;
-			};
-
-			// Variable edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-
-			// Successful save
-			scope.saveProperty(fakeEvent, BLAST);
-			deferredAddProperty.resolve({id: 45});
-			scope.$apply();
-
-			// Fail to set the property
-			deferredSetProperty.reject();
-			scope.$apply();
-
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
-		});
 	});
 });

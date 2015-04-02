@@ -2,14 +2,25 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variableState', ['properties', 'methods', 'scales']);
+	var app = angular.module('variableState', ['properties', 'methods', 'scales', 'pascalprecht.translate']);
 
-	app.service('variableStateService', ['$q', 'propertiesService', 'methodsService', 'scalesService',
-		function($q, propertiesService, methodsService, scalesService) {
+	app.service('variableStateService', ['$q', '$translate', 'propertiesService', 'methodsService', 'scalesService',
+		function($q, $translate, propertiesService, methodsService, scalesService) {
 
 			var variable = {},
 				scopeData = {},
+				errors = [],
 				editInProgress = false;
+
+			function handleFailedUpdate(reject, translationKey) {
+				return function(error) {
+					$translate(translationKey).then(function(message) {
+						errors.push(message);
+					});
+
+					reject(error);
+				};
+			}
 
 			return {
 
@@ -22,7 +33,8 @@
 				getVariableState: function() {
 					return {
 						variable: variable,
-						scopeData: scopeData
+						scopeData: scopeData,
+						errors: errors
 					};
 				},
 
@@ -33,6 +45,7 @@
 				reset: function() {
 					variable = {};
 					scopeData = {};
+					errors = [];
 					editInProgress = false;
 				},
 
@@ -57,9 +70,7 @@
 							};
 
 							resolve();
-						}, function(error) {
-							reject(error);
-						});
+						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetProperty'));
 					});
 				},
 
@@ -84,11 +95,7 @@
 							};
 
 							resolve();
-						}, function(error) {
-
-							// FIXME Set some kind of error state on the variable state service
-							reject(error);
-						});
+						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetMethod'));
 					});
 				},
 
@@ -113,9 +120,7 @@
 							});
 
 							resolve();
-						}, function(error) {
-							reject(error);
-						});
+						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetScale'));
 					});
 				}
 			};

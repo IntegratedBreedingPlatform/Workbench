@@ -18,9 +18,10 @@
 						// If we successfully added the method, continue..
 						method.id = response.id;
 						if (variableStateService.updateInProgress()) {
-							variableStateService.setMethod(method.id, method.name).then(function() {
+
+							variableStateService.setMethod(method.id, method.name).finally(function() {
 								$window.history.back();
-							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							});
 						} else {
 							// FIXME Go somewhere more useful
 							$location.path('/methods');

@@ -207,29 +207,5 @@ describe('Add Scale View', function() {
 			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE.name);
 			expect(window.history.back).toHaveBeenCalled();
 		});
-
-		it('should log an error if there is a problem setting the scale on the variable being updated', function() {
-
-			var deferredSetScale;
-
-			variableStateService.setScale = function() {
-				deferredSetScale = q.defer();
-				return deferredSetScale.promise;
-			};
-
-			// Variable edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-
-			// Successful save
-			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferredAddScale.resolve({id: '1'});
-			scope.$apply();
-
-			// Fail to set the scale
-			deferredSetScale.reject();
-			scope.$apply();
-
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
-		});
 	});
 });

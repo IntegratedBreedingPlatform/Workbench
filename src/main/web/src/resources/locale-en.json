@@ -72,6 +72,12 @@
 		}
 	},
 
+	"variableStateService": {
+		"couldNotSetProperty": "Your property was created but not set on your new variable. Please try again.",
+		"couldNotSetMethod": "Your method was created but not set on your new variable. Please try again.",
+		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again."
+	},
+
 	"validation": {
 
 		"tooLong": "Please reduce to under {{maxLength}} characters",

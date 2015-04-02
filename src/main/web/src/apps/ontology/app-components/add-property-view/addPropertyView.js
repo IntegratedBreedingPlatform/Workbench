@@ -22,9 +22,9 @@
 				propertiesService.addProperty(property).then(function(response) {
 					property.id = response.id;
 					if (variableStateService.updateInProgress()) {
-						variableStateService.setProperty(property.id, property.name).then(function() {
+						variableStateService.setProperty(property.id, property.name).finally(function() {
 							$window.history.back();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						});
 					} else {
 						// FIXME Go somewhere more useful
 						$location.path('/properties');

@@ -13,6 +13,8 @@
 
 			var storedData;
 
+			$scope.serverErrors = {};
+
 			// The select2 input needs to be able to call length on the arrays used for the options before the data is returned.
 			$scope.data = {
 				properties: [],
@@ -26,8 +28,10 @@
 			if (variableStateService.updateInProgress()) {
 
 				storedData = variableStateService.getVariableState();
+
 				$scope.variable = storedData.variable;
 				$scope.data = storedData.scopeData;
+				$scope.serverErrors.general = storedData.errors;
 
 			} else {
 
