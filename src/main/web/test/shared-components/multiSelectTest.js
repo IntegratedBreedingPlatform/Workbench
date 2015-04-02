@@ -226,6 +226,24 @@ describe('multiselect module', function() {
 		});
 	});
 
+	describe('$scope.onClick', function() {
+
+		it('should add to selected items', function() {
+			compileDirective();
+
+			spyOn(isolateScope, 'addToSelectedItems').and.callThrough();
+
+			isolateScope.onClick(1);
+			expect(isolateScope.addToSelectedItems).toHaveBeenCalledWith(1);
+		});
+
+		it('should reset the selected index back to -1', function() {
+			compileDirective();
+			isolateScope.onClick();
+			expect(isolateScope.selectedIndex).toEqual(-1);
+		});
+	});
+
 	describe('$scope.removeItem', function() {
 
 		it('should remove an item from the selected items array at the provided index', function() {
@@ -322,6 +340,13 @@ describe('stringDataService', function() {
 		});
 	});
 
+	describe('formatForDisplay', function() {
+
+		it('should return the passed in string with no additional formatting', function() {
+			expect(formatForDisplay('hi')).toEqual('hi');
+		});
+	});
+
 	describe('search', function() {
 
 		beforeEach(function() {
@@ -350,6 +375,7 @@ describe('stringDataService', function() {
 		});
 
 		it('should not add the search term text to the suggestions if the model for the input is not valued', function() {
+			scope.tags = true;
 			search();
 			expect(scope.suggestions).not.toContain('');
 		});
@@ -378,4 +404,112 @@ describe('stringDataService', function() {
 	});
 });
 
+describe('objectDataService', function() {
+		var ONE = {name: 'one'},
+			TWO = {name: 'two'},
+			DEFAULT_OPTIONS = [ONE, TWO],
 
+			scope,
+			objectDataService,
+			addToSelectedItems,
+			formatForDisplay,
+			search;
+
+	beforeEach(function() {
+		module('multiSelect');
+	});
+
+	beforeEach(inject(function($rootScope) {
+		scope = $rootScope.$new();
+	}));
+
+	beforeEach(function() {
+		inject(function(_objectDataService_) {
+			objectDataService = _objectDataService_;
+		});
+
+		addToSelectedItems = objectDataService.addToSelectedItems(scope);
+		search = objectDataService.search(scope);
+
+		formatForDisplay = objectDataService.formatForDisplay;
+	});
+
+	beforeEach(function() {
+		scope.model = {
+			property: []
+		};
+		scope.property = 'property';
+	});
+
+	describe('addToSelectedItems', function() {
+		beforeEach(function() {
+			scope.suggestions = DEFAULT_OPTIONS;
+		});
+
+		it('should add the item if it hasn\'t already been added to the list of selected items', function() {
+			addToSelectedItems(0);
+			expect(scope.model[scope.property]).toContain(ONE);
+		});
+
+		it('should not add the item again if it has already been added to the list of selected items', function() {
+			scope.model[scope.property] = [ONE];
+			addToSelectedItems(0);
+
+			expect(scope.model[scope.property][0]).toEqual(ONE);
+			expect(scope.model[scope.property].length).toEqual(1);
+		});
+
+		it('should not add an item if the index is not within the bounds of the suggestions array', function() {
+			addToSelectedItems(-1);
+			expect(scope.model[scope.property].length).toEqual(0);
+		});
+
+		it('should set the suggestions back to an empty array after adding an item', function() {
+			addToSelectedItems(0);
+			expect(scope.suggestions).toEqual([]);
+		});
+	});
+
+	describe('formatForDisplay', function() {
+
+		it('should return the name of the passed in object', function() {
+			expect(formatForDisplay(ONE)).toEqual('one');
+		});
+	});
+
+	describe('search', function() {
+
+		beforeEach(function() {
+			scope.options = DEFAULT_OPTIONS;
+			scope.searchText = '';
+		});
+
+		it('should reset suggestions to the passed in options', function() {
+			scope.suggestions = [];
+			search();
+			expect(scope.suggestions).toEqual(scope.options);
+		});
+
+		it('should only return suggestions that match the search term', function() {
+			scope.searchText = 'on';
+			search();
+
+			expect(scope.suggestions[0]).toEqual(ONE);
+			expect(scope.suggestions).not.toContain(TWO);
+		});
+
+		it('should only return suggestions that have not already been selected', function() {
+			scope.searchText = 'one';
+
+			scope.model[scope.property] = [ONE];
+			search();
+
+			expect(scope.suggestions).not.toContain(ONE);
+		});
+
+		it('should set the selected index to -1', function() {
+			search();
+			expect(scope.selectedIndex).toEqual(-1);
+		});
+	});
+});
