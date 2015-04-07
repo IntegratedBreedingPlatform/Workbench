@@ -16,6 +16,7 @@
 
 				$scope.$watch('selectedScale', function(scale) {
 					$scope.model = angular.copy(scale);
+					$scope.deletable = scale && scale.deletable || false;
 				});
 
 				$scope.$watch('selectedItem', function(selected) {

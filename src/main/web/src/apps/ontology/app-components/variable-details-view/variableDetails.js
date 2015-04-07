@@ -25,6 +25,7 @@
 
 					$scope.$watch('selectedVariable', function(variable) {
 						$scope.model = angular.copy(variable);
+						$scope.deletable = variable && variable.deletable || false;
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype

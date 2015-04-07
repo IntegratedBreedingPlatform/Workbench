@@ -22,7 +22,7 @@
 	</ng-messages>
 
 	<button ng-hide="editing" ng-click="editProperty($event)">{{'button.edit' | translate}}</button>
-	<button ng-hide="editing" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
+	<button ng-hide="editing || !deletable" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
 
 	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>

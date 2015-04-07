@@ -13,6 +13,7 @@
 
 					$scope.$watch('selectedProperty', function(property) {
 						$scope.model = angular.copy(property);
+						$scope.deletable = property && property.deletable || false;
 					});
 
 					$scope.data = {

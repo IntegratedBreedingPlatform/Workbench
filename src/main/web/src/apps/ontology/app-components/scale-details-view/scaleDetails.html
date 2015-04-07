@@ -40,7 +40,7 @@
 	</div>
 
 	<button ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
-	<button ng-hide="editing" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
+	<button ng-hide="editing || !deletable" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
 
 	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
 
