@@ -221,7 +221,7 @@
 			}]
 			*/
 			getTypes: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variableTypes');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/variableTypes');
 				return request.then(successHandler, failureHandler);
 			}
 		};

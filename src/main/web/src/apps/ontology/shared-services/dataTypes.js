@@ -19,7 +19,7 @@
 			}]
 			*/
 			getDataTypes: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/dataTypes');
+				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/dataTypes');
 				return request.then(successHandler, failureHandler);
 			}
 		};
