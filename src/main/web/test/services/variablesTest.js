@@ -82,7 +82,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables', function() {
 
-			httpBackend.expectGET(/\/variables\?propertyId=1$/).respond();
+			httpBackend.expectGET(/\/variables\?programId=1$/).respond();
 
 			variablesService.getVariables();
 
@@ -93,7 +93,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?propertyId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\?programId=1$/).respond(response);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -107,7 +107,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?propertyId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\?programId=1$/).respond(500, error);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -122,7 +122,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables, setting favourite=true', function() {
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?propertyId=1$/).respond();
+			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond();
 
 			variablesService.getFavouriteVariables();
 
@@ -133,7 +133,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?propertyId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond(response);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -147,7 +147,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?propertyId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond(500, error);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -217,7 +217,7 @@ describe('Variables Service', function() {
 			var id = 123;
 
 			// FIXME check that the variable with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/variables\/:id\?propertyId=1$/).respond();
+			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond();
 
 			variablesService.getVariable(id);
 
@@ -229,7 +229,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\/:id\?propertyId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond(response);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -244,7 +244,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\/:id\?propertyId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond(500, error);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -263,7 +263,7 @@ describe('Variables Service', function() {
 			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(204);
+			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(204);
 
 			variablesService.updateVariable(id, PLANT_VIGOR);
 
@@ -280,7 +280,7 @@ describe('Variables Service', function() {
 			variable.metadata = {};
 			variable.editableFields = ['blah'];
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, expectedVariable).respond(204);
+			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, expectedVariable).respond(204);
 
 			variablesService.updateVariable(id, variable);
 
@@ -293,7 +293,7 @@ describe('Variables Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
+			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
 
 			variablesService.updateVariable(id, PLANT_VIGOR).then(function(res) {
 				actualResponse = res;
@@ -309,7 +309,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/variables\/:id\?propertyId=1$/, CONVERTED_PLANT_VIGOR).respond(500, error);
+			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(500, error);
 
 			variablesService.updateVariable(1, PLANT_VIGOR);
 			httpBackend.flush();

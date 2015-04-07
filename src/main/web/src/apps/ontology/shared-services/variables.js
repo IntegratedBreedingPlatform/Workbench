@@ -61,7 +61,7 @@
 			*/
 			getVariables: function() {
 				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
-					'?propertyId=1');
+					'?programId=1');
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -70,7 +70,7 @@
 			*/
 			getFavouriteVariables: function() {
 				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
-					'?favourite=true?propertyId=1');
+					'?favourite=true?programId=1');
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -166,7 +166,7 @@
 					request;
 
 				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
-					'?propertyId=1', convertedVariable);
+					'?programId=1', convertedVariable);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -207,7 +207,7 @@
 			*/
 			getVariable: function(/*id*/) {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
-					'?propertyId=1');
+					'?programId=1');
 				return request.then(successHandler, failureHandler);
 			}
 		};
