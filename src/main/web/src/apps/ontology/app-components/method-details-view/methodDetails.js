@@ -11,8 +11,11 @@
 				controller: function($scope) {
 					$scope.editing = false;
 
+					$scope.serverErrors = {};
+
 					$scope.$watch('selectedMethod', function(method) {
 						$scope.model = angular.copy(method);
+						$scope.deletable = method && method.deletable || false;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
@@ -22,6 +25,9 @@
 					$scope.editMethod = function(e) {
 						e.preventDefault();
 						$scope.editing = true;
+
+						// Reset server errors
+						$scope.serverErrors = {};
 					};
 
 					$scope.deleteMethod = function(e, id) {
@@ -31,25 +37,37 @@
 							// Remove method on parent scope if we succeeded
 							panelService.hidePanel();
 							$scope.updateSelectedMethod();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						});
 					};
 
 					$scope.cancel = function(e) {
 						e.preventDefault();
 						$scope.editing = false;
 						$scope.model = angular.copy($scope.selectedMethod);
+
+						// Reset server errors
+						$scope.serverErrors = {};
 					};
 
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
 
-						methodsService.updateMethod(id, model).then(function() {
+						// Reset server errors
+						$scope.serverErrors = {};
 
-							// Update method on parent scope if we succeeded
-							$scope.updateSelectedMethod(model);
+						if ($scope.mdForm.$valid) {
+							methodsService.updateMethod(id, model).then(function() {
 
-							$scope.editing = false;
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+								// Update method on parent scope if we succeeded
+								$scope.updateSelectedMethod(model);
+
+								$scope.editing = false;
+							}, function(response) {
+								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+							});
+						}
 					};
 				},
 				restrict: 'E',

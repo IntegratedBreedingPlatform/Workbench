@@ -59,7 +59,6 @@ describe('Add Method View', function() {
 		scope = $rootScope;
 		window = $window;
 
-
 		// Pretend our form is valid
 		scope.amForm = {
 			$valid: true

@@ -6,7 +6,7 @@ describe('Method details directive', function() {
 			preventDefault: function() {}
 		},
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 		panelService = {
 			hidePanel: function() {}
@@ -69,7 +69,7 @@ describe('Method details directive', function() {
 
 		spyOn(methodsService, 'updateMethod').and.callThrough();
 		spyOn(methodsService, 'deleteMethod').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -134,11 +134,25 @@ describe('Method details directive', function() {
 
 		beforeEach(function() {
 			scope.updateSelectedMethod = function(/*model*/) {};
+
+			// Pretend our form is valid
+			scope.mdForm = {
+				$valid: true
+			};
 		});
 
 		it('should call the methods service to update the method', function() {
 			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
 			expect(methodsService.updateMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY);
+		});
+
+		it('should not call the methods service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.mdForm.$valid = false;
+
+			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
+
+			expect(methodsService.updateMethod.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors if the update was not successful', function() {
@@ -147,7 +161,7 @@ describe('Method details directive', function() {
 			deferredUpdateMethod.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {
@@ -189,7 +203,7 @@ describe('Method details directive', function() {
 			deferredDeleteMethod.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {

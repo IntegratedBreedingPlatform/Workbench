@@ -1,11 +1,28 @@
-<form novalidate>
-	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+<form name="mdForm" ng-submit="saveChanges($event, methodId, model)" novalidate>
 
-	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<div ng-repeat="error in serverErrors.general">{{error}}</div>
+
+	<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
+
+	<ng-messages for="mdForm.omName.$error" ng-if="mdForm.$submitted || mdForm.omName.$touched">
+		<ng-message when="required">{{'validation.method.nameRequired' | translate}}</ng-message>
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+	</ng-messages>
+
+	<div ng-repeat="error in serverErrors.name">{{error}}</div>
+
+	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+
+	<ng-messages for="mdForm.omDescription.$error" ng-if="mdForm.$submitted || mdForm.omDescription.$touched">
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+	</ng-messages>
+
+	<div ng-repeat="error in serverErrors.description">{{error}}</div>
 
 	<button ng-hide="editing" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
-	<button ng-hide="editing" ng-click="deleteMethod($event, methodId)">{{'button.delete' | translate}}</button>
 
-	<button ng-show="editing" ng-click="saveChanges($event, methodId, model)" type="submit">{{'button.save' | translate}}</button>
+	<button ng-hide="editing || !deletable" ng-click="deleteMethod($event, methodId)">{{'button.delete' | translate}}</button>
+
+	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>
