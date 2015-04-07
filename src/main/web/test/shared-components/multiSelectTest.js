@@ -358,10 +358,6 @@ describe('stringDataService', function() {
 			expect(scope.model[scope.property].length).toEqual(0);
 		});
 
-		it('should set the suggestions back to an empty array after adding an item', function() {
-			addToSelectedItems(0);
-			expect(scope.suggestions).toEqual([]);
-		});
 	});
 
 	describe('formatForDisplay', function() {
@@ -488,10 +484,6 @@ describe('objectDataService', function() {
 			expect(scope.model[scope.property].length).toEqual(0);
 		});
 
-		it('should set the suggestions back to an empty array after adding an item', function() {
-			addToSelectedItems(0);
-			expect(scope.suggestions).toEqual([]);
-		});
 	});
 
 	describe('formatForDisplay', function() {

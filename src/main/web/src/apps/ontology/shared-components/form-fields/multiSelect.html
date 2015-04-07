@@ -10,8 +10,8 @@
 					<span class="cross" ng-click="removeItem($index)">x</span>
 				</span>
 			</span>
-			<div>
-				<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()"/>
+			<div om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="enabled">
+				<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="showSuggestions()"/>
 				<span class="suggestions-toggle" ng-click="toggleSuggestions()">toggle</span>
 			</div>
 		</div>

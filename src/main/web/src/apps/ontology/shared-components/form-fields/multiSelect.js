@@ -2,11 +2,8 @@
 'use strict';
 
 (function() {
-	var multiSelect = angular.module('multiSelect', ['formFields']);
+	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway']);
 
-	// This will work for classes at this stage. Will just need to get rid of
-	// adding your own in the search function and then it should work for multi
-	// select as well
 	multiSelect.directive('omMultiSelect', ['editable', 'stringDataService', 'objectDataService',
 		function(editable, stringDataService, objectDataService) {
 
@@ -51,7 +48,7 @@
 
 							// Load the suggestions if the user presses down with an empty input
 							if (scope.selectedIndex === -1) {
-								scope.search();
+								scope.showSuggestions();
 							}
 
 							if (scope.selectedIndex + 1 < scope.suggestions.length) {
@@ -70,13 +67,13 @@
 						else if (event.keyCode === 13) {
 							event.preventDefault();
 							scope.addToSelectedItems(scope.selectedIndex);
-							scope.selectedIndex = -1;
+							scope.hideSuggestions();
 						}
 					};
 
 					scope.onClick = function(index) {
 						scope.addToSelectedItems(index);
-						scope.selectedIndex = -1;
+						scope.hideSuggestions();
 					};
 
 					scope.removeItem = function(index) {
@@ -84,13 +81,23 @@
 					};
 
 					scope.toggleSuggestions = function() {
-						// If the suggestions are not populated then they aren't currently shown, so search to show them
 						if (scope.selectedIndex === -1 && scope.suggestions.length === 0) {
-							scope.search();
+							scope.showSuggestions();
 						} else {
-							// Clear the suggestions to hide them
-							scope.suggestions = [];
+							scope.hideSuggestions();
 						}
+					};
+
+					scope.showSuggestions = function() {
+						scope.search();
+						scope.enabled = true;
+					};
+
+					scope.hideSuggestions = function() {
+						scope.suggestions = [];
+						scope.selectedIndex = -1;
+						scope.searchText = '';
+						scope.enabled = false;
 					};
 
 				},
@@ -129,8 +136,6 @@
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
 						scope.model[scope.property].push(itemToAdd);
-						scope.searchText = '';
-						scope.suggestions = [];
 					}
 				};
 			},
@@ -186,8 +191,6 @@
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
 						scope.model[scope.property].push(itemToAdd);
-						scope.searchText = '';
-						scope.suggestions = [];
 					}
 				};
 			},
