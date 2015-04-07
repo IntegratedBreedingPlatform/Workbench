@@ -1,15 +1,29 @@
-<form novalidate>
-	<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model"></om-input>
+<form name="pdForm" ng-submit="saveChanges($event, propertyId, model)" novalidate>
 
-	<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model"></om-text-area>
+	<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
 
-	<om-multi-select om-id="om-class" om-label="{{'formField.classes' | translate}}" om-property="classes" om-editing="editing" om-model="model" om-options="data.classes" om-tags="true"></om-multi-select>
+	<ng-messages for="pdForm.omName.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
+		<ng-message when="required">{{'validation.property.nameRequired' | translate}}</ng-message>
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+	</ng-messages>
 
-	<om-input om-id="om-ontology-id" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model"></om-input>
+	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+
+	<ng-messages for="pdForm.omDescription.$error" ng-if="pdForm.$submitted || pdForm.omDescription.$touched">
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+	</ng-messages>
+
+	<om-multi-select om-id="omClass" om-label="{{'formField.classes' | translate}}" om-property="classes" om-editing="editing" om-model="model" om-options="data.classes" om-tags="true"></om-multi-select>
+
+	<om-input om-id="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model" om-max-length="200"></om-input>
+
+	<ng-messages for="pdForm.omOntologyId.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
+		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+	</ng-messages>
 
 	<button ng-hide="editing" ng-click="editProperty($event)">{{'button.edit' | translate}}</button>
 	<button ng-hide="editing" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
 
-	<button ng-show="editing" ng-click="saveChanges($event, propertyId, model)" type="submit">{{'button.save' | translate}}</button>
+	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
 	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

@@ -165,11 +165,25 @@ describe('Property details directive', function() {
 
 		beforeEach(function() {
 			scope.updateSelectedProperty = function(/*model*/) {};
+
+			// Pretend our form is valid
+			scope.pdForm = {
+				$valid: true
+			};
 		});
 
 		it('should call the properties service to update the property', function() {
 			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
 			expect(propertiesService.updateProperty).toHaveBeenCalledWith(BLAST.id, BLAST);
+		});
+
+		it('should not call the properties service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.pdForm.$valid = false;
+
+			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
+
+			expect(propertiesService.updateProperty.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors if the update was not successful', function() {

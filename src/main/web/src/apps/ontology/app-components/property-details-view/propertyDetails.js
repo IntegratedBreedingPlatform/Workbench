@@ -51,13 +51,15 @@
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
 
-						propertiesService.updateProperty(id, model).then(function() {
+						if ($scope.pdForm.$valid) {
+							propertiesService.updateProperty(id, model).then(function() {
 
-							// Update property on parent scope if we succeeded
-							$scope.updateSelectedProperty(model);
+								// Update property on parent scope if we succeeded
+								$scope.updateSelectedProperty(model);
 
-							$scope.editing = false;
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+								$scope.editing = false;
+							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						}
 					};
 				},
 				restrict: 'E',

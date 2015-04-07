@@ -103,6 +103,10 @@
 
 		"method": {
 			"nameRequired": "Please name your method."
+		},
+
+		"property": {
+			"nameRequired": "Please name your property."
 		}
 	},
 

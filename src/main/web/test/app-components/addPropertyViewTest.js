@@ -71,6 +71,11 @@ describe('Add Property View', function() {
 
 		deferredGetClasses.resolve(classes);
 		scope.$apply();
+
+		// Pretend our form is valid
+		scope.apForm = {
+			$valid: true
+		};
 	}));
 
 	it('should set the classes on the scope', function() {
@@ -86,6 +91,15 @@ describe('Add Property View', function() {
 			scope.saveProperty(fakeEvent, BLAST);
 
 			expect(propertiesService.addProperty).toHaveBeenCalledWith(BLAST);
+		});
+
+		it('should not call the properties service if the form is not valid', function() {
+			// Set the form to be invalid
+			scope.apForm.$valid = false;
+
+			scope.saveProperty(fakeEvent, BLAST);
+
+			expect(propertiesService.addProperty.calls.count()).toEqual(0);
 		});
 
 		it('should handle any errors and not redirect if the save was not successful', function() {

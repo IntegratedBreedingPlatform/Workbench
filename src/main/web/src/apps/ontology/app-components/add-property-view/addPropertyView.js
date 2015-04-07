@@ -19,18 +19,20 @@
 
 			$scope.saveProperty = function(e, property) {
 				e.preventDefault();
-				propertiesService.addProperty(property).then(function(response) {
-					property.id = response.id;
-					if (variableStateService.updateInProgress()) {
-						variableStateService.setProperty(property.id, property.name).finally(function() {
-							$window.history.back();
-						});
-					} else {
-						// FIXME Go somewhere more useful
-						$location.path('/properties');
-					}
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
+				if ($scope.apForm.$valid) {
+					propertiesService.addProperty(property).then(function(response) {
+						property.id = response.id;
+						if (variableStateService.updateInProgress()) {
+							variableStateService.setProperty(property.id, property.name).finally(function() {
+								$window.history.back();
+							});
+						} else {
+							// FIXME Go somewhere more useful
+							$location.path('/properties');
+						}
+					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}
 			};
 		}
 	]);

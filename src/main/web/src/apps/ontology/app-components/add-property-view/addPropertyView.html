@@ -3,15 +3,29 @@
 	<button ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.property.title' | translate}}</h2>
-	<form>
-		<button ng-click="saveProperty($event, property)" type="submit">{{'button.save' | translate}}</button>
+	<form name="apForm" ng-submit="saveProperty($event, property)" novalidate>
 
-		<om-input om-id="om-name" om-label="{{'formField.name' | translate}}" om-property="name" om-model="property" om-adding="true"></om-input>
+		<input type="submit" value="{{'button.save' | translate}}"></input>
 
-		<om-text-area om-id="om-description" om-label="{{'formField.description' | translate}}" om-property="description" om-model="property" om-adding="true"></om-text-area>
+		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-model="property" om-adding="true" om-required="true" om-max-length="200"></om-input>
 
-		<om-multi-select om-id="om-classes" om-label="{{'formField.classes' | translate}}" om-property="classes" om-model="property" om-options="classes" om-tags="true" om-adding="true"></om-multi-select>
+		<ng-messages for="apForm.omName.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
+			<ng-message when="required">{{'validation.property.nameRequired' | translate}}</ng-message>
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+		</ng-messages>
 
-		<om-input om-id="om-ontology-id" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-model="property" om-adding="true"></om-input>
+		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-model="property" om-adding="true" om-max-length="255"></om-text-area>
+
+		<ng-messages for="apForm.omDescription.$error" ng-if="apForm.$submitted || apForm.omDescription.$touched">
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
+		</ng-messages>
+
+		<om-multi-select om-id="omClasses" om-label="{{'formField.classes' | translate}}" om-property="classes" om-model="property" om-options="classes" om-tags="true" om-adding="true"></om-multi-select>
+
+		<om-input om-id="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-model="property" om-adding="true" om-max-length="200"></om-input>
+
+		<ng-messages for="apForm.omOntologyId.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
+			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
+		</ng-messages>
 	</form>
 </div>
