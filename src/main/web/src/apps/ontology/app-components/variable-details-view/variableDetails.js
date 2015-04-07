@@ -3,11 +3,11 @@
 
 (function() {
 	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
-		'scales', 'utilities', 'variables', 'panel']);
+		'scales', 'utilities', 'variables', 'variableTypes', 'panel']);
 
-	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'propertiesService', 'methodsService', 'scalesService',
-		'serviceUtilities', 'panelService',
-		function(variablesService, propertiesService, methodsService, scalesService, serviceUtilities, panelService) {
+	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
+		'scalesService', 'serviceUtilities', 'panelService',
+		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -44,7 +44,7 @@
 						$scope.data.scales = scales;
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
-					variablesService.getTypes().then(function(types) {
+					variableTypesService.getTypes().then(function(types) {
 						$scope.data.types = types;
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 

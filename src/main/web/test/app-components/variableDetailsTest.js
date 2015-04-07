@@ -18,6 +18,7 @@ describe('Variable details directive', function() {
 		propertiesService = {},
 		methodsService = {},
 		scalesService = {},
+		variableTypesService = {},
 		variablesService = {},
 		scope,
 		q,
@@ -60,6 +61,7 @@ describe('Variable details directive', function() {
 		$provide.value('scalesService', scalesService);
 		$provide.value('serviceUtilities', serviceUtilities);
 		$provide.value('variablesService', variablesService);
+		$provide.value('variableTypesService', variableTypesService);
 		$provide.value('panelService', panelService);
 	}));
 
@@ -82,7 +84,7 @@ describe('Variable details directive', function() {
 			return deferredGetScales.promise;
 		};
 
-		variablesService.getTypes = function() {
+		variableTypesService.getTypes = function() {
 			deferredGetTypes = q.defer();
 			return deferredGetTypes.promise;
 		};
@@ -100,7 +102,7 @@ describe('Variable details directive', function() {
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
-		spyOn(variablesService, 'getTypes').and.callThrough();
+		spyOn(variableTypesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'deleteVariable').and.callThrough();
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
@@ -208,7 +210,7 @@ describe('Variable details directive', function() {
 
 	describe('getting variable types', function() {
 		it('should call the variables service to get all variable types', function() {
-			expect(variablesService.getTypes).toHaveBeenCalled();
+			expect(variableTypesService.getTypes).toHaveBeenCalled();
 		});
 
 		it('should handle any errors if retrieving the variable types was not successful', function() {

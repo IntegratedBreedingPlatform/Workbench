@@ -367,44 +367,4 @@ describe('Variables Service', function() {
 			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
 		});
 	});
-
-	describe('getTypes', function() {
-
-		it('should GET /variableTypes', function() {
-
-			httpBackend.expectGET(/\/variableTypes$/).respond();
-
-			variablesService.getTypes();
-
-			httpBackend.flush();
-		});
-
-		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
-
-			var response = ['variableTypes go here'];
-
-			httpBackend.expectGET(/\/variableTypes$/).respond(response);
-
-			variablesService.getTypes();
-			httpBackend.flush();
-
-			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
-			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
-			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
-		});
-
-		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
-
-			var error = 'Error!';
-
-			httpBackend.expectGET(/\/variableTypes$/).respond(500, error);
-
-			variablesService.getTypes();
-			httpBackend.flush();
-
-			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
-			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
-			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
-		});
-	});
 });

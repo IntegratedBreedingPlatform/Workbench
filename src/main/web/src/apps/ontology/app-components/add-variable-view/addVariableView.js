@@ -3,12 +3,12 @@
 
 (function() {
 	var app = angular.module('addVariable', ['formFields', 'multiSelect', 'input', 'textArea', 'select', 'variables', 'properties',
-		'methods', 'scales', 'variableState', 'utilities']);
+		'variableTypes', 'methods', 'scales', 'variableState', 'utilities']);
 
-	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'propertiesService', 'methodsService',
-		'scalesService', 'variableStateService', 'serviceUtilities',
+	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'variableTypesService', 'propertiesService',
+		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities',
 
-		function($scope, $location, variablesService, propertiesService, methodsService, scalesService,
+		function($scope, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
 			variableStateService, serviceUtilities) {
 
 			var storedData;
@@ -51,7 +51,7 @@
 					$scope.data.scales = scales;
 				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 
-				variablesService.getTypes().then(function(types) {
+				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
 				}, serviceUtilities.genericAndRatherUselessErrorHandler);
 			}

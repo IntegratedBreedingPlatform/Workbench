@@ -209,20 +209,6 @@
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
 					'?propertyId=1');
 				return request.then(successHandler, failureHandler);
-			},
-
-			/*
-			Expects an array of variable types in the format:
-
-			[{
-				'id': 1,
-				'name': 'Analysis',
-				'description': 'Variable to be used only in analysis (for example derived variables).'
-			}]
-			*/
-			getTypes: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/variableTypes');
-				return request.then(successHandler, failureHandler);
 			}
 		};
 	}]);

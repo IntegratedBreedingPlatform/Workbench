@@ -20,6 +20,7 @@ describe('Add Variable View', function() {
 			}]
 		},
 
+		variableTypesService = {},
 		variablesService = {},
 		propertiesService = {},
 		methodsService = {},
@@ -74,6 +75,7 @@ describe('Add Variable View', function() {
 		controller = controllerFn('AddVariableController', {
 			$scope: scope,
 			$location: location,
+			variableTypesService: variableTypesService,
 			variablesService: variablesService,
 			propertiesService: propertiesService,
 			methodsService: methodsService,
@@ -102,7 +104,7 @@ describe('Add Variable View', function() {
 		propertiesService.getProperties = fakePromise();
 		methodsService.getMethods = fakePromise();
 		scalesService.getScales = fakePromise();
-		variablesService.getTypes = fakePromise();
+		variableTypesService.getTypes = fakePromise();
 
 		// We want a little more control over when this gets resolved
 		variablesService.addVariable = function() {
@@ -118,7 +120,7 @@ describe('Add Variable View', function() {
 		spyOn(scalesService, 'getScales').and.callThrough();
 
 		spyOn(variablesService, 'addVariable').and.callThrough();
-		spyOn(variablesService, 'getTypes').and.callThrough();
+		spyOn(variableTypesService, 'getTypes').and.callThrough();
 
 		spyOn(location, 'path');
 		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
@@ -175,7 +177,7 @@ describe('Add Variable View', function() {
 			expect(propertiesService.getProperties.calls.count()).toEqual(0);
 			expect(methodsService.getMethods.calls.count()).toEqual(0);
 			expect(scalesService.getScales.calls.count()).toEqual(0);
-			expect(variablesService.getTypes.calls.count()).toEqual(0);
+			expect(variableTypesService.getTypes.calls.count()).toEqual(0);
 		});
 	});
 
@@ -191,7 +193,7 @@ describe('Add Variable View', function() {
 			expect(propertiesService.getProperties).toHaveBeenCalled();
 			expect(methodsService.getMethods).toHaveBeenCalled();
 			expect(scalesService.getScales).toHaveBeenCalled();
-			expect(variablesService.getTypes).toHaveBeenCalled();
+			expect(variableTypesService.getTypes).toHaveBeenCalled();
 		});
 	});
 
