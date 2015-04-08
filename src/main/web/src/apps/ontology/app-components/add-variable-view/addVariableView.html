@@ -1,20 +1,28 @@
 <div class="om-av-view">
 
-	<button ng-click="goBack()">{{'button.back' | translate}}</button>
+	<button class="btn btn-default" ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.variable.title' | translate}}</h2>
-	<form name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
-		<input type="submit" value="{{'button.save' | translate}}"></input>
 
-		<div ng-repeat="error in serverErrors.general">{{error}}</div>
+	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+		<ul>
+			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+	</div>
 
-		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+	<form class="form-horizontal" name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
 
-		<ng-messages for="avForm.omName.$error" ng-if="avForm.$submitted || avForm.omName.$touched">
-			<ng-message when="required">{{'validation.variable.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
-			<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
-		</ng-messages>
+		<div ng-class="formGroupClass('omName')">
+			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<div class="col-sm-10">
+				<om-input om-name="omName" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+				<ng-messages for="avForm.omName.$error" ng-if="avForm.$submitted || avForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
+		</div>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 
@@ -70,5 +78,7 @@
 				<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>
 			</ng-messages>
 		</div>
+
+		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
 	</form>
 </div>

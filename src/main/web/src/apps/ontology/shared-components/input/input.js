@@ -14,8 +14,7 @@
 			},
 			restrict: 'E',
 			scope: {
-				id: '@omId',
-				label: '@omLabel',
+				name: '@omName',
 				property: '@omProperty',
 				adding: '=omAdding',
 				editing: '=omEditing',

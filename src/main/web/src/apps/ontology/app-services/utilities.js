@@ -48,4 +48,29 @@
 			}
 		};
 	}]);
+
+	app.factory('formUtilities', function() {
+
+		return {
+			formGroupClassGenerator: function($scope, formName) {
+				return function(fieldName) {
+					var className = 'formGroup';
+
+					// If the field hasn't been initialised yet, don't do anything!
+					if ($scope[formName] && $scope[formName][fieldName]) {
+
+						// Don't mark as invalid until we are relatively sure the user is finished doing things
+						if ($scope[formName].$submitted || $scope[formName][fieldName].$touched) {
+
+							// Only mark as invalid if the field is.. well, invalid
+							if ($scope[formName][fieldName].$invalid) {
+								className += ' has-error';
+							}
+						}
+					}
+					return className;
+				};
+			}
+		};
+	});
 }());

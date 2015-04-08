@@ -6,8 +6,9 @@
 		'scales', 'utilities', 'variables', 'variableTypes', 'panel']);
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
-		'scalesService', 'serviceUtilities', 'panelService',
-		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, panelService) {
+		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
+		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
+		 panelService) {
 
 			return {
 				controller: function($scope) {
@@ -92,6 +93,8 @@
 							}, serviceUtilities.genericAndRatherUselessErrorHandler);
 						}
 					};
+
+					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'vdForm');
 				},
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/variableDetails.html'

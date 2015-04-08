@@ -1,22 +1,28 @@
 <div class="om-am-view">
 
-	<button ng-click="goBack()">{{'button.back' | translate}}</button>
+	<button class="btn btn-default" ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.method.title' | translate}}</h2>
 
-	<form name="amForm" ng-submit="saveMethod($event, method)" novalidate>
-		<input type="submit" value="{{'button.save' | translate}}"></input>
+	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+		<ul>
+			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+	</div>
 
-		<div ng-repeat="error in serverErrors.general">{{error}}</div>
+	<form class="form-horizontal" name="amForm" ng-submit="saveMethod($event, method)" novalidate>
 
-		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
-
-		<ng-messages for="amForm.omName.$error" ng-if="amForm.$submitted || amForm.omName.$touched">
-			<ng-message when="required">{{'validation.method.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
-		</ng-messages>
-
-		<div ng-repeat="error in serverErrors.name">{{error}}</div>
+		<div ng-class="formGroupClass('omName')">
+			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<div class="col-sm-10">
+				<om-input om-name="omName" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
+				<ng-messages for="amForm.omName.$error" ng-if="amForm.$submitted || amForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.method.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-repeat="error in serverErrors.name">{{error}}</p>
+			</div>
+		</div>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="method" om-max-length="255"></om-text-area>
 
@@ -25,6 +31,8 @@
 		</ng-messages>
 
 		<div ng-repeat="error in serverErrors.description">{{error}}</div>
+
+		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
 
 	</form>
 </div>

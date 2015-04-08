@@ -4,8 +4,8 @@
 (function() {
 	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']);
 
-	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'panelService',
-		function(methodsService, serviceUtilities, panelService) {
+	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService',
+		function(methodsService, serviceUtilities, formUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -69,6 +69,8 @@
 							});
 						}
 					};
+
+					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'mdForm');
 				},
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/methodDetails.html'

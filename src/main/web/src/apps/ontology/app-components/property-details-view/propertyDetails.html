@@ -1,11 +1,15 @@
-<form name="pdForm" ng-submit="saveChanges($event, propertyId, model)" novalidate>
+<form class="form-horizontal" name="pdForm" ng-submit="saveChanges($event, propertyId, model)" novalidate>
 
-	<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
-
-	<ng-messages for="pdForm.omName.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
-		<ng-message when="required">{{'validation.property.nameRequired' | translate}}</ng-message>
-		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
-	</ng-messages>
+	<div ng-class="formGroupClass('omName')">
+		<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+		<div class="col-sm-10">
+			<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
+			<ng-messages for="pdForm.omName.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
+				<ng-message when="required"><p class="text-danger">{{'validation.property.nameRequired' | translate}}</p></ng-message>
+				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
+			</ng-messages>
+		</div>
+	</div>
 
 	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
 
@@ -25,9 +29,9 @@
 		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
 	</ng-messages>
 
-	<button ng-hide="editing" ng-click="editProperty($event)">{{'button.edit' | translate}}</button>
-	<button ng-hide="editing || !deletable" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
+	<button class="btn btn-primary" ng-hide="editing" ng-click="editProperty($event)">{{'button.edit' | translate}}</button>
+	<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
 
-	<input ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
-	<button ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+	<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
+	<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 </form>

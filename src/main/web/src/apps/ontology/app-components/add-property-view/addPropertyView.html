@@ -1,18 +1,21 @@
 <div class="om-ap-view">
 
-	<button ng-click="goBack()">{{'button.back' | translate}}</button>
+	<button class="btn btn-default" ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.property.title' | translate}}</h2>
-	<form name="apForm" ng-submit="saveProperty($event, property)" novalidate>
 
-		<input type="submit" value="{{'button.save' | translate}}"></input>
+	<form class="form-horizontal" name="apForm" ng-submit="saveProperty($event, property)" novalidate>
 
-		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-model="property" om-adding="true" om-required="true" om-max-length="200"></om-input>
-
-		<ng-messages for="apForm.omName.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
-			<ng-message when="required">{{'validation.property.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
-		</ng-messages>
+		<div ng-class="formGroupClass('omName')">
+			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<div class="col-sm-10">
+				<om-input om-name="omName" om-property="name" om-model="property" om-adding="true" om-required="true" om-max-length="200"></om-input>
+				<ng-messages for="apForm.omName.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.property.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
+				</ng-messages>
+			</div>
+		</div>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-model="property" om-adding="true" om-max-length="255"></om-text-area>
 
@@ -31,5 +34,7 @@
 		<ng-messages for="apForm.omOntologyId.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
 			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
 		</ng-messages>
+
+		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
 	</form>
 </div>

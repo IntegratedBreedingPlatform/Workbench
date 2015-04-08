@@ -5,8 +5,8 @@
 	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
 		'utilities', 'categories', 'panel']);
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'panelService', 'dataTypesService',
-		function(scalesService, serviceUtilities, panelService, dataTypesService) {
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService', 'dataTypesService',
+		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService) {
 
 		return {
 			controller: function($scope) {
@@ -69,6 +69,8 @@
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					}
 				};
+
+				$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'sdForm');
 			},
 			restrict: 'E',
 			templateUrl: 'static/views/ontology/scaleDetails.html'

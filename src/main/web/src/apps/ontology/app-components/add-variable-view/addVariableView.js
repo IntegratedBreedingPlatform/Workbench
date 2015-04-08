@@ -6,10 +6,10 @@
 		'variableTypes', 'methods', 'scales', 'variableState', 'utilities']);
 
 	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'variableTypesService', 'propertiesService',
-		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities',
+		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities', 'formUtilities',
 
 		function($scope, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
-			variableStateService, serviceUtilities) {
+			variableStateService, serviceUtilities, formUtilities) {
 
 			var storedData;
 
@@ -80,6 +80,8 @@
 				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/' + path);
 			};
+
+			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
 		}
 	]);
 

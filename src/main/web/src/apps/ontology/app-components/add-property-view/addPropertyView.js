@@ -5,8 +5,8 @@
 	var app = angular.module('addProperty', ['formFields', 'multiSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertiesService', 'variableStateService',
-		'serviceUtilities',
-		function($scope, $location, $window, propertiesService, variableStateService, serviceUtilities) {
+		'serviceUtilities', 'formUtilities',
+		function($scope, $location, $window, propertiesService, variableStateService, serviceUtilities, formUtilities) {
 
 			$scope.property = {
 				classes: []
@@ -34,6 +34,8 @@
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 				}
 			};
+
+			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'apForm');
 		}
 	]);
 } ());

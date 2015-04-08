@@ -1,17 +1,20 @@
 <div class="om-as-view">
 
-	<button ng-click="goBack()">{{'button.back' | translate}}</button>
+	<button class="btn btn-default" ng-click="goBack()">{{'button.back' | translate}}</button>
 
 	<h2>{{'addNew.scale.title' | translate}}</h2>
-	<form name="asForm" ng-submit="saveScale($event, scale)" novalidate>
-		<input type="submit" value="{{'button.save' | translate}}"></input>
+	<form class="form-horizontal" name="asForm" ng-submit="saveScale($event, scale)" novalidate>
 
-		<om-input om-id="omName" om-label="{{'formField.name' | translate}}" om-property="name" om-adding="true" om-model="scale" om-required="true" om-max-length="200"></om-input>
-
-		<ng-messages for="asForm.omName.$error" ng-if="asForm.$submitted || asForm.omName.$touched">
-			<ng-message when="required">{{'validation.scale.nameRequired' | translate}}</ng-message>
-			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</ng-message>
-		</ng-messages>
+		<div ng-class="formGroupClass('omName')">
+			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<div class="col-sm-10">
+				<om-input om-name="omName" om-property="name" om-adding="true" om-model="scale" om-required="true" om-max-length="200"></om-input>
+				<ng-messages for="asForm.omName.$error" ng-if="asForm.$submitted || asForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.scale.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
+				</ng-messages>
+			</div>
+		</div>
 
 		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="scale" om-max-length="255"></om-text-area>
 
@@ -44,6 +47,8 @@
 				<ng-message when="nonUniqueValue">{{'validation.scale.nonUniqueValue' | translate}}</ng-message>
 			</ng-messages>
 		</div>
+
+		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
 	</form>
 </div>
 

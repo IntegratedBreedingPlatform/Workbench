@@ -4,8 +4,8 @@
 (function() {
 	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'properties', 'utilities', 'panel']);
 
-	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities','panelService',
-		function(propertiesService, serviceUtilities, panelService) {
+	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',
+		function(propertiesService, serviceUtilities, formUtilities, panelService) {
 
 			return {
 				controller: function($scope) {
@@ -62,6 +62,8 @@
 							}, serviceUtilities.genericAndRatherUselessErrorHandler);
 						}
 					};
+
+					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'pdForm');
 				},
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/propertyDetails.html'

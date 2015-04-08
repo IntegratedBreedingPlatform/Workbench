@@ -1,5 +1,2 @@
-<div>
-	<label for="{{id}}">{{label}}</label>
-	<input ng-show="editable()" type="text" name="{{id}}" id="{{id}}" ng-model="model[property]" ng-required="{{required}}" ng-maxlength="maxLength" ng-pattern="regex"></input>
-	<p ng-hide="editable()">{{model[property]}}</p>
-</div>
+<input ng-show="editable()" type="text" name="{{name}}" ng-model="model[property]" ng-required="{{required}}" ng-maxlength="maxLength" ng-pattern="regex" class="form-control"></input>
+<p ng-hide="editable()">{{model[property]}}</p>

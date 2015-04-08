@@ -5,8 +5,8 @@
 	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range', 'ngMessages']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
-		'serviceUtilities',
-		function($scope, $location, $window, dataTypesService, scalesService, variableStateService, serviceUtilities) {
+		'serviceUtilities', 'formUtilities',
+		function($scope, $location, $window, dataTypesService, scalesService, variableStateService, serviceUtilities, formUtilities) {
 
 			$scope.scale = {};
 
@@ -34,6 +34,8 @@
 					}, serviceUtilities.genericAndRatherUselessErrorHandler);
 				}
 			};
+
+			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'asForm');
 
 			$scope.$watch('scale.dataType', function(newType) {
 				if (newType) {

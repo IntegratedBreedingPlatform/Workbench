@@ -5,7 +5,7 @@
 	var app = angular.module('addMethod', ['methods', 'variableState', 'utilities']);
 
 	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodsService', 'variableStateService', 'serviceUtilities',
-		function($scope, $location, $window, methodsService, variableStateService, serviceUtilities) {
+		'formUtilities', function($scope, $location, $window, methodsService, variableStateService, serviceUtilities, formUtilities) {
 
 			$scope.saveMethod = function(e, method) {
 				e.preventDefault();
@@ -31,6 +31,8 @@
 					});
 				}
 			};
+
+			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'amForm');
 		}
 	]);
 }());
