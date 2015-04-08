@@ -1,14 +1,14 @@
-<table class="om-li-table">
+<table class="table table-striped table-clickable">
 	<thead>
-		<tr class="om-li-row">
-			<th class="om-li-cell" ng-repeat="header in colHeaders">
+		<tr>
+			<th ng-repeat="header in colHeaders">
 				<span class="om-li-header-cell-test" ng-if="isNotActionHeader(header)">{{'list.' + header | translate}}</span>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="om-li-row" ng-repeat="item in data" ng-click="clickHandler(item.id)">
-			<td class="om-li-cell" ng-repeat="header in colHeaders">
+		<tr ng-repeat="item in data" ng-click="clickHandler(item.id)">
+			<td ng-repeat="header in colHeaders">
 				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
 				<span class="om-li-data-cell-test" ng-if="isAction(item[header])">{{item[header].iconValue}}</span>
 			</td>

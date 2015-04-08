@@ -6,7 +6,6 @@ body {
 
 body {
 	margin: 0;
-	font-size: 16px;
 }
 
 ol {
@@ -19,41 +18,9 @@ ol {
 	box-sizing: border-box;
 }
 
-.om-header {
-	display: table-row;
-	width: 100%;
-}
-
-.om-title {
-	margin: 0 0 2rem 0;
-}
-
-.om-nav-wrapper {
-	width: 100%;
-	padding-bottom: 0.5rem;
-	border-bottom: 1px solid grey;
-}
-
-.om-nav {
-	display: inline-block;
-}
-
-.om-nav-item {
-	display: inline;
-	padding: 0 1rem 0 0;
-}
-
-.om-nav-item-link {
-	text-decoration: none;
-	font-size: 1.2rem;
-}
-
-.om-add-new-button {
+.om-add-new-btn {
 	float: right;
-}
-
-.om-add-list-item {
-	display: block;
+	margin-right: 12px;
 }
 
 .om-view {

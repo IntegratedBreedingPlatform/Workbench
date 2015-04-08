@@ -9,39 +9,41 @@
 
 	<link th:href="@{/controller/static/lib/angular-ui-select/angular-ui-select.min.css}" rel="stylesheet"></link>
 	<link rel="stylesheet" th:href="@{/controller/static/lib/select2/select2.css}"></link>
+	<link rel="stylesheet" th:href="@{/controller/static/lib/select2/select2-bootstrap.css}"></link>
+	<link th:href="@{/controller/static/lib/styleGuide/bootstrap.min.css}" rel="stylesheet"></link>
+	<link th:href="@{/controller/static/lib/styleGuide/styles.css}" rel="stylesheet"></link>
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
 <body class="om-ontology-manager" ng-controller="OntologyController as ctrl">
 
-	<header class="om-header">
-		<h1 class="om-title">{{'title' | translate}}</h1>
-		<div class="om-nav-wrapper">
-			<nav class="om-nav">
-				<ol>
-					<li class="om-nav-item">
-						<a class="om-nav-item-link" href="#variables">
-							{{'variables' | translate}}
-						</a>
-					</li>
-					<li class="om-nav-item">
-						<a class="om-nav-item-link" href="#properties">
-							{{'properties' | translate}}
-						</a>
-					</li>
-					<li class="om-nav-item">
-						<a class="om-nav-item-link" href="#methods">
-							{{'methods' | translate}}
-						</a>
-					</li>
-					<li class="om-nav-item">
-						<a class="om-nav-item-link" href="#scales">
-							{{'scales' | translate}}
-						</a>
-					</li>
-				</ol>
-			</nav>
-			<button class="om-add-new-button" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
-		</div>
+	<header>
+		<h1>{{'title' | translate}}</h1>
+
+		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
+		<nav>
+			<ol class="nav nav-tabs">
+				<li role="presentation" class="active">
+					<a href="#variables">
+						{{'variables' | translate}}
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#properties">
+						{{'properties' | translate}}
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#methods">
+						{{'methods' | translate}}
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#scales">
+						{{'scales' | translate}}
+					</a>
+				</li>
+			</ol>
+		</nav>
 	</header>
 
 	<div class="om-view" ng-view="ng-view"></div>
@@ -49,13 +51,14 @@
 	<div om-mask-for-panel="panelName"></div>
 
 	<om-panel om-panel-identifier="panelName" om-panel-small="">
-		<h3>{{'addNew.title' | translate}}</h3>
-		<ol>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'variable')">{{'addNew.variable.menuItem' | translate}}</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'property')">{{'addNew.property.menuItem' | translate}}</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'method')">{{'addNew.method.menuItem' | translate}}</a></li>
-			<li class="om-add-list-item"><a href="#" ng-click="addNew($event, 'scale')">{{'addNew.scale.menuItem' | translate}}</a></li>
-		</ol>
+
+		<h2>{{'addNew.title' | translate}}</h2>
+		<nav class="list-group">
+			<a href="#" class="list-group-item" ng-click="addNew($event, 'variable')">{{'addNew.variable.menuItem' | translate}}</a>
+			<a href="#" class="list-group-item" ng-click="addNew($event, 'property')">{{'addNew.property.menuItem' | translate}}</a>
+			<a href="#" class="list-group-item" ng-click="addNew($event, 'method')">{{'addNew.method.menuItem' | translate}}</a>
+			<a href="#" class="list-group-item" ng-click="addNew($event, 'scale')">{{'addNew.scale.menuItem' | translate}}</a>
+		</nav>
 	</om-panel>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.js}"></script>
