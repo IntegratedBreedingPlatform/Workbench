@@ -52,7 +52,13 @@
 			</ng-messages>
 		</div>
 
-		<om-multi-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-adding="true" om-model="variable" om-options="data.types"></om-multi-select>
+		<div>
+			<om-multi-select name="omVariableTypes" om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-adding="true" ng-model="variable" om-options="data.types"></om-multi-select>
+
+			<ng-messages for="avForm.omVariableTypes.$error" ng-if="avForm.$submitted">
+				<ng-message when="emptyValue">{{'validation.variable.variableTypeEmpty' | translate}}</ng-message>
+			</ng-messages>
+		</div>
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.variable.expectedRange' | translate}}</span>

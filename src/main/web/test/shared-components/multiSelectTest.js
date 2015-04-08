@@ -70,7 +70,7 @@ describe('multiselect module', function() {
 	compileDirective = function(extraAttrs) {
 		var attrs = extraAttrs || '',
 			directiveHtml = '<om-multi-select om-id="multiselect" om-label="Multiselect" ' +
-			'om-property="property" om-model="model" om-options="options" ' + attrs + '></om-multi-select>';
+			'om-property="property" ng-model="model" om-options="options" ' + attrs + '></om-multi-select>';
 
 		inject(function($compile) {
 			directiveElement = $compile(directiveHtml)(scope);
@@ -113,6 +113,42 @@ describe('multiselect module', function() {
 		}];
 		compileDirective();
 		expect(isolateScope.service).toEqual(objectDataService);
+	});
+
+	describe('multiselect validation', function() {
+
+		function compileForm() {
+			inject(function($compile) {
+				directiveElement = $compile(
+					'<form name="testForm" novalidate>' +
+						'<om-multi-select name="omMultiSelect" om-id="multiselect" om-label="Multiselect" ' +
+							'om-property="property" ng-model="model" om-options="options"></om-multi-select>' +
+					'</form>'
+					)(scope);
+			});
+
+			scope.$digest();
+		}
+
+		it('should set the validity to be invalid when there is nothing selected', function() {
+			scope.model = {
+				property: []
+			};
+			compileForm();
+
+			expect(scope.testForm.omMultiSelect.$error).toEqual({emptyValue: true});
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the validity to be valid when there is something selected', function() {
+			scope.model = {
+				property: ['cat']
+			};
+
+			compileForm();
+			expect(scope.testForm.omMultiSelect.$error).toEqual({});
+			expect(scope.testForm.$valid).toBe(true);
+		});
 	});
 
 	describe('by default', function() {

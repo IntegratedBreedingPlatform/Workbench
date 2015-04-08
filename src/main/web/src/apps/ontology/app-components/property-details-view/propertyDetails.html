@@ -13,7 +13,11 @@
 		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
 	</ng-messages>
 
-	<om-multi-select om-id="omClass" om-label="{{'formField.classes' | translate}}" om-property="classes" om-editing="editing" om-model="model" om-options="data.classes" om-tags="true"></om-multi-select>
+	<om-multi-select name="omClasses" om-id="om-classes" om-label="{{'formField.classes' | translate}}" om-property="classes" om-editing="editing" ng-model="model" om-options="data.classes" om-tags="true"></om-multi-select>
+
+	<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted">
+		<ng-message when="emptyValue">{{'validation.property.classesEmpty' | translate}}</ng-message>
+	</ng-messages>
 
 	<om-input om-id="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model" om-max-length="200"></om-input>
 

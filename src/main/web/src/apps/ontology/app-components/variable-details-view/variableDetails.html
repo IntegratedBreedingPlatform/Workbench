@@ -39,7 +39,11 @@
 		<ng-message when="required">{{'validation.variable.scaleRequired' | translate}}</ng-message>
 	</ng-messages>
 
-	<om-multi-select om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-editing="editing" om-model="model" om-options="data.types"></om-multi-select>
+	<om-multi-select name="omVariableTypes" om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
+
+	<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
+		<ng-message when="emptyValue">{{'validation.variable.variableTypeEmpty' | translate}}</ng-message>
+	</ng-messages>
 
 	<div ng-show="showRangeWidget">
 		<span>{{'variablesList.details.expectedRange' | translate}}</span>

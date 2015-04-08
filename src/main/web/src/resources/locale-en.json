@@ -90,7 +90,8 @@
 			"methodRequired": "Method is required.",
 			"scaleRequired": "Scale is required.",
 			"minOutOfRange": "Minimum must be within the range of valid values for this scale ({{min}} - {{max}}).",
-			"maxOutOfRange": "Maximum must be within the range of valid values for this scale ({{min}} - {{max}})."
+			"maxOutOfRange": "Maximum must be within the range of valid values for this scale ({{min}} - {{max}}).",
+			"variableTypeEmpty": "Please select at least one variable type."
 		},
 
 		"scale": {
@@ -106,7 +107,8 @@
 		},
 
 		"property": {
-			"nameRequired": "Please name your property."
+			"nameRequired": "Please name your property.",
+			"classesEmpty": "Please provide at least one class."
 		}
 	},
 

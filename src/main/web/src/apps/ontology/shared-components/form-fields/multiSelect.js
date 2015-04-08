@@ -27,7 +27,7 @@
 						}
 					});
 				},
-				link: function(scope) {
+				link: function(scope, elm, attrs, ctrl) {
 
 					scope.suggestions = angular.copy(scope.options);
 					scope.searchText = '';
@@ -39,6 +39,15 @@
 							scope.searchText = scope.service.formatForDisplay(scope.suggestions[index]);
 						}
 					});
+
+					scope.$watch('model[property]', function(items) {
+						ctrl.$setValidity('emptyValue', true);
+
+						if (items && items.length < 1) {
+							ctrl.$setValidity('emptyValue', false);
+						}
+
+					}, true);
 
 					scope.checkKeyDown = function(event) {
 
@@ -101,13 +110,14 @@
 					};
 
 				},
+				require: 'ngModel',
 				restrict: 'E',
 				scope: {
 					adding: '=omAdding',
 					editing: '=omEditing',
 					id: '@omId',
 					label: '@omLabel',
-					model: '=omModel',
+					model: '=ngModel',
 					options: '=omOptions',
 					property: '@omProperty',
 					tags: '@omTags'
