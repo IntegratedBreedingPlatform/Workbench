@@ -18,6 +18,7 @@ public class OntologyController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String ontology(Model model) throws MiddlewareQueryException {
 		model.addAttribute("currentCrop", context.getProjectInContext().getCropType().getCropName());
+		model.addAttribute("currentProgramId", context.getProjectInContext().getUniqueID());
 		return "ontology";
 	}
 }
