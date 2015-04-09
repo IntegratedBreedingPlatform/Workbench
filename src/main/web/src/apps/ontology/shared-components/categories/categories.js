@@ -4,6 +4,31 @@
 (function() {
 	var categoriesModule = angular.module('categories', ['formFields']);
 
+	function validateCategories(ctrl, categories) {
+		var names = [],
+			values = [];
+
+		categories.some(function(category) {
+			if (!category.name || !category.description) {
+				ctrl.$setValidity('emptyValue', false);
+				return true;
+			}
+
+			if (names.indexOf(category.name) !== -1) {
+				ctrl.$setValidity('nonUniqueName', false);
+				return true;
+			}
+
+			if (values.indexOf(category.description) !== -1) {
+				ctrl.$setValidity('nonUniqueValue', false);
+				return true;
+			}
+
+			names.push(category.name);
+			values.push(category.description);
+		});
+	}
+
 	categoriesModule.directive('omCategories', function(editable) {
 		return {
 			require: 'ngModel',
@@ -48,38 +73,19 @@
 				scope.$watch('categorical', function (categorical) {
 					if (!categorical) {
 						resetValidity();
+					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories) {
+						validateCategories(ctrl, scope.model[scope.property].categories);
 					}
 				});
 
 				scope.$watch('model[property].categories', function (data) {
-					var names = [],
-						values = [];
-
 					resetValidity();
 
 					if (!scope.categorical || !data) {
 						return;
 					}
 
-					data.some(function(category) {
-						if (!category.name || !category.description) {
-							ctrl.$setValidity('emptyValue', false);
-							return true;
-						}
-
-						if (names.indexOf(category.name) !== -1) {
-							ctrl.$setValidity('nonUniqueName', false);
-							return true;
-						}
-
-						if (values.indexOf(category.description) !== -1) {
-							ctrl.$setValidity('nonUniqueValue', false);
-							return true;
-						}
-
-						names.push(category.name);
-						values.push(category.description);
-					});
+					validateCategories(ctrl, data);
 				}, true);
 			},
 

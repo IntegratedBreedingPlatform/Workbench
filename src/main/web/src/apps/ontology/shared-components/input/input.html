@@ -1,2 +1,2 @@
 <input ng-show="editable()" type="text" name="{{name}}" ng-model="model[property]" ng-required="{{required}}" ng-maxlength="maxLength" ng-pattern="regex" class="form-control"></input>
-<div class="form-control-readonly" ng-hide="editable()">{{model[property]}}</div>
+<div class="form-control-static" ng-hide="editable()">{{model[property]}}</div>

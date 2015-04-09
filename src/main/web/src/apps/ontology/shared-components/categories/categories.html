@@ -1,21 +1,35 @@
 <div ng-show="editable()">
-	<ol>
-		<li ng-repeat="category in model[property].categories">
-			<label for="om-category-label-{{$index}}">{{'categories.name' | translate}}</label>
-			<input type="text" name="om-category-label-{{$index}}" id="om-category-label-{{$index}}" ng-model="category.name"/>
-
-			<label for="om-category-value-{{$index}}">{{'categories.description' | translate}}</label>
-			<input type="text" name="om-category-value-{{$index}}" id="om-category-value-{{$index}}" ng-model="category.description"/>
-			<a href="#" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
+	<ol class="om-categories form-inline">
+		<li class="om-category row" ng-repeat="category in model[property].categories">
+			<div class="col-sm-2">
+				<input type="text" class="form-control om-category-input" ng-model="category.name" placeholder="{{'categories.name' | translate}}"/>
+			</div>
+			<div class="col-sm-6">
+				<input type="text" class="form-control om-category-input" ng-model="category.description" placeholder="{{'categories.description' | translate}}"/>
+			</div>
+			<div class="col-sm-4">
+				<a class="form-control-static" href="#" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
+			</div>
 		</li>
 	</ol>
-	<button ng-click="addCategory($event)">{{'categories.add' | translate}}</button>
+	<a href="#" ng-click="addCategory($event)">{{'categories.add' | translate}}</a>
 </div>
 
 <div ng-hide="editable()">
-	<ol>
-		<li ng-repeat="category in model[property].categories">
-			<p>{{category.name}}: {{category.description}}</p>
-		</li>
-	</ol>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+				<th>{{'categories.name' | translate}}</th>
+				<th>{{'categories.description' | translate}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="category in model[property].categories">
+				<td>{{category.name}}</td>
+				<td>{{category.description}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
+
+

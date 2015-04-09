@@ -46,14 +46,17 @@
 		</div>
 
 		<div ng-show="showCategoriesWidget">
-			<span>{{'addNew.scale.categories' | translate}}</span>
-			<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
-
-			<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
-				<ng-message when="emptyValue">{{'validation.scale.emptyValue' | translate}}</ng-message>
-				<ng-message when="nonUniqueName">{{'validation.scale.nonUniqueName' | translate}}</ng-message>
-				<ng-message when="nonUniqueValue">{{'validation.scale.nonUniqueValue' | translate}}</ng-message>
-			</ng-messages>
+			<div ng-class="formGroupClass('omCategories')">
+				<label for="omCategories" class="col-sm-2 control-label">{{'addNew.scale.categories' | translate}}</label>
+				<div class="col-sm-10">
+					<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
+					<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
+						<ng-message when="emptyValue"><p class="text-danger">{{'validation.scale.emptyValue' | translate}}</p></ng-message>
+						<ng-message when="nonUniqueName"><p class="text-danger">{{'validation.scale.nonUniqueName' | translate}}</p></ng-message>
+						<ng-message when="nonUniqueValue"><p class="text-danger">{{'validation.scale.nonUniqueValue' | translate}}</p></ng-message>
+					</ng-messages>
+				</div>
+			</div>
 		</div>
 
 		<div class="form-group">
