@@ -61,7 +61,9 @@
 
 	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',
 		function($scope, $location, $window, panelService) {
+
 			$scope.panelName = 'addNew';
+			$scope.activeTab = 'variables';
 
 			$scope.addNewSelection = function() {
 				panelService.showPanel($scope.panelName);
@@ -81,6 +83,10 @@
 			// Back functionality for our nested views. Used in the add-* modules
 			$scope.goBack = function() {
 				$window.history.back();
+			};
+
+			$scope.setAsActive = function(value) {
+				$scope.activeTab = value;
 			};
 		}
 	]);

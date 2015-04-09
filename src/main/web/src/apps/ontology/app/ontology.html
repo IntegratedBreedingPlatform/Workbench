@@ -20,23 +20,23 @@
 		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
 		<nav>
 			<ol class="nav nav-tabs">
-				<li role="presentation" class="active">
-					<a href="#variables">
+				<li role="presentation" ng-class="{active : activeTab === 'variables'}">
+					<a href="#variables" ng-click="setAsActive('variables')">
 						{{'variables' | translate}}
 					</a>
 				</li>
-				<li role="presentation">
-					<a href="#properties">
+				<li role="presentation" ng-class="{active : activeTab === 'properties'}">
+					<a href="#properties" ng-click="setAsActive('properties')">
 						{{'properties' | translate}}
 					</a>
 				</li>
-				<li role="presentation">
-					<a href="#methods">
+				<li role="presentation" ng-class="{active : activeTab === 'methods'}">
+					<a href="#methods" ng-click="setAsActive('methods')">
 						{{'methods' | translate}}
 					</a>
 				</li>
-				<li role="presentation">
-					<a href="#scales">
+				<li role="presentation" ng-class="{active : activeTab === 'scales'}">
+					<a href="#scales" ng-click="setAsActive('scales')">
 						{{'scales' | translate}}
 					</a>
 				</li>

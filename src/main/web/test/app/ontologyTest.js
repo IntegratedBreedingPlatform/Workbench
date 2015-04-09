@@ -88,4 +88,13 @@ describe('Ontology Controller', function() {
 			expect(window.history.back).toHaveBeenCalled();
 		});
 	});
+
+	describe('setAsActive', function() {
+		it('should set the active tab', function() {
+			var testValue = 'value';
+			scope.setAsActive(testValue);
+
+			expect(scope.activeTab).toEqual(testValue);
+		});
+	});
 });
