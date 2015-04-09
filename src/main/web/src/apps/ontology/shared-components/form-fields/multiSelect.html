@@ -1,27 +1,24 @@
-<div>
-	<label for="{{id}}">{{label}}</label>
-
-	<div ng-show="editable()" class="tags-wrapper">
-		<div class="tags-cloud">
-			<span class="tag" ng-repeat="selectedItem in model[property]">
-				<span class="tagName">{{formatForDisplay(selectedItem)}}</span>
-				<span>
-					&nbsp;
-					<span class="cross" ng-click="removeItem($index)">x</span>
-				</span>
+<div ng-show="editable()" class="tags-wrapper">
+	<div class="tags-cloud">
+		<span class="tag" ng-repeat="selectedItem in model[property]">
+			<span class="tagName">{{formatForDisplay(selectedItem)}}</span>
+			<span>
+				&nbsp;
+				<span class="cross" ng-click="removeItem($index)">x</span>
 			</span>
-			<div om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="enabled">
-				<input name="{{id}}" id="{{id}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="showSuggestions()"/>
-				<span class="suggestions-toggle" ng-click="toggleSuggestions()">toggle</span>
-			</div>
+		</span>
+		<div om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="enabled">
+			<input name="{{name}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="showSuggestions()"/>
+			<span class="suggestions-toggle" ng-click="toggleSuggestions()">toggle</span>
 		</div>
-
-		<ul class="suggestions-list">
-			<li class="blockSpan" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active: selectedIndex === $index}">{{formatForDisplay(suggestion)}}</li>
-		</ul>
 	</div>
 
-	<div ng-hide="editable()">
-		<p ng-repeat="item in model[property]">{{formatForDisplay(item)}}</p>
-	</div>
+	<ul class="suggestions-list">
+		<li class="blockSpan" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active: selectedIndex === $index}">{{formatForDisplay(suggestion)}}</li>
+	</ul>
 </div>
+
+<div class="form-control-readonly" ng-hide="editable()">
+	<p ng-repeat="item in model[property]">{{formatForDisplay(item)}}</p>
+</div>
+

@@ -67,12 +67,14 @@
 			</div>
 		</div>
 
-		<div>
-			<om-multi-select name="omVariableTypes" om-id="om-type" om-label="{{'formField.variableType' | translate}}" om-property="variableTypes" om-adding="true" ng-model="variable" om-options="data.types"></om-multi-select>
-
-			<ng-messages for="avForm.omVariableTypes.$error" ng-if="avForm.$submitted">
-				<ng-message when="emptyValue">{{'validation.variable.variableTypeEmpty' | translate}}</ng-message>
-			</ng-messages>
+		<div ng-class="formGroupClass('omVariableTypes')">
+			<label for="omVariableTypes" class="col-sm-2 control-label">{{'formField.variableType' | translate}}</label>
+			<div class="col-sm-10">
+				<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-adding="true" ng-model="variable" om-options="data.types"></om-multi-select>
+				<ng-messages for="avForm.omVariableTypes.$error" ng-if="avForm.$submitted">
+					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
 		</div>
 
 		<div ng-show="showRangeWidget">

@@ -115,8 +115,7 @@
 				scope: {
 					adding: '=omAdding',
 					editing: '=omEditing',
-					id: '@omId',
-					label: '@omLabel',
+					name: '@omName',
 					model: '=ngModel',
 					options: '=omOptions',
 					property: '@omProperty',

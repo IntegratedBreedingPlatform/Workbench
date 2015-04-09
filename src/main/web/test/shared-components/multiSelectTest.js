@@ -69,7 +69,7 @@ describe('multiselect module', function() {
 
 	compileDirective = function(extraAttrs) {
 		var attrs = extraAttrs || '',
-			directiveHtml = '<om-multi-select om-id="multiselect" om-label="Multiselect" ' +
+			directiveHtml = '<om-multi-select om-name="multiselect" ' +
 			'om-property="property" ng-model="model" om-options="options" ' + attrs + '></om-multi-select>';
 
 		inject(function($compile) {
@@ -121,7 +121,7 @@ describe('multiselect module', function() {
 			inject(function($compile) {
 				directiveElement = $compile(
 					'<form name="testForm" novalidate>' +
-						'<om-multi-select name="omMultiSelect" om-id="multiselect" om-label="Multiselect" ' +
+						'<om-multi-select name="omMultiSelect" om-name="multiselect" ' +
 							'om-property="property" ng-model="model" om-options="options"></om-multi-select>' +
 					'</form>'
 					)(scope);
