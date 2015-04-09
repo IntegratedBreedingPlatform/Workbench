@@ -114,7 +114,7 @@ public class AuthenticationControllerTest {
 		when(result.hasErrors()).thenReturn(false);
 
 		ResponseEntity<Map<String, Object>> out = controller
-				.forgotPassword(userAccountModel, result);
+				.validateForgotPasswordForm(userAccountModel, result);
 
 		assertTrue("ok status", out.getStatusCode().equals(HttpStatus.OK));
 
@@ -134,7 +134,7 @@ public class AuthenticationControllerTest {
 				.validateLogin(userAccountModel, result);
 
 		ResponseEntity<Map<String, Object>> out2 = controller
-				.forgotPassword(userAccountModel, result);
+				.validateForgotPasswordForm(userAccountModel, result);
 
 		assertTrue("should output bad request status",
 				out.getStatusCode().equals(HttpStatus.BAD_REQUEST));

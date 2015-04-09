@@ -17,15 +17,14 @@
 		$select = $('.login-select'),
 		$select2Container = $('.select2-container'),
 
-
-	createAccount = 'login-create-account',
+		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
 		formInvalid = 'login-form-invalid',
 
 		createAccountText = 'Create Account',
 		signInText = 'Sign In',
-		resetPasswordText = 'Reset Password',
+		resetPasswordText = 'Continue',
 
 		loginAction = $loginForm.attr('action'),
 
@@ -167,7 +166,7 @@
 		var errorMessage;
 
 		// Add validation error styling to all empty inputs
-		$('.js-login-username, .js-login-password, .js-login-forgot-password-input').each(function(index, input) {
+		$('.js-login-username, .js-login-forgot-password-input').each(function(index, input) {
 			var $input = $(input);
 			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
 		});
@@ -189,6 +188,11 @@
 			errorMessage +=  errorMessage ? (' ' + value) : value;
 		});
 		displayClientError(errorMessage);
+	}
+
+	function doFormSubmit() {
+		$loginForm.submit();
+		return false;
 	}
 
 	// Record whether media queries are supported in this browser as a class
@@ -218,6 +222,11 @@
 	// Giving the select container the ability to be focused
 	$select2Container.attr('tabindex', 1);
 
+
+	$loginSubmit.on('click',function() {
+		return doFormSubmit();
+	});
+
 	// Hook up our fake (better looking) checkbox with it's real, submit-able counterpart
 	$('.js-login-checkbox-control').on('click', '.js-login-remember-me', function(e) {
 		e.preventDefault();
@@ -232,6 +241,8 @@
 	// Toggle between forms
 	$loginModeToggle.on('click', function(e) {
 		e.preventDefault();
+		$('.login-forgot-password-email-notify').hide();
+
 		clearErrors();
 		toggleLoginPage(toggleLoginCreateAccount);
 	});
@@ -239,10 +250,26 @@
 
 	$('.ac-login-forgot-password').on('click',function(e) {
 		e.preventDefault();
+		$('.login-forgot-password-email-notify').hide();
+
 		clearErrors();
 		toggleLoginPage(toggleForgotPasswordScreen);
 
 	});
+
+	$('.login-form-control input').on('keypress',function(e) {
+		if (e.which == 13) {
+			e.preventDefault();
+			$loginForm.submit();
+		}
+	});
+
+	var doSendPasswordRequestEmail = function (userForm) {
+		$.post('/ibpworkbench/controller/auth/sendResetEmail',userForm)
+			.done(function() {
+				$('.login-forgot-password-email-notify').show();
+			});
+	};
 
 	$loginForm.on('submit', function(e) {
 		// Prevent default submit behaviour and implement our own post / response handler
@@ -289,20 +316,26 @@
 				});
 		} else {
 			// Create account or forgot password
-			$.post($loginForm.attr('action'), $loginForm.serialize())
+			var userForm = $loginForm.serialize();
+
+
+			$.post($loginForm.attr('action'), userForm)
 				.done(function() {
 					// Clear form fields and show the login screen
 					clearErrors();
 
 					if (isPasswordScreen) {
-						$('.js-login-forgot-password-input, .js-login-password').val('');
+						// we add notification that the login email has been set
+						$('.js-login-forgot-password-input').val('');
 						toggleForgotPasswordScreen();
+
+						doSendPasswordRequestEmail(userForm);
+
 					} else {
 						// this will automatically login the user.
 						$loginForm.attr('action',loginAction);
 						loginFormRef.submit();
 					}
-
 				})
 				.fail(function(jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});

@@ -100,6 +100,11 @@ select {
 		transition-delay: 0, 100ms, 0;
 	}
 
+  	.login-forgot-password-email-notify {
+		display: none;
+	  	height: 2.5rem;
+	}
+
 	.login-icon {
 		position: absolute;
 		top: 0.9rem;
@@ -254,6 +259,15 @@ select {
 	  .login-forgot-password-control {
 		height: 3.5rem;
 		opacity: 1;
+	  }
+
+	  .login-forgot-password-control.extended-height {
+		height: 5rem;
+
+	  }
+
+	  .login-forgot-password-control-hide {
+		display:none;
 	  }
 
 	  .login-confirm-password-control {

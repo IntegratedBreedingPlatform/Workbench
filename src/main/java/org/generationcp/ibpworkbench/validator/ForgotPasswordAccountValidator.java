@@ -24,21 +24,13 @@ public class ForgotPasswordAccountValidator extends UserAccountValidator {
 				SIGNUP_FIELD_REQUIRED, new String[] { EMAIL_STR });
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.USERNAME,
 				SIGNUP_FIELD_REQUIRED, new String[] { USERNAME_STR });
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.PASSWORD,
-				SIGNUP_FIELD_REQUIRED, new String[] { PASSWORD_STR });
-		ValidationUtils
-				.rejectIfEmptyOrWhitespace(errors,
-						UserAccountFields.PASSWORD_CONFIRMATION, SIGNUP_FIELD_REQUIRED);
 
 		validateFieldLength(errors, userAccount.getUsername(), UserAccountFields.USERNAME,
 				USERNAME_STR, 30);
 
 		validateEmailFormat(errors, userAccount);
 
-		validatePasswordConfirmationIfEquals(errors, userAccount);
-
 		validateUsernameAndEmailIfNotExists(errors, userAccount);
-
 	}
 
 	protected void validateUsernameAndEmailIfNotExists(Errors errors, UserAccountModel userAccount) {

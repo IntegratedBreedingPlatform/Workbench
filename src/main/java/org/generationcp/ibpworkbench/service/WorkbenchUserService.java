@@ -2,10 +2,12 @@ package org.generationcp.ibpworkbench.service;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +96,25 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
-		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),userAccount.getPassword());
+		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),
+				userAccount.getPassword());
+	}
+
+	public User getUserByUserName(String username) throws MiddlewareQueryException {
+		User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+
+		return user;
+	}
+
+	public User getUserByUserid(Integer userId) throws MiddlewareQueryException {
+
+		User user = workbenchDataManager.getUserById(userId);
+		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+
+		return user;
+
 	}
 }
