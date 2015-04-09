@@ -1,28 +1,20 @@
-<div ng-show="editable()">
-	<ng-form name="rangeForm">
-
-		<div>
-			<label for="omRangeMin">{{'range.edit.min' | translate}}</label>
-			<input type="number" name="omRangeMin" id="omRangeMin" ng-model="model[property].min"></input>
-
-			<ng-messages for="rangeForm.omRangeMin.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMin.$touched">
-				<ng-message when="number">{{'range.validation.nan' | translate}}</ng-message>
-			</ng-messages>
+<ng-form class="form-inline" name="rangeForm" ng-show="editable()">
+	<div class="row">
+		<div class="col-sm-3">
+			<input class="form-control" type="number" name="omRangeMin" ng-model="model[property].min" placeholder="{{'range.edit.min' | translate}}"></input>
 		</div>
-
-		<div>
-			<label for="omRangeMax">{{'range.edit.max' | translate}}</label>
-			<input type="number" name="omRangeMax" id="omRangeMax" ng-model="model[property].max"></input>
-
-			<ng-messages for="rangeForm.omRangeMax.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMax.$touched">
-				<ng-message when="number">{{'range.validation.nan' | translate}}</ng-message>
-			</ng-messages>
+		<div class="col-sm-3">
+			<input class="form-control" type="number" name="omRangeMax" ng-model="model[property].max" placeholder="{{'range.edit.max' | translate}}"></input>
 		</div>
+	</div>
+</ng-form>
 
-	</ng-form>
-</div>
+<p ng-hide="editable()" class="form-control-static">{{'range.readOnly' | translate: model[property]}}</p>
 
-<div ng-hide="editable()">
-	<p>{{'range.readOnly.min' | translate: model[property]}}</p>
-	<p>{{'range.readOnly.max' | translate: model[property]}}</p>
-</div>
+<script type="text/ng-template" id="range-validation-messages">
+	<ng-message when="minNaN"><p class="text-danger">{{'range.validation.minNaN' | translate}}</p></ng-message>
+	<ng-message when="maxNaN"><p class="text-danger">{{'range.validation.maxNaN' | translate}}</p></ng-message>
+	<ng-message when="minTooBig"><p class="text-danger">{{'range.validation.minTooBig' | translate}}</p></ng-message>
+	<ng-message when="minOutOfRange"><p class="text-danger">{{'range.validation.minOutOfRange' | translate}}</p></ng-message>
+	<ng-message when="maxOutOfRange"><p class="text-danger">{{'range.validation.maxOutOfRange' | translate}}</p></ng-message>
+</script>

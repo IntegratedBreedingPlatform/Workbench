@@ -77,15 +77,13 @@
 			</div>
 		</div>
 
-		<div ng-show="showRangeWidget">
-			<span>{{'addNew.variable.expectedRange' | translate}}</span>
-			<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="variable.scale.validValues.min" om-max="variable.scale.validValues.max"></om-range>
-
-			<ng-messages for="avForm.omRange.$error" ng-if="avForm.$submitted">
-				<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
-				<ng-message when="minOutOfRange">{{'validation.variable.minOutOfRange' | translate: variable.scale.validValues}}</ng-message>
-				<ng-message when="maxOutOfRange">{{'validation.variable.maxOutOfRange' | translate: variable.scale.validValues}}</ng-message>
-			</ng-messages>
+		<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
+			<label for="omRange" class="col-sm-2 control-label">{{'addNew.variable.expectedRange' | translate}}</label>
+			<div class="col-sm-10">
+				<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="variable.scale.validValues.min" om-max="variable.scale.validValues.max"></om-range>
+				<small ng-show="variable.scale.validValues">{{'validation.variable.expectedRange' | translate: variable.scale.validValues}}</small>
+				<ng-messages for="avForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="avForm.$submitted || avForm.omRange.$touched"></ng-messages>
+			</div>
 		</div>
 
 		<div class="form-group">

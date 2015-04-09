@@ -162,5 +162,94 @@ describe('Range module', function() {
 			expect(scope.testForm.omRange.$error.maxOutOfRange).toBe(true);
 			expect(scope.testForm.$valid).toBe(false);
 		});
+
+		it('should set the minNaN error if the minimum value is not a valid number', function() {
+
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			scope.model = {};
+
+			directiveScope = directiveElement.find('ng-form').scope();
+			directiveScope.rangeForm.omRangeMin = {
+				$error: {
+					number: true
+				}
+			};
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$error.minNaN).toBe(true);
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the maxNaN error if the maximum value is not a valid number', function() {
+
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			directiveScope = directiveElement.find('ng-form').scope();
+			directiveScope.rangeForm.omRangeMax = {
+				$error: {
+					number: true
+				}
+			};
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$error.maxNaN).toBe(true);
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should not cause validation errors if the widget is not yet instantiated', function() {
+
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			directiveScope = directiveElement.find('ng-form').scope();
+			directiveScope.rangeForm = null;
+			scope.$apply();
+
+			// Make a change to the model and ensure no errors happen if the embedded form is not yet present
+			scope.model = {
+				validValues: {
+					max: 80
+				}
+			};
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$error.maxNaN).toBeFalsy();
+			expect(scope.testForm.omRange.$error.minNaN).toBeFalsy();
+			expect(scope.testForm.$valid).toBe(true);
+		});
+
+		it('should set the parent form to be touched if the range minimum is touched', function() {
+
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			directiveScope = directiveElement.find('ng-form').scope();
+
+			directiveScope.rangeForm.omRangeMin.$touched = true;
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$touched).toBe(true);
+		});
+
+		it('should set the parent form to be touched if the range maximum is touched', function() {
+
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			directiveScope = directiveElement.find('ng-form').scope();
+
+			directiveScope.rangeForm.omRangeMax.$touched = true;
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$touched).toBe(true);
+		});
 	});
 });

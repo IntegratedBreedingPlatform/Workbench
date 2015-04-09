@@ -81,7 +81,6 @@
 	"validation": {
 
 		"tooLong": "Please reduce to under {{maxLength}} characters.",
-		"minTooBig": "Minimum must be less than the maximum.",
 
 		"variable": {
 			"nameRequired": "Please name your variable.",
@@ -89,9 +88,8 @@
 			"propertyRequired": "Property is required.",
 			"methodRequired": "Method is required.",
 			"scaleRequired": "Scale is required.",
-			"minOutOfRange": "Minimum must be within the range of valid values for this scale ({{min}} - {{max}}).",
-			"maxOutOfRange": "Maximum must be within the range of valid values for this scale ({{min}} - {{max}}).",
-			"variableTypeEmpty": "Please select at least one variable type."
+			"variableTypeEmpty": "Please select at least one variable type.",
+			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}})."
 		},
 
 		"scale": {
@@ -129,15 +127,16 @@
 
 	"range": {
 		"edit": {
-			"min": "Minimum Value",
-			"max": "Maximum Value"
+			"min": "Minimum",
+			"max": "Maximum"
 		},
-		"readOnly": {
-			"min": "Min: {{min}}",
-			"max": "Max: {{max}}"
-		},
+		"readOnly": "{{min}} - {{max}}",
 		"validation": {
-			"nan": "Please enter a valid number."
+			"minNaN": "Minimum is not a valid number.",
+			"maxNaN": "Maximum is not a valid number.",
+			"minTooBig": "Minimum must be less than the maximum.",
+			"minOutOfRange": "Minimum must be within the range of valid values.",
+			"maxOutOfRange": "Maximum must be within the range of valid values."
 		}
 	},
 

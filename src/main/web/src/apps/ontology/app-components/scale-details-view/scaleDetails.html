@@ -31,13 +31,13 @@
 		</div>
 	</div>
 
-	<div ng-show="showRangeWidget">
-		<span>{{'scalesList.details.validRange' | translate}}</span>
-		<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
+	<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
+		<label for="omRange" class="col-sm-2 control-label">{{'scalesList.details.validRange' | translate}}</label>
+		<div class="col-sm-10">
+			<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
 
-		<ng-messages for="sdForm.omRange.$error" ng-if="sdForm.$submitted">
-			<ng-message when="minTooBig">{{'validation.minTooBig' | translate}}</ng-message>
-		</ng-messages>
+			<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
+		</div>
 	</div>
 
 	<div ng-show="showCategoriesWidget">
