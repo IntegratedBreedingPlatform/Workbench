@@ -1,4 +1,6 @@
 <div class="om-pa-wrapper-test">
-	<a href="#" class="om-pa-close" ng-click="closePanel($event)">{{'panel.close' | translate}}</a>
+	<div class="om-pa-close-wrapper">
+		<span><a href="#" class="om-pa-close" ng-click="closePanel($event)">{{'panel.close' | translate}}</a></span>
+	</div>
 	<ng-transclude></ng-transclude>
 </div>

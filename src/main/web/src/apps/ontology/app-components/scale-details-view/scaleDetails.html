@@ -11,11 +11,15 @@
 		</div>
 	</div>
 
-	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
-
-	<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
-		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
-	</ng-messages>
+	<div ng-class="formGroupClass('omDescription')">
+		<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
+		<div class="col-sm-10">
+			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+			<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
+				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+			</ng-messages>
+		</div>
+	</div>
 
 	<om-select name="omDataType" om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
 

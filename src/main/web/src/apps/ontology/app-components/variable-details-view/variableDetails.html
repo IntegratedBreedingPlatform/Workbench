@@ -23,11 +23,15 @@
 		</div>
 	</div>
 
-	<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
-
-	<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
-		<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
-	</ng-messages>
+	<div ng-class="formGroupClass('omDescription')">
+		<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
+		<div class="col-sm-10">
+			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+			<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
+				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+			</ng-messages>
+		</div>
+	</div>
 
 	<om-select name="omProperty" om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
 
@@ -64,9 +68,14 @@
 		</ng-messages>
 	</div>
 
-	<button class="btn btn-primary" ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
-	<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button class="btn btn-primary" ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
+			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
 
-	<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
-	<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+			<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
+			<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+		</div>
+	</div>
+
 </form>

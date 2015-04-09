@@ -24,11 +24,16 @@
 			</div>
 		</div>
 
-		<om-text-area om-id="omDescription" om-label="{{'formField.description' | translate}}" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
+		<div ng-class="formGroupClass('omDescription')">
+			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
+			<div class="col-sm-10">
+				<om-text-area om-name="omDescription" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 
-		<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
-			<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</ng-message>
-		</ng-messages>
+				<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+				</ng-messages>
+			</div>
+		</div>
 
 		<div>
 			<om-select name="omProperty" om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>

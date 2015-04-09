@@ -132,16 +132,16 @@ describe('Utilities Service', function() {
 
 			describe('the returned function', function(){
 
-				it('should return a formGroup class if the specified form is not yet initialised', function() {
+				it('should return a form-group class if the specified form is not yet initialised', function() {
 					var scope = {},
 						formName = 'form',
 
 						returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
 
-					expect(returnedFunction()).toEqual('formGroup');
+					expect(returnedFunction()).toEqual('form-group');
 				});
 
-				it('should return a formGroup class if the specified form field is not yet initialised', function() {
+				it('should return a form-group class if the specified form field is not yet initialised', function() {
 					var scope = {},
 						formName = 'form',
 						fieldName = 'field',
@@ -152,10 +152,10 @@ describe('Utilities Service', function() {
 						$submitted: false
 					};
 
-					expect(returnedFunction(fieldName)).toEqual('formGroup');
+					expect(returnedFunction(fieldName)).toEqual('form-group');
 				});
 
-				it('should return a formGroup class if the form is not submitted and the input not touched', function() {
+				it('should return a form-group class if the form is not submitted and the input not touched', function() {
 					var scope = {},
 						formName = 'form',
 						fieldName = 'field',
@@ -171,7 +171,7 @@ describe('Utilities Service', function() {
 						$invalid: true
 					};
 
-					expect(returnedFunction(fieldName)).toEqual('formGroup');
+					expect(returnedFunction(fieldName)).toEqual('form-group');
 				});
 
 				it('should append a has-error class to the returned class if the specified form field is invalid and the form is submitted',
@@ -192,7 +192,7 @@ describe('Utilities Service', function() {
 						$invalid: true
 					};
 
-					expect(returnedFunction(fieldName)).toEqual('formGroup has-error');
+					expect(returnedFunction(fieldName)).toEqual('form-group has-error');
 				});
 
 				it('should append a has-error class to the returned class if the specified form field is invalid and the field is touched',
@@ -213,7 +213,7 @@ describe('Utilities Service', function() {
 						$invalid: true
 					};
 
-					expect(returnedFunction(fieldName)).toEqual('formGroup has-error');
+					expect(returnedFunction(fieldName)).toEqual('form-group has-error');
 				});
 			});
 		});

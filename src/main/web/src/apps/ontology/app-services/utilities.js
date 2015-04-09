@@ -54,7 +54,7 @@
 		return {
 			formGroupClassGenerator: function($scope, formName) {
 				return function(fieldName) {
-					var className = 'formGroup';
+					var className = 'form-group';
 
 					// If the field hasn't been initialised yet, don't do anything!
 					if ($scope[formName] && $scope[formName][fieldName]) {
