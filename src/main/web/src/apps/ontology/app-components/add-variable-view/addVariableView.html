@@ -28,41 +28,43 @@
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-10">
 				<om-text-area om-name="omDescription" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
-
 				<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
 				</ng-messages>
 			</div>
 		</div>
 
-		<div>
-			<om-select name="omProperty" om-id="om-property" om-label="{{'formField.property' | translate}}" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
-
-			<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
-
-			<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'validation.variable.propertyRequired' | translate}}</ng-message>
-			</ng-messages>
+		<div ng-class="formGroupClass('omProperty')">
+			<label for="omProperty" class="col-sm-2 control-label">{{'formField.property' | translate}}</label>
+			<div class="col-sm-10">
+				<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
+				<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
+				<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
 		</div>
 
-		<div>
-			<om-select name="omMethod" om-id="om-method" om-label="{{'formField.method' | translate}}" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
-
-			<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
-
-			<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'validation.variable.methodRequired' | translate}}</ng-message>
-			</ng-messages>
+		<div ng-class="formGroupClass('omMethod')">
+			<label for="omMethod" class="col-sm-2 control-label">{{'formField.method' | translate}}</label>
+			<div class="col-sm-10">
+				<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
+				<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
+				<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
 		</div>
 
-		<div>
-			<om-select name="omScale" om-id="om-scale" om-label="{{'formField.scale' | translate}}" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
-
-			<a href="#" ng-click="addNew($event, 'scale')">{{'addNew.variable.addScale' | translate}}</a>
-
-			<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
-				<ng-message when="required">{{'validation.variable.scaleRequired' | translate}}</ng-message>
-			</ng-messages>
+		<div ng-class="formGroupClass('omScale')">
+			<label for="omScale" class="col-sm-2 control-label">{{'formField.scale' | translate}}</label>
+			<div class="col-sm-10">
+				<om-select name="omScale" om-name="om-scale" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
+				<a href="#" ng-click="addNew($event, 'scale')">{{'addNew.variable.addScale' | translate}}</a>
+				<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
 		</div>
 
 		<div>
@@ -84,6 +86,10 @@
 			</ng-messages>
 		</div>
 
-		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
+			</div>
+		</div>
 	</form>
 </div>

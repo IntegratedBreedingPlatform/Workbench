@@ -24,8 +24,7 @@
 			scope: {
 				// omOptions must be an array of objects with (at least) name and id properties.
 				options: '=omOptions',
-				id: '@omId',
-				label: '@omLabel',
+				name: '@omName',
 				property: '@omProperty',
 				adding: '=omAdding',
 				editing: '=omEditing',

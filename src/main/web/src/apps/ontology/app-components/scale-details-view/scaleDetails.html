@@ -21,11 +21,15 @@
 		</div>
 	</div>
 
-	<om-select name="omDataType" om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
-
-	<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
-		<ng-message when="required">{{'validation.scale.dataTypeRequired' | translate}}</ng-message>
-	</ng-messages>
+	<div ng-class="formGroupClass('omDataType')">
+		<label for="omDataType" class="col-sm-2 control-label">{{'formField.dataType' | translate}}</label>
+		<div class="col-sm-10">
+			<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
+			<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
+				<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
+			</ng-messages>
+		</div>
+	</div>
 
 	<div ng-show="showRangeWidget">
 		<span>{{'scalesList.details.validRange' | translate}}</span>
@@ -47,10 +51,13 @@
 		</ng-messages>
 	</div>
 
-	<button class="btn btn-primary" ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
-	<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button class="btn btn-primary" ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
+			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
 
-	<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
-
-	<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+			<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
+			<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+		</div>
+	</div>
 </form>

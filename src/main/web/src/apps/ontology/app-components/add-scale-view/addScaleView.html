@@ -26,11 +26,15 @@
 			</div>
 		</div>
 
-		<om-select name="omDataType" om-id="om-data-type" om-label="{{'formField.dataType' | translate}}" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
-
-		<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted">
-			<ng-message when="required">{{'validation.scale.dataTypeRequired' | translate}}</ng-message>
-		</ng-messages>
+		<div ng-class="formGroupClass('omDataType')">
+			<label for="omDataType" class="col-sm-2 control-label">{{'formField.dataType' | translate}}</label>
+			<div class="col-sm-10">
+				<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
+				<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
+				</ng-messages>
+			</div>
+		</div>
 
 		<div ng-show="showRangeWidget">
 			<span>{{'addNew.scale.validRange' | translate}}</span>
@@ -52,7 +56,11 @@
 			</ng-messages>
 		</div>
 
-		<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input class="btn btn-primary" type="submit" value="{{'button.save' | translate}}"></input>
+			</div>
+		</div>
 	</form>
 </div>
 
