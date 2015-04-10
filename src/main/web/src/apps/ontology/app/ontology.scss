@@ -1,3 +1,23 @@
+/*
+Allow angular.js to be loaded in the body, hiding cloaked elements until
+templates compile.  The !important is important given that there may be
+other selectors that are more specific or come later and might alter display.
+*/
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
+	display: none !important;
+}
+
+/*
+Class provided by angular-translate to hide the flicker of translation keys before
+the translations are loaded. The class is removed as soon as the actual translations
+have loaded.
+*/
+.translate-cloak {
+	display: none !important;
+}
+
 html,
 body {
 	height: 100%;
