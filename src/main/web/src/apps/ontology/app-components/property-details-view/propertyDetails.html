@@ -46,7 +46,7 @@
 			<button class="btn btn-primary" ng-hide="editing" ng-click="editProperty($event)">{{'button.edit' | translate}}</button>
 			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteProperty($event, propertyId)">{{'button.delete' | translate}}</button>
 
-			<input class="btn btn-primary" ng-show="editing" type="submit" value="{{'button.save' | translate}}"></input>
+			<button class="btn btn-primary" ng-show="editing" type="submit">{{'button.save' | translate}}</button>
 			<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 		</div>
 	</div>
