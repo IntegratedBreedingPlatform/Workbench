@@ -1,24 +1,18 @@
-<div ng-show="editable()" class="tags-wrapper">
-	<div class="tags-cloud">
-		<span class="tag" ng-repeat="selectedItem in model[property]">
-			<span class="tagName">{{formatForDisplay(selectedItem)}}</span>
-			<span>
-				&nbsp;
-				<span class="cross" ng-click="removeItem($index)">x</span>
-			</span>
+<div ng-show="editable()">
+	<div class="label-wrapper" ng-repeat="selectedItem in model[property]">
+		<span class="label label-primary">
+			{{formatForDisplay(selectedItem)}}
+			<a href="#" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
 		</span>
-		<div om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="enabled">
-			<input name="{{name}}" class="searchInput" type="text" placeholder="{{'multiSelect.placeholder' | translate}}" ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="showSuggestions()"/>
-			<span class="suggestions-toggle" ng-click="toggleSuggestions()">toggle</span>
-		</div>
 	</div>
-
-	<ul class="suggestions-list">
-		<li class="blockSpan" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active: selectedIndex === $index}">{{formatForDisplay(suggestion)}}</li>
-	</ul>
+	<div class="suggestions-wrapper" ng-class="suggestionsShown ? 'show-suggestions' : ''" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestionsShown">
+		<input name="{{name}}" type="input" class="label-input form-control" placeholder="{{'multiSelect.placeholder' | translate}}" ng-model="searchText" ng-change="showSuggestions()" ng-click="toggleSuggestions()" ng-keydown="checkKeyDown($event)">
+		<ul class="suggestions-list">
+			<li class="suggestion" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-class="{active: selectedIndex === $index}">{{formatForDisplay(suggestion)}}</li>
+		</ul>
+	</div>
 </div>
-
-<div class="form-control-static" ng-hide="editable()">
-	<p ng-repeat="item in model[property]">{{formatForDisplay(item)}}</p>
-</div>
-
+<p ng-hide="editable()" class="form-control-static">
+<!-- TODO Fix the coma after items -->
+	<span ng-repeat="item in model[property]">{{formatForDisplay(item)}} </span>
+</p>

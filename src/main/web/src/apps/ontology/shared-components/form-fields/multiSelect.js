@@ -85,7 +85,8 @@
 						scope.hideSuggestions();
 					};
 
-					scope.removeItem = function(index) {
+					scope.removeItem = function(event, index) {
+						event.preventDefault();
 						scope.model[scope.property].splice(index, 1);
 					};
 
@@ -99,14 +100,14 @@
 
 					scope.showSuggestions = function() {
 						scope.search();
-						scope.enabled = true;
+						scope.suggestionsShown = true;
 					};
 
 					scope.hideSuggestions = function() {
 						scope.suggestions = [];
 						scope.selectedIndex = -1;
 						scope.searchText = '';
-						scope.enabled = false;
+						scope.suggestionsShown = false;
 					};
 
 				},
