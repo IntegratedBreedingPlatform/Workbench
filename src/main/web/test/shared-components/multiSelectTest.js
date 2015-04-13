@@ -283,12 +283,17 @@ describe('multiselect module', function() {
 	describe('$scope.removeItem', function() {
 
 		it('should remove an item from the selected items array at the provided index', function() {
+
+			var fakeEvent = {
+				preventDefault: function(){}
+			};
+
 			compileDirective();
 
 			scope.model[scope.property] = ['one'];
 			spyOn(scope.model[scope.property], 'splice').and.callThrough();
 
-			isolateScope.removeItem(0);
+			isolateScope.removeItem(fakeEvent, 0);
 
 			expect(scope.model[scope.property].splice).toHaveBeenCalledWith(0, 1);
 			expect(scope.model[scope.property]).not.toContain('one');
