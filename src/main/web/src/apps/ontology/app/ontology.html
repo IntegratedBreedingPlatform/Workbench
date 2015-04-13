@@ -48,9 +48,7 @@
 
 	<div om-mask-for-panel="panelName"></div>
 
-	<om-panel om-panel-identifier="panelName" om-panel-small="">
-
-		<h2>{{'addNew.title' | translate}}</h2>
+	<om-panel om-panel-identifier="panelName" om-panel-small="" om-title="'addNew.title' | translate">
 		<nav class="list-group">
 			<a href="#" class="list-group-item" ng-click="addNew($event, 'variable')">{{'addNew.variable.menuItem' | translate}}</a>
 			<a href="#" class="list-group-item" ng-click="addNew($event, 'property')">{{'addNew.property.menuItem' | translate}}</a>

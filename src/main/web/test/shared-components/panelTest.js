@@ -29,8 +29,7 @@ describe('Panel module', function() {
 	}));
 
 	describe('Panel directive', function() {
-		var PANEL_CLASS = 'om-pa-wrapper-test',
-			CONTENT_CLASS = 'om-pa-content-test',
+		var CONTENT_CLASS = 'om-pa-content-test',
 			CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 
 			directiveElement;
@@ -45,9 +44,7 @@ describe('Panel module', function() {
 
 		it('should display any content nested inside the panel tags', function() {
 			compileDirective();
-
-			expect(directiveElement).toContainElement('.' + PANEL_CLASS);
-			expect(directiveElement.find('.' + PANEL_CLASS)).toContainElement('.' + CONTENT_CLASS);
+			expect(directiveElement).toContainElement('.' + CONTENT_CLASS);
 		});
 
 		it('should be shown when showPanel is called with the panel\'s identifier ', function() {

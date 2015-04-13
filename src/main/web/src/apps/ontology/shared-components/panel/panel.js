@@ -27,7 +27,8 @@
 			},
 			restrict: 'E',
 			scope: {
-				omPanelIdentifier: '='
+				omPanelIdentifier: '=',
+				title: '=omTitle'
 			},
 			templateUrl: 'static/views/ontology/panel.html',
 			transclude: true

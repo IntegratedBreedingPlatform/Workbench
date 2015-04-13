@@ -1,6 +1,12 @@
-<div class="om-pa-wrapper-test">
-	<div class="om-pa-close-wrapper">
-		<span><a href="#" class="om-pa-close" ng-click="closePanel($event)">{{'panel.close' | translate}}</a></span>
+<div class="om-panel-header">
+	<div class="clearfix">
+		<button type="button" class="btn btn-default btn-sm pull-right panel-close" ng-click="closePanel($event)">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {{'panel.close' | translate}}
+		</button>
 	</div>
+	<h2 class="om-panel-title">{{title}}</h2>
+</div>
+
+<div class="om-panel-content">
 	<ng-transclude></ng-transclude>
 </div>
