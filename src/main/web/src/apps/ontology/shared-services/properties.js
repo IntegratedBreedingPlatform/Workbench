@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var app = angular.module('properties', ['utilities']);
+	var app = angular.module('properties', ['utilities', 'config']);
 
-	app.service('propertiesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
+	app.service('propertiesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -44,7 +44,8 @@
 
 			*/
 			getProperties: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties');
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/properties',
+					request = $http.get(url);
 				return request.then(successHandler, failureHandler);
 			},
 
