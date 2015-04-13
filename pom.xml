@@ -1,186 +1,187 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.generationcp</groupId>
-    <artifactId>ibpworkbench</artifactId>
-    <packaging>war</packaging>
-    <name>IBPWorkbench</name>
-    <version>4.0.2.SNAPSHOT</version>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.generationcp</groupId>
+	<artifactId>ibpworkbench</artifactId>
+	<packaging>war</packaging>
+	<name>IBPWorkbench</name>
+	<version>4.0.2.SNAPSHOT</version>
 
-    <properties>
-        <vaadin.version>6.8.13</vaadin.version>
-        <gwt.version>2.5.1</gwt.version>
-        <gwt.plugin.version>2.5.1</gwt.plugin.version>
-        <ibpcommons.version>4.0.2.SNAPSHOT</ibpcommons.version>
-        <spring.version>3.2.11.RELEASE</spring.version>
-        <spring.security.version>3.2.5.RELEASE</spring.security.version>
-        <webapp.path>C:/Breeding Management System/infrastructure/tomcat/webapps</webapp.path>
-    </properties>
+	<properties>
+		<vaadin.version>6.8.13</vaadin.version>
+		<gwt.version>2.5.1</gwt.version>
+		<gwt.plugin.version>2.5.1</gwt.plugin.version>
+		<ibpcommons.version>4.0.2.SNAPSHOT</ibpcommons.version>
+		<spring.version>3.2.11.RELEASE</spring.version>
+		<spring.security.version>3.2.5.RELEASE</spring.security.version>
+		<webapp.path>C:/Breeding Management
+			System/infrastructure/tomcat/webapps</webapp.path>
+	</properties>
 
-    <distributionManagement>
-        <repository>
-            <id>efficio-nexus</id>
-            <name>Releases</name>
-            <url>http://apps.leafnode.io:8081/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>efficio-nexus</id>
-            <name>Snapshots</name>
-            <url>http://apps.leafnode.io:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>efficio-nexus</id>
+			<name>Releases</name>
+			<url>http://apps.leafnode.io:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>efficio-nexus</id>
+			<name>Snapshots</name>
+			<url>http://apps.leafnode.io:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
-        </repository>
-        <repository>
-            <id>gcp-efficio-repo</id>
-            <url>http://apps.leafnode.io:8081/nexus/content/repositories/thirdparty/</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+		<repository>
+			<id>gcp-efficio-repo</id>
+			<url>http://apps.leafnode.io:8081/nexus/content/repositories/thirdparty/</url>
+		</repository>
+	</repositories>
 
-    <dependencies>
-        <!-- Vaadin Dependency -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin</artifactId>
-            <version>${vaadin.version}</version>
-        </dependency>
-        <!-- dellroad-stuff for Spring -->
-        <dependency>
-            <groupId>org.dellroad</groupId>
-            <artifactId>dellroad-stuff-vaadin</artifactId>
-            <version>1.0.315</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
-            <artifactId>vaadin-lazyquerycontainer</artifactId>
-            <version>1.2.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>tableexport</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>vaadin-colorpicker</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>pagedtable</artifactId>
-            <version>0.6.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>easyuploads</artifactId>
-            <version>0.5.3</version>
-        </dependency>
+	<dependencies>
+		<!-- Vaadin Dependency -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin</artifactId>
+			<version>${vaadin.version}</version>
+		</dependency>
+		<!-- dellroad-stuff for Spring -->
+		<dependency>
+			<groupId>org.dellroad</groupId>
+			<artifactId>dellroad-stuff-vaadin</artifactId>
+			<version>1.0.315</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+			<artifactId>vaadin-lazyquerycontainer</artifactId>
+			<version>1.2.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>tableexport</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>vaadin-colorpicker</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>pagedtable</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>easyuploads</artifactId>
+			<version>0.5.3</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>popupbutton</artifactId>
-            <version>1.2.1</version>
-        </dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>popupbutton</artifactId>
+			<version>1.2.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>customcheckbox</artifactId>
-            <version>0.1.1</version>
-        </dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>customcheckbox</artifactId>
+			<version>0.1.1</version>
+		</dependency>
 
 
-        <!-- Spring Dependency -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-instrument</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-instrument-tomcat</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
+		<!-- Spring Dependency -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument-tomcat</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
+		<!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
 
-        <!-- Spring Security -->
+		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
@@ -207,12 +208,12 @@
 			<version>${spring.security.version}</version>
 		</dependency>
 
-        <!-- owasp for xss prevention -->
-        <dependency>
-            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-            <artifactId>owasp-java-html-sanitizer</artifactId>
-            <version>r239</version>
-        </dependency>
+		<!-- owasp for xss prevention -->
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>r239</version>
+		</dependency>
 
 		<!-- For AOP Proxying -->
 		<dependency>
@@ -243,223 +244,229 @@
 			<version>2.1.1.RELEASE</version>
 		</dependency>
 
-        <!-- Apache Commons -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
-        </dependency>
+		<!-- Apache Commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <!-- Other Apache Libs -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.8</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<!-- Other Apache Libs -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.8</version>
+		</dependency>
 
-        <!-- Logging dependencies -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.7</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
+		<!-- Logging dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>1.1.2</version>
 		</dependency>
 
-        <!-- JUnit Dependency for Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- to be used in unit testing the restore functionality, we would dynamically do a git (svn) checkout -->
-        <dependency>
+		<!-- JUnit Dependency for Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- to be used in unit testing the restore functionality, we would dynamically 
+			do a git (svn) checkout -->
+		<dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
 			<version>1.8.5</version>
 		</dependency>
 
-        <!-- IBPCommons Dependency -->
-        <dependency>
-            <groupId>org.generationcp</groupId>
-            <artifactId>ibpcommons</artifactId>
-            <version>${ibpcommons.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>2.3</version>
-        </dependency>
+		<!-- IBPCommons Dependency -->
+		<dependency>
+			<groupId>org.generationcp</groupId>
+			<artifactId>ibpcommons</artifactId>
+			<version>${ibpcommons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
 
-        <!-- Random Pojo Data Generator -->
-        <dependency>
-            <groupId>uk.co.jemos.podam</groupId>
-            <artifactId>podam</artifactId>
-            <version>2.3.5.RELEASE</version>
-        </dependency>
+		<!-- Random Pojo Data Generator -->
+		<dependency>
+			<groupId>uk.co.jemos.podam</groupId>
+			<artifactId>podam</artifactId>
+			<version>2.3.5.RELEASE</version>
+		</dependency>
 
-        <!-- Web-app Integration Optimization -->
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
+		<!-- Web-app Integration Optimization -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
 
-        <!-- for testing, uncomment to use junit tests in src/test/java -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
+		<!-- for testing, uncomment to use junit tests in src/test/java -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>uk.com.robust-it</groupId>
-            <artifactId>cloning</artifactId>
-            <version>1.9.0</version>
-        </dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
+		</dependency>
 
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>uk.com.robust-it</groupId>
+			<artifactId>cloning</artifactId>
+			<version>1.9.0</version>
+		</dependency>
 
-    </dependencies>
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
 
-    <profiles>
-        <profile>
-            <id>vaadinWidgetSetCompilation</id>
-            <activation>
-                <file>
-                    <missing>src/main/webapp/VAADIN/widgetsets</missing>
-                </file>
-                <property>
-                    <name>compileVaadinWidget</name>
-                </property>
-            </activation>
+	</dependencies>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
-                        <version>${gwt.plugin.version}</version>
-                        <configuration>
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
-                            <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <runTarget>IBPWorkbench</runTarget>
-                            <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                            <noServer>true</noServer>
-                            <port>8080</port>
-                            <compileReport>false</compileReport>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>resources</goal>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.google.gwt</groupId>
-                                <artifactId>gwt-dev</artifactId>
-                                <version>${gwt.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.google.gwt</groupId>
-                                <artifactId>gwt-user</artifactId>
-                                <version>${gwt.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
+	<profiles>
+		<profile>
+			<id>vaadinWidgetSetCompilation</id>
+			<activation>
+				<file>
+					<missing>src/main/webapp/VAADIN/widgetsets</missing>
+				</file>
+				<property>
+					<name>compileVaadinWidget</name>
+				</property>
+			</activation>
 
-                    <plugin>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-maven-plugin</artifactId>
-                        <version>1.0.2</version>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                </configuration>
-                                <goals>
-                                    <goal>update-widgetset</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<version>${gwt.plugin.version}</version>
+						<configuration>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+							<runTarget>IBPWorkbench</runTarget>
+							<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+							<noServer>true</noServer>
+							<port>8080</port>
+							<compileReport>false</compileReport>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>resources</goal>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>com.google.gwt</groupId>
+								<artifactId>gwt-dev</artifactId>
+								<version>${gwt.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>com.google.gwt</groupId>
+								<artifactId>gwt-user</artifactId>
+								<version>${gwt.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
 
-    <build>
-    	<finalName>${project.artifactId}</finalName>
-        <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
+					<plugin>
+						<groupId>com.vaadin</groupId>
+						<artifactId>vaadin-maven-plugin</artifactId>
+						<version>1.0.2</version>
+						<executions>
+							<execution>
+								<configuration>
+								</configuration>
+								<goals>
+									<goal>update-widgetset</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<scm>
+		<developerConnection>scm:git:https://github.com/IntegratedBreedingPlatform/Workbench</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.1</version>
@@ -471,64 +478,64 @@
 					<maxPostSize>-1</maxPostSize>
 				</configuration>
 			</plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-properties</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <copy todir="src/main/resources" overwrite="true">
-                                    <fileset dir="pipeline/config/${envConfig}" id="fromDir">
-                                        <include name="workbench.properties"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-cli</id>
-                        <configuration>
-                            <tasks>
-                                <delete dir="${webapp.path}/${project.artifactId}"/>
-                                <copy todir="${webapp.path}/${project.artifactId}">
-                                    <fileset dir="target/${project.artifactId}" includes="**/*"/>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <attachClasses>true</attachClasses>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-            <plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>copy-properties</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<copy todir="src/main/resources" overwrite="true">
+									<fileset dir="pipeline/config/${envConfig}" id="fromDir">
+										<include name="workbench.properties" />
+									</fileset>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-cli</id>
+						<configuration>
+							<tasks>
+								<delete dir="${webapp.path}/${project.artifactId}" />
+								<copy todir="${webapp.path}/${project.artifactId}">
+									<fileset dir="target/${project.artifactId}" includes="**/*" />
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+			</plugin>
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.1.201405082137</version>
@@ -550,57 +557,85 @@
 			</plugin>
 
 			<!-- Gulp Plugin for Web Development -->
-	        <plugin>
-		        <groupId>com.github.eirslett</groupId>
-		        <artifactId>frontend-maven-plugin</artifactId>
-		        <version>0.0.17</version>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>0.0.17</version>
 
-		        <configuration>
-		        	<workingDirectory>src/main/web</workingDirectory>
-		        </configuration>
+				<configuration>
+					<workingDirectory>src/main/web</workingDirectory>
+				</configuration>
 
-		        <executions>
-		        	<execution>
-					    <id>install node and npm</id>
-					    <goals>
-					        <goal>install-node-and-npm</goal>
-					    </goals>
-					    <configuration>
-					        <nodeVersion>v0.10.33</nodeVersion>
-					        <npmVersion>2.1.7</npmVersion>
-					    </configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v0.10.33</nodeVersion>
+							<npmVersion>2.1.7</npmVersion>
+						</configuration>
 					</execution>
 
 					<execution>
-					    <id>npm install</id>
-					    <goals>
-					        <goal>npm</goal>
-					    </goals>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
 					</execution>
 					<execution>
-					    <id>gulp clean</id>
-					    <goals>
-					        <goal>gulp</goal>
-					    </goals>
+						<id>gulp clean</id>
+						<goals>
+							<goal>gulp</goal>
+						</goals>
 
-					    <configuration>
-					    	<arguments>clean</arguments>
-					    </configuration>
+						<configuration>
+							<arguments>clean</arguments>
+						</configuration>
 					</execution>
 					<execution>
-					    <id>gulp build</id>
-					    <goals>
-					        <goal>gulp</goal>
-					    </goals>
+						<id>gulp build</id>
+						<goals>
+							<goal>gulp</goal>
+						</goals>
 
-					    <configuration>
-					    	<!-- Add dash dash prod after 'build' below to get a production build with
-					    	minified files. -->
-					    	<arguments>build</arguments>
-					    </configuration>
+						<configuration>
+							<!-- Add dash dash prod after 'build' below to get a production build 
+								with minified files. -->
+							<arguments>build</arguments>
+						</configuration>
 					</execution>
 				</executions>
-		    </plugin>
-        </plugins>
-    </build>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<git-SHA-1>${buildNumber}</git-SHA-1>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
