@@ -92,7 +92,8 @@ select {
 	}
 
 	.login-create-account-control,
-	.login-forgot-password-control {
+	.login-forgot-password-control,
+	.login-forgot-password-note {
 		height: 0;
 		opacity: 0;
 
@@ -102,7 +103,8 @@ select {
 
   	.login-forgot-password-email-notify {
 		display: none;
-	  	height: 2.5rem;
+		height: auto;
+		margin-bottom: 1rem;
 	}
 
 	.login-icon {
@@ -261,12 +263,14 @@ select {
 		opacity: 1;
 	  }
 
-	  .login-forgot-password-control.extended-height {
-		height: 5rem;
-
+	  .login-forgot-password-note {
+		height: auto;
+		margin-bottom: 1rem;
+		opacity: 1;
 	  }
 
-	  .login-forgot-password-control-hide {
+	  .login-forgot-password-control-hide,
+	  .login-forgot-password-note-hide {
 		display:none;
 	  }
 
@@ -410,7 +414,9 @@ select {
 }
 
 .no-csstransitions {
-	.login-create-account-control, .login-forgot-password-control {
+	.login-create-account-control,
+	.login-forgot-password-control,
+	.login-forgot-password-note {
 		display: none;
 	}
 
@@ -425,7 +431,8 @@ select {
 	}
 
   	.login-forgot-password {
-	  .login-forgot-password-control {
+	  .login-forgot-password-control,
+	  .login-forgot-password-note {
 		display: inline-block;
 	  }
 

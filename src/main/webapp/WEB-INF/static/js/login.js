@@ -265,10 +265,8 @@
 	});
 
 	var doSendPasswordRequestEmail = function (userForm) {
-		$.post('/ibpworkbench/controller/auth/sendResetEmail',userForm)
-			.done(function() {
-				$('.login-forgot-password-email-notify').show();
-			});
+		//$.post('/ibpworkbench/controller/auth/sendResetEmail',userForm);
+		$('.login-forgot-password-email-notify').show();
 	};
 
 	$loginForm.on('submit', function(e) {
