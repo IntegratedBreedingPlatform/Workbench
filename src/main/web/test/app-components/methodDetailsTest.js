@@ -137,7 +137,8 @@ describe('Method details directive', function() {
 
 			// Pretend our form is valid
 			scope.mdForm = {
-				$valid: true
+				$valid: true,
+				$setUntouched: function() {}
 			};
 		});
 
@@ -155,12 +156,15 @@ describe('Method details directive', function() {
 			expect(methodsService.updateMethod.calls.count()).toEqual(0);
 		});
 
-		it('should handle any errors if the update was not successful', function() {
+		it('should handle any errors and set the form to untouched if the update was not successful', function() {
+			spyOn(scope.mdForm, '$setUntouched');
+
 			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
 
 			deferredUpdateMethod.reject();
 			scope.$apply();
 
+			expect(scope.mdForm.$setUntouched).toHaveBeenCalled();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 

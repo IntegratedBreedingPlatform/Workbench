@@ -65,6 +65,7 @@
 
 								$scope.editing = false;
 							}, function(response) {
+								$scope.mdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 							});
 						}

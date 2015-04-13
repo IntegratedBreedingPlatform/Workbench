@@ -215,6 +215,31 @@ describe('Utilities Service', function() {
 
 					expect(returnedFunction(fieldName)).toEqual('form-group has-error');
 				});
+
+				it('should append a has-error class to the returned class if the specified field has server errors and is touched',
+					function() {
+
+					var scope = {},
+						formName = 'form',
+						fieldName = 'field',
+						serverFieldName = 'serverField',
+
+						returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
+
+					scope.serverErrors = {};
+					scope.serverErrors[serverFieldName] = ['Something is wrong with this field'];
+
+					scope[formName] = {
+						$submitted: true
+					};
+
+					scope[formName][fieldName] = {
+						$touched: false,
+						$invalid: false
+					};
+
+					expect(returnedFunction(fieldName, serverFieldName)).toEqual('form-group has-error');
+				});
 			});
 		});
 	});

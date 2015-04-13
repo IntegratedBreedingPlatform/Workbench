@@ -53,11 +53,17 @@
 
 		return {
 			formGroupClassGenerator: function($scope, formName) {
-				return function(fieldName) {
+				return function(fieldName, serverFieldName) {
 					var className = 'form-group';
 
 					// If the field hasn't been initialised yet, don't do anything!
+
 					if ($scope[formName] && $scope[formName][fieldName]) {
+
+						// If there are server errors for this field and the user hasn't tried to correct it, mark as invalid
+						if ($scope.serverErrors && $scope.serverErrors[serverFieldName] && !$scope[formName][fieldName].$touched) {
+							className += ' has-error';
+						}
 
 						// Don't mark as invalid until we are relatively sure the user is finished doing things
 						if ($scope[formName].$submitted || $scope[formName][fieldName].$touched) {
