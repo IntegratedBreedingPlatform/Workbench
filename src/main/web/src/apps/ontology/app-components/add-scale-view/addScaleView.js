@@ -21,6 +21,8 @@
 				e.preventDefault();
 
 				if ($scope.asForm.$valid) {
+					$scope.submitted = true;
+
 					scalesService.addScale(scale).then(function(response) {
 						scale.id = response.id;
 						if (variableStateService.updateInProgress()) {
