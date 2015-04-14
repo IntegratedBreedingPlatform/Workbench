@@ -7,8 +7,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omName', 'name')">
-		<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
+		<div class="col-sm-9">
 			<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
 			<ng-messages for="mdForm.omName.$error" ng-if="mdForm.$submitted || mdForm.omName.$touched">
 				<ng-message when="required"><p class="text-danger">{{'validation.method.nameRequired' | translate}}</p></ng-message>
@@ -19,8 +19,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omDescription',  'description')">
-		<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
+		<div class="col-sm-9">
 			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
 			<ng-messages for="mdForm.omDescription.$error" ng-if="mdForm.$submitted || mdForm.omDescription.$touched">
 				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
@@ -30,7 +30,7 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
+		<div class="col-sm-offset-3 col-sm-9">
 			<button class="btn btn-primary" ng-hide="editing" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
 			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteMethod($event, methodId)">{{'button.delete' | translate}}</button>
 

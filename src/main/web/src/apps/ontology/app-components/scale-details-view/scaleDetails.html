@@ -1,8 +1,8 @@
 <form class="form-horizontal" name="sdForm" ng-submit="saveChanges($event, scaleId, model)" novalidate>
 
 	<div ng-class="formGroupClass('omName')">
-		<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
+		<div class="col-sm-9">
 			<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
 			<ng-messages for="sdForm.omName.$error" ng-if="sdForm.$submitted || sdForm.omName.$touched">
 				<ng-message when="required"><p class="text-danger">{{'validation.scale.nameRequired' | translate}}</p></ng-message>
@@ -12,8 +12,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omDescription')">
-		<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
+		<div class="col-sm-9">
 			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
 			<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
 				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
@@ -22,8 +22,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omDataType')">
-		<label for="omDataType" class="col-sm-2 control-label">{{'formField.dataType' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omDataType" class="col-sm-3 control-label">{{'formField.dataType' | translate}}</label>
+		<div class="col-sm-9">
 			<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
 			<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
 				<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
@@ -32,8 +32,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
-		<label for="omRange" class="col-sm-2 control-label">{{'scalesList.details.validRange' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omRange" class="col-sm-3 control-label">{{'scalesList.details.validRange' | translate}}</label>
+		<div class="col-sm-9">
 			<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
 
 			<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
@@ -42,8 +42,8 @@
 
 	<div ng-show="showCategoriesWidget">
 		<div ng-class="formGroupClass('omCategories')">
-			<label for="omCategories" class="col-sm-2 control-label">{{'scalesList.details.categories' | translate}}</label>
-			<div class="col-sm-10">
+			<label for="omCategories" class="col-sm-3 control-label">{{'scalesList.details.categories' | translate}}</label>
+			<div class="col-sm-9">
 				<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model" om-categorical="showCategoriesWidget"></om-categories>
 				<ng-messages for="sdForm.omCategories.$error" ng-if="sdForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.scale.emptyValue' | translate}}</p></ng-message>
@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
+		<div class="col-sm-offset-3 col-sm-9">
 			<button class="btn btn-primary" ng-hide="editing" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
 			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteScale($event, scaleId)">{{'button.delete' | translate}}</button>
 

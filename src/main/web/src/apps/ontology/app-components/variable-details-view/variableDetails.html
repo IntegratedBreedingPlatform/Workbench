@@ -1,8 +1,8 @@
 <form class="form-horizontal" name="vdForm" ng-submit="saveChanges($event, variableId, model)" novalidate>
 
 	<div ng-class="formGroupClass('omName')">
-		<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
+		<div class="col-sm-9">
 			<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 			<ng-messages for="vdForm.omName.$error" ng-if="vdForm.$submitted || vdForm.omName.$touched">
 				<ng-message when="required"><p class="text-danger">{{'validation.variable.nameRequired' | translate}}</p></ng-message>
@@ -13,8 +13,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omAlias')">
-		<label for="omAlias" class="col-sm-2 control-label">{{'formField.alias' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omAlias" class="col-sm-3 control-label">{{'formField.alias' | translate}}</label>
+		<div class="col-sm-9">
 			<om-input om-name="omAlias" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 			<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
 				<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
@@ -24,8 +24,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omDescription')">
-		<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
+		<div class="col-sm-9">
 			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
 			<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
 				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
@@ -34,8 +34,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omProperty')">
-		<label for="omProperty" class="col-sm-2 control-label">{{'formField.property' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omProperty" class="col-sm-3 control-label">{{'formField.property' | translate}}</label>
+		<div class="col-sm-9">
 			<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
 			<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
 				<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
@@ -44,8 +44,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omMethod')">
-		<label for="omMethod" class="col-sm-2 control-label">{{'formField.method' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omMethod" class="col-sm-3 control-label">{{'formField.method' | translate}}</label>
+		<div class="col-sm-9">
 			<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
 			<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
 				<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
@@ -54,8 +54,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omScale')">
-		<label for="omScale" class="col-sm-2 control-label">{{'formField.scale' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omScale" class="col-sm-3 control-label">{{'formField.scale' | translate}}</label>
+		<div class="col-sm-9">
 			<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
 			<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
 				<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
@@ -64,8 +64,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omVariableTypes')">
-		<label for="omVariableTypes" class="col-sm-2 control-label">{{'formField.variableType' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
+		<div class="col-sm-9">
 			<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
 			<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 				<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
@@ -74,8 +74,8 @@
 	</div>
 
 	<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
-		<label for="omRange" class="col-sm-2 control-label">{{'variablesList.details.expectedRange' | translate}}</label>
-		<div class="col-sm-10">
+		<label for="omRange" class="col-sm-3 control-label">{{'variablesList.details.expectedRange' | translate}}</label>
+		<div class="col-sm-9">
 			<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="model.scale.validValues.min" om-max="model.scale.validValues.max"></om-range>
 			<small ng-show="editing && model.scale.validValues">{{'validation.variable.expectedRange' | translate: model.scale.validValues}}</small>
 			<ng-messages for="vdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="vdForm.$submitted || vdForm.omRange.$touched"></ng-messages>
@@ -83,7 +83,7 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
+		<div class="col-sm-offset-3 col-sm-9">
 			<button class="btn btn-primary" ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
 
