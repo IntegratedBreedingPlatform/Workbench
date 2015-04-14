@@ -21,6 +21,8 @@
 				e.preventDefault();
 
 				if ($scope.apForm.$valid) {
+					$scope.submitted = true;
+
 					propertiesService.addProperty(property).then(function(response) {
 						property.id = response.id;
 						if (variableStateService.updateInProgress()) {
