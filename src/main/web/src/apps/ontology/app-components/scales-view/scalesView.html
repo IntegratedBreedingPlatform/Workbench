@@ -4,5 +4,8 @@
 	</om-panel>
 
 	<h2>{{'scalesList.title' | translate}}</h2>
-	<om-list om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem"></om-list>
+	<div ng-show="scalesCtrl.scales.length === 0" class="om-loading">
+		<span ng-class="{'throbber-hidden': !scalesCtrl.showThrobber}" class="throbber throbber-lg"></span>
+	</div>
+	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem"></om-list>
 </div>

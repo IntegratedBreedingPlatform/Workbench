@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('scalesView', ['scales', 'scaleDetails','list', 'panel']);
+	var app = angular.module('scalesView', ['scales', 'scaleDetails','list', 'panel']),
+		DELAY = 400;
 
 	function transformScaleToDisplayFormat(scale, id) {
 		return {
@@ -17,10 +18,14 @@
 		return scales.map(transformScaleToDisplayFormat);
 	}
 
-	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService',
-		function($scope, scalesService, panelService) {
+	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout',
+		function($scope, scalesService, panelService, $timeout) {
 			var ctrl = this;
 			this.scales = [];
+
+			$timeout(function() {
+				ctrl.showThrobber = true;
+			}, DELAY);
 
 			$scope.panelName = 'scales';
 
