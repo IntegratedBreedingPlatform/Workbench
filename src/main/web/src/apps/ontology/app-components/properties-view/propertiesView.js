@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails']);
+	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails']),
+		DELAY = 400;
 
 	function transformPropertyToDisplayFormat(property, id) {
 		return {
@@ -16,10 +17,14 @@
 		return properties.map(transformPropertyToDisplayFormat);
 	}
 
-	app.controller('PropertiesController', ['$scope', 'propertiesService', 'panelService',
-		function($scope, propertiesService, panelService) {
+	app.controller('PropertiesController', ['$scope', 'propertiesService', 'panelService', '$timeout',
+		function($scope, propertiesService, panelService, $timeout) {
 			var ctrl = this;
 			this.properties = [];
+
+			$timeout(function() {
+				ctrl.showThrobber = true;
+			}, DELAY);
 
 			$scope.panelName = 'properties';
 

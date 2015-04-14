@@ -4,5 +4,8 @@
 	</om-panel>
 
 	<h2>{{'propertiesList.title' | translate}}</h2>
-	<om-list om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem"></om-list>
+	<div ng-show="propsCtrl.properties.length === 0" class="om-loading">
+		<span ng-class="{'throbber-hidden': !propsCtrl.showThrobber}" class="throbber throbber-lg"></span>
+	</div>
+	<om-list ng-hide="propsCtrl.properties.length === 0" om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem"></om-list>
 </div>
