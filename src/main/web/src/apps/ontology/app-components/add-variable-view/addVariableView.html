@@ -4,7 +4,7 @@
 
 	<h2>{{'addNew.variable.title' | translate}}</h2>
 
-	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+	<div ng-if="serverErrors.general.length > 0" class="alert alert-danger" role="alert">
 		<ul>
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
 		</ul>
