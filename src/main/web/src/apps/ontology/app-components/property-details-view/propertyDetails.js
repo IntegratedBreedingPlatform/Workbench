@@ -2,10 +2,12 @@
 'use strict';
 
 (function() {
-	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'properties', 'utilities', 'panel']);
+	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'properties', 'utilities', 'panel']),
+		DELAY = 400;
 
 	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',
-		function(propertiesService, serviceUtilities, formUtilities, panelService) {
+		'$timeout',
+		function(propertiesService, serviceUtilities, formUtilities, panelService, $timeout) {
 
 			return {
 				controller: function($scope) {
@@ -53,12 +55,21 @@
 						e.preventDefault();
 
 						if ($scope.pdForm.$valid) {
+							$scope.submitted = true;
+							$timeout(function() {
+								if ($scope.submitted) {
+									$scope.showThrobber = true;
+								}
+							}, DELAY);
+
 							propertiesService.updateProperty(id, model).then(function() {
 
 								// Update property on parent scope if we succeeded
 								$scope.updateSelectedProperty(model);
 
 								$scope.editing = false;
+								$scope.submitted = false;
+								$scope.showThrobber = false;
 							}, serviceUtilities.genericAndRatherUselessErrorHandler);
 						}
 					};
