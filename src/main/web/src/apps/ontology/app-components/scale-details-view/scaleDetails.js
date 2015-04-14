@@ -3,10 +3,12 @@
 
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
-		'utilities', 'categories', 'panel']);
+			'utilities', 'categories', 'panel']),
+		DELAY = 400;
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService', 'dataTypesService',
-		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService) {
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
+		'dataTypesService', '$timeout',
+		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout) {
 
 		return {
 			controller: function($scope) {
@@ -60,12 +62,21 @@
 					e.preventDefault();
 
 					if ($scope.sdForm.$valid) {
+						$scope.submitted = true;
+						$timeout(function() {
+							if ($scope.submitted) {
+								$scope.showThrobber = true;
+							}
+						}, DELAY);
+
 						scalesService.updateScale(id, model).then(function() {
 
 							// Update scale on parent scope if we succeeded
 							$scope.updateSelectedScale(model);
 
 							$scope.editing = false;
+							$scope.submitted = false;
+							$scope.showThrobber = false;
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					}
 				};
