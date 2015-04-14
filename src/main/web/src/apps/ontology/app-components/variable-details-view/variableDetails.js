@@ -3,12 +3,13 @@
 
 (function() {
 	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
-		'scales', 'utilities', 'variables', 'variableTypes', 'panel']);
+		'scales', 'utilities', 'variables', 'variableTypes', 'panel']),
+		DELAY = 400;
 
 	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
-		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
+		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
-		 panelService) {
+		 panelService, $timeout) {
 
 			return {
 				controller: function($scope) {
@@ -84,12 +85,21 @@
 						e.preventDefault();
 
 						if ($scope.vdForm.$valid) {
+							$scope.submitted = true;
+							$timeout(function() {
+								if ($scope.submitted) {
+									$scope.showThrobber = true;
+								}
+							}, DELAY);
+
 							variablesService.updateVariable(id, model).then(function() {
 
 								// Update variable on parent scope if we succeeded
 								$scope.updateSelectedVariable(model);
 
 								$scope.editing = false;
+								$scope.submitted = false;
+								$scope.showThrobber = false;
 							}, serviceUtilities.genericAndRatherUselessErrorHandler);
 						}
 					};
