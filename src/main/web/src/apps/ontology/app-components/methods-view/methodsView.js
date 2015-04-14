@@ -2,12 +2,17 @@
 'use strict';
 
 (function() {
-	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails']);
+	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails']),
+		DELAY = 400;
 
-	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService',
-		function($scope, methodsService, panelService) {
+	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService', '$timeout',
+		function($scope, methodsService, panelService, $timeout) {
 			var ctrl = this;
 			this.methods = [];
+
+			$timeout(function() {
+				ctrl.showThrobber = true;
+			}, DELAY);
 
 			$scope.panelName = 'methods';
 
