@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']);
+	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']),
+		DELAY = 400;
 
 	function transformDetailedVariableToDisplayFormat(variable, id) {
 		return {
@@ -55,9 +56,15 @@
 		findAndUpdate(list, id);
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService',
-		function($scope, variablesService, panelService) {
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout',
+		function($scope, variablesService, panelService, $timeout) {
 			var ctrl = this;
+
+			$timeout(function() {
+				ctrl.showAllVariablesThrobber = true;
+				ctrl.showFavouritesThrobber = true;
+			}, DELAY);
+
 			ctrl.variables = [];
 			ctrl.favouriteVariables = [];
 
