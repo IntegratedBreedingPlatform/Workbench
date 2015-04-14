@@ -2,10 +2,11 @@
 'use strict';
 
 (function() {
-	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']);
+	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']),
+		DELAY = 400;
 
-	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService',
-		function(methodsService, serviceUtilities, formUtilities, panelService) {
+	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
+		function(methodsService, serviceUtilities, formUtilities, panelService, $timeout) {
 
 			return {
 				controller: function($scope) {
@@ -21,6 +22,11 @@
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.methodId = selected && selected.id || null;
 					}, true);
+
+					function resetSubmissionState() {
+						$scope.submitted = false;
+						$scope.showThrobber = false;
+					}
 
 					$scope.editMethod = function(e) {
 						e.preventDefault();
@@ -58,13 +64,21 @@
 						$scope.serverErrors = {};
 
 						if ($scope.mdForm.$valid) {
-							methodsService.updateMethod(id, model).then(function() {
+							$scope.submitted = true;
+							$timeout(function() {
+								if ($scope.submitted) {
+									$scope.showThrobber = true;
+								}
+							}, DELAY);
 
+							methodsService.updateMethod(id, model).then(function() {
 								// Update method on parent scope if we succeeded
 								$scope.updateSelectedMethod(model);
 
 								$scope.editing = false;
+								resetSubmissionState();
 							}, function(response) {
+								resetSubmissionState();
 								$scope.mdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 							});
