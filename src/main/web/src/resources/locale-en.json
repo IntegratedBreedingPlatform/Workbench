@@ -35,11 +35,20 @@
 		}
 	},
 
+	"propertiesList": {
+		"title": "Properties"
+	},
+
+	"methodsList": {
+		"title": "Methods"
+	},
+
 	"scalesList": {
 		"details": {
 			"validRange": "Valid Range",
 			"categories": "Categories"
-		}
+		},
+		"title": "Scales"
 	},
 
 	"addNew": {
