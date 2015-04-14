@@ -14,6 +14,8 @@
 				$scope.serverErrors = {};
 
 				if ($scope.amForm.$valid) {
+					$scope.submitted = true;
+
 					methodsService.addMethod(method).then(function(response) {
 						// If we successfully added the method, continue..
 						method.id = response.id;
