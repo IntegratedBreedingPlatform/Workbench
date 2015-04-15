@@ -225,10 +225,13 @@ describe('Scale details directive', function() {
 
 	describe('$scope.saveChanges', function() {
 
-		beforeEach(function() {
+		var timeout;
+
+		beforeEach(inject(function($timeout) {
+			timeout = $timeout;
 			scope.updateSelectedScale = function(/*model*/) {};
 			scope.sdForm.$valid = true;
-		});
+		}));
 
 		it('should call the scales service to update the scale', function() {
 			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
@@ -241,6 +244,19 @@ describe('Scale details directive', function() {
 			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
 
 			expect(scalesService.updateScale.calls.count()).toEqual(0);
+		});
+
+		it('should show the throbber if the form is valid and submitted', function() {
+			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
+			timeout.flush();
+			expect(scope.showThrobber).toBe(true);
+		});
+
+		it('should not show the throbber if the form is not in a submitted state', function() {
+			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
+			scope.submitted = false;
+			timeout.flush();
+			expect(scope.showThrobber).toBeFalsy();
 		});
 
 		it('should handle any errors if the update was not successful', function() {

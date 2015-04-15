@@ -132,7 +132,11 @@ describe('Method details directive', function() {
 
 	describe('$scope.saveChanges', function() {
 
-		beforeEach(function() {
+		var timeout;
+
+		beforeEach(inject(function($timeout) {
+			timeout = $timeout;
+
 			scope.updateSelectedMethod = function(/*model*/) {};
 
 			// Pretend our form is valid
@@ -140,7 +144,7 @@ describe('Method details directive', function() {
 				$valid: true,
 				$setUntouched: function() {}
 			};
-		});
+		}));
 
 		it('should call the methods service to update the method', function() {
 			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
@@ -154,6 +158,19 @@ describe('Method details directive', function() {
 			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
 
 			expect(methodsService.updateMethod.calls.count()).toEqual(0);
+		});
+
+		it('should show the throbber if the form is valid and submitted', function() {
+			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
+			timeout.flush();
+			expect(scope.showThrobber).toBe(true);
+		});
+
+		it('should not show the throbber if the form is not in a submitted state', function() {
+			scope.saveChanges(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
+			scope.submitted = false;
+			timeout.flush();
+			expect(scope.showThrobber).toBeFalsy();
 		});
 
 		it('should handle any errors and set the form to untouched if the update was not successful', function() {

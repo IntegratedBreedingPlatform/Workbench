@@ -283,10 +283,13 @@ describe('Variable details directive', function() {
 
 	describe('$scope.saveChanges', function() {
 
-		beforeEach(function() {
+		var timeout;
+
+		beforeEach(inject(function($timeout) {
+			timeout = $timeout;
 			scope.updateSelectedVariable = function(/*model*/) {};
 			scope.vdForm.$valid = true;
-		});
+		}));
 
 		it('should call the variables service to update the variable', function() {
 			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, PLANT_VIGOR);
@@ -299,6 +302,19 @@ describe('Variable details directive', function() {
 			scope.saveChanges(fakeEvent, PLANT_VIGOR);
 
 			expect(variablesService.updateVariable.calls.count()).toEqual(0);
+		});
+
+		it('should show the throbber if the form is valid and submitted', function() {
+			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, PLANT_VIGOR);
+			timeout.flush();
+			expect(scope.showThrobber).toBe(true);
+		});
+
+		it('should not show the throbber if the form is not in a submitted state', function() {
+			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, PLANT_VIGOR);
+			scope.submitted = false;
+			timeout.flush();
+			expect(scope.showThrobber).toBeFalsy();
 		});
 
 		it('should handle any errors if the update was not successful', function() {

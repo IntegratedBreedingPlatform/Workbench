@@ -163,14 +163,18 @@ describe('Property details directive', function() {
 
 	describe('$scope.saveChanges', function() {
 
-		beforeEach(function() {
+		var timeout;
+
+		beforeEach(inject(function($timeout) {
+			timeout = $timeout;
+
 			scope.updateSelectedProperty = function(/*model*/) {};
 
 			// Pretend our form is valid
 			scope.pdForm = {
 				$valid: true
 			};
-		});
+		}));
 
 		it('should call the properties service to update the property', function() {
 			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
@@ -184,6 +188,19 @@ describe('Property details directive', function() {
 			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
 
 			expect(propertiesService.updateProperty.calls.count()).toEqual(0);
+		});
+
+		it('should show the throbber if the form is valid and submitted', function() {
+			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
+			timeout.flush();
+			expect(scope.showThrobber).toBe(true);
+		});
+
+		it('should not show the throbber if the form is not in a submitted state', function() {
+			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
+			scope.submitted = false;
+			timeout.flush();
+			expect(scope.showThrobber).toBeFalsy();
 		});
 
 		it('should handle any errors if the update was not successful', function() {
