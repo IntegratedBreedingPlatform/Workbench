@@ -21,6 +21,8 @@
 				types: []
 			};
 
+
+
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
 
@@ -82,6 +84,18 @@
 				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/' + path);
 			};
+
+
+			$scope.$watchCollection('variable.variableTypes', function(newValue) {
+				if (newValue) {
+				 	var filtered = newValue.filter(function(type) {
+				 		//TODO change to filtering by id when real service is hooked in
+						return type.name === 'Treatment Factor';
+					});
+				 	$scope.showTreatmentFactorAlert = filtered.length > 0;
+				}
+			});
+
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
 		}

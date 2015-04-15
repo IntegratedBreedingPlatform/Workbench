@@ -98,7 +98,8 @@
 			"methodRequired": "Method is required.",
 			"scaleRequired": "Scale is required.",
 			"variableTypeEmpty": "Please select at least one variable type.",
-			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}})."
+			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}}).",
+			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\"."
 		},
 
 		"scale": {
