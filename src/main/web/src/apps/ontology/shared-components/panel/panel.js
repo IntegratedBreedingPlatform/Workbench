@@ -2,21 +2,33 @@
 'use strict';
 
 (function() {
-	var panelModule = angular.module('panel', []);
+	var panelModule = angular.module('panel', []),
+		DELAY = 400;
 
-	panelModule.directive('omPanel', function(panelService) {
+	panelModule.directive('omPanel', ['$timeout', 'panelService', function($timeout, panelService) {
 		var VISIBLE_CLASS = 'om-pa-panel-visible';
 
 		return {
 			controller: function($scope) {
 				$scope.closePanel = function(e) {
 					e.preventDefault();
+					$scope.showThrobber = false;
 					panelService.hidePanel();
 				};
 			},
 			link: function($scope, element) {
-				$scope.$watch(panelService.getCurrentPanel, function(panelName) {
-					element.toggleClass(VISIBLE_CLASS, panelName === $scope.omPanelIdentifier);
+				$scope.$watch(panelService.getCurrentPanel, function(panelName, prevPanelName, scope) {
+					if (panelName === scope.omPanelIdentifier) {
+						element.addClass(VISIBLE_CLASS);
+
+						$timeout(function() {
+							if (panelService.getCurrentPanel()) {
+								$scope.showThrobber = true;
+							}
+						}, DELAY);
+					} else {
+						element.removeClass(VISIBLE_CLASS);
+					}
 				});
 			},
 			restrict: 'E',
@@ -27,7 +39,7 @@
 			templateUrl: 'static/views/ontology/panel.html',
 			transclude: true
 		};
-	});
+	}]);
 
 	panelModule.directive('omMask', function(panelService) {
 		var VISIBLE_CLASS = 'om-mask-visible';

@@ -32,7 +32,8 @@ describe('Panel module', function() {
 		var CONTENT_CLASS = 'om-pa-content-test',
 			CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 
-			directiveElement;
+			directiveElement,
+			timeout;
 
 		function compileDirective(attribute) {
 			var attr = attribute || '';
@@ -41,6 +42,10 @@ describe('Panel module', function() {
 			});
 			scope.$digest();
 		}
+
+		beforeEach(inject(function($timeout) {
+			timeout = $timeout;
+		}));
 
 		it('should display any content nested inside the panel tags', function() {
 			compileDirective();
@@ -85,6 +90,37 @@ describe('Panel module', function() {
 			scope.$digest();
 			expect(panelService.getCurrentPanel()).toBe(null);
 			expect(directiveElement).not.toHaveClass('om-pa-panel-visible');
+		});
+
+		it('should show the throbber if the panel is opened', function() {
+			var isolateScope;
+
+			scope.panelName = 'panel';
+			compileDirective('om-panel-identifier="panelName"');
+
+			panelService.showPanel('panel');
+			scope.$digest();
+
+			isolateScope = directiveElement.isolateScope();
+
+			timeout.flush();
+			expect(isolateScope.showThrobber).toBe(true);
+		});
+
+		it('should not show the throbber the panel is closed', function() {
+			var isolateScope;
+
+			scope.panelName = 'panel';
+			compileDirective('om-panel-identifier="panelName"');
+
+			panelService.showPanel('panel');
+			scope.$digest();
+
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.closePanel({preventDefault: function(){}});
+
+			timeout.flush();
+			expect(isolateScope.showThrobber).toBeFalsy();
 		});
 	});
 
