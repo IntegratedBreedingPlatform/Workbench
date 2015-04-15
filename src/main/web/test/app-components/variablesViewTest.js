@@ -34,6 +34,7 @@ describe('Variables Controller', function() {
 		q,
 		controller,
 		scope,
+		timeout,
 
 		variablesService,
 		panelService,
@@ -70,9 +71,10 @@ describe('Variables Controller', function() {
 		module('variablesView');
 	});
 
-	beforeEach(inject(function($q, $controller, $rootScope) {
+	beforeEach(inject(function($q, $controller, $rootScope, $timeout) {
 		q = $q;
 		scope = $rootScope;
+		timeout = $timeout;
 
 		variablesService = {
 			getVariable: function() {
@@ -213,6 +215,16 @@ describe('Variables Controller', function() {
 
 	it('should set the selected variable to be an empty object by default', function() {
 		expect(scope.selectedVariable).toEqual({});
+	});
+
+	it('should show the all variables throbber after a delay', function() {
+		timeout.flush();
+		expect(controller.showAllVariablesThrobber).toBe(true);
+	});
+
+	it('should show the favourites throbber after a delay', function() {
+		timeout.flush();
+		expect(controller.showFavouritesThrobber).toBe(true);
 	});
 
 	describe('$scope.showVariableDetails', function() {

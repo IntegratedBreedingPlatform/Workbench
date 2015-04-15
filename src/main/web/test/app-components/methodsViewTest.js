@@ -9,6 +9,7 @@ var CUT_AND_DRY = {
 	q,
 	controller,
 	scope,
+	timeout,
 	deferredGetMethods,
 	deferredGetMethod,
 	methodsService,
@@ -20,10 +21,11 @@ describe('Methods View', function() {
 		module('methodsView');
 	});
 
-	beforeEach(inject(function($q, $controller, $rootScope) {
+	beforeEach(inject(function($q, $controller, $rootScope, $timeout) {
 
 		q = $q;
 		scope = $rootScope;
+		timeout = $timeout;
 
 		methodsService = {
 			getMethod: function() {
@@ -63,6 +65,11 @@ describe('Methods View', function() {
 
 	it('should set the selected method to be null by default', function() {
 		expect(scope.selectedMethod).toEqual(null);
+	});
+
+	it('should show the throbber after a delay', function() {
+		timeout.flush();
+		expect(controller.showThrobber).toBe(true);
 	});
 
 	describe('$scope.showMethodDetails', function() {

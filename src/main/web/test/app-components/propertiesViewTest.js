@@ -13,6 +13,7 @@ describe('Properties View', function() {
 		q,
 		controller,
 		scope,
+		timeout,
 		deferredGetProperties,
 		deferredGetProperty,
 		propertiesService,
@@ -22,7 +23,7 @@ describe('Properties View', function() {
 		module('propertiesView');
 	});
 
-	beforeEach(inject(function($q, $controller, $rootScope) {
+	beforeEach(inject(function($q, $controller, $rootScope, $timeout) {
 		propertiesService = {
 			getProperties: function() {
 				deferredGetProperties = q.defer();
@@ -44,6 +45,7 @@ describe('Properties View', function() {
 
 		q = $q;
 		scope = $rootScope;
+		timeout = $timeout;
 		controller = $controller('PropertiesController', {
 			$scope: scope,
 			propertiesService: propertiesService,
@@ -75,6 +77,11 @@ describe('Properties View', function() {
 
 	it('should set the selected property to be null by default', function() {
 		expect(scope.selectedProperty).toEqual(null);
+	});
+
+	it('should show the throbber after a delay', function() {
+		timeout.flush();
+		expect(controller.showThrobber).toBe(true);
 	});
 
 	describe('$scope.showPropertyDetails', function() {

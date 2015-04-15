@@ -18,6 +18,7 @@ describe('Scales View', function() {
 		q,
 		controller,
 		scope,
+		timeout,
 		deferredGetScales,
 		deferredGetScale,
 		scalesService,
@@ -27,7 +28,7 @@ describe('Scales View', function() {
 		module('scalesView');
 	});
 
-	beforeEach(inject(function($q, $controller, $rootScope) {
+	beforeEach(inject(function($q, $controller, $rootScope, $timeout) {
 		scalesService = {
 			getScales: function() {
 				deferredGetScales = q.defer();
@@ -49,6 +50,7 @@ describe('Scales View', function() {
 
 		q = $q;
 		scope = $rootScope;
+		timeout = $timeout;
 		controller = $controller('ScalesController', {
 			$scope: scope,
 			scalesService: scalesService,
@@ -82,6 +84,11 @@ describe('Scales View', function() {
 
 	it('should set the selected scale to be null by default', function() {
 		expect(scope.selectedScale).toEqual(null);
+	});
+
+	it('should show the throbber after a delay', function() {
+		timeout.flush();
+		expect(controller.showThrobber).toBe(true);
 	});
 
 	describe('$scope.showScaleDetails', function() {
