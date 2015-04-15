@@ -4,14 +4,14 @@
 	</om-panel>
 
 	<h2>{{'variablesList.favouritesTitle' | translate}}</h2>
-	<div ng-show="varsCtrl.favouriteVariables.length === 0" class="om-loading">
+	<div ng-show="varsCtrl.favouriteVariables.length === 0" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showFavouritesThrobber}" class="throbber throbber-lg"></span>
 	</div>
 
 	<om-list ng-hide="varsCtrl.favouriteVariables.length === 0" om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 
 	<h2>{{'variablesList.allTitle' | translate}}</h2>
-	<div ng-show="varsCtrl.variables.length === 0" class="om-loading">
+	<div ng-show="varsCtrl.variables.length === 0" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showAllVariablesThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
