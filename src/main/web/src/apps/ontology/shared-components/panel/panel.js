@@ -4,25 +4,19 @@
 (function() {
 	var panelModule = angular.module('panel', []);
 
-	panelModule.directive('omPanel', function() {
+	panelModule.directive('omPanel', function(panelService) {
 		var VISIBLE_CLASS = 'om-pa-panel-visible';
 
 		return {
-			controller: function($scope, panelService) {
-				$scope.panelService = panelService;
-
+			controller: function($scope) {
 				$scope.closePanel = function(e) {
 					e.preventDefault();
-					$scope.panelService.hidePanel();
+					panelService.hidePanel();
 				};
 			},
 			link: function($scope, element) {
-				$scope.$watch('panelService.getShownPanel()', function(panelName, prevPanelName, scope) {
-					if (panelName === scope.omPanelIdentifier) {
-						element.addClass(VISIBLE_CLASS);
-					} else {
-						element.removeClass(VISIBLE_CLASS);
-					}
+				$scope.$watch(panelService.getCurrentPanel, function(panelName) {
+					element.toggleClass(VISIBLE_CLASS, panelName === $scope.omPanelIdentifier);
 				});
 			},
 			restrict: 'E',
@@ -35,51 +29,32 @@
 		};
 	});
 
-	panelModule.directive('omPanelSmall', function() {
-		return {
-			link: function ($scope, element) {
-				element.addClass('om-pa-panel-small');
-			}
-		};
-	});
-
-	panelModule.directive('omMaskForPanel', function() {
-		var VISIBLE_CLASS = 'om-pa-mask-visible';
+	panelModule.directive('omMask', function(panelService) {
+		var VISIBLE_CLASS = 'om-mask-visible';
 
 		return {
-			controller: function($scope, panelService) {
-				$scope.panelService = panelService;
-			},
 			link: function($scope, element) {
-				$scope.$watch('panelService.getShownPanel()', function(panelName, prevPanelName, scope) {
-					if (panelName === scope.omMaskForPanel) {
-						element.addClass(VISIBLE_CLASS);
-					} else {
-						element.removeClass(VISIBLE_CLASS);
-					}
+				$scope.$watch(panelService.getCurrentPanel, function(panelName) {
+					element.toggleClass(VISIBLE_CLASS, !!panelName);
 				});
 			},
-			restrict: 'A',
-			scope: {
-				omMaskForPanel: '='
-			},
-			templateUrl: 'static/views/ontology/panelMask.html',
-			transclude: true
+			restrict: 'E',
+			scope: {}
 		};
 	});
 
 	panelModule.service('panelService', [function() {
-		var shownPanel = null;
+		var currentPanel = null;
 
 		return {
-			showPanel: function(panel) {
-				shownPanel = panel;
+			showPanel: function(panelName) {
+				currentPanel = panelName;
 			},
 			hidePanel: function() {
-				shownPanel = null;
+				currentPanel = null;
 			},
-			getShownPanel: function() {
-				return shownPanel;
+			getCurrentPanel: function() {
+				return currentPanel;
 			}
 		};
 	}]);

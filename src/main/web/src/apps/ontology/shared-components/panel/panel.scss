@@ -16,7 +16,7 @@ om-panel {
 
 	background-color: white;
 
-	&.om-pa-panel-small {
+	&.om-panel-small {
 		width: $panelWidthSmall;
 	}
 
@@ -58,7 +58,7 @@ om-panel {
 }
 
 // Slightly awkward pseudo media query styling for smaller panel sizes
-om-panel[om-panel-small] {
+om-panel.om-panel-small {
 	.om-panel-header,
 	.om-panel-content {
 		padding: 1rem;
@@ -69,33 +69,22 @@ om-panel[om-panel-small] {
 	}
 }
 
-.om-pa-mask {
+om-mask {
+	position: fixed;
+	z-index: -99;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 
-	width: 100%;
-	height: 100%;
-	z-index: 99;
-	transition: transform 0.5s;
+	transition: opacity .15s linear, z-index 0 ease .15s;
 
-	&::after {
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: 0;
-		height: 0;
-
-		content: '';
-		transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
-		opacity: 0;
-		background: rgba(0, 0, 0, 0.2);
-
-		.om-pa-mask-visible & {
-			width: 100%;
-			height: 100%;
-
-			transition: opacity 0.5s;
-			opacity: 1;
-		}
-	}
-
+	opacity: 0;
+	background-color: black;
 }
 
+om-mask.om-mask-visible {
+	z-index: 99;
+	transition: opacity .15s linear, z-index 0 ease;
+	opacity: .5;
+}

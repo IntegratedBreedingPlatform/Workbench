@@ -13,7 +13,7 @@
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
 <body ng-cloak="" translate-cloak="title" class="om-ontology-manager container-fluid" ng-controller="OntologyController as ctrl">
-
+<om-mask></om-mask>
 	<header>
 		<h1>{{'title' | translate}}</h1>
 
@@ -46,9 +46,7 @@
 
 	<div class="om-view" ng-view="ng-view"></div>
 
-	<div om-mask-for-panel="panelName"></div>
-
-	<om-panel om-panel-identifier="panelName" om-panel-small="" om-title="'addNew.title' | translate">
+	<om-panel class="om-panel-small" om-panel-identifier="panelName" om-title="'addNew.title' | translate">
 		<nav class="list-group">
 			<a href="#" class="list-group-item" ng-click="addNew($event, 'variable')">{{'addNew.variable.menuItem' | translate}}</a>
 			<a href="#" class="list-group-item" ng-click="addNew($event, 'property')">{{'addNew.property.menuItem' | translate}}</a>

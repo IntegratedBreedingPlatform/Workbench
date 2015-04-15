@@ -83,61 +83,38 @@ describe('Panel module', function() {
 				preventDefault: function() {}
 			});
 			scope.$digest();
-			expect(panelService.getShownPanel()).toBe(null);
+			expect(panelService.getCurrentPanel()).toBe(null);
 			expect(directiveElement).not.toHaveClass('om-pa-panel-visible');
 		});
 	});
 
-	describe('Small Panel Directive', function() {
-
-		it('should give the panel a smaller width', function() {
-			var directiveElement;
-
-			inject(function($compile) {
-				directiveElement = $compile('<om-panel om-panel-small>Content</div>')(scope);
-			});
-			scope.$digest();
-
-			expect(directiveElement).toHaveClass('om-pa-panel-small');
-		});
-	});
-
 	describe('Panel Mask Directive', function() {
-		var MASK_CLASS = 'om-pa-mask-test',
-			CONTENT_CLASS = 'masked-content',
-			CONTENT = '<div class="' + CONTENT_CLASS + '">Content</div>',
-			directiveElement;
+		var directiveElement;
 
 		function compileDirective() {
 			inject(function($compile) {
 				scope.panelName = 'panel';
-				directiveElement = $compile('<div class="maskParent" om-mask-for-panel="panelName">' + CONTENT + '</div>')(scope);
+				directiveElement = $compile('<om-mask></om-mask>')(scope);
 			});
 			scope.$digest();
 		}
 
-		it('should display any html inside the panel tags', function() {
-			compileDirective();
-			expect(directiveElement).toContainElement('.' + MASK_CLASS);
-			expect(directiveElement).toContainElement('.' + CONTENT_CLASS);
-		});
-
-		it('should be shown when showPanel is called with the panel\'s identifier ', function() {
+		it('should be shown when showPanel is called', function() {
 			compileDirective();
 
 			panelService.showPanel('panel');
 			scope.$digest();
 
-			expect(directiveElement).toHaveClass('om-pa-mask-visible');
+			expect(directiveElement).toHaveClass('om-mask-visible');
 		});
 
-		it('should be hidden when showPanel is called with a different panel\'s identifier ', function() {
+		it('should be hidden when hidePanel is called', function() {
 			compileDirective();
 
-			panelService.showPanel('differentPanel');
+			panelService.hidePanel();
 
 			scope.$digest();
-			expect(directiveElement).not.toHaveClass('om-pa-mask-visible');
+			expect(directiveElement).not.toHaveClass('om-mask-visible');
 		});
 	});
 
@@ -145,13 +122,13 @@ describe('Panel module', function() {
 
 		it('should set the shown panel to the panel passed to showPanel', function() {
 			panelService.showPanel('thisPanel');
-			expect(panelService.getShownPanel()).toBe('thisPanel');
+			expect(panelService.getCurrentPanel()).toBe('thisPanel');
 		});
 
 		it('should set the shown panel to null when hidePanel is called', function() {
 			panelService.showPanel('thisPanel');
 			panelService.hidePanel();
-			expect(panelService.getShownPanel()).toBe(null);
+			expect(panelService.getCurrentPanel()).toBe(null);
 		});
 	});
 });
