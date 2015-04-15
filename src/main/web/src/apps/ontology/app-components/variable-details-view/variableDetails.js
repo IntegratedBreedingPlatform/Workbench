@@ -105,6 +105,18 @@
 					};
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'vdForm');
+
+					$scope.$watchCollection('model.variableTypes', function(newValue) {
+						var filtered;
+
+						if (newValue) {
+							filtered = newValue.filter(function(type) {
+				 				//TODO change to filtering by id when real service is hooked in
+				 				return type.name === 'Treatment Factor';
+				 			});
+							$scope.showTreatmentFactorAlert = filtered.length > 0;
+						}
+					});
 				},
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/variableDetails.html'

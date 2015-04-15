@@ -70,6 +70,10 @@
 			<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 				<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 			</ng-messages>
+
+			<p class="text-warning" ng-show="editing && showTreatmentFactorAlert" >
+				{{'validation.variable.treatmentFactor' | translate }}
+			</p>
 		</div>
 	</div>
 
