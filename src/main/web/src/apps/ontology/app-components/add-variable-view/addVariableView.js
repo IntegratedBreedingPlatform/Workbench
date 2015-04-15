@@ -87,12 +87,14 @@
 
 
 			$scope.$watchCollection('variable.variableTypes', function(newValue) {
+				var filtered;
+
 				if (newValue) {
-				 	var filtered = newValue.filter(function(type) {
-				 		//TODO change to filtering by id when real service is hooked in
+					filtered = newValue.filter(function(type) {
+						//TODO change to filtering by id when real service is hooked in
 						return type.name === 'Treatment Factor';
 					});
-				 	$scope.showTreatmentFactorAlert = filtered.length > 0;
+					$scope.showTreatmentFactorAlert = filtered.length > 0;
 				}
 			});
 
