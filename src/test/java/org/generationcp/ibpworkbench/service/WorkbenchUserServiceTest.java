@@ -12,6 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -75,7 +78,10 @@ public class WorkbenchUserServiceTest {
 		User user = new User();
 		user.setPersonid(TEST_PERSON_ID);
 		Person person = new Person();
-		when(workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL).get(0)).thenReturn(user);
+		List<User> userList = new ArrayList<>();
+		userList.add(user);
+
+		when(workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(userList);
 		when(workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		User resultUser = userService.getUserByUserName(TEST_USERNAME);
