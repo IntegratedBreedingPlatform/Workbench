@@ -7,7 +7,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +99,12 @@ public class WorkbenchUserService {
 				userAccount.getPassword());
 	}
 
+	/**
+	 * Retrieves User obj including the Person object information
+	 * @param username
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
 	public User getUserByUserName(String username) throws MiddlewareQueryException {
 		User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
 		Person person = workbenchDataManager.getPersonById(user.getPersonid());
@@ -108,6 +113,12 @@ public class WorkbenchUserService {
 		return user;
 	}
 
+	/**
+	 * Retreives User with Person object given user id
+	 * @param userId
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
 	public User getUserByUserid(Integer userId) throws MiddlewareQueryException {
 
 		User user = workbenchDataManager.getUserById(userId);

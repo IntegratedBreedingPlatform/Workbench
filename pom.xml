@@ -169,6 +169,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- java mail for smtp implem -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
 		<!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -249,19 +256,19 @@
             <artifactId>attoparser</artifactId>
             <version>1.4.0.RELEASE</version>
         </dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.21</version>
+		</dependency>
+
 		<!-- Apache Commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
 		</dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.21</version>
-        </dependency>
-
 
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -278,6 +285,7 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.6</version>
 		</dependency>
+
 		<!-- Other Apache Libs -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -380,18 +388,6 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
-        </dependency>
-		<!-- Mockito -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
 
 	</dependencies>
 

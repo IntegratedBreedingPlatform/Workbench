@@ -24,9 +24,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -61,13 +61,19 @@ public class ForgotPasswordEmailService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
-	public void doRequestPasswordReset(User user)
-			throws MiddlewareQueryException, MessagingException, IOException {
+	public void doRequestPasswordReset(User user) throws MessagingException {
 
-		UserInfo userInfo = workbenchDataManager.getUserInfoByUsername(user.getName());
-		String generatedURL = generateResetPasswordUrl(userInfo);
-		sendForgotPasswordRequest(user.getPerson().getDisplayName(), user.getPerson().getEmail(),
-				generatedURL);
+		UserInfo userInfo = null;
+		try {
+			userInfo = workbenchDataManager.getUserInfoByUsername(user.getName());
+
+			String generatedURL = generateResetPasswordUrl(userInfo);
+			sendForgotPasswordRequest(user.getPerson().getDisplayName(), user.getPerson().getEmail(),
+					generatedURL);
+
+		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
+		}
 	}
 
 	public String generateResetPasswordUrl(UserInfo userInfo)
@@ -88,7 +94,7 @@ public class ForgotPasswordEmailService {
 	}
 
 	protected Date getTokenExpiryDate() {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(Locale.getDefault(Locale.Category.DISPLAY));
 		cal.add(Calendar.HOUR, noOfHoursBeforeExpire);
 
 		return cal.getTime();
@@ -98,38 +104,54 @@ public class ForgotPasswordEmailService {
 	 * Pre-req: a validated user email account + username
 	 */
 	public void sendForgotPasswordRequest(final String recipientName, final String recipientEmail,
-			final String forgotPasswordUrl) throws MessagingException, IOException {
-		// prepare the evaluation context
-		Context ctx = new Context(LocaleContextHolder.getLocale());
-		ctx.setVariable("recipientName", recipientName);
-		ctx.setVariable("forgotPasswordUrl", forgotPasswordUrl);
-		ctx.setVariable("bmsLogo", BMS_LOGO_LOC);
-		ctx.setVariable("expireHrs",noOfHoursBeforeExpire);
+			final String forgotPasswordUrl) throws MessagingException {
 
 		// Prepare message using a Spring helper
 		final MimeMessage mimeMessage = mailSender.createMimeMessage();
 		// true = multipart
-		final MimeMessageHelper message =
-				new MimeMessageHelper(mimeMessage, true, "UTF-8");
-		message.setSubject(messageSource.getMessage("forgot.mail.subject", new String[] {}, "",
-				LocaleContextHolder.getLocale()));
-		message.setFrom(senderEmail);
-		message.setTo(recipientEmail);
+		final MimeMessageHelper message = getMimeMessageHelper(mimeMessage);
 
-		final String htmlContent = templateEngine.process("forgot-password-email", ctx);
-		message.setText(htmlContent, true); // true = isHtml
+		try {
+			// prepare the evaluation context
+			Context ctx = new Context(LocaleContextHolder.getLocale());
+			ctx.setVariable("recipientName", recipientName);
+			ctx.setVariable("forgotPasswordUrl", forgotPasswordUrl);
+			ctx.setVariable("bmsLogo", BMS_LOGO_LOC);
+			ctx.setVariable("expireHrs",noOfHoursBeforeExpire);
 
-		// add BMS logo
-		final InputStream bmsLogoResource = servletContext.getResourceAsStream(BMS_LOGO_LOC);
-		message.addInline(BMS_LOGO_LOC,new ByteArrayResource(IOUtils.toByteArray(bmsLogoResource)),"image/png");
+			message.setSubject(messageSource.getMessage("forgot.mail.subject", new String[] {}, "",
+					LocaleContextHolder.getLocale()));
+			message.setFrom(senderEmail);
+			message.setTo(recipientEmail);
 
-		// send the message
-		mailSender.send(mimeMessage);
+			final String htmlContent = processTemplate(ctx);
+			// true = isHtml
+			message.setText(htmlContent, true);
 
-		LOG.info("Sent password reset to {} with URL token {}",recipientEmail,forgotPasswordUrl);
+			// add BMS logo
+			message.addInline(BMS_LOGO_LOC, retrieveLogoImage(),"image/png");
 
+			LOG.info("Sent password reset to {} with URL token {}",recipientEmail,forgotPasswordUrl);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(),e);
+		} finally {
+			// send the message
+			mailSender.send(mimeMessage);
+		}
 	}
 
+	protected ByteArrayResource retrieveLogoImage() throws IOException {
+		return new ByteArrayResource(IOUtils.toByteArray(servletContext.getResourceAsStream(BMS_LOGO_LOC)));
+	}
+
+	protected String processTemplate(Context ctx) {
+		return templateEngine.process("forgot-password-email", ctx);
+	}
+
+	protected MimeMessageHelper getMimeMessageHelper(MimeMessage mimeMessage)
+			throws MessagingException {
+		return new MimeMessageHelper(mimeMessage, true, "UTF-8");
+	}
 
 	public User validateResetToken(String token) throws InvalidResetTokenException {
 		UserInfo userInfo = null;
@@ -147,7 +169,7 @@ public class ForgotPasswordEmailService {
 		}
 	}
 
-	public boolean isResetTokenValid(UserInfo userInfo) {
+	protected boolean isResetTokenValid(UserInfo userInfo) {
 		return null != userInfo && getTokenExpiryDate().after(userInfo.getResetExpiryDate());
 	}
 

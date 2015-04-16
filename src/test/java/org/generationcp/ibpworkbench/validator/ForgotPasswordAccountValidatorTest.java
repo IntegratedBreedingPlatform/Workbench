@@ -50,8 +50,6 @@ public class ForgotPasswordAccountValidatorTest {
 
 		validatorDUT.validate(userAccount, errors);
 
-		verify(validatorDUT).validateEmailFormat(errors, userAccount);
-
 		verify(validatorDUT).validatePasswordConfirmationIfEquals(errors, userAccount);
 
 		verify(validatorDUT).validateUsernameAndEmailIfNotExists(errors, userAccount);

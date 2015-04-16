@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -57,29 +56,6 @@ public class AuthenticationController {
 		return "login";
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/reset", method = RequestMethod.POST)
-	public String getRequestResetPasswordPage(@ModelAttribute("userAccount") UserAccountModel model) {
-		LOG.debug("reset password submitted");
-
-		try {
-			// 1. replace password
-			workbenchUserService.updateUserPassword(model);
-
-			//User user = workbenchUserService.getUserByUserName(model.getUsername());
-			// 2. remove token
-			forgotPasswordEmailService.deleteToken(model);
-
-			return "true";
-
-		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(),e);
-
-			return "false";
-		}
-
-	}
-
 	@RequestMapping(value="/reset/{token}", method = RequestMethod.GET)
 	public String getCreateNewPasswordPage(@PathVariable String token,Model model) {
 
@@ -92,9 +68,8 @@ public class AuthenticationController {
 			return "new-password";
 
 		} catch (InvalidResetTokenException e) {
-			LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(),e);
 			return "redirect:" + AuthenticationController.URL;
-
 		}
 	}
 
@@ -186,7 +161,8 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> sendResetEmail(@ModelAttribute("userAccount") UserAccountModel model) {
+	public ResponseEntity<Map<String,Object>> doSendResetPasswordRequestEmail(
+			@ModelAttribute("userAccount") UserAccountModel model) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -198,7 +174,7 @@ public class AuthenticationController {
 			isSuccess = HttpStatus.OK;
 			out.put(SUCCESS, Boolean.TRUE);
 
-		} catch (MiddlewareQueryException | MessagingException | IOException e) {
+		} catch (MiddlewareQueryException | MessagingException e) {
 			out.put(SUCCESS, Boolean.FALSE);
 			out.put(ERRORS, e.getMessage());
 
@@ -206,6 +182,27 @@ public class AuthenticationController {
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/reset", method = RequestMethod.POST)
+	public Boolean doResetPassword(@ModelAttribute("userAccount") UserAccountModel model) {
+		LOG.debug("reset password submitted");
+
+		try {
+			// 1. replace password
+			workbenchUserService.updateUserPassword(model);
+
+			// 2. remove token
+			forgotPasswordEmailService.deleteToken(model);
+
+			return true;
+
+		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(),e);
+
+			return false;
+		}
 	}
 
 	protected void generateErrors(BindingResult result, Map<String, Object> out) {

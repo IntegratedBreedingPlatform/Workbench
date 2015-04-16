@@ -149,7 +149,7 @@ public class StudyDetailsQuery implements Query {
                 value = format.format(oldFormat.parse(date));
             }
         } catch (ParseException e) {
-            LOG.debug(e.getMessage(), e);
+            LOG.debug(e.getMessage());
             value = "N/A";
         }
         return value;
