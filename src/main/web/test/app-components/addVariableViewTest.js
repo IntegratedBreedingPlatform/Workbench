@@ -53,6 +53,27 @@ describe('Add Variable View', function() {
 			}
 		},
 
+		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [
+		{
+			id: 0,
+			name: 'Trait',
+			description: 'Characteristics of a germplasm to be recorded during a study.'
+		},
+		{
+			id: 1,
+			name: 'Treatment Factor',
+			description: 'Treatments to be applied to members of a trial.'
+		}
+		],
+
+		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [
+		{
+			id: 0,
+			name: 'Trait',
+			description: 'Characteristics of a germplasm to be recorded during a study.'
+		}
+		],
+
 		deferred = [],
 		deferredAddVariable,
 
@@ -150,6 +171,24 @@ describe('Add Variable View', function() {
 			scope.$apply();
 
 			expect(scope.showRangeWidget).toBe(false);
+		});
+
+		it('should hide the Treatment Factor warning message by default', function() {
+			expect(scope.showTreatmentFactorAlert).toBeFalsy();
+		});
+
+		it('should show the Treatment Factor warning message if the variable types include Treatment Factor', function() {
+			scope.variable.variableTypes = VARIABLE_TYPES_INC_TREATMENT_FACTOR;
+			scope.$apply();
+
+			expect(scope.showTreatmentFactorAlert).toBe(true);
+		});
+
+		it('should hide the Treatment Factor warning message if the variable types do not include Treatment Factor', function() {
+			scope.variable.variableTypes = VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR;
+			scope.$apply();
+
+			expect(scope.showTreatmentFactorAlert).toBe(false);
 		});
 	});
 
