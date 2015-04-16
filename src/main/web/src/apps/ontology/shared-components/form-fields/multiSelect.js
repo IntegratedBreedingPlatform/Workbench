@@ -50,6 +50,7 @@
 					}, true);
 
 					scope.checkKeyDown = function(event) {
+						var itemAdded;
 
 						// Down key, increment selectedIndex
 						if (event.keyCode === 40) {
@@ -75,8 +76,11 @@
 						// Enter pressed, select item
 						else if (event.keyCode === 13) {
 							event.preventDefault();
-							scope.addToSelectedItems(scope.selectedIndex);
-							scope.hideSuggestions();
+
+							itemAdded = scope.addToSelectedItems(scope.selectedIndex);
+							if (itemAdded) {
+								scope.hideSuggestions();
+							}
 						}
 					};
 
@@ -133,6 +137,12 @@
 	multiSelect.service('stringDataService', function() {
 		return {
 
+			/*
+			Returns a function that adds an item at the given index to the model if it has not already been
+			added. Also allows users to add text that they have entered as an item without having to select it
+			from the list.
+			Returns true if the item is added to the selected items, and false if it isn't.
+			*/
 			addToSelectedItems: function(scope) {
 				return function(index) {
 					var itemToAdd = scope.suggestions[index];
@@ -146,7 +156,10 @@
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
 						scope.model[scope.property].push(itemToAdd);
+						return true;
 					}
+
+					return false;
 				};
 			},
 
@@ -194,6 +207,11 @@
 	multiSelect.service('objectDataService', function() {
 		return {
 
+			/*
+			Returns a function that adds an item at the given index to the model if it has not already been
+			added.
+			Returns true if the item is added to the selected items, and false if it isn't.
+			*/
 			addToSelectedItems: function(scope) {
 				return function(index) {
 					var itemToAdd = scope.suggestions[index];
@@ -201,7 +219,10 @@
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
 						scope.model[scope.property].push(itemToAdd);
+						return true;
 					}
+
+					return false;
 				};
 			},
 
