@@ -9,9 +9,6 @@
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
 		</ul>
 	</div>
-	<div ng-show="showTreatmentFactorAlert" class="alert alert-warning" role="alert">
-		<span>{{'validation.variable.treatmentFactor' | translate }}</span>
-	</div>
 
 	<form class="form-horizontal" name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
 
@@ -77,6 +74,9 @@
 				<ng-messages for="avForm.omVariableTypes.$error" ng-if="avForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-warning" ng-show="showTreatmentFactorAlert">
+					{{'validation.variable.treatmentFactor' | translate }}
+				</p>
 			</div>
 		</div>
 
