@@ -241,16 +241,6 @@ describe('multiselect module', function() {
 			expect(isolateScope.addToSelectedItems).toHaveBeenCalledWith(0);
 		});
 
-		it('should reset the selected index back to -1', function() {
-			compileDirective();
-
-			isolateScope.selectedIndex = 0;
-			keyEvent.keyCode = ENTER_KEY;
-			isolateScope.checkKeyDown(keyEvent);
-
-			expect(isolateScope.selectedIndex).toEqual(-1);
-		});
-
 		it('should not change the selectedIndex if a key other than up, down or enter is pressed', function() {
 			compileDirective();
 
