@@ -21,6 +21,7 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -112,7 +113,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
                 if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
                     return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
                 }
 

@@ -4,13 +4,13 @@ import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
+import org.generationcp.middleware.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Calendar;
 
 /**
  * GCP
@@ -34,7 +34,7 @@ public class BackupIBDBService {
         checkBackupDir();
         ProjectBackup projectBackup = new ProjectBackup();
         projectBackup.setProjectId(Long.valueOf(projectId));
-        projectBackup.setBackupTime(Calendar.getInstance().getTime());
+        projectBackup.setBackupTime(Util.getCurrentDate());
         File backupFile = mysqlUtil.backupDatabase(dbName);
         projectBackup.setBackupPath(backupFile.getAbsolutePath());
         // save result to DB

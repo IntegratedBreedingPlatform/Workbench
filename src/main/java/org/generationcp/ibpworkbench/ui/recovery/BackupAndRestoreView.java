@@ -4,6 +4,8 @@ import com.vaadin.data.Validator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -22,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by cyrus on 2/20/14.
@@ -133,7 +134,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                 
                 restoreList.addItem(pb);
 
-                String dateStr = (new SimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
+                String dateStr = (DateUtil.getSimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
 
                 restoreList.setItemCaption(pb,dateStr + " - " + pb.getBackupPath());
                 restoreList.setValue(pb);

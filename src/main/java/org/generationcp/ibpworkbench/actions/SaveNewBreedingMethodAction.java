@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.SessionData;
@@ -30,9 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * @author Jeffrey Morales
@@ -118,9 +116,7 @@ public class SaveNewBreedingMethodAction implements ClickListener {
             newBreedingMethod.setReference(0);
 
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-            newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
+            newBreedingMethod.setMdate(DateUtil.getCurrentDateAsIntegerValue());
             newBreedingMethod.setMfprg(0);
 
             //TODO: MOVE THIS CODE TO PRESENTER, GET PRESENTER REFERENCE FROM HERE

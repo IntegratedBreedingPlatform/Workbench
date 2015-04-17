@@ -15,6 +15,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
+
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -31,8 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -147,13 +147,12 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 
 	protected String getCutOffDate() {
 		//Dec 31, 2015
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = DateUtil.getCalendarInstance();
 		cal.set(Calendar.YEAR, 2015);
 		cal.set(Calendar.MONTH, 11);
 		cal.set(Calendar.DATE, 31);
 		Date cutOffDate = cal.getTime();
-		DateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy");
-		return sdf.format(cutOffDate);
+		return DateUtil.getDateAsStringValue(cutOffDate,"MMMMM dd, yyyy");
 
 	}
 

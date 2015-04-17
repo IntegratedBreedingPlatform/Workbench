@@ -8,6 +8,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -508,7 +509,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         @Override
         protected String formatPropertyValue(Object rowId, Object colId, Property property) {
             if (property.getType() == Date.class) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_TIMESTAMP_FORMAT);
                 return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
             }
 

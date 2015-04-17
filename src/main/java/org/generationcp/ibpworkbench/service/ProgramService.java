@@ -1,9 +1,7 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -188,11 +187,7 @@ public class ProgramService {
 	}
 
     private Integer getCurrentDate(){
-        Calendar now = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String dateNowStr = formatter.format(now.getTime());
-        Integer dateNowInt = Integer.valueOf(dateNowStr);
-        return dateNowInt;
+        return DateUtil.getCurrentDateAsIntegerValue();
     }
 
 	public void setSelectedUsers(Set<User> users) {

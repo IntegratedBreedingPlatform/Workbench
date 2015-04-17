@@ -15,6 +15,7 @@ package org.generationcp.ibpworkbench.ui.programmembers;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -31,7 +32,6 @@ import org.generationcp.middleware.pojos.workbench.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Configurable
@@ -252,10 +252,6 @@ public class SaveUsersInProjectAction implements ClickListener{
     }
 
     private Integer getCurrentDate(){
-        Calendar now = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String dateNowStr = formatter.format(now.getTime());
-        Integer dateNowInt = Integer.valueOf(dateNowStr);
-        return dateNowInt;
+        return DateUtil.getCurrentDateAsIntegerValue();
     }
 }

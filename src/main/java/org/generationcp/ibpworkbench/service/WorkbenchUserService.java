@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -10,9 +11,7 @@ import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by cyrus on 11/27/14.
@@ -56,8 +55,7 @@ public class WorkbenchUserService {
 		user.setPassword(userAccount.getPassword());
 		user.setAccess(0);
 
-		String currentDate = new SimpleDateFormat("yyyyMMdd").format(
-				Calendar.getInstance().getTime());
+		String currentDate = DateUtil.getCurrentDateAsStringValue();
 
 		user.setAdate(Integer.parseInt(currentDate));
 		user.setCdate(Integer.parseInt(currentDate));
