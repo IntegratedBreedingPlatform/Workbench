@@ -152,7 +152,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 		cal.set(Calendar.MONTH, 11);
 		cal.set(Calendar.DATE, 31);
 		Date cutOffDate = cal.getTime();
-		return DateUtil.getDateAsStringValue(cutOffDate,"MMMMM dd, yyyy");
+		return DateUtil.formatDateAsStringValue(cutOffDate,"MMMMM dd, yyyy");
 
 	}
 
