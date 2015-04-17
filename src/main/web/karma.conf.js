@@ -70,6 +70,9 @@ module.exports = function(config) {
 		// if true, Karma captures browsers, runs the tests and exits
 		singleRun: false,
 
+		// Increased the default timeout as it was timing out on Windows
+		browserNoActivityTimeout: 30000,
+
 		ngHtml2JsPreprocessor: {
 			cacheIdFromPath: function(filepath) {
 				// Convert template path from its file system path to the path expected by the javascript using the template
