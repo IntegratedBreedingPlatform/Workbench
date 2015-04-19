@@ -8,6 +8,7 @@
 
 		return {
 			genericAndRatherUselessErrorHandler: function(error) {
+				/* istanbul ignore else */
 				if (console) {
 					console.log(error);
 				}
@@ -49,9 +50,10 @@
 		};
 	}]);
 
-	app.factory('formUtilities', function() {
+	app.factory('formUtilities', ['$window', '$q', '$timeout', function($window, $q, $timeout) {
 
-		return {
+		var formUtilities = {
+
 			formGroupClassGenerator: function($scope, formName) {
 				return function(fieldName, serverFieldName) {
 					var className = 'form-group';
@@ -76,7 +78,47 @@
 					}
 					return className;
 				};
+			},
+
+			cancelHandler: function(scope, formNotEmpty) {
+				if (formNotEmpty) {
+					formUtilities.confirmationHandler(scope).then(formUtilities.goBack);
+				} else {
+					formUtilities.goBack();
+				}
+			},
+
+			confirmationHandler: function($scope) {
+				var confirmation;
+
+				// Generate a promise and expose two new methods on the scope to resolve and reject this promise.
+				confirmation = $q.defer();
+				$scope.confirmationNecessary = true;
+
+				$scope.confirm = function(e) {
+					e.preventDefault();
+					confirmation.resolve();
+				};
+
+				$scope.deny = function(e) {
+					e.preventDefault();
+					confirmation.reject();
+				};
+
+				return confirmation.promise.finally(function() {
+					$timeout(function() {
+						$scope.confirmationNecessary = false;
+						delete $scope.confirm;
+						delete $scope.deny;
+					}, 200);
+				});
+			},
+
+			goBack: function() {
+				$window.history.back();
 			}
 		};
-	});
+
+		return formUtilities;
+	}]);
 }());

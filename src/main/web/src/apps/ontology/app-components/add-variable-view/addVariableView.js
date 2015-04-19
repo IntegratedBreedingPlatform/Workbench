@@ -5,11 +5,12 @@
 	var app = angular.module('addVariable', ['formFields', 'multiSelect', 'input', 'textArea', 'select', 'variables', 'properties',
 		'variableTypes', 'methods', 'scales', 'variableState', 'utilities']);
 
-	app.controller('AddVariableController', ['$scope', '$location', 'variablesService', 'variableTypesService', 'propertiesService',
-		'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities', 'formUtilities',
+	app.controller('AddVariableController', ['$scope', '$window', '$location', 'variablesService', 'variableTypesService',
+		'propertiesService', 'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities', 'formUtilities',
+		'variableFormService',
 
-		function($scope, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
-			variableStateService, serviceUtilities, formUtilities) {
+		function($scope, $window, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
+			variableStateService, serviceUtilities, formUtilities, variableFormService) {
 
 			var storedData;
 
@@ -20,8 +21,6 @@
 				properties: [],
 				types: []
 			};
-
-
 
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
@@ -77,6 +76,11 @@
 				}
 			};
 
+			$scope.cancel = function(e) {
+				e.preventDefault();
+				formUtilities.cancelHandler($scope, $scope.avForm.$dirty && !variableFormService.formEmpty($scope.variable));
+			};
+
 			$scope.addNew = function(e, path) {
 				e.preventDefault();
 
@@ -84,7 +88,6 @@
 				variableStateService.storeVariableState($scope.variable, $scope.data);
 				$location.path('/add/' + path);
 			};
-
 
 			$scope.$watchCollection('variable.variableTypes', function(newValue) {
 				var filtered;
@@ -98,9 +101,29 @@
 				}
 			});
 
-
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
 		}
 	]);
 
+	app.factory('variableFormService', [function() {
+
+		return {
+			formEmpty: function(model) {
+				var isUndefined = angular.isUndefined,
+					formEmpty;
+
+				// Don't bother checking for expected range, because for there to be an expected range
+				// there must be a scale, in which case the form isn't empty.. :)
+				formEmpty = !!!model.name &&
+					!!!model.description &&
+					isUndefined(model.propertySummary) &&
+					isUndefined(model.methodSummary) &&
+					isUndefined(model.scale) &&
+					(isUndefined(model.variableTypes) ||
+						(angular.isArray(model.variableTypes) && model.variableTypes.length === 0));
+
+				return formEmpty;
+			}
+		};
+	}]);
 }());

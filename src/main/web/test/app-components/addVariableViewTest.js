@@ -37,6 +37,8 @@ describe('Add Variable View', function() {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
 
+		formUtilities,
+
 		PERCENTAGE = {
 			name: 'Percentage',
 			dataType: {
@@ -82,7 +84,8 @@ describe('Add Variable View', function() {
 		scope,
 		controllerFn,
 
-		controller;
+		controller,
+		variableFormService;
 
 	function fakePromise() {
 		return function() {
@@ -116,11 +119,12 @@ describe('Add Variable View', function() {
 		module('addVariable');
 	});
 
-	beforeEach(inject(function($q, $rootScope, $location, $controller) {
+	beforeEach(inject(function($q, $rootScope, $location, $controller, _formUtilities_, _variableFormService_) {
 		q = $q;
 		location = $location;
 		scope = $rootScope;
 		controllerFn = $controller;
+		formUtilities = _formUtilities_;
 
 		propertiesService.getProperties = fakePromise();
 		methodsService.getMethods = fakePromise();
@@ -132,6 +136,8 @@ describe('Add Variable View', function() {
 			deferredAddVariable = q.defer();
 			return deferredAddVariable.promise;
 		};
+
+		variableFormService = _variableFormService_;
 
 		spyOn(variableStateService, 'reset');
 		spyOn(variableStateService, 'storeVariableState');
@@ -319,6 +325,76 @@ describe('Add Variable View', function() {
 
 			scope.addNew(fakeEvent, path);
 			expect(location.path).toHaveBeenCalledWith('/add/' + path);
+		});
+	});
+
+	describe('$scope.cancel', function() {
+
+		beforeEach(function() {
+			compileController();
+		});
+
+		it('should call the cancel handler', function() {
+			scope.avForm = {
+				$dirty: true,
+				variable: {
+					name: 'Name'
+				}
+			};
+
+			spyOn(formUtilities, 'cancelHandler');
+
+			scope.cancel(fakeEvent);
+
+			expect(formUtilities.cancelHandler).toHaveBeenCalled();
+		});
+	});
+
+	describe('variableFormService', function() {
+
+		describe('formEmpty', function() {
+
+			it('should return false if the name or description are present', function() {
+				var name = {
+						name: 'name'
+					},
+					description = {
+						description: 'description'
+					};
+
+				expect(variableFormService.formEmpty(name)).toBe(false);
+				expect(variableFormService.formEmpty(description)).toBe(false);
+			});
+
+			it('should return false if the propertySummary, methodSummary or scale are present', function() {
+				var propertySummary = {
+						name: 'a property'
+					},
+					methodSummary = {
+						name: 'a method'
+					},
+					scale = {
+						name: 'a scale'
+					};
+
+				expect(variableFormService.formEmpty(propertySummary)).toBe(false);
+				expect(variableFormService.formEmpty(methodSummary)).toBe(false);
+				expect(variableFormService.formEmpty(scale)).toBe(false);
+			});
+
+			it('should return false if at least one variable type is present', function() {
+				var model = {
+						variableTypes: ['type']
+					};
+
+				expect(variableFormService.formEmpty(model)).toBe(false);
+			});
+
+			it('should return true if no fields are valued', function() {
+				var model = {};
+
+				expect(variableFormService.formEmpty(model)).toBe(true);
+			});
 		});
 	});
 });

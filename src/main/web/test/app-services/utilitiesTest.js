@@ -1,20 +1,24 @@
-/*global expect, inject, spyOn*/
+/*global expect, inject, spyOn, fail*/
 'use strict';
 
 describe('Utilities Service', function() {
 	var serviceUtilities,
 		formUtilities,
+		rootScope,
+		window,
+		timeout,
 		q;
 
-	beforeEach(function() {
-		module('utilities');
-	});
+	beforeEach(module('utilities'));
 
 	beforeEach(function() {
-		inject(function(_serviceUtilities_, _formUtilities_, $q) {
+		inject(function(_serviceUtilities_, _formUtilities_, $q, $rootScope, $window, $timeout) {
 			serviceUtilities = _serviceUtilities_;
 			formUtilities = _formUtilities_;
 			q = $q;
+			rootScope = $rootScope;
+			window = $window;
+			timeout = $timeout;
 		});
 	});
 
@@ -240,6 +244,124 @@ describe('Utilities Service', function() {
 
 					expect(returnedFunction(fieldName, serverFieldName)).toEqual('form-group has-error');
 				});
+			});
+		});
+
+		describe('cancelHandler', function() {
+
+			var confirmation;
+
+			beforeEach(function() {
+				formUtilities.confirmationHandler = function() {
+					confirmation = q.defer();
+					return confirmation.promise;
+				};
+
+				formUtilities.goBack = function() {};
+
+				spyOn(formUtilities, 'confirmationHandler').and.callThrough();
+				spyOn(formUtilities, 'goBack');
+			});
+
+			it('should immediately go back if the form is empty', function() {
+				formUtilities.cancelHandler({}, false);
+				expect(formUtilities.goBack).toHaveBeenCalled();
+			});
+
+			it('should set up a confirmation handler if the form is not empty', function() {
+				var scope = {
+						prop: 'some scope'
+					};
+				formUtilities.cancelHandler(scope, true);
+				expect(formUtilities.confirmationHandler).toHaveBeenCalledWith(scope);
+			});
+
+			it('should go back when the confirmation is recieved', function() {
+				var scope = {
+						prop: 'some scope'
+					};
+				formUtilities.cancelHandler(scope, true);
+
+				confirmation.resolve();
+				rootScope.$apply();
+
+				expect(formUtilities.goBack).toHaveBeenCalled();
+			});
+		});
+
+		describe('confirmationHandler', function() {
+
+			it('should return a promise', function() {
+				var confirmation = formUtilities.confirmationHandler({});
+				expect(typeof confirmation).toEqual('object');
+				expect(typeof confirmation.then).toEqual('function');
+			});
+
+			it('should set the confirmationNecessary property on the specified scope to true', function() {
+				var scope = {};
+
+				formUtilities.confirmationHandler(scope);
+				expect(scope.confirmationNecessary).toBe(true);
+			});
+
+			it('should append a confirm method on the scope that will resolve the returned promise', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope);
+
+				expect(typeof scope.confirm).toEqual('function');
+
+				confirmation.then(done, fail);
+
+				scope.confirm(fakeEvent);
+				rootScope.$apply();
+			});
+
+			it('should append a deny method on the scope that will reject the returned promise', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope);
+
+				expect(typeof scope.deny).toEqual('function');
+
+				confirmation.then(fail, done);
+
+				scope.deny(fakeEvent);
+				rootScope.$apply();
+			});
+
+			it('should reset the confirmationNecessary state after the promise is fulfilled', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope);
+
+				confirmation.finally(function() {
+					timeout.flush();
+				}).finally(function() {
+					expect(scope.confirmationNecessary).toBe(false);
+					expect(scope.confirm).toBe(undefined);
+					expect(scope.deny).toBe(undefined);
+					done();
+				});
+
+				scope.confirm(fakeEvent);
+				rootScope.$apply();
+			});
+
+		});
+
+		describe('goBack', function() {
+			it('should load the previous url', function() {
+				spyOn(window.history, 'back').and.callThrough();
+
+				formUtilities.goBack();
+				expect(window.history.back).toHaveBeenCalled();
 			});
 		});
 	});
