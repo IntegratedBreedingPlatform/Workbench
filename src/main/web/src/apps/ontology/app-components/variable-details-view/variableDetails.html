@@ -85,21 +85,30 @@
 			<ng-messages for="vdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="vdForm.$submitted || vdForm.omRange.$touched"></ng-messages>
 		</div>
 	</div>
-
 	<div class="form-group">
 		<div class="col-sm-offset-3 col-sm-9">
-			<button class="btn btn-primary" ng-hide="editing" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
-
-			<button class="btn btn-default" ng-hide="editing || !deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
-
-			<button ng-show="editing" class="btn btn-primary" type="submit">
-				{{'button.save' | translate}}
-				<span ng-show="showThrobber" class="throbber-btn-wrapper">
-					<span class="throbber throbber-btn throbber-white"></span>
-				</span>
-			</button>
-
-			<button class="btn btn-default" ng-show="editing" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+			<div ng-hide="editing">
+				<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
+				<button class="btn btn-default" ng-hide="!deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
+			</div>
+			<div ng-show="editing">
+				<div ng-show="confirmationNecessary">
+					<div class="alert alert-danger">{{'warnings.discardConfirmation' | translate}}</div>
+					<button class="btn btn-danger" ng-click="confirm($event)">
+						{{'button.discard' | translate}}
+					</button>
+					<a href="#" ng-click="deny($event)">{{'button.continueEditing' | translate}}</a>
+				</div>
+				<div ng-hide="confirmationNecessary">
+					<button class="btn btn-primary" type="submit">
+						{{'button.save' | translate}}
+						<span ng-show="showThrobber" class="throbber-btn-wrapper">
+							<span class="throbber throbber-btn throbber-white"></span>
+						</span>
+					</button>
+					<button class="btn btn-default" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </form>

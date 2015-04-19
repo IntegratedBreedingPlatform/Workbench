@@ -247,7 +247,7 @@ describe('Utilities Service', function() {
 			});
 		});
 
-		describe('cancelHandler', function() {
+		describe('cancelAddHandler', function() {
 
 			var confirmation;
 
@@ -264,7 +264,7 @@ describe('Utilities Service', function() {
 			});
 
 			it('should immediately go back if the form is empty', function() {
-				formUtilities.cancelHandler({}, false);
+				formUtilities.cancelAddHandler({}, false);
 				expect(formUtilities.goBack).toHaveBeenCalled();
 			});
 
@@ -272,7 +272,7 @@ describe('Utilities Service', function() {
 				var scope = {
 						prop: 'some scope'
 					};
-				formUtilities.cancelHandler(scope, true);
+				formUtilities.cancelAddHandler(scope, true);
 				expect(formUtilities.confirmationHandler).toHaveBeenCalledWith(scope);
 			});
 
@@ -280,7 +280,7 @@ describe('Utilities Service', function() {
 				var scope = {
 						prop: 'some scope'
 					};
-				formUtilities.cancelHandler(scope, true);
+				formUtilities.cancelAddHandler(scope, true);
 
 				confirmation.resolve();
 				rootScope.$apply();

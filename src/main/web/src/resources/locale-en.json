@@ -55,7 +55,6 @@
 
 	"addNew": {
 		"title": "Add New",
-		"discardConfirmation": "Are you sure you want to discard your changes?",
 
 		"variable": {
 			"menuItem": "Variable",
@@ -121,6 +120,10 @@
 			"nameRequired": "Please name your property.",
 			"classesEmpty": "Please provide at least one class."
 		}
+	},
+
+	"warnings": {
+		"discardConfirmation": "Are you sure you want to discard your changes?"
 	},
 
 	"categories": {

@@ -80,8 +80,8 @@
 				};
 			},
 
-			cancelHandler: function(scope, formNotEmpty) {
-				if (formNotEmpty) {
+			cancelAddHandler: function(scope, formDirty) {
+				if (formDirty) {
 					formUtilities.confirmationHandler(scope).then(formUtilities.goBack);
 				} else {
 					formUtilities.goBack();

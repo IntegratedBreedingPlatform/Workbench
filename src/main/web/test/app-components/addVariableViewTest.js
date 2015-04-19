@@ -342,11 +342,11 @@ describe('Add Variable View', function() {
 				}
 			};
 
-			spyOn(formUtilities, 'cancelHandler');
+			spyOn(formUtilities, 'cancelAddHandler');
 
 			scope.cancel(fakeEvent);
 
-			expect(formUtilities.cancelHandler).toHaveBeenCalled();
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
 		});
 	});
 

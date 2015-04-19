@@ -78,7 +78,7 @@
 
 			$scope.cancel = function(e) {
 				e.preventDefault();
-				formUtilities.cancelHandler($scope, $scope.avForm.$dirty && !variableFormService.formEmpty($scope.variable));
+				formUtilities.cancelAddHandler($scope, $scope.avForm.$dirty && !variableFormService.formEmpty($scope.variable));
 			};
 
 			$scope.addNew = function(e, path) {

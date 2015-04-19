@@ -42,6 +42,7 @@ describe('Variable details directive', function() {
 		scalesService = {},
 		variableTypesService = {},
 		variablesService = {},
+		formUtilities,
 		scope,
 		q,
 		directiveElement,
@@ -87,9 +88,10 @@ describe('Variable details directive', function() {
 		$provide.value('panelService', panelService);
 	}));
 
-	beforeEach(inject(function($rootScope, $q) {
+	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;
 		scope = $rootScope;
+		formUtilities = _formUtilities_;
 
 		propertiesService.getProperties = function() {
 			deferredGetProperties = q.defer();
@@ -307,18 +309,55 @@ describe('Variable details directive', function() {
 	});
 
 	describe('$scope.cancel', function() {
-		it('should set editing to be false', function() {
-			scope.editing = true;
-			scope.cancel(fakeEvent);
-			expect(scope.editing).toBe(false);
+
+		var confirmation;
+
+		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
 		});
 
-		it('should set the model back to the original unchanged variable', function() {
-			scope.model = null;
+		it('should set editing to false if the user has not made any edits', function() {
 			scope.selectedVariable = {
 				name: 'variable'
 			};
+			scope.model = angular.copy(scope.selectedVariable);
+			scope.editing = true;
+
 			scope.cancel(fakeEvent);
+
+			expect(scope.editing).toBe(false);
+		});
+
+		it('should call the confirmation handler if the user has made edits', function() {
+			scope.selectedVariable = {
+				name: 'variable'
+			};
+			scope.model = {
+				name: 'new_variable_name'
+			};
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.confirmationHandler).toHaveBeenCalledWith(scope);
+		});
+
+		it('should set editing to false and reset the model when the confirmation handler is resolved', function() {
+			scope.selectedVariable = {
+				name: 'variable'
+			};
+			scope.model = {
+				name: 'new_variable_name'
+			};
+
+			scope.cancel(fakeEvent);
+			confirmation.resolve();
+			scope.$apply();
+
+			expect(scope.editing).toBe(false);
 			expect(scope.model).toEqual(scope.selectedVariable);
 		});
 	});

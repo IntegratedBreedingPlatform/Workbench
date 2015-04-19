@@ -2,11 +2,11 @@
 'use strict';
 
 (function() {
-	var variableDetailsModule = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
+	var variableDetails = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
 		'scales', 'utilities', 'variables', 'variableTypes', 'panel']),
 		DELAY = 400;
 
-	variableDetailsModule.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
+	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
 		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
 		 panelService, $timeout) {
@@ -77,8 +77,16 @@
 
 					$scope.cancel = function(e) {
 						e.preventDefault();
-						$scope.editing = false;
-						$scope.model = angular.copy($scope.selectedVariable);
+
+						// The user hasn't changed anything
+						if (angular.equals($scope.model, $scope.selectedVariable)) {
+							$scope.editing = false;
+						} else {
+							formUtilities.confirmationHandler($scope).then(function() {
+								$scope.editing = false;
+								$scope.model = angular.copy($scope.selectedVariable);
+							});
+						}
 					};
 
 					$scope.saveChanges = function(e, id, model) {
