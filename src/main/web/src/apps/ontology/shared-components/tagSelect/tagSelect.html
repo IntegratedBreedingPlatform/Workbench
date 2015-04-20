@@ -1,0 +1,18 @@
+<div ng-show="editable()">
+	<div class="label-wrapper" ng-repeat="selectedItem in model[property]">
+		<span class="label label-primary">
+			{{selectedItem}}
+			<a href="#" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
+		</span>
+	</div>
+	<div class="suggestions-wrapper" ng-class="suggestionsShown ? 'show-suggestions' : ''" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestionsShown">
+		<input name="{{name}}" type="input" class="label-input form-control" placeholder="{{'multiSelect.placeholder' | translate}}" ng-model="searchText" ng-change="showSuggestions()" ng-click="toggleSuggestions()" ng-keydown="checkKeyDown($event)">
+		<ul class="suggestions-list">
+			<li class="suggestion" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-class="{active: selectedIndex === $index}">{{suggestion}}</li>
+		</ul>
+	</div>
+</div>
+<p ng-hide="editable()" class="form-control-static">
+<!-- TODO Fix the coma after items -->
+	<span ng-repeat="item in model[property]">{{item}} </span>
+</p>

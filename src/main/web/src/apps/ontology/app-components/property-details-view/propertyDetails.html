@@ -24,7 +24,7 @@
 	<div ng-class="formGroupClass('omClasses')">
 		<label for="omClasses" class="col-sm-3 control-label">{{'formField.classes' | translate}}</label>
 		<div class="col-sm-9">
-			<om-multi-select name="omClasses" om-name="om-classes" om-property="classes" om-editing="editing" ng-model="model" om-options="data.classes" om-tags="true"></om-multi-select>
+			<om-tag-select name="omClasses" om-name="om-classes" om-property="classes" om-editing="editing" ng-model="model" om-options="data.classes"></om-tag-select>
 			<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted">
 				<ng-message when="emptyValue"><p class="text-danger">{{'validation.property.classesEmpty' | translate}}</p></ng-message>
 			</ng-messages>

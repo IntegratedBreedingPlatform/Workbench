@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'properties', 'utilities', 'panel']),
+	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'tagSelect', 'properties',
+			'utilities', 'panel']),
 		DELAY = 400;
 
 	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',

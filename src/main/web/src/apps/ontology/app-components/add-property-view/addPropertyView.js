@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['formFields', 'multiSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities']);
+	var app = angular.module('addProperty', ['formFields', 'tagSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertiesService', 'variableStateService',
 		'propertyFormService', 'serviceUtilities', 'formUtilities',
