@@ -22,6 +22,8 @@
 						types: []
 					};
 
+					$scope.clientErrors = {};
+
 					// Whether or not we want to display the expected range widget
 					$scope.showRangeWidget = false;
 
@@ -63,16 +65,26 @@
 					$scope.editVariable = function(e) {
 						e.preventDefault();
 						$scope.editing = true;
+
+						// Reset any errors we're showing the user
+						$scope.clientErrors = {};
 					};
 
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
 
-						variablesService.deleteVariable(id).then(function() {
-							// Remove variable on parent scope if we succeeded
-							panelService.hidePanel();
-							$scope.updateSelectedVariable();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						// Reset any errors we're showing the user
+						$scope.clientErrors = {};
+
+						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
+							variablesService.deleteVariable(id).then(function() {
+								// Remove variable on parent scope if we succeeded
+								panelService.hidePanel();
+								$scope.updateSelectedVariable();
+							}, function() {
+								$scope.clientErrors.failedToDelete = true;
+							});
+						});
 					};
 
 					$scope.cancel = function(e) {
@@ -82,7 +94,7 @@
 						if (angular.equals($scope.model, $scope.selectedVariable)) {
 							$scope.editing = false;
 						} else {
-							formUtilities.confirmationHandler($scope).then(function() {
+							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
 								$scope.editing = false;
 								$scope.model = angular.copy($scope.selectedVariable);
 							});

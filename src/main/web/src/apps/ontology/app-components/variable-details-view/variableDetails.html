@@ -87,18 +87,19 @@
 	</div>
 	<div class="form-group">
 		<div class="col-sm-offset-3 col-sm-9">
-			<div ng-hide="editing">
-				<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
-				<button class="btn btn-default" ng-hide="!deletable" ng-click="deleteVariable($event, variableId)">{{'button.delete' | translate}}</button>
+
+			<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
+				{{'warnings.deleteUnsuccessful' | translate}}
 			</div>
-			<div ng-show="editing">
-				<div ng-show="confirmationNecessary">
-					<div class="alert alert-danger">{{'warnings.discardConfirmation' | translate}}</div>
-					<button class="btn btn-danger" ng-click="confirm($event)">
-						{{'button.discard' | translate}}
-					</button>
-					<a href="#" ng-click="deny($event)">{{'button.continueEditing' | translate}}</a>
-				</div>
+
+			<div ng-hide="editing || confirmationNecessary">
+				<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
+
+				<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteVariable($event, variableId)">
+					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</button>
+			</div>
+			<div ng-show="editing && !confirmationNecessary">
 				<div ng-hide="confirmationNecessary">
 					<button class="btn btn-primary" type="submit">
 						{{'button.save' | translate}}
@@ -108,6 +109,22 @@
 					</button>
 					<button class="btn btn-default" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 				</div>
+			</div>
+
+
+			<div ng-show="confirmationNecessary">
+				<div class="alert alert-danger">
+					<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
+					<span ng-show="confirmDelete">{{'warnings.variables.deleteConfirmation' | translate}}</span>
+				</div>
+				<button class="btn btn-danger" ng-click="confirm($event)">
+					<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
+					<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
+				</button>
+				<a href="#" ng-click="deny($event)">
+					<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
+					<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
+				</a>
 			</div>
 		</div>
 	</div>

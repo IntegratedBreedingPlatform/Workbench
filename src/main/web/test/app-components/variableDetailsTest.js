@@ -342,7 +342,9 @@ describe('Variable details directive', function() {
 			};
 
 			scope.cancel(fakeEvent);
-			expect(formUtilities.confirmationHandler).toHaveBeenCalledWith(scope);
+
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
 		});
 
 		it('should set editing to false and reset the model when the confirmation handler is resolved', function() {
@@ -431,28 +433,55 @@ describe('Variable details directive', function() {
 
 	describe('$scope.deleteVariable', function() {
 
+		var confirmation;
+
 		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
 			scope.updateSelectedVariable = function(/*model*/) {};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
 		});
 
-		it('should call the variables service to delete the variable', function() {
+		it('should call the confirmation handler', function() {
 			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
+		});
+
+		it('should call the variables service to delete the variable if the confirmation is resolved', function() {
+			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			confirmation.resolve();
+			scope.$apply();
+
 			expect(variablesService.deleteVariable).toHaveBeenCalledWith(PLANT_VIGOR.id);
 		});
 
-		it('should handle any errors if the update was not successful', function() {
+		it('should set an error if the update was not successful', function() {
+			scope.clientErrors = {};
 			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteVariable.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(scope.clientErrors.failedToDelete).toBe(true);
 		});
 
 		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
 			spyOn(scope, 'updateSelectedVariable').and.callThrough();
 
 			scope.deleteVariable(fakeEvent, PLANT_VIGOR.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteVariable.resolve();
 			scope.$apply();
@@ -461,5 +490,4 @@ describe('Variable details directive', function() {
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith();
 		});
 	});
-
 });

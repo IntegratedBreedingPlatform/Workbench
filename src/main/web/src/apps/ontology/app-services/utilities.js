@@ -88,12 +88,24 @@
 				}
 			},
 
-			confirmationHandler: function($scope) {
+			/*
+			Exposes confirm and deny functions on the specified scope that allow callers to reject or resolve the returned
+			promise. Also expses a confirmationNecessary property that is set to true when called and false when the promise
+			is fulfilled.
+
+			An optionalScopeProperty can be passed, and will be set to the value of confirmationNecessary. It can (for
+			example) be used to distingush between two confirmationHandlers being used on the same page.
+			*/
+			confirmationHandler: function($scope, optionalScopeProperty) {
 				var confirmation;
 
 				// Generate a promise and expose two new methods on the scope to resolve and reject this promise.
 				confirmation = $q.defer();
 				$scope.confirmationNecessary = true;
+
+				if (optionalScopeProperty) {
+					$scope[optionalScopeProperty] = true;
+				}
 
 				$scope.confirm = function(e) {
 					e.preventDefault();
@@ -108,6 +120,11 @@
 				return confirmation.promise.finally(function() {
 					$timeout(function() {
 						$scope.confirmationNecessary = false;
+
+						if (optionalScopeProperty) {
+							$scope[optionalScopeProperty] = false;
+						}
+
 						delete $scope.confirm;
 						delete $scope.deny;
 					}, 200);

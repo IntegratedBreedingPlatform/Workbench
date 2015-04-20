@@ -304,6 +304,13 @@ describe('Utilities Service', function() {
 				expect(scope.confirmationNecessary).toBe(true);
 			});
 
+			it('should (if passed) set the specified property on the specified scope to true', function() {
+				var scope = {};
+
+				formUtilities.confirmationHandler(scope, 'cancelling');
+				expect(scope.cancelling).toBe(true);
+			});
+
 			it('should append a confirm method on the scope that will resolve the returned promise', function(done) {
 				var scope = {},
 					fakeEvent = { preventDefault: function() {} },
@@ -354,6 +361,23 @@ describe('Utilities Service', function() {
 				rootScope.$apply();
 			});
 
+			it('should set the specified property (if passed) after the promise is fulfilled', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope, 'cancelling');
+
+				confirmation.finally(function() {
+					timeout.flush();
+				}).finally(function() {
+					expect(scope.cancelling).toBe(false);
+					done();
+				});
+
+				scope.confirm(fakeEvent);
+				rootScope.$apply();
+			});
 		});
 
 		describe('goBack', function() {
