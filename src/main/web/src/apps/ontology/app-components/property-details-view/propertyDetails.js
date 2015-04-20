@@ -28,7 +28,7 @@
 
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.propertyId = selected && selected.id || null;
-					});
+					}, true);
 
 					$scope.editProperty = function(e) {
 						e.preventDefault();

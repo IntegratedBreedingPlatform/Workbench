@@ -71,7 +71,7 @@
 			}
 			*/
 			addProperty: function(property) {
-				var request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties',
+				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/properties',
 					property);
 				return request.then(successHandler, failureHandler);
 			},
@@ -101,7 +101,7 @@
 				var convertedProperty = convertPropertyForUpdating(property),
 					request;
 
-				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id',
+				request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id,
 					convertedProperty);
 				return request.then(function(response) {
 					return response.status;
@@ -111,10 +111,10 @@
 			/*
 			Deletes the property with the specified ID.
 			*/
-			deleteProperty: function(/*id*/) {
+			deleteProperty: function(id) {
 				var request;
 
-				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id');
+				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -132,8 +132,8 @@
 				'deletable': true
 			}
 			*/
-			getProperty: function(/*id*/) {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/properties/:id');
+			getProperty: function(id) {
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id);
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -143,7 +143,7 @@
 			['Abiotic Stress', 'Agronomic', 'Biotic Stress', 'Germplasm']
 			*/
 			getClasses: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/classes');
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/classes');
 				return request.then(successHandler, failureHandler);
 			}
 		};

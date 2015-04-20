@@ -137,9 +137,9 @@ describe('Properties Service', function() {
 
 		it('should PUT to /updateProperty', function() {
 
-			httpBackend.expectPUT(/\/properties\/:id$/).respond(204);
+			httpBackend.expectPUT(/\/properties\/1$/).respond(204);
 
-			propertiesService.updateProperty(null, {});
+			propertiesService.updateProperty(1, {});
 
 			httpBackend.flush();
 		});
@@ -147,7 +147,7 @@ describe('Properties Service', function() {
 		it('should remove unnecessary properties before PUTing', function() {
 			var id = 1;
 
-			httpBackend.expectPUT(/\/properties\/:id$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
+			httpBackend.expectPUT(/\/properties\/1$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
 
 			propertiesService.updateProperty(id, DETAILED_PROPERTY);
 
@@ -159,7 +159,7 @@ describe('Properties Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/properties\/:id$/).respond(expectedResponse);
+			httpBackend.expectPUT(/\/properties\/1$/).respond(expectedResponse);
 
 			propertiesService.updateProperty(id, {}).then(function(res) {
 				actualResponse = res;
@@ -175,7 +175,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/properties\/:id$/, {}).respond(500, error);
+			httpBackend.expectPUT(/\/properties\/1$/, {}).respond(500, error);
 
 			propertiesService.updateProperty(1, {});
 			httpBackend.flush();
@@ -193,7 +193,7 @@ describe('Properties Service', function() {
 			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/properties\/:id$/).respond(204);
+			httpBackend.expectDELETE(/\/properties\/1$/).respond(204);
 
 			propertiesService.deleteProperty(id);
 
@@ -207,7 +207,7 @@ describe('Properties Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/properties\/:id$/).respond(expectedResponse);
+			httpBackend.expectDELETE(/\/properties\/1$/).respond(expectedResponse);
 
 			propertiesService.deleteProperty(id).then(function(res) {
 				actualResponse = res;
@@ -223,7 +223,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/properties\/:id$/).respond(500, error);
+			httpBackend.expectDELETE(/\/properties\/1$/).respond(500, error);
 
 			propertiesService.deleteProperty(1);
 			httpBackend.flush();
@@ -241,7 +241,7 @@ describe('Properties Service', function() {
 			var id = 1;
 
 			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/properties\/:id$/).respond();
+			httpBackend.expectGET(/\/properties\/1$/).respond();
 
 			propertiesService.getProperty(id);
 
@@ -253,7 +253,7 @@ describe('Properties Service', function() {
 			var id = 1,
 				response = ['properties go here'];
 
-			httpBackend.expectGET(/\/properties\/:id$/).respond(response);
+			httpBackend.expectGET(/\/properties\/1$/).respond(response);
 
 			propertiesService.getProperty(id);
 			httpBackend.flush();
@@ -268,7 +268,7 @@ describe('Properties Service', function() {
 			var id = 1,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/properties\/:id$/).respond(500, error);
+			httpBackend.expectGET(/\/properties\/1$/).respond(500, error);
 
 			propertiesService.getProperty(id);
 			httpBackend.flush();
