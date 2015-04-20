@@ -25,6 +25,9 @@ describe('Add Property View', function() {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
 
+		formUtilities,
+		propertyFormService,
+
 		q,
 		deferredAddProperty,
 		controller,
@@ -36,7 +39,7 @@ describe('Add Property View', function() {
 		module('addProperty');
 	});
 
-	beforeEach(inject(function($q, $rootScope, $location, $controller, $window) {
+	beforeEach(inject(function($q, $rootScope, $location, $controller, $window, _formUtilities_, _propertyFormService_) {
 
 		var deferredGetClasses;
 
@@ -44,6 +47,8 @@ describe('Add Property View', function() {
 		location = $location;
 		scope = $rootScope;
 		window = $window;
+		formUtilities = _formUtilities_;
+		propertyFormService = _propertyFormService_;
 
 		propertiesService = {
 			getClasses: function() {
@@ -152,6 +157,60 @@ describe('Add Property View', function() {
 
 			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id, BLAST.name);
 			expect(window.history.back).toHaveBeenCalled();
+		});
+	});
+
+	describe('$scope.cancel', function() {
+
+		it('should call the cancel handler', function() {
+			scope.apForm = {
+				$dirty: true,
+				property: {
+					name: 'Name'
+				}
+			};
+
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+	});
+
+	describe('propertyFormService', function() {
+
+		describe('formEmpty', function() {
+
+			it('should return false if the name, description or cropOntologyId are present', function() {
+				var name = {
+						name: 'name'
+					},
+					description = {
+						description: 'description'
+					},
+					cropOntologyId = {
+						cropOntologyId: 'cropOntologyId'
+					};
+
+				expect(propertyFormService.formEmpty(name)).toBe(false);
+				expect(propertyFormService.formEmpty(description)).toBe(false);
+				expect(propertyFormService.formEmpty(cropOntologyId)).toBe(false);
+			});
+
+			it('should return false if at least one class is present', function() {
+				var model = {
+						classes: ['class']
+					};
+
+				expect(propertyFormService.formEmpty(model)).toBe(false);
+			});
+
+			it('should return true if no fields are valued', function() {
+				var model = {};
+
+				expect(propertyFormService.formEmpty(model)).toBe(true);
+			});
 		});
 	});
 });

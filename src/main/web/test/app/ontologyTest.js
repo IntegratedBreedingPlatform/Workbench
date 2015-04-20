@@ -76,19 +76,6 @@ describe('Ontology Controller', function() {
 		});
 	});
 
-	describe('goBack', function() {
-		it('should load the previous url', function() {
-
-			// Pretend we've gone somewhere
-			scope.addNew(fakeEvent, 'aPath');
-
-			spyOn(window.history, 'back').and.callThrough();
-
-			scope.goBack();
-			expect(window.history.back).toHaveBeenCalled();
-		});
-	});
-
 	describe('setAsActive', function() {
 		it('should set the active tab', function() {
 			var testValue = 'value';

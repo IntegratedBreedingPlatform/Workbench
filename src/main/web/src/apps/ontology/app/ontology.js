@@ -80,11 +80,6 @@
 				$scope.previousUrl = oldUrl;
 			});
 
-			// Back functionality for our nested views. Used in the add-* modules
-			$scope.goBack = function() {
-				$window.history.back();
-			};
-
 			$scope.setAsActive = function(value) {
 				$scope.activeTab = value;
 			};

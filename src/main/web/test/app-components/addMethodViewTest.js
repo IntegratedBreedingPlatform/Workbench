@@ -22,6 +22,9 @@ describe('Add Method View', function() {
 			formatErrorsForDisplay: function() {}
 		},
 
+		formUtilities,
+		methodFormService,
+
 		q,
 		controller,
 		location,
@@ -34,7 +37,7 @@ describe('Add Method View', function() {
 		module('addMethod');
 	});
 
-	beforeEach(inject(function($q, $rootScope, $location, $controller, $window) {
+	beforeEach(inject(function($q, $rootScope, $location, $controller, $window, _formUtilities_, _methodFormService_) {
 
 		methodsService = {
 			addMethod: function() {
@@ -58,6 +61,8 @@ describe('Add Method View', function() {
 		location = $location;
 		scope = $rootScope;
 		window = $window;
+		formUtilities = _formUtilities_;
+		methodFormService = _methodFormService_;
 
 		// Pretend our form is valid
 		scope.amForm = {
@@ -142,6 +147,48 @@ describe('Add Method View', function() {
 
 			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
 			expect(window.history.back).toHaveBeenCalled();
+		});
+	});
+
+	describe('$scope.cancel', function() {
+
+		it('should call the cancel handler', function() {
+			scope.amForm = {
+				$dirty: true,
+				method: {
+					name: 'Name'
+				}
+			};
+
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+	});
+
+	describe('methodFormService', function() {
+
+		describe('formEmpty', function() {
+
+			it('should return false if the name or description are present', function() {
+				var name = {
+						name: 'name'
+					},
+					description = {
+						description: 'description'
+					};
+
+				expect(methodFormService.formEmpty(name)).toBe(false);
+				expect(methodFormService.formEmpty(description)).toBe(false);
+			});
+
+			it('should return true if no fields are valued', function() {
+				var model = {};
+
+				expect(methodFormService.formEmpty(model)).toBe(true);
+			});
 		});
 	});
 });

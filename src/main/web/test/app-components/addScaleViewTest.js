@@ -48,6 +48,9 @@ describe('Add Scale View', function() {
 			genericAndRatherUselessErrorHandler: function() {}
 		},
 
+		formUtilities,
+		scaleFormService,
+
 		q,
 		controller,
 		location,
@@ -61,12 +64,14 @@ describe('Add Scale View', function() {
 		module('addScale');
 	});
 
-	beforeEach(inject(function($q, $rootScope, $location, $controller, $window) {
+	beforeEach(inject(function($q, $rootScope, $location, $controller, $window, _formUtilities_, _scaleFormService_) {
 
 		q = $q;
 		location = $location;
 		scope = $rootScope;
 		window = $window;
+		formUtilities = _formUtilities_;
+		scaleFormService = _scaleFormService_;
 
 		dataTypesService.getDataTypes = function() {
 			deferredGetDataTypes = q.defer();
@@ -206,6 +211,56 @@ describe('Add Scale View', function() {
 
 			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE.name);
 			expect(window.history.back).toHaveBeenCalled();
+		});
+	});
+
+	describe('$scope.cancel', function() {
+
+		it('should call the cancel handler', function() {
+			scope.asForm = {
+				$dirty: true,
+				scale: {
+					name: 'Name'
+				}
+			};
+
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+	});
+
+	describe('scaleFormService', function() {
+
+		describe('formEmpty', function() {
+
+			it('should return false if the name or description are present', function() {
+				var name = {
+						name: 'name'
+					},
+					description = {
+						description: 'description'
+					};
+
+				expect(scaleFormService.formEmpty(name)).toBe(false);
+				expect(scaleFormService.formEmpty(description)).toBe(false);
+			});
+
+			it('should return false if the dataType is present', function() {
+				var dataType = {
+						dataType: 'a type'
+					};
+
+				expect(scaleFormService.formEmpty(dataType)).toBe(false);
+			});
+
+			it('should return true if no fields are valued', function() {
+				var model = {};
+
+				expect(scaleFormService.formEmpty(model)).toBe(true);
+			});
 		});
 	});
 });

@@ -5,8 +5,9 @@
 	var app = angular.module('addProperty', ['formFields', 'multiSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertiesService', 'variableStateService',
-		'serviceUtilities', 'formUtilities',
-		function($scope, $location, $window, propertiesService, variableStateService, serviceUtilities, formUtilities) {
+		'propertyFormService', 'serviceUtilities', 'formUtilities',
+		function($scope, $location, $window, propertiesService, variableStateService, propertyFormService, serviceUtilities,
+			formUtilities) {
 
 			$scope.property = {
 				classes: []
@@ -37,7 +38,24 @@
 				}
 			};
 
+			$scope.cancel = function(e) {
+				e.preventDefault();
+				formUtilities.cancelAddHandler($scope, !propertyFormService.formEmpty($scope.property));
+			};
+
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'apForm');
 		}
 	]);
+
+	app.factory('propertyFormService', [function() {
+		return {
+			formEmpty: function(model) {
+				return !!!model.name &&
+					!!!model.description &&
+					!!!model.cropOntologyId &&
+					(angular.isUndefined(model.classes) ||
+						(angular.isArray(model.classes) && model.classes.length === 0));
+			}
+		};
+	}]);
 } ());

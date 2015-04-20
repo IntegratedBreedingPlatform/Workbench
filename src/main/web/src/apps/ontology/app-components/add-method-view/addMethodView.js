@@ -4,8 +4,11 @@
 (function() {
 	var app = angular.module('addMethod', ['methods', 'variableState', 'utilities']);
 
-	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodsService', 'variableStateService', 'serviceUtilities',
-		'formUtilities', function($scope, $location, $window, methodsService, variableStateService, serviceUtilities, formUtilities) {
+	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodsService', 'methodFormService', 'variableStateService',
+		'serviceUtilities', 'formUtilities', function($scope, $location, $window, methodsService, methodFormService, variableStateService,
+			serviceUtilities, formUtilities) {
+
+			$scope.method = {};
 
 			$scope.saveMethod = function(e, method) {
 				e.preventDefault();
@@ -34,8 +37,21 @@
 				}
 			};
 
+			$scope.cancel = function(e) {
+				e.preventDefault();
+				formUtilities.cancelAddHandler($scope, !methodFormService.formEmpty($scope.method));
+			};
+
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'amForm');
 		}
 	]);
+
+	app.factory('methodFormService', [function() {
+		return {
+			formEmpty: function(model) {
+				return !!!model.name && !!!model.description;
+			}
+		};
+	}]);
 }());
 
