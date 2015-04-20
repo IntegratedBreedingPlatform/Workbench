@@ -13,6 +13,7 @@
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
 		 		$scope.clientErrors = {};
+		 		$scope.serverErrors = {};
 		 	}
 
 			return {
@@ -31,7 +32,9 @@
 
 					propertiesService.getClasses().then(function(classes) {
 						$scope.data.classes = classes;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.propertyId = selected && selected.id || null;
@@ -94,7 +97,10 @@
 								$scope.editing = false;
 								$scope.submitted = false;
 								$scope.showThrobber = false;
-							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							}, function(response) {
+								$scope.pdForm.$setUntouched();
+								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+							});
 						}
 					};
 

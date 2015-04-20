@@ -1,10 +1,15 @@
 <div class="om-ap-view">
 
 	<h2>{{'addNew.property.title' | translate}}</h2>
+	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+		<ul>
+			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+	</div>
 
 	<form class="form-horizontal" name="apForm" ng-submit="saveProperty($event, property)" novalidate>
 
-		<div ng-class="formGroupClass('omName')">
+		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
 			<div class="col-sm-10">
 				<om-input om-name="omName" om-property="name" om-model="property" om-adding="true" om-required="true" om-max-length="200"></om-input>
@@ -12,36 +17,40 @@
 					<ng-message when="required"><p class="text-danger">{{'validation.property.nameRequired' | translate}}</p></ng-message>
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="apForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omDescription')">
+		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-10">
 				<om-text-area om-name="omDescription" om-property="description" om-model="property" om-adding="true" om-max-length="255"></om-text-area>
 				<ng-messages for="apForm.omDescription.$error" ng-if="apForm.$submitted || apForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="apForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omClasses')">
+		<div ng-class="formGroupClass('omClasses', 'classes')">
 			<label for="omClasses" class="col-sm-2 control-label">{{'formField.classes' | translate}}</label>
 			<div class="col-sm-10">
 				<om-tag-select name="omClasses" om-name="om-classes" om-property="classes" ng-model="property" om-options="classes" om-adding="true"></om-tag-select>
 				<ng-messages for="apForm.omClasses.$error" ng-if="apForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.property.classesEmpty' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="apForm.omClasses.$touched" ng-repeat="error in serverErrors.classes">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omOntologyId')">
+		<div ng-class="formGroupClass('omOntologyId', 'cropOntologyId')">
 			<label for="omOntologyId" class="col-sm-2 control-label">{{'formField.ontologyId' | translate}}</label>
 			<div class="col-sm-10">
 				<om-input om-name="omOntologyId" om-property="cropOntologyId" om-model="property" om-adding="true" om-max-length="200"></om-input>
 				<ng-messages for="apForm.omOntologyId.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="apForm.omOntologyId.$touched" ng-repeat="error in serverErrors.cropOntologyId">{{error}}</p>
 			</div>
 		</div>
 

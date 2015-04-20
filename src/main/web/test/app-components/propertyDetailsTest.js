@@ -9,7 +9,7 @@ describe('Property details directive', function() {
 			hidePanel: function() {}
 		},
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 		BLAST = {
 			id: 1,
@@ -79,7 +79,7 @@ describe('Property details directive', function() {
 		spyOn(propertiesService, 'getClasses').and.callThrough();
 		spyOn(propertiesService, 'updateProperty').and.callThrough();
 		spyOn(propertiesService, 'deleteProperty').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -128,7 +128,7 @@ describe('Property details directive', function() {
 		it('should handle any errors if the retrieving classes was not successful', function() {
 			deferredGetClasses.reject();
 			scope.$apply();
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set data.classes to the returned classes after a successful update', function() {
@@ -215,7 +215,8 @@ describe('Property details directive', function() {
 
 			// Pretend our form is valid
 			scope.pdForm = {
-				$valid: true
+				$valid: true,
+				$setUntouched: function() {}
 			};
 		}));
 
@@ -252,7 +253,7 @@ describe('Property details directive', function() {
 			deferredUpdateProperty.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {
@@ -274,6 +275,18 @@ describe('Property details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedProperty).toHaveBeenCalledWith(BLAST);
+		});
+
+		it('should handle any errors and set the form to untouched if the update was not successful', function() {
+			spyOn(scope.pdForm, '$setUntouched');
+
+			scope.saveChanges(fakeEvent, BLAST.id, BLAST);
+
+			deferredUpdateProperty.reject();
+			scope.$apply();
+
+			expect(scope.pdForm.$setUntouched).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 	});
 

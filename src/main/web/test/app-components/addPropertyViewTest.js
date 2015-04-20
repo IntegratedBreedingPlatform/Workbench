@@ -22,7 +22,7 @@ describe('Add Property View', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 
 		formUtilities,
@@ -63,7 +63,7 @@ describe('Add Property View', function() {
 
 		spyOn(propertiesService, 'addProperty').and.callThrough();
 		spyOn(propertiesService, 'getClasses').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 
 		controller = $controller('AddPropertyController', {
 			$scope: $rootScope,
@@ -79,7 +79,8 @@ describe('Add Property View', function() {
 
 		// Pretend our form is valid
 		scope.apForm = {
-			$valid: true
+			$valid: true,
+			$setUntouched: function() {}
 		};
 	}));
 
@@ -116,8 +117,20 @@ describe('Add Property View', function() {
 			deferredAddProperty.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
+		});
+
+		it('should handle any errors and set the form to untouched if the save was not successful', function() {
+			spyOn(scope.apForm, '$setUntouched');
+
+			scope.saveProperty(fakeEvent, BLAST.id, BLAST);
+
+			deferredAddProperty.reject();
+			scope.$apply();
+
+			expect(scope.apForm.$setUntouched).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should redirect to /properties after a successful save, if no variable is currently being edited', function() {

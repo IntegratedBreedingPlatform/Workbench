@@ -14,12 +14,20 @@
 			};
 			$scope.classes = [];
 
+			// Reset server errors
+			$scope.serverErrors = {};
+
 			propertiesService.getClasses().then(function(classes) {
 				$scope.classes = classes;
-			}, serviceUtilities.genericAndRatherUselessErrorHandler);
+			}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+			});
 
 			$scope.saveProperty = function(e, property) {
 				e.preventDefault();
+
+				// Reset server errors
+				$scope.serverErrors = {};
 
 				if ($scope.apForm.$valid) {
 					$scope.submitted = true;
@@ -34,7 +42,10 @@
 							// FIXME Go somewhere more useful
 							$location.path('/properties');
 						}
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.apForm.$setUntouched();
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 				}
 			};
 
