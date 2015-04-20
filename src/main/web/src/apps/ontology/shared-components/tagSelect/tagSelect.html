@@ -5,10 +5,11 @@
 			<a href="#" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
 		</span>
 	</div>
-	<div class="suggestions-wrapper" ng-class="suggestions.length > 0 ? 'show-suggestions' : ''" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestions.length > 0">
+	<div class="suggestions-wrapper" ng-class="suggestionsShown ? 'show-suggestions' : ''" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestionsShown">
 		<input name="{{name}}" type="input" class="label-input form-control" placeholder="{{'multiSelect.placeholder' | translate}}" ng-model="searchText" ng-change="showSuggestions()" ng-click="toggleSuggestions()" ng-keydown="checkKeyDown($event)">
 		<ul class="suggestions-list">
 			<li class="suggestion" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-class="{active: selectedIndex === $index}">{{suggestion}}</li>
+			<li class="no-suggestions" ng-show="suggestions.length === 0">{{'multiSelect.noMatchesFound' | translate}}</li>
 		</ul>
 	</div>
 </div>

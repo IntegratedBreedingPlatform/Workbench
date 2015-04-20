@@ -39,7 +39,10 @@
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
 						scope.model[scope.property].push(itemToAdd);
+						return true;
 					}
+
+					return false;
 				};
 
 				scope.formatForDisplay = function(item) {
@@ -96,9 +99,14 @@
 					}
 					// Enter pressed, select item
 					else if (event.keyCode === 13) {
+						var itemAdded;
+
 						event.preventDefault();
-						scope.addToSelectedItems(scope.selectedIndex);
-						scope.hideSuggestions();
+
+						itemAdded = scope.addToSelectedItems(scope.selectedIndex);
+						if (itemAdded) {
+							scope.hideSuggestions();
+						}
 					}
 				};
 
@@ -122,12 +130,14 @@
 
 				scope.showSuggestions = function() {
 					scope.search();
+					scope.suggestionsShown = true;
 				};
 
 				scope.hideSuggestions = function() {
 					scope.suggestions = [];
 					scope.selectedIndex = -1;
 					scope.searchText = '';
+					scope.suggestionsShown = false;
 				};
 
 			},
