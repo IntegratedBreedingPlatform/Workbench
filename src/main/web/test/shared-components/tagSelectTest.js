@@ -114,6 +114,7 @@ describe('tagSelect module', function() {
 		var DOWN_KEY = 40,
 			UP_KEY = 38,
 			ENTER_KEY = 13,
+			ESCAPE_KEY = 27,
 			RANDOM_KEY = 1;
 
 		it('should call search if the user presses the down arrow with nothing selected', function() {
@@ -181,7 +182,7 @@ describe('tagSelect module', function() {
 			expect(isolateScope.hideSuggestions).not.toHaveBeenCalled();
 		});
 
-		it('should hide the suggestions list if the item wasn\'t added when the enter key is pressed', function() {
+		it('should hide the suggestions list if the item was added when the enter key is pressed', function() {
 			spyOn(isolateScope, 'addToSelectedItems').and.returnValue(true);
 			spyOn(isolateScope, 'hideSuggestions');
 
@@ -191,7 +192,16 @@ describe('tagSelect module', function() {
 			expect(isolateScope.hideSuggestions).toHaveBeenCalled();
 		});
 
-		it('should not change the selectedIndex if a key other than up, down or enter is pressed', function() {
+		it('should call hideSuggestions if the escape key is pressed', function() {
+			spyOn(isolateScope, 'hideSuggestions');
+
+			fakeEvent.keyCode = ESCAPE_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.hideSuggestions).toHaveBeenCalled();
+		});
+
+		it('should not change the selectedIndex if a key other than up, down, enter or escape is pressed', function() {
 			isolateScope.selectedIndex = 0;
 			fakeEvent.keyCode = RANDOM_KEY;
 			isolateScope.checkKeyDown(fakeEvent);

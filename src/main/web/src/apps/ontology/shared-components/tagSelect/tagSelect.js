@@ -110,6 +110,11 @@
 							scope.hideSuggestions();
 						}
 					}
+					// Escape pressed, close suggestions
+					else if (event.keyCode === 27) {
+						event.preventDefault();
+						scope.hideSuggestions();
+					}
 				};
 
 				scope.onClick = function(index) {
