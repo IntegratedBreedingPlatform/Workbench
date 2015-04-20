@@ -45,6 +45,7 @@
 					}, function(response) {
 						$scope.apForm.$setUntouched();
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.submitted = false;
 					});
 				}
 			};

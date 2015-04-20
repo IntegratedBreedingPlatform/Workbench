@@ -33,6 +33,7 @@
 						}
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.submitted = false;
 					});
 				}
 			};
