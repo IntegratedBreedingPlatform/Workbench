@@ -55,7 +55,7 @@
 
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.variableId = selected && selected.id || null;
-					});
+					}, true);
 
 					// Hide the alias if the name is still editable
 					$scope.hideAlias = function() {

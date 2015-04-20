@@ -23,7 +23,7 @@
 
 				$scope.$watch('selectedItem', function(selected) {
 					$scope.scaleId = selected && selected.id || null;
-				});
+				}, true);
 
 				$scope.$watch('model.dataType', function(newType) {
 					if (newType) {
