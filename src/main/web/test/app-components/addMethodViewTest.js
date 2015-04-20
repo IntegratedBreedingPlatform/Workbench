@@ -47,6 +47,7 @@ describe('Add Method View', function() {
 		};
 
 		spyOn(methodsService, 'addMethod').and.callThrough();
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 
 		controller = $controller('AddMethodController', {
 			$scope: $rootScope,
@@ -66,7 +67,8 @@ describe('Add Method View', function() {
 
 		// Pretend our form is valid
 		scope.amForm = {
-			$valid: true
+			$valid: true,
+			$setUntouched: function() {}
 		};
 	}));
 
@@ -98,7 +100,6 @@ describe('Add Method View', function() {
 			};
 
 			spyOn(location, 'path');
-			spyOn(serviceUtilities, 'formatErrorsForDisplay').and.callThrough();
 
 			scope.saveMethod(fakeEvent, CUT_AND_DRY);
 
@@ -147,6 +148,18 @@ describe('Add Method View', function() {
 
 			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
 			expect(window.history.back).toHaveBeenCalled();
+		});
+
+		it('should handle any errors and set the form to untouched if the save was not successful', function() {
+			spyOn(scope.amForm, '$setUntouched');
+
+			scope.saveMethod(fakeEvent, CUT_AND_DRY.id, CUT_AND_DRY);
+
+			deferredAddMethod.reject();
+			scope.$apply();
+
+			expect(scope.amForm.$setUntouched).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 	});
 

@@ -32,6 +32,7 @@
 							$location.path('/methods');
 						}
 					}, function(response) {
+						$scope.amForm.$setUntouched();
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 						$scope.submitted = false;
 					});

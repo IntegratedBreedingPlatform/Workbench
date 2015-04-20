@@ -9,7 +9,7 @@
 	</div>
 
 	<form class="form-horizontal" name="amForm" ng-submit="saveMethod($event, method)" novalidate>
-		<div ng-class="formGroupClass('omName')">
+		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
 			<div class="col-sm-10">
 				<om-input om-name="omName" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
@@ -17,18 +17,18 @@
 					<ng-message when="required"><p class="text-danger">{{'validation.method.nameRequired' | translate}}</p></ng-message>
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-repeat="error in serverErrors.name">{{error}}</p>
+				<p class="text-danger" ng-hide="amForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omDescription')">
+		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-10">
 				<om-text-area om-name="omDescription" om-property="description" om-adding="true" om-model="method" om-max-length="255"></om-text-area>
 				<ng-messages for="amForm.omDescription.$error" ng-if="amForm.$submitted || amForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-repeat="error in serverErrors.description">{{error}}</p>
+				<p class="text-danger" ng-hide="amForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
 		</div>
 
