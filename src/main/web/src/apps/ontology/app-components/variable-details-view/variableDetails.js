@@ -11,6 +11,11 @@
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
 		 panelService, $timeout) {
 
+			// Reset any errors we're showing the user
+		 	function resetErrors($scope) {
+		 		$scope.clientErrors = {};
+		 	}
+
 			return {
 				controller: function($scope) {
 					$scope.editing = false;
@@ -22,14 +27,13 @@
 						types: []
 					};
 
-					$scope.clientErrors = {};
-
 					// Whether or not we want to display the expected range widget
 					$scope.showRangeWidget = false;
 
 					$scope.$watch('selectedVariable', function(variable) {
 						$scope.model = angular.copy(variable);
 						$scope.deletable = variable && variable.deletable || false;
+						resetErrors($scope);
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
@@ -64,17 +68,14 @@
 
 					$scope.editVariable = function(e) {
 						e.preventDefault();
-						$scope.editing = true;
+						resetErrors($scope);
 
-						// Reset any errors we're showing the user
-						$scope.clientErrors = {};
+						$scope.editing = true;
 					};
 
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
-
-						// Reset any errors we're showing the user
-						$scope.clientErrors = {};
+						resetErrors($scope);
 
 						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
 							variablesService.deleteVariable(id).then(function() {
@@ -89,20 +90,22 @@
 
 					$scope.cancel = function(e) {
 						e.preventDefault();
+						resetErrors($scope);
 
 						// The user hasn't changed anything
 						if (angular.equals($scope.model, $scope.selectedVariable)) {
 							$scope.editing = false;
 						} else {
 							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
-								$scope.editing = false;
 								$scope.model = angular.copy($scope.selectedVariable);
+								$scope.editing = false;
 							});
 						}
 					};
 
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
+						resetErrors($scope);
 
 						if ($scope.vdForm.$valid) {
 							$scope.submitted = true;

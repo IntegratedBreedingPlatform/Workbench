@@ -16,6 +16,7 @@ describe('Method details directive', function() {
 			name: 'Cut and Dry'
 		},
 		methodsService = {},
+		formUtilities,
 		scope,
 		q,
 		directiveElement,
@@ -53,9 +54,10 @@ describe('Method details directive', function() {
 		$provide.value('panelService', panelService);
 	}));
 
-	beforeEach(inject(function($rootScope, $q) {
+	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;
 		scope = $rootScope;
+		formUtilities = _formUtilities_;
 
 		methodsService.updateMethod = function() {
 			deferredUpdateMethod = q.defer();
@@ -116,16 +118,57 @@ describe('Method details directive', function() {
 	});
 
 	describe('$scope.cancel', function() {
-		it('should set editing to be false', function() {
+
+		var confirmation;
+
+		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
+		});
+
+		it('should set editing to false if the user has not made any edits', function() {
+			scope.selectedMethod = {
+				name: 'method'
+			};
+			scope.model = angular.copy(scope.selectedMethod);
 			scope.editing = true;
+
 			scope.cancel(fakeEvent);
+
 			expect(scope.editing).toBe(false);
 		});
 
-		it('should set the model back to the original unchanged method', function() {
-			scope.model = null;
-			scope.selectedMethod = CUT_AND_DRY;
+		it('should call the confirmation handler if the user has made edits', function() {
+			scope.selectedMethod = {
+				name: 'method'
+			};
+			scope.model = {
+				name: 'new_method_name'
+			};
+
 			scope.cancel(fakeEvent);
+
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
+		});
+
+		it('should set editing to false and reset the model when the confirmation handler is resolved', function() {
+			scope.selectedMethod = {
+				name: 'method'
+			};
+			scope.model = {
+				name: 'new_method_name'
+			};
+
+			scope.cancel(fakeEvent);
+			confirmation.resolve();
+			scope.$apply();
+
+			expect(scope.editing).toBe(false);
 			expect(scope.model).toEqual(scope.selectedMethod);
 		});
 	});
@@ -209,28 +252,55 @@ describe('Method details directive', function() {
 
 	describe('$scope.deleteMethod', function() {
 
+		var confirmation;
+
 		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
 			scope.updateSelectedMethod = function(/*model*/) {};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
 		});
 
-		it('should call the properties service to delete the variable', function() {
+		it('should call the confirmation handler', function() {
 			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
+		});
+
+		it('should call the methods service to delete the method if the confirmation is resolved', function() {
+			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			confirmation.resolve();
+			scope.$apply();
+
 			expect(methodsService.deleteMethod).toHaveBeenCalledWith(CUT_AND_DRY.id);
 		});
 
-		it('should handle any errors if the update was not successful', function() {
+		it('should set an error if the update was not successful', function() {
+			scope.clientErrors = {};
 			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteMethod.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.clientErrors.failedToDelete).toBe(true);
 		});
 
-		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+		it('should remove method on the parent scope and hide the panel after a successful delete', function() {
 			spyOn(scope, 'updateSelectedMethod').and.callThrough();
 
 			scope.deleteMethod(fakeEvent, CUT_AND_DRY.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteMethod.resolve();
 			scope.$apply();
@@ -239,6 +309,5 @@ describe('Method details directive', function() {
 			expect(scope.updateSelectedMethod).toHaveBeenCalledWith();
 		});
 	});
-
 });
 

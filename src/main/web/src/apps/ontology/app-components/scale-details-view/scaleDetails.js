@@ -10,81 +10,103 @@
 		'dataTypesService', '$timeout',
 		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout) {
 
-		return {
-			controller: function($scope) {
-				$scope.editing = false;
-				$scope.showRangeWidget = false;
-				$scope.showCategoriesWidget = false;
+			// Reset any errors we're showing the user
+			function resetErrors($scope) {
+		 		$scope.clientErrors = {};
+		 	}
 
-				$scope.$watch('selectedScale', function(scale) {
-					$scope.model = angular.copy(scale);
-					$scope.deletable = scale && scale.deletable || false;
-				});
-
-				$scope.$watch('selectedItem', function(selected) {
-					$scope.scaleId = selected && selected.id || null;
-				}, true);
-
-				$scope.$watch('model.dataType', function(newType) {
-					if (newType) {
-						$scope.showRangeWidget = newType.name === 'Numeric';
-						$scope.showCategoriesWidget = newType.name === 'Categorical';
-					}
-				});
-
-				$scope.editScale = function(e) {
-					e.preventDefault();
-
-					dataTypesService.getDataTypes().then(function(types) {
-						$scope.types = types;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
-
-					$scope.editing = true;
-				};
-
-				$scope.deleteScale = function(e, id) {
-					e.preventDefault();
-
-					scalesService.deleteScale(id).then(function() {
-						// Remove scale on parent scope if we succeeded
-						panelService.hidePanel();
-						$scope.updateSelectedScale();
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
-				};
-
-				$scope.cancel = function(e) {
-					e.preventDefault();
+			return {
+				controller: function($scope) {
 					$scope.editing = false;
-					$scope.model = angular.copy($scope.selectedScale || {});
-				};
+					$scope.showRangeWidget = false;
+					$scope.showCategoriesWidget = false;
 
-				$scope.saveChanges = function(e, id, model) {
-					e.preventDefault();
+					$scope.$watch('selectedScale', function(scale) {
+						$scope.model = angular.copy(scale);
+						$scope.deletable = scale && scale.deletable || false;
+						resetErrors($scope);
+					});
 
-					if ($scope.sdForm.$valid) {
-						$scope.submitted = true;
-						$timeout(function() {
-							if ($scope.submitted) {
-								$scope.showThrobber = true;
-							}
-						}, DELAY);
+					$scope.$watch('selectedItem', function(selected) {
+						$scope.scaleId = selected && selected.id || null;
+					}, true);
 
-						scalesService.updateScale(id, model).then(function() {
+					$scope.$watch('model.dataType', function(newType) {
+						if (newType) {
+							$scope.showRangeWidget = newType.name === 'Numeric';
+							$scope.showCategoriesWidget = newType.name === 'Categorical';
+						}
+					});
 
-							// Update scale on parent scope if we succeeded
-							$scope.updateSelectedScale(model);
+					$scope.editScale = function(e) {
+						e.preventDefault();
+						resetErrors($scope);
 
-							$scope.editing = false;
-							$scope.submitted = false;
-							$scope.showThrobber = false;
+						dataTypesService.getDataTypes().then(function(types) {
+							$scope.types = types;
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
-					}
-				};
 
-				$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'sdForm');
-			},
-			restrict: 'E',
-			templateUrl: 'static/views/ontology/scaleDetails.html'
-		};
+						$scope.editing = true;
+					};
+
+					$scope.deleteScale = function(e, id) {
+						e.preventDefault();
+						resetErrors($scope);
+
+						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
+							scalesService.deleteScale(id).then(function() {
+								// Remove scale on parent scope if we succeeded
+								panelService.hidePanel();
+								$scope.updateSelectedScale();
+							}, function() {
+								$scope.clientErrors.failedToDelete = true;
+							});
+						});
+					};
+
+					$scope.cancel = function(e) {
+						e.preventDefault();
+						resetErrors($scope);
+
+						// The user hasn't changed anything
+						if (angular.equals($scope.model, $scope.selectedScale)) {
+							$scope.editing = false;
+						} else {
+							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
+								$scope.editing = false;
+								$scope.model = angular.copy($scope.selectedScale);
+							});
+						}
+					};
+
+					$scope.saveChanges = function(e, id, model) {
+						e.preventDefault();
+						resetErrors($scope);
+
+						if ($scope.sdForm.$valid) {
+							$scope.submitted = true;
+							$timeout(function() {
+								if ($scope.submitted) {
+									$scope.showThrobber = true;
+								}
+							}, DELAY);
+
+							scalesService.updateScale(id, model).then(function() {
+
+								// Update scale on parent scope if we succeeded
+								$scope.updateSelectedScale(model);
+
+								$scope.editing = false;
+								$scope.submitted = false;
+								$scope.showThrobber = false;
+							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						}
+					};
+
+					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'sdForm');
+				},
+				restrict: 'E',
+				templateUrl: 'static/views/ontology/scaleDetails.html'
+			};
 	}]);
 })();

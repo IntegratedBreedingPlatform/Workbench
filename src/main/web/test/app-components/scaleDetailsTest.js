@@ -57,6 +57,7 @@ describe('Scale details directive', function() {
 		types = [angular.copy(CATEGORICAL_TYPE), angular.copy(NUMERIC_TYPE), angular.copy(CHARACTER_TYPE)],
 
 		scalesService = {},
+		formUtilities,
 		scope,
 		q,
 		directiveElement,
@@ -96,9 +97,10 @@ describe('Scale details directive', function() {
 		$provide.value('panelService', panelService);
 	}));
 
-	beforeEach(inject(function($rootScope, $q) {
+	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;
 		scope = $rootScope;
+		formUtilities = _formUtilities_;
 
 		scalesService.updateScale = function() {
 			deferredUpdateScale = q.defer();
@@ -203,22 +205,57 @@ describe('Scale details directive', function() {
 	});
 
 	describe('$scope.cancel', function() {
-		it('should set editing to be false', function() {
+
+		var confirmation;
+
+		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
+		});
+
+		it('should set editing to false if the user has not made any edits', function() {
+			scope.selectedScale = {
+				name: 'scale'
+			};
+			scope.model = angular.copy(scope.selectedScale);
 			scope.editing = true;
+
 			scope.cancel(fakeEvent);
+
 			expect(scope.editing).toBe(false);
 		});
 
-		it('should set the model back to the original unchanged scale', function() {
-			scope.model = null;
-
-			scope.selectedScale = PERCENTAGE;
-			scope.$apply();
-
-			scope.model.dataType = CATEGORICAL_TYPE;
+		it('should call the confirmation handler if the user has made edits', function() {
+			scope.selectedScale = {
+				name: 'scale'
+			};
+			scope.model = {
+				name: 'new_scale_name'
+			};
 
 			scope.cancel(fakeEvent);
 
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
+		});
+
+		it('should set editing to false and reset the model when the confirmation handler is resolved', function() {
+			scope.selectedScale = {
+				name: 'scale'
+			};
+			scope.model = {
+				name: 'new_scale_name'
+			};
+
+			scope.cancel(fakeEvent);
+			confirmation.resolve();
+			scope.$apply();
+
+			expect(scope.editing).toBe(false);
 			expect(scope.model).toEqual(scope.selectedScale);
 		});
 	});
@@ -292,28 +329,55 @@ describe('Scale details directive', function() {
 
 	describe('$scope.deleteScale', function() {
 
+		var confirmation;
+
 		beforeEach(function() {
+			formUtilities.confirmationHandler = function() {
+				confirmation = q.defer();
+				return confirmation.promise;
+			};
+
 			scope.updateSelectedScale = function(/*model*/) {};
+
+			spyOn(formUtilities, 'confirmationHandler').and.callThrough();
 		});
 
-		it('should call the properties service to delete the variable', function() {
+		it('should call the confirmation handler', function() {
 			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			expect(formUtilities.confirmationHandler).toHaveBeenCalled();
+			expect(formUtilities.confirmationHandler.calls.mostRecent().args[0]).toEqual(scope);
+		});
+
+		it('should call the scales service to delete the scale if the confirmation is resolved', function() {
+			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			confirmation.resolve();
+			scope.$apply();
+
 			expect(scalesService.deleteScale).toHaveBeenCalledWith(PERCENTAGE.id);
 		});
 
-		it('should handle any errors if the update was not successful', function() {
+		it('should set an error if the update was not successful', function() {
+			scope.clientErrors = {};
 			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteScale.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(scope.clientErrors.failedToDelete).toBe(true);
 		});
 
-		it('should remove variable on the parent scope and hide the panel after a successful delete', function() {
+		it('should remove scale on the parent scope and hide the panel after a successful delete', function() {
 			spyOn(scope, 'updateSelectedScale').and.callThrough();
 
 			scope.deleteScale(fakeEvent, PERCENTAGE.id);
+
+			confirmation.resolve();
+			scope.$apply();
 
 			deferredDeleteScale.resolve();
 			scope.$apply();
@@ -322,6 +386,5 @@ describe('Scale details directive', function() {
 			expect(scope.updateSelectedScale).toHaveBeenCalledWith();
 		});
 	});
-
 });
 

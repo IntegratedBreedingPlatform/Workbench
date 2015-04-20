@@ -8,15 +8,20 @@
 	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
 		function(methodsService, serviceUtilities, formUtilities, panelService, $timeout) {
 
+			// Reset any errors we're showing the user
+			function resetErrors($scope) {
+				$scope.serverErrors = {};
+		 		$scope.clientErrors = {};
+		 	}
+
 			return {
 				controller: function($scope) {
 					$scope.editing = false;
 
-					$scope.serverErrors = {};
-
 					$scope.$watch('selectedMethod', function(method) {
 						$scope.model = angular.copy(method);
 						$scope.deletable = method && method.deletable || false;
+						resetErrors($scope);
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
@@ -30,38 +35,44 @@
 
 					$scope.editMethod = function(e) {
 						e.preventDefault();
-						$scope.editing = true;
+						resetErrors($scope);
 
-						// Reset server errors
-						$scope.serverErrors = {};
+						$scope.editing = true;
 					};
 
 					$scope.deleteMethod = function(e, id) {
 						e.preventDefault();
+						resetErrors($scope);
 
-						methodsService.deleteMethod(id).then(function() {
-							// Remove method on parent scope if we succeeded
-							panelService.hidePanel();
-							$scope.updateSelectedMethod();
-						}, function(response) {
-							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
+							methodsService.deleteMethod(id).then(function() {
+								// Remove method on parent scope if we succeeded
+								panelService.hidePanel();
+								$scope.updateSelectedMethod();
+							}, function() {
+								$scope.clientErrors.failedToDelete = true;
+							});
 						});
 					};
 
 					$scope.cancel = function(e) {
 						e.preventDefault();
-						$scope.editing = false;
-						$scope.model = angular.copy($scope.selectedMethod);
+						resetErrors($scope);
 
-						// Reset server errors
-						$scope.serverErrors = {};
+						// The user hasn't changed anything
+						if (angular.equals($scope.model, $scope.selectedMethod)) {
+							$scope.editing = false;
+						} else {
+							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
+								$scope.editing = false;
+								$scope.model = angular.copy($scope.selectedMethod);
+							});
+						}
 					};
 
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
-
-						// Reset server errors
-						$scope.serverErrors = {};
+						resetErrors($scope);
 
 						if ($scope.mdForm.$valid) {
 							$scope.submitted = true;

@@ -128,6 +128,18 @@
 
 		"variables": {
 			"deleteConfirmation": "Are you sure you want to delete this variable?"
+		},
+
+		"properties": {
+			"deleteConfirmation": "Are you sure you want to delete this property?"
+		},
+
+		"methods": {
+			"deleteConfirmation": "Are you sure you want to delete this method?"
+		},
+
+		"scales": {
+			"deleteConfirmation": "Are you sure you want to delete this scale?"
 		}
 	},
 

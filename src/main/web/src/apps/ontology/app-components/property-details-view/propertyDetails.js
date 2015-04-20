@@ -9,6 +9,11 @@
 		'$timeout',
 		function(propertiesService, serviceUtilities, formUtilities, panelService, $timeout) {
 
+			// Reset any errors we're showing the user
+			function resetErrors($scope) {
+		 		$scope.clientErrors = {};
+		 	}
+
 			return {
 				controller: function($scope) {
 					$scope.editing = false;
@@ -16,6 +21,7 @@
 					$scope.$watch('selectedProperty', function(property) {
 						$scope.model = angular.copy(property);
 						$scope.deletable = property && property.deletable || false;
+						resetErrors($scope);
 					});
 
 					$scope.data = {
@@ -32,27 +38,44 @@
 
 					$scope.editProperty = function(e) {
 						e.preventDefault();
+						resetErrors($scope);
+
 						$scope.editing = true;
 					};
 
 					$scope.deleteProperty = function(e, id) {
 						e.preventDefault();
+						resetErrors($scope);
 
-						propertiesService.deleteProperty(id).then(function() {
-							// Remove property on parent scope if we succeeded
-							panelService.hidePanel();
-							$scope.updateSelectedProperty();
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
+							propertiesService.deleteProperty(id).then(function() {
+								// Remove property on parent scope if we succeeded
+								panelService.hidePanel();
+								$scope.updateSelectedProperty();
+							}, function() {
+								$scope.clientErrors.failedToDelete = true;
+							});
+						});
 					};
 
 					$scope.cancel = function(e) {
 						e.preventDefault();
-						$scope.editing = false;
-						$scope.model = angular.copy($scope.selectedProperty);
+						resetErrors($scope);
+
+						// The user hasn't changed anything
+						if (angular.equals($scope.model, $scope.selectedProperty)) {
+							$scope.editing = false;
+						} else {
+							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
+								$scope.editing = false;
+								$scope.model = angular.copy($scope.selectedProperty);
+							});
+						}
 					};
 
 					$scope.saveChanges = function(e, id, model) {
 						e.preventDefault();
+						resetErrors($scope);
 
 						if ($scope.pdForm.$valid) {
 							$scope.submitted = true;
