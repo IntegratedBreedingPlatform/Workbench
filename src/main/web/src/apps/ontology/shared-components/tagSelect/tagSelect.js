@@ -132,14 +132,12 @@
 
 				scope.showSuggestions = function() {
 					scope.search();
-					scope.suggestionsShown = true;
 				};
 
 				scope.hideSuggestions = function() {
 					scope.suggestions = [];
 					scope.selectedIndex = -1;
 					scope.searchText = '';
-					scope.suggestionsShown = false;
 				};
 
 			},
