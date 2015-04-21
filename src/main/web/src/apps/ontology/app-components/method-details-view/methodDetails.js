@@ -28,7 +28,8 @@
 					});
 
 					$scope.$watch('editing', function() {
-						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
+						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
+							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
