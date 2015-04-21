@@ -14,7 +14,8 @@ describe('Variable details directive', function() {
 
 		PLANT_VIGOR = {
 			id: 1,
-			name: 'Plant Vigor'
+			name: 'Plant Vigor',
+			editableFields: [ 'description','cropOntologyId', 'variableTypeIds' ]
 		},
 
 		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [
@@ -192,6 +193,14 @@ describe('Variable details directive', function() {
 			scope.$apply();
 
 			expect(scope.showTreatmentFactorAlert).toBe(false);
+		});
+
+		it('should show non-editable fields alert if the selected item does not have all fields in editable fields list', function() {
+			scope.selectedVariable = PLANT_VIGOR;
+			scope.$apply();
+			scope.editing = true;
+			scope.$apply();
+			expect(scope.showNoneditableFieldsAlert).toEqual(true);
 		});
 	});
 

@@ -1,4 +1,7 @@
 <form class="form-horizontal" name="vdForm" ng-submit="saveChanges($event, variableId, model)" novalidate>
+	<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+		<span>{{'validation.variable.noneditableFields' | translate }}</span>
+	</div>
 
 	<div ng-class="formGroupClass('omName')">
 		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>

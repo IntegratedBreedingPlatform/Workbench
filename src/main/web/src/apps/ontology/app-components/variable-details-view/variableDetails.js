@@ -4,7 +4,8 @@
 (function() {
 	var variableDetails = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
 		'scales', 'utilities', 'variables', 'variableTypes', 'panel']),
-		DELAY = 400;
+		DELAY = 400,
+		NUM_EDITABLE_FIELDS = 6;
 
 	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
 		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
@@ -33,12 +34,19 @@
 					$scope.$watch('selectedVariable', function(variable) {
 						$scope.model = angular.copy(variable);
 						$scope.deletable = variable && variable.deletable || false;
+						// Should always open in read-only view
+						$scope.editing = false;
 						resetErrors($scope);
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
 					$scope.$watch('model.scale.dataType.name', function(newValue) {
 						$scope.showRangeWidget = newValue === 'Numeric';
+					});
+
+					$scope.$watch('editing', function() {
+						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
+							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					propertiesService.getProperties().then(function(properties) {
