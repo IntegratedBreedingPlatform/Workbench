@@ -109,8 +109,9 @@ describe('Method details directive', function() {
 		});
 
 		it('should show non-editable fields alert if the selected item does not have all fields in editable fields list', function() {
-			scope.editing = true;
 			scope.selectedMethod = CUT_AND_DRY;
+			scope.$apply();
+			scope.editing = true;
 			scope.$apply();
 			expect(scope.showNoneditableFieldsAlert).toEqual(true);
 		});

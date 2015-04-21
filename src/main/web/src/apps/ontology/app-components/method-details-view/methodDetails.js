@@ -22,6 +22,8 @@
 					$scope.$watch('selectedMethod', function(method) {
 						$scope.model = angular.copy(method);
 						$scope.deletable = method && method.deletable || false;
+						// Should always open in read-only view
+						$scope.editing = false;
 						resetErrors($scope);
 					});
 
