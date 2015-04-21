@@ -216,10 +216,10 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
 
-        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
+        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis");
         breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets");
 
         breedingViewMultiSiteAnalysisButton = new Button("Multi-site Analysis");
         breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");

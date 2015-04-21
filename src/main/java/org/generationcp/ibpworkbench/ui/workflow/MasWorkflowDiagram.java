@@ -257,7 +257,7 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         ontologyBrowserFBBtn.setSizeUndefined();
         ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
 
-        metaAnalysisBtn = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn = new Button("Meta Analysis of Field Trials");
         metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         metaAnalysisBtn.setSizeUndefined();
         metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");

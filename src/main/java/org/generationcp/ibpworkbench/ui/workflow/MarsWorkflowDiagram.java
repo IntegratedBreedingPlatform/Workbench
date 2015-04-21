@@ -234,10 +234,10 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
         
-        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis for Local Datasets");
+        breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis");
         breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Local IBDB");
+        breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets");
         
         // recombination cycle selection buttons
         optimasButton = new Button();
@@ -305,13 +305,13 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         ontologyBrowserFBBtn.setSizeUndefined();
         ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
 
-        metaAnalysisBtn = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn = new Button("Meta Analysis of Field Trials");
         metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         metaAnalysisBtn.setSizeUndefined();
         metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
 
 
-        metaAnalysisBtn2 = new Button("Meta Analysis of Field Trials for Local Datasets");
+        metaAnalysisBtn2 = new Button("Meta Analysis of Field Trials");
         metaAnalysisBtn2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
         metaAnalysisBtn2.setSizeUndefined();
         metaAnalysisBtn2.setDescription("Click to launch Meta Analysis of Field Trial Tool");
@@ -540,7 +540,8 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setExpandRatio(emptyLabel, 100);
         
         layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
+        layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton,
+                Alignment.TOP_CENTER);
         layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
 
         layout.addComponent(breedingViewMultiSiteAnalysisButton);
@@ -548,6 +549,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
 
         layout.addComponent(metaAnalysisBtn2);
+        layout.setComponentAlignment(metaAnalysisBtn2, Alignment.TOP_CENTER);
         layout.setExpandRatio(metaAnalysisBtn2, 0);
 
         layout.addComponent(phenotypicBreedingViewButton);
