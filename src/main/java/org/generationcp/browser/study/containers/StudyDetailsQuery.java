@@ -84,11 +84,9 @@ public class StudyDetailsQuery implements Query {
 
     private Item getStudyItem(StudyDetails studyDetails) {
         Item item = new PropertysetItem();
-        String columnId = null;
         String value = null;
         int numOfCols = columnIds.size();
         for (int i = 0; i < numOfCols; i++) {
-            columnId = columnIds.get(i);
             switch (i) {
                 case 0:
                     value = studyDetails.getStudyName();
@@ -118,13 +116,9 @@ public class StudyDetailsQuery implements Query {
                     break;
                 default:
                     break;
-                //disregard value
             }
-            if (value != null) {
-                item.addItemProperty(columnId, new ObjectProperty<String>(value));
-            } else {
-                item.addItemProperty(columnId, null);
-            }
+            item.addItemProperty(columnIds.get(i), value != null ?
+                		new ObjectProperty<String>(value):null);
         }
         return item;
     }

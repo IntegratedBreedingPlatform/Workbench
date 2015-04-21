@@ -135,6 +135,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			try {
 				sessionData.logProgramActivity(windowName.getwindowName(),messageSource.getMessage(Message.LAUNCHED_APP, windowCaption));
 			} catch (MiddlewareQueryException e) {
+				LOG.error(e.getMessage(),e);
 				MessageNotifier.showError(window,
 						messageSource.getMessage(Message.DATABASE_ERROR),
 						"<br />" + messageSource

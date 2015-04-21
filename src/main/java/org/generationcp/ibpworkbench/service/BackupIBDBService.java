@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
 import org.generationcp.commons.util.MySQLUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.generationcp.middleware.util.Util;
@@ -20,8 +19,6 @@ import java.io.File;
 public class BackupIBDBService {
     private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBService.class);
     private static final String BACKUP_DIR = "backup";
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
     @Autowired
     private MySQLUtil mysqlUtil;
     @Autowired
@@ -42,7 +39,7 @@ public class BackupIBDBService {
         return backupFile;
     }
 
-    public void checkBackupDir() throws Exception {
+    public void checkBackupDir() {
         File saveDir = new File(BACKUP_DIR);
         if (!saveDir.exists() || !saveDir.isDirectory()) {
             saveDir.mkdirs();

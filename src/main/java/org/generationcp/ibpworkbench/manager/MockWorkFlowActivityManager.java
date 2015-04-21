@@ -32,7 +32,7 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
     
     private static MockWorkFlowActivityManager INSTANCE;
     
-    private MockWorkFlowActivityManager() throws InternationalizableException  {
+    private MockWorkFlowActivityManager() {
         activities = new ArrayList<WorkFlowActivity>();
 
         SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
@@ -82,7 +82,7 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
         return activities;
     }
 
-    public static MockWorkFlowActivityManager getInstance() throws InternationalizableException {
+    public static MockWorkFlowActivityManager getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new MockWorkFlowActivityManager();
         }

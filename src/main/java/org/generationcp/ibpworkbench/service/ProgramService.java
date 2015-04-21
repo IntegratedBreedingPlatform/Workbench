@@ -56,7 +56,7 @@ public class ProgramService {
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
 
-	public void createNewProgram(Project program) throws Exception {
+	public void createNewProgram(Project program) throws MiddlewareQueryException {
 
 		idAndNameOfProgramMembers.clear();
 		
@@ -106,7 +106,7 @@ public class ProgramService {
 					workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 				}
 			} catch (MiddlewareQueryException e1) {
-				// do nothing
+				LOG.error(e1.getMessage(),e1);
 			}
 		}
 	}
@@ -139,8 +139,8 @@ public class ProgramService {
 			} else {
 				List<Person> persons = userDataManager.getAllPersons();
 				for (Person person : persons) {
-					if (person.getLastName().toUpperCase().equals(cropDBPerson.getLastName().toUpperCase())
-							&& person.getFirstName().toUpperCase().equals(cropDBPerson.getFirstName().toUpperCase())) {
+					if (person.getLastName().equalsIgnoreCase(cropDBPerson.getLastName().toUpperCase())
+							&& person.getFirstName().equalsIgnoreCase(cropDBPerson.getFirstName().toUpperCase())) {
 						cropDBPerson = person;
 						break;
 					}

@@ -86,6 +86,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     private List<Project> projects = null;
     private SummaryView summaryView;
+    private Button lasSelectedProjectButton = null;
 
     public WorkbenchDashboard() {
         super();
@@ -120,7 +121,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-        tblProject.setImmediate(true); // react at once when something is selected
+        // react at once when something is selected
+        tblProject.setImmediate(true); 
         tblProject.setSelectable(true);
         tblProject.setStyleName("gcp-tblproject");
 
@@ -206,7 +208,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
             button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
-            button.setWidth("26px"); button.setHeight("26px");
+            button.setWidth("26px"); 
+            button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
 
@@ -228,8 +231,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         }
 
     }
-
-    private Button lasSelectedProjectButton = null;
 
     protected void initializeActions() {
         

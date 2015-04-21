@@ -21,7 +21,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -29,6 +28,8 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -38,13 +39,15 @@ import java.util.*;
 public class SaveUsersInProjectAction implements ClickListener{
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(SaveUsersInProjectAction.class);
     private static final int PROJECT_USER_ACCESS_NUMBER = 100;
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
     
     private final TwinTableSelect<User> select;
 
-    private int projectUserInstalId = -1; // instalid of installation inserted, default value is -1 
+    // instalid of installation inserted, default value is -1 
+    private int projectUserInstalId = -1; 
     
     private Project project;
     
@@ -54,9 +57,6 @@ public class SaveUsersInProjectAction implements ClickListener{
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
     
-    @Autowired
-    private ToolUtil toolUtil;
-
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
     
@@ -107,6 +107,7 @@ public class SaveUsersInProjectAction implements ClickListener{
             MessageNotifier.showMessage(event.getComponent().getWindow(),"Success","Successfully updated this project's members list.");
 
         } catch(MiddlewareQueryException ex) {
+        	LOG.error(ex.getMessage(),ex);
             //do nothing because getting the User will not fail
             event.getComponent().getWindow().showNotification("");
             MessageNotifier.showError(event.getComponent().getWindow(),messageSource.getMessage(Message.ERROR_DATABASE),"A database problem occured while updating this project's members list. Please see error logs.");
@@ -123,7 +124,7 @@ public class SaveUsersInProjectAction implements ClickListener{
             }
      
 	     }catch(Exception e){
-	     	e.printStackTrace();
+	     	LOG.error(e.getMessage(),e);
 	     }
     }
     
@@ -161,8 +162,8 @@ public class SaveUsersInProjectAction implements ClickListener{
                 // set localPerson to the existing person
                 List<Person> persons = userDataManager.getAllPersons();
                 for (Person person : persons){
-                    if (person.getLastName().toUpperCase().equals(localPerson.getLastName().toUpperCase()) && 
-                        person.getFirstName().toUpperCase().equals(localPerson.getFirstName().toUpperCase())){
+                    if (person.getLastName().equalsIgnoreCase(localPerson.getLastName()) && 
+                        person.getFirstName().equalsIgnoreCase(localPerson.getFirstName())){
                         localPerson = person;
                         break;
                     }
@@ -229,18 +230,14 @@ public class SaveUsersInProjectAction implements ClickListener{
                 if (member == null) {
                     continue;
                 }
-                
                 Person person = workbenchDataManager.getPersonById(member.getPersonid());
-                if (person == null) {
-                    continue;
-                }
-                
                 ProjectUserMysqlAccount userMysqlAccount = workbenchDataManager.getProjectUserMysqlAccountByProjectIdAndUserId(project.getProjectId().intValue(), member.getUserid());
-                if (userMysqlAccount == null) {
+                if (userMysqlAccount == null && person!=null) {
                     // we need to create a MySQL account for this user
                     idAndNameOfProjectMembers.put(member.getUserid(), person.getInitialsWithTimestamp());
                 }
             } catch(MiddlewareQueryException ex) {
+            	LOG.error(ex.getMessage(),ex);
                 //do nothing because getting the User will not fail
             }
         }

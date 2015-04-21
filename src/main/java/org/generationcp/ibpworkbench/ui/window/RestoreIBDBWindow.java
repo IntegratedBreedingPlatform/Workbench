@@ -37,9 +37,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     
 	private static final long serialVersionUID = 1L;
-    
-    private static final String VERSION = "1.1.3.10";
-    
 
     private Project project;
         
@@ -120,7 +117,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		}
     }
     
-    protected void initializeComponents() throws Exception {
+    protected void initializeComponents() {
 		saveBtn = new Button("Restore");
         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		saveBtn.setSizeUndefined();
@@ -235,7 +232,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
     	
     }
 
-    protected void assemble() throws Exception {
+    protected void assemble() {
         initializeComponents();
         initializeLayout();
         initializeData();
