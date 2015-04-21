@@ -4,7 +4,8 @@
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
 			'utilities', 'categories', 'panel']),
-		DELAY = 400;
+		DELAY = 400,
+		NUM_EDITABLE_FIELDS = 3;
 
 	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'dataTypesService', '$timeout',
@@ -24,7 +25,14 @@
 					$scope.$watch('selectedScale', function(scale) {
 						$scope.model = angular.copy(scale);
 						$scope.deletable = scale && scale.deletable || false;
+						// Should always open in read-only view
+						$scope.editing = false;
 						resetErrors($scope);
+					});
+
+					$scope.$watch('editing', function() {
+						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
+							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {

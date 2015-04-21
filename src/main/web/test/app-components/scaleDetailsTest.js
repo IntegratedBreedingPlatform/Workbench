@@ -37,7 +37,8 @@ describe('Scale details directive', function() {
 			id: 1,
 			name: 'Percentage',
 			description: 'As per title, really',
-			dataType: NUMERIC_TYPE
+			dataType: NUMERIC_TYPE,
+			editableFields: ['description']
 		},
 
 		SCORE = {
@@ -182,6 +183,14 @@ describe('Scale details directive', function() {
 			scope.selectedItem = null;
 			scope.$apply();
 			expect(scope.scaleId).toEqual(null);
+		});
+
+		it('should show non-editable fields alert if the selected item does not have all fields in editable fields list', function() {
+			scope.selectedScale = PERCENTAGE;
+			scope.$apply();
+			scope.editing = true;
+			scope.$apply();
+			expect(scope.showNoneditableFieldsAlert).toEqual(true);
 		});
 	});
 
