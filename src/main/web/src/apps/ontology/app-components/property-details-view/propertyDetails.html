@@ -4,6 +4,9 @@
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
 		</ul>
 	</div>
+	<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+		<span>{{'validation.property.noneditableFields' | translate }}</span>
+	</div>
 
 	<div ng-class="formGroupClass('omName', 'name')">
 		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>

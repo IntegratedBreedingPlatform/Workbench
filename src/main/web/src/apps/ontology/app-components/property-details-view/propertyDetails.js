@@ -4,7 +4,8 @@
 (function() {
 	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'tagSelect', 'properties',
 			'utilities', 'panel']),
-		DELAY = 400;
+		DELAY = 400,
+		NUM_EDITABLE_FIELDS = 4;
 
 	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'$timeout',
@@ -23,12 +24,18 @@
 					$scope.$watch('selectedProperty', function(property) {
 						$scope.model = angular.copy(property);
 						$scope.deletable = property && property.deletable || false;
+						// Should always open in read-only view
+						$scope.editing = false;
 						resetErrors($scope);
 					});
 
 					$scope.data = {
 						classes: []
 					};
+
+					$scope.$watch('editing', function() {
+						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
+					});
 
 					propertiesService.getClasses().then(function(classes) {
 						$scope.data.classes = classes;

@@ -13,7 +13,8 @@ describe('Property details directive', function() {
 		},
 		BLAST = {
 			id: 1,
-			name: 'Blast'
+			name: 'Blast',
+			editableFields: [ 'description', 'classes', 'cropOntologyId' ]
 		},
 		SITE_CONDITION = 'Site Condition',
 		propertiesService = {},
@@ -117,6 +118,14 @@ describe('Property details directive', function() {
 			scope.selectedItem = null;
 			scope.$apply();
 			expect(scope.propertyId).toEqual(null);
+		});
+
+		it('should show non-editable fields alert if the selected item does not have all fields in editable fields list', function() {
+			scope.selectedProperty = BLAST;
+			scope.$apply();
+			scope.editing = true;
+			scope.$apply();
+			expect(scope.showNoneditableFieldsAlert).toEqual(true);
 		});
 	});
 
