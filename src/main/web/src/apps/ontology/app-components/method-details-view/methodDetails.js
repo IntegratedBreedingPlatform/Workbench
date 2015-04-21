@@ -3,7 +3,8 @@
 
 (function() {
 	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']),
-		DELAY = 400;
+		DELAY = 400,
+		NUM_EDITABLE_FIELDS = 2;
 
 	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
 		function(methodsService, serviceUtilities, formUtilities, panelService, $timeout) {
@@ -22,6 +23,10 @@
 						$scope.model = angular.copy(method);
 						$scope.deletable = method && method.deletable || false;
 						resetErrors($scope);
+					});
+
+					$scope.$watch('editing', function() {
+						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {

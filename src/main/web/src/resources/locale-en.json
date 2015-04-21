@@ -101,7 +101,8 @@
 			"scaleRequired": "Scale is required.",
 			"variableTypeEmpty": "Please select at least one variable type.",
 			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}}).",
-			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\"."
+			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
+			"noneditableFields": "Some fields cannot be edited as this variable is already in use."
 		},
 
 		"scale": {
@@ -109,16 +110,19 @@
 			"dataTypeRequired": "Please select a data type.",
 			"emptyValue": "Please provide a name and value for all categories.",
 			"nonUniqueName": "All category names must be unique.",
-			"nonUniqueValue": "All category values must be unique."
+			"nonUniqueValue": "All category values must be unique.",
+			"noneditableFields": "Some fields cannot be edited as this scale is already in use."
 		},
 
 		"method": {
-			"nameRequired": "Please name your method."
+			"nameRequired": "Please name your method.",
+			"noneditableFields": "Some fields cannot be edited as this method is already in use."
 		},
 
 		"property": {
 			"nameRequired": "Please name your property.",
-			"classesEmpty": "Please provide at least one class."
+			"classesEmpty": "Please provide at least one class.",
+			"noneditableFields": "Some fields cannot be edited as this property is already in use."
 		}
 	},
 

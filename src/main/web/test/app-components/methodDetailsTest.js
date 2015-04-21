@@ -13,7 +13,8 @@ describe('Method details directive', function() {
 		},
 		CUT_AND_DRY = {
 			id: 1,
-			name: 'Cut and Dry'
+			name: 'Cut and Dry',
+			editableFields: [ 'description' ]
 		},
 		methodsService = {},
 		formUtilities,
@@ -105,6 +106,13 @@ describe('Method details directive', function() {
 			scope.selectedItem = null;
 			scope.$apply();
 			expect(scope.methodId).toEqual(null);
+		});
+
+		it('should show non-editable fields alert if the selected item does not have all fields in editable fields list', function() {
+			scope.editing = true;
+			scope.selectedMethod = CUT_AND_DRY;
+			scope.$apply();
+			expect(scope.showNoneditableFieldsAlert).toEqual(true);
 		});
 	});
 
