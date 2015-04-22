@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
@@ -36,8 +37,10 @@ import java.util.List;
 public class StudyDetailsQuery implements Query {
 
     private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
-    private static final SimpleDateFormat BACKEND_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-    private static final SimpleDateFormat FRONTEND_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(
+    		Util.DATE_AS_NUMBER_FORMAT);
+    private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(
+    		Util.FRONTEND_DATE_FORMAT);
     private final String programUUID;
     private StudyDataManager studyDataManager;
     private StudyType studyType;
@@ -81,11 +84,9 @@ public class StudyDetailsQuery implements Query {
 
     private Item getStudyItem(StudyDetails studyDetails) {
         Item item = new PropertysetItem();
-        String columnId = null;
         String value = null;
         int numOfCols = columnIds.size();
         for (int i = 0; i < numOfCols; i++) {
-            columnId = columnIds.get(i);
             switch (i) {
                 case 0:
                     value = studyDetails.getStudyName();
@@ -115,13 +116,9 @@ public class StudyDetailsQuery implements Query {
                     break;
                 default:
                     break;
-                //disregard value
             }
-            if (value != null) {
-                item.addItemProperty(columnId, new ObjectProperty<String>(value));
-            } else {
-                item.addItemProperty(columnId, null);
-            }
+            item.addItemProperty(columnIds.get(i), value != null ?
+                		new ObjectProperty<String>(value):null);
         }
         return item;
     }

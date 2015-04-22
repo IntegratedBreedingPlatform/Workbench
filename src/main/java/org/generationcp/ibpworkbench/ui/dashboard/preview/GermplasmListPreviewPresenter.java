@@ -1,8 +1,6 @@
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -191,17 +189,17 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
             Integer userId = manager.getLocalIbdbUserId(sessionData.getUserData().getUserid(),
                     sessionData.getSelectedProject().getProjectId());
-
+            long currentDate = DateUtil.getCurrentDateAsLongValue();
             if (id != null) {
                 gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
 
                 if (null != gpList && !gpList.isFolder()) {
-                    newList = new GermplasmList(null, folderName, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), FOLDER, userId, folderName, gpList.getParent(), 0);
+                    newList = new GermplasmList(null, folderName, currentDate, FOLDER, userId, folderName, gpList.getParent(), 0);
                 } else {
-                    newList = new GermplasmList(null, folderName, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), FOLDER, userId, folderName, gpList, 0);
+                    newList = new GermplasmList(null, folderName, currentDate, FOLDER, userId, folderName, gpList, 0);
                 }
             } else {
-                newList = new GermplasmList(null, folderName, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), FOLDER, userId, folderName, null, 0);
+                newList = new GermplasmList(null, folderName, currentDate, FOLDER, userId, folderName, null, 0);
             }
 
             newList.setDescription("(NEW FOLDER) " + folderName);

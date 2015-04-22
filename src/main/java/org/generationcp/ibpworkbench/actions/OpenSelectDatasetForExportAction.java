@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
 
 import org.generationcp.commons.breedingview.xml.ProjectType;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -41,8 +42,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +106,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
             LOG.info("Input Directory: " + inputDir);
 
             breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm").format(Calendar.getInstance().getTime());
+            String timeStamp = DateUtil.getCurrentDateAsStringValue("yyyy-MM-dd_HH:mm");
+            
             String breedingViewAnalysisName = String.format("SSA analysis of %s  (run at %s)", datasetName.trim(),  timeStamp);
 
             defaultFilePath = File.separator + breedingViewProjectName;

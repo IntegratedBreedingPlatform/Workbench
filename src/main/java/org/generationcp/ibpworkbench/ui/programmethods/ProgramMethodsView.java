@@ -10,6 +10,8 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.*;
+
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -24,7 +26,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -274,8 +275,8 @@ import java.util.*;
 
 			@Override
              public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                 DateFormat newDf = new SimpleDateFormat("MM/dd/yyyy");
+                 DateFormat df = DateUtil.getSimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT);
+                 DateFormat newDf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT_2);
 
                  if (((MethodView)itemId).getMdate().toString().length() > 1) {
                      try {

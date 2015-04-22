@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -217,9 +217,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
             newBreedingMethod.setMprgn(0);
             newBreedingMethod.setReference(0);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-            newBreedingMethod.setMdate(Integer.parseInt(sdf.format(new Date())));
+            newBreedingMethod.setMdate(DateUtil.getCurrentDateAsIntegerValue());
             newBreedingMethod.setMfprg(0);
             
             //set programUUID

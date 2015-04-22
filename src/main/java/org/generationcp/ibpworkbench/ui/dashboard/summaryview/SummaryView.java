@@ -8,12 +8,12 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.etl.StudyDetails;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,23 @@ import java.util.List;
 @Configurable
 public class SummaryView extends VerticalLayout implements InitializingBean {
 
-	private final static Logger LOG = LoggerFactory.getLogger(SummaryView.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SummaryView.class);
+
+	private static final String STUDY_NAME = "studyName";
+
+	private static final String TITLE = "title";
+
+	private static final String OBJECTIVE = "objective";
+
+	private static final String START_DATE = "startDate";
+
+	private static final String END_DATE = "endDate";
+
+	private static final String PI_NAME = "piName";
+
+	private static final String SITE_NAME = "siteName";
+
+	private static final String STUDY_TYPE = "studyType";
 
     @Autowired
     private SimpleResourceBundleMessageSource messageSource;
@@ -62,14 +78,10 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        try {
-            initializeComponents();
-            initializeActions();
-            initializeValues();
-            initializeLayout();
-        } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
-        }
+        initializeComponents();
+        initializeActions();
+        initializeValues();
+        initializeLayout();
     }
 
     private void initializeLayout() {
@@ -114,10 +126,12 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
     }
 
-    private void initializeValues() throws MiddlewareQueryException {
+    private void initializeValues() {
+    	//do nothing
     }
 
     private void initializeActions() {
+    	//do nothing
     }
 
     private void initializeComponents() {
@@ -143,7 +157,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                         try {
                             SummaryView.this.removeComponent(SummaryView.this.getComponent(1));
                         } catch (IndexOutOfBoundsException e) {
-                            // dont care
+                        	LOG.debug(e.getMessage(),e);
                         }
 
                     } else {
@@ -167,6 +181,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                             SummaryView.this.addComponent(tblSeason,1);
                             SummaryView.this.updateHeaderAndTableControls(messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),seasonCount,tblSeason);
                             break;
+                        default: break;
                     }
 
                 }
@@ -201,99 +216,99 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
     private PagedTable buildActivityTable() {
-        final PagedTable tblActivity = new PagedTableWithUpdatedControls();
-        tblActivity.setImmediate(true);
+        final PagedTable activityTable = new PagedTableWithUpdatedControls();
+        activityTable.setImmediate(true);
 
         BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
         container.setBeanIdProperty("projectActivityId");
-        tblActivity.setContainerDataSource(container);
+        activityTable.setContainerDataSource(container);
 
         String[] columns = new String[] {"createdAt", "name", "description"};
-        tblActivity.setVisibleColumns(columns);
+        activityTable.setVisibleColumns(columns);
 
         // LAYOUT
-        tblActivity.setWidth("100%");
+        activityTable.setWidth("100%");
 
-        messageSource.setColumnHeader(tblActivity, "createdAt", Message.DATE);
-        messageSource.setColumnHeader(tblActivity, "name", Message.NAME);
-        messageSource.setColumnHeader(tblActivity, "description", Message.DESCRIPTION_HEADER);
+        messageSource.setColumnHeader(activityTable, "createdAt", Message.DATE);
+        messageSource.setColumnHeader(activityTable, "name", Message.NAME);
+        messageSource.setColumnHeader(activityTable, "description", Message.DESCRIPTION_HEADER);
 
-        return tblActivity;
+        return activityTable;
     }
 
     private PagedTable buildTrialSummaryTable() {
-        final PagedTable tblTrial = new PagedTableWithUpdatedControls();
-        tblTrial.setImmediate(true);
+        final PagedTable trialSummaryTable = new PagedTableWithUpdatedControls();
+        trialSummaryTable.setImmediate(true);
 
         
         BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
         container.setBeanIdProperty("id");
-        tblTrial.setContainerDataSource(container);
+        trialSummaryTable.setContainerDataSource(container);
 
         String[] columns = getTblTrialColumns();
-        tblTrial.setVisibleColumns(columns);
+        trialSummaryTable.setVisibleColumns(columns);
 
         // LAYOUT
-        tblTrial.setWidth("100%");
+        trialSummaryTable.setWidth("100%");
 
-        messageSource.setColumnHeader(tblTrial, columns[0], Message.NAME_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[1], Message.TITLE_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[2], Message.OBJECTIVE_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[3], Message.START_DATE_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[4], Message.END_DATE_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[5], Message.PI_NAME_LABEL);
-        messageSource.setColumnHeader(tblTrial, columns[6], Message.SITE_NAME_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[0], Message.NAME_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[1], Message.TITLE_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[2], Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[3], Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[4], Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[5], Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(trialSummaryTable, columns[6], Message.SITE_NAME_LABEL);
        
-        return tblTrial;
+        return trialSummaryTable;
     }
 
     private PagedTable buildNurserySummaryTable() {
-        final PagedTable tblNursery = new PagedTableWithUpdatedControls();
-        tblNursery.setImmediate(true);
+        final PagedTable nurserySummaryTable = new PagedTableWithUpdatedControls();
+        nurserySummaryTable.setImmediate(true);
 
         BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
         container.setBeanIdProperty("id");
-        tblNursery.setContainerDataSource(container);
+        nurserySummaryTable.setContainerDataSource(container);
 
         String[] columns = getTblNurseryColumns();
-        tblNursery.setVisibleColumns(columns);
+        nurserySummaryTable.setVisibleColumns(columns);
         // LAYOUT
-        tblNursery.setWidth("100%");
+        nurserySummaryTable.setWidth("100%");
 
-        messageSource.setColumnHeader(tblNursery, columns[0], Message.NAME_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[1], Message.TITLE_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[2], Message.OBJECTIVE_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[3], Message.START_DATE_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[4], Message.END_DATE_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[5], Message.PI_NAME_LABEL);
-        messageSource.setColumnHeader(tblNursery, columns[6], Message.SITE_NAME_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[0], Message.NAME_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[1], Message.TITLE_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[2], Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[3], Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[4], Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[5], Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(nurserySummaryTable, columns[6], Message.SITE_NAME_LABEL);
         
-        return tblNursery;
+        return nurserySummaryTable;
     }
 
     private PagedTable buildSeasonSummaryTable() {
-        final PagedTable tblSeason = new PagedTableWithUpdatedControls();
-        tblSeason.setImmediate(true);
+        final PagedTable seasonSummaryTable = new PagedTableWithUpdatedControls();
+        seasonSummaryTable.setImmediate(true);
 
         BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
         container.setBeanIdProperty("id");
-        tblSeason.setContainerDataSource(container);
+        seasonSummaryTable.setContainerDataSource(container);
 
         String[] columns = getTblSeasonColumns();
-        tblSeason.setVisibleColumns(columns);
+        seasonSummaryTable.setVisibleColumns(columns);
         // LAYOUT
-        tblSeason.setWidth("100%");
+        seasonSummaryTable.setWidth("100%");
 
-        messageSource.setColumnHeader(tblSeason, columns[0], Message.NAME_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[1], Message.TITLE_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[2], Message.OBJECTIVE_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[3], Message.START_DATE_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[4], Message.END_DATE_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[5], Message.PI_NAME_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[6], Message.SITE_NAME_LABEL);
-        messageSource.setColumnHeader(tblSeason, columns[7], Message.STUDY_TYPE_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[0], Message.NAME_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[1], Message.TITLE_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[2], Message.OBJECTIVE_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[3], Message.START_DATE_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[4], Message.END_DATE_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[5], Message.PI_NAME_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[6], Message.SITE_NAME_LABEL);
+        messageSource.setColumnHeader(seasonSummaryTable, columns[7], Message.STUDY_TYPE_LABEL);
         
-        return tblSeason;
+        return seasonSummaryTable;
     }
 
     public void updateActivityTable(List<ProjectActivity> activityList) {
@@ -389,7 +404,8 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
                 choices[i] = new Button(selections[i]);
                 choices[i].setStyleName(Reindeer.BUTTON_LINK);
                 choices[i].addListener(new ChoiceListener(i));
-                choices[i].setWidth("100%"); choices[i].setHeight("26px");
+                choices[i].setWidth("100%"); 
+                choices[i].setHeight("26px");
                 root.addComponent(choices[i]);
             }
 
@@ -459,15 +475,15 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
     }
 
 	public String[] getTblTrialColumns() {
-		return new String[] {"studyName","title","objective","startDate","endDate","piName","siteName"};
+		return new String[] {STUDY_NAME,TITLE,OBJECTIVE,START_DATE,END_DATE,PI_NAME,SITE_NAME};
 	}
     
 	public String[] getTblNurseryColumns() {
-		return new String[] {"studyName","title","objective","startDate","endDate","piName","siteName"};
+		return new String[] {STUDY_NAME,TITLE,OBJECTIVE,START_DATE,END_DATE,PI_NAME,SITE_NAME};
 	}
 	
 	public String[] getTblSeasonColumns() {
-		return new String[] {"studyName","title","objective","startDate","endDate","piName","siteName", "studyType"};
+		return new String[] {STUDY_NAME,TITLE,OBJECTIVE,START_DATE,END_DATE,PI_NAME,SITE_NAME,STUDY_TYPE};
 	}
 
     private class PagedTableWithUpdatedControls extends PagedTable {
@@ -478,7 +494,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
         @Override
         public HorizontalLayout createControls() {
-            HorizontalLayout controls = super.createControls();    //To change body of overridden methods use File | Settings | File Templates.
+            HorizontalLayout controls = super.createControls();
 
             controls.setMargin(new MarginInfo(true,false,true,false));
 
@@ -508,7 +524,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
         @Override
         protected String formatPropertyValue(Object rowId, Object colId, Property property) {
             if (property.getType() == Date.class) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_TIMESTAMP_FORMAT);
                 return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
             }
 

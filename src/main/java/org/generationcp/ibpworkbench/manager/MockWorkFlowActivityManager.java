@@ -13,6 +13,7 @@
 package org.generationcp.ibpworkbench.manager;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
@@ -31,10 +32,10 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
     
     private static MockWorkFlowActivityManager INSTANCE;
     
-    private MockWorkFlowActivityManager() throws InternationalizableException  {
+    private MockWorkFlowActivityManager() {
         activities = new ArrayList<WorkFlowActivity>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
 
         try {
             WorkFlowActivity activity1 = new WorkFlowActivity();
@@ -81,7 +82,7 @@ public class MockWorkFlowActivityManager implements IWorkFlowActivityManager{
         return activities;
     }
 
-    public static MockWorkFlowActivityManager getInstance() throws InternationalizableException {
+    public static MockWorkFlowActivityManager getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new MockWorkFlowActivityManager();
         }
