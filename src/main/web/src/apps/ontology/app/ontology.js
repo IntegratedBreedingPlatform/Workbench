@@ -73,6 +73,8 @@
 				e.preventDefault();
 				panelService.hidePanel();
 				$location.path('/add/' + path);
+				//Deselect all tabs on redirection to the new item view
+				$scope.activeTab = '';
 			};
 
 			// Storing the location so we can implement back functionality on our nested views
