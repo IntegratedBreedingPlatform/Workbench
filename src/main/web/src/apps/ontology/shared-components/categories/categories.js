@@ -55,12 +55,17 @@
 					$scope.model[$scope.property].categories.push({});
 				};
 
+				$scope.removable = function() {
+					 return $scope.model[$scope.property].categories.length >= 2;
+				};
+
 				$scope.removeCategory = function(e, index) {
 					e.preventDefault();
-					if ($scope.model[$scope.property].categories.length >= 2) {
+					if ($scope.removable()) {
 						$scope.model[$scope.property].categories.splice(index, 1);
 					}
 				};
+
 			},
 
 			link: function(scope, elm, attrs, ctrl) {

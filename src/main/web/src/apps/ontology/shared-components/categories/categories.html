@@ -8,7 +8,7 @@
 				<input type="text" class="form-control om-category-input" ng-model="category.description" placeholder="{{'categories.description' | translate}}"/>
 			</div>
 			<div class="col-sm-4">
-				<a class="form-control-static" href="#" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
+				<a class="form-control-static" href="#" ng-show="removable()" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
 			</div>
 		</li>
 	</ol>
