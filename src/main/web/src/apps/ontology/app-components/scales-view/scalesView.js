@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('scalesView', ['scales', 'scaleDetails','list', 'panel']),
+	var app = angular.module('scalesView', ['scales', 'scaleDetails','list', 'panel', 'utilities']),
 		DELAY = 400;
 
 	function transformScaleToDisplayFormat(scale, id) {
@@ -18,8 +18,8 @@
 		return scales.map(transformScaleToDisplayFormat);
 	}
 
-	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout',
-		function($scope, scalesService, panelService, $timeout) {
+	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout', 'collectionUtilities',
+		function($scope, scalesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
 			this.scales = [];
 
@@ -62,6 +62,7 @@
 				if (selectedIndex !== -1) {
 					if (transformedScale) {
 						ctrl.scales[selectedIndex] = transformedScale;
+						collectionUtilities.sortByName(ctrl.scales);
 					} else {
 						ctrl.scales.splice(selectedIndex, 1);
 					}

@@ -374,22 +374,16 @@ describe('Variables Controller', function() {
 
 				displayVariableToLeaveAlone = {
 					id: 2,
+					name: 'A Name',
 					property: 'A Property',
 					method: 'A Method',
 					scale: 'A Scale'
 				},
 
-				displayVariableToUpdate = {
-					id: 1,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name
-				},
-
 				newName = 'Not Plant Vigor';
 
-			controller.variables = [displayVariableToLeaveAlone, displayVariableToUpdate];
-			controller.favouriteVariables = [displayVariableToLeaveAlone, displayVariableToUpdate];
+			controller.variables = [displayVariableToLeaveAlone];
+			controller.favouriteVariables = [displayVariableToLeaveAlone];
 
 			// Select our variable for editing
 			scope.selectedItem.id = 1;

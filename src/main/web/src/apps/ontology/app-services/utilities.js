@@ -142,4 +142,21 @@
 
 		return formUtilities;
 	}]);
+
+	app.factory('collectionUtilities', function() {
+
+		var collectionUtilities = {
+
+			/*
+			Takes a collection of objects and sorts those objects alphabetically by their name property.
+			*/
+			sortByName: function(collection) {
+				return collection.sort(function(itemOne, itemTwo) {
+					return itemOne.name.toLowerCase().localeCompare(itemTwo.name.toLowerCase());
+				});
+			}
+		};
+
+		return collectionUtilities;
+	});
 }());

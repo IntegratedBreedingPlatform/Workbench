@@ -2,11 +2,11 @@
 'use strict';
 
 (function() {
-	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails']),
+	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails', 'utilities']),
 		DELAY = 400;
 
-	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService', '$timeout',
-		function($scope, methodsService, panelService, $timeout) {
+	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService', '$timeout', 'collectionUtilities',
+		function($scope, methodsService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
 			this.methods = [];
 
@@ -52,6 +52,7 @@
 				if (selectedIndex !== -1) {
 					if (updatedMethod) {
 						ctrl.methods[selectedIndex] = updatedMethod;
+						collectionUtilities.sortByName(ctrl.methods);
 					} else {
 						ctrl.methods.splice(selectedIndex, 1);
 					}

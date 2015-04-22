@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails']),
+	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails', 'utilities']),
 		DELAY = 400;
 
 	function transformPropertyToDisplayFormat(property, id) {
@@ -17,8 +17,8 @@
 		return properties.map(transformPropertyToDisplayFormat);
 	}
 
-	app.controller('PropertiesController', ['$scope', 'propertiesService', 'panelService', '$timeout',
-		function($scope, propertiesService, panelService, $timeout) {
+	app.controller('PropertiesController', ['$scope', 'propertiesService', 'panelService', '$timeout', 'collectionUtilities',
+		function($scope, propertiesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
 			this.properties = [];
 
@@ -62,6 +62,7 @@
 				if (selectedIndex !== -1) {
 					if (transformedProperty) {
 						ctrl.properties[selectedIndex] = transformedProperty;
+						ctrl.properties = collectionUtilities.sortByName(ctrl.properties);
 					} else {
 						ctrl.properties.splice(selectedIndex, 1);
 					}

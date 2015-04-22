@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails']),
+	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities']),
 		DELAY = 400;
 
 	function transformDetailedVariableToDisplayFormat(variable, id) {
@@ -32,7 +32,7 @@
 		return variables.map(transformVariableToDisplayFormat);
 	}
 
-	function findAndUpdate(list, id, updatedVariable) {
+	function findAndUpdate(list, id, updatedVariable, sortFunction) {
 		var selectedVariableIndex = -1;
 
 		list.some(function(variable, index) {
@@ -46,6 +46,7 @@
 		if (selectedVariableIndex !== -1) {
 			if (updatedVariable) {
 				list[selectedVariableIndex] = updatedVariable;
+				sortFunction(list);
 			} else {
 				list.splice(selectedVariableIndex, 1);
 			}
@@ -56,8 +57,8 @@
 		findAndUpdate(list, id);
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout',
-		function($scope, variablesService, panelService, $timeout) {
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities',
+		function($scope, variablesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
 
 			$timeout(function() {
@@ -105,11 +106,11 @@
 				if (updatedVariable) {
 					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
-					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable);
+					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 
 					// If the variable is not a favourite, we need to remove it if it's in the favourites list
 					if (updatedVariable.favourite) {
-						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable);
+						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 					} else {
 						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 					}

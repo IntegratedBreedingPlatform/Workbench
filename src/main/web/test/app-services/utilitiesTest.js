@@ -4,6 +4,7 @@
 describe('Utilities Service', function() {
 	var serviceUtilities,
 		formUtilities,
+		collectionUtilities,
 		rootScope,
 		window,
 		timeout,
@@ -12,9 +13,10 @@ describe('Utilities Service', function() {
 	beforeEach(module('utilities'));
 
 	beforeEach(function() {
-		inject(function(_serviceUtilities_, _formUtilities_, $q, $rootScope, $window, $timeout) {
+		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, $q, $rootScope, $window, $timeout) {
 			serviceUtilities = _serviceUtilities_;
 			formUtilities = _formUtilities_;
+			collectionUtilities = _collectionUtilities_;
 			q = $q;
 			rootScope = $rootScope;
 			window = $window;
@@ -418,6 +420,23 @@ describe('Utilities Service', function() {
 
 				formUtilities.goBack();
 				expect(window.history.back).toHaveBeenCalled();
+			});
+		});
+	});
+
+	describe('Service Utilities', function() {
+
+		describe('sortByName', function() {
+
+			it('should sort the collection of objects in alphabetical order by the name property', function() {
+				var A = {name: 'A'},
+					B = {name: 'b'},
+					C = {name: 'C'},
+					collection = [B, C, A];
+
+				collection = collectionUtilities.sortByName(collection);
+
+				expect(collection).toEqual([A, B, C]);
 			});
 		});
 	});
