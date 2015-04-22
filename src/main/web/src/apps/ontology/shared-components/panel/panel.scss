@@ -82,7 +82,7 @@ om-mask {
 	bottom: 0;
 	left: 0;
 
-	transition: opacity .15s linear, z-index 0 ease .15s;
+	transition: opacity .15s linear, z-index 0s ease .15s;
 
 	opacity: 0;
 	background-color: black;
@@ -90,6 +90,6 @@ om-mask {
 
 om-mask.om-mask-visible {
 	z-index: 99;
-	transition: opacity .15s linear, z-index 0 ease;
+	transition: opacity .15s linear, z-index 0s ease;
 	opacity: .5;
 }
