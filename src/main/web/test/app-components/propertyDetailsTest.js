@@ -96,6 +96,21 @@ describe('Property details directive', function() {
 			expect(scope.data).toEqual({classes: []});
 		});
 
+		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
+			scope.selectedProperty = BLAST;
+			scope.deny = function() {};
+			scope.serverErrors = { general: ['error'] };
+		 	scope.clientErrors = { general: ['error'] };
+
+			spyOn(scope, 'deny');
+
+			scope.$apply();
+
+			expect(scope.deny).toHaveBeenCalled();
+			expect(scope.serverErrors).toEqual({});
+			expect(scope.clientErrors).toEqual({});
+		});
+
 		it('should set the model to be the selected property if the selected property changes', function() {
 			scope.selectedProperty = BLAST;
 			scope.$apply();

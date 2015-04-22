@@ -84,6 +84,21 @@ describe('Method details directive', function() {
 			expect(scope.editing).toBe(false);
 		});
 
+		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
+			scope.selectedMethod = CUT_AND_DRY;
+			scope.deny = function() {};
+			scope.serverErrors = { general: ['error'] };
+		 	scope.clientErrors = { general: ['error'] };
+
+			spyOn(scope, 'deny');
+
+			scope.$apply();
+
+			expect(scope.deny).toHaveBeenCalled();
+			expect(scope.serverErrors).toEqual({});
+			expect(scope.clientErrors).toEqual({});
+		});
+
 		it('should set the model to be the selected method if the selected method changes', function() {
 			scope.selectedMethod = CUT_AND_DRY;
 			scope.$apply();

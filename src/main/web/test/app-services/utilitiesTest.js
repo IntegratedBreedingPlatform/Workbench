@@ -313,7 +313,6 @@ describe('Utilities Service', function() {
 
 			it('should append a confirm method on the scope that will resolve the returned promise', function(done) {
 				var scope = {},
-					fakeEvent = { preventDefault: function() {} },
 					confirmation;
 
 				confirmation = formUtilities.confirmationHandler(scope);
@@ -322,13 +321,12 @@ describe('Utilities Service', function() {
 
 				confirmation.then(done, fail);
 
-				scope.confirm(fakeEvent);
+				scope.confirm();
 				rootScope.$apply();
 			});
 
 			it('should append a deny method on the scope that will reject the returned promise', function(done) {
 				var scope = {},
-					fakeEvent = { preventDefault: function() {} },
 					confirmation;
 
 				confirmation = formUtilities.confirmationHandler(scope);
@@ -337,13 +335,48 @@ describe('Utilities Service', function() {
 
 				confirmation.then(fail, done);
 
+				scope.deny();
+				rootScope.$apply();
+			});
+
+			it('should call preventDefault if the confirm method is passed an event', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope);
+
+				spyOn(fakeEvent, 'preventDefault');
+
+				confirmation.then(function() {
+					expect(fakeEvent.preventDefault).toHaveBeenCalled();
+					done();
+				}, fail);
+
+				scope.confirm(fakeEvent);
+				rootScope.$apply();
+			});
+
+			it('should call preventDefault if the deny method is passed an event', function(done) {
+				var scope = {},
+					fakeEvent = { preventDefault: function() {} },
+					confirmation;
+
+				confirmation = formUtilities.confirmationHandler(scope);
+
+				spyOn(fakeEvent, 'preventDefault');
+
+				confirmation.then(fail, function() {
+					expect(fakeEvent.preventDefault).toHaveBeenCalled();
+					done();
+				});
+
 				scope.deny(fakeEvent);
 				rootScope.$apply();
 			});
 
 			it('should reset the confirmationNecessary state after the promise is fulfilled', function(done) {
 				var scope = {},
-					fakeEvent = { preventDefault: function() {} },
 					confirmation;
 
 				confirmation = formUtilities.confirmationHandler(scope);
@@ -357,13 +390,12 @@ describe('Utilities Service', function() {
 					done();
 				});
 
-				scope.confirm(fakeEvent);
+				scope.confirm();
 				rootScope.$apply();
 			});
 
 			it('should set the specified property (if passed) after the promise is fulfilled', function(done) {
 				var scope = {},
-					fakeEvent = { preventDefault: function() {} },
 					confirmation;
 
 				confirmation = formUtilities.confirmationHandler(scope, 'cancelling');
@@ -375,7 +407,7 @@ describe('Utilities Service', function() {
 					done();
 				});
 
-				scope.confirm(fakeEvent);
+				scope.confirm();
 				rootScope.$apply();
 			});
 		});

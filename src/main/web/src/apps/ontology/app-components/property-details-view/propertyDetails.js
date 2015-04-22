@@ -22,11 +22,16 @@
 					$scope.editing = false;
 
 					$scope.$watch('selectedProperty', function(property) {
-						$scope.model = angular.copy(property);
-						$scope.deletable = property && property.deletable || false;
 						// Should always open in read-only view
 						$scope.editing = false;
 						resetErrors($scope);
+
+						// If a confirmation handler was in effect, get rid of it
+						if ($scope.deny) {
+							$scope.deny();
+						}
+						$scope.model = angular.copy(property);
+						$scope.deletable = property && property.deletable || false;
 					});
 
 					$scope.data = {

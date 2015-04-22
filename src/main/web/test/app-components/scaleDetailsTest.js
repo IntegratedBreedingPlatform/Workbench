@@ -138,6 +138,19 @@ describe('Scale details directive', function() {
 			expect(scope.showCategoriesWidget).toBe(false);
 		});
 
+		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
+			scope.selectedScale = PERCENTAGE;
+			scope.deny = function() {};
+		 	scope.clientErrors = { general: ['error'] };
+
+			spyOn(scope, 'deny');
+
+			scope.$apply();
+
+			expect(scope.deny).toHaveBeenCalled();
+			expect(scope.clientErrors).toEqual({});
+		});
+
 		it('should show the range widget and hide the categories widget if the scale type is changed to be Numeric', function() {
 			scope.selectedScale = PERCENTAGE;
 			scope.$apply();

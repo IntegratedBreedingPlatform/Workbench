@@ -20,11 +20,16 @@
 					$scope.editing = false;
 
 					$scope.$watch('selectedMethod', function(method) {
-						$scope.model = angular.copy(method);
-						$scope.deletable = method && method.deletable || false;
 						// Should always open in read-only view
 						$scope.editing = false;
 						resetErrors($scope);
+
+						// If a confirmation handler was in effect, get rid of it
+						if ($scope.deny) {
+							$scope.deny();
+						}
+						$scope.model = angular.copy(method);
+						$scope.deletable = method && method.deletable || false;
 					});
 
 					$scope.$watch('editing', function() {

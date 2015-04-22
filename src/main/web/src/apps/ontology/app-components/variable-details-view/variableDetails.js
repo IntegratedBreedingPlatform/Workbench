@@ -32,11 +32,16 @@
 					$scope.showRangeWidget = false;
 
 					$scope.$watch('selectedVariable', function(variable) {
-						$scope.model = angular.copy(variable);
-						$scope.deletable = variable && variable.deletable || false;
 						// Should always open in read-only view
 						$scope.editing = false;
 						resetErrors($scope);
+
+						// If a confirmation handler was in effect, get rid of it
+						if ($scope.deny) {
+							$scope.deny();
+						}
+						$scope.model = angular.copy(variable);
+						$scope.deletable = variable && variable.deletable || false;
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype

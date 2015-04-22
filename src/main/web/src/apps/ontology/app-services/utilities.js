@@ -108,12 +108,16 @@
 				}
 
 				$scope.confirm = function(e) {
-					e.preventDefault();
+					if (e) {
+						e.preventDefault();
+					}
 					confirmation.resolve();
 				};
 
 				$scope.deny = function(e) {
-					e.preventDefault();
+					if (e) {
+						e.preventDefault();
+					}
 					confirmation.reject();
 				};
 

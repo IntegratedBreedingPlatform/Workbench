@@ -23,11 +23,16 @@
 					$scope.showCategoriesWidget = false;
 
 					$scope.$watch('selectedScale', function(scale) {
-						$scope.model = angular.copy(scale);
-						$scope.deletable = scale && scale.deletable || false;
 						// Should always open in read-only view
 						$scope.editing = false;
 						resetErrors($scope);
+
+						// If a confirmation handler was in effect, get rid of it
+						if ($scope.deny) {
+							$scope.deny();
+						}
+						$scope.model = angular.copy(scale);
+						$scope.deletable = scale && scale.deletable || false;
 					});
 
 					$scope.$watch('editing', function() {

@@ -151,6 +151,19 @@ describe('Variable details directive', function() {
 			});
 		});
 
+		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
+			scope.selectedVariable = PLANT_VIGOR;
+			scope.deny = function() {};
+		 	scope.clientErrors = { general: ['error'] };
+
+			spyOn(scope, 'deny');
+
+			scope.$apply();
+
+			expect(scope.deny).toHaveBeenCalled();
+			expect(scope.clientErrors).toEqual({});
+		});
+
 		it('should set the model to be the selected variable if the selected variable changes', function() {
 			scope.selectedVariable = PLANT_VIGOR;
 			scope.$apply();
