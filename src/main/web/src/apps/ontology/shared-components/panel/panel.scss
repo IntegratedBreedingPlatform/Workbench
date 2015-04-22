@@ -54,7 +54,7 @@ om-panel {
 	overflow-y: auto;
 	overflow-x: hidden;
 	width: 100%;
-	padding: 3rem;
+	padding: 0 3rem;
 }
 
 // Slightly awkward pseudo media query styling for smaller panel sizes
@@ -85,7 +85,7 @@ om-mask {
 	transition: opacity .15s linear, z-index 0s ease .15s;
 
 	opacity: 0;
-	background-color: black;
+	background-color: #4A5F6D;
 }
 
 om-mask.om-mask-visible {
