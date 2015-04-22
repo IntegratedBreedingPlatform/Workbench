@@ -48,6 +48,35 @@ ol {
 	float: right;
 }
 
+.om-add-new {
+	list-style: none;
+	margin: -1rem 0;
+
+	li {
+		padding: 8px;
+		line-height: 1.42857;
+		vertical-align: top;
+		border-top: 1px solid #cfd7de;
+
+		&:last-child {
+			border-bottom: 1px solid #cfd7de;
+		}
+
+		&:hover {
+			background-color: #f3f5f7;
+			cursor: pointer;
+		}
+	}
+
+	span {
+		color: #6F889B;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
 .om-view {
 	display: table-row;
 	height: 100%;
