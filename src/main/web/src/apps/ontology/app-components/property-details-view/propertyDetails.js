@@ -13,17 +13,29 @@
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
-		 		$scope.clientErrors = {};
-		 		$scope.serverErrors = {};
-		 	}
+				$scope.clientErrors = {};
+				$scope.serverErrors = {};
+			}
+
+			function loadClasses($scope) {
+				propertiesService.getClasses().then(function(classes) {
+					$scope.data.classes = classes;
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				});
+			}
 
 			return {
 				controller: function($scope) {
 					$scope.editing = false;
+					$scope.data = {
+						classes: []
+					};
 
 					$scope.$watch('selectedProperty', function(property) {
 						// Should always open in read-only view
 						$scope.editing = false;
+						loadClasses($scope);
 						resetErrors($scope);
 
 						// If a confirmation handler was in effect, get rid of it
@@ -34,19 +46,10 @@
 						$scope.deletable = property && property.deletable || false;
 					});
 
-					$scope.data = {
-						classes: []
-					};
 
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
 							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
-					});
-
-					propertiesService.getClasses().then(function(classes) {
-						$scope.data.classes = classes;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
