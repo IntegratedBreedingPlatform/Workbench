@@ -1,6 +1,6 @@
 <div class="om-am-view">
 
-	<h2>{{'addNew.method.title' | translate}}</h2>
+	<h2 class="om-title">{{'addNew.method.title' | translate}}</h2>
 
 	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
 		<ul>
@@ -11,7 +11,7 @@
 	<form class="form-horizontal" name="amForm" ng-submit="saveMethod($event, method)" novalidate>
 		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
-			<div class="col-sm-10">
+			<div class="col-sm-7">
 				<om-input om-name="omName" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
 				<ng-messages for="amForm.omName.$error" ng-if="amForm.$submitted || amForm.omName.$touched">
 					<ng-message when="required"><p class="text-danger">{{'validation.method.nameRequired' | translate}}</p></ng-message>
@@ -23,7 +23,7 @@
 
 		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
-			<div class="col-sm-10">
+			<div class="col-sm-7">
 				<om-text-area om-name="omDescription" om-property="description" om-adding="true" om-model="method" om-max-length="255"></om-text-area>
 				<ng-messages for="amForm.omDescription.$error" ng-if="amForm.$submitted || amForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
@@ -33,7 +33,7 @@
 		</div>
 
 		<div class="form-group">
-			<div ng-hide="confirmationNecessary" class="col-sm-offset-2 col-sm-10">
+			<div ng-hide="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
 				<button class="btn btn-primary" type="submit">
 					{{'button.save' | translate}}
 					<span ng-show="submitted" class="throbber-btn-wrapper">
@@ -42,7 +42,7 @@
 				</button>
 				<button class="btn btn-default" ng-click="cancel($event)">{{'button.cancel' | translate}}</button>
 			</div>
-			<div ng-show="confirmationNecessary" class="col-sm-offset-2 col-sm-10">
+			<div ng-show="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
 				<div class="alert alert-danger">{{'warnings.discardConfirmation' | translate}}</div>
 				<button class="btn btn-danger" ng-click="confirm($event)">
 					{{'button.discard' | translate}}
