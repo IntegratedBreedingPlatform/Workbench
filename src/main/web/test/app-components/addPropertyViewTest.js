@@ -29,6 +29,7 @@ describe('Add Property View', function() {
 		propertyFormService,
 
 		q,
+		deferredGetClasses,
 		deferredAddProperty,
 		controller,
 		location,
@@ -40,8 +41,6 @@ describe('Add Property View', function() {
 	});
 
 	beforeEach(inject(function($q, $rootScope, $location, $controller, $window, _formUtilities_, _propertyFormService_) {
-
-		var deferredGetClasses;
 
 		q = $q;
 		location = $location;
@@ -74,7 +73,6 @@ describe('Add Property View', function() {
 			serviceUtilities: serviceUtilities
 		});
 
-		deferredGetClasses.resolve(classes);
 		scope.$apply();
 
 		// Pretend our form is valid
@@ -85,7 +83,16 @@ describe('Add Property View', function() {
 	}));
 
 	it('should set the classes on the scope', function() {
+		deferredGetClasses.resolve(classes);
+		scope.$apply();
 		expect(scope.classes).toEqual(classes);
+	});
+
+	it('should display errors if classes were not retrieved successfully', function() {
+		var errors = ['error'];
+		deferredGetClasses.reject(errors);
+		scope.$apply();
+		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalledWith(errors);
 	});
 
 	describe('$scope.saveProperty', function() {
