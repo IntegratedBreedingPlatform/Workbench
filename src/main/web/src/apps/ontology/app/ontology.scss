@@ -26,11 +26,17 @@ body {
 
 body {
 	margin: 0;
+	padding: 0 10px;
 }
 
 ol {
 	margin: 0;
 	padding-left: 0;
+}
+
+.om-title {
+	margin-top: 1.5rem;
+	margin-bottom: 2rem;
 }
 
 .om-ontology-manager {
@@ -40,7 +46,6 @@ ol {
 
 .om-add-new-btn {
 	float: right;
-	margin-right: 12px;
 }
 
 .om-view {
