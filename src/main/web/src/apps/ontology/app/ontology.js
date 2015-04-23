@@ -62,6 +62,8 @@
 	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',
 		function($scope, $location, $window, panelService) {
 
+			var urls = ['methods', 'variables', 'scales', 'properties'];
+
 			$scope.panelName = 'addNew';
 			$scope.activeTab = 'variables';
 
@@ -77,8 +79,12 @@
 				$scope.activeTab = '';
 			};
 
-			// Storing the location so we can implement back functionality on our nested views
 			$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+				urls.some(function(url) {
+					if (newUrl.indexOf(url, newUrl.length - url.length) !== -1) {
+						$scope.activeTab = url;
+					}
+				});
 				$scope.previousUrl = oldUrl;
 			});
 

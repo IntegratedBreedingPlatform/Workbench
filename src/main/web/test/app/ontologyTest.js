@@ -53,6 +53,15 @@ describe('Ontology Controller', function() {
 		expect(scope.previousUrl).toEqual(newUrl);
 	});
 
+	it('should set the active tab if the location changes to one of our known tab urls', function() {
+		var oldUrl = '/variables',
+			newUrl = '/methods';
+
+		expect(scope.activeTab).toEqual('variables');
+		scope.$broadcast('$locationChangeStart', newUrl, oldUrl);
+		expect(scope.activeTab).toEqual('methods');
+	});
+
 	describe('addNew', function() {
 		it('should route and close the panel', function() {
 			var path = 'myPath';
