@@ -321,6 +321,23 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         Component breedingDecisionArea = layoutBreedingDecision();
         layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
 
+        //the steps on the second column   
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        topInPixels = top + "px";
+        int left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + ARROW_IMAGE_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        String leftInPixels = left + "px";
+        
+        Component genotypingArea = layoutGenotypingStep();
+        layout.addComponent(genotypingArea, "top:" + topInPixels  + "; left:" + leftInPixels);
+        
+        top = 10 + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS + 50;
+        topInPixels = top + "px";
+        left = EXTRA_SPACE_BETWEEN_COMPONENTS + WORKFLOW_STEP_WIDTH + EXTRA_SPACE_BETWEEN_COMPONENTS
+                + EXTRA_SPACE_BETWEEN_COMPONENTS;
+        leftInPixels = left + "px";
+        layout.addComponent(twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
+
         final VerticalLayout rootContainer = new VerticalLayout();
         rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
         rootContainer.setSpacing(false);
@@ -375,6 +392,13 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
         layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
         layout.setExpandRatio(browseGermplasmListsButton, 0);
         
+        
+        
+        layout.addComponent(browseGenotypingDataButton);
+        browseGenotypingDataButton.setHeight("20px");
+        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
+        layout.setExpandRatio(browseGenotypingDataButton, 0);
+
         layout.addComponent(mainHeadToHeadButton2);
         mainHeadToHeadButton2.setHeight("20px");
         layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
