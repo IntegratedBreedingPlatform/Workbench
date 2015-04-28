@@ -41,7 +41,7 @@ describe('Data Types Service', function() {
 
 		it('should GET /dataTypes', function() {
 
-			httpBackend.expectGET(/\/dataTypes$/).respond();
+			httpBackend.expectGET(/\/datatypes$/).respond();
 
 			dataTypesService.getDataTypes();
 
@@ -52,7 +52,7 @@ describe('Data Types Service', function() {
 
 			var response = ['dataTypes go here'];
 
-			httpBackend.expectGET(/\/dataTypes$/).respond(response);
+			httpBackend.expectGET(/\/datatypes$/).respond(response);
 
 			dataTypesService.getDataTypes();
 			httpBackend.flush();
@@ -66,7 +66,7 @@ describe('Data Types Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/dataTypes$/).respond(500, error);
+			httpBackend.expectGET(/\/datatypes$/).respond(500, error);
 
 			dataTypesService.getDataTypes();
 			httpBackend.flush();
