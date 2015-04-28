@@ -49,6 +49,10 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
     private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
     private static final String TWO_HEADED_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-lr.png";
 
+	private static final String GCP_WORKFLOW_LINK = " gcp-workflow-link";
+
+	private static final String GCP_SECTION_TITLE_LARGE = "gcp-section-title-large";
+
     private boolean workflowPreview;
 
     private Project project;
@@ -131,138 +135,138 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         dashboardTitle.setStyleName("gcp-content-title");
 
         projectPlanningTitle = new Label("Program Planning");
-        projectPlanningTitle.setStyleName("gcp-section-title-large");
+        projectPlanningTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         backcrossingTitle = new Label("Backcrossing");
-        backcrossingTitle.setStyleName("gcp-section-title-large");
+        backcrossingTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         fieldTrialManagementTitle = new Label("Field Trial Management");
-        fieldTrialManagementTitle.setStyleName("gcp-section-title-large");
+        fieldTrialManagementTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         genotypingTitle = new Label("Genotyping");
-        genotypingTitle.setStyleName("gcp-section-title-large");
+        genotypingTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         statisticalAnalysisTitle = new Label("Statistical Analysis");
-        statisticalAnalysisTitle.setStyleName("gcp-section-title-large");
+        statisticalAnalysisTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         breedingDecisionTitle = new Label("Breeding Decision");
-        breedingDecisionTitle.setStyleName("gcp-section-title-large");
+        breedingDecisionTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
 
         breedingPlannerButton = new Button(messageSource.getMessage(Message.BREEDING_PLANNER_MABC));
-        breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingPlannerButton.setSizeUndefined();
         breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
 
         germplasmImportButton = new Button("IBFB Import Germplasm Lists");
-        germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         germplasmImportButton.setSizeUndefined();
         germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
 
         germplasmImportButton2 = new Button("Import Germplasm Lists");
-        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         germplasmImportButton2.setSizeUndefined();
         germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
 
 
         mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
-        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         mainHeadToHeadButton.setSizeUndefined();
         mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
         mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
-        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         mainHeadToHeadButton2.setSizeUndefined();
         mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
         // GCP-6394
         ontologyBrowserButton = new Button(messageSource.getMessage(Message.MANAGE_ONTOLOGIES));
-        ontologyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        ontologyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         ontologyBrowserButton.setSizeUndefined();
         ontologyBrowserButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_ONTOLOGY_BROWSER));
 
         metaAnalysisButton = new Button(messageSource.getMessage(Message.META_ANALYSIS));
-        metaAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        metaAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         metaAnalysisButton.setSizeUndefined();
         metaAnalysisButton.setDescription(messageSource.getMessage(Message.META_ANALYSIS));
 
         manageGermplasmListsButton = new Button("Manage Germplasm Lists");
-        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         manageGermplasmListsButton.setSizeUndefined();
         manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
 
         browseGenotypingDataButton = new Button("Browse Genotyping Data");
-        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         browseGenotypingDataButton.setSizeUndefined();
         browseGenotypingDataButton.setDescription("Click to launch genotyping data");
 
         breedingManagerButton = new Button("Manage Nurseries");
-        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingManagerButton.setSizeUndefined();
         breedingManagerButton.setDescription("Click to launch Manage Nurseries");
 
         browseStudiesButton = new Button("Browse Studies and Datasets");
-        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         browseStudiesButton.setSizeUndefined();
         browseStudiesButton.setDescription("Click to launch Study Browser");
 
 
         breedingViewButton = new Button("Breeding View Standalone (all analyses)");
-        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingViewButton.setSizeUndefined();
         breedingViewButton.setDescription("Click to launch Breeding View");
 
         breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
-        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisCentralButton.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
 
         breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis");
-        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
         breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets");
 
         breedingViewMultiSiteAnalysisButton = new Button("Multi-site Analysis");
-        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingViewMultiSiteAnalysisButton.setSizeUndefined();
         breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis on Study Datasets");
 
         gdmsButton = new Button("Manage Genotyping Data");
-        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         gdmsButton.setSizeUndefined();
         gdmsButton.setDescription("Click to launch GDMS");
 
         mbdtButton = new Button(messageSource.getMessage(Message.MBDT_MABC));
-        mbdtButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        mbdtButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         mbdtButton.setSizeUndefined();
         mbdtButton.setDescription("Click to launch MBDT");
 
         fieldbookButton = new Button(messageSource.getMessage(Message.MANAGE_TRIALS));
-        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         fieldbookButton.setSizeUndefined();
         fieldbookButton.setDescription("Click to launch Fieldbook");
 
         queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
-        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         queryForAdaptedGermplasmButton.setSizeUndefined();
         queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
 
         queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
-        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         queryForAdaptedGermplasmButton2.setSizeUndefined();
         queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
 
         breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_BROWSE_FOR_GERMPLASMS_AND_LISTS));
-        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         breedingManagerListManager.setSizeUndefined();
         breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
 
         optimasButton = new Button("OptiMAS");
-        optimasButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        optimasButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         optimasButton.setSizeUndefined();
         optimasButton.setDescription("Click to launch OptiMAS");
 
         makeCrossesButton = new Button("Make Crosses");
-        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
         makeCrossesButton.setSizeUndefined();
         makeCrossesButton.setDescription("Click to launch Crossing Manager");
 
@@ -581,7 +585,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
         for (String buttonCaption : buttonCaptions) {
             Button button = new Button(buttonCaption);
-            button.setStyleName(BaseTheme.BUTTON_LINK + " gcp-workflow-link");
+            button.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
 
             layout.addComponent(button);
             layout.setComponentAlignment(button, Alignment.TOP_CENTER);
